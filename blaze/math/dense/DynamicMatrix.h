@@ -59,15 +59,14 @@
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
-#include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
@@ -6672,7 +6671,7 @@ struct UnaryMapTraitEval2< T, OP
 {
    using ET = ElementType_t<T>;
 
-   using Type = DynamicMatrix< UnaryMapTrait_t<ET,OP>, StorageOrder_v<T> >;
+   using Type = DynamicMatrix< MapTrait_t<ET,OP>, StorageOrder_v<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6706,7 +6705,7 @@ struct BinaryMapTraitEval2< T1, T2, OP
 
    static constexpr bool SO = StorageOrder_v<T1> && StorageOrder_v<T2>;
 
-   using Type = DynamicMatrix< BinaryMapTrait_t<ET1,ET2,OP>, SO >;
+   using Type = DynamicMatrix< MapTrait_t<ET1,ET2,OP>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************

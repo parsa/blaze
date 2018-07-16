@@ -62,11 +62,11 @@
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ElementsTrait.h>
+#include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
-#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsResizable.h>
@@ -2634,7 +2634,7 @@ struct UnaryMapTraitEval2< T, OP
 {
    using ET = ElementType_t<T>;
 
-   using Type = CompressedVector< UnaryMapTrait_t<ET,OP>, TransposeFlag_v<T> >;
+   using Type = CompressedVector< MapTrait_t<ET,OP>, TransposeFlag_v<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************

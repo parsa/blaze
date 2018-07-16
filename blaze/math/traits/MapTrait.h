@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/traits/UnaryMapTrait.h
-//  \brief Header file for the unary map trait
+//  \file blaze/math/traits/MapTrait.h
+//  \brief Header file for the map trait
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_TRAITS_UNARYMAPTRAIT_H_
-#define _BLAZE_MATH_TRAITS_UNARYMAPTRAIT_H_
+#ifndef _BLAZE_MATH_TRAITS_MAPTRAIT_H_
+#define _BLAZE_MATH_TRAITS_MAPTRAIT_H_
 
 
 //*************************************************************************************************
@@ -54,9 +54,11 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename, typename, typename = void > struct UnaryMapTrait;
+template< typename... > struct MapTrait;
 template< typename, typename, typename = void > struct UnaryMapTraitEval1;
 template< typename, typename, typename = void > struct UnaryMapTraitEval2;
+template< typename, typename, typename, typename = void > struct BinaryMapTraitEval1;
+template< typename, typename, typename, typename = void > struct BinaryMapTraitEval2;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -64,59 +66,77 @@ template< typename, typename, typename = void > struct UnaryMapTraitEval2;
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T, typename OP >
-auto evalUnaryMapTrait( T&, OP )
+auto evalMapTrait( T&, OP )
    -> typename UnaryMapTraitEval1<T,OP>::Type;
 
 template< typename T, typename OP >
-auto evalUnaryMapTrait( const T&, OP )
-   -> typename UnaryMapTrait<T,OP>::Type;
+auto evalMapTrait( const T&, OP )
+   -> typename MapTrait<T,OP>::Type;
 
 template< typename T, typename OP >
-auto evalUnaryMapTrait( const volatile T&, OP )
-   -> typename UnaryMapTrait<T,OP>::Type;
+auto evalMapTrait( const volatile T&, OP )
+   -> typename MapTrait<T,OP>::Type;
+
+template< typename T1, typename T2, typename OP >
+auto evalMapTrait( T1&, T2&, OP )
+   -> typename BinaryMapTraitEval1<T1,T2,OP>::Type;
+
+template< typename T1, typename T2, typename OP >
+auto evalMapTrait( const T1&, const T2&, OP )
+   -> typename MapTrait<T1,T2,OP>::Type;
+
+template< typename T1, typename T2, typename OP >
+auto evalMapTrait( const T1&, volatile const T2&, OP )
+   -> typename MapTrait<T1,T2,OP>::Type;
+
+template< typename T1, typename T2, typename OP >
+auto evalMapTrait( volatile const T1&, const T2&, OP )
+   -> typename MapTrait<T1,T2,OP>::Type;
+
+template< typename T1, typename T2, typename OP >
+auto evalMapTrait( volatile const T1&, volatile const T2&, OP )
+   -> typename MapTrait<T1,T2,OP>::Type;
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Base template for the UnaryMapTrait class.
+/*!\brief Base template for the MapTrait class.
 // \ingroup math_traits
 //
-// \section unarymaptrait_general General
+// \section maptrait_general General
 //
-// The UnaryMapTrait class template offers the possibility to select the resulting data type of
-// a generic, unary map operation on the given type \a T. UnaryMapTrait defines the nested type
-// \a Type, which represents the resulting data type of the map operation. In case no result type
+// The MapTrait class template offers the possibility to select the resulting data type of a
+// generic unary or binary map operation. MapTrait defines the nested type \a Type, which
+// represents the resulting data type of the map operation. In case no result type
 // can be determined for the type \a T, a compilation error is created. Note that \c const and
 // \c volatile qualifiers and reference modifiers are generally ignored.
 //
 //
-// \n \section unarymaptrait_specializations Creating custom specializations
+// \n \section maptrait_specializations Creating custom specializations
 //
-// UnaryMapTrait is guaranteed to work for all built-in data types, complex numbers, all vector
+// MapTrait is guaranteed to work for all built-in data types, complex numbers, all vector
 // and matrix types of the Blaze library (including views and adaptors) and all data types that
 // work in combination with the provided custom operation \a OP. In order to add support for
 // user-defined data types or in order to adapt to special cases it is possible to specialize
-// the UnaryMapTrait template. The following example shows the according specialization for
-// unary map operations with a dynamic column vector:
+// the MapTrait template. The following example shows the according specialization for map
+// operations with a dynamic column vector:
 
    \code
    template< typename T, typename OP >
-   struct UnaryMapTrait< DynamicVector<T,columnVector>, OP >
+   struct MapTrait< DynamicVector<T,columnVector>, OP >
    {
-      using Type = DynamicVector< typename UnaryMapTrait<T,OP>::Type, columnVector >;
+      using Type = DynamicVector< typename MapTrait<T,OP>::Type, columnVector >;
    };
    \endcode
 */
-template< typename T   // Type of the operand
-        , typename OP  // Type of the custom operation
-        , typename >   // Restricting condition
-struct UnaryMapTrait
+template< typename... Args >  // Types of the map template paramters
+struct MapTrait
 {
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalUnaryMapTrait( std::declval<T&>(), std::declval<OP&>() ) );
+   using Type = decltype( evalMapTrait( std::declval<Args&>()... ) );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -124,27 +144,26 @@ struct UnaryMapTrait
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the UnaryMapTrait class template.
+/*!\brief Auxiliary alias declaration for the MapTrait class template.
 // \ingroup math_traits
 //
-// The UnaryMapTrait_t alias declaration provides a convenient shortcut to access the nested \a Type
-// of the UnaryMapTrait class template. For instance, given the type \a T and the custom operation
+// The MapTrait_t alias declaration provides a convenient shortcut to access the nested \a Type
+// of the MapTrait class template. For instance, given the type \a T and the custom operation
 // type \a OP the following two type definitions are identical:
 
    \code
-   using Type1 = typename blaze::UnaryMapTrait<T,OP>::Type;
-   using Type2 = blaze::UnaryMapTrait_t<T,OP>;
+   using Type1 = typename blaze::MapTrait<T,OP>::Type;
+   using Type2 = blaze::MapTrait_t<T,OP>;
    \endcode
 */
-template< typename T     // Type of the operand
-        , typename OP >  // Type of the custom operation
-using UnaryMapTrait_t = typename UnaryMapTrait<T,OP>::Type;
+template< typename... Args >  // Types of the map template paramters
+using MapTrait_t = typename MapTrait<Args...>::Type;
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief First auxiliary helper struct for the UnaryMapTrait type trait.
+/*!\brief Auxiliary helper struct for the MapTrait type trait.
 // \ingroup math_traits
 */
 template< typename T   // Type of the operand
@@ -163,7 +182,7 @@ struct UnaryMapTraitEval1
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Second auxiliary helper struct for the UnaryMapTrait type trait.
+/*!\brief Auxiliary helper struct for the MapTrait type trait.
 // \ingroup math_traits
 */
 template< typename T   // Type of the operand
@@ -174,6 +193,46 @@ struct UnaryMapTraitEval2
  public:
    //**********************************************************************************************
    using Type = Decay_t< decltype( std::declval<OP>()( std::declval<T>() ) ) >;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the MapTrait type trait.
+// \ingroup math_traits
+*/
+template< typename T1  // Type of the left-hand side operand
+        , typename T2  // Type of the right-hand side operand
+        , typename OP  // Type of the custom operation
+        , typename >   // Restricting condition
+struct BinaryMapTraitEval1
+{
+ public:
+   //**********************************************************************************************
+   using Type = typename BinaryMapTraitEval2<T1,T2,OP>::Type;
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the MapTrait type trait.
+// \ingroup math_traits
+*/
+template< typename T1  // Type of the left-hand side operand
+        , typename T2  // Type of the right-hand side operand
+        , typename OP  // Type of the custom operation
+        , typename >   // Restricting condition
+struct BinaryMapTraitEval2
+{
+ public:
+   //**********************************************************************************************
+   using Type = Decay_t< decltype( std::declval<OP>()( std::declval<T1>(), std::declval<T2>() ) ) >;
    //**********************************************************************************************
 };
 /*! \endcond */

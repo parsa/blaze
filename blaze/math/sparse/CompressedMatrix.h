@@ -58,12 +58,12 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsIdentity.h>
@@ -6126,7 +6126,7 @@ struct UnaryMapTraitEval2< T, OP
 {
    using ET = ElementType_t<T>;
 
-   using Type = CompressedMatrix< UnaryMapTrait_t<ET,OP>, StorageOrder_v<T> >;
+   using Type = CompressedMatrix< MapTrait_t<ET,OP>, StorageOrder_v<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************

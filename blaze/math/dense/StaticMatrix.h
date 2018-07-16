@@ -59,15 +59,14 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
-#include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
-#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
@@ -6566,7 +6565,7 @@ struct UnaryMapTraitEval2< T, OP
 {
    using ET = ElementType_t<T>;
 
-   using Type = StaticMatrix< UnaryMapTrait_t<ET,OP>, Size_v<T,0UL>, Size_v<T,1UL>, StorageOrder_v<T> >;
+   using Type = StaticMatrix< MapTrait_t<ET,OP>, Size_v<T,0UL>, Size_v<T,1UL>, StorageOrder_v<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6599,7 +6598,7 @@ struct BinaryMapTraitEval2< T1, T2, OP
 
    static constexpr bool SO = StorageOrder_v<T1> && StorageOrder_v<T2>;
 
-   using Type = StaticMatrix< BinaryMapTrait_t<ET1,ET2,OP>, M, N, SO >;
+   using Type = StaticMatrix< MapTrait_t<ET1,ET2,OP>, M, N, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************

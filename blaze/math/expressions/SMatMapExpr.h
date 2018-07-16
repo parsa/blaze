@@ -54,8 +54,8 @@
 #include <blaze/math/Functors.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
+#include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
@@ -147,7 +147,7 @@ class SMatMapExpr
  public:
    //**Type definitions****************************************************************************
    using This          = SMatMapExpr<MT,OP,SO>;        //!< Type of this SMatMapExpr instance.
-   using ResultType    = UnaryMapTrait_t<RT,OP>;       //!< Result type for expression template evaluations.
+   using ResultType    = MapTrait_t<RT,OP>;            //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.

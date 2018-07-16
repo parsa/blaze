@@ -60,16 +60,15 @@
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/BandTrait.h>
-#include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ElementsTrait.h>
+#include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
-#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
@@ -2929,7 +2928,7 @@ struct UnaryMapTraitEval2< T, OP
 {
    using ET = ElementType_t<T>;
 
-   using Type = DynamicVector< UnaryMapTrait_t<ET,OP>, TransposeFlag_v<T> >;
+   using Type = DynamicVector< MapTrait_t<ET,OP>, TransposeFlag_v<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2957,7 +2956,7 @@ struct BinaryMapTraitEval2< T1, T2, OP
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
 
-   using Type = DynamicVector< BinaryMapTrait_t<ET1,ET2,OP>, TransposeFlag_v<T1> >;
+   using Type = DynamicVector< MapTrait_t<ET1,ET2,OP>, TransposeFlag_v<T1> >;
 };
 /*! \endcond */
 //*************************************************************************************************

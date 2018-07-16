@@ -58,7 +58,7 @@
 #include <blaze/math/functors/Pow.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
-#include <blaze/math/traits/BinaryMapTrait.h>
+#include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
@@ -177,7 +177,7 @@ class DMatDMatMapExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DMatDMatMapExpr<MT1,MT2,OP,SO>;  //!< Type of this DMatDMatMapExpr instance.
-   using ResultType    = BinaryMapTrait_t<RT1,RT2,OP>;    //!< Result type for expression template evaluations.
+   using ResultType    = MapTrait_t<RT1,RT2,OP>;          //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;      //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;     //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;       //!< Resulting element type.

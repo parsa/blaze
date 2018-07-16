@@ -52,16 +52,15 @@
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/BandTrait.h>
-#include <blaze/math/traits/BinaryMapTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ElementsTrait.h>
+#include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
-#include <blaze/math/traits/UnaryMapTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
@@ -3044,7 +3043,7 @@ struct UnaryMapTraitEval2< T, OP
 {
    using ET = ElementType_t<T>;
 
-   using Type = HybridVector< UnaryMapTrait_t<ET,OP>, MaxSize_v<T,0UL>, TransposeFlag_v<T> >;
+   using Type = HybridVector< MapTrait_t<ET,OP>, MaxSize_v<T,0UL>, TransposeFlag_v<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3074,7 +3073,7 @@ struct BinaryMapTraitEval2< T1, T2, OP
 
    static constexpr size_t N = min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) );
 
-   using Type = HybridVector< BinaryMapTrait_t<ET1,ET2,OP>, N, TransposeFlag_v<T1> >;
+   using Type = HybridVector< MapTrait_t<ET1,ET2,OP>, N, TransposeFlag_v<T1> >;
 };
 /*! \endcond */
 //*************************************************************************************************
