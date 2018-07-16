@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseVector.h>
@@ -52,7 +53,6 @@
 #include <blaze/math/expressions/VecVecAddExpr.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
-#include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -110,7 +110,7 @@ class SVecSVecAddExpr
    static constexpr bool returnExpr = ( !IsTemporary_v<RN1> && !IsTemporary_v<RN2> );
 
    //! Expression return type for the subscript operator.
-   using ExprReturnType = AddExprTrait_t<RN1,RN2>;
+   using ExprReturnType = decltype( std::declval<RN1>() + std::declval<RN2>() );
    //**********************************************************************************************
 
    //**Parallel evaluation strategy****************************************************************

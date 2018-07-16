@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/traits/AddExprTrait.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/BinaryMapTrait.h>
