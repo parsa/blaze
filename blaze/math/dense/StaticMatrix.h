@@ -6411,11 +6411,18 @@ struct SubTraitEval2< T1, T2
    static constexpr size_t M = max( Size_v<T1,0UL>, Size_v<T2,0UL> );
    static constexpr size_t N = max( Size_v<T1,1UL>, Size_v<T2,1UL> );
 
+   static constexpr bool SO1 = StorageOrder_v<T1>;
+   static constexpr bool SO2 = StorageOrder_v<T2>;
+
    static constexpr bool SO = ( IsDenseMatrix_v<T1> && IsDenseMatrix_v<T2>
-                                ? ( StorageOrder_v<T1> && StorageOrder_v<T2> )
+                                ? ( IsSymmetric_v<T1> ^ IsSymmetric_v<T2>
+                                    ? ( IsSymmetric_v<T1>
+                                        ? SO2
+                                        : SO1 )
+                                    : SO1 && SO2 )
                                 : ( IsDenseMatrix_v<T1>
-                                    ? StorageOrder_v<T1>
-                                    : StorageOrder_v<T2> ) );
+                                    ? SO1
+                                    : SO2 ) );
 
    using Type = StaticMatrix< SubTrait_t<ET1,ET2>, M, N, SO >;
 };

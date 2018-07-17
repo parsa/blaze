@@ -1351,8 +1351,10 @@ template< typename T1, typename T2 >
 struct SubTraitEval1< T1, T2
                     , EnableIf_t< ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
                                     IsHermitian_v<T2> && !IsSymmetric_v<T2> ) ||
-                                  ( IsHermitian_v<T1> && !IsSymmetric_v<T1> && IsIdentity_v<T2> ) ||
-                                  ( IsIdentity_v<T1> && IsHermitian_v<T2> && !IsSymmetric_v<T2> ) > >
+                                  ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
+                                    IsSymmetric_v<T2> && !IsComplex_v< UnderlyingNumeric_t<T2> > ) ||
+                                  ( IsSymmetric_v<T1> && !IsComplex_v< UnderlyingNumeric_t<T1> > &&
+                                    IsHermitian_v<T2> && !IsSymmetric_v<T2> ) > >
 {
    using Type = HermitianMatrix< typename SubTraitEval2<T1,T2>::Type >;
 };
