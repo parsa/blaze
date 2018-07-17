@@ -73,13 +73,21 @@ template< typename T >
 auto evalBandTrait( T& )
    -> typename BandTraitEval2<T,inf>::Type;
 
-template< ptrdiff_t... CBAs, typename T >
+template< ptrdiff_t I, typename T >
 auto evalBandTrait( const T& )
-   -> typename BandTrait<T,CBAs...>::Type;
+   -> typename BandTrait<T,I>::Type;
 
-template< ptrdiff_t... CBAs, typename T >
+template< typename T >
+auto evalBandTrait( const T& )
+   -> typename BandTrait<T>::Type;
+
+template< ptrdiff_t I, typename T >
 auto evalBandTrait( volatile const T& )
-   -> typename BandTrait<T,CBAs...>::Type;
+   -> typename BandTrait<T,I>::Type;
+
+template< typename T >
+auto evalBandTrait( volatile const T& )
+   -> typename BandTrait<T>::Type;
    /*! \endcond */
 //*************************************************************************************************
 
