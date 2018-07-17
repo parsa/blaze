@@ -72,13 +72,21 @@ template< typename T >
 auto evalRowsTrait( T& )
    -> typename RowsTraitEval2<T,-1UL>::Type;
 
-template< size_t... CRAs, typename T >
+template< size_t N, typename T >
 auto evalRowsTrait( const T& )
-   -> typename RowsTrait<T,CRAs...>::Type;
+   -> typename RowsTrait<T,N>::Type;
 
-template< size_t... CRAs, typename T >
+template< typename T >
+auto evalRowsTrait( const T& )
+   -> typename RowsTrait<T>::Type;
+
+template< size_t N, typename T >
 auto evalRowsTrait( volatile const T& )
-   -> typename RowsTrait<T,CRAs...>::Type;
+   -> typename RowsTrait<T,N>::Type;
+
+template< typename T >
+auto evalRowsTrait( volatile const T& )
+   -> typename RowsTrait<T>::Type;
 /*! \endcond */
 //*************************************************************************************************
 
