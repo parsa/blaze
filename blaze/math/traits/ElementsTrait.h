@@ -72,13 +72,21 @@ template< typename T >
 auto evalElementsTrait( T& )
    -> typename ElementsTraitEval2<T,0UL>::Type;
 
-template< size_t... CEAs, typename T >
+template< size_t N, typename T >
 auto evalElementsTrait( const T& )
-   -> typename ElementsTrait<T,CEAs...>::Type;
+   -> typename ElementsTrait<T,N>::Type;
 
-template< size_t... CEAs, typename T >
+template< typename T >
+auto evalElementsTrait( const T& )
+   -> typename ElementsTrait<T>::Type;
+
+template< size_t N, typename T >
 auto evalElementsTrait( volatile const T& )
-   -> typename ElementsTrait<T,CEAs...>::Type;
+   -> typename ElementsTrait<T,N>::Type;
+
+template< typename T >
+auto evalElementsTrait( volatile const T& )
+   -> typename ElementsTrait<T>::Type;
 /*! \endcond */
 //*************************************************************************************************
 
