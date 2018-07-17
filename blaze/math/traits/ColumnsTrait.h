@@ -72,13 +72,21 @@ template< typename T >
 auto evalColumnsTrait( T& )
    -> typename ColumnsTraitEval2<T,-1UL>::Type;
 
-template< size_t... CCAs, typename T >
+template< size_t N, typename T >
 auto evalColumnsTrait( const T& )
-   -> typename ColumnsTrait<T,CCAs...>::Type;
+   -> typename ColumnsTrait<T,N>::Type;
 
-template< size_t... CCAs, typename T >
+template< typename T >
+auto evalColumnsTrait( const T& )
+   -> typename ColumnsTrait<T>::Type;
+
+template< size_t N, typename T >
 auto evalColumnsTrait( volatile const T& )
-   -> typename ColumnsTrait<T,CCAs...>::Type;
+   -> typename ColumnsTrait<T,N>::Type;
+
+template< typename T >
+auto evalColumnsTrait( volatile const T& )
+   -> typename ColumnsTrait<T>::Type;
 /*! \endcond */
 //*************************************************************************************************
 
