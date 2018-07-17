@@ -84,6 +84,7 @@
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/StorageOrder.h>
+#include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsIdentity.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
@@ -92,6 +93,7 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/Unused.h>
 
@@ -1324,8 +1326,10 @@ template< typename T1, typename T2 >
 struct AddTraitEval1< T1, T2
                     , EnableIf_t< ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
                                     IsHermitian_v<T2> && !IsSymmetric_v<T2> ) ||
-                                  ( IsHermitian_v<T1> && !IsSymmetric_v<T1> && IsIdentity_v<T2> ) ||
-                                  ( IsIdentity_v<T1> && IsHermitian_v<T2> && !IsSymmetric_v<T2> ) > >
+                                  ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
+                                    IsSymmetric_v<T2> && !IsComplex_v< UnderlyingNumeric_t<T2> > ) ||
+                                  ( IsSymmetric_v<T1> && !IsComplex_v< UnderlyingNumeric_t<T1> > &&
+                                    IsHermitian_v<T2> && !IsSymmetric_v<T2> ) > >
 {
    using Type = HermitianMatrix< typename AddTraitEval2<T1,T2>::Type >;
 };

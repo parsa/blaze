@@ -5967,7 +5967,9 @@ struct AddTraitEval2< T1, T2
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
 
-   using Type = CompressedMatrix< AddTrait_t<ET1,ET2>, StorageOrder_v<T1> >;
+   static constexpr bool SO = ( StorageOrder_v<T1> && StorageOrder_v<T2> );
+
+   using Type = CompressedMatrix< AddTrait_t<ET1,ET2>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************

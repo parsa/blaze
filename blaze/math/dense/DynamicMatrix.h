@@ -90,6 +90,7 @@
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/MaxSize.h>
@@ -6467,7 +6468,20 @@ struct AddTraitEval2< T1, T2
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
 
-   using Type = DynamicMatrix< AddTrait_t<ET1,ET2>, StorageOrder_v<T1> >;
+   static constexpr bool SO1 = StorageOrder_v<T1>;
+   static constexpr bool SO2 = StorageOrder_v<T2>;
+
+   static constexpr bool SO = ( IsDenseMatrix_v<T1> && IsDenseMatrix_v<T2>
+                                ? ( IsSymmetric_v<T1> ^ IsSymmetric_v<T2>
+                                    ? ( IsSymmetric_v<T1>
+                                        ? SO2
+                                        : SO1 )
+                                    : SO1 && SO2 )
+                                : ( IsDenseMatrix_v<T1>
+                                    ? SO1
+                                    : SO2 ) );
+
+   using Type = DynamicMatrix< AddTrait_t<ET1,ET2>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
