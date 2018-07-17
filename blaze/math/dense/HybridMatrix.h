@@ -6771,7 +6771,14 @@ struct SchurTraitEval2< T1, T2
    static constexpr size_t M = min( size_t( MaxSize_v<T1,0UL> ), size_t( MaxSize_v<T2,0UL> ) );
    static constexpr size_t N = min( size_t( MaxSize_v<T1,1UL> ), size_t( MaxSize_v<T2,1UL> ) );
 
-   static constexpr bool SO = ( StorageOrder_v<T1> && StorageOrder_v<T2> );
+   static constexpr bool SO1 = StorageOrder_v<T1>;
+   static constexpr bool SO2 = StorageOrder_v<T2>;
+
+   static constexpr bool SO = ( IsSymmetric_v<T1> ^ IsSymmetric_v<T2>
+                                ? ( IsSymmetric_v<T1>
+                                    ? SO2
+                                    : SO1 )
+                                : SO1 && SO2 );
 
    using Type = HybridMatrix< MultTrait_t<ET1,ET2>, M, N, SO >;
 };

@@ -64,6 +64,7 @@
 #include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
+#include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniLower.h>
@@ -1840,7 +1841,15 @@ struct SchurTraitEval1< T1, T2
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
 
-   static constexpr bool SO = ( StorageOrder_v<T1> && StorageOrder_v<T2> );
+   static constexpr bool SO1 = StorageOrder_v<T1>;
+   static constexpr bool SO2 = StorageOrder_v<T2>;
+
+   static constexpr bool SO = ( ( IsDenseMatrix_v<T1> && IsDenseMatrix_v<T2> ) ||
+                                ( IsSparseMatrix_v<T1> && IsSparseMatrix_v<T2> )
+                                ? SO1 && SO2
+                                : ( IsSparseMatrix_v<T1>
+                                    ? SO1
+                                    : SO2 ) );
 
    using Type = IdentityMatrix< MultTrait_t<ET1,ET2>, SO >;
 };
