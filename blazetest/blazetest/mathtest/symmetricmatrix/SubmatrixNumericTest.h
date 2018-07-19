@@ -47,7 +47,6 @@
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/Submatrix.h>
 #include <blaze/math/SymmetricMatrix.h>
-#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>
 
@@ -157,9 +156,6 @@ class SubmatrixNumericTest
 template< typename ST >  // Type of the symmetric matrix
 void SubmatrixNumericTest::testAssignment()
 {
-   using SMT = blaze::SubmatrixExprTrait_t<ST,blaze::unaligned>;
-
-
    //=====================================================================================
    // Dense matrix assignment
    //=====================================================================================
@@ -187,7 +183,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
          sm = mat;
 
          checkRows    ( sym,  6UL );
@@ -240,7 +236,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
          sm = mat;
 
          checkRows    ( sym,  6UL );
@@ -308,7 +304,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
          sm = mat;
 
          checkRows    ( sym,  6UL );
@@ -361,7 +357,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
          sm = mat;
 
          checkRows    ( sym,  6UL );
@@ -429,7 +425,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
          sm = mat;
 
          checkRows    ( sym,  6UL );
@@ -482,7 +478,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
          sm = mat;
 
          checkRows    ( sym,  6UL );
@@ -554,7 +550,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
          sm = mat;
 
          checkRows    ( sym,  6UL );
@@ -614,7 +610,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
          sm = mat;
 
          checkRows    ( sym,  6UL );
@@ -682,7 +678,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -711,7 +707,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -750,7 +746,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -779,7 +775,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -818,7 +814,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -847,7 +843,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -890,7 +886,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm = mat;
@@ -923,7 +919,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm = mat;
@@ -967,7 +963,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
          sm = mat;
 
          checkRows    ( sym,  6UL );
@@ -1020,7 +1016,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
          sm = mat;
 
          checkRows    ( sym,  6UL );
@@ -1088,7 +1084,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
          sm = mat;
 
          checkRows    ( sym,  6UL );
@@ -1141,7 +1137,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
          sm = mat;
 
          checkRows    ( sym,  6UL );
@@ -1209,7 +1205,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
          sm = mat;
 
          checkRows    ( sym,  6UL );
@@ -1262,7 +1258,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
          sm = mat;
 
          checkRows    ( sym,  6UL );
@@ -1334,7 +1330,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
          sm = mat;
 
          checkRows    ( sym,  6UL );
@@ -1394,7 +1390,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
          sm = mat;
 
          checkRows    ( sym,  6UL );
@@ -1462,7 +1458,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -1491,7 +1487,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -1530,7 +1526,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -1559,7 +1555,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -1598,7 +1594,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -1627,7 +1623,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -1670,7 +1666,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm = mat;
@@ -1703,7 +1699,7 @@ void SubmatrixNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm = mat;
@@ -1734,9 +1730,6 @@ void SubmatrixNumericTest::testAssignment()
 template< typename ST >  // Type of the symmetric matrix
 void SubmatrixNumericTest::testAddAssign()
 {
-   using SMT = blaze::SubmatrixExprTrait_t<ST,blaze::unaligned>;
-
-
    //=====================================================================================
    // Dense matrix addition assignment
    //=====================================================================================
@@ -1764,7 +1757,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
          sm += mat;
 
          checkRows    ( sym,  6UL );
@@ -1817,7 +1810,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
          sm += mat;
 
          checkRows    ( sym,  6UL );
@@ -1885,7 +1878,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
          sm += mat;
 
          checkRows    ( sym,  6UL );
@@ -1938,7 +1931,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
          sm += mat;
 
          checkRows    ( sym,  6UL );
@@ -2006,7 +1999,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
          sm += mat;
 
          checkRows    ( sym,  6UL );
@@ -2059,7 +2052,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
          sm += mat;
 
          checkRows    ( sym,  6UL );
@@ -2131,7 +2124,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
          sm += mat;
 
          checkRows    ( sym,  6UL );
@@ -2191,7 +2184,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
          sm += mat;
 
          checkRows    ( sym,  6UL );
@@ -2259,7 +2252,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -2288,7 +2281,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -2327,7 +2320,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -2356,7 +2349,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -2395,7 +2388,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -2424,7 +2417,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -2467,7 +2460,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm += mat;
@@ -2500,7 +2493,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm += mat;
@@ -2544,7 +2537,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
          sm += mat;
 
          checkRows    ( sym,  6UL );
@@ -2597,7 +2590,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
          sm += mat;
 
          checkRows    ( sym,  6UL );
@@ -2665,7 +2658,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
          sm += mat;
 
          checkRows    ( sym,  6UL );
@@ -2718,7 +2711,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
          sm += mat;
 
          checkRows    ( sym,  6UL );
@@ -2786,7 +2779,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
          sm += mat;
 
          checkRows    ( sym,  6UL );
@@ -2839,7 +2832,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
          sm += mat;
 
          checkRows    ( sym,  6UL );
@@ -2911,7 +2904,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
          sm += mat;
 
          checkRows    ( sym,  6UL );
@@ -2971,7 +2964,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
          sm += mat;
 
          checkRows    ( sym,  6UL );
@@ -3039,7 +3032,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -3068,7 +3061,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -3107,7 +3100,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -3136,7 +3129,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -3175,7 +3168,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -3204,7 +3197,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -3247,7 +3240,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm += mat;
@@ -3280,7 +3273,7 @@ void SubmatrixNumericTest::testAddAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm += mat;
@@ -3311,9 +3304,6 @@ void SubmatrixNumericTest::testAddAssign()
 template< typename ST >  // Type of the symmetric matrix
 void SubmatrixNumericTest::testSubAssign()
 {
-   using SMT = blaze::SubmatrixExprTrait_t<ST,blaze::unaligned>;
-
-
    //=====================================================================================
    // Dense matrix subtraction assignment
    //=====================================================================================
@@ -3341,7 +3331,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
          sm -= mat;
 
          checkRows    ( sym,  6UL );
@@ -3394,7 +3384,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
          sm -= mat;
 
          checkRows    ( sym,  6UL );
@@ -3462,7 +3452,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
          sm -= mat;
 
          checkRows    ( sym,  6UL );
@@ -3515,7 +3505,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
          sm -= mat;
 
          checkRows    ( sym,  6UL );
@@ -3583,7 +3573,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
          sm -= mat;
 
          checkRows    ( sym,  6UL );
@@ -3636,7 +3626,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
          sm -= mat;
 
          checkRows    ( sym,  6UL );
@@ -3708,7 +3698,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
          sm -= mat;
 
          checkRows    ( sym,  6UL );
@@ -3768,7 +3758,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
          sm -= mat;
 
          checkRows    ( sym,  6UL );
@@ -3836,7 +3826,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -3865,7 +3855,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -3904,7 +3894,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -3933,7 +3923,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -3972,7 +3962,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -4001,7 +3991,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -4044,7 +4034,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm -= mat;
@@ -4077,7 +4067,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm -= mat;
@@ -4121,7 +4111,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
          sm -= mat;
 
          checkRows    ( sym,  6UL );
@@ -4174,7 +4164,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
          sm -= mat;
 
          checkRows    ( sym,  6UL );
@@ -4242,7 +4232,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
          sm -= mat;
 
          checkRows    ( sym,  6UL );
@@ -4295,7 +4285,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
          sm -= mat;
 
          checkRows    ( sym,  6UL );
@@ -4363,7 +4353,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
          sm -= mat;
 
          checkRows    ( sym,  6UL );
@@ -4416,7 +4406,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
          sm -= mat;
 
          checkRows    ( sym,  6UL );
@@ -4488,7 +4478,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
          sm -= mat;
 
          checkRows    ( sym,  6UL );
@@ -4548,7 +4538,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
          sm -= mat;
 
          checkRows    ( sym,  6UL );
@@ -4616,7 +4606,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -4645,7 +4635,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -4684,7 +4674,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -4713,7 +4703,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -4752,7 +4742,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -4781,7 +4771,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -4824,7 +4814,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm -= mat;
@@ -4857,7 +4847,7 @@ void SubmatrixNumericTest::testSubAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm -= mat;
@@ -4888,9 +4878,6 @@ void SubmatrixNumericTest::testSubAssign()
 template< typename ST >  // Type of the symmetric matrix
 void SubmatrixNumericTest::testSchurAssign()
 {
-   using SMT = blaze::SubmatrixExprTrait_t<ST,blaze::unaligned>;
-
-
    //=====================================================================================
    // Dense matrix Schur product assignment
    //=====================================================================================
@@ -4918,7 +4905,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
          sm %= mat;
 
          checkRows    ( sym,  6UL );
@@ -4971,7 +4958,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
          sm %= mat;
 
          checkRows    ( sym,  6UL );
@@ -5039,7 +5026,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
          sm %= mat;
 
          checkRows    ( sym,  6UL );
@@ -5092,7 +5079,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
          sm %= mat;
 
          checkRows    ( sym,  6UL );
@@ -5160,7 +5147,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
          sm %= mat;
 
          checkRows    ( sym,  6UL );
@@ -5213,7 +5200,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
          sm %= mat;
 
          checkRows    ( sym,  6UL );
@@ -5285,7 +5272,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
          sm %= mat;
 
          checkRows    ( sym,  6UL );
@@ -5345,7 +5332,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
          sm %= mat;
 
          checkRows    ( sym,  6UL );
@@ -5413,7 +5400,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm %= mat;
@@ -5442,7 +5429,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm %= mat;
@@ -5481,7 +5468,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm %= mat;
@@ -5510,7 +5497,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm %= mat;
@@ -5549,7 +5536,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm %= mat;
@@ -5578,7 +5565,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm %= mat;
@@ -5621,7 +5608,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm %= mat;
@@ -5654,7 +5641,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm %= mat;
@@ -5698,7 +5685,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
          sm %= mat;
 
          checkRows    ( sym,  6UL );
@@ -5751,7 +5738,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
          sm %= mat;
 
          checkRows    ( sym,  6UL );
@@ -5819,7 +5806,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
          sm %= mat;
 
          checkRows    ( sym,  6UL );
@@ -5872,7 +5859,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
          sm %= mat;
 
          checkRows    ( sym,  6UL );
@@ -5940,7 +5927,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
          sm %= mat;
 
          checkRows    ( sym,  6UL );
@@ -5993,7 +5980,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
          sm %= mat;
 
          checkRows    ( sym,  6UL );
@@ -6065,7 +6052,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
          sm %= mat;
 
          checkRows    ( sym,  6UL );
@@ -6125,7 +6112,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
          sm %= mat;
 
          checkRows    ( sym,  6UL );
@@ -6193,7 +6180,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm %= mat;
@@ -6222,7 +6209,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm %= mat;
@@ -6261,7 +6248,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm %= mat;
@@ -6290,7 +6277,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm %= mat;
@@ -6329,7 +6316,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm %= mat;
@@ -6358,7 +6345,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm %= mat;
@@ -6401,7 +6388,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm %= mat;
@@ -6434,7 +6421,7 @@ void SubmatrixNumericTest::testSchurAssign()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm %= mat;

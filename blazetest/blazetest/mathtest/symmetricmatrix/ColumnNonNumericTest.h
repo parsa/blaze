@@ -49,7 +49,6 @@
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/SymmetricMatrix.h>
-#include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>
 
@@ -160,9 +159,6 @@ class ColumnNonNumericTest
 template< typename ST >  // Type of the symmetric matrix
 void ColumnNonNumericTest::testAssignment()
 {
-   using CT = blaze::ColumnExprTrait_t<ST>;
-
-
    //=====================================================================================
    // Dense vector assignment
    //=====================================================================================
@@ -181,7 +177,7 @@ void ColumnNonNumericTest::testAssignment()
       ST sym;
       init( sym );
 
-      CT col1 = column( sym, 1UL );
+      auto col1 = column( sym, 1UL );
       col1 = tmp;
 
       checkRows    ( sym, 3UL );
@@ -232,7 +228,7 @@ void ColumnNonNumericTest::testAssignment()
       ST sym;
       init( sym );
 
-      CT col1 = column( sym, 1UL );
+      auto col1 = column( sym, 1UL );
       col1 = tmp;
 
       checkRows    ( sym, 3UL );

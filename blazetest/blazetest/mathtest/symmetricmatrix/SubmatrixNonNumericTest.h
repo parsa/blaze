@@ -47,7 +47,6 @@
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/Submatrix.h>
 #include <blaze/math/SymmetricMatrix.h>
-#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>
 
@@ -158,9 +157,6 @@ class SubmatrixNonNumericTest
 template< typename ST >  // Type of the symmetric matrix
 void SubmatrixNonNumericTest::testAssignment()
 {
-   using SMT = blaze::SubmatrixExprTrait_t<ST,blaze::unaligned>;
-
-
    //=====================================================================================
    // Dense matrix assignment
    //=====================================================================================
@@ -188,7 +184,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
          sm = tmp;
 
          checkRows    ( sym,  6UL );
@@ -242,7 +238,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
          sm = tmp;
 
          checkRows    ( sym,  6UL );
@@ -310,7 +306,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
          sm = tmp;
 
          checkRows    ( sym,  6UL );
@@ -364,7 +360,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
          sm = tmp;
 
          checkRows    ( sym,  6UL );
@@ -432,7 +428,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
          sm = tmp;
 
          checkRows    ( sym,  6UL );
@@ -486,7 +482,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
          sm = tmp;
 
          checkRows    ( sym,  6UL );
@@ -558,7 +554,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
          sm = tmp;
 
          checkRows    ( sym,  6UL );
@@ -618,7 +614,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
          sm = tmp;
 
          checkRows    ( sym,  6UL );
@@ -686,7 +682,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm = tmp;
@@ -715,7 +711,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm = tmp;
@@ -754,7 +750,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm = tmp;
@@ -783,7 +779,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm = tmp;
@@ -822,7 +818,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm = tmp;
@@ -851,7 +847,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm = tmp;
@@ -894,7 +890,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm = tmp;
@@ -927,7 +923,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm = tmp;
@@ -971,7 +967,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
          sm = tmp;
 
          checkRows    ( sym,  6UL );
@@ -1025,7 +1021,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
          sm = tmp;
 
          checkRows    ( sym,  6UL );
@@ -1093,7 +1089,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
          sm = tmp;
 
          checkRows    ( sym,  6UL );
@@ -1147,7 +1143,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
          sm = tmp;
 
          checkRows    ( sym,  6UL );
@@ -1215,7 +1211,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
          sm = tmp;
 
          checkRows    ( sym,  6UL );
@@ -1269,7 +1265,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
          sm = tmp;
 
          checkRows    ( sym,  6UL );
@@ -1341,7 +1337,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
          sm = tmp;
 
          checkRows    ( sym,  6UL );
@@ -1401,7 +1397,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
          sm = tmp;
 
          checkRows    ( sym,  6UL );
@@ -1469,7 +1465,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm = tmp;
@@ -1498,7 +1494,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm = tmp;
@@ -1537,7 +1533,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm = tmp;
@@ -1566,7 +1562,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm = tmp;
@@ -1605,7 +1601,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( sym, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm = tmp;
@@ -1634,7 +1630,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( sym, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm = tmp;
@@ -1677,7 +1673,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( sym, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm = tmp;
@@ -1710,7 +1706,7 @@ void SubmatrixNonNumericTest::testAssignment()
          ST sym;
          init( sym );
 
-         SMT sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( sym, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm = tmp;

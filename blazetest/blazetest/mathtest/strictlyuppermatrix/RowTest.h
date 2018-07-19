@@ -49,7 +49,6 @@
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/Row.h>
 #include <blaze/math/StrictlyUpperMatrix.h>
-#include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>
 
@@ -159,9 +158,6 @@ class RowTest
 template< typename UT >  // Type of the strictly upper matrix
 void RowTest::testAssignment()
 {
-   using RT = blaze::RowExprTrait_t<UT>;
-
-
    //=====================================================================================
    // Dense vector assignment
    //=====================================================================================
@@ -178,7 +174,7 @@ void RowTest::testAssignment()
       UT upper;
       init( upper );
 
-      RT row1 = row( upper, 1UL );
+      auto row1 = row( upper, 1UL );
       row1 = vec;
 
       checkRows    ( upper, 3UL );
@@ -221,7 +217,7 @@ void RowTest::testAssignment()
       UT upper;
       init( upper );
 
-      RT row1 = row( upper, 1UL );
+      auto row1 = row( upper, 1UL );
 
       try {
          row1 = vec;
@@ -249,7 +245,7 @@ void RowTest::testAssignment()
       UT upper;
       init( upper );
 
-      RT row1 = row( upper, 1UL );
+      auto row1 = row( upper, 1UL );
 
       try {
          row1 = vec;
@@ -282,7 +278,7 @@ void RowTest::testAssignment()
       UT upper;
       init( upper );
 
-      RT row1 = row( upper, 1UL );
+      auto row1 = row( upper, 1UL );
       row1 = vec;
 
       checkRows    ( upper, 3UL );
@@ -325,7 +321,7 @@ void RowTest::testAssignment()
       UT upper;
       init( upper );
 
-      RT row1 = row( upper, 1UL );
+      auto row1 = row( upper, 1UL );
 
       try {
          row1 = vec;
@@ -353,7 +349,7 @@ void RowTest::testAssignment()
       UT upper;
       init( upper );
 
-      RT row1 = row( upper, 1UL );
+      auto row1 = row( upper, 1UL );
 
       try {
          row1 = vec;
@@ -383,9 +379,6 @@ void RowTest::testAssignment()
 template< typename UT >  // Type of the strictly upper matrix
 void RowTest::testAddAssign()
 {
-   using RT = blaze::RowExprTrait_t<UT>;
-
-
    //=====================================================================================
    // Dense vector addition assignment
    //=====================================================================================
@@ -402,7 +395,7 @@ void RowTest::testAddAssign()
       UT upper;
       init( upper );
 
-      RT row1 = row( upper, 1UL );
+      auto row1 = row( upper, 1UL );
       row1 += vec;
 
       checkRows    ( upper, 3UL );
@@ -445,7 +438,7 @@ void RowTest::testAddAssign()
       UT upper;
       init( upper );
 
-      RT row1 = row( upper, 1UL );
+      auto row1 = row( upper, 1UL );
 
       try {
          row1 += vec;
@@ -473,7 +466,7 @@ void RowTest::testAddAssign()
       UT upper;
       init( upper );
 
-      RT row1 = row( upper, 1UL );
+      auto row1 = row( upper, 1UL );
 
       try {
          row1 += vec;
@@ -506,7 +499,7 @@ void RowTest::testAddAssign()
       UT upper;
       init( upper );
 
-      RT row1 = row( upper, 1UL );
+      auto row1 = row( upper, 1UL );
       row1 += vec;
 
       checkRows    ( upper, 3UL );
@@ -549,7 +542,7 @@ void RowTest::testAddAssign()
       UT upper;
       init( upper );
 
-      RT row1 = row( upper, 1UL );
+      auto row1 = row( upper, 1UL );
 
       try {
          row1 += vec;
@@ -577,7 +570,7 @@ void RowTest::testAddAssign()
       UT upper;
       init( upper );
 
-      RT row1 = row( upper, 1UL );
+      auto row1 = row( upper, 1UL );
 
       try {
          row1 += vec;
@@ -607,9 +600,6 @@ void RowTest::testAddAssign()
 template< typename UT >  // Type of the strictly upper matrix
 void RowTest::testSubAssign()
 {
-   using RT = blaze::RowExprTrait_t<UT>;
-
-
    //=====================================================================================
    // Dense vector subtraction assignment
    //=====================================================================================
@@ -626,7 +616,7 @@ void RowTest::testSubAssign()
       UT upper;
       init( upper );
 
-      RT row1 = row( upper, 1UL );
+      auto row1 = row( upper, 1UL );
       row1 -= vec;
 
       checkRows    ( upper, 3UL );
@@ -669,7 +659,7 @@ void RowTest::testSubAssign()
       UT upper;
       init( upper );
 
-      RT row1 = row( upper, 1UL );
+      auto row1 = row( upper, 1UL );
 
       try {
          row1 -= vec;
@@ -697,7 +687,7 @@ void RowTest::testSubAssign()
       UT upper;
       init( upper );
 
-      RT row1 = row( upper, 1UL );
+      auto row1 = row( upper, 1UL );
 
       try {
          row1 -= vec;
@@ -730,7 +720,7 @@ void RowTest::testSubAssign()
       UT upper;
       init( upper );
 
-      RT row1 = row( upper, 1UL );
+      auto row1 = row( upper, 1UL );
       row1 -= vec;
 
       checkRows    ( upper, 3UL );
@@ -773,7 +763,7 @@ void RowTest::testSubAssign()
       UT upper;
       init( upper );
 
-      RT row1 = row( upper, 1UL );
+      auto row1 = row( upper, 1UL );
 
       try {
          row1 -= vec;
@@ -801,7 +791,7 @@ void RowTest::testSubAssign()
       UT upper;
       init( upper );
 
-      RT row1 = row( upper, 1UL );
+      auto row1 = row( upper, 1UL );
 
       try {
          row1 -= vec;
@@ -831,9 +821,6 @@ void RowTest::testSubAssign()
 template< typename UT >  // Type of the strictly upper matrix
 void RowTest::testMultAssign()
 {
-   using RT = blaze::RowExprTrait_t<UT>;
-
-
    //=====================================================================================
    // Dense vector multiplication assignment
    //=====================================================================================
@@ -852,7 +839,7 @@ void RowTest::testMultAssign()
       UT upper;
       init( upper );
 
-      RT row1 = row( upper, 1UL );
+      auto row1 = row( upper, 1UL );
       row1 *= vec;
 
       checkRows    ( upper, 3UL );
@@ -900,7 +887,7 @@ void RowTest::testMultAssign()
       UT upper;
       init( upper );
 
-      RT row1 = row( upper, 1UL );
+      auto row1 = row( upper, 1UL );
       row1 *= vec;
 
       checkRows    ( upper, 3UL );

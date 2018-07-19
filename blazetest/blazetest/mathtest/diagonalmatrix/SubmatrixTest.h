@@ -47,7 +47,6 @@
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DiagonalMatrix.h>
 #include <blaze/math/Submatrix.h>
-#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>
 
@@ -157,9 +156,6 @@ class SubmatrixTest
 template< typename DT >  // Type of the diagonal matrix
 void SubmatrixTest::testAssignment()
 {
-   using SMT = blaze::SubmatrixExprTrait_t<DT,blaze::unaligned>;
-
-
    //=====================================================================================
    // Dense matrix assignment
    //=====================================================================================
@@ -178,7 +174,7 @@ void SubmatrixTest::testAssignment()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
       sm = mat;
 
       checkRows    ( diag, 4UL );
@@ -229,7 +225,7 @@ void SubmatrixTest::testAssignment()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
       sm = mat;
 
       checkRows    ( diag, 4UL );
@@ -279,7 +275,7 @@ void SubmatrixTest::testAssignment()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm = mat;
@@ -309,7 +305,7 @@ void SubmatrixTest::testAssignment()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm = mat;
@@ -338,7 +334,7 @@ void SubmatrixTest::testAssignment()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
       sm = mat;
 
       checkRows    ( diag, 4UL );
@@ -389,7 +385,7 @@ void SubmatrixTest::testAssignment()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
       sm = mat;
 
       checkRows    ( diag, 4UL );
@@ -439,7 +435,7 @@ void SubmatrixTest::testAssignment()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm = mat;
@@ -469,7 +465,7 @@ void SubmatrixTest::testAssignment()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm = mat;
@@ -505,7 +501,7 @@ void SubmatrixTest::testAssignment()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
       sm = mat;
 
       checkRows    ( diag, 4UL );
@@ -558,7 +554,7 @@ void SubmatrixTest::testAssignment()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
       sm = mat;
 
       checkRows    ( diag, 4UL );
@@ -609,7 +605,7 @@ void SubmatrixTest::testAssignment()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm = mat;
@@ -640,7 +636,7 @@ void SubmatrixTest::testAssignment()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm = mat;
@@ -671,7 +667,7 @@ void SubmatrixTest::testAssignment()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
       sm = mat;
 
       checkRows    ( diag, 4UL );
@@ -724,7 +720,7 @@ void SubmatrixTest::testAssignment()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
       sm = mat;
 
       checkRows    ( diag, 4UL );
@@ -775,7 +771,7 @@ void SubmatrixTest::testAssignment()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm = mat;
@@ -806,7 +802,7 @@ void SubmatrixTest::testAssignment()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm = mat;
@@ -836,9 +832,6 @@ void SubmatrixTest::testAssignment()
 template< typename DT >  // Type of the diagonal matrix
 void SubmatrixTest::testAddAssign()
 {
-   using SMT = blaze::SubmatrixExprTrait_t<DT,blaze::unaligned>;
-
-
    //=====================================================================================
    // Dense matrix addition assignment
    //=====================================================================================
@@ -857,7 +850,7 @@ void SubmatrixTest::testAddAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
       sm += mat;
 
       checkRows    ( diag, 4UL );
@@ -908,7 +901,7 @@ void SubmatrixTest::testAddAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
       sm += mat;
 
       checkRows    ( diag, 4UL );
@@ -958,7 +951,7 @@ void SubmatrixTest::testAddAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm += mat;
@@ -988,7 +981,7 @@ void SubmatrixTest::testAddAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm += mat;
@@ -1017,7 +1010,7 @@ void SubmatrixTest::testAddAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
       sm += mat;
 
       checkRows    ( diag, 4UL );
@@ -1068,7 +1061,7 @@ void SubmatrixTest::testAddAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
       sm += mat;
 
       checkRows    ( diag, 4UL );
@@ -1118,7 +1111,7 @@ void SubmatrixTest::testAddAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm += mat;
@@ -1148,7 +1141,7 @@ void SubmatrixTest::testAddAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm += mat;
@@ -1184,7 +1177,7 @@ void SubmatrixTest::testAddAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
       sm += mat;
 
       checkRows    ( diag, 4UL );
@@ -1237,7 +1230,7 @@ void SubmatrixTest::testAddAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
       sm += mat;
 
       checkRows    ( diag, 4UL );
@@ -1288,7 +1281,7 @@ void SubmatrixTest::testAddAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm += mat;
@@ -1319,7 +1312,7 @@ void SubmatrixTest::testAddAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm += mat;
@@ -1350,7 +1343,7 @@ void SubmatrixTest::testAddAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
       sm += mat;
 
       checkRows    ( diag, 4UL );
@@ -1403,7 +1396,7 @@ void SubmatrixTest::testAddAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
       sm += mat;
 
       checkRows    ( diag, 4UL );
@@ -1454,7 +1447,7 @@ void SubmatrixTest::testAddAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm += mat;
@@ -1485,7 +1478,7 @@ void SubmatrixTest::testAddAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm += mat;
@@ -1515,9 +1508,6 @@ void SubmatrixTest::testAddAssign()
 template< typename DT >  // Type of the diagonal matrix
 void SubmatrixTest::testSubAssign()
 {
-   using SMT = blaze::SubmatrixExprTrait_t<DT,blaze::unaligned>;
-
-
    //=====================================================================================
    // Dense matrix subtraction assignment
    //=====================================================================================
@@ -1536,7 +1526,7 @@ void SubmatrixTest::testSubAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
       sm -= mat;
 
       checkRows    ( diag, 4UL );
@@ -1587,7 +1577,7 @@ void SubmatrixTest::testSubAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
       sm -= mat;
 
       checkRows    ( diag, 4UL );
@@ -1637,7 +1627,7 @@ void SubmatrixTest::testSubAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm -= mat;
@@ -1667,7 +1657,7 @@ void SubmatrixTest::testSubAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm -= mat;
@@ -1696,7 +1686,7 @@ void SubmatrixTest::testSubAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
       sm -= mat;
 
       checkRows    ( diag, 4UL );
@@ -1747,7 +1737,7 @@ void SubmatrixTest::testSubAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
       sm -= mat;
 
       checkRows    ( diag, 4UL );
@@ -1797,7 +1787,7 @@ void SubmatrixTest::testSubAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm -= mat;
@@ -1827,7 +1817,7 @@ void SubmatrixTest::testSubAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm -= mat;
@@ -1863,7 +1853,7 @@ void SubmatrixTest::testSubAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
       sm -= mat;
 
       checkRows    ( diag, 4UL );
@@ -1916,7 +1906,7 @@ void SubmatrixTest::testSubAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
       sm -= mat;
 
       checkRows    ( diag, 4UL );
@@ -1967,7 +1957,7 @@ void SubmatrixTest::testSubAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm -= mat;
@@ -1998,7 +1988,7 @@ void SubmatrixTest::testSubAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm -= mat;
@@ -2029,7 +2019,7 @@ void SubmatrixTest::testSubAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
       sm -= mat;
 
       checkRows    ( diag, 4UL );
@@ -2082,7 +2072,7 @@ void SubmatrixTest::testSubAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
       sm -= mat;
 
       checkRows    ( diag, 4UL );
@@ -2133,7 +2123,7 @@ void SubmatrixTest::testSubAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm -= mat;
@@ -2164,7 +2154,7 @@ void SubmatrixTest::testSubAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( diag, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm -= mat;
@@ -2194,9 +2184,6 @@ void SubmatrixTest::testSubAssign()
 template< typename DT >  // Type of the diagonal matrix
 void SubmatrixTest::testSchurAssign()
 {
-   using SMT = blaze::SubmatrixExprTrait_t<DT,blaze::unaligned>;
-
-
    //=====================================================================================
    // Dense matrix Schur product assignment
    //=====================================================================================
@@ -2217,7 +2204,7 @@ void SubmatrixTest::testSchurAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
       sm %= mat;
 
       checkRows    ( diag, 4UL );
@@ -2270,7 +2257,7 @@ void SubmatrixTest::testSchurAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
       sm %= mat;
 
       checkRows    ( diag, 4UL );
@@ -2321,7 +2308,7 @@ void SubmatrixTest::testSchurAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
       sm %= mat;
 
       checkRows    ( diag, 4UL );
@@ -2374,7 +2361,7 @@ void SubmatrixTest::testSchurAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
       sm %= mat;
 
       checkRows    ( diag, 4UL );
@@ -2430,7 +2417,7 @@ void SubmatrixTest::testSchurAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
       sm %= mat;
 
       checkRows    ( diag, 4UL );
@@ -2483,7 +2470,7 @@ void SubmatrixTest::testSchurAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
       sm %= mat;
 
       checkRows    ( diag, 4UL );
@@ -2534,7 +2521,7 @@ void SubmatrixTest::testSchurAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( diag, 0UL, 1UL, 4UL, 2UL );
       sm %= mat;
 
       checkRows    ( diag, 4UL );
@@ -2587,7 +2574,7 @@ void SubmatrixTest::testSchurAssign()
       DT diag;
       init( diag );
 
-      SMT sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( diag, 1UL, 0UL, 2UL, 4UL );
       sm %= mat;
 
       checkRows    ( diag, 4UL );

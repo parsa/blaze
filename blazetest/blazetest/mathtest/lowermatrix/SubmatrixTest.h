@@ -47,7 +47,6 @@
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/LowerMatrix.h>
 #include <blaze/math/Submatrix.h>
-#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>
 
@@ -157,9 +156,6 @@ class SubmatrixTest
 template< typename LT >  // Type of the lower matrix
 void SubmatrixTest::testAssignment()
 {
-   using SMT = blaze::SubmatrixExprTrait_t<LT,blaze::unaligned>;
-
-
    //=====================================================================================
    // Dense matrix assignment
    //=====================================================================================
@@ -181,7 +177,7 @@ void SubmatrixTest::testAssignment()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm = mat;
 
       checkRows    ( lower,  4UL );
@@ -235,7 +231,7 @@ void SubmatrixTest::testAssignment()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm = mat;
 
       checkRows    ( lower, 4UL );
@@ -286,7 +282,7 @@ void SubmatrixTest::testAssignment()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm = mat;
@@ -318,7 +314,7 @@ void SubmatrixTest::testAssignment()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm = mat;
 
       checkRows    ( lower,  4UL );
@@ -372,7 +368,7 @@ void SubmatrixTest::testAssignment()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm = mat;
 
       checkRows    ( lower, 4UL );
@@ -423,7 +419,7 @@ void SubmatrixTest::testAssignment()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm = mat;
@@ -461,7 +457,7 @@ void SubmatrixTest::testAssignment()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm = mat;
 
       checkRows    ( lower,  4UL );
@@ -516,7 +512,7 @@ void SubmatrixTest::testAssignment()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm = mat;
 
       checkRows    ( lower, 4UL );
@@ -567,7 +563,7 @@ void SubmatrixTest::testAssignment()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm = mat;
@@ -600,7 +596,7 @@ void SubmatrixTest::testAssignment()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm = mat;
 
       checkRows    ( lower,  4UL );
@@ -655,7 +651,7 @@ void SubmatrixTest::testAssignment()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm = mat;
 
       checkRows    ( lower, 4UL );
@@ -706,7 +702,7 @@ void SubmatrixTest::testAssignment()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm = mat;
@@ -736,9 +732,6 @@ void SubmatrixTest::testAssignment()
 template< typename LT >  // Type of the lower matrix
 void SubmatrixTest::testAddAssign()
 {
-   using SMT = blaze::SubmatrixExprTrait_t<LT,blaze::unaligned>;
-
-
    //=====================================================================================
    // Dense matrix addition assignment
    //=====================================================================================
@@ -760,7 +753,7 @@ void SubmatrixTest::testAddAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm += mat;
 
       checkRows    ( lower,  4UL );
@@ -814,7 +807,7 @@ void SubmatrixTest::testAddAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm += mat;
 
       checkRows    ( lower, 4UL );
@@ -865,7 +858,7 @@ void SubmatrixTest::testAddAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm += mat;
@@ -897,7 +890,7 @@ void SubmatrixTest::testAddAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm += mat;
 
       checkRows    ( lower,  4UL );
@@ -951,7 +944,7 @@ void SubmatrixTest::testAddAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm += mat;
 
       checkRows    ( lower, 4UL );
@@ -1002,7 +995,7 @@ void SubmatrixTest::testAddAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm += mat;
@@ -1039,7 +1032,7 @@ void SubmatrixTest::testAddAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm += mat;
 
       checkRows    ( lower,  4UL );
@@ -1093,7 +1086,7 @@ void SubmatrixTest::testAddAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm += mat;
 
       checkRows    ( lower, 4UL );
@@ -1144,7 +1137,7 @@ void SubmatrixTest::testAddAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm += mat;
@@ -1176,7 +1169,7 @@ void SubmatrixTest::testAddAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm += mat;
 
       checkRows    ( lower,  4UL );
@@ -1230,7 +1223,7 @@ void SubmatrixTest::testAddAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm += mat;
 
       checkRows    ( lower, 4UL );
@@ -1281,7 +1274,7 @@ void SubmatrixTest::testAddAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm += mat;
@@ -1311,9 +1304,6 @@ void SubmatrixTest::testAddAssign()
 template< typename LT >  // Type of the lower matrix
 void SubmatrixTest::testSubAssign()
 {
-   using SMT = blaze::SubmatrixExprTrait_t<LT,blaze::unaligned>;
-
-
    //=====================================================================================
    // Dense matrix subtraction assignment
    //=====================================================================================
@@ -1335,7 +1325,7 @@ void SubmatrixTest::testSubAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm -= mat;
 
       checkRows    ( lower,  4UL );
@@ -1389,7 +1379,7 @@ void SubmatrixTest::testSubAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm -= mat;
 
       checkRows    ( lower, 4UL );
@@ -1440,7 +1430,7 @@ void SubmatrixTest::testSubAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm -= mat;
@@ -1472,7 +1462,7 @@ void SubmatrixTest::testSubAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm -= mat;
 
       checkRows    ( lower,  4UL );
@@ -1526,7 +1516,7 @@ void SubmatrixTest::testSubAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm -= mat;
 
       checkRows    ( lower, 4UL );
@@ -1577,7 +1567,7 @@ void SubmatrixTest::testSubAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm -= mat;
@@ -1614,7 +1604,7 @@ void SubmatrixTest::testSubAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm -= mat;
 
       checkRows    ( lower,  4UL );
@@ -1668,7 +1658,7 @@ void SubmatrixTest::testSubAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm -= mat;
 
       checkRows    ( lower, 4UL );
@@ -1719,7 +1709,7 @@ void SubmatrixTest::testSubAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm -= mat;
@@ -1751,7 +1741,7 @@ void SubmatrixTest::testSubAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm -= mat;
 
       checkRows    ( lower,  4UL );
@@ -1805,7 +1795,7 @@ void SubmatrixTest::testSubAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm -= mat;
 
       checkRows    ( lower, 4UL );
@@ -1856,7 +1846,7 @@ void SubmatrixTest::testSubAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
+      auto sm = submatrix( lower, 1UL, 1UL, 2UL, 2UL );
 
       try {
          sm -= mat;
@@ -1886,9 +1876,6 @@ void SubmatrixTest::testSubAssign()
 template< typename LT >  // Type of the lower matrix
 void SubmatrixTest::testSchurAssign()
 {
-   using SMT = blaze::SubmatrixExprTrait_t<LT,blaze::unaligned>;
-
-
    //=====================================================================================
    // Dense matrix Schur product assignment
    //=====================================================================================
@@ -1909,7 +1896,7 @@ void SubmatrixTest::testSchurAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm %= mat;
 
       checkRows    ( lower, 4UL );
@@ -1962,7 +1949,7 @@ void SubmatrixTest::testSchurAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm %= mat;
 
       checkRows    ( lower, 4UL );
@@ -2013,7 +2000,7 @@ void SubmatrixTest::testSchurAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm %= mat;
 
       checkRows    ( lower, 4UL );
@@ -2066,7 +2053,7 @@ void SubmatrixTest::testSchurAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm %= mat;
 
       checkRows    ( lower, 4UL );
@@ -2122,7 +2109,7 @@ void SubmatrixTest::testSchurAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm %= mat;
 
       checkRows    ( lower, 4UL );
@@ -2175,7 +2162,7 @@ void SubmatrixTest::testSchurAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm %= mat;
 
       checkRows    ( lower, 4UL );
@@ -2226,7 +2213,7 @@ void SubmatrixTest::testSchurAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
+      auto sm = submatrix( lower, 0UL, 1UL, 4UL, 2UL );
       sm %= mat;
 
       checkRows    ( lower, 4UL );
@@ -2279,7 +2266,7 @@ void SubmatrixTest::testSchurAssign()
       LT lower;
       init( lower );
 
-      SMT sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
+      auto sm = submatrix( lower, 1UL, 0UL, 2UL, 4UL );
       sm %= mat;
 
       checkRows    ( lower, 4UL );

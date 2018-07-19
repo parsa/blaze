@@ -49,7 +49,6 @@
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/SymmetricMatrix.h>
 #include <blaze/math/Row.h>
-#include <blaze/math/traits/RowExprTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>
 
@@ -159,9 +158,6 @@ class RowNumericTest
 template< typename ST >  // Type of the symmetric matrix
 void RowNumericTest::testAssignment()
 {
-   using RT = blaze::RowExprTrait_t<ST>;
-
-
    //=====================================================================================
    // Dense vector assignment
    //=====================================================================================
@@ -180,7 +176,7 @@ void RowNumericTest::testAssignment()
       ST sym;
       init( sym );
 
-      RT row1 = row( sym, 1UL );
+      auto row1 = row( sym, 1UL );
       row1 = vec;
 
       checkRows    ( sym, 3UL );
@@ -229,7 +225,7 @@ void RowNumericTest::testAssignment()
       ST sym;
       init( sym );
 
-      RT row1 = row( sym, 1UL );
+      auto row1 = row( sym, 1UL );
       row1 = vec;
 
       checkRows    ( sym, 3UL );
@@ -274,9 +270,6 @@ void RowNumericTest::testAssignment()
 template< typename ST >  // Type of the symmetric matrix
 void RowNumericTest::testAddAssign()
 {
-   using RT = blaze::RowExprTrait_t<ST>;
-
-
    //=====================================================================================
    // Dense vector addition assignment
    //=====================================================================================
@@ -295,7 +288,7 @@ void RowNumericTest::testAddAssign()
       ST sym;
       init( sym );
 
-      RT row1 = row( sym, 1UL );
+      auto row1 = row( sym, 1UL );
       row1 += vec;
 
       checkRows    ( sym, 3UL );
@@ -344,7 +337,7 @@ void RowNumericTest::testAddAssign()
       ST sym;
       init( sym );
 
-      RT row1 = row( sym, 1UL );
+      auto row1 = row( sym, 1UL );
       row1 += vec;
 
       checkRows    ( sym, 3UL );
@@ -389,9 +382,6 @@ void RowNumericTest::testAddAssign()
 template< typename ST >  // Type of the symmetric matrix
 void RowNumericTest::testSubAssign()
 {
-   using RT = blaze::RowExprTrait_t<ST>;
-
-
    //=====================================================================================
    // Dense vector subtraction assignment
    //=====================================================================================
@@ -410,7 +400,7 @@ void RowNumericTest::testSubAssign()
       ST sym;
       init( sym );
 
-      RT row1 = row( sym, 1UL );
+      auto row1 = row( sym, 1UL );
       row1 -= vec;
 
       checkRows    ( sym, 3UL );
@@ -459,7 +449,7 @@ void RowNumericTest::testSubAssign()
       ST sym;
       init( sym );
 
-      RT row1 = row( sym, 1UL );
+      auto row1 = row( sym, 1UL );
       row1 -= vec;
 
       checkRows    ( sym, 3UL );
@@ -504,9 +494,6 @@ void RowNumericTest::testSubAssign()
 template< typename ST >  // Type of the symmetric matrix
 void RowNumericTest::testMultAssign()
 {
-   using RT = blaze::RowExprTrait_t<ST>;
-
-
    //=====================================================================================
    // Dense vector multiplication assignment
    //=====================================================================================
@@ -525,7 +512,7 @@ void RowNumericTest::testMultAssign()
       ST sym;
       init( sym );
 
-      RT row1 = row( sym, 1UL );
+      auto row1 = row( sym, 1UL );
       row1 *= vec;
 
       checkRows    ( sym, 3UL );
@@ -574,7 +561,7 @@ void RowNumericTest::testMultAssign()
       ST sym;
       init( sym );
 
-      RT row1 = row( sym, 1UL );
+      auto row1 = row( sym, 1UL );
       row1 *= vec;
 
       checkRows    ( sym, 3UL );

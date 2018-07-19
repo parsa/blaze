@@ -47,7 +47,6 @@
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/HermitianMatrix.h>
 #include <blaze/math/Submatrix.h>
-#include <blaze/math/traits/SubmatrixExprTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>
 
@@ -160,9 +159,6 @@ class SubmatrixComplexTest
 template< typename HT >  // Type of the Hermitian matrix
 void SubmatrixComplexTest::testAssignment()
 {
-   using SMT = blaze::SubmatrixExprTrait_t<HT,blaze::unaligned>;
-
-
    //=====================================================================================
    // Dense matrix assignment
    //=====================================================================================
@@ -190,7 +186,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
          sm = mat;
 
          checkRows    ( herm,  6UL );
@@ -244,7 +240,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
          sm = mat;
 
          checkRows    ( herm,  6UL );
@@ -312,7 +308,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
          sm = mat;
 
          checkRows    ( herm,  6UL );
@@ -366,7 +362,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
          sm = mat;
 
          checkRows    ( herm,  6UL );
@@ -434,7 +430,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
          sm = mat;
 
          checkRows    ( herm,  6UL );
@@ -488,7 +484,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
          sm = mat;
 
          checkRows    ( herm,  6UL );
@@ -560,7 +556,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
          sm = mat;
 
          checkRows    ( herm,  6UL );
@@ -620,7 +616,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
          sm = mat;
 
          checkRows    ( herm,  6UL );
@@ -688,7 +684,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -717,7 +713,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -756,7 +752,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -785,7 +781,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -824,7 +820,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -853,7 +849,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -896,7 +892,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm = mat;
@@ -929,7 +925,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm = mat;
@@ -968,7 +964,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -997,7 +993,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -1036,7 +1032,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -1065,7 +1061,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -1104,7 +1100,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -1133,7 +1129,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -1176,7 +1172,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm = mat;
@@ -1209,7 +1205,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm = mat;
@@ -1248,7 +1244,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -1277,7 +1273,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -1316,7 +1312,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -1345,7 +1341,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -1384,7 +1380,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -1413,7 +1409,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -1456,7 +1452,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm = mat;
@@ -1489,7 +1485,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm = mat;
@@ -1533,7 +1529,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
          sm = mat;
 
          checkRows    ( herm,  6UL );
@@ -1587,7 +1583,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
          sm = mat;
 
          checkRows    ( herm,  6UL );
@@ -1655,7 +1651,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
          sm = mat;
 
          checkRows    ( herm,  6UL );
@@ -1709,7 +1705,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
          sm = mat;
 
          checkRows    ( herm,  6UL );
@@ -1777,7 +1773,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
          sm = mat;
 
          checkRows    ( herm,  6UL );
@@ -1831,7 +1827,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
          sm = mat;
 
          checkRows    ( herm,  6UL );
@@ -1903,7 +1899,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
          sm = mat;
 
          checkRows    ( herm,  6UL );
@@ -1963,7 +1959,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
          sm = mat;
 
          checkRows    ( herm,  6UL );
@@ -2031,7 +2027,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -2060,7 +2056,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -2099,7 +2095,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -2128,7 +2124,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -2167,7 +2163,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -2196,7 +2192,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -2239,7 +2235,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm = mat;
@@ -2272,7 +2268,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm = mat;
@@ -2311,7 +2307,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -2340,7 +2336,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -2379,7 +2375,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -2408,7 +2404,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -2447,7 +2443,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -2476,7 +2472,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -2519,7 +2515,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm = mat;
@@ -2552,7 +2548,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm = mat;
@@ -2591,7 +2587,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -2620,7 +2616,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -2659,7 +2655,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -2688,7 +2684,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -2727,7 +2723,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm = mat;
@@ -2756,7 +2752,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm = mat;
@@ -2799,7 +2795,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm = mat;
@@ -2832,7 +2828,7 @@ void SubmatrixComplexTest::testAssignment()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm = mat;
@@ -2863,9 +2859,6 @@ void SubmatrixComplexTest::testAssignment()
 template< typename HT >  // Type of the Hermitian matrix
 void SubmatrixComplexTest::testAddAssign()
 {
-   using SMT = blaze::SubmatrixExprTrait_t<HT,blaze::unaligned>;
-
-
    //=====================================================================================
    // Dense matrix addition assignment
    //=====================================================================================
@@ -2893,7 +2886,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
          sm += mat;
 
          checkRows    ( herm,  6UL );
@@ -2947,7 +2940,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
          sm += mat;
 
          checkRows    ( herm,  6UL );
@@ -3015,7 +3008,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
          sm += mat;
 
          checkRows    ( herm,  6UL );
@@ -3069,7 +3062,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
          sm += mat;
 
          checkRows    ( herm,  6UL );
@@ -3137,7 +3130,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
          sm += mat;
 
          checkRows    ( herm,  6UL );
@@ -3191,7 +3184,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
          sm += mat;
 
          checkRows    ( herm,  6UL );
@@ -3263,7 +3256,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
          sm += mat;
 
          checkRows    ( herm,  6UL );
@@ -3323,7 +3316,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
          sm += mat;
 
          checkRows    ( herm,  6UL );
@@ -3391,7 +3384,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -3420,7 +3413,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -3459,7 +3452,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -3488,7 +3481,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -3527,7 +3520,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -3556,7 +3549,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -3599,7 +3592,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm += mat;
@@ -3632,7 +3625,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm += mat;
@@ -3671,7 +3664,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -3700,7 +3693,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -3739,7 +3732,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -3768,7 +3761,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -3807,7 +3800,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -3836,7 +3829,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -3879,7 +3872,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm += mat;
@@ -3912,7 +3905,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm += mat;
@@ -3951,7 +3944,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -3980,7 +3973,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -4019,7 +4012,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -4048,7 +4041,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -4087,7 +4080,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -4116,7 +4109,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -4159,7 +4152,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm += mat;
@@ -4192,7 +4185,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm += mat;
@@ -4236,7 +4229,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
          sm += mat;
 
          checkRows    ( herm,  6UL );
@@ -4290,7 +4283,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
          sm += mat;
 
          checkRows    ( herm,  6UL );
@@ -4358,7 +4351,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
          sm += mat;
 
          checkRows    ( herm,  6UL );
@@ -4412,7 +4405,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
          sm += mat;
 
          checkRows    ( herm,  6UL );
@@ -4480,7 +4473,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
          sm += mat;
 
          checkRows    ( herm,  6UL );
@@ -4534,7 +4527,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
          sm += mat;
 
          checkRows    ( herm,  6UL );
@@ -4606,7 +4599,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
          sm += mat;
 
          checkRows    ( herm,  6UL );
@@ -4666,7 +4659,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
          sm += mat;
 
          checkRows    ( herm,  6UL );
@@ -4734,7 +4727,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -4763,7 +4756,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -4802,7 +4795,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -4831,7 +4824,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -4870,7 +4863,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -4899,7 +4892,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -4942,7 +4935,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm += mat;
@@ -4975,7 +4968,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm += mat;
@@ -5014,7 +5007,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -5043,7 +5036,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -5082,7 +5075,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -5111,7 +5104,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -5150,7 +5143,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -5179,7 +5172,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -5222,7 +5215,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm += mat;
@@ -5255,7 +5248,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm += mat;
@@ -5294,7 +5287,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -5323,7 +5316,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -5362,7 +5355,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -5391,7 +5384,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -5430,7 +5423,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm += mat;
@@ -5459,7 +5452,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm += mat;
@@ -5502,7 +5495,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm += mat;
@@ -5535,7 +5528,7 @@ void SubmatrixComplexTest::testAddAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm += mat;
@@ -5566,9 +5559,6 @@ void SubmatrixComplexTest::testAddAssign()
 template< typename HT >  // Type of the Hermitian matrix
 void SubmatrixComplexTest::testSubAssign()
 {
-   using SMT = blaze::SubmatrixExprTrait_t<HT,blaze::unaligned>;
-
-
    //=====================================================================================
    // Dense matrix subtraction assignment
    //=====================================================================================
@@ -5596,7 +5586,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
          sm -= mat;
 
          checkRows    ( herm,  6UL );
@@ -5650,7 +5640,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
          sm -= mat;
 
          checkRows    ( herm,  6UL );
@@ -5718,7 +5708,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
          sm -= mat;
 
          checkRows    ( herm,  6UL );
@@ -5772,7 +5762,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
          sm -= mat;
 
          checkRows    ( herm,  6UL );
@@ -5840,7 +5830,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
          sm -= mat;
 
          checkRows    ( herm,  6UL );
@@ -5894,7 +5884,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
          sm -= mat;
 
          checkRows    ( herm,  6UL );
@@ -5966,7 +5956,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
          sm -= mat;
 
          checkRows    ( herm,  6UL );
@@ -6026,7 +6016,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
          sm -= mat;
 
          checkRows    ( herm,  6UL );
@@ -6094,7 +6084,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -6123,7 +6113,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -6162,7 +6152,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -6191,7 +6181,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -6230,7 +6220,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -6259,7 +6249,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -6302,7 +6292,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm -= mat;
@@ -6335,7 +6325,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm -= mat;
@@ -6374,7 +6364,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -6403,7 +6393,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -6442,7 +6432,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -6471,7 +6461,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -6510,7 +6500,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -6539,7 +6529,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -6582,7 +6572,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm -= mat;
@@ -6615,7 +6605,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm -= mat;
@@ -6654,7 +6644,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -6683,7 +6673,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -6722,7 +6712,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -6751,7 +6741,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -6790,7 +6780,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -6819,7 +6809,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -6862,7 +6852,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm -= mat;
@@ -6895,7 +6885,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm -= mat;
@@ -6939,7 +6929,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
          sm -= mat;
 
          checkRows    ( herm,  6UL );
@@ -6993,7 +6983,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
          sm -= mat;
 
          checkRows    ( herm,  6UL );
@@ -7061,7 +7051,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
          sm -= mat;
 
          checkRows    ( herm,  6UL );
@@ -7115,7 +7105,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
          sm -= mat;
 
          checkRows    ( herm,  6UL );
@@ -7183,7 +7173,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
          sm -= mat;
 
          checkRows    ( herm,  6UL );
@@ -7237,7 +7227,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
          sm -= mat;
 
          checkRows    ( herm,  6UL );
@@ -7309,7 +7299,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
          sm -= mat;
 
          checkRows    ( herm,  6UL );
@@ -7369,7 +7359,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
          sm -= mat;
 
          checkRows    ( herm,  6UL );
@@ -7437,7 +7427,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -7466,7 +7456,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -7505,7 +7495,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -7534,7 +7524,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -7573,7 +7563,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -7602,7 +7592,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -7645,7 +7635,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm -= mat;
@@ -7678,7 +7668,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm -= mat;
@@ -7717,7 +7707,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -7746,7 +7736,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -7785,7 +7775,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -7814,7 +7804,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -7853,7 +7843,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -7882,7 +7872,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -7925,7 +7915,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm -= mat;
@@ -7958,7 +7948,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm -= mat;
@@ -7997,7 +7987,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -8026,7 +8016,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -8065,7 +8055,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -8094,7 +8084,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -8133,7 +8123,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm -= mat;
@@ -8162,7 +8152,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm -= mat;
@@ -8205,7 +8195,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm -= mat;
@@ -8238,7 +8228,7 @@ void SubmatrixComplexTest::testSubAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm -= mat;
@@ -8269,9 +8259,6 @@ void SubmatrixComplexTest::testSubAssign()
 template< typename HT >  // Type of the Hermitian matrix
 void SubmatrixComplexTest::testSchurAssign()
 {
-   using SMT = blaze::SubmatrixExprTrait_t<HT,blaze::unaligned>;
-
-
    //=====================================================================================
    // Dense matrix Schur product assignment
    //=====================================================================================
@@ -8299,7 +8286,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
          sm %= mat;
 
          checkRows    ( herm,  6UL );
@@ -8353,7 +8340,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
          sm %= mat;
 
          checkRows    ( herm,  6UL );
@@ -8421,7 +8408,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
          sm %= mat;
 
          checkRows    ( herm,  6UL );
@@ -8475,7 +8462,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
          sm %= mat;
 
          checkRows    ( herm,  6UL );
@@ -8543,7 +8530,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
          sm %= mat;
 
          checkRows    ( herm,  6UL );
@@ -8597,7 +8584,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
          sm %= mat;
 
          checkRows    ( herm,  6UL );
@@ -8669,7 +8656,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
          sm %= mat;
 
          checkRows    ( herm,  6UL );
@@ -8729,7 +8716,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
          sm %= mat;
 
          checkRows    ( herm,  6UL );
@@ -8797,7 +8784,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm %= mat;
@@ -8826,7 +8813,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm %= mat;
@@ -8865,7 +8852,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm %= mat;
@@ -8894,7 +8881,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm %= mat;
@@ -8933,7 +8920,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm %= mat;
@@ -8962,7 +8949,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm %= mat;
@@ -9005,7 +8992,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm %= mat;
@@ -9038,7 +9025,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm %= mat;
@@ -9077,7 +9064,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm %= mat;
@@ -9106,7 +9093,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm %= mat;
@@ -9145,7 +9132,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm %= mat;
@@ -9174,7 +9161,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm %= mat;
@@ -9213,7 +9200,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm %= mat;
@@ -9242,7 +9229,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm %= mat;
@@ -9285,7 +9272,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm %= mat;
@@ -9318,7 +9305,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm %= mat;
@@ -9362,7 +9349,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
          sm %= mat;
 
          checkRows    ( herm,  6UL );
@@ -9416,7 +9403,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
          sm %= mat;
 
          checkRows    ( herm,  6UL );
@@ -9484,7 +9471,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
          sm %= mat;
 
          checkRows    ( herm,  6UL );
@@ -9538,7 +9525,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
          sm %= mat;
 
          checkRows    ( herm,  6UL );
@@ -9606,7 +9593,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
          sm %= mat;
 
          checkRows    ( herm,  6UL );
@@ -9660,7 +9647,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
          sm %= mat;
 
          checkRows    ( herm,  6UL );
@@ -9732,7 +9719,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
          sm %= mat;
 
          checkRows    ( herm,  6UL );
@@ -9792,7 +9779,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
          sm %= mat;
 
          checkRows    ( herm,  6UL );
@@ -9860,7 +9847,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm %= mat;
@@ -9889,7 +9876,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm %= mat;
@@ -9928,7 +9915,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm %= mat;
@@ -9957,7 +9944,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm %= mat;
@@ -9996,7 +9983,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm %= mat;
@@ -10025,7 +10012,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm %= mat;
@@ -10068,7 +10055,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm %= mat;
@@ -10101,7 +10088,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm %= mat;
@@ -10140,7 +10127,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 2UL, 4UL );
 
          try {
             sm %= mat;
@@ -10169,7 +10156,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 0UL, 0UL, 4UL, 2UL );
 
          try {
             sm %= mat;
@@ -10208,7 +10195,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 1UL, 2UL, 4UL );
 
          try {
             sm %= mat;
@@ -10237,7 +10224,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 1UL, 2UL, 4UL, 2UL );
 
          try {
             sm %= mat;
@@ -10276,7 +10263,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
+         auto sm = submatrix( herm, 4UL, 2UL, 2UL, 4UL );
 
          try {
             sm %= mat;
@@ -10305,7 +10292,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
+         auto sm = submatrix( herm, 2UL, 4UL, 4UL, 2UL );
 
          try {
             sm %= mat;
@@ -10348,7 +10335,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
+         auto sm = submatrix( herm, 2UL, 0UL, 3UL, 4UL );
 
          try {
             sm %= mat;
@@ -10381,7 +10368,7 @@ void SubmatrixComplexTest::testSchurAssign()
          HT herm;
          init( herm );
 
-         SMT sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
+         auto sm = submatrix( herm, 0UL, 2UL, 4UL, 3UL );
 
          try {
             sm %= mat;

@@ -49,7 +49,6 @@
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/DiagonalMatrix.h>
-#include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>
 
@@ -159,9 +158,6 @@ class ColumnTest
 template< typename DT >  // Type of the diagonal matrix
 void ColumnTest::testAssignment()
 {
-   using CT = blaze::ColumnExprTrait_t<DT>;
-
-
    //=====================================================================================
    // Dense vector assignment
    //=====================================================================================
@@ -178,7 +174,7 @@ void ColumnTest::testAssignment()
       DT diag;
       init( diag );
 
-      CT col1 = column( diag, 1UL );
+      auto col1 = column( diag, 1UL );
       col1 = vec;
 
       checkRows    ( diag, 3UL );
@@ -221,7 +217,7 @@ void ColumnTest::testAssignment()
       DT diag;
       init( diag );
 
-      CT col1 = column( diag, 1UL );
+      auto col1 = column( diag, 1UL );
 
       try {
          col1 = vec;
@@ -249,7 +245,7 @@ void ColumnTest::testAssignment()
       DT diag;
       init( diag );
 
-      CT col1 = column( diag, 1UL );
+      auto col1 = column( diag, 1UL );
 
       try {
          col1 = vec;
@@ -283,7 +279,7 @@ void ColumnTest::testAssignment()
       DT diag;
       init( diag );
 
-      CT col1 = column( diag, 1UL );
+      auto col1 = column( diag, 1UL );
       col1 = vec;
 
       checkRows    ( diag, 3UL );
@@ -327,7 +323,7 @@ void ColumnTest::testAssignment()
       DT diag;
       init( diag );
 
-      CT col1 = column( diag, 1UL );
+      auto col1 = column( diag, 1UL );
 
       try {
          col1 = vec;
@@ -356,7 +352,7 @@ void ColumnTest::testAssignment()
       DT diag;
       init( diag );
 
-      CT col1 = column( diag, 1UL );
+      auto col1 = column( diag, 1UL );
 
       try {
          col1 = vec;
@@ -386,9 +382,6 @@ void ColumnTest::testAssignment()
 template< typename DT >  // Type of the diagonal matrix
 void ColumnTest::testAddAssign()
 {
-   using CT = blaze::ColumnExprTrait_t<DT>;
-
-
    //=====================================================================================
    // Dense vector addition assignment
    //=====================================================================================
@@ -405,7 +398,7 @@ void ColumnTest::testAddAssign()
       DT diag;
       init( diag );
 
-      CT col1 = column( diag, 1UL );
+      auto col1 = column( diag, 1UL );
       col1 += vec;
 
       checkRows    ( diag, 3UL );
@@ -448,7 +441,7 @@ void ColumnTest::testAddAssign()
       DT diag;
       init( diag );
 
-      CT col1 = column( diag, 1UL );
+      auto col1 = column( diag, 1UL );
 
       try {
          col1 += vec;
@@ -476,7 +469,7 @@ void ColumnTest::testAddAssign()
       DT diag;
       init( diag );
 
-      CT col1 = column( diag, 1UL );
+      auto col1 = column( diag, 1UL );
 
       try {
          col1 += vec;
@@ -510,7 +503,7 @@ void ColumnTest::testAddAssign()
       DT diag;
       init( diag );
 
-      CT col1 = column( diag, 1UL );
+      auto col1 = column( diag, 1UL );
       col1 += vec;
 
       checkRows    ( diag, 3UL );
@@ -554,7 +547,7 @@ void ColumnTest::testAddAssign()
       DT diag;
       init( diag );
 
-      CT col1 = column( diag, 1UL );
+      auto col1 = column( diag, 1UL );
 
       try {
          col1 += vec;
@@ -583,7 +576,7 @@ void ColumnTest::testAddAssign()
       DT diag;
       init( diag );
 
-      CT col1 = column( diag, 1UL );
+      auto col1 = column( diag, 1UL );
 
       try {
          col1 += vec;
@@ -613,9 +606,6 @@ void ColumnTest::testAddAssign()
 template< typename DT >  // Type of the diagonal matrix
 void ColumnTest::testSubAssign()
 {
-   using CT = blaze::ColumnExprTrait_t<DT>;
-
-
    //=====================================================================================
    // Dense vector subtraction assignment
    //=====================================================================================
@@ -632,7 +622,7 @@ void ColumnTest::testSubAssign()
       DT diag;
       init( diag );
 
-      CT col1 = column( diag, 1UL );
+      auto col1 = column( diag, 1UL );
       col1 -= vec;
 
       checkRows    ( diag, 3UL );
@@ -675,7 +665,7 @@ void ColumnTest::testSubAssign()
       DT diag;
       init( diag );
 
-      CT col1 = column( diag, 1UL );
+      auto col1 = column( diag, 1UL );
 
       try {
          col1 -= vec;
@@ -703,7 +693,7 @@ void ColumnTest::testSubAssign()
       DT diag;
       init( diag );
 
-      CT col1 = column( diag, 1UL );
+      auto col1 = column( diag, 1UL );
 
       try {
          col1 -= vec;
@@ -737,7 +727,7 @@ void ColumnTest::testSubAssign()
       DT diag;
       init( diag );
 
-      CT col1 = column( diag, 1UL );
+      auto col1 = column( diag, 1UL );
       col1 -= vec;
 
       checkRows    ( diag, 3UL );
@@ -781,7 +771,7 @@ void ColumnTest::testSubAssign()
       DT diag;
       init( diag );
 
-      CT col1 = column( diag, 1UL );
+      auto col1 = column( diag, 1UL );
 
       try {
          col1 -= vec;
@@ -810,7 +800,7 @@ void ColumnTest::testSubAssign()
       DT diag;
       init( diag );
 
-      CT col1 = column( diag, 1UL );
+      auto col1 = column( diag, 1UL );
 
       try {
          col1 -= vec;
@@ -840,9 +830,6 @@ void ColumnTest::testSubAssign()
 template< typename DT >  // Type of the diagonal matrix
 void ColumnTest::testMultAssign()
 {
-   using CT = blaze::ColumnExprTrait_t<DT>;
-
-
    //=====================================================================================
    // Dense vector multiplication assignment
    //=====================================================================================
@@ -861,7 +848,7 @@ void ColumnTest::testMultAssign()
       DT diag;
       init( diag );
 
-      CT col1 = column( diag, 1UL );
+      auto col1 = column( diag, 1UL );
       col1 *= vec;
 
       checkRows    ( diag, 3UL );
@@ -910,7 +897,7 @@ void ColumnTest::testMultAssign()
       DT diag;
       init( diag );
 
-      CT col1 = column( diag, 1UL );
+      auto col1 = column( diag, 1UL );
       col1 *= vec;
 
       checkRows    ( diag, 3UL );

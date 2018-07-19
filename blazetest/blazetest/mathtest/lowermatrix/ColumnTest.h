@@ -49,7 +49,6 @@
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/LowerMatrix.h>
-#include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>
 
@@ -159,9 +158,6 @@ class ColumnTest
 template< typename LT >  // Type of the lower matrix
 void ColumnTest::testAssignment()
 {
-   using CT = blaze::ColumnExprTrait_t<LT>;
-
-
    //=====================================================================================
    // Dense vector assignment
    //=====================================================================================
@@ -179,7 +175,7 @@ void ColumnTest::testAssignment()
       LT lower;
       init( lower );
 
-      CT col1 = column( lower, 1UL );
+      auto col1 = column( lower, 1UL );
       col1 = vec;
 
       checkRows    ( lower, 3UL );
@@ -223,7 +219,7 @@ void ColumnTest::testAssignment()
       LT lower;
       init( lower );
 
-      CT col1 = column( lower, 1UL );
+      auto col1 = column( lower, 1UL );
 
       try {
          col1 = vec;
@@ -257,7 +253,7 @@ void ColumnTest::testAssignment()
       LT lower;
       init( lower );
 
-      CT col1 = column( lower, 1UL );
+      auto col1 = column( lower, 1UL );
       col1 = vec;
 
       checkRows    ( lower, 3UL );
@@ -301,7 +297,7 @@ void ColumnTest::testAssignment()
       LT lower;
       init( lower );
 
-      CT col1 = column( lower, 1UL );
+      auto col1 = column( lower, 1UL );
 
       try {
          col1 = vec;
@@ -331,9 +327,6 @@ void ColumnTest::testAssignment()
 template< typename LT >  // Type of the lower matrix
 void ColumnTest::testAddAssign()
 {
-   using CT = blaze::ColumnExprTrait_t<LT>;
-
-
    //=====================================================================================
    // Dense vector addition assignment
    //=====================================================================================
@@ -351,7 +344,7 @@ void ColumnTest::testAddAssign()
       LT lower;
       init( lower );
 
-      CT col1 = column( lower, 1UL );
+      auto col1 = column( lower, 1UL );
       col1 += vec;
 
       checkRows    ( lower, 3UL );
@@ -395,7 +388,7 @@ void ColumnTest::testAddAssign()
       LT lower;
       init( lower );
 
-      CT col1 = column( lower, 1UL );
+      auto col1 = column( lower, 1UL );
 
       try {
          col1 += vec;
@@ -428,7 +421,7 @@ void ColumnTest::testAddAssign()
       LT lower;
       init( lower );
 
-      CT col1 = column( lower, 1UL );
+      auto col1 = column( lower, 1UL );
       col1 += vec;
 
       checkRows    ( lower, 3UL );
@@ -472,7 +465,7 @@ void ColumnTest::testAddAssign()
       LT lower;
       init( lower );
 
-      CT col1 = column( lower, 1UL );
+      auto col1 = column( lower, 1UL );
 
       try {
          col1 += vec;
@@ -502,9 +495,6 @@ void ColumnTest::testAddAssign()
 template< typename LT >  // Type of the lower matrix
 void ColumnTest::testSubAssign()
 {
-   using CT = blaze::ColumnExprTrait_t<LT>;
-
-
    //=====================================================================================
    // Dense vector subtraction assignment
    //=====================================================================================
@@ -522,7 +512,7 @@ void ColumnTest::testSubAssign()
       LT lower;
       init( lower );
 
-      CT col1 = column( lower, 1UL );
+      auto col1 = column( lower, 1UL );
       col1 -= vec;
 
       checkRows    ( lower, 3UL );
@@ -566,7 +556,7 @@ void ColumnTest::testSubAssign()
       LT lower;
       init( lower );
 
-      CT col1 = column( lower, 1UL );
+      auto col1 = column( lower, 1UL );
 
       try {
          col1 -= vec;
@@ -599,7 +589,7 @@ void ColumnTest::testSubAssign()
       LT lower;
       init( lower );
 
-      CT col1 = column( lower, 1UL );
+      auto col1 = column( lower, 1UL );
       col1 -= vec;
 
       checkRows    ( lower, 3UL );
@@ -643,7 +633,7 @@ void ColumnTest::testSubAssign()
       LT lower;
       init( lower );
 
-      CT col1 = column( lower, 1UL );
+      auto col1 = column( lower, 1UL );
 
       try {
          col1 -= vec;
@@ -673,9 +663,6 @@ void ColumnTest::testSubAssign()
 template< typename LT >  // Type of the lower matrix
 void ColumnTest::testMultAssign()
 {
-   using CT = blaze::ColumnExprTrait_t<LT>;
-
-
    //=====================================================================================
    // Dense vector multiplication assignment
    //=====================================================================================
@@ -694,7 +681,7 @@ void ColumnTest::testMultAssign()
       LT lower;
       init( lower );
 
-      CT col1 = column( lower, 1UL );
+      auto col1 = column( lower, 1UL );
       col1 *= vec;
 
       checkRows    ( lower, 3UL );
@@ -743,7 +730,7 @@ void ColumnTest::testMultAssign()
       LT lower;
       init( lower );
 
-      CT col1 = column( lower, 1UL );
+      auto col1 = column( lower, 1UL );
       col1 *= vec;
 
       checkRows    ( lower, 3UL );

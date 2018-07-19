@@ -49,7 +49,6 @@
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/HermitianMatrix.h>
-#include <blaze/math/traits/ColumnExprTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>
 
@@ -159,9 +158,6 @@ class ColumnRealTest
 template< typename HT >  // Type of the Hermitian matrix
 void ColumnRealTest::testAssignment()
 {
-   using CT = blaze::ColumnExprTrait_t<HT>;
-
-
    //=====================================================================================
    // Dense vector assignment
    //=====================================================================================
@@ -180,7 +176,7 @@ void ColumnRealTest::testAssignment()
       HT herm;
       init( herm );
 
-      CT col1 = column( herm, 1UL );
+      auto col1 = column( herm, 1UL );
       col1 = vec;
 
       checkRows    ( herm, 3UL );
@@ -229,7 +225,7 @@ void ColumnRealTest::testAssignment()
       HT herm;
       init( herm );
 
-      CT col1 = column( herm, 1UL );
+      auto col1 = column( herm, 1UL );
       col1 = vec;
 
       checkRows    ( herm, 3UL );
@@ -274,9 +270,6 @@ void ColumnRealTest::testAssignment()
 template< typename HT >  // Type of the Hermitian matrix
 void ColumnRealTest::testAddAssign()
 {
-   using CT = blaze::ColumnExprTrait_t<HT>;
-
-
    //=====================================================================================
    // Dense vector addition assignment
    //=====================================================================================
@@ -295,7 +288,7 @@ void ColumnRealTest::testAddAssign()
       HT herm;
       init( herm );
 
-      CT col1 = column( herm, 1UL );
+      auto col1 = column( herm, 1UL );
       col1 += vec;
 
       checkRows    ( herm, 3UL );
@@ -344,7 +337,7 @@ void ColumnRealTest::testAddAssign()
       HT herm;
       init( herm );
 
-      CT col1 = column( herm, 1UL );
+      auto col1 = column( herm, 1UL );
       col1 += vec;
 
       checkRows    ( herm, 3UL );
@@ -389,9 +382,6 @@ void ColumnRealTest::testAddAssign()
 template< typename HT >  // Type of the Hermitian matrix
 void ColumnRealTest::testSubAssign()
 {
-   using CT = blaze::ColumnExprTrait_t<HT>;
-
-
    //=====================================================================================
    // Dense vector subtraction assignment
    //=====================================================================================
@@ -410,7 +400,7 @@ void ColumnRealTest::testSubAssign()
       HT herm;
       init( herm );
 
-      CT col1 = column( herm, 1UL );
+      auto col1 = column( herm, 1UL );
       col1 -= vec;
 
       checkRows    ( herm, 3UL );
@@ -459,7 +449,7 @@ void ColumnRealTest::testSubAssign()
       HT herm;
       init( herm );
 
-      CT col1 = column( herm, 1UL );
+      auto col1 = column( herm, 1UL );
       col1 -= vec;
 
       checkRows    ( herm, 3UL );
@@ -504,9 +494,6 @@ void ColumnRealTest::testSubAssign()
 template< typename HT >  // Type of the Hermitian matrix
 void ColumnRealTest::testMultAssign()
 {
-   using CT = blaze::ColumnExprTrait_t<HT>;
-
-
    //=====================================================================================
    // Dense vector multiplication assignment
    //=====================================================================================
@@ -525,7 +512,7 @@ void ColumnRealTest::testMultAssign()
       HT herm;
       init( herm );
 
-      CT col1 = column( herm, 1UL );
+      auto col1 = column( herm, 1UL );
       col1 *= vec;
 
       checkRows    ( herm, 3UL );
@@ -574,7 +561,7 @@ void ColumnRealTest::testMultAssign()
       HT herm;
       init( herm );
 
-      CT col1 = column( herm, 1UL );
+      auto col1 = column( herm, 1UL );
       col1 *= vec;
 
       checkRows    ( herm, 3UL );
