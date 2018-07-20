@@ -66,6 +66,7 @@
 #include <blaze/math/traits/ElementsTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/ReduceTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
@@ -2949,6 +2950,32 @@ struct BinaryMapTraitEval2< T1, T2, OP
    using ET2 = ElementType_t<T2>;
 
    using Type = DynamicVector< MapTrait_t<ET1,ET2,OP>, TransposeFlag_v<T1> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  REDUCETRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, typename OP, size_t RF >
+struct PartialReduceTraitEval2< T, OP, RF
+                              , EnableIf_t< IsMatrix_v<T> &&
+                                            ( Size_v<T,0UL> == DefaultSize_v ||
+                                              Size_v<T,1UL> == DefaultSize_v ) &&
+                                            ( MaxSize_v<T,0UL> == DefaultMaxSize_v ||
+                                              MaxSize_v<T,1UL> == DefaultMaxSize_v ) > >
+{
+   static constexpr bool TF = ( RF == 0UL );
+
+   using Type = DynamicVector< ElementType_t<T>, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
