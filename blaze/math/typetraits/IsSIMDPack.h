@@ -44,7 +44,6 @@
 #include <blaze/math/simd/SIMDPack.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
-#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -68,12 +67,15 @@ struct IsSIMDPackHelper
    template< typename U >
    static TrueType test( const SIMDPack<U>& );
 
+   template< typename U >
+   static TrueType test( const volatile SIMDPack<U>& );
+
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval< RemoveCV_t<T> >() ) );
+   using Type = decltype( test( std::declval<T&>() ) );
    //**********************************************************************************************
 };
 /*! \endcond */

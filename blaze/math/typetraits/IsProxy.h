@@ -44,7 +44,6 @@
 #include <blaze/math/proxy/Forward.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
-#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -68,12 +67,15 @@ struct IsProxyHelper
    template< typename PT, typename RT >
    static TrueType test( const Proxy<PT,RT>& );
 
+   template< typename PT, typename RT >
+   static TrueType test( const volatile Proxy<PT,RT>& );
+
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval< RemoveCV_t<T> >() ) );
+   using Type = decltype( test( std::declval<T&>() ) );
    //**********************************************************************************************
 };
 /*! \endcond */

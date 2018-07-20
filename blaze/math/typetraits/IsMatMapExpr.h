@@ -44,7 +44,6 @@
 #include <blaze/math/expressions/MatMapExpr.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
-#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -68,12 +67,15 @@ struct IsMatMapExprHelper
    template< typename MT >
    static TrueType test( const MatMapExpr<MT>& );
 
+   template< typename MT >
+   static TrueType test( const volatile MatMapExpr<MT>& );
+
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval< RemoveCV_t<T> >() ) );
+   using Type = decltype( test( std::declval<T&>() ) );
    //**********************************************************************************************
 };
 /*! \endcond */

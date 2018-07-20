@@ -45,7 +45,6 @@
 #include <blaze/math/StorageOrder.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
-#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -69,12 +68,15 @@ struct IsRowMajorMatrixHelper
    template< typename MT >
    static TrueType test( const Matrix<MT,rowMajor>& );
 
+   template< typename MT >
+   static TrueType test( const volatile Matrix<MT,rowMajor>& );
+
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval< RemoveCV_t<T> >() ) );
+   using Type = decltype( test( std::declval<T&>() ) );
    //**********************************************************************************************
 };
 /*! \endcond */

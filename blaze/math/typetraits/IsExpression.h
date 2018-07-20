@@ -44,7 +44,6 @@
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
-#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -68,12 +67,15 @@ struct IsExpressionHelper
    template< typename U >
    static TrueType test( const Expression<U>& );
 
+   template< typename U >
+   static TrueType test( const volatile Expression<U>& );
+
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval< RemoveCV_t<T> >() ) );
+   using Type = decltype( test( std::declval<T&>() ) );
    //**********************************************************************************************
 };
 /*! \endcond */

@@ -44,7 +44,6 @@
 #include <blaze/math/expressions/DeclUppExpr.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
-#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -68,12 +67,15 @@ struct IsDeclUppExprHelper
    template< typename MT >
    static TrueType test( const DeclUppExpr<MT>& );
 
+   template< typename MT >
+   static TrueType test( const volatile DeclUppExpr<MT>& );
+
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval< RemoveCV_t<T> >() ) );
+   using Type = decltype( test( std::declval<T&>() ) );
    //**********************************************************************************************
 };
 /*! \endcond */

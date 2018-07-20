@@ -44,7 +44,6 @@
 #include <blaze/math/expressions/Vector.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
-#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -68,12 +67,15 @@ struct IsVectorHelper
    template< typename VT, bool TF >
    static TrueType test( const Vector<VT,TF>& );
 
+   template< typename VT, bool TF >
+   static TrueType test( const volatile Vector<VT,TF>& );
+
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval< RemoveCV_t<T> >() ) );
+   using Type = decltype( test( std::declval<T&>() ) );
    //**********************************************************************************************
 };
 /*! \endcond */

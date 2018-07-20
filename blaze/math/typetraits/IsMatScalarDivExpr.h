@@ -44,7 +44,6 @@
 #include <blaze/math/expressions/MatScalarDivExpr.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
-#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -68,12 +67,15 @@ struct IsMatScalarDivExprHelper
    template< typename MT >
    static TrueType test( const MatScalarDivExpr<MT>& );
 
+   template< typename MT >
+   static TrueType test( const volatile MatScalarDivExpr<MT>& );
+
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval< RemoveCV_t<T> >() ) );
+   using Type = decltype( test( std::declval<T&>() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
