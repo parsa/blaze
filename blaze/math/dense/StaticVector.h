@@ -66,6 +66,7 @@
 #include <blaze/math/traits/ElementsTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/ReduceTrait.h>
 #include <blaze/math/traits/RowTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
@@ -3008,6 +3009,32 @@ struct BinaryMapTraitEval2< T1, T2, OP
    static constexpr size_t N = max( Size_v<T1,0UL>, Size_v<T2,0UL> );
 
    using Type = StaticVector< MapTrait_t<ET1,ET2,OP>, N, TransposeFlag_v<T1> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  REDUCETRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, typename OP, size_t RF >
+struct PartialReduceTraitEval2< T, OP, RF
+                              , EnableIf_t< IsMatrix_v<T> &&
+                                            Size_v<T,0UL> != DefaultSize_v &&
+                                            Size_v<T,1UL> != DefaultSize_v > >
+{
+   static constexpr bool TF = ( RF == 0UL );
+
+   static constexpr size_t N = Size_v< T, TF ? 1UL : 0UL >;
+
+   using Type = StaticVector< ElementType_t<T>, N, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
