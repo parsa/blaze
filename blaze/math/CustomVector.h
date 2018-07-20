@@ -66,17 +66,18 @@ namespace blaze {
 template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool TF >      // Transpose flag
-class Rand< CustomVector<Type,AF,PF,TF> >
+        , bool TF        // Transpose flag
+        , typename RT >  // Result type
+class Rand< CustomVector<Type,AF,PF,TF,RT> >
 {
  public:
    //**Randomize functions*************************************************************************
    /*!\name Randomize functions */
    //@{
-   inline void randomize( CustomVector<Type,AF,PF,TF>& vector ) const;
+   inline void randomize( CustomVector<Type,AF,PF,TF,RT>& vector ) const;
 
    template< typename Arg >
-   inline void randomize( CustomVector<Type,AF,PF,TF>& vector, const Arg& min, const Arg& max ) const;
+   inline void randomize( CustomVector<Type,AF,PF,TF,RT>& vector, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -94,8 +95,9 @@ class Rand< CustomVector<Type,AF,PF,TF> >
 template< typename Type  // Data type of the vector
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool TF >      // Transpose flag
-inline void Rand< CustomVector<Type,AF,PF,TF> >::randomize( CustomVector<Type,AF,PF,TF>& vector ) const
+        , bool TF        // Transpose flag
+        , typename RT >  // Result type
+inline void Rand< CustomVector<Type,AF,PF,TF,RT> >::randomize( CustomVector<Type,AF,PF,TF,RT>& vector ) const
 {
    using blaze::randomize;
 
@@ -120,10 +122,11 @@ inline void Rand< CustomVector<Type,AF,PF,TF> >::randomize( CustomVector<Type,AF
 template< typename Type   // Data type of the vector
         , bool AF         // Alignment flag
         , bool PF         // Padding flag
-        , bool TF >       // Transpose flag
+        , bool TF         // Transpose flag
+        , typename RT >   // Result type
 template< typename Arg >  // Min/max argument type
-inline void Rand< CustomVector<Type,AF,PF,TF> >::randomize( CustomVector<Type,AF,PF,TF>& vector,
-                                                            const Arg& min, const Arg& max ) const
+inline void Rand< CustomVector<Type,AF,PF,TF,RT> >::randomize( CustomVector<Type,AF,PF,TF,RT>& vector,
+                                                               const Arg& min, const Arg& max ) const
 {
    using blaze::randomize;
 

@@ -52,7 +52,7 @@ namespace blaze {
 //=================================================================================================
 
 template< typename, bool, bool, bool > class CustomMatrix;
-template< typename, bool, bool, bool > class CustomVector;
+template< typename, bool, bool, bool, typename > class CustomVector;
 template< typename, bool > class DynamicVector;
 template< typename, bool > class DynamicMatrix;
 template< typename, size_t, size_t, bool > class HybridMatrix;
