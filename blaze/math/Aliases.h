@@ -36,6 +36,14 @@
 #define _BLAZE_MATH_ALIASES_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/util/Template.h>
+#include <blaze/util/Types.h>
+
+
 namespace blaze {
 
 //=================================================================================================
@@ -285,6 +293,26 @@ using Pointer_t = typename T::Pointer;
 
 
 //*************************************************************************************************
+/*!\brief Alias declaration for nested \c Rebind class templates.
+// \ingroup aliases
+//
+// The Rebind_t alias declaration provides a convenient shortcut to access the nested \a Rebind
+// class template of the given type \a T1. The following code example shows both ways to access
+// the nested class template:
+
+   \code
+   using Type1 = typename T1::template Rebind<T2>::Other;
+   using Type2 = Rebind_t<T1,T2>;
+
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
+   \endcode
+*/
+template< typename T1, typename T2 >
+using Rebind_t = typename T1::BLAZE_TEMPLATE Rebind<T2>::Other;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Alias declaration for nested \c Reference type definitions.
 // \ingroup aliases
 //
@@ -321,6 +349,26 @@ using Reference_t = typename T::Reference;
 */
 template< typename T >
 using RepresentedType_t = typename T::RepresentedType;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Alias declaration for nested \c Resize class templates.
+// \ingroup aliases
+//
+// The Resize_t alias declaration provides a convenient shortcut to access the nested \a Resize
+// class template of the given type \a T1. The following code example shows both ways to access
+// the nested class template:
+
+   \code
+   using Type1 = typename T::template Resize<N>::Other;
+   using Type2 = Resize_t<T,N>;
+
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
+   \endcode
+*/
+template< typename T, size_t... Ns >
+using Resize_t = typename T::BLAZE_TEMPLATE Resize<Ns...>::Other;
 //*************************************************************************************************
 
 
