@@ -1,8 +1,9 @@
+#!/bin/bash
 #==================================================================================================
 #
-#  Makefile for the traits module of the Blaze test suite
+#  Run script for the multtrait module of the Blaze test suite
 #
-#  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved - All Rights Reserved
+#  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 #
 #  This file is part of the Blaze library. You can redistribute it and/or modify it under
 #  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -32,51 +33,8 @@
 #==================================================================================================
 
 
-# Build rules
-default: all
+PATH_MULTTRAIT=$( dirname "${BASH_SOURCE[0]}" )
 
-all: addtrait multtrait schurtrait subtrait
+echo " Running MultTrait tests..."
 
-essential: all
-
-single: all
-
-
-# Internal rules
-addtrait:
-	@echo
-	@echo "Building the AddTrait tests..."
-	@$(MAKE) --no-print-directory -C ./addtrait $(MAKECMDGOALS)
-
-multtrait:
-	@echo
-	@echo "Building the MultTrait tests..."
-	@$(MAKE) --no-print-directory -C ./multtrait $(MAKECMDGOALS)
-
-schurtrait:
-	@echo
-	@echo "Building the SchurTrait tests..."
-	@$(MAKE) --no-print-directory -C ./schurtrait $(MAKECMDGOALS)
-
-subtrait:
-	@echo
-	@echo "Building the SubTrait tests..."
-	@$(MAKE) --no-print-directory -C ./subtrait $(MAKECMDGOALS)
-
-
-# Cleanup
-reset:
-	@$(MAKE) --no-print-directory -C ./addtrait reset
-	@$(MAKE) --no-print-directory -C ./multtrait reset
-	@$(MAKE) --no-print-directory -C ./schurtrait reset
-	@$(MAKE) --no-print-directory -C ./subtrait reset
-
-clean:
-	@$(MAKE) --no-print-directory -C ./addtrait clean
-	@$(MAKE) --no-print-directory -C ./multtrait clean
-	@$(MAKE) --no-print-directory -C ./schurtrait clean
-	@$(MAKE) --no-print-directory -C ./subtrait clean
-
-
-# Setting the independent commands
-.PHONY: default all essential single reset clean addtrait multtrait schurtrait subtrait
+EXE=$PATH_MULTTRAIT/ClassTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
