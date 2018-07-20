@@ -3407,6 +3407,32 @@
    columns( M1 * M2 );  // Returns 7, i.e. the number of columns of the resulting matrix
    \endcode
 
+// \subsection matrix_operations_spacing .spacing()
+//
+// The total number of elements of a row or column of a dense matrix, including potential padding
+// elements, can be acquired via the \c spacing member function. In case of a row-major matrix
+// (i.e. in case the storage order is set to blaze::rowMajor) the function returns the spacing
+// between two rows, in case of a column-major matrix (i.e. in case the storage flag is set to
+// blaze::columnMajor) the function returns the spacing between two columns:
+
+   \code
+   // Instantiating a row-major dynamic matrix with 7 rows and 8 columns
+   blaze::DynamicMatrix<int,blaze::rowMajor> M1( 7UL, 8UL );
+   M1.spacing();  // Returns the total number of elements in a row
+
+   // Instantiating a column-major dynamic matrix with 8 rows and 12 columns
+   blaze::CompressedMatrix<double> M2( 8UL, 12UL );
+   M2.spacing();  // Returns the total number of element in a column
+   \endcode
+
+// Alternatively, the free functions \c spacing() can be used to query the current number of
+// elements in a row/column.
+
+   \code
+   spacing( M1 );  // Returns the total number of elements in a row
+   spacing( M2 );  // Returns the total number of elements in a column
+   \endcode
+
 // \n \subsection matrix_operations_capacity .capacity()
 //
 // The \c capacity() member function returns the internal capacity of a dense or sparse matrix.
