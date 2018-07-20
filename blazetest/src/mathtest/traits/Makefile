@@ -35,7 +35,7 @@
 # Build rules
 default: all
 
-all: addtrait crosstrait multtrait schurtrait subtrait
+all: addtrait crosstrait divtrait multtrait schurtrait subtrait
 
 essential: all
 
@@ -52,6 +52,11 @@ crosstrait:
 	@echo
 	@echo "Building the CrossTrait tests..."
 	@$(MAKE) --no-print-directory -C ./crosstrait $(MAKECMDGOALS)
+
+divtrait:
+	@echo
+	@echo "Building the DivTrait tests..."
+	@$(MAKE) --no-print-directory -C ./divtrait $(MAKECMDGOALS)
 
 multtrait:
 	@echo
@@ -73,6 +78,7 @@ subtrait:
 reset:
 	@$(MAKE) --no-print-directory -C ./addtrait reset
 	@$(MAKE) --no-print-directory -C ./crosstrait reset
+	@$(MAKE) --no-print-directory -C ./divtrait reset
 	@$(MAKE) --no-print-directory -C ./multtrait reset
 	@$(MAKE) --no-print-directory -C ./schurtrait reset
 	@$(MAKE) --no-print-directory -C ./subtrait reset
@@ -80,6 +86,7 @@ reset:
 clean:
 	@$(MAKE) --no-print-directory -C ./addtrait clean
 	@$(MAKE) --no-print-directory -C ./crosstrait clean
+	@$(MAKE) --no-print-directory -C ./divtrait clean
 	@$(MAKE) --no-print-directory -C ./multtrait clean
 	@$(MAKE) --no-print-directory -C ./schurtrait clean
 	@$(MAKE) --no-print-directory -C ./subtrait clean
@@ -87,4 +94,4 @@ clean:
 
 # Setting the independent commands
 .PHONY: default all essential single reset clean \
-        addtrait crosstrait multtrait schurtrait subtrait
+        addtrait crosstrait divtrait multtrait schurtrait subtrait

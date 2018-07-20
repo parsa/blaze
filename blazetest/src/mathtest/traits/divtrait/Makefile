@@ -1,9 +1,8 @@
-#!/bin/bash
 #==================================================================================================
 #
-#  Run script for the traits module of the Blaze test suite
+#  Makefile for the divtrait module of the Blaze test suite
 #
-#  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+#  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved - All Rights Reserved
 #
 #  This file is part of the Blaze library. You can redistribute it and/or modify it under
 #  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,46 +32,53 @@
 #==================================================================================================
 
 
-PATH_TRAITS=$( dirname "${BASH_SOURCE[0]}" )
+# Including the compiler and library settings
+ifneq ($(MAKECMDGOALS),reset)
+ifneq ($(MAKECMDGOALS),clean)
+-include ../../../Makeconfig
+endif
+endif
 
 
-#==================================================================================================
-# AddTrait tests
-#==================================================================================================
-
-$PATH_TRAITS/addtrait/run; if [ $? != 0 ]; then exit 1; fi
-
-
-#==================================================================================================
-# SubTrait tests
-#==================================================================================================
-
-$PATH_TRAITS/subtrait/run; if [ $? != 0 ]; then exit 1; fi
+# Setting the source, object and dependency files
+SRC = $(wildcard ./*.cpp)
+DEP = $(SRC:.cpp=.d)
+OBJ = $(SRC:.cpp=.o)
+BIN = $(SRC:.cpp=)
 
 
-#==================================================================================================
-# SchurTrait tests
-#==================================================================================================
-
-$PATH_TRAITS/schurtrait/run; if [ $? != 0 ]; then exit 1; fi
-
-
-#==================================================================================================
-# MultTrait tests
-#==================================================================================================
-
-$PATH_TRAITS/multtrait/run; if [ $? != 0 ]; then exit 1; fi
+# General rules
+default: all
+all: $(BIN)
+essential: $(BIN)
+single: $(BIN)
+noop: $(BIN)
 
 
-#==================================================================================================
-# CrossTrait tests
-#==================================================================================================
-
-$PATH_TRAITS/crosstrait/run; if [ $? != 0 ]; then exit 1; fi
+# Build rules
+ClassTest: ClassTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 
-#==================================================================================================
-# DivTrait tests
-#==================================================================================================
+# Cleanup
+reset:
+	@$(RM) $(OBJ) $(BIN)
+clean:
+	@$(RM) $(OBJ) $(BIN) $(DEP)
 
-$PATH_TRAITS/divtrait/run; if [ $? != 0 ]; then exit 1; fi
+
+# Makefile includes
+ifneq ($(MAKECMDGOALS),reset)
+ifneq ($(MAKECMDGOALS),clean)
+-include $(DEP)
+endif
+endif
+
+
+# Makefile generation
+%.d: %.cpp
+	@$(CXX) -MM -MP -MT "$*.o $*.d" -MF $@ $(CXXFLAGS) $<
+
+
+# Setting the independent commands
+.PHONY: default all essential single noop reset clean
