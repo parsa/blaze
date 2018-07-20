@@ -35,7 +35,7 @@
 # Build rules
 default: all
 
-all: shims simd blas lapack typetraits \
+all: shims simd blas lapack typetraits traits \
      densevector sparsevector densematrix sparsematrix \
      staticvector hybridvector dynamicvector customvector initializervector compressedvector \
      staticmatrix hybridmatrix dynamicmatrix custommatrix initializermatrix compressedmatrix \
@@ -66,7 +66,7 @@ essential: all
 
 single: all
 
-noop: shims simd blas lapack typetraits \
+noop: shims simd blas lapack typetraits traits \
       densevector sparsevector densematrix sparsematrix \
       staticvector hybridvector dynamicvector customvector initializervector compressedvector \
       staticmatrix hybridmatrix dynamicmatrix custommatrix initializermatrix compressedmatrix \
@@ -104,6 +104,9 @@ typetraits:
 	@echo
 	@echo "Building the typetraits operation tests..."
 	@$(MAKE) --no-print-directory -C ./typetraits $(MAKECMDGOALS)
+
+traits:
+	@$(MAKE) --no-print-directory -C ./traits $(MAKECMDGOALS)
 
 densevector:
 	@echo
@@ -613,6 +616,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./blas reset
 	@$(MAKE) --no-print-directory -C ./lapack reset
 	@$(MAKE) --no-print-directory -C ./typetraits reset
+	@$(MAKE) --no-print-directory -C ./traits reset
 	@$(MAKE) --no-print-directory -C ./densevector reset
 	@$(MAKE) --no-print-directory -C ./sparsevector reset
 	@$(MAKE) --no-print-directory -C ./densematrix reset
@@ -720,6 +724,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./blas clean
 	@$(MAKE) --no-print-directory -C ./lapack clean
 	@$(MAKE) --no-print-directory -C ./typetraits clean
+	@$(MAKE) --no-print-directory -C ./traits clean
 	@$(MAKE) --no-print-directory -C ./densevector clean
 	@$(MAKE) --no-print-directory -C ./sparsevector clean
 	@$(MAKE) --no-print-directory -C ./densematrix clean
@@ -824,7 +829,7 @@ clean:
 
 # Setting the independent commands
 .PHONY: default all essential single noop reset clean \
-        shims simd blas lapack typetraits \
+        shims simd blas lapack typetraits traits \
         densevector sparsevector densematrix sparsematrix \
         staticvector hybridvector dynamicvector customvector initializervector compressedvector \
         staticmatrix hybridmatrix dynamicmatrix custommatrix initializermatrix compressedmatrix \
