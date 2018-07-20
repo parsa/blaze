@@ -72,17 +72,18 @@ namespace blaze {
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-class Rand< CustomMatrix<Type,AF,PF,SO> >
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+class Rand< CustomMatrix<Type,AF,PF,SO,RT> >
 {
  public:
    //**Randomize functions*************************************************************************
    /*!\name Randomize functions */
    //@{
-   inline void randomize( CustomMatrix<Type,AF,PF,SO>& matrix ) const;
+   inline void randomize( CustomMatrix<Type,AF,PF,SO,RT>& matrix ) const;
 
    template< typename Arg >
-   inline void randomize( CustomMatrix<Type,AF,PF,SO>& matrix, const Arg& min, const Arg& max ) const;
+   inline void randomize( CustomMatrix<Type,AF,PF,SO,RT>& matrix, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 };
@@ -100,8 +101,9 @@ class Rand< CustomMatrix<Type,AF,PF,SO> >
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline void Rand< CustomMatrix<Type,AF,PF,SO> >::randomize( CustomMatrix<Type,AF,PF,SO>& matrix ) const
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline void Rand< CustomMatrix<Type,AF,PF,SO,RT> >::randomize( CustomMatrix<Type,AF,PF,SO,RT>& matrix ) const
 {
    using blaze::randomize;
 
@@ -130,10 +132,11 @@ inline void Rand< CustomMatrix<Type,AF,PF,SO> >::randomize( CustomMatrix<Type,AF
 template< typename Type   // Data type of the matrix
         , bool AF         // Alignment flag
         , bool PF         // Padding flag
-        , bool SO >       // Storage order
+        , bool SO         // Storage order
+        , typename RT >   // Result type
 template< typename Arg >  // Min/max argument type
-inline void Rand< CustomMatrix<Type,AF,PF,SO> >::randomize( CustomMatrix<Type,AF,PF,SO>& matrix,
-                                                            const Arg& min, const Arg& max ) const
+inline void Rand< CustomMatrix<Type,AF,PF,SO,RT> >::randomize( CustomMatrix<Type,AF,PF,SO,RT>& matrix,
+                                                               const Arg& min, const Arg& max ) const
 {
    using blaze::randomize;
 
@@ -169,8 +172,9 @@ inline void Rand< CustomMatrix<Type,AF,PF,SO> >::randomize( CustomMatrix<Type,AF
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-void makeSymmetric( CustomMatrix<Type,AF,PF,SO>& matrix )
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+void makeSymmetric( CustomMatrix<Type,AF,PF,SO,RT>& matrix )
 {
    using blaze::randomize;
 
@@ -208,8 +212,9 @@ template< typename Type   // Data type of the matrix
         , bool AF         // Alignment flag
         , bool PF         // Padding flag
         , bool SO         // Storage order
+        , typename RT     // Result type
         , typename Arg >  // Min/max argument type
-void makeSymmetric( CustomMatrix<Type,AF,PF,SO>& matrix, const Arg& min, const Arg& max )
+void makeSymmetric( CustomMatrix<Type,AF,PF,SO,RT>& matrix, const Arg& min, const Arg& max )
 {
    using blaze::randomize;
 
@@ -244,8 +249,9 @@ void makeSymmetric( CustomMatrix<Type,AF,PF,SO>& matrix, const Arg& min, const A
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-void makeHermitian( CustomMatrix<Type,AF,PF,SO>& matrix )
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+void makeHermitian( CustomMatrix<Type,AF,PF,SO,RT>& matrix )
 {
    using blaze::randomize;
 
@@ -287,8 +293,9 @@ template< typename Type   // Data type of the matrix
         , bool AF         // Alignment flag
         , bool PF         // Padding flag
         , bool SO         // Storage order
+        , typename RT     // Result type
         , typename Arg >  // Min/max argument type
-void makeHermitian( CustomMatrix<Type,AF,PF,SO>& matrix, const Arg& min, const Arg& max )
+void makeHermitian( CustomMatrix<Type,AF,PF,SO,RT>& matrix, const Arg& min, const Arg& max )
 {
    using blaze::randomize;
 
@@ -327,8 +334,9 @@ void makeHermitian( CustomMatrix<Type,AF,PF,SO>& matrix, const Arg& min, const A
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-void makePositiveDefinite( CustomMatrix<Type,AF,PF,SO>& matrix )
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+void makePositiveDefinite( CustomMatrix<Type,AF,PF,SO,RT>& matrix )
 {
    using blaze::randomize;
 

@@ -398,26 +398,27 @@ namespace blaze {
    F *= A * D;    // Multiplication assignment
    \endcode
 */
-template< typename Type                    // Data type of the matrix
-        , bool AF                          // Alignment flag
-        , bool PF                          // Padding flag
-        , bool SO = defaultStorageOrder >  // Storage order
+template< typename Type                                          // Data type of the matrix
+        , bool AF                                                // Alignment flag
+        , bool PF                                                // Padding flag
+        , bool SO = defaultStorageOrder                          // Storage order
+        , typename RT = DynamicMatrix<RemoveConst_t<Type>,SO> >  // Result type
 class CustomMatrix
-   : public DenseMatrix< CustomMatrix<Type,AF,PF,SO>, SO >
+   : public DenseMatrix< CustomMatrix<Type,AF,PF,SO,RT>, SO >
 {
  public:
    //**Type definitions****************************************************************************
-   using This     = CustomMatrix<Type,AF,PF,SO>;  //!< Type of this CustomMatrix instance.
-   using BaseType = DenseMatrix<This,SO>;         //!< Base type of this CustomMatrix instance.
+   using This     = CustomMatrix<Type,AF,PF,SO,RT>;  //!< Type of this CustomMatrix instance.
+   using BaseType = DenseMatrix<This,SO>;            //!< Base type of this CustomMatrix instance.
 
    //! Result type for expression template evaluations.
-   using ResultType = DynamicMatrix<RemoveConst_t<Type>,SO>;
+   using ResultType = RT;
 
    //! Result type with opposite storage order for expression template evaluations.
-   using OppositeType = DynamicMatrix<RemoveConst_t<Type>,!SO>;
+   using OppositeType = OppositeType_t<RT>;
 
    //! Transpose type for expression template evaluations.
-   using TransposeType = DynamicMatrix<RemoveConst_t<Type>,!SO>;
+   using TransposeType = TransposeType_t<RT>;
 
    using ElementType   = Type;                      //!< Type of the matrix elements.
    using SIMDType      = SIMDTrait_t<ElementType>;  //!< SIMD type of the matrix elements.
@@ -438,7 +439,8 @@ class CustomMatrix
    */
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      using Other = CustomMatrix<NewType,AF,PF,SO>;  //!< The type of the other CustomMatrix.
+      using RRT   = Rebind_t< RT, RemoveConst_t<NewType> >;  //!< The rebound result type.
+      using Other = CustomMatrix<NewType,AF,PF,SO,RRT>;      //!< The type of the other CustomMatrix.
    };
    //**********************************************************************************************
 
@@ -448,7 +450,8 @@ class CustomMatrix
    template< size_t NewM    // Number of rows of the other matrix
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
-      using Other = CustomMatrix<Type,AF,PF,SO>;  //!< The type of the other CustomMatrix.
+      using RRT   = Resize_t<RT,NewM,NewN>;           //!< The resized result type.
+      using Other = CustomMatrix<Type,AF,PF,SO,RRT>;  //!< The type of the other CustomMatrix.
    };
    //**********************************************************************************************
 
@@ -718,8 +721,9 @@ class CustomMatrix
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix()
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline CustomMatrix<Type,AF,PF,SO,RT>::CustomMatrix()
    : m_ ( 0UL )      // The current number of rows of the matrix
    , n_ ( 0UL )      // The current number of columns of the matrix
    , nn_( 0UL )      // The number of elements between two rows
@@ -751,8 +755,9 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix()
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n )
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline CustomMatrix<Type,AF,PF,SO,RT>::CustomMatrix( Type* ptr, size_t m, size_t n )
    : m_ ( m )    // The current number of rows of the matrix
    , n_ ( n )    // The current number of columns of the matrix
    , nn_( n )    // The number of elements between two rows
@@ -796,8 +801,9 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n 
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n, size_t nn )
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline CustomMatrix<Type,AF,PF,SO,RT>::CustomMatrix( Type* ptr, size_t m, size_t n, size_t nn )
    : m_ ( m )    // The current number of rows of the matrix
    , n_ ( n )    // The current number of columns of the matrix
    , nn_( nn )   // The number of elements between two rows
@@ -840,8 +846,9 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( Type* ptr, size_t m, size_t n,
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( const CustomMatrix& m )
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline CustomMatrix<Type,AF,PF,SO,RT>::CustomMatrix( const CustomMatrix& m )
    : m_ ( m.m_ )   // The current number of rows of the matrix
    , n_ ( m.n_ )   // The current number of columns of the matrix
    , nn_( m.nn_ )  // The number of elements between two rows
@@ -858,8 +865,9 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( const CustomMatrix& m )
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( CustomMatrix&& m ) noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline CustomMatrix<Type,AF,PF,SO,RT>::CustomMatrix( CustomMatrix&& m ) noexcept
    : m_ ( m.m_ )   // The current number of rows of the matrix
    , n_ ( m.n_ )   // The current number of columns of the matrix
    , nn_( m.nn_ )  // The number of elements between two rows
@@ -896,9 +904,10 @@ inline CustomMatrix<Type,AF,PF,SO>::CustomMatrix( CustomMatrix&& m ) noexcept
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline typename CustomMatrix<Type,AF,PF,SO>::Reference
-   CustomMatrix<Type,AF,PF,SO>::operator()( size_t i, size_t j ) noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,SO,RT>::Reference
+   CustomMatrix<Type,AF,PF,SO,RT>::operator()( size_t i, size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -920,9 +929,10 @@ inline typename CustomMatrix<Type,AF,PF,SO>::Reference
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline typename CustomMatrix<Type,AF,PF,SO>::ConstReference
-   CustomMatrix<Type,AF,PF,SO>::operator()( size_t i, size_t j ) const noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,SO,RT>::ConstReference
+   CustomMatrix<Type,AF,PF,SO,RT>::operator()( size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -945,9 +955,10 @@ inline typename CustomMatrix<Type,AF,PF,SO>::ConstReference
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline typename CustomMatrix<Type,AF,PF,SO>::Reference
-   CustomMatrix<Type,AF,PF,SO>::at( size_t i, size_t j )
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,SO,RT>::Reference
+   CustomMatrix<Type,AF,PF,SO,RT>::at( size_t i, size_t j )
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -974,9 +985,10 @@ inline typename CustomMatrix<Type,AF,PF,SO>::Reference
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline typename CustomMatrix<Type,AF,PF,SO>::ConstReference
-   CustomMatrix<Type,AF,PF,SO>::at( size_t i, size_t j ) const
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,SO,RT>::ConstReference
+   CustomMatrix<Type,AF,PF,SO,RT>::at( size_t i, size_t j ) const
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -1004,9 +1016,10 @@ inline typename CustomMatrix<Type,AF,PF,SO>::ConstReference
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline typename CustomMatrix<Type,AF,PF,SO>::Pointer
-   CustomMatrix<Type,AF,PF,SO>::data() noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,SO,RT>::Pointer
+   CustomMatrix<Type,AF,PF,SO,RT>::data() noexcept
 {
    return v_;
 }
@@ -1028,9 +1041,10 @@ inline typename CustomMatrix<Type,AF,PF,SO>::Pointer
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline typename CustomMatrix<Type,AF,PF,SO>::ConstPointer
-   CustomMatrix<Type,AF,PF,SO>::data() const noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,SO,RT>::ConstPointer
+   CustomMatrix<Type,AF,PF,SO,RT>::data() const noexcept
 {
    return v_;
 }
@@ -1048,9 +1062,10 @@ inline typename CustomMatrix<Type,AF,PF,SO>::ConstPointer
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline typename CustomMatrix<Type,AF,PF,SO>::Pointer
-   CustomMatrix<Type,AF,PF,SO>::data( size_t i ) noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,SO,RT>::Pointer
+   CustomMatrix<Type,AF,PF,SO,RT>::data( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return v_+i*nn_;
@@ -1069,9 +1084,10 @@ inline typename CustomMatrix<Type,AF,PF,SO>::Pointer
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline typename CustomMatrix<Type,AF,PF,SO>::ConstPointer
-   CustomMatrix<Type,AF,PF,SO>::data( size_t i ) const noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,SO,RT>::ConstPointer
+   CustomMatrix<Type,AF,PF,SO,RT>::data( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return v_+i*nn_;
@@ -1093,9 +1109,10 @@ inline typename CustomMatrix<Type,AF,PF,SO>::ConstPointer
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline typename CustomMatrix<Type,AF,PF,SO>::Iterator
-   CustomMatrix<Type,AF,PF,SO>::begin( size_t i ) noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,SO,RT>::Iterator
+   CustomMatrix<Type,AF,PF,SO,RT>::begin( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return Iterator( v_+i*nn_ );
@@ -1117,9 +1134,10 @@ inline typename CustomMatrix<Type,AF,PF,SO>::Iterator
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline typename CustomMatrix<Type,AF,PF,SO>::ConstIterator
-   CustomMatrix<Type,AF,PF,SO>::begin( size_t i ) const noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,SO,RT>::ConstIterator
+   CustomMatrix<Type,AF,PF,SO,RT>::begin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return ConstIterator( v_+i*nn_ );
@@ -1141,9 +1159,10 @@ inline typename CustomMatrix<Type,AF,PF,SO>::ConstIterator
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline typename CustomMatrix<Type,AF,PF,SO>::ConstIterator
-   CustomMatrix<Type,AF,PF,SO>::cbegin( size_t i ) const noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,SO,RT>::ConstIterator
+   CustomMatrix<Type,AF,PF,SO,RT>::cbegin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return ConstIterator( v_+i*nn_ );
@@ -1165,9 +1184,10 @@ inline typename CustomMatrix<Type,AF,PF,SO>::ConstIterator
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline typename CustomMatrix<Type,AF,PF,SO>::Iterator
-   CustomMatrix<Type,AF,PF,SO>::end( size_t i ) noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,SO,RT>::Iterator
+   CustomMatrix<Type,AF,PF,SO,RT>::end( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return Iterator( v_+i*nn_+n_ );
@@ -1189,9 +1209,10 @@ inline typename CustomMatrix<Type,AF,PF,SO>::Iterator
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline typename CustomMatrix<Type,AF,PF,SO>::ConstIterator
-   CustomMatrix<Type,AF,PF,SO>::end( size_t i ) const noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,SO,RT>::ConstIterator
+   CustomMatrix<Type,AF,PF,SO,RT>::end( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return ConstIterator( v_+i*nn_+n_ );
@@ -1213,9 +1234,10 @@ inline typename CustomMatrix<Type,AF,PF,SO>::ConstIterator
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline typename CustomMatrix<Type,AF,PF,SO>::ConstIterator
-   CustomMatrix<Type,AF,PF,SO>::cend( size_t i ) const noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,SO,RT>::ConstIterator
+   CustomMatrix<Type,AF,PF,SO,RT>::cend( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense matrix row access index" );
    return ConstIterator( v_+i*nn_+n_ );
@@ -1240,8 +1262,10 @@ inline typename CustomMatrix<Type,AF,PF,SO>::ConstIterator
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( const Type& rhs )
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline CustomMatrix<Type,AF,PF,SO,RT>&
+   CustomMatrix<Type,AF,PF,SO,RT>::operator=( const Type& rhs )
 {
    for( size_t i=0UL; i<m_; ++i )
       for( size_t j=0UL; j<n_; ++j )
@@ -1283,9 +1307,10 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( cons
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline CustomMatrix<Type,AF,PF,SO>&
-   CustomMatrix<Type,AF,PF,SO>::operator=( initializer_list< initializer_list<Type> > list )
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline CustomMatrix<Type,AF,PF,SO,RT>&
+   CustomMatrix<Type,AF,PF,SO,RT>::operator=( initializer_list< initializer_list<Type> > list )
 {
    if( list.size() != m_ || determineColumns( list ) > n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to custom matrix" );
@@ -1336,11 +1361,13 @@ inline CustomMatrix<Type,AF,PF,SO>&
 template< typename Type   // Data type of the matrix
         , bool AF         // Alignment flag
         , bool PF         // Padding flag
-        , bool SO >       // Storage order
+        , bool SO         // Storage order
+        , typename RT >   // Result type
 template< typename Other  // Data type of the initialization array
         , size_t M        // Number of rows of the initialization array
         , size_t N >      // Number of columns of the initialization array
-inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( const Other (&array)[M][N] )
+inline CustomMatrix<Type,AF,PF,SO,RT>&
+   CustomMatrix<Type,AF,PF,SO,RT>::operator=( const Other (&array)[M][N] )
 {
    if( m_ != M || n_ != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
@@ -1368,8 +1395,10 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( cons
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( const CustomMatrix& rhs )
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline CustomMatrix<Type,AF,PF,SO,RT>&
+   CustomMatrix<Type,AF,PF,SO,RT>::operator=( const CustomMatrix& rhs )
 {
    if( rhs.rows() != m_ || rhs.columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -1391,9 +1420,10 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( cons
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline CustomMatrix<Type,AF,PF,SO>&
-   CustomMatrix<Type,AF,PF,SO>::operator=( CustomMatrix&& rhs ) noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline CustomMatrix<Type,AF,PF,SO,RT>&
+   CustomMatrix<Type,AF,PF,SO,RT>::operator=( CustomMatrix&& rhs ) noexcept
 {
    m_  = rhs.m_;
    n_  = rhs.n_;
@@ -1425,10 +1455,12 @@ inline CustomMatrix<Type,AF,PF,SO>&
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
-inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( const Matrix<MT,SO2>& rhs )
+inline CustomMatrix<Type,AF,PF,SO,RT>&
+   CustomMatrix<Type,AF,PF,SO,RT>::operator=( const Matrix<MT,SO2>& rhs )
 {
    using TT = decltype( trans( *this ) );
    using CT = decltype( ctrans( *this ) );
@@ -1472,10 +1504,12 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator=( cons
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
-inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator+=( const Matrix<MT,SO2>& rhs )
+inline CustomMatrix<Type,AF,PF,SO,RT>&
+   CustomMatrix<Type,AF,PF,SO,RT>::operator+=( const Matrix<MT,SO2>& rhs )
 {
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -1507,10 +1541,12 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator+=( con
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
-inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator-=( const Matrix<MT,SO2>& rhs )
+inline CustomMatrix<Type,AF,PF,SO,RT>&
+   CustomMatrix<Type,AF,PF,SO,RT>::operator-=( const Matrix<MT,SO2>& rhs )
 {
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -1542,10 +1578,12 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator-=( con
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT    // Type of the right-hand side matrix
         , bool SO2 >     // Storage order of the right-hand side matrix
-inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator%=( const Matrix<MT,SO2>& rhs )
+inline CustomMatrix<Type,AF,PF,SO,RT>&
+   CustomMatrix<Type,AF,PF,SO,RT>::operator%=( const Matrix<MT,SO2>& rhs )
 {
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -1580,8 +1618,9 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::operator%=( con
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline size_t CustomMatrix<Type,AF,PF,SO>::rows() const noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline size_t CustomMatrix<Type,AF,PF,SO,RT>::rows() const noexcept
 {
    return m_;
 }
@@ -1596,8 +1635,9 @@ inline size_t CustomMatrix<Type,AF,PF,SO>::rows() const noexcept
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline size_t CustomMatrix<Type,AF,PF,SO>::columns() const noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline size_t CustomMatrix<Type,AF,PF,SO,RT>::columns() const noexcept
 {
    return n_;
 }
@@ -1617,8 +1657,9 @@ inline size_t CustomMatrix<Type,AF,PF,SO>::columns() const noexcept
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline size_t CustomMatrix<Type,AF,PF,SO>::spacing() const noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline size_t CustomMatrix<Type,AF,PF,SO,RT>::spacing() const noexcept
 {
    return nn_;
 }
@@ -1633,8 +1674,9 @@ inline size_t CustomMatrix<Type,AF,PF,SO>::spacing() const noexcept
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline size_t CustomMatrix<Type,AF,PF,SO>::capacity() const noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline size_t CustomMatrix<Type,AF,PF,SO,RT>::capacity() const noexcept
 {
    return m_ * nn_;
 }
@@ -1655,8 +1697,9 @@ inline size_t CustomMatrix<Type,AF,PF,SO>::capacity() const noexcept
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline size_t CustomMatrix<Type,AF,PF,SO>::capacity( size_t i ) const noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline size_t CustomMatrix<Type,AF,PF,SO,RT>::capacity( size_t i ) const noexcept
 {
    UNUSED_PARAMETER( i );
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
@@ -1673,8 +1716,9 @@ inline size_t CustomMatrix<Type,AF,PF,SO>::capacity( size_t i ) const noexcept
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline size_t CustomMatrix<Type,AF,PF,SO>::nonZeros() const
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline size_t CustomMatrix<Type,AF,PF,SO,RT>::nonZeros() const
 {
    size_t nonzeros( 0UL );
 
@@ -1702,8 +1746,9 @@ inline size_t CustomMatrix<Type,AF,PF,SO>::nonZeros() const
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline size_t CustomMatrix<Type,AF,PF,SO>::nonZeros( size_t i ) const
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline size_t CustomMatrix<Type,AF,PF,SO,RT>::nonZeros( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
@@ -1727,8 +1772,9 @@ inline size_t CustomMatrix<Type,AF,PF,SO>::nonZeros( size_t i ) const
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline void CustomMatrix<Type,AF,PF,SO>::reset()
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline void CustomMatrix<Type,AF,PF,SO,RT>::reset()
 {
    using blaze::clear;
 
@@ -1753,8 +1799,9 @@ inline void CustomMatrix<Type,AF,PF,SO>::reset()
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline void CustomMatrix<Type,AF,PF,SO>::reset( size_t i )
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline void CustomMatrix<Type,AF,PF,SO,RT>::reset( size_t i )
 {
    using blaze::clear;
 
@@ -1775,8 +1822,9 @@ inline void CustomMatrix<Type,AF,PF,SO>::reset( size_t i )
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline void CustomMatrix<Type,AF,PF,SO>::clear()
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline void CustomMatrix<Type,AF,PF,SO,RT>::clear()
 {
    m_  = 0UL;
    n_  = 0UL;
@@ -1795,8 +1843,9 @@ inline void CustomMatrix<Type,AF,PF,SO>::clear()
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline void CustomMatrix<Type,AF,PF,SO>::swap( CustomMatrix& m ) noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline void CustomMatrix<Type,AF,PF,SO,RT>::swap( CustomMatrix& m ) noexcept
 {
    using std::swap;
 
@@ -1827,8 +1876,9 @@ inline void CustomMatrix<Type,AF,PF,SO>::swap( CustomMatrix& m ) noexcept
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::transpose()
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline CustomMatrix<Type,AF,PF,SO,RT>& CustomMatrix<Type,AF,PF,SO,RT>::transpose()
 {
    using std::swap;
 
@@ -1856,8 +1906,9 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::transpose()
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::ctranspose()
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline CustomMatrix<Type,AF,PF,SO,RT>& CustomMatrix<Type,AF,PF,SO,RT>::ctranspose()
 {
    if( m_ != n_ ) {
       BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
@@ -1899,9 +1950,10 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::ctranspose()
 template< typename Type     // Data type of the matrix
         , bool AF           // Alignment flag
         , bool PF           // Padding flag
-        , bool SO >         // Storage order
+        , bool SO           // Storage order
+        , typename RT >     // Result type
 template< typename Other >  // Data type of the scalar value
-inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::scale( const Other& scalar )
+inline CustomMatrix<Type,AF,PF,SO,RT>& CustomMatrix<Type,AF,PF,SO,RT>::scale( const Other& scalar )
 {
    for( size_t i=0UL; i<m_; ++i )
       for( size_t j=0UL; j<n_; ++j )
@@ -1946,8 +1998,9 @@ inline CustomMatrix<Type,AF,PF,SO>& CustomMatrix<Type,AF,PF,SO>::scale( const Ot
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline void CustomMatrix<Type,AF,PF,SO>::reset( Type* ptr, size_t m, size_t n )
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline void CustomMatrix<Type,AF,PF,SO,RT>::reset( Type* ptr, size_t m, size_t n )
 {
    BLAZE_STATIC_ASSERT( PF == unpadded );
 
@@ -1983,8 +2036,9 @@ inline void CustomMatrix<Type,AF,PF,SO>::reset( Type* ptr, size_t m, size_t n )
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline void CustomMatrix<Type,AF,PF,SO>::reset( Type* ptr, size_t m, size_t n, size_t nn )
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline void CustomMatrix<Type,AF,PF,SO,RT>::reset( Type* ptr, size_t m, size_t n, size_t nn )
 {
    CustomMatrix tmp( ptr, m, n, nn );
    swap( tmp );
@@ -2013,9 +2067,10 @@ inline void CustomMatrix<Type,AF,PF,SO>::reset( Type* ptr, size_t m, size_t n, s
 template< typename Type     // Data type of the matrix
         , bool AF           // Alignment flag
         , bool PF           // Padding flag
-        , bool SO >         // Storage order
+        , bool SO           // Storage order
+        , typename RT >     // Result type
 template< typename Other >  // Data type of the foreign expression
-inline bool CustomMatrix<Type,AF,PF,SO>::canAlias( const Other* alias ) const noexcept
+inline bool CustomMatrix<Type,AF,PF,SO,RT>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -2035,9 +2090,10 @@ inline bool CustomMatrix<Type,AF,PF,SO>::canAlias( const Other* alias ) const no
 template< typename Type     // Data type of the matrix
         , bool AF           // Alignment flag
         , bool PF           // Padding flag
-        , bool SO >         // Storage order
+        , bool SO           // Storage order
+        , typename RT >     // Result type
 template< typename Other >  // Data type of the foreign expression
-inline bool CustomMatrix<Type,AF,PF,SO>::isAliased( const Other* alias ) const noexcept
+inline bool CustomMatrix<Type,AF,PF,SO,RT>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -2056,8 +2112,9 @@ inline bool CustomMatrix<Type,AF,PF,SO>::isAliased( const Other* alias ) const n
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline bool CustomMatrix<Type,AF,PF,SO>::isAligned() const noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline bool CustomMatrix<Type,AF,PF,SO,RT>::isAligned() const noexcept
 {
    return ( AF || ( checkAlignment( v_ ) && columns() % SIMDSIZE == 0UL ) );
 }
@@ -2077,8 +2134,9 @@ inline bool CustomMatrix<Type,AF,PF,SO>::isAligned() const noexcept
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline bool CustomMatrix<Type,AF,PF,SO>::canSMPAssign() const noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline bool CustomMatrix<Type,AF,PF,SO,RT>::canSMPAssign() const noexcept
 {
    return ( rows() * columns() >= SMP_DMATASSIGN_THRESHOLD );
 }
@@ -2103,9 +2161,10 @@ inline bool CustomMatrix<Type,AF,PF,SO>::canSMPAssign() const noexcept
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,SO>::SIMDType
-   CustomMatrix<Type,AF,PF,SO>::load( size_t i, size_t j ) const noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,SO,RT>::SIMDType
+   CustomMatrix<Type,AF,PF,SO,RT>::load( size_t i, size_t j ) const noexcept
 {
    if( AF && PF )
       return loada( i, j );
@@ -2133,9 +2192,10 @@ BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,SO>::SIMDType
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,SO>::SIMDType
-   CustomMatrix<Type,AF,PF,SO>::loada( size_t i, size_t j ) const noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,SO,RT>::SIMDType
+   CustomMatrix<Type,AF,PF,SO,RT>::loada( size_t i, size_t j ) const noexcept
 {
    using blaze::loada;
 
@@ -2170,9 +2230,10 @@ BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,SO>::SIMDType
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,SO>::SIMDType
-   CustomMatrix<Type,AF,PF,SO>::loadu( size_t i, size_t j ) const noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,SO,RT>::SIMDType
+   CustomMatrix<Type,AF,PF,SO,RT>::loadu( size_t i, size_t j ) const noexcept
 {
    using blaze::loadu;
 
@@ -2206,9 +2267,10 @@ BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,SO>::SIMDType
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 BLAZE_ALWAYS_INLINE void
-   CustomMatrix<Type,AF,PF,SO>::store( size_t i, size_t j, const SIMDType& value ) noexcept
+   CustomMatrix<Type,AF,PF,SO,RT>::store( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    if( AF && PF )
       storea( i, j, value );
@@ -2237,9 +2299,10 @@ BLAZE_ALWAYS_INLINE void
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 BLAZE_ALWAYS_INLINE void
-   CustomMatrix<Type,AF,PF,SO>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
+   CustomMatrix<Type,AF,PF,SO,RT>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::storea;
 
@@ -2275,9 +2338,10 @@ BLAZE_ALWAYS_INLINE void
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 BLAZE_ALWAYS_INLINE void
-   CustomMatrix<Type,AF,PF,SO>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
+   CustomMatrix<Type,AF,PF,SO,RT>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -2312,9 +2376,10 @@ BLAZE_ALWAYS_INLINE void
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 BLAZE_ALWAYS_INLINE void
-   CustomMatrix<Type,AF,PF,SO>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
+   CustomMatrix<Type,AF,PF,SO,RT>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::stream;
 
@@ -2345,9 +2410,10 @@ BLAZE_ALWAYS_INLINE void
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline auto CustomMatrix<Type,AF,PF,SO>::assign( const DenseMatrix<MT,SO>& rhs )
+inline auto CustomMatrix<Type,AF,PF,SO,RT>::assign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -2383,9 +2449,10 @@ inline auto CustomMatrix<Type,AF,PF,SO>::assign( const DenseMatrix<MT,SO>& rhs )
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline auto CustomMatrix<Type,AF,PF,SO>::assign( const DenseMatrix<MT,SO>& rhs )
+inline auto CustomMatrix<Type,AF,PF,SO,RT>::assign( const DenseMatrix<MT,SO>& rhs )
    -> EnableIf_t< VectorizedAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2455,9 +2522,10 @@ inline auto CustomMatrix<Type,AF,PF,SO>::assign( const DenseMatrix<MT,SO>& rhs )
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline void CustomMatrix<Type,AF,PF,SO>::assign( const DenseMatrix<MT,!SO>& rhs )
+inline void CustomMatrix<Type,AF,PF,SO,RT>::assign( const DenseMatrix<MT,!SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -2495,9 +2563,10 @@ inline void CustomMatrix<Type,AF,PF,SO>::assign( const DenseMatrix<MT,!SO>& rhs 
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side sparse matrix
-inline void CustomMatrix<Type,AF,PF,SO>::assign( const SparseMatrix<MT,SO>& rhs )
+inline void CustomMatrix<Type,AF,PF,SO,RT>::assign( const SparseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -2523,9 +2592,10 @@ inline void CustomMatrix<Type,AF,PF,SO>::assign( const SparseMatrix<MT,SO>& rhs 
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side sparse matrix
-inline void CustomMatrix<Type,AF,PF,SO>::assign( const SparseMatrix<MT,!SO>& rhs )
+inline void CustomMatrix<Type,AF,PF,SO,RT>::assign( const SparseMatrix<MT,!SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -2553,9 +2623,10 @@ inline void CustomMatrix<Type,AF,PF,SO>::assign( const SparseMatrix<MT,!SO>& rhs
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline auto CustomMatrix<Type,AF,PF,SO>::addAssign( const DenseMatrix<MT,SO>& rhs )
+inline auto CustomMatrix<Type,AF,PF,SO,RT>::addAssign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -2606,9 +2677,10 @@ inline auto CustomMatrix<Type,AF,PF,SO>::addAssign( const DenseMatrix<MT,SO>& rh
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline auto CustomMatrix<Type,AF,PF,SO>::addAssign( const DenseMatrix<MT,SO>& rhs )
+inline auto CustomMatrix<Type,AF,PF,SO,RT>::addAssign( const DenseMatrix<MT,SO>& rhs )
    -> EnableIf_t< VectorizedAddAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2667,9 +2739,10 @@ inline auto CustomMatrix<Type,AF,PF,SO>::addAssign( const DenseMatrix<MT,SO>& rh
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline void CustomMatrix<Type,AF,PF,SO>::addAssign( const DenseMatrix<MT,!SO>& rhs )
+inline void CustomMatrix<Type,AF,PF,SO,RT>::addAssign( const DenseMatrix<MT,!SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -2719,9 +2792,10 @@ inline void CustomMatrix<Type,AF,PF,SO>::addAssign( const DenseMatrix<MT,!SO>& r
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side sparse matrix
-inline void CustomMatrix<Type,AF,PF,SO>::addAssign( const SparseMatrix<MT,SO>& rhs )
+inline void CustomMatrix<Type,AF,PF,SO,RT>::addAssign( const SparseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -2747,9 +2821,10 @@ inline void CustomMatrix<Type,AF,PF,SO>::addAssign( const SparseMatrix<MT,SO>& r
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side sparse matrix
-inline void CustomMatrix<Type,AF,PF,SO>::addAssign( const SparseMatrix<MT,!SO>& rhs )
+inline void CustomMatrix<Type,AF,PF,SO,RT>::addAssign( const SparseMatrix<MT,!SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -2777,9 +2852,10 @@ inline void CustomMatrix<Type,AF,PF,SO>::addAssign( const SparseMatrix<MT,!SO>& 
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline auto CustomMatrix<Type,AF,PF,SO>::subAssign( const DenseMatrix<MT,SO>& rhs )
+inline auto CustomMatrix<Type,AF,PF,SO,RT>::subAssign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -2830,9 +2906,10 @@ inline auto CustomMatrix<Type,AF,PF,SO>::subAssign( const DenseMatrix<MT,SO>& rh
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline auto CustomMatrix<Type,AF,PF,SO>::subAssign( const DenseMatrix<MT,SO>& rhs )
+inline auto CustomMatrix<Type,AF,PF,SO,RT>::subAssign( const DenseMatrix<MT,SO>& rhs )
    -> EnableIf_t< VectorizedSubAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -2891,9 +2968,10 @@ inline auto CustomMatrix<Type,AF,PF,SO>::subAssign( const DenseMatrix<MT,SO>& rh
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline void CustomMatrix<Type,AF,PF,SO>::subAssign( const DenseMatrix<MT,!SO>& rhs )
+inline void CustomMatrix<Type,AF,PF,SO,RT>::subAssign( const DenseMatrix<MT,!SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -2943,9 +3021,10 @@ inline void CustomMatrix<Type,AF,PF,SO>::subAssign( const DenseMatrix<MT,!SO>& r
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side sparse matrix
-inline void CustomMatrix<Type,AF,PF,SO>::subAssign( const SparseMatrix<MT,SO>& rhs )
+inline void CustomMatrix<Type,AF,PF,SO,RT>::subAssign( const SparseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -2971,9 +3050,10 @@ inline void CustomMatrix<Type,AF,PF,SO>::subAssign( const SparseMatrix<MT,SO>& r
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side sparse matrix
-inline void CustomMatrix<Type,AF,PF,SO>::subAssign( const SparseMatrix<MT,!SO>& rhs )
+inline void CustomMatrix<Type,AF,PF,SO,RT>::subAssign( const SparseMatrix<MT,!SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -3001,9 +3081,10 @@ inline void CustomMatrix<Type,AF,PF,SO>::subAssign( const SparseMatrix<MT,!SO>& 
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline auto CustomMatrix<Type,AF,PF,SO>::schurAssign( const DenseMatrix<MT,SO>& rhs )
+inline auto CustomMatrix<Type,AF,PF,SO,RT>::schurAssign( const DenseMatrix<MT,SO>& rhs )
    -> DisableIf_t< VectorizedSchurAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -3039,9 +3120,10 @@ inline auto CustomMatrix<Type,AF,PF,SO>::schurAssign( const DenseMatrix<MT,SO>& 
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline auto CustomMatrix<Type,AF,PF,SO>::schurAssign( const DenseMatrix<MT,SO>& rhs )
+inline auto CustomMatrix<Type,AF,PF,SO,RT>::schurAssign( const DenseMatrix<MT,SO>& rhs )
    -> EnableIf_t< VectorizedSchurAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -3091,9 +3173,10 @@ inline auto CustomMatrix<Type,AF,PF,SO>::schurAssign( const DenseMatrix<MT,SO>& 
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline void CustomMatrix<Type,AF,PF,SO>::schurAssign( const DenseMatrix<MT,!SO>& rhs )
+inline void CustomMatrix<Type,AF,PF,SO,RT>::schurAssign( const DenseMatrix<MT,!SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -3131,9 +3214,10 @@ inline void CustomMatrix<Type,AF,PF,SO>::schurAssign( const DenseMatrix<MT,!SO>&
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side sparse matrix
-inline void CustomMatrix<Type,AF,PF,SO>::schurAssign( const SparseMatrix<MT,SO>& rhs )
+inline void CustomMatrix<Type,AF,PF,SO,RT>::schurAssign( const SparseMatrix<MT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -3163,9 +3247,10 @@ inline void CustomMatrix<Type,AF,PF,SO>::schurAssign( const SparseMatrix<MT,SO>&
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
+        , bool SO        // Storage order
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side sparse matrix
-inline void CustomMatrix<Type,AF,PF,SO>::schurAssign( const SparseMatrix<MT,!SO>& rhs )
+inline void CustomMatrix<Type,AF,PF,SO,RT>::schurAssign( const SparseMatrix<MT,!SO>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -3205,23 +3290,24 @@ inline void CustomMatrix<Type,AF,PF,SO>::schurAssign( const SparseMatrix<MT,!SO>
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-class CustomMatrix<Type,AF,PF,true>
-   : public DenseMatrix< CustomMatrix<Type,AF,PF,true>, true >
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+class CustomMatrix<Type,AF,PF,true,RT>
+   : public DenseMatrix< CustomMatrix<Type,AF,PF,true,RT>, true >
 {
  public:
    //**Type definitions****************************************************************************
-   using This     = CustomMatrix<Type,AF,PF,true>;  //!< Type of this CustomMatrix instance.
-   using BaseType = DenseMatrix<This,true>;         //!< Base type of this CustomMatrix instance.
+   using This     = CustomMatrix<Type,AF,PF,true,RT>;  //!< Type of this CustomMatrix instance.
+   using BaseType = DenseMatrix<This,true>;            //!< Base type of this CustomMatrix instance.
 
    //! Result type for expression template evaluations.
-   using ResultType = DynamicMatrix<RemoveConst_t<Type>,true>;
+   using ResultType = RT;
 
    //! Result type with opposite storage order for expression template evaluations.
-   using OppositeType = DynamicMatrix<RemoveConst_t<Type>,false>;
+   using OppositeType = OppositeType_t<RT>;
 
    //! Transpose type for expression template evaluations.
-   using TransposeType = DynamicMatrix<RemoveConst_t<Type>,false>;
+   using TransposeType = TransposeType_t<RT>;
 
    using ElementType   = Type;                      //!< Type of the matrix elements.
    using SIMDType      = SIMDTrait_t<ElementType>;  //!< SIMD type of the matrix elements.
@@ -3242,7 +3328,8 @@ class CustomMatrix<Type,AF,PF,true>
    */
    template< typename NewType >  // Data type of the other matrix
    struct Rebind {
-      using Other = CustomMatrix<NewType,AF,PF,true>;  //!< The type of the other CustomMatrix.
+      using RRT   = Rebind_t< RT, RemoveConst_t<NewType> >;  //!< The rebound result type.
+      using Other = CustomMatrix<NewType,AF,PF,true,RRT>;    //!< The type of the other CustomMatrix.
    };
    //**********************************************************************************************
 
@@ -3252,7 +3339,8 @@ class CustomMatrix<Type,AF,PF,true>
    template< size_t NewM    // Number of rows of the other matrix
            , size_t NewN >  // Number of columns of the other matrix
    struct Resize {
-      using Other = CustomMatrix<Type,AF,PF,true>;  //!< The type of the other CustomMatrix.
+      using RRT   = Resize_t<RT,NewM,NewN>;             //!< The resized result type.
+      using Other = CustomMatrix<Type,AF,PF,true,RRT>;  //!< The type of the other CustomMatrix.
    };
    //**********************************************************************************************
 
@@ -3506,8 +3594,9 @@ class CustomMatrix<Type,AF,PF,true>
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline CustomMatrix<Type,AF,PF,true>::CustomMatrix()
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline CustomMatrix<Type,AF,PF,true,RT>::CustomMatrix()
    : m_ ( 0UL )      // The current number of rows of the matrix
    , mm_( 0UL )      // The number of elements between two columns
    , n_ ( 0UL )      // The current number of columns of the matrix
@@ -3540,8 +3629,9 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix()
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t n )
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline CustomMatrix<Type,AF,PF,true,RT>::CustomMatrix( Type* ptr, size_t m, size_t n )
    : m_ ( m )    // The current number of rows of the matrix
    , mm_( m )    // The number of elements between two columns
    , n_ ( n )    // The current number of columns of the matrix
@@ -3586,8 +3676,9 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t 
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t n, size_t mm )
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline CustomMatrix<Type,AF,PF,true,RT>::CustomMatrix( Type* ptr, size_t m, size_t n, size_t mm )
    : m_ ( m )    // The current number of rows of the matrix
    , mm_( mm )   // The number of elements between two columns
    , n_ ( n )    // The current number of columns of the matrix
@@ -3632,8 +3723,9 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( Type* ptr, size_t m, size_t 
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( const CustomMatrix& m )
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline CustomMatrix<Type,AF,PF,true,RT>::CustomMatrix( const CustomMatrix& m )
    : m_ ( m.m_ )   // The current number of rows of the matrix
    , mm_( m.mm_ )  // The number of elements between two columns
    , n_ ( m.n_ )   // The current number of columns of the matrix
@@ -3651,8 +3743,9 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( const CustomMatrix& m )
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( CustomMatrix&& m ) noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline CustomMatrix<Type,AF,PF,true,RT>::CustomMatrix( CustomMatrix&& m ) noexcept
    : m_ ( m.m_ )   // The current number of rows of the matrix
    , mm_( m.mm_ )  // The number of elements between two columns
    , n_ ( m.n_ )   // The current number of columns of the matrix
@@ -3690,9 +3783,10 @@ inline CustomMatrix<Type,AF,PF,true>::CustomMatrix( CustomMatrix&& m ) noexcept
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline typename CustomMatrix<Type,AF,PF,true>::Reference
-   CustomMatrix<Type,AF,PF,true>::operator()( size_t i, size_t j ) noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,true,RT>::Reference
+   CustomMatrix<Type,AF,PF,true,RT>::operator()( size_t i, size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -3715,9 +3809,10 @@ inline typename CustomMatrix<Type,AF,PF,true>::Reference
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline typename CustomMatrix<Type,AF,PF,true>::ConstReference
-   CustomMatrix<Type,AF,PF,true>::operator()( size_t i, size_t j ) const noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,true,RT>::ConstReference
+   CustomMatrix<Type,AF,PF,true,RT>::operator()( size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -3741,9 +3836,10 @@ inline typename CustomMatrix<Type,AF,PF,true>::ConstReference
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline typename CustomMatrix<Type,AF,PF,true>::Reference
-   CustomMatrix<Type,AF,PF,true>::at( size_t i, size_t j )
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,true,RT>::Reference
+   CustomMatrix<Type,AF,PF,true,RT>::at( size_t i, size_t j )
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -3771,9 +3867,10 @@ inline typename CustomMatrix<Type,AF,PF,true>::Reference
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline typename CustomMatrix<Type,AF,PF,true>::ConstReference
-   CustomMatrix<Type,AF,PF,true>::at( size_t i, size_t j ) const
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,true,RT>::ConstReference
+   CustomMatrix<Type,AF,PF,true,RT>::at( size_t i, size_t j ) const
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -3801,9 +3898,10 @@ inline typename CustomMatrix<Type,AF,PF,true>::ConstReference
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline typename CustomMatrix<Type,AF,PF,true>::Pointer
-   CustomMatrix<Type,AF,PF,true>::data() noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,true,RT>::Pointer
+   CustomMatrix<Type,AF,PF,true,RT>::data() noexcept
 {
    return v_;
 }
@@ -3825,9 +3923,10 @@ inline typename CustomMatrix<Type,AF,PF,true>::Pointer
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline typename CustomMatrix<Type,AF,PF,true>::ConstPointer
-   CustomMatrix<Type,AF,PF,true>::data() const noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,true,RT>::ConstPointer
+   CustomMatrix<Type,AF,PF,true,RT>::data() const noexcept
 {
    return v_;
 }
@@ -3846,9 +3945,10 @@ inline typename CustomMatrix<Type,AF,PF,true>::ConstPointer
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline typename CustomMatrix<Type,AF,PF,true>::Pointer
-   CustomMatrix<Type,AF,PF,true>::data( size_t j ) noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,true,RT>::Pointer
+   CustomMatrix<Type,AF,PF,true,RT>::data( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return v_+j*mm_;
@@ -3868,9 +3968,10 @@ inline typename CustomMatrix<Type,AF,PF,true>::Pointer
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline typename CustomMatrix<Type,AF,PF,true>::ConstPointer
-   CustomMatrix<Type,AF,PF,true>::data( size_t j ) const noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,true,RT>::ConstPointer
+   CustomMatrix<Type,AF,PF,true,RT>::data( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return v_+j*mm_;
@@ -3888,9 +3989,10 @@ inline typename CustomMatrix<Type,AF,PF,true>::ConstPointer
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline typename CustomMatrix<Type,AF,PF,true>::Iterator
-   CustomMatrix<Type,AF,PF,true>::begin( size_t j ) noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,true,RT>::Iterator
+   CustomMatrix<Type,AF,PF,true,RT>::begin( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return Iterator( v_+j*mm_ );
@@ -3908,9 +4010,10 @@ inline typename CustomMatrix<Type,AF,PF,true>::Iterator
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline typename CustomMatrix<Type,AF,PF,true>::ConstIterator
-   CustomMatrix<Type,AF,PF,true>::begin( size_t j ) const noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,true,RT>::ConstIterator
+   CustomMatrix<Type,AF,PF,true,RT>::begin( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return ConstIterator( v_+j*mm_ );
@@ -3928,9 +4031,10 @@ inline typename CustomMatrix<Type,AF,PF,true>::ConstIterator
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline typename CustomMatrix<Type,AF,PF,true>::ConstIterator
-   CustomMatrix<Type,AF,PF,true>::cbegin( size_t j ) const noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,true,RT>::ConstIterator
+   CustomMatrix<Type,AF,PF,true,RT>::cbegin( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return ConstIterator( v_+j*mm_ );
@@ -3948,9 +4052,10 @@ inline typename CustomMatrix<Type,AF,PF,true>::ConstIterator
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline typename CustomMatrix<Type,AF,PF,true>::Iterator
-   CustomMatrix<Type,AF,PF,true>::end( size_t j ) noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,true,RT>::Iterator
+   CustomMatrix<Type,AF,PF,true,RT>::end( size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return Iterator( v_+j*mm_+m_ );
@@ -3968,9 +4073,10 @@ inline typename CustomMatrix<Type,AF,PF,true>::Iterator
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline typename CustomMatrix<Type,AF,PF,true>::ConstIterator
-   CustomMatrix<Type,AF,PF,true>::end( size_t j ) const noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,true,RT>::ConstIterator
+   CustomMatrix<Type,AF,PF,true,RT>::end( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return ConstIterator( v_+j*mm_+m_ );
@@ -3988,9 +4094,10 @@ inline typename CustomMatrix<Type,AF,PF,true>::ConstIterator
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline typename CustomMatrix<Type,AF,PF,true>::ConstIterator
-   CustomMatrix<Type,AF,PF,true>::cend( size_t j ) const noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline typename CustomMatrix<Type,AF,PF,true,RT>::ConstIterator
+   CustomMatrix<Type,AF,PF,true,RT>::cend( size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( j < n_, "Invalid dense matrix column access index" );
    return ConstIterator( v_+j*mm_+m_ );
@@ -4016,8 +4123,10 @@ inline typename CustomMatrix<Type,AF,PF,true>::ConstIterator
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline CustomMatrix<Type,AF,PF,true>& CustomMatrix<Type,AF,PF,true>::operator=( const Type& rhs )
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline CustomMatrix<Type,AF,PF,true,RT>&
+   CustomMatrix<Type,AF,PF,true,RT>::operator=( const Type& rhs )
 {
    for( size_t j=0UL; j<n_; ++j )
       for( size_t i=0UL; i<m_; ++i )
@@ -4060,9 +4169,10 @@ inline CustomMatrix<Type,AF,PF,true>& CustomMatrix<Type,AF,PF,true>::operator=( 
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline CustomMatrix<Type,AF,PF,true>&
-   CustomMatrix<Type,AF,PF,true>::operator=( initializer_list< initializer_list<Type> > list )
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline CustomMatrix<Type,AF,PF,true,RT>&
+   CustomMatrix<Type,AF,PF,true,RT>::operator=( initializer_list< initializer_list<Type> > list )
 {
    using blaze::clear;
 
@@ -4122,12 +4232,13 @@ inline CustomMatrix<Type,AF,PF,true>&
 */
 template< typename Type   // Data type of the matrix
         , bool AF         // Alignment flag
-        , bool PF >       // Padding flag
+        , bool PF         // Padding flag
+        , typename RT >   // Result type
 template< typename Other  // Data type of the initialization array
         , size_t M        // Number of rows of the initialization array
         , size_t N >      // Number of columns of the initialization array
-inline CustomMatrix<Type,AF,PF,true>&
-   CustomMatrix<Type,AF,PF,true>::operator=( const Other (&array)[M][N] )
+inline CustomMatrix<Type,AF,PF,true,RT>&
+   CustomMatrix<Type,AF,PF,true,RT>::operator=( const Other (&array)[M][N] )
 {
    if( m_ != M || n_ != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
@@ -4156,9 +4267,10 @@ inline CustomMatrix<Type,AF,PF,true>&
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline CustomMatrix<Type,AF,PF,true>&
-   CustomMatrix<Type,AF,PF,true>::operator=( const CustomMatrix& rhs )
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline CustomMatrix<Type,AF,PF,true,RT>&
+   CustomMatrix<Type,AF,PF,true,RT>::operator=( const CustomMatrix& rhs )
 {
    if( rhs.rows() != m_ || rhs.columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -4181,9 +4293,10 @@ inline CustomMatrix<Type,AF,PF,true>&
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline CustomMatrix<Type,AF,PF,true>&
-   CustomMatrix<Type,AF,PF,true>::operator=( CustomMatrix&& rhs ) noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline CustomMatrix<Type,AF,PF,true,RT>&
+   CustomMatrix<Type,AF,PF,true,RT>::operator=( CustomMatrix&& rhs ) noexcept
 {
    m_  = rhs.m_;
    mm_ = rhs.mm_;
@@ -4216,11 +4329,12 @@ inline CustomMatrix<Type,AF,PF,true>&
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT    // Type of the right-hand side matrix
         , bool SO >      // Storage order of the right-hand side matrix
-inline CustomMatrix<Type,AF,PF,true>&
-   CustomMatrix<Type,AF,PF,true>::operator=( const Matrix<MT,SO>& rhs )
+inline CustomMatrix<Type,AF,PF,true,RT>&
+   CustomMatrix<Type,AF,PF,true,RT>::operator=( const Matrix<MT,SO>& rhs )
 {
    using TT = decltype( trans( *this ) );
    using CT = decltype( ctrans( *this ) );
@@ -4265,11 +4379,12 @@ inline CustomMatrix<Type,AF,PF,true>&
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT    // Type of the right-hand side matrix
         , bool SO >      // Storage order of the right-hand side matrix
-inline CustomMatrix<Type,AF,PF,true>&
-   CustomMatrix<Type,AF,PF,true>::operator+=( const Matrix<MT,SO>& rhs )
+inline CustomMatrix<Type,AF,PF,true,RT>&
+   CustomMatrix<Type,AF,PF,true,RT>::operator+=( const Matrix<MT,SO>& rhs )
 {
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -4302,11 +4417,12 @@ inline CustomMatrix<Type,AF,PF,true>&
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT    // Type of the right-hand side matrix
         , bool SO >      // Storage order of the right-hand side matrix
-inline CustomMatrix<Type,AF,PF,true>&
-   CustomMatrix<Type,AF,PF,true>::operator-=( const Matrix<MT,SO>& rhs )
+inline CustomMatrix<Type,AF,PF,true,RT>&
+   CustomMatrix<Type,AF,PF,true,RT>::operator-=( const Matrix<MT,SO>& rhs )
 {
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -4339,11 +4455,12 @@ inline CustomMatrix<Type,AF,PF,true>&
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT    // Type of the right-hand side matrix
         , bool SO >      // Storage order of the right-hand side matrix
-inline CustomMatrix<Type,AF,PF,true>&
-   CustomMatrix<Type,AF,PF,true>::operator%=( const Matrix<MT,SO>& rhs )
+inline CustomMatrix<Type,AF,PF,true,RT>&
+   CustomMatrix<Type,AF,PF,true,RT>::operator%=( const Matrix<MT,SO>& rhs )
 {
    if( (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
@@ -4379,8 +4496,9 @@ inline CustomMatrix<Type,AF,PF,true>&
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline size_t CustomMatrix<Type,AF,PF,true>::rows() const noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline size_t CustomMatrix<Type,AF,PF,true,RT>::rows() const noexcept
 {
    return m_;
 }
@@ -4396,8 +4514,9 @@ inline size_t CustomMatrix<Type,AF,PF,true>::rows() const noexcept
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline size_t CustomMatrix<Type,AF,PF,true>::columns() const noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline size_t CustomMatrix<Type,AF,PF,true,RT>::columns() const noexcept
 {
    return n_;
 }
@@ -4416,8 +4535,9 @@ inline size_t CustomMatrix<Type,AF,PF,true>::columns() const noexcept
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline size_t CustomMatrix<Type,AF,PF,true>::spacing() const noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline size_t CustomMatrix<Type,AF,PF,true,RT>::spacing() const noexcept
 {
    return mm_;
 }
@@ -4433,8 +4553,9 @@ inline size_t CustomMatrix<Type,AF,PF,true>::spacing() const noexcept
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline size_t CustomMatrix<Type,AF,PF,true>::capacity() const noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline size_t CustomMatrix<Type,AF,PF,true,RT>::capacity() const noexcept
 {
    return mm_ * n_;
 }
@@ -4451,8 +4572,9 @@ inline size_t CustomMatrix<Type,AF,PF,true>::capacity() const noexcept
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline size_t CustomMatrix<Type,AF,PF,true>::capacity( size_t j ) const noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline size_t CustomMatrix<Type,AF,PF,true,RT>::capacity( size_t j ) const noexcept
 {
    UNUSED_PARAMETER( j );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
@@ -4470,8 +4592,9 @@ inline size_t CustomMatrix<Type,AF,PF,true>::capacity( size_t j ) const noexcept
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline size_t CustomMatrix<Type,AF,PF,true>::nonZeros() const
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline size_t CustomMatrix<Type,AF,PF,true,RT>::nonZeros() const
 {
    size_t nonzeros( 0UL );
 
@@ -4495,8 +4618,9 @@ inline size_t CustomMatrix<Type,AF,PF,true>::nonZeros() const
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline size_t CustomMatrix<Type,AF,PF,true>::nonZeros( size_t j ) const
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline size_t CustomMatrix<Type,AF,PF,true,RT>::nonZeros( size_t j ) const
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -4521,8 +4645,9 @@ inline size_t CustomMatrix<Type,AF,PF,true>::nonZeros( size_t j ) const
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline void CustomMatrix<Type,AF,PF,true>::reset()
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline void CustomMatrix<Type,AF,PF,true,RT>::reset()
 {
    using blaze::clear;
 
@@ -4546,8 +4671,9 @@ inline void CustomMatrix<Type,AF,PF,true>::reset()
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline void CustomMatrix<Type,AF,PF,true>::reset( size_t j )
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline void CustomMatrix<Type,AF,PF,true,RT>::reset( size_t j )
 {
    using blaze::clear;
 
@@ -4569,8 +4695,9 @@ inline void CustomMatrix<Type,AF,PF,true>::reset( size_t j )
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline void CustomMatrix<Type,AF,PF,true>::clear()
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline void CustomMatrix<Type,AF,PF,true,RT>::clear()
 {
    m_  = 0UL;
    mm_ = 0UL;
@@ -4590,8 +4717,9 @@ inline void CustomMatrix<Type,AF,PF,true>::clear()
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline void CustomMatrix<Type,AF,PF,true>::swap( CustomMatrix& m ) noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline void CustomMatrix<Type,AF,PF,true,RT>::swap( CustomMatrix& m ) noexcept
 {
    using std::swap;
 
@@ -4623,8 +4751,9 @@ inline void CustomMatrix<Type,AF,PF,true>::swap( CustomMatrix& m ) noexcept
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline CustomMatrix<Type,AF,PF,true>& CustomMatrix<Type,AF,PF,true>::transpose()
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline CustomMatrix<Type,AF,PF,true,RT>& CustomMatrix<Type,AF,PF,true,RT>::transpose()
 {
    using std::swap;
 
@@ -4653,8 +4782,9 @@ inline CustomMatrix<Type,AF,PF,true>& CustomMatrix<Type,AF,PF,true>::transpose()
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline CustomMatrix<Type,AF,PF,true>& CustomMatrix<Type,AF,PF,true>::ctranspose()
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline CustomMatrix<Type,AF,PF,true,RT>& CustomMatrix<Type,AF,PF,true,RT>::ctranspose()
 {
    if( m_ != n_ ) {
       BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
@@ -4697,9 +4827,10 @@ inline CustomMatrix<Type,AF,PF,true>& CustomMatrix<Type,AF,PF,true>::ctranspose(
 */
 template< typename Type     // Data type of the matrix
         , bool AF           // Alignment flag
-        , bool PF >         // Padding flag
+        , bool PF           // Padding flag
+        , typename RT >     // Result type
 template< typename Other >  // Data type of the scalar value
-inline CustomMatrix<Type,AF,PF,true>& CustomMatrix<Type,AF,PF,true>::scale( const Other& scalar )
+inline CustomMatrix<Type,AF,PF,true,RT>& CustomMatrix<Type,AF,PF,true,RT>::scale( const Other& scalar )
 {
    for( size_t j=0UL; j<n_; ++j )
       for( size_t i=0UL; i<m_; ++i )
@@ -4745,8 +4876,9 @@ inline CustomMatrix<Type,AF,PF,true>& CustomMatrix<Type,AF,PF,true>::scale( cons
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline void CustomMatrix<Type,AF,PF,true>::reset( Type* ptr, size_t m, size_t n )
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline void CustomMatrix<Type,AF,PF,true,RT>::reset( Type* ptr, size_t m, size_t n )
 {
    BLAZE_STATIC_ASSERT( PF == unpadded );
 
@@ -4783,8 +4915,9 @@ inline void CustomMatrix<Type,AF,PF,true>::reset( Type* ptr, size_t m, size_t n 
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline void CustomMatrix<Type,AF,PF,true>::reset( Type* ptr, size_t m, size_t n, size_t mm )
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline void CustomMatrix<Type,AF,PF,true,RT>::reset( Type* ptr, size_t m, size_t n, size_t mm )
 {
    CustomMatrix tmp( ptr, m, n, mm );
    swap( tmp );
@@ -4814,9 +4947,10 @@ inline void CustomMatrix<Type,AF,PF,true>::reset( Type* ptr, size_t m, size_t n,
 */
 template< typename Type     // Data type of the matrix
         , bool AF           // Alignment flag
-        , bool PF >         // Padding flag
+        , bool PF           // Padding flag
+        , typename RT >     // Result type
 template< typename Other >  // Data type of the foreign expression
-inline bool CustomMatrix<Type,AF,PF,true>::canAlias( const Other* alias ) const noexcept
+inline bool CustomMatrix<Type,AF,PF,true,RT>::canAlias( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -4837,9 +4971,10 @@ inline bool CustomMatrix<Type,AF,PF,true>::canAlias( const Other* alias ) const 
 */
 template< typename Type     // Data type of the matrix
         , bool AF           // Alignment flag
-        , bool PF >         // Padding flag
+        , bool PF           // Padding flag
+        , typename RT >     // Result type
 template< typename Other >  // Data type of the foreign expression
-inline bool CustomMatrix<Type,AF,PF,true>::isAliased( const Other* alias ) const noexcept
+inline bool CustomMatrix<Type,AF,PF,true,RT>::isAliased( const Other* alias ) const noexcept
 {
    return static_cast<const void*>( this ) == static_cast<const void*>( alias );
 }
@@ -4859,8 +4994,9 @@ inline bool CustomMatrix<Type,AF,PF,true>::isAliased( const Other* alias ) const
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline bool CustomMatrix<Type,AF,PF,true>::isAligned() const noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline bool CustomMatrix<Type,AF,PF,true,RT>::isAligned() const noexcept
 {
    return ( AF || ( checkAlignment( v_ ) && rows() % SIMDSIZE == 0UL ) );
 }
@@ -4881,8 +5017,9 @@ inline bool CustomMatrix<Type,AF,PF,true>::isAligned() const noexcept
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-inline bool CustomMatrix<Type,AF,PF,true>::canSMPAssign() const noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline bool CustomMatrix<Type,AF,PF,true,RT>::canSMPAssign() const noexcept
 {
    return ( rows() * columns() >= SMP_DMATASSIGN_THRESHOLD );
 }
@@ -4907,9 +5044,10 @@ inline bool CustomMatrix<Type,AF,PF,true>::canSMPAssign() const noexcept
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,true>::SIMDType
-   CustomMatrix<Type,AF,PF,true>::load( size_t i, size_t j ) const noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,true,RT>::SIMDType
+   CustomMatrix<Type,AF,PF,true,RT>::load( size_t i, size_t j ) const noexcept
 {
    if( AF && PF )
       return loada( i, j );
@@ -4937,9 +5075,10 @@ BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,true>::SIMDType
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,true>::SIMDType
-   CustomMatrix<Type,AF,PF,true>::loada( size_t i, size_t j ) const noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,true,RT>::SIMDType
+   CustomMatrix<Type,AF,PF,true,RT>::loada( size_t i, size_t j ) const noexcept
 {
    using blaze::loada;
 
@@ -4974,9 +5113,10 @@ BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,true>::SIMDType
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
-BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,true>::SIMDType
-   CustomMatrix<Type,AF,PF,true>::loadu( size_t i, size_t j ) const noexcept
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,true,RT>::SIMDType
+   CustomMatrix<Type,AF,PF,true,RT>::loadu( size_t i, size_t j ) const noexcept
 {
    using blaze::loadu;
 
@@ -5010,9 +5150,10 @@ BLAZE_ALWAYS_INLINE typename CustomMatrix<Type,AF,PF,true>::SIMDType
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 BLAZE_ALWAYS_INLINE void
-   CustomMatrix<Type,AF,PF,true>::store( size_t i, size_t j, const SIMDType& value ) noexcept
+   CustomMatrix<Type,AF,PF,true,RT>::store( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    if( AF && PF )
       storea( i, j, value );
@@ -5041,9 +5182,10 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 BLAZE_ALWAYS_INLINE void
-   CustomMatrix<Type,AF,PF,true>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
+   CustomMatrix<Type,AF,PF,true,RT>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::storea;
 
@@ -5079,9 +5221,10 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 BLAZE_ALWAYS_INLINE void
-   CustomMatrix<Type,AF,PF,true>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
+   CustomMatrix<Type,AF,PF,true,RT>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -5116,9 +5259,10 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 BLAZE_ALWAYS_INLINE void
-   CustomMatrix<Type,AF,PF,true>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
+   CustomMatrix<Type,AF,PF,true,RT>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::stream;
 
@@ -5150,9 +5294,10 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline auto CustomMatrix<Type,AF,PF,true>::assign( const DenseMatrix<MT,true>& rhs )
+inline auto CustomMatrix<Type,AF,PF,true,RT>::assign( const DenseMatrix<MT,true>& rhs )
    -> DisableIf_t< VectorizedAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -5189,9 +5334,10 @@ inline auto CustomMatrix<Type,AF,PF,true>::assign( const DenseMatrix<MT,true>& r
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline auto CustomMatrix<Type,AF,PF,true>::assign( const DenseMatrix<MT,true>& rhs )
+inline auto CustomMatrix<Type,AF,PF,true,RT>::assign( const DenseMatrix<MT,true>& rhs )
    -> EnableIf_t< VectorizedAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -5262,9 +5408,10 @@ inline auto CustomMatrix<Type,AF,PF,true>::assign( const DenseMatrix<MT,true>& r
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline void CustomMatrix<Type,AF,PF,true>::assign( const DenseMatrix<MT,false>& rhs )
+inline void CustomMatrix<Type,AF,PF,true,RT>::assign( const DenseMatrix<MT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -5303,9 +5450,10 @@ inline void CustomMatrix<Type,AF,PF,true>::assign( const DenseMatrix<MT,false>& 
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side sparse matrix
-inline void CustomMatrix<Type,AF,PF,true>::assign( const SparseMatrix<MT,true>& rhs )
+inline void CustomMatrix<Type,AF,PF,true,RT>::assign( const SparseMatrix<MT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -5332,9 +5480,10 @@ inline void CustomMatrix<Type,AF,PF,true>::assign( const SparseMatrix<MT,true>& 
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side sparse matrix
-inline void CustomMatrix<Type,AF,PF,true>::assign( const SparseMatrix<MT,false>& rhs )
+inline void CustomMatrix<Type,AF,PF,true,RT>::assign( const SparseMatrix<MT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -5363,9 +5512,10 @@ inline void CustomMatrix<Type,AF,PF,true>::assign( const SparseMatrix<MT,false>&
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline auto CustomMatrix<Type,AF,PF,true>::addAssign( const DenseMatrix<MT,true>& rhs )
+inline auto CustomMatrix<Type,AF,PF,true,RT>::addAssign( const DenseMatrix<MT,true>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -5417,9 +5567,10 @@ inline auto CustomMatrix<Type,AF,PF,true>::addAssign( const DenseMatrix<MT,true>
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline auto CustomMatrix<Type,AF,PF,true>::addAssign( const DenseMatrix<MT,true>& rhs )
+inline auto CustomMatrix<Type,AF,PF,true,RT>::addAssign( const DenseMatrix<MT,true>& rhs )
    -> EnableIf_t< VectorizedAddAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -5479,9 +5630,10 @@ inline auto CustomMatrix<Type,AF,PF,true>::addAssign( const DenseMatrix<MT,true>
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline void CustomMatrix<Type,AF,PF,true>::addAssign( const DenseMatrix<MT,false>& rhs )
+inline void CustomMatrix<Type,AF,PF,true,RT>::addAssign( const DenseMatrix<MT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -5532,9 +5684,10 @@ inline void CustomMatrix<Type,AF,PF,true>::addAssign( const DenseMatrix<MT,false
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side sparse matrix
-inline void CustomMatrix<Type,AF,PF,true>::addAssign( const SparseMatrix<MT,true>& rhs )
+inline void CustomMatrix<Type,AF,PF,true,RT>::addAssign( const SparseMatrix<MT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -5561,9 +5714,10 @@ inline void CustomMatrix<Type,AF,PF,true>::addAssign( const SparseMatrix<MT,true
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side sparse matrix
-inline void CustomMatrix<Type,AF,PF,true>::addAssign( const SparseMatrix<MT,false>& rhs )
+inline void CustomMatrix<Type,AF,PF,true,RT>::addAssign( const SparseMatrix<MT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -5592,9 +5746,10 @@ inline void CustomMatrix<Type,AF,PF,true>::addAssign( const SparseMatrix<MT,fals
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline auto CustomMatrix<Type,AF,PF,true>::subAssign( const DenseMatrix<MT,true>& rhs )
+inline auto CustomMatrix<Type,AF,PF,true,RT>::subAssign( const DenseMatrix<MT,true>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -5647,9 +5802,10 @@ inline auto CustomMatrix<Type,AF,PF,true>::subAssign( const DenseMatrix<MT,true>
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline auto CustomMatrix<Type,AF,PF,true>::subAssign( const DenseMatrix<MT,true>& rhs )
+inline auto CustomMatrix<Type,AF,PF,true,RT>::subAssign( const DenseMatrix<MT,true>& rhs )
    -> EnableIf_t< VectorizedSubAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -5709,9 +5865,10 @@ inline auto CustomMatrix<Type,AF,PF,true>::subAssign( const DenseMatrix<MT,true>
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline void CustomMatrix<Type,AF,PF,true>::subAssign( const DenseMatrix<MT,false>& rhs )
+inline void CustomMatrix<Type,AF,PF,true,RT>::subAssign( const DenseMatrix<MT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -5762,9 +5919,10 @@ inline void CustomMatrix<Type,AF,PF,true>::subAssign( const DenseMatrix<MT,false
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side sparse matrix
-inline void CustomMatrix<Type,AF,PF,true>::subAssign( const SparseMatrix<MT,true>& rhs )
+inline void CustomMatrix<Type,AF,PF,true,RT>::subAssign( const SparseMatrix<MT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -5791,9 +5949,10 @@ inline void CustomMatrix<Type,AF,PF,true>::subAssign( const SparseMatrix<MT,true
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side sparse matrix
-inline void CustomMatrix<Type,AF,PF,true>::subAssign( const SparseMatrix<MT,false>& rhs )
+inline void CustomMatrix<Type,AF,PF,true,RT>::subAssign( const SparseMatrix<MT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -5822,9 +5981,10 @@ inline void CustomMatrix<Type,AF,PF,true>::subAssign( const SparseMatrix<MT,fals
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline auto CustomMatrix<Type,AF,PF,true>::schurAssign( const DenseMatrix<MT,true>& rhs )
+inline auto CustomMatrix<Type,AF,PF,true,RT>::schurAssign( const DenseMatrix<MT,true>& rhs )
    -> DisableIf_t< VectorizedSchurAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
@@ -5862,9 +6022,10 @@ inline auto CustomMatrix<Type,AF,PF,true>::schurAssign( const DenseMatrix<MT,tru
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline auto CustomMatrix<Type,AF,PF,true>::schurAssign( const DenseMatrix<MT,true>& rhs )
+inline auto CustomMatrix<Type,AF,PF,true,RT>::schurAssign( const DenseMatrix<MT,true>& rhs )
    -> EnableIf_t< VectorizedSchurAssign_v<MT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
@@ -5915,9 +6076,10 @@ inline auto CustomMatrix<Type,AF,PF,true>::schurAssign( const DenseMatrix<MT,tru
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense matrix
-inline void CustomMatrix<Type,AF,PF,true>::schurAssign( const DenseMatrix<MT,false>& rhs )
+inline void CustomMatrix<Type,AF,PF,true,RT>::schurAssign( const DenseMatrix<MT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -5956,9 +6118,10 @@ inline void CustomMatrix<Type,AF,PF,true>::schurAssign( const DenseMatrix<MT,fal
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side sparse matrix
-inline void CustomMatrix<Type,AF,PF,true>::schurAssign( const SparseMatrix<MT,true>& rhs )
+inline void CustomMatrix<Type,AF,PF,true,RT>::schurAssign( const SparseMatrix<MT,true>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -5989,9 +6152,10 @@ inline void CustomMatrix<Type,AF,PF,true>::schurAssign( const SparseMatrix<MT,tr
 */
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
-        , bool PF >      // Padding flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side sparse matrix
-inline void CustomMatrix<Type,AF,PF,true>::schurAssign( const SparseMatrix<MT,false>& rhs )
+inline void CustomMatrix<Type,AF,PF,true,RT>::schurAssign( const SparseMatrix<MT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
@@ -6025,23 +6189,23 @@ inline void CustomMatrix<Type,AF,PF,true>::schurAssign( const SparseMatrix<MT,fa
 //*************************************************************************************************
 /*!\name CustomMatrix operators */
 //@{
-template< typename Type, bool AF, bool PF, bool SO >
-inline void reset( CustomMatrix<Type,AF,PF,SO>& m );
+template< typename Type, bool AF, bool PF, bool SO, typename RT >
+inline void reset( CustomMatrix<Type,AF,PF,SO,RT>& m );
 
-template< typename Type, bool AF, bool PF, bool SO >
-inline void reset( CustomMatrix<Type,AF,PF,SO>& m, size_t i );
+template< typename Type, bool AF, bool PF, bool SO, typename RT >
+inline void reset( CustomMatrix<Type,AF,PF,SO,RT>& m, size_t i );
 
-template< typename Type, bool AF, bool PF, bool SO >
-inline void clear( CustomMatrix<Type,AF,PF,SO>& m );
+template< typename Type, bool AF, bool PF, bool SO, typename RT >
+inline void clear( CustomMatrix<Type,AF,PF,SO,RT>& m );
 
-template< bool RF, typename Type, bool AF, bool PF, bool SO >
-inline bool isDefault( const CustomMatrix<Type,AF,PF,SO>& m );
+template< bool RF, typename Type, bool AF, bool PF, bool SO, typename RT >
+inline bool isDefault( const CustomMatrix<Type,AF,PF,SO,RT>& m );
 
-template< typename Type, bool AF, bool PF, bool SO >
-inline bool isIntact( const CustomMatrix<Type,AF,PF,SO>& m );
+template< typename Type, bool AF, bool PF, bool SO, typename RT >
+inline bool isIntact( const CustomMatrix<Type,AF,PF,SO,RT>& m );
 
-template< typename Type, bool AF, bool PF, bool SO >
-inline void swap( CustomMatrix<Type,AF,PF,SO>& a, CustomMatrix<Type,AF,PF,SO>& b ) noexcept;
+template< typename Type, bool AF, bool PF, bool SO, typename RT >
+inline void swap( CustomMatrix<Type,AF,PF,SO,RT>& a, CustomMatrix<Type,AF,PF,SO,RT>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -6056,8 +6220,9 @@ inline void swap( CustomMatrix<Type,AF,PF,SO>& a, CustomMatrix<Type,AF,PF,SO>& b
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline void reset( CustomMatrix<Type,AF,PF,SO>& m )
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline void reset( CustomMatrix<Type,AF,PF,SO,RT>& m )
 {
    m.reset();
 }
@@ -6080,8 +6245,9 @@ inline void reset( CustomMatrix<Type,AF,PF,SO>& m )
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline void reset( CustomMatrix<Type,AF,PF,SO>& m, size_t i )
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline void reset( CustomMatrix<Type,AF,PF,SO,RT>& m, size_t i )
 {
    m.reset( i );
 }
@@ -6098,8 +6264,9 @@ inline void reset( CustomMatrix<Type,AF,PF,SO>& m, size_t i )
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline void clear( CustomMatrix<Type,AF,PF,SO>& m )
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline void clear( CustomMatrix<Type,AF,PF,SO,RT>& m )
 {
    m.clear();
 }
@@ -6138,8 +6305,9 @@ template< bool RF        // Relaxation flag
         , typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline bool isDefault( const CustomMatrix<Type,AF,PF,SO>& m )
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline bool isDefault( const CustomMatrix<Type,AF,PF,SO,RT>& m )
 {
    return ( m.rows() == 0UL && m.columns() == 0UL );
 }
@@ -6170,8 +6338,9 @@ inline bool isDefault( const CustomMatrix<Type,AF,PF,SO>& m )
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline bool isIntact( const CustomMatrix<Type,AF,PF,SO>& m )
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline bool isIntact( const CustomMatrix<Type,AF,PF,SO,RT>& m )
 {
    return ( m.rows() * m.columns() <= m.capacity() );
 }
@@ -6189,8 +6358,9 @@ inline bool isIntact( const CustomMatrix<Type,AF,PF,SO>& m )
 template< typename Type  // Data type of the matrix
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
-        , bool SO >      // Storage order
-inline void swap( CustomMatrix<Type,AF,PF,SO>& a, CustomMatrix<Type,AF,PF,SO>& b ) noexcept
+        , bool SO        // Storage order
+        , typename RT >  // Result type
+inline void swap( CustomMatrix<Type,AF,PF,SO,RT>& a, CustomMatrix<Type,AF,PF,SO,RT>& b ) noexcept
 {
    a.swap( b );
 }
@@ -6207,8 +6377,8 @@ inline void swap( CustomMatrix<Type,AF,PF,SO>& a, CustomMatrix<Type,AF,PF,SO>& b
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool AF, bool PF, bool SO >
-struct HasConstDataAccess< CustomMatrix<T,AF,PF,SO> >
+template< typename T, bool AF, bool PF, bool SO, typename RT >
+struct HasConstDataAccess< CustomMatrix<T,AF,PF,SO,RT> >
    : public TrueType
 {};
 /*! \endcond */
@@ -6225,8 +6395,8 @@ struct HasConstDataAccess< CustomMatrix<T,AF,PF,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool AF, bool PF, bool SO >
-struct HasMutableDataAccess< CustomMatrix<T,AF,PF,SO> >
+template< typename T, bool AF, bool PF, bool SO, typename RT >
+struct HasMutableDataAccess< CustomMatrix<T,AF,PF,SO,RT> >
    : public TrueType
 {};
 /*! \endcond */
@@ -6243,8 +6413,8 @@ struct HasMutableDataAccess< CustomMatrix<T,AF,PF,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool AF, bool PF, bool SO >
-struct IsCustom< CustomMatrix<T,AF,PF,SO> >
+template< typename T, bool AF, bool PF, bool SO, typename RT >
+struct IsCustom< CustomMatrix<T,AF,PF,SO,RT> >
    : public TrueType
 {};
 /*! \endcond */
@@ -6261,8 +6431,8 @@ struct IsCustom< CustomMatrix<T,AF,PF,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool PF, bool SO >
-struct IsAligned< CustomMatrix<T,aligned,PF,SO> >
+template< typename T, bool PF, bool SO, typename RT >
+struct IsAligned< CustomMatrix<T,aligned,PF,SO,RT> >
    : public TrueType
 {};
 /*! \endcond */
@@ -6279,8 +6449,8 @@ struct IsAligned< CustomMatrix<T,aligned,PF,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool AF, bool PF, bool SO >
-struct IsContiguous< CustomMatrix<T,AF,PF,SO> >
+template< typename T, bool AF, bool PF, bool SO, typename RT >
+struct IsContiguous< CustomMatrix<T,AF,PF,SO,RT> >
    : public TrueType
 {};
 /*! \endcond */
@@ -6298,8 +6468,8 @@ struct IsContiguous< CustomMatrix<T,AF,PF,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool AF, bool SO >
-struct IsPadded< CustomMatrix<T,AF,padded,SO> >
+template< typename T, bool AF, bool SO, typename RT >
+struct IsPadded< CustomMatrix<T,AF,padded,SO,RT> >
    : public TrueType
 {};
 /*! \endcond */
