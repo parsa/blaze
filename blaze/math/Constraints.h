@@ -96,6 +96,7 @@
 #include <blaze/math/constraints/OpposedView.h>
 #include <blaze/math/constraints/Padded.h>
 #include <blaze/math/constraints/Proxy.h>
+#include <blaze/math/constraints/ReduceExpr.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/Resizable.h>
 #include <blaze/math/constraints/Restricted.h>
