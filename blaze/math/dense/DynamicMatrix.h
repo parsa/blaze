@@ -6731,7 +6731,18 @@ struct BinaryMapTraitEval2< T1, T2, OP
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
 
-   static constexpr bool SO = StorageOrder_v<T1> && StorageOrder_v<T2>;
+   static constexpr bool SO1 = StorageOrder_v<T1>;
+   static constexpr bool SO2 = StorageOrder_v<T2>;
+
+   static constexpr bool SO = ( IsDenseMatrix_v<T1> && IsDenseMatrix_v<T2>
+                                ? ( IsSymmetric_v<T1> ^ IsSymmetric_v<T2>
+                                    ? ( IsSymmetric_v<T1>
+                                        ? SO2
+                                        : SO1 )
+                                    : SO1 && SO2 )
+                                : ( IsDenseMatrix_v<T1>
+                                    ? SO1
+                                    : SO2 ) );
 
    using Type = DynamicMatrix< MapTrait_t<ET1,ET2,OP>, SO >;
 };
