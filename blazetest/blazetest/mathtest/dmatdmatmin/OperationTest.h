@@ -57,7 +57,7 @@
 #include <blaze/math/Functors.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/traits/BinaryMapTrait.h>
+#include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
@@ -127,7 +127,7 @@ class OperationTest
    using TOMT2 = blaze::TransposeType_t<OMT2>;  //!< Transpose matrix type 2 with opposite storage order
 
    //! Dense result type
-   using DRE = blaze::BinaryMapTrait_t<MT1,MT2,blaze::Min>;
+   using DRE = blaze::MapTrait_t<MT1,MT2,blaze::Min>;
 
    using DET   = blaze::ElementType_t<DRE>;     //!< Element type of the dense result
    using ODRE  = blaze::OppositeType_t<DRE>;    //!< Dense result type with opposite storage order

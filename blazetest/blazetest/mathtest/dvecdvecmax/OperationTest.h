@@ -56,7 +56,7 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/StaticVector.h>
-#include <blaze/math/traits/BinaryMapTrait.h>
+#include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
@@ -107,9 +107,9 @@ class OperationTest
    using TVT1 = blaze::TransposeType_t<VT1>;  //!< Transpose vector type 1
    using TVT2 = blaze::TransposeType_t<VT2>;  //!< Transpose vector type 2
 
-   using DRE  = blaze::BinaryMapTrait_t<VT1,VT2,blaze::Max>;    //!< Dense result type
-   using TDRE = blaze::BinaryMapTrait_t<TVT1,TVT2,blaze::Max>;  //!< Transpose dense result type
-   using DET  = blaze::ElementType_t<DRE>;                      //!< Element type of the dense result
+   using DRE  = blaze::MapTrait_t<VT1,VT2,blaze::Max>;    //!< Dense result type
+   using TDRE = blaze::MapTrait_t<TVT1,TVT2,blaze::Max>;  //!< Transpose dense result type
+   using DET  = blaze::ElementType_t<DRE>;                //!< Element type of the dense result
 
    using SRE  = blaze::CompressedVector<DET,TF>;  //!< Sparse result type
    using TSRE = blaze::TransposeType_t<SRE>;      //!< Transpose sparse result type
