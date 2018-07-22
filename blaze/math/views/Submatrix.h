@@ -52,6 +52,7 @@
 #include <blaze/math/expressions/MatMatMultExpr.h>
 #include <blaze/math/expressions/MatMatSubExpr.h>
 #include <blaze/math/expressions/Matrix.h>
+#include <blaze/math/expressions/MatReduceExpr.h>
 #include <blaze/math/expressions/MatScalarDivExpr.h>
 #include <blaze/math/expressions/MatScalarMultExpr.h>
 #include <blaze/math/expressions/MatSerialExpr.h>
@@ -1787,6 +1788,64 @@ inline decltype(auto) subvector( const TVecMatMultExpr<VT>& vector, RSAs... args
                                        :( right.rows() ) ) );
 
    return subvector<AF>( left, row, m ) * submatrix<AF>( right, row, sd.offset(), m, sd.size() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given column-wise matrix reduction operation.
+// \ingroup submatrix
+//
+// \param vector The constant column-wise matrix reduction operation.
+// \param args The runtime subvector arguments.
+// \return View on the specified subvector of the reduction operation.
+//
+// This function returns an expression representing the specified subvector of the given
+// column-wise matrix reduction operation.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename VT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime subvector arguments
+inline decltype(auto) subvector( const MatReduceExpr<0UL,VT>& vector, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const SubvectorData<CSAs...> sd( args... );
+   const size_t M( (~vector).operand().rows() );
+
+   return reduce<0UL>( submatrix<AF>( (~vector).operand(), 0UL, sd.offset(), M, sd.size() ), (~vector).operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given row-wise matrix reduction operation.
+// \ingroup submatrix
+//
+// \param vector The constant row-wise matrix reduction operation.
+// \param args The runtime subvector arguments.
+// \return View on the specified subvector of the reduction operation.
+//
+// This function returns an expression representing the specified subvector of the given row-wise
+// matrix reduction operation.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename VT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime subvector arguments
+inline decltype(auto) subvector( const MatReduceExpr<1UL,VT>& vector, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const SubvectorData<CSAs...> sd( args... );
+   const size_t N( (~vector).operand().columns() );
+
+   return reduce<1UL>( submatrix<AF>( (~vector).operand(), sd.offset(), 0UL, sd.size(), N ), (~vector).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
