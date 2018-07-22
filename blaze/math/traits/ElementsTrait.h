@@ -64,29 +64,17 @@ template< typename, size_t, typename = void > struct ElementsTraitEval2;
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< size_t N, typename T >
+template< size_t... CEAs, typename T >
 auto evalElementsTrait( T& )
-   -> typename ElementsTraitEval1<T,N>::Type;
+   -> typename ElementsTraitEval1<T,sizeof...(CEAs)>::Type;
 
-template< typename T >
-auto evalElementsTrait( T& )
-   -> typename ElementsTraitEval2<T,0UL>::Type;
-
-template< size_t N, typename T >
+template< size_t... CEAs, typename T >
 auto evalElementsTrait( const T& )
-   -> typename ElementsTrait<T,N>::Type;
+   -> typename ElementsTrait<T,CEAs...>::Type;
 
-template< typename T >
-auto evalElementsTrait( const T& )
-   -> typename ElementsTrait<T>::Type;
-
-template< size_t N, typename T >
+template< size_t... CEAs, typename T >
 auto evalElementsTrait( volatile const T& )
-   -> typename ElementsTrait<T,N>::Type;
-
-template< typename T >
-auto evalElementsTrait( volatile const T& )
-   -> typename ElementsTrait<T>::Type;
+   -> typename ElementsTrait<T,CEAs...>::Type;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -144,7 +132,7 @@ struct ElementsTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalElementsTrait<sizeof...(CEAs)>( std::declval<VT&>() ) );
+   using Type = decltype( evalElementsTrait<CEAs...>( std::declval<VT&>() ) );
    /*! \endcond */
    //**********************************************************************************************
 };
