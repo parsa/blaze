@@ -64,29 +64,17 @@ template< typename, size_t, typename = void > struct ColumnsTraitEval2;
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< size_t N, typename T >
+template< size_t... CCAs, typename T >
 auto evalColumnsTrait( T& )
-   -> typename ColumnsTraitEval1<T,N>::Type;
+   -> typename ColumnsTraitEval1<T,sizeof...(CCAs)>::Type;
 
-template< typename T >
-auto evalColumnsTrait( T& )
-   -> typename ColumnsTraitEval2<T,-1UL>::Type;
-
-template< size_t N, typename T >
+template< size_t... CCAs, typename T >
 auto evalColumnsTrait( const T& )
-   -> typename ColumnsTrait<T,N>::Type;
+   -> typename ColumnsTrait<T,CCAs...>::Type;
 
-template< typename T >
-auto evalColumnsTrait( const T& )
-   -> typename ColumnsTrait<T>::Type;
-
-template< size_t N, typename T >
+template< size_t... CCAs, typename T >
 auto evalColumnsTrait( volatile const T& )
-   -> typename ColumnsTrait<T,N>::Type;
-
-template< typename T >
-auto evalColumnsTrait( volatile const T& )
-   -> typename ColumnsTrait<T>::Type;
+   -> typename ColumnsTrait<T,CCAs...>::Type;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -144,7 +132,7 @@ struct ColumnsTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalColumnsTrait<sizeof...(CCAs)>( std::declval<MT&>() ) );
+   using Type = decltype( evalColumnsTrait<CCAs...>( std::declval<MT&>() ) );
    /*! \endcond */
    //**********************************************************************************************
 };
