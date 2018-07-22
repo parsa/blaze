@@ -64,29 +64,17 @@ template< typename, size_t, typename = void > struct RowsTraitEval2;
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< size_t N, typename T >
+template< size_t... CRAs, typename T >
 auto evalRowsTrait( T& )
-   -> typename RowsTraitEval1<T,N>::Type;
+   -> typename RowsTraitEval1<T,sizeof...(CRAs)>::Type;
 
-template< typename T >
-auto evalRowsTrait( T& )
-   -> typename RowsTraitEval2<T,-1UL>::Type;
-
-template< size_t N, typename T >
+template< size_t... CRAs, typename T >
 auto evalRowsTrait( const T& )
-   -> typename RowsTrait<T,N>::Type;
+   -> typename RowsTrait<T,CRAs...>::Type;
 
-template< typename T >
-auto evalRowsTrait( const T& )
-   -> typename RowsTrait<T>::Type;
-
-template< size_t N, typename T >
+template< size_t... CRAs, typename T >
 auto evalRowsTrait( volatile const T& )
-   -> typename RowsTrait<T,N>::Type;
-
-template< typename T >
-auto evalRowsTrait( volatile const T& )
-   -> typename RowsTrait<T>::Type;
+   -> typename RowsTrait<T,CRAs...>::Type;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -144,7 +132,7 @@ struct RowsTrait
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalRowsTrait<sizeof...(CRAs)>( std::declval<MT&>() ) );
+   using Type = decltype( evalRowsTrait<CRAs...>( std::declval<MT&>() ) );
    /*! \endcond */
    //**********************************************************************************************
 };
