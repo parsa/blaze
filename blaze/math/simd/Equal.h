@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/simd/Equality.h
+//  \file blaze/math/simd/Equal.h
 //  \brief Header file for the SIMD equality functionality
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SIMD_EQUALITY_H_
-#define _BLAZE_MATH_SIMD_EQUALITY_H_
+#ifndef _BLAZE_MATH_SIMD_EQUAL_H_
+#define _BLAZE_MATH_SIMD_EQUAL_H_
 
 
 //*************************************************************************************************
