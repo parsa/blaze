@@ -225,10 +225,10 @@ BLAZE_ALWAYS_INLINE ValueType_t<T> sum( const SIMDi32<T>& a ) noexcept
    return _mm_extract_epi32( d, 0 );
 #elif BLAZE_SSSE3_MODE
    const __m128i b( _mm_hadd_epi32( (~a).value, (~a).value ) );
-   const __m128i c( _mm_hadd_epi32( b, b ) );
-   return _mm_cvtsi128_si32( c );
+   return _mm_cvtsi128_si32( _mm_hadd_epi32( b, b ) );
 #elif BLAZE_SSE2_MODE
-   return (~a)[0] + (~a)[1] + (~a)[2] + (~a)[3];
+   const __m128i b( _mm_add_epi32( (~a).value, _mm_shuffle_epi32( (~a).value, 0x4E ) ) );
+   return _mm_cvtsi128_si32( _mm_add_epi32( b, _mm_shuffle_epi32( b, 0xB1 ) ) );
 #else
    return (~a).value;
 #endif
@@ -352,7 +352,8 @@ BLAZE_ALWAYS_INLINE float sum( const SIMDfloat& a ) noexcept
    const __m128 c( _mm_hadd_ps( b, b ) );
    return _mm_cvtss_f32( c );
 #elif BLAZE_SSE_MODE
-   return a[0] + a[1] + a[2] + a[3];
+   const __m128 b( _mm_add_ps( a.value, _mm_movehl_ps( a.value, a.value ) ) );
+   return _mm_cvtss_f32( _mm_add_ss( b, _mm_shuffle_ps( b, b, 1 ) ) );
 #else
    return a.value;
 #endif
@@ -414,10 +415,9 @@ BLAZE_ALWAYS_INLINE double sum( const SIMDdouble& a ) noexcept
    const __m128d c( _mm_add_pd( _mm256_extractf128_pd( b, 1 ), _mm256_castpd256_pd128( b ) ) );
    return _mm_cvtsd_f64( c );
 #elif BLAZE_SSE3_MODE
-   const __m128d b( _mm_hadd_pd( a.value, a.value ) );
-   return _mm_cvtsd_f64( b );
+   return _mm_cvtsd_f64( _mm_hadd_pd( a.value, a.value ) );
 #elif BLAZE_SSE2_MODE
-   return a[0] + a[1];
+   return _mm_cvtsd_f64( _mm_add_sd( a.value, _mm_unpackhi_pd( a.value, a.value ) ) );
 #else
    return a.value;
 #endif
