@@ -54,7 +54,7 @@
 #include <blaze/math/simd/Conj.h>
 #include <blaze/math/simd/Cos.h>
 #include <blaze/math/simd/Cosh.h>
-#include <blaze/math/simd/Division.h>
+#include <blaze/math/simd/Div.h>
 #include <blaze/math/simd/Equality.h>
 #include <blaze/math/simd/Erf.h>
 #include <blaze/math/simd/Erfc.h>

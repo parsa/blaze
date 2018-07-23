@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/simd/Division.h
+//  \file blaze/math/simd/Div.h
 //  \brief Header file for the SIMD division functionality
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SIMD_DIVISION_H_
-#define _BLAZE_MATH_SIMD_DIVISION_H_
+#ifndef _BLAZE_MATH_SIMD_DIV_H_
+#define _BLAZE_MATH_SIMD_DIV_H_
 
 
 //*************************************************************************************************
