@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/simd/Multiplication.h
+//  \file blaze/math/simd/Mult.h
 //  \brief Header file for the SIMD multiplication functionality
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SIMD_MULTIPLICATION_H_
-#define _BLAZE_MATH_SIMD_MULTIPLICATION_H_
+#ifndef _BLAZE_MATH_SIMD_MULT_H_
+#define _BLAZE_MATH_SIMD_MULT_H_
 
 
 //*************************************************************************************************

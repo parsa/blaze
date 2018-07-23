@@ -41,7 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/constraints/SIMDPack.h>
-#include <blaze/math/simd/Multiplication.h>
+#include <blaze/math/simd/Mult.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>

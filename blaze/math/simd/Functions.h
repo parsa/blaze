@@ -73,7 +73,7 @@
 #include <blaze/math/simd/Log10.h>
 #include <blaze/math/simd/Max.h>
 #include <blaze/math/simd/Min.h>
-#include <blaze/math/simd/Multiplication.h>
+#include <blaze/math/simd/Mult.h>
 #include <blaze/math/simd/Pow.h>
 #include <blaze/math/simd/Prod.h>
 #include <blaze/math/simd/Round.h>

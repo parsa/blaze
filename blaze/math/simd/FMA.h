@@ -42,7 +42,7 @@
 
 #include <blaze/math/simd/Add.h>
 #include <blaze/math/simd/BasicTypes.h>
-#include <blaze/math/simd/Multiplication.h>
+#include <blaze/math/simd/Mult.h>
 #include <blaze/math/simd/Sub.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
