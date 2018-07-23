@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/simd/Reduction.h
-//  \brief Header file for the SIMD reduction functionality
+//  \file blaze/math/simd/Sum.h
+//  \brief Header file for the SIMD addition reduction functionality
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SIMD_REDUCTION_H_
-#define _BLAZE_MATH_SIMD_REDUCTION_H_
+#ifndef _BLAZE_MATH_SIMD_SUM_H_
+#define _BLAZE_MATH_SIMD_SUM_H_
 
 
 //*************************************************************************************************

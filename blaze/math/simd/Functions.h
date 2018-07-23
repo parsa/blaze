@@ -76,7 +76,6 @@
 #include <blaze/math/simd/Multiplication.h>
 #include <blaze/math/simd/Pow.h>
 #include <blaze/math/simd/Prod.h>
-#include <blaze/math/simd/Reduction.h>
 #include <blaze/math/simd/Round.h>
 #include <blaze/math/simd/Set.h>
 #include <blaze/math/simd/Setzero.h>
@@ -88,6 +87,7 @@
 #include <blaze/math/simd/Storeu.h>
 #include <blaze/math/simd/Stream.h>
 #include <blaze/math/simd/Subtraction.h>
+#include <blaze/math/simd/Sum.h>
 #include <blaze/math/simd/Tan.h>
 #include <blaze/math/simd/Tanh.h>
 #include <blaze/math/simd/Trunc.h>
