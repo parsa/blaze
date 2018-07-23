@@ -304,7 +304,8 @@ class OperationTest : private blaze::NonCopyable
    void testErfc          ( blaze::TrueType  );
    void testErfc          ( blaze::FalseType );
 
-   void testReduction     ();
+   void testSum           ();
+   void testProd          ();
    //@}
    //**********************************************************************************************
 
@@ -433,7 +434,8 @@ OperationTest<T>::OperationTest()
    testErf           ( blaze::HasSIMDErf < T >() );
    testErfc          ( blaze::HasSIMDErfc< T >() );
 
-   testReduction     ();
+   testSum           ();
+   testProd          ();
 }
 //*************************************************************************************************
 
@@ -3059,16 +3061,17 @@ void OperationTest<T>::testErfc( blaze::FalseType )
 
 
 //*************************************************************************************************
-/*!\brief Testing the reduction operation.
+/*!\brief Testing the addition reduction operation (\c sum).
 //
 // \return void
 // \exception std::runtime_error Error in reduction computation detected.
 //
-// This function tests the reduction operation by comparing the results of a vectorized and a
-// scalar reduction. In case any error is detected, a \a std::runtime_error exception is thrown.
+// This function tests the addition reduction operation by comparing the results of a vectorized
+// and a scalar reduction. In case any error is detected, a \a std::runtime_error exception is
+// thrown.
 */
 template< typename T >  // Data type of the SIMD test
-void OperationTest<T>::testReduction()
+void OperationTest<T>::testSum()
 {
    using blaze::loada;
    using blaze::sum;
@@ -3099,6 +3102,54 @@ void OperationTest<T>::testReduction()
           << " Details:\n"
           << "   ssum = " << ssum << "\n"
           << "   vsum = " << vsum << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the multiplication reduction operation (\c prod).
+//
+// \return void
+// \exception std::runtime_error Error in reduction computation detected.
+//
+// This function tests the multiplication reduction operation by comparing the results of a
+// vectorized and a scalar reduction. In case any error is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testProd()
+{
+   using blaze::loada;
+   using blaze::prod;
+
+   test_ = "prod() operation";
+
+   initialize();
+
+   T sprod{ 1 };
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      T tmp{ 1 };
+      for( size_t j=0UL; j<SIMDSIZE; ++j ) {
+         tmp *= a_[i+j];
+      }
+      sprod *= tmp;
+   }
+
+   T vprod{ 1 };
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      vprod *= prod( loada( a_+i ) );
+   }
+
+   if( !blaze::equal( sprod, vprod ) ) {
+      std::ostringstream oss;
+      oss.precision( 20 );
+      oss << " Test : " << test_ << "\n"
+          << " Error: Failed reduction operation\n"
+          << " Details:\n"
+          << "   sprod = " << sprod << "\n"
+          << "   vprod = " << vprod << "\n";
       throw std::runtime_error( oss.str() );
    }
 }
