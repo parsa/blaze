@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/simd/Subtraction.h
+//  \file blaze/math/simd/Sub.h
 //  \brief Header file for the SIMD subtraction functionality
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SIMD_SUBTRACTION_H_
-#define _BLAZE_MATH_SIMD_SUBTRACTION_H_
+#ifndef _BLAZE_MATH_SIMD_SUB_H_
+#define _BLAZE_MATH_SIMD_SUB_H_
 
 
 //*************************************************************************************************

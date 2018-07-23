@@ -86,7 +86,7 @@
 #include <blaze/math/simd/Storea.h>
 #include <blaze/math/simd/Storeu.h>
 #include <blaze/math/simd/Stream.h>
-#include <blaze/math/simd/Subtraction.h>
+#include <blaze/math/simd/Sub.h>
 #include <blaze/math/simd/Sum.h>
 #include <blaze/math/simd/Tan.h>
 #include <blaze/math/simd/Tanh.h>
