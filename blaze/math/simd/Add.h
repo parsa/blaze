@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/simd/Addition.h
+//  \file blaze/math/simd/Add.h
 //  \brief Header file for the SIMD addition functionality
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SIMD_ADDITION_H_
-#define _BLAZE_MATH_SIMD_ADDITION_H_
+#ifndef _BLAZE_MATH_SIMD_ADD_H_
+#define _BLAZE_MATH_SIMD_ADD_H_
 
 
 //*************************************************************************************************

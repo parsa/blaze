@@ -41,7 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/constraints/SIMDPack.h>
-#include <blaze/math/simd/Addition.h>
+#include <blaze/math/simd/Add.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>

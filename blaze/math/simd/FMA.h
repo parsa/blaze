@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/simd/Addition.h>
+#include <blaze/math/simd/Add.h>
 #include <blaze/math/simd/BasicTypes.h>
 #include <blaze/math/simd/Multiplication.h>
 #include <blaze/math/simd/Subtraction.h>
