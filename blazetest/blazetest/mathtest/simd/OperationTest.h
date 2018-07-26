@@ -193,6 +193,8 @@ class OperationTest : private blaze::NonCopyable
    void testStream        ();
    void testStoreu        ( size_t offset );
 
+   void testPackAccess    ();
+
    void testEquality      ( blaze::TrueType , blaze::TrueType  );
    void testEquality      ( blaze::TrueType , blaze::FalseType );
    void testEquality      ( blaze::FalseType, blaze::TrueType  );
@@ -375,6 +377,8 @@ OperationTest<T>::OperationTest()
       testStoreu( offset );
    }
 
+   testPackAccess();
+
    testEquality      ( blaze::HasSIMDEqual<T,T>(), blaze::IsFloatingPoint<T>() );
    testInequality    ( blaze::HasSIMDEqual<T,T>(), blaze::IsFloatingPoint<T>() );
 
@@ -552,6 +556,39 @@ void OperationTest<T>::testStoreu( size_t offset )
    }
 
    compare( a_+offset, b_+offset );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the subscript operator for read and write access to SIMD packs.
+//
+// \return void
+// \exception std::runtime_error Comparison error detected.
+//
+// This function tests the subscript operator by reading to and writing from individual values
+// of a SIMD pack. In case any error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testPackAccess()
+{
+   using blaze::loada;
+   using blaze::storea;
+
+   test_  = "operator[]";
+
+   initialize();
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      const auto xmm1( loada( a_+i ) );
+      auto xmm2( loada( b_+i ) );
+      for( size_t j=0UL; j<SIMDSIZE; ++j ) {
+         xmm2[j] = xmm1[j];
+      }
+      storea( b_+i, xmm2 );
+   }
+
+   compare( a_, b_ );
 }
 //*************************************************************************************************
 
