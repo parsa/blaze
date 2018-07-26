@@ -52,6 +52,6 @@
    \endcode
 */
 #ifndef BLAZE_CACHE_SIZE
-#define BLAZE_CACHE_SIZE 3145728UL;
+#define BLAZE_CACHE_SIZE 3145728UL
 #endif
 //*************************************************************************************************

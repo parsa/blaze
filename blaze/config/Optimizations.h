@@ -59,7 +59,7 @@
    \endcode
 */
 #ifndef BLAZE_USE_PADDING
-#define BLAZE_USE_PADDING 1;
+#define BLAZE_USE_PADDING 1
 #endif
 //*************************************************************************************************
 
