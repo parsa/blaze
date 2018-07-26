@@ -86,27 +86,32 @@ struct SIMDint8
 #if BLAZE_AVX512BW_MODE
    using IntrinsicType = __m512i;
    BLAZE_ALWAYS_INLINE SIMDint8() noexcept : value( _mm512_setzero_epi32() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 64UL;
 #elif BLAZE_MIC_MODE
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDint8() noexcept : value( 0 ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #elif BLAZE_AVX2_MODE
    using IntrinsicType = __m256i;
    BLAZE_ALWAYS_INLINE SIMDint8() noexcept : value( _mm256_setzero_si256() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 32UL;
 #elif BLAZE_SSE2_MODE
    using IntrinsicType = __m128i;
    BLAZE_ALWAYS_INLINE SIMDint8() noexcept : value( _mm_setzero_si128() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 16UL;
 #else
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDint8() noexcept : value( 0 ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #endif
 
@@ -140,27 +145,32 @@ struct SIMDuint8
 #if BLAZE_AVX512BW_MODE
    using IntrinsicType = __m512i;
    BLAZE_ALWAYS_INLINE SIMDuint8() noexcept : value( _mm512_setzero_epi32() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 64UL;
 #elif BLAZE_MIC_MODE
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDuint8() noexcept : value( 0 ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #elif BLAZE_AVX2_MODE
    using IntrinsicType = __m256i;
    BLAZE_ALWAYS_INLINE SIMDuint8() noexcept : value( _mm256_setzero_si256() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 32UL;
 #elif BLAZE_SSE2_MODE
    using IntrinsicType = __m128i;
    BLAZE_ALWAYS_INLINE SIMDuint8() noexcept : value( _mm_setzero_si128() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 16UL;
 #else
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDuint8() noexcept : value( 0 ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #endif
 
@@ -216,27 +226,32 @@ struct SIMDcint8
 #if BLAZE_AVX512BW_MODE
    using IntrinsicType = __m512i;
    BLAZE_ALWAYS_INLINE SIMDcint8() noexcept : value( _mm512_setzero_epi32() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 32UL;
 #elif BLAZE_MIC_MODE
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDcint8() noexcept : value( 0, 0 ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #elif BLAZE_AVX2_MODE
    using IntrinsicType = __m256i;
    BLAZE_ALWAYS_INLINE SIMDcint8() noexcept : value( _mm256_setzero_si256() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 16UL;
 #elif BLAZE_SSE2_MODE
    using IntrinsicType = __m128i;
    BLAZE_ALWAYS_INLINE SIMDcint8() noexcept : value( _mm_setzero_si128() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 8UL;
 #else
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDcint8() noexcept : value( 0, 0 ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #endif
 
@@ -270,27 +285,32 @@ struct SIMDcuint8
 #if BLAZE_AVX512BW_MODE
    using IntrinsicType = __m512i;
    BLAZE_ALWAYS_INLINE SIMDcuint8() noexcept : value( _mm512_setzero_epi32() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 32UL;
 #elif BLAZE_MIC_MODE
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDcuint8() noexcept : value( 0, 0 ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #elif BLAZE_AVX2_MODE
    using IntrinsicType = __m256i;
    BLAZE_ALWAYS_INLINE SIMDcuint8() noexcept : value( _mm256_setzero_si256() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 16UL;
 #elif BLAZE_SSE2_MODE
    using IntrinsicType = __m128i;
    BLAZE_ALWAYS_INLINE SIMDcuint8() noexcept : value( _mm_setzero_si128() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 8UL;
 #else
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDcuint8() noexcept : value( 0, 0 ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #endif
 
@@ -346,27 +366,32 @@ struct SIMDint16
 #if BLAZE_AVX512BW_MODE
    using IntrinsicType = __m512i;
    BLAZE_ALWAYS_INLINE SIMDint16() noexcept : value( _mm512_setzero_epi32() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 32UL;
 #elif BLAZE_MIC_MODE
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDint16() noexcept : value( 0 ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #elif BLAZE_AVX2_MODE
    using IntrinsicType = __m256i;
    BLAZE_ALWAYS_INLINE SIMDint16() noexcept : value( _mm256_setzero_si256() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 16UL;
 #elif BLAZE_SSE2_MODE
    using IntrinsicType = __m128i;
    BLAZE_ALWAYS_INLINE SIMDint16() noexcept : value( _mm_setzero_si128() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 8UL;
 #else
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDint16() noexcept : value( 0 ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #endif
 
@@ -400,27 +425,32 @@ struct SIMDuint16
 #if BLAZE_AVX512BW_MODE
    using IntrinsicType = __m512i;
    BLAZE_ALWAYS_INLINE SIMDuint16() noexcept : value( _mm512_setzero_epi32() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 32UL;
 #elif BLAZE_MIC_MODE
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDuint16() noexcept : value( 0 ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #elif BLAZE_AVX2_MODE
    using IntrinsicType = __m256i;
    BLAZE_ALWAYS_INLINE SIMDuint16() noexcept : value( _mm256_setzero_si256() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 16UL;
 #elif BLAZE_SSE2_MODE
    using IntrinsicType = __m128i;
    BLAZE_ALWAYS_INLINE SIMDuint16() noexcept : value( _mm_setzero_si128() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 8UL;
 #else
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDuint16() noexcept : value( 0 ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #endif
 
@@ -476,27 +506,32 @@ struct SIMDcint16
 #if BLAZE_AVX512BW_MODE
    using IntrinsicType = __m512i;
    BLAZE_ALWAYS_INLINE SIMDcint16() noexcept : value( _mm512_setzero_epi32() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 16UL;
 #elif BLAZE_MIC_MODE
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDcint16() noexcept : value( 0, 0 ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #elif BLAZE_AVX2_MODE
    using IntrinsicType = __m256i;
    BLAZE_ALWAYS_INLINE SIMDcint16() noexcept : value( _mm256_setzero_si256() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 8UL;
 #elif BLAZE_SSE2_MODE
    using IntrinsicType = __m128i;
    BLAZE_ALWAYS_INLINE SIMDcint16() noexcept : value( _mm_setzero_si128() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 4UL;
 #else
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDcint16() noexcept : value( 0, 0 ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #endif
 
@@ -530,27 +565,32 @@ struct SIMDcuint16
 #if BLAZE_AVX512BW_MODE
    using IntrinsicType = __m512i;
    BLAZE_ALWAYS_INLINE SIMDcuint16() noexcept : value( _mm512_setzero_epi32() ) {}
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
    BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 16UL;
 #elif BLAZE_MIC_MODE
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDcuint16() noexcept : value( 0, 0 ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #elif BLAZE_AVX2_MODE
    using IntrinsicType = __m256i;
    BLAZE_ALWAYS_INLINE SIMDcuint16() noexcept : value( _mm256_setzero_si256() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 8UL;
 #elif BLAZE_SSE2_MODE
    using IntrinsicType = __m128i;
    BLAZE_ALWAYS_INLINE SIMDcuint16() noexcept : value( _mm_setzero_si128() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 4UL;
 #else
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDcuint16() noexcept : value( 0, 0 ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #endif
 
@@ -606,22 +646,26 @@ struct SIMDint32
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    using IntrinsicType = __m512i;
    BLAZE_ALWAYS_INLINE SIMDint32() noexcept : value( _mm512_setzero_epi32() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 16UL;
 #elif BLAZE_AVX2_MODE
    using IntrinsicType = __m256i;
    BLAZE_ALWAYS_INLINE SIMDint32() noexcept : value( _mm256_setzero_si256() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 8UL;
 #elif BLAZE_SSE2_MODE
    using IntrinsicType = __m128i;
    BLAZE_ALWAYS_INLINE SIMDint32() noexcept : value( _mm_setzero_si128() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 4UL;
 #else
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDint32() noexcept : value( 0 ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #endif
 
@@ -655,22 +699,26 @@ struct SIMDuint32
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    using IntrinsicType = __m512i;
    BLAZE_ALWAYS_INLINE SIMDuint32() noexcept : value( _mm512_setzero_epi32() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 16UL;
 #elif BLAZE_AVX2_MODE
    using IntrinsicType = __m256i;
    BLAZE_ALWAYS_INLINE SIMDuint32() noexcept : value( _mm256_setzero_si256() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 8UL;
 #elif BLAZE_SSE2_MODE
    using IntrinsicType = __m128i;
    BLAZE_ALWAYS_INLINE SIMDuint32() noexcept : value( _mm_setzero_si128() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 4UL;
 #else
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDuint32() noexcept : value( 0 ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #endif
 
@@ -726,22 +774,26 @@ struct SIMDcint32
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    using IntrinsicType = __m512i;
    BLAZE_ALWAYS_INLINE SIMDcint32() noexcept : value( _mm512_setzero_epi32() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 8UL;
 #elif BLAZE_AVX2_MODE
    using IntrinsicType = __m256i;
    BLAZE_ALWAYS_INLINE SIMDcint32() noexcept : value( _mm256_setzero_si256() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 4UL;
 #elif BLAZE_SSE2_MODE
    using IntrinsicType = __m128i;
    BLAZE_ALWAYS_INLINE SIMDcint32() noexcept : value( _mm_setzero_si128() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 2UL;
 #else
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDcint32() noexcept : value( 0, 0 ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #endif
 
@@ -775,22 +827,26 @@ struct SIMDcuint32
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    using IntrinsicType = __m512i;
    BLAZE_ALWAYS_INLINE SIMDcuint32() noexcept : value( _mm512_setzero_epi32() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 8UL;
 #elif BLAZE_AVX2_MODE
    using IntrinsicType = __m256i;
    BLAZE_ALWAYS_INLINE SIMDcuint32() noexcept : value( _mm256_setzero_si256() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 4UL;
 #elif BLAZE_SSE2_MODE
    using IntrinsicType = __m128i;
    BLAZE_ALWAYS_INLINE SIMDcuint32() noexcept : value( _mm_setzero_si128() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 2UL;
 #else
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDcuint32() noexcept : value( 0, 0 ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #endif
 
@@ -846,22 +902,26 @@ struct SIMDint64
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    using IntrinsicType = __m512i;
    BLAZE_ALWAYS_INLINE SIMDint64() noexcept : value( _mm512_setzero_epi32() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 8UL;
 #elif BLAZE_AVX2_MODE
    using IntrinsicType = __m256i;
    BLAZE_ALWAYS_INLINE SIMDint64() noexcept : value( _mm256_setzero_si256() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 4UL;
 #elif BLAZE_SSE2_MODE
    using IntrinsicType = __m128i;
    BLAZE_ALWAYS_INLINE SIMDint64() noexcept : value( _mm_setzero_si128() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 2UL;
 #else
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDint64() noexcept : value( 0L ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #endif
 
@@ -895,22 +955,26 @@ struct SIMDuint64
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    using IntrinsicType = __m512i;
    BLAZE_ALWAYS_INLINE SIMDuint64() noexcept : value( _mm512_setzero_epi32() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 8UL;
 #elif BLAZE_AVX2_MODE
    using IntrinsicType = __m256i;
    BLAZE_ALWAYS_INLINE SIMDuint64() noexcept : value( _mm256_setzero_si256() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 4UL;
 #elif BLAZE_SSE2_MODE
    using IntrinsicType = __m128i;
    BLAZE_ALWAYS_INLINE SIMDuint64() noexcept : value( _mm_setzero_si128() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 2UL;
 #else
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDuint64() noexcept : value( 0L ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #endif
 
@@ -966,22 +1030,26 @@ struct SIMDcint64
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    using IntrinsicType = __m512i;
    BLAZE_ALWAYS_INLINE SIMDcint64() noexcept : value( _mm512_setzero_epi32() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 4UL;
 #elif BLAZE_AVX2_MODE
    using IntrinsicType = __m256i;
    BLAZE_ALWAYS_INLINE SIMDcint64() noexcept : value( _mm256_setzero_si256() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 2UL;
 #elif BLAZE_SSE2_MODE
    using IntrinsicType = __m128i;
    BLAZE_ALWAYS_INLINE SIMDcint64() noexcept : value( _mm_setzero_si128() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 1UL;
 #else
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDcint64() noexcept : value( 0L, 0L ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #endif
 
@@ -1015,22 +1083,26 @@ struct SIMDcuint64
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    using IntrinsicType = __m512i;
    BLAZE_ALWAYS_INLINE SIMDcuint64() noexcept : value( _mm512_setzero_epi32() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 4UL;
 #elif BLAZE_AVX2_MODE
    using IntrinsicType = __m256i;
    BLAZE_ALWAYS_INLINE SIMDcuint64() noexcept : value( _mm256_setzero_si256() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 2UL;
 #elif BLAZE_SSE2_MODE
    using IntrinsicType = __m128i;
    BLAZE_ALWAYS_INLINE SIMDcuint64() noexcept : value( _mm_setzero_si128() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 1UL;
 #else
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDcuint64() noexcept : value( 0L, 0L ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #endif
 
@@ -1086,22 +1158,26 @@ struct SIMDfloat
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    using IntrinsicType = __m512;
    BLAZE_ALWAYS_INLINE SIMDfloat() noexcept : value( _mm512_setzero_ps() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 16UL;
 #elif BLAZE_AVX_MODE
    using IntrinsicType = __m256;
    BLAZE_ALWAYS_INLINE SIMDfloat() noexcept : value( _mm256_setzero_ps() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 8UL;
 #elif BLAZE_SSE_MODE
    using IntrinsicType = __m128;
    BLAZE_ALWAYS_INLINE SIMDfloat() noexcept : value( _mm_setzero_ps() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 4UL;
 #else
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDfloat() noexcept : value( 0.0F ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #endif
 
@@ -1159,22 +1235,26 @@ struct SIMDcfloat
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    using IntrinsicType = __m512;
    BLAZE_ALWAYS_INLINE SIMDcfloat() noexcept : value( _mm512_setzero_ps() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 8UL;
 #elif BLAZE_AVX_MODE
    using IntrinsicType = __m256;
    BLAZE_ALWAYS_INLINE SIMDcfloat() noexcept : value( _mm256_setzero_ps() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 4UL;
 #elif BLAZE_SSE_MODE
    using IntrinsicType = __m128;
    BLAZE_ALWAYS_INLINE SIMDcfloat() noexcept : value( _mm_setzero_ps() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 2UL;
 #else
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDcfloat() noexcept : value( 0.0F, 0.0F ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #endif
 
@@ -1230,22 +1310,26 @@ struct SIMDdouble
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    using IntrinsicType = __m512d;
    BLAZE_ALWAYS_INLINE SIMDdouble() noexcept : value( _mm512_setzero_pd() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 8UL;
 #elif BLAZE_AVX_MODE
    using IntrinsicType = __m256d;
    BLAZE_ALWAYS_INLINE SIMDdouble() noexcept : value( _mm256_setzero_pd() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 4UL;
 #elif BLAZE_SSE2_MODE
    using IntrinsicType = __m128d;
    BLAZE_ALWAYS_INLINE SIMDdouble() noexcept : value( _mm_setzero_pd() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 2UL;
 #else
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDdouble() noexcept : value( 0.0 ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #endif
 
@@ -1303,22 +1387,26 @@ struct SIMDcdouble
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    using IntrinsicType = __m512d;
    BLAZE_ALWAYS_INLINE SIMDcdouble() noexcept : value( _mm512_setzero_pd() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 4UL;
 #elif BLAZE_AVX_MODE
    using IntrinsicType = __m256d;
    BLAZE_ALWAYS_INLINE SIMDcdouble() noexcept : value( _mm256_setzero_pd() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 2UL;
 #elif BLAZE_SSE2_MODE
    using IntrinsicType = __m128d;
    BLAZE_ALWAYS_INLINE SIMDcdouble() noexcept : value( _mm_setzero_pd() ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t i ) noexcept { return reinterpret_cast<ValueType*>( &value )[i]; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t i ) const noexcept { return reinterpret_cast<const ValueType*>( &value )[i]; }
    static constexpr size_t size = 1UL;
 #else
    using IntrinsicType = ValueType;
    BLAZE_ALWAYS_INLINE SIMDcdouble() noexcept : value( 0.0, 0.0 ) {}
-   BLAZE_ALWAYS_INLINE ValueType operator[]( size_t /*i*/ ) const noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType& operator[]( size_t /*i*/ ) noexcept { return value; }
+   BLAZE_ALWAYS_INLINE ValueType  operator[]( size_t /*i*/ ) const noexcept { return value; }
    static constexpr size_t size = 1UL;
 #endif
 
