@@ -52,7 +52,7 @@ all: shims simd blas lapack typetraits traits \
      dvecdvecouter dvecsvecouter svecdvecouter svecsvecouter \
      dvecdvecdiv svecdvecdiv \
      dvecdvecmin dvecdvecmax \
-     dvecreduce \
+     dvecreduce svecreduce \
      dmatdvecmult dmatsvecmult smatdvecmult smatsvecmult \
      tdvecdmatmult tsvecdmatmult tdvecsmatmult tsvecsmatmult \
      dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
@@ -424,6 +424,11 @@ dvecreduce:
 	@echo "Building the dense vector reduction tests..."
 	@$(MAKE) --no-print-directory -C ./dvecreduce $(MAKECMDGOALS)
 
+svecreduce:
+	@echo
+	@echo "Building the sparse vector reduction tests..."
+	@$(MAKE) --no-print-directory -C ./svecreduce $(MAKECMDGOALS)
+
 dmatdvecmult:
 	@echo
 	@echo "Building the dense matrix/dense vector multiplication tests..."
@@ -686,6 +691,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./dvecdvecmin reset
 	@$(MAKE) --no-print-directory -C ./dvecdvecmax reset
 	@$(MAKE) --no-print-directory -C ./dvecreduce reset
+	@$(MAKE) --no-print-directory -C ./svecreduce reset
 	@$(MAKE) --no-print-directory -C ./dmatdvecmult reset
 	@$(MAKE) --no-print-directory -C ./dmatsvecmult reset
 	@$(MAKE) --no-print-directory -C ./smatdvecmult reset
@@ -795,6 +801,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./dvecdvecmin clean
 	@$(MAKE) --no-print-directory -C ./dvecdvecmax clean
 	@$(MAKE) --no-print-directory -C ./dvecreduce clean
+	@$(MAKE) --no-print-directory -C ./svecreduce clean
 	@$(MAKE) --no-print-directory -C ./dmatdvecmult clean
 	@$(MAKE) --no-print-directory -C ./dmatsvecmult clean
 	@$(MAKE) --no-print-directory -C ./smatdvecmult clean
@@ -854,7 +861,7 @@ clean:
         dvecdvecouter dvecsvecouter svecdvecouter svecsvecouter \
         dvecdvecdiv svecdvecdiv \
         dvecdvecmin dvecdvecmax \
-        dvecreduce \
+        dvecreduce svecreduce \
         dmatdvecmult dmatsvecmult smatdvecmult smatsvecmult \
         tdvecdmatmult tsvecdmatmult tdvecsmatmult tsvecsmatmult \
         dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
