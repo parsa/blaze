@@ -60,6 +60,7 @@
 #include <blaze/math/expressions/SMatEvalExpr.h>
 #include <blaze/math/expressions/SMatMapExpr.h>
 #include <blaze/math/expressions/SMatNormExpr.h>
+#include <blaze/math/expressions/SMatReduceExpr.h>
 #include <blaze/math/expressions/SMatScalarDivExpr.h>
 #include <blaze/math/expressions/SMatScalarMultExpr.h>
 #include <blaze/math/expressions/SMatSerialExpr.h>

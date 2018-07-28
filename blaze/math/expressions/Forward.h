@@ -562,6 +562,12 @@ decltype(auto) reduce( const DenseMatrix<MT,SO>&, OP );
 template< size_t RF, typename MT, bool SO, typename OP >
 decltype(auto) reduce( const DenseMatrix<MT,SO>&, OP );
 
+template< typename MT, bool SO, typename OP >
+decltype(auto) reduce( const SparseMatrix<MT,SO>&, OP );
+
+template< size_t RF, typename MT, bool SO, typename OP >
+decltype(auto) reduce( const SparseMatrix<MT,SO>&, OP );
+
 
 template< typename MT, bool SO >
 inline decltype(auto) declsym( const DenseMatrix<MT,SO>& );
