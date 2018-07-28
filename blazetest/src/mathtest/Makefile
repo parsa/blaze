@@ -60,7 +60,7 @@ all: shims simd blas lapack typetraits traits \
      dmatdmatschur dmatsmatschur smatdmatschur smatsmatschur \
      dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
      dmatdmatmin dmatdmatmax \
-     dmatreduce \
+     dmatreduce smatreduce \
      determinant lu llh qr rq ql lq inversion eigen svd \
      vectorserializer matrixserializer
 
@@ -563,6 +563,9 @@ dmatdmatmax:
 dmatreduce:
 	@$(MAKE) --no-print-directory -C ./dmatreduce $(MAKECMDGOALS)
 
+smatreduce:
+	@$(MAKE) --no-print-directory -C ./smatreduce $(MAKECMDGOALS)
+
 determinant:
 	@echo
 	@echo "Building the matrix determinant tests..."
@@ -723,6 +726,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./dmatdmatmin reset
 	@$(MAKE) --no-print-directory -C ./dmatdmatmax reset
 	@$(MAKE) --no-print-directory -C ./dmatreduce reset
+	@$(MAKE) --no-print-directory -C ./smatreduce reset
 	@$(MAKE) --no-print-directory -C ./determinant reset
 	@$(MAKE) --no-print-directory -C ./lu reset
 	@$(MAKE) --no-print-directory -C ./llh reset
@@ -834,6 +838,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./dmatdmatmin clean
 	@$(MAKE) --no-print-directory -C ./dmatdmatmax clean
 	@$(MAKE) --no-print-directory -C ./dmatreduce clean
+	@$(MAKE) --no-print-directory -C ./smatreduce clean
 	@$(MAKE) --no-print-directory -C ./determinant clean
 	@$(MAKE) --no-print-directory -C ./lu clean
 	@$(MAKE) --no-print-directory -C ./llh clean
@@ -875,6 +880,6 @@ clean:
         dmatdmatschur dmatsmatschur smatdmatschur smatsmatschur \
         dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
         dmatdmatmin dmatdmatmax \
-        dmatreduce \
+        dmatreduce smatreduce \
         determinant lu llh qr rq ql lq inversion eigen svd \
         vectorserializer matrixserializer
