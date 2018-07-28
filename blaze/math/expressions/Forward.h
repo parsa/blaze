@@ -546,6 +546,9 @@ decltype(auto) map( const DenseMatrix<MT1,true>&, const DenseMatrix<MT2,false>&,
 template< typename VT, bool TF, typename OP >
 decltype(auto) reduce( const DenseVector<VT,TF>&, OP );
 
+template< typename VT, bool TF, typename OP >
+decltype(auto) reduce( const SparseVector<VT,TF>&, OP );
+
 
 template< typename MT, bool SO >
 inline decltype(auto) declsym( const DenseMatrix<MT,SO>& );
