@@ -36,6 +36,13 @@
 #define _BLAZE_MATH_EXPRESSIONS_FORWARD_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/util/Types.h>
+
+
 namespace blaze {
 
 //=================================================================================================
@@ -548,6 +555,12 @@ decltype(auto) reduce( const DenseVector<VT,TF>&, OP );
 
 template< typename VT, bool TF, typename OP >
 decltype(auto) reduce( const SparseVector<VT,TF>&, OP );
+
+template< typename MT, bool SO, typename OP >
+decltype(auto) reduce( const DenseMatrix<MT,SO>&, OP );
+
+template< size_t RF, typename MT, bool SO, typename OP >
+decltype(auto) reduce( const DenseMatrix<MT,SO>&, OP );
 
 
 template< typename MT, bool SO >
