@@ -56,6 +56,7 @@
 #include <blaze/math/expressions/MatMatMultExpr.h>
 #include <blaze/math/expressions/MatMatSubExpr.h>
 #include <blaze/math/expressions/Matrix.h>
+#include <blaze/math/expressions/MatReduceExpr.h>
 #include <blaze/math/expressions/MatScalarDivExpr.h>
 #include <blaze/math/expressions/MatScalarMultExpr.h>
 #include <blaze/math/expressions/MatSerialExpr.h>
@@ -1265,6 +1266,32 @@ inline decltype(auto) elements( const MatVecMultExpr<VT>& vector, REAs... args )
    BLAZE_FUNCTION_TRACE;
 
    return rows<CEAs...>( (~vector).leftOperand(), args... ) * (~vector).rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of elements of the given row-wise matrix reduction
+//        operation.
+// \ingroup rows
+//
+// \param vector The constant row-wise matrix reduction operation.
+// \param args The runtime element arguments.
+// \return View on the specified elements of the multiplication.
+//
+// This function returns an expression representing the specified elements of the given
+// row-wise matrix reduction operation.
+*/
+template< size_t... CEAs      // Compile time element arguments
+        , typename VT         // Vector base type of the expression
+        , typename... REAs >  // Runtime element arguments
+inline decltype(auto) elements( const MatReduceExpr<1UL,VT>& vector, REAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return reduce<1UL>( rows<CEAs...>( (~vector).operand(), args... ), (~vector).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
