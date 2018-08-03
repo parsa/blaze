@@ -1736,15 +1736,7 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, OP op )
          }
       }
 
-      if( IsSame_v<OP,Mult> ) {
-         redux = prod( xmm1 );
-      }
-      else {
-         redux = xmm1[0UL];
-         for( size_t k=1UL; k<SIMDSIZE; ++k ) {
-            redux = op( redux, xmm1[k] );
-         }
-      }
+      redux = reduce( xmm1, op );
    }
    else
    {

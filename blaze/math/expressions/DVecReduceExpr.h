@@ -53,7 +53,6 @@
 #include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasMember.h>
-#include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -227,15 +226,7 @@ inline auto dvecreduce( const DenseVector<VT,TF>& dv, OP op )
          xmm1 = op( xmm1, xmm2 );
       }
 
-      if( IsSame_v<OP,Mult> ) {
-         redux = prod( xmm1 );
-      }
-      else {
-         redux = xmm1[0UL];
-         for( size_t k=1UL; k<SIMDSIZE; ++k ) {
-            redux = op( redux, xmm1[k] );
-         }
-      }
+      redux = reduce( xmm1, op );
 
       for( size_t i=ipos; i<N; ++i ) {
          redux = op( redux, tmp[i] );
