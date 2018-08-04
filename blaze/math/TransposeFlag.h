@@ -55,7 +55,7 @@ namespace blaze {
    blaze::StaticVector<int,3UL,columnVector> v{ 1, 2, 3 };
    \endcode
 */
-const bool columnVector = false;
+constexpr bool columnVector = false;
 //*************************************************************************************************
 
 
@@ -70,7 +70,7 @@ const bool columnVector = false;
    blaze::StaticVector<int,3UL,rowVector> v{ 1, 2, 3 };
    \endcode
 */
-const bool rowVector = true;
+constexpr bool rowVector = true;
 //*************************************************************************************************
 
 } // namespace blaze
