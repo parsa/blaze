@@ -56,8 +56,6 @@
 #include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
-#include <blaze/util/algorithms/Max.h>
-#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DecltypeAuto.h>
@@ -266,12 +264,6 @@ const ElementType_t<VT> sqrLength( const SparseVector<VT,TF>& sv );
 
 template< typename VT, bool TF >
 inline auto length( const SparseVector<VT,TF>& sv ) -> decltype( sqrt( sqrLength( ~sv ) ) );
-
-template< typename VT, bool TF >
-const ElementType_t<VT> min( const SparseVector<VT,TF>& sv );
-
-template< typename VT, bool TF >
-const ElementType_t<VT> max( const SparseVector<VT,TF>& sv );
 //@}
 //*************************************************************************************************
 
@@ -450,120 +442,6 @@ template< typename VT  // Type of the sparse vector
 inline auto length( const SparseVector<VT,TF>& sv ) -> decltype( sqrt( sqrLength( ~sv ) ) )
 {
    return sqrt( sqrLength( ~sv ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns the smallest element of the sparse vector.
-// \ingroup sparse_vector
-//
-// \param sv The given sparse vector.
-// \return The smallest sparse vector element.
-//
-// This function returns the smallest element of the given sparse vector. This function can
-// only be used for element types that support the smaller-than relationship. In case the
-// vector currently has a size of 0, the returned value is the default value (e.g. 0 in case
-// of fundamental data types).
-//
-// \note In case the sparse vector is not completely filled, the zero elements are also
-// taken into account. Example: the following compressed vector has only 2 non-zero elements.
-// However, the minimum of this vector is 0:
-
-                              \f[
-                              \left(\begin{array}{*{4}{c}}
-                              1 & 0 & 3 & 0 \\
-                              \end{array}\right)
-                              \f]
-*/
-template< typename VT  // Type of the sparse vector
-        , bool TF >    // Transpose flag
-const ElementType_t<VT> min( const SparseVector<VT,TF>& sv )
-{
-   using blaze::min;
-
-   using ET = ElementType_t<VT>;
-   using CT = CompositeType_t<VT>;
-   using ConstIterator = ConstIterator_t< RemoveReference_t<CT> >;
-
-   CT a( ~sv );  // Evaluation of the sparse vector operand
-
-   const ConstIterator end( a.end() );
-   ConstIterator element( a.begin() );
-
-   if( element == end ) {
-      return ET();
-   }
-   else if( a.nonZeros() == a.size() ) {
-      ET minimum( element->value() );
-      ++element;
-      for( ; element!=end; ++element )
-         minimum = min( minimum, element->value() );
-      return minimum;
-   }
-   else {
-      ET minimum{};
-      for( ; element!=end; ++element )
-         minimum = min( minimum, element->value() );
-      return minimum;
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns the largest element of the sparse vector.
-// \ingroup sparse_vector
-//
-// \param sv The given sparse vector.
-// \return The largest sparse vector element.
-//
-// This function returns the largest element of the given sparse vector. This function can
-// only be used for element types that support the smaller-than relationship. In case the
-// vector currently has a size of 0, the returned value is the default value (e.g. 0 in case
-// of fundamental data types).
-//
-// \note In case the compressed vector is not completely filled, the zero elements are also
-// taken into account. Example: the following compressed vector has only 2 non-zero elements.
-// However, the maximum of this vector is 0:
-
-                              \f[
-                              \left(\begin{array}{*{4}{c}}
-                              -1 & 0 & -3 & 0 \\
-                              \end{array}\right)
-                              \f]
-*/
-template< typename VT  // Type of the sparse vector
-        , bool TF >    // Transpose flag
-const ElementType_t<VT> max( const SparseVector<VT,TF>& sv )
-{
-   using blaze::max;
-
-   using ET = ElementType_t<VT>;
-   using CT = CompositeType_t<VT>;
-   using ConstIterator = ConstIterator_t< RemoveReference_t<CT> >;
-
-   CT a( ~sv );  // Evaluation of the sparse vector operand
-
-   const ConstIterator end( a.end() );
-   ConstIterator element( a.begin() );
-
-   if( element == end ) {
-      return ET();
-   }
-   else if( a.nonZeros() == a.size() ) {
-      ET maximum( element->value() );
-      ++element;
-      for( ; element!=end; ++element )
-         maximum = max( maximum, element->value() );
-      return maximum;
-   }
-   else {
-      ET maximum{};
-      for( ; element!=end; ++element )
-         maximum = max( maximum, element->value() );
-      return maximum;
-   }
 }
 //*************************************************************************************************
 
