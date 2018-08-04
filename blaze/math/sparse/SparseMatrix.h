@@ -74,8 +74,6 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
-#include <blaze/util/algorithms/Max.h>
-#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DecltypeAuto.h>
 #include <blaze/util/EnableIf.h>
@@ -326,12 +324,6 @@ bool isDiagonal( const SparseMatrix<MT,SO>& sm );
 
 template< bool RF, typename MT, bool SO >
 bool isIdentity( const SparseMatrix<MT,SO>& sm );
-
-template< typename MT, bool SO >
-const ElementType_t<MT> min( const SparseMatrix<MT,SO>& sm );
-
-template< typename MT, bool SO >
-const ElementType_t<MT> max( const SparseMatrix<MT,SO>& sm );
 //@}
 //*************************************************************************************************
 
@@ -1570,104 +1562,6 @@ bool isIdentity( const SparseMatrix<MT,SO>& sm )
    }
 
    return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns the smallest element of the sparse matrix.
-// \ingroup sparse_matrix
-//
-// \param sm The given sparse matrix.
-// \return The smallest sparse matrix element.
-//
-// This function returns the smallest element of the given sparse matrix. This function can
-// only be used for element types that support the smaller-than relationship. In case the
-// matrix currently has either 0 rows or 0 columns, the returned value is the default value
-// (e.g. 0 in case of fundamental data types).
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-const ElementType_t<MT> min( const SparseMatrix<MT,SO>& sm )
-{
-   using blaze::min;
-
-   using ET = ElementType_t<MT>;
-   using CT = CompositeType_t<MT>;
-   using ConstIterator = ConstIterator_t< RemoveReference_t<CT> >;
-
-   CT A( ~sm );  // Evaluation of the sparse matrix operand
-
-   const size_t nonzeros( A.nonZeros() );
-
-   if( nonzeros == 0UL ) {
-      return ET();
-   }
-
-   ET minimum{};
-   if( nonzeros == A.rows() * A.columns() ) {
-      minimum = A.begin( 0UL )->value();
-   }
-
-   const size_t index( ( SO == rowMajor )?( A.rows() ):( A.columns() ) );
-
-   for( size_t i=0UL; i<index; ++i ) {
-      const ConstIterator end( A.end( i ) );
-      ConstIterator element( A.begin( i ) );
-      for( ; element!=end; ++element )
-         minimum = min( minimum, element->value() );
-   }
-
-   return minimum;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns the largest element of the sparse matrix.
-// \ingroup sparse_matrix
-//
-// \param sm The given sparse matrix.
-// \return The largest sparse matrix element.
-//
-// This function returns the largest element of the given sparse matrix. This function can
-// only be used for element types that support the smaller-than relationship. In case the
-// matrix currently has either 0 rows or 0 columns, the returned value is the default value
-// (e.g. 0 in case of fundamental data types).
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-const ElementType_t<MT> max( const SparseMatrix<MT,SO>& sm )
-{
-   using blaze::max;
-
-   using ET = ElementType_t<MT>;
-   using CT = CompositeType_t<MT>;
-   using ConstIterator = ConstIterator_t< RemoveReference_t<CT> >;
-
-   CT A( ~sm );  // Evaluation of the sparse matrix operand
-
-   const size_t nonzeros( A.nonZeros() );
-
-   if( nonzeros == 0UL ) {
-      return ET();
-   }
-
-   ET maximum{};
-   if( nonzeros == A.rows() * A.columns() ) {
-      maximum = A.begin( 0UL )->value();
-   }
-
-   const size_t index( ( SO == rowMajor )?( A.rows() ):( A.columns() ) );
-
-   for( size_t i=0UL; i<index; ++i ) {
-      const ConstIterator end( A.end( i ) );
-      ConstIterator element( A.begin( i ) );
-      for( ; element!=end; ++element )
-         maximum = max( maximum, element->value() );
-   }
-
-   return maximum;
 }
 //*************************************************************************************************
 

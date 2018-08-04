@@ -56,6 +56,8 @@
 #include <blaze/math/expressions/MatReduceExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/functors/Add.h>
+#include <blaze/math/functors/Max.h>
+#include <blaze/math/functors/Min.h>
 #include <blaze/math/functors/Mult.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/ReduceTrait.h>
@@ -1509,7 +1511,7 @@ struct SMatReduceExpr<1UL,MT,OP>
    \code
    blaze::CompressedMatrix<double> a;
    // ... Resizing and initialization
-   const double sum = reduce( a, Add() );
+   const double totalsum = reduce( a, Add() );
    \endcode
 
 // Please note that the evaluation order of the reduction operation is unspecified. Thus the
@@ -1660,8 +1662,7 @@ inline decltype(auto) reduce( const SparseMatrix<MT,SO>& sm, OP op )
 
    \code
    blaze::CompressedMatrix<int> a{ { 1, 2 }, { 3, 4 } };
-   // ... Resizing and initialization
-   const int sum = sum( a );  // Results in 10
+   const int totalsum = sum( a );  // Results in 10
    \endcode
 
 // Please note that the evaluation order of the reduction operation is unspecified.
@@ -1692,13 +1693,11 @@ inline decltype(auto) sum( const SparseMatrix<MT,SO>& sm )
 
    \code
    blaze::CompressedMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
-   // ... Resizing and initialization
    const blaze::DynamicVector<int,rowVector> colsum = sum<0UL>( A );  // Results in { 2, 3, 6 }
    \endcode
 
    \code
    blaze::CompressedMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
-   // ... Resizing and initialization
    const blaze::DynamicVector<int,columnVector> rowsum = sum<1UL>( A );  // Results in { 3, 8 }
    \endcode
 
@@ -1728,8 +1727,7 @@ inline decltype(auto) sum( const SparseMatrix<MT,SO>& sm )
 
    \code
    blaze::CompressedMatrix<int> a{ { 1, 2 }, { 3, 4 } };
-   // ... Resizing and initialization
-   const int prod = prod( a );  // Results in 24
+   const int totalprod = prod( a );  // Results in 24
    \endcode
 
 // Please note that the evaluation order of the reduction operation is unspecified.
@@ -1760,13 +1758,11 @@ inline decltype(auto) prod( const SparseMatrix<MT,SO>& sm )
 
    \code
    blaze::CompressedMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
-   // ... Resizing and initialization
    const blaze::DynamicVector<int,rowVector> colsum = sum<0UL>( A );  // Results in { 1, 3, 8 }
    \endcode
 
    \code
    blaze::CompressedMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
-   // ... Resizing and initialization
    const blaze::DynamicVector<int,columnVector> rowsum = sum<1UL>( A );  // Results in { 2, 12 }
    \endcode
 
@@ -1780,6 +1776,144 @@ inline decltype(auto) prod( const SparseMatrix<MT,SO>& sm )
    BLAZE_FUNCTION_TRACE;
 
    return reduce<RF>( ~sm, Mult() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the smallest element of the sparse matrix.
+// \ingroup sparse_matrix
+//
+// \param sm The given sparse matrix.
+// \return The smallest sparse matrix element.
+//
+// This function returns the smallest non-zero element of the given sparse matrix. This function
+// can only be used for element types that support the smaller-than relationship. In case the
+// matrix currently has either 0 rows or 0 columns, the returned value is the default value
+// (e.g. 0 in case of fundamental data types).
+//
+// \note In case the sparse matrix is not completely filled, the implicit zero elements are NOT
+// taken into account. Example: the following compressed matrix has only 2 non-zero elements.
+// However, the minimum of this matrix is 1:
+
+   \code
+   blaze::CompressedMatrix<int> A{ { 1, 0 }, { 3, 0 } };
+   const int totalmin = min( A );  // Results in 1
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline decltype(auto) min( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return reduce( ~sm, Min() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the smallest element of each row/columns of the sparse matrix.
+// \ingroup sparse_matrix
+//
+// \param sm The given sparse matrix.
+// \return The smallest elements in each row/column.
+//
+// This function returns the smallest non-zero element of each row/column of the given sparse
+// matrix \a sm. In case the reduction flag \a RF is set to 0, a row vector containing the the
+// smallest element of each column is returned. In case \a RF is set to 1, a column vector
+// containing the smallest element of each row is returned.
+//
+// \note In case the sparse matrix is not completely filled, the implicit zero elements are NOT
+// taken into account:
+
+   \code
+   blaze::CompressedMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
+   const blaze::DynamicVector<int,rowVector> colmin = min<0UL>( A );  // Results in { 1, 3, 2 }
+   \endcode
+
+   \code
+   blaze::CompressedMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
+   const blaze::DynamicVector<int,columnVector> rowmin = min<1UL>( A );  // Results in { 1, 1 }
+   \endcode
+*/
+template< size_t RF    // Reduction flag
+        , typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline decltype(auto) min( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return reduce<RF>( ~sm, Min() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the largest element of the sparse matrix.
+// \ingroup sparse_matrix
+//
+// \param sm The given sparse matrix.
+// \return The largest sparse matrix element.
+//
+// This function returns the largest non-zero element of the given sparse matrix. This function
+// can only be used for element types that support the smaller-than relationship. In case the
+// matrix currently has either 0 rows or 0 columns, the returned value is the default value
+// (e.g. 0 in case of fundamental data types).
+//
+// \note In case the sparse matrix is not completely filled, the implicit zero elements are NOT
+// taken into account. Example: the following compressed matrix has only 2 non-zero elements.
+// However, the maximum of this matrix is -1:
+
+   \code
+   blaze::CompressedMatrix<int> A{ { -1, 0 }, { -3, 0 } };
+   const int totalmax = max( A );  // Results in -1
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline decltype(auto) max( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return reduce( ~sm, Max() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the largest element of each row/columns of the sparse matrix.
+// \ingroup sparse_matrix
+//
+// \param sm The given sparse matrix.
+// \return The largest elements in each row/column.
+//
+// This function returns the largest element of each row/column of the given sparse matrix \a sm.
+// In case the reduction flag \a RF is set to 0, a row vector containing the the largest element
+// of each column is returned. In case \a RF is set to 1, a column vector containing the largest
+// element of each row is returned.
+//
+// \note In case the sparse matrix is not completely filled, the implicit zero elements are NOT
+// taken into account:
+
+   \code
+   blaze::CompressedMatrix<int> A{ { -1, 0, -2 }, { -1, -3, -4 } };
+   const blaze::DynamicVector<int,rowVector> colmax = max<0UL>( A );  // Results in { -1, -3, -2 }
+   \endcode
+
+   \code
+   blaze::CompressedMatrix<int> A{ { -1, 0, -2 }, { -1, -3, -4 } };
+   const blaze::DynamicVector<int,columnVector> rowmax = max<1UL>( A );  // Results in { -1, -1 }
+   \endcode
+*/
+template< size_t RF    // Reduction flag
+        , typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline decltype(auto) max( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return reduce<RF>( ~sm, Max() );
 }
 //*************************************************************************************************
 
