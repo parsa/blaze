@@ -225,3 +225,4 @@ Mario Emmenlauer -- Blazemark extensions
 
 Jeff Pollock -- CMake extensions
 
+Darcy Beurle -- Integration of **Blaze** into the Compiler Explorer
