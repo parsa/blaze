@@ -74,7 +74,7 @@ auto evalDeclHermTrait( const T& )
    -> typename DeclHermTrait<T>::Type;
 
 template< typename T >
-auto evalDeclHermTrait( volatile const T& )
+auto evalDeclHermTrait( const volatile T& )
    -> typename DeclHermTrait<T>::Type;
 /*! \endcond */
 //*************************************************************************************************

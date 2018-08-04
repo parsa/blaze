@@ -73,7 +73,7 @@ auto evalRowsTrait( const T& )
    -> typename RowsTrait<T,CRAs...>::Type;
 
 template< size_t... CRAs, typename T >
-auto evalRowsTrait( volatile const T& )
+auto evalRowsTrait( const volatile T& )
    -> typename RowsTrait<T,CRAs...>::Type;
 /*! \endcond */
 //*************************************************************************************************

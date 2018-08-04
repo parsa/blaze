@@ -74,7 +74,7 @@ auto evalDeclSymTrait( const T& )
    -> typename DeclSymTrait<T>::Type;
 
 template< typename T >
-auto evalDeclSymTrait( volatile const T& )
+auto evalDeclSymTrait( const volatile T& )
    -> typename DeclSymTrait<T>::Type;
 /*! \endcond */
 //*************************************************************************************************

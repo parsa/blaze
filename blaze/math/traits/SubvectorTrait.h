@@ -82,11 +82,11 @@ auto evalSubvectorTrait( const T& )
    -> typename SubvectorTrait<T>::Type;
 
 template< size_t I, size_t N, typename T >
-auto evalSubvectorTrait( volatile const T& )
+auto evalSubvectorTrait( const volatile T& )
    -> typename SubvectorTrait<T,I,N>::Type;
 
 template< typename T >
-auto evalSubvectorTrait( volatile const T& )
+auto evalSubvectorTrait( const volatile T& )
    -> typename SubvectorTrait<T>::Type;
 /*! \endcond */
 //*************************************************************************************************

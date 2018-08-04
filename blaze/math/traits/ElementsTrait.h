@@ -73,7 +73,7 @@ auto evalElementsTrait( const T& )
    -> typename ElementsTrait<T,CEAs...>::Type;
 
 template< size_t... CEAs, typename T >
-auto evalElementsTrait( volatile const T& )
+auto evalElementsTrait( const volatile T& )
    -> typename ElementsTrait<T,CEAs...>::Type;
 /*! \endcond */
 //*************************************************************************************************

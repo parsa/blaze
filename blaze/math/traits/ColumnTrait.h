@@ -82,11 +82,11 @@ auto evalColumnTrait( const T& )
    -> typename ColumnTrait<T>::Type;
 
 template< size_t I, typename T >
-auto evalColumnTrait( volatile const T& )
+auto evalColumnTrait( const volatile T& )
    -> typename ColumnTrait<T,I>::Type;
 
 template< typename T >
-auto evalColumnTrait( volatile const T& )
+auto evalColumnTrait( const volatile T& )
    -> typename ColumnTrait<T>::Type;
 /*! \endcond */
 //*************************************************************************************************

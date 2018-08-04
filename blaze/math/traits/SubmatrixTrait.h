@@ -82,11 +82,11 @@ auto evalSubmatrixTrait( const T& )
    -> typename SubmatrixTrait<T>::Type;
 
 template< size_t I, size_t J, size_t M, size_t N, typename T >
-auto evalSubmatrixTrait( volatile const T& )
+auto evalSubmatrixTrait( const volatile T& )
    -> typename SubmatrixTrait<T,I,J,M,N>::Type;
 
 template< typename T >
-auto evalSubmatrixTrait( volatile const T& )
+auto evalSubmatrixTrait( const volatile T& )
    -> typename SubmatrixTrait<T>::Type;
 /*! \endcond */
 //*************************************************************************************************

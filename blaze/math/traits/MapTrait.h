@@ -86,15 +86,15 @@ auto evalMapTrait( const T1&, const T2&, OP )
    -> typename MapTrait<T1,T2,OP>::Type;
 
 template< typename T1, typename T2, typename OP >
-auto evalMapTrait( const T1&, volatile const T2&, OP )
+auto evalMapTrait( const T1&, const volatile T2&, OP )
    -> typename MapTrait<T1,T2,OP>::Type;
 
 template< typename T1, typename T2, typename OP >
-auto evalMapTrait( volatile const T1&, const T2&, OP )
+auto evalMapTrait( const volatile T1&, const T2&, OP )
    -> typename MapTrait<T1,T2,OP>::Type;
 
 template< typename T1, typename T2, typename OP >
-auto evalMapTrait( volatile const T1&, volatile const T2&, OP )
+auto evalMapTrait( const volatile T1&, const volatile T2&, OP )
    -> typename MapTrait<T1,T2,OP>::Type;
 /*! \endcond */
 //*************************************************************************************************

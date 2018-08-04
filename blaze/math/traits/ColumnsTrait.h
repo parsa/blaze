@@ -73,7 +73,7 @@ auto evalColumnsTrait( const T& )
    -> typename ColumnsTrait<T,CCAs...>::Type;
 
 template< size_t... CCAs, typename T >
-auto evalColumnsTrait( volatile const T& )
+auto evalColumnsTrait( const volatile T& )
    -> typename ColumnsTrait<T,CCAs...>::Type;
 /*! \endcond */
 //*************************************************************************************************

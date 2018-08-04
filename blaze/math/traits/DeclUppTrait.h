@@ -74,7 +74,7 @@ auto evalDeclUppTrait( const T& )
    -> typename DeclUppTrait<T>::Type;
 
 template< typename T >
-auto evalDeclUppTrait( volatile const T& )
+auto evalDeclUppTrait( const volatile T& )
    -> typename DeclUppTrait<T>::Type;
 /*! \endcond */
 //*************************************************************************************************

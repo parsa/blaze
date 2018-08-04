@@ -74,7 +74,7 @@ auto evalDeclDiagTrait( const T& )
    -> typename DeclDiagTrait<T>::Type;
 
 template< typename T >
-auto evalDeclDiagTrait( volatile const T& )
+auto evalDeclDiagTrait( const volatile T& )
    -> typename DeclDiagTrait<T>::Type;
 /*! \endcond */
 //*************************************************************************************************

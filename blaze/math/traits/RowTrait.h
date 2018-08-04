@@ -82,11 +82,11 @@ auto evalRowTrait( const T& )
    -> typename RowTrait<T>::Type;
 
 template< size_t I, typename T >
-auto evalRowTrait( volatile const T& )
+auto evalRowTrait( const volatile T& )
    -> typename RowTrait<T,I>::Type;
 
 template< typename T >
-auto evalRowTrait( volatile const T& )
+auto evalRowTrait( const volatile T& )
    -> typename RowTrait<T>::Type;
 /*! \endcond */
 //*************************************************************************************************

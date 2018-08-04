@@ -74,7 +74,7 @@ auto evalDeclLowTrait( const T& )
    -> typename DeclLowTrait<T>::Type;
 
 template< typename T >
-auto evalDeclLowTrait( volatile const T& )
+auto evalDeclLowTrait( const volatile T& )
    -> typename DeclLowTrait<T>::Type;
 /*! \endcond */
 //*************************************************************************************************
