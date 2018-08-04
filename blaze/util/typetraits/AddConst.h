@@ -62,7 +62,7 @@ namespace blaze {
    blaze::AddConst<int*>::Type          // Results in 'int* const'
    blaze::AddConst<int&>::Type          // Results in 'int&'
    blaze::AddConst<int const>::Type     // Results in 'int const'
-   blaze::AddConst<int volatile>::Type  // Results in 'int volatile const'
+   blaze::AddConst<int volatile>::Type  // Results in 'int const volatile'
    \endcode
 */
 template< typename T >

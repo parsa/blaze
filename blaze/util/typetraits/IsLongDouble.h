@@ -68,7 +68,7 @@ namespace blaze {
    blaze::IsLongDouble<const volatile long double>  // Is derived from TrueType
    blaze::IsLongDouble<float>::value                // Evaluates to 'false'
    blaze::IsLongDouble<const unsigned int>::Type    // Results in FalseType
-   blaze::IsLongDouble<volatile const short>        // Is derived from FalseType
+   blaze::IsLongDouble<const volatile short>        // Is derived from FalseType
    \endcode
 */
 template< typename T >
