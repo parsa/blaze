@@ -56,6 +56,8 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatReduceExpr.h>
 #include <blaze/math/functors/Add.h>
+#include <blaze/math/functors/Max.h>
+#include <blaze/math/functors/Min.h>
 #include <blaze/math/functors/Mult.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
@@ -1913,9 +1915,9 @@ inline ElementType_t<MT> dmatreduce( const DenseMatrix<MT,true>& dm, OP op )
 // \a op:
 
    \code
-   blaze::DynamicMatrix<double> a;
+   blaze::DynamicMatrix<double> A;
    // ... Resizing and initialization
-   const double sum = reduce( a, Add() );
+   const double totalsum = reduce( A, Add() );
    \endcode
 
 // Please note that the evaluation order of the reduction operation is unspecified. Thus the
@@ -2029,9 +2031,8 @@ inline decltype(auto) reduce( const DenseMatrix<MT,SO>& dm, OP op )
 // This function reduces the given dense matrix \a dm by means of addition:
 
    \code
-   blaze::DynamicMatrix<int> a{ { 1, 2 }, { 3, 4 } };
-   // ... Resizing and initialization
-   const int sum = sum( a );  // Results in 10
+   blaze::DynamicMatrix<int> A{ { 1, 2 }, { 3, 4 } };
+   const int totalsum = sum( A );  // Results in 10
    \endcode
 
 // Please note that the evaluation order of the reduction operation is unspecified.
@@ -2062,13 +2063,11 @@ inline decltype(auto) sum( const DenseMatrix<MT,SO>& dm )
 
    \code
    blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
-   // ... Resizing and initialization
    const blaze::DynamicVector<int,rowVector> colsum = sum<0UL>( A );  // Results in { 2, 3, 6 }
    \endcode
 
    \code
    blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
-   // ... Resizing and initialization
    const blaze::DynamicVector<int,columnVector> rowsum = sum<1UL>( A );  // Results in { 3, 8 }
    \endcode
 
@@ -2096,9 +2095,8 @@ inline decltype(auto) sum( const DenseMatrix<MT,SO>& dm )
 // This function reduces the given dense matrix \a dm by means of multiplication:
 
    \code
-   blaze::DynamicMatrix<int> a{ { 1, 2 }, { 3, 4 } };
-   // ... Resizing and initialization
-   const int prod = prod( a );  // Results in 24
+   blaze::DynamicMatrix<int> A{ { 1, 2 }, { 3, 4 } };
+   const int totalprod = prod( A );  // Results in 24
    \endcode
 
 // Please note that the evaluation order of the reduction operation is unspecified.
@@ -2129,13 +2127,11 @@ inline decltype(auto) prod( const DenseMatrix<MT,SO>& dm )
 
    \code
    blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
-   // ... Resizing and initialization
    const blaze::DynamicVector<int,rowVector> colprod = prod<0UL>( A );  // Results in { 1, 0, 8 }
    \endcode
 
    \code
    blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
-   // ... Resizing and initialization
    const blaze::DynamicVector<int,columnVector> rowprod = prod<1UL>( A );  // Results in { 0, 12 }
    \endcode
 
@@ -2149,6 +2145,130 @@ inline decltype(auto) prod( const DenseMatrix<MT,SO>& dm )
    BLAZE_FUNCTION_TRACE;
 
    return reduce<RF>( ~dm, Mult() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the smallest element of the dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix.
+// \return The smallest dense matrix element.
+//
+// This function returns the smallest element of the given dense matrix. This function can
+// only be used for element types that support the smaller-than relationship. In case the
+// matrix currently has either 0 rows or 0 columns, the returned value is the default value
+// (e.g. 0 in case of fundamental data types).
+
+   \code
+   blaze::DynamicMatrix<int> A{ { 1, 2 }, { 3, 4 } };
+   const int totalmin = min( A );  // Results in 1
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline decltype(auto) min( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return reduce( ~dm, Min() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the smallest element of each row/columns of the dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix.
+// \return The smallest elements in each row/column.
+//
+// This function returns the smallest element of each row/column of the given dense matrix \a dm.
+// In case the reduction flag \a RF is set to 0, a row vector containing the the smallest element
+// of each column is returned. In case \a RF is set to 1, a column vector containing the smallest
+// element of each row is returned.
+
+   \code
+   blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
+   const blaze::DynamicVector<int,rowVector> colmin = min<0UL>( A );  // Results in { 1, 0, 2 }
+   \endcode
+
+   \code
+   blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
+   const blaze::DynamicVector<int,columnVector> rowmin = min<1UL>( A );  // Results in { 0, 1 }
+   \endcode
+*/
+template< size_t RF    // Reduction flag
+        , typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline decltype(auto) min( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return reduce<RF>( ~dm, Min() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the largest element of the dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix.
+// \return The largest dense matrix element.
+//
+// This function returns the largest element of the given dense matrix. This function can
+// only be used for element types that support the smaller-than relationship. In case the
+// matrix currently has either 0 rows or 0 columns, the returned value is the default value
+// (e.g. 0 in case of fundamental data types).
+
+   \code
+   blaze::DynamicMatrix<int> A{ { 1, 2 }, { 3, 4 } };
+   const int totalmax = max( A );  // Results in 4
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline decltype(auto) max( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return reduce( ~dm, Max() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the largest element of each row/columns of the dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix.
+// \return The largest elements in each row/column.
+//
+// This function returns the largest element of each row/column of the given dense matrix \a dm.
+// In case the reduction flag \a RF is set to 0, a row vector containing the the largest element
+// of each column is returned. In case \a RF is set to 1, a column vector containing the largest
+// element of each row is returned.
+
+   \code
+   blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
+   const blaze::DynamicVector<int,rowVector> colmax = max<0UL>( A );  // Results in { 1, 3, 4 }
+   \endcode
+
+   \code
+   blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
+   const blaze::DynamicVector<int,columnVector> rowmax = max<1UL>( A );  // Results in { 2, 4 }
+   \endcode
+*/
+template< size_t RF    // Reduction flag
+        , typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline decltype(auto) max( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return reduce<RF>( ~dm, Max() );
 }
 //*************************************************************************************************
 
