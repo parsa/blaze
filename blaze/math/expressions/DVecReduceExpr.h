@@ -43,6 +43,8 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/functors/Add.h>
+#include <blaze/math/functors/Max.h>
+#include <blaze/math/functors/Min.h>
 #include <blaze/math/functors/Mult.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/system/Compiler.h>
@@ -349,7 +351,7 @@ inline auto dvecreduce( const DenseVector<VT,TF>& dv, Add /*op*/ )
    \code
    blaze::DynamicVector<double> a;
    // ... Resizing and initialization
-   const double sum = reduce( a, Add() );
+   const double totalsum = reduce( a, Add() );
    \endcode
 
 // Please note that the evaluation order of the reduction operation is unspecified. Thus the
@@ -379,8 +381,7 @@ inline decltype(auto) reduce( const DenseVector<VT,TF>& dv, OP op )
 
    \code
    blaze::DynamicVector<int> a{ 1, 2, 3, 4 };
-   // ... Resizing and initialization
-   const int sum = sum( a );  // Results in 10
+   const int totalsum = sum( a );  // Results in 10
    \endcode
 
 // Please note that the evaluation order of the reduction operation is unspecified.
@@ -407,8 +408,7 @@ inline decltype(auto) sum( const DenseVector<VT,TF>& dv )
 
    \code
    blaze::DynamicVector<int> a{ 1, 2, 3, 4 };
-   // ... Resizing and initialization
-   const int prod = prod( a );  // Results in 24
+   const int totalprod = prod( a );  // Results in 24
    \endcode
 
 // Please note that the evaluation order of the reduction operation is unspecified.
@@ -420,6 +420,62 @@ inline decltype(auto) prod( const DenseVector<VT,TF>& dv )
    BLAZE_FUNCTION_TRACE;
 
    return reduce( ~dv, Mult() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the smallest element of the dense vector.
+// \ingroup dense_vector
+//
+// \param dv The given dense vector.
+// \return The smallest dense vector element.
+//
+// This function returns the smallest element of the given dense vector. This function can
+// only be used for element types that support the smaller-than relationship. In case the
+// vector currently has a size of 0, the returned value is the default value (e.g. 0 in case
+// of fundamental data types).
+
+   \code
+   blaze::DynamicVector<int> a{ 1, -2, 3, 0 };
+   const int totalmin = min( a );  // Results in -2
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) min( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return reduce( ~dv, Min() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the largest element of the dense vector.
+// \ingroup dense_vector
+//
+// \param dv The given dense vector.
+// \return The largest dense vector element.
+//
+// This function returns the largest element of the given dense vector. This function can
+// only be used for element types that support the smaller-than relationship. In case the
+// vector currently has a size of 0, the returned value is the default value (e.g. 0 in case
+// of fundamental data types).
+
+   \code
+   blaze::DynamicVector<int> a{ 1, -2, 3, 0 };
+   const int totalmax = max( a );  // Results in 3
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) max( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return reduce( ~dv, Max() );
 }
 //*************************************************************************************************
 

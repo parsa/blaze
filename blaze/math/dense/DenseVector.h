@@ -51,8 +51,6 @@
 #include <blaze/math/shims/Sqrt.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsUniform.h>
-#include <blaze/util/algorithms/Max.h>
-#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/DecltypeAuto.h>
@@ -344,12 +342,6 @@ const ElementType_t<VT> sqrLength( const DenseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
 inline auto length( const DenseVector<VT,TF>& dv ) -> decltype( sqrt( sqrLength( ~dv ) ) );
-
-template< typename VT, bool TF >
-const ElementType_t<VT> min( const DenseVector<VT,TF>& dv );
-
-template< typename VT, bool TF >
-const ElementType_t<VT> max( const DenseVector<VT,TF>& dv );
 //@}
 //*************************************************************************************************
 
@@ -539,72 +531,6 @@ template< typename VT  // Type of the dense vector
 inline auto length( const DenseVector<VT,TF>& dv ) -> decltype( sqrt( sqrLength( ~dv ) ) )
 {
    return sqrt( sqrLength( ~dv ) );
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns the smallest element of the dense vector.
-// \ingroup dense_vector
-//
-// \param dv The given dense vector.
-// \return The smallest dense vector element.
-//
-// This function returns the smallest element of the given dense vector. This function can
-// only be used for element types that support the smaller-than relationship. In case the
-// vector currently has a size of 0, the returned value is the default value (e.g. 0 in case
-// of fundamental data types).
-*/
-template< typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
-const ElementType_t<VT> min( const DenseVector<VT,TF>& dv )
-{
-   using blaze::min;
-
-   using ET = ElementType_t<VT>;
-   using CT = CompositeType_t<VT>;
-
-   CT a( ~dv );  // Evaluation of the dense vector operand
-
-   if( a.size() == 0UL ) return ET();
-
-   ET minimum( a[0] );
-   for( size_t i=1UL; i<a.size(); ++i )
-      minimum = min( minimum, a[i] );
-   return minimum;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Returns the largest element of the dense vector.
-// \ingroup dense_vector
-//
-// \param dv The given dense vector.
-// \return The largest dense vector element.
-//
-// This function returns the largest element of the given dense vector. This function can
-// only be used for element types that support the smaller-than relationship. In case the
-// vector currently has a size of 0, the returned value is the default value (e.g. 0 in case
-// of fundamental data types).
-*/
-template< typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
-const ElementType_t<VT> max( const DenseVector<VT,TF>& dv )
-{
-   using blaze::max;
-
-   using ET = ElementType_t<VT>;
-   using CT = CompositeType_t<VT>;
-
-   CT a( ~dv );  // Evaluation of the dense vector operand
-
-   if( a.size() == 0UL ) return ET();
-
-   ET maximum( a[0] );
-   for( size_t i=1UL; i<a.size(); ++i )
-      maximum = max( maximum, a[i] );
-   return maximum;
 }
 //*************************************************************************************************
 
