@@ -4184,7 +4184,7 @@ void GeneralTest::testMinimum()
 
          const int minimum = min( mat );
 
-         if( minimum != 0 ) {
+         if( minimum != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Fifth computation failed\n"
@@ -4323,7 +4323,7 @@ void GeneralTest::testMinimum()
 
          const int minimum = min( mat );
 
-         if( minimum != 0 ) {
+         if( minimum != 1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Fifth computation failed\n"
@@ -4477,7 +4477,7 @@ void GeneralTest::testMaximum()
 
          const int maximum = max( mat );
 
-         if( maximum != 0 ) {
+         if( maximum != -1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Fifth computation failed\n"
@@ -4618,7 +4618,7 @@ void GeneralTest::testMaximum()
 
          const int maximum = max( mat );
 
-         if( maximum != 0 ) {
+         if( maximum != -1 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Fifth computation failed\n"
