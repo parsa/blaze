@@ -276,7 +276,7 @@ class DMatReduceExpr<0UL,MT,OP>
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const noexcept {
-      return dm_.canSMPAssign() || ( size() > SMP_DMATDVECMULT_THRESHOLD );  // TODO: rethink
+      return dm_.canSMPAssign() || ( size() > SMP_DMATREDUCE_THRESHOLD );
    }
    //**********************************************************************************************
 
@@ -1183,7 +1183,7 @@ class DMatReduceExpr<1UL,MT,OP>
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const noexcept {
-      return dm_.canSMPAssign() || ( size() > SMP_DMATDVECMULT_THRESHOLD );  // TODO: rethink
+      return dm_.canSMPAssign() || ( size() > SMP_DMATREDUCE_THRESHOLD );
    }
    //**********************************************************************************************
 

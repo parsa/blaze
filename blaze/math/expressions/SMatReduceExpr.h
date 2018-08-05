@@ -276,7 +276,7 @@ struct SMatReduceExpr<0UL,MT,OP>
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const noexcept {
-      return sm_.canSMPAssign() || ( size() > SMP_SMATDVECMULT_THRESHOLD );  // TODO: rethink
+      return sm_.canSMPAssign() || ( size() > SMP_SMATREDUCE_THRESHOLD );
    }
    //**********************************************************************************************
 
@@ -1184,7 +1184,7 @@ struct SMatReduceExpr<1UL,MT,OP>
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const noexcept {
-      return sm_.canSMPAssign() || ( size() > SMP_SMATDVECMULT_THRESHOLD );  // TODO: rethink
+      return sm_.canSMPAssign() || ( size() > SMP_SMATREDUCE_THRESHOLD );
    }
    //**********************************************************************************************
 

@@ -397,7 +397,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 38000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
@@ -430,7 +430,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 51000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
@@ -463,7 +463,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 38000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
@@ -496,7 +496,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 38000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
@@ -529,7 +529,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 38000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
@@ -562,7 +562,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 38000. In case the threshold is set to 0, the
 // operation is unconditionally executed in parallel.
@@ -595,7 +595,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 84100 (which corresponds to a matrix size of
 // \f$ 290 \times 290 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -629,7 +629,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 330. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
@@ -662,7 +662,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 360. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
@@ -695,7 +695,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 370. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
@@ -728,7 +728,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 340. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
@@ -761,7 +761,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 480. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
@@ -794,7 +794,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 910. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
@@ -827,7 +827,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 910. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
@@ -860,7 +860,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 480. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
@@ -893,7 +893,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 600. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
@@ -926,7 +926,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 1250. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
@@ -959,7 +959,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 1190. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
@@ -992,7 +992,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 530. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
@@ -1025,7 +1025,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 260. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
@@ -1058,7 +1058,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 2160. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
@@ -1091,7 +1091,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 2160. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
@@ -1124,7 +1124,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 260. In case the threshold is set to 0, the operation
 // is unconditionally executed in parallel.
@@ -1157,7 +1157,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 48400 (which corresponds to a matrix size of
 // \f$ 220 \times 220 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -1191,7 +1191,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 48400 (which corresponds to a matrix size of
 // \f$ 220 \times 220 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -1226,7 +1226,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 36100 (which corresponds to a matrix size of
 // \f$ 190 \times 190 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -1262,7 +1262,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 30625 (which corresponds to a matrix size of
 // \f$ 175 \times 175 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -1297,7 +1297,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 36100 (which corresponds to a matrix size of
 // \f$ 190 \times 190 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -1333,7 +1333,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 30625 (which corresponds to a matrix size of
 // \f$ 175 \times 175 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -1368,7 +1368,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 36100 (which corresponds to a matrix size of
 // \f$ 190 \times 190 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -1404,7 +1404,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 30625 (which corresponds to a matrix size of
 // \f$ 175 \times 175 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -1438,7 +1438,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 3025 (which corresponds to a matrix size of
 // \f$ 55 \times 55 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -1472,7 +1472,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 3025 (which corresponds to a matrix size of
 // \f$ 55 \times 55 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -1506,7 +1506,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 3025 (which corresponds to a matrix size of
 // \f$ 55 \times 55 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -1540,7 +1540,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 3025 (which corresponds to a matrix size of
 // \f$ 55 \times 55 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -1574,7 +1574,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 4096 (which corresponds to a matrix size of
 // \f$ 64 \times 64 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -1608,7 +1608,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 4624 (which corresponds to a matrix size of
 // \f$ 68 \times 68 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -1642,7 +1642,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 8100 (which corresponds to a matrix size of
 // \f$ 90 \times 90 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -1676,7 +1676,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 8100 (which corresponds to a matrix size of
 // \f$ 90 \times 90 \f$). In case the threshold is set to 0, the operation
@@ -1710,7 +1710,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 7744 (which corresponds to a matrix size of
 // \f$ 88 \times 88 \f$). In case the threshold is set to 0, the operation
@@ -1744,7 +1744,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 5184 (which corresponds to a matrix size of
 // \f$ 72 \times 72 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -1778,7 +1778,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 4356 (which corresponds to a matrix size of
 // \f$ 66 \times 66 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -1812,7 +1812,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 4356 (which corresponds to a matrix size of
 // \f$ 66 \times 66 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -1846,7 +1846,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 22500 (which corresponds to a matrix size of
 // \f$ 150 \times 150 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -1880,7 +1880,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 19600 (which corresponds to a matrix size of
 // \f$ 140 \times 140 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -1914,7 +1914,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 19600 (which corresponds to a matrix size of
 // \f$ 140 \times 140 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -1948,7 +1948,7 @@
 // performance for all possible situations and configurations. It merely provides a reasonable
 // standard for the current generation of CPUs. Also note that the provided default has been
 // determined using the OpenMP parallelization and requires individual adaption for the C++11
-// and Boost thread parallelization.
+// and Boost thread parallelization or the HPX-based parallelization.
 //
 // The default setting for this threshold is 22500 (which corresponds to a matrix size of
 // \f$ 150 \times 150 \f$). In case the threshold is set to 0, the operation is unconditionally
@@ -1964,5 +1964,71 @@
 */
 #ifndef BLAZE_SMP_TSMATTSMATMULT_THRESHOLD
 #define BLAZE_SMP_TSMATTSMATMULT_THRESHOLD 22500UL
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief SMP dense matrix reduction threshold.
+// \ingroup config
+//
+// This threshold specifies when a dense matrix reduction can be executed in parallel. In case
+// the number of elements of the target vector is larger or equal to this threshold, the operation
+// is executed in parallel. If the number of elements is below this threshold the operation is
+// executed single-threaded.
+//
+// Please note that this threshold is highly sensitiv to the used system architecture and the
+// shared memory parallelization technique. Therefore the default value cannot guarantee maximum
+// performance for all possible situations and configurations. It merely provides a reasonable
+// standard for the current generation of CPUs. Also note that the provided default has been
+// determined using the OpenMP parallelization and requires individual adaption for the C++11
+// and Boost thread parallelization or the HPX-based parallelization.
+//
+// The default setting for this threshold is 180. In case the threshold is set to 0, the operation
+// is unconditionally executed in parallel.
+//
+// \note It is possible to specify this threshold via command line or by defining this symbol
+// manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_SMP_DMATREDUCE_THRESHOLD 180UL
+   #include <blaze/Blaze.h>
+   \endcode
+*/
+#ifndef BLAZE_SMP_DMATREDUCE_THRESHOLD
+#define BLAZE_SMP_DMATREDUCE_THRESHOLD 180UL
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief SMP sparse matrix reduction threshold.
+// \ingroup config
+//
+// This threshold specifies when a sparse matrix reduction can be executed in parallel. In case
+// the number of elements of the target vector is larger or equal to this threshold, the operation
+// is executed in parallel. If the number of elements is below this threshold the operation is
+// executed single-threaded.
+//
+// Please note that this threshold is highly sensitiv to the used system architecture and the
+// shared memory parallelization technique. Therefore the default value cannot guarantee maximum
+// performance for all possible situations and configurations. It merely provides a reasonable
+// standard for the current generation of CPUs. Also note that the provided default has been
+// determined using the OpenMP parallelization and requires individual adaption for the C++11
+// and Boost thread parallelization or the HPX-based parallelization.
+//
+// The default setting for this threshold is 180. In case the threshold is set to 0, the operation
+// is unconditionally executed in parallel.
+//
+// \note It is possible to specify this threshold via command line or by defining this symbol
+// manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_SMP_SMATREDUCE_THRESHOLD 180UL
+   #include <blaze/Blaze.h>
+   \endcode
+*/
+#ifndef BLAZE_SMP_SMATREDUCE_THRESHOLD
+#define BLAZE_SMP_SMATREDUCE_THRESHOLD 180UL
 #endif
 //*************************************************************************************************
