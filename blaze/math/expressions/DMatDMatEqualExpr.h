@@ -165,6 +165,8 @@ inline EnableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
 {
    using CT1 = CompositeType_t<MT1>;
    using CT2 = CompositeType_t<MT2>;
+   using XT1 = RemoveReference_t<CT1>;
+   using XT2 = RemoveReference_t<CT2>;
 
    // Early exit in case the matrix sizes don't match
    if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
@@ -175,7 +177,7 @@ inline EnableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
    CT2 B( ~rhs );
 
    constexpr size_t SIMDSIZE = SIMDTrait< ElementType_t<MT1> >::size;
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT1> || !IsPadded_v<MT2> );
+   constexpr bool remainder( !usePadding || !IsPadded_v<XT1> || !IsPadded_v<XT2> );
 
    const size_t M( A.rows()    );
    const size_t N( A.columns() );
@@ -276,6 +278,8 @@ inline EnableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
 {
    using CT1 = CompositeType_t<MT1>;
    using CT2 = CompositeType_t<MT2>;
+   using XT1 = RemoveReference_t<CT1>;
+   using XT2 = RemoveReference_t<CT2>;
 
    // Early exit in case the matrix sizes don't match
    if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
@@ -286,7 +290,7 @@ inline EnableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
    CT2 B( ~rhs );
 
    constexpr size_t SIMDSIZE = SIMDTrait< ElementType_t<MT1> >::size;
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT1> || !IsPadded_v<MT2> );
+   constexpr bool remainder( !usePadding || !IsPadded_v<XT1> || !IsPadded_v<XT2> );
 
    const size_t M( A.rows()    );
    const size_t N( A.columns() );

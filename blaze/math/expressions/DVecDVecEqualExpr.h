@@ -163,6 +163,8 @@ inline EnableIf_t< DVecDVecEqualExprHelper<VT1,VT2>::value, bool >
 {
    using CT1 = CompositeType_t<VT1>;
    using CT2 = CompositeType_t<VT2>;
+   using XT1 = RemoveReference_t<CT1>;
+   using XT2 = RemoveReference_t<CT2>;
 
    // Early exit in case the vector sizes don't match
    if( (~lhs).size() != (~rhs).size() ) return false;
@@ -172,7 +174,7 @@ inline EnableIf_t< DVecDVecEqualExprHelper<VT1,VT2>::value, bool >
    CT2 b( ~rhs );
 
    constexpr size_t SIMDSIZE = SIMDTrait< ElementType_t<VT1> >::size;
-   constexpr bool remainder( !usePadding || !IsPadded_v<VT1> || !IsPadded_v<VT2> );
+   constexpr bool remainder( !usePadding || !IsPadded_v<XT1> || !IsPadded_v<XT2> );
 
    const size_t N( a.size() );
 

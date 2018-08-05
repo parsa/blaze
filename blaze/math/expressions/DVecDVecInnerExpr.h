@@ -125,8 +125,8 @@ inline DisableIf_t< DVecDVecInnerExprHelper<VT1,VT2>::value
                   , const MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> > >
    dvecdvecinner( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
 {
-   using Lhs      = CompositeType_t<VT1>;
-   using Rhs      = CompositeType_t<VT2>;
+   using CT1      = CompositeType_t<VT1>;
+   using CT2      = CompositeType_t<VT2>;
    using ET1      = ElementType_t<VT1>;
    using ET2      = ElementType_t<VT2>;
    using MultType = MultTrait_t<ET1,ET2>;
@@ -135,8 +135,8 @@ inline DisableIf_t< DVecDVecInnerExprHelper<VT1,VT2>::value
 
    if( (~lhs).size() == 0UL ) return MultType();
 
-   Lhs left ( ~lhs );
-   Rhs right( ~rhs );
+   CT1 left ( ~lhs );
+   CT2 right( ~rhs );
 
    MultType sp( left[0UL] * right[0UL] );
    size_t i( 1UL );
@@ -181,8 +181,10 @@ inline EnableIf_t< DVecDVecInnerExprHelper<VT1,VT2>::value
                  , const MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> > >
    dvecdvecinner( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
 {
-   using Lhs      = CompositeType_t<VT1>;
-   using Rhs      = CompositeType_t<VT2>;
+   using CT1      = CompositeType_t<VT1>;
+   using CT2      = CompositeType_t<VT2>;
+   using XT1      = RemoveReference_t<CT1>;
+   using XT2      = RemoveReference_t<CT2>;
    using ET1      = ElementType_t<VT1>;
    using ET2      = ElementType_t<VT2>;
    using MultType = MultTrait_t<ET1,ET2>;
@@ -191,11 +193,11 @@ inline EnableIf_t< DVecDVecInnerExprHelper<VT1,VT2>::value
 
    if( (~lhs).size() == 0UL ) return MultType();
 
-   Lhs left ( ~lhs );
-   Rhs right( ~rhs );
+   CT1 left ( ~lhs );
+   CT2 right( ~rhs );
 
    constexpr size_t SIMDSIZE = SIMDTrait<MultType>::size;
-   constexpr bool remainder( !usePadding || !IsPadded_v<VT1> || !IsPadded_v<VT2> );
+   constexpr bool remainder( !usePadding || !IsPadded_v<XT1> || !IsPadded_v<XT2> );
 
    const size_t N( left.size() );
 

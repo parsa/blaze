@@ -96,15 +96,15 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   using Lhs           = CompositeType_t<VT1>;    // Composite type of the left-hand side sparse vector expression
-   using Rhs           = CompositeType_t<VT2>;    // Composite type of the right-hand side sparse vector expression
-   using X1            = RemoveReference_t<Lhs>;  // Auxiliary type for the left-hand side composite type
-   using X2            = RemoveReference_t<Rhs>;  // Auxiliary type for the right-hand side composite type
-   using E1            = ElementType_t<X1>;       // Element type of the left-hand side sparse vector expression
-   using E2            = ElementType_t<X2>;       // Element type of the right-hand side sparse vector expression
-   using MultType      = MultTrait_t<E1,E2>;      // Multiplication result type
-   using LeftIterator  = ConstIterator_t<X1>;     // Iterator type of the left-hand sparse vector expression
-   using RightIterator = ConstIterator_t<X2>;     // Iterator type of the right-hand sparse vector expression
+   using CT1           = CompositeType_t<VT1>;    // Composite type of the left-hand side sparse vector expression
+   using CT2           = CompositeType_t<VT2>;    // Composite type of the right-hand side sparse vector expression
+   using XT1           = RemoveReference_t<CT1>;  // Auxiliary type for the left-hand side composite type
+   using XT2           = RemoveReference_t<CT2>;  // Auxiliary type for the right-hand side composite type
+   using ET1           = ElementType_t<XT1>;      // Element type of the left-hand side sparse vector expression
+   using ET2           = ElementType_t<XT2>;      // Element type of the right-hand side sparse vector expression
+   using MultType      = MultTrait_t<ET1,ET2>;    // Multiplication result type
+   using LeftIterator  = ConstIterator_t<XT1>;    // Iterator type of the left-hand sparse vector expression
+   using RightIterator = ConstIterator_t<XT2>;    // Iterator type of the right-hand sparse vector expression
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT1 );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT2 );
@@ -115,8 +115,8 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   Lhs left ( ~lhs );  // Evaluation of the left-hand side sparse vector operand
-   Rhs right( ~rhs );  // Evaluation of the right-hand side sparse vector operand
+   CT1 left ( ~lhs );  // Evaluation of the left-hand side sparse vector operand
+   CT2 right( ~rhs );  // Evaluation of the right-hand side sparse vector operand
 
    BLAZE_INTERNAL_ASSERT( left.size()  == (~lhs).size(), "Invalid vector size" );
    BLAZE_INTERNAL_ASSERT( right.size() == (~rhs).size(), "Invalid vector size" );

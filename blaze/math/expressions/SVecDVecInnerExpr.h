@@ -100,14 +100,14 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   using Lhs           = CompositeType_t<VT1>;    // Composite type of the left-hand side sparse vector expression
-   using Rhs           = CompositeType_t<VT2>;    // Composite type of the right-hand side dense vector expression
-   using X1            = RemoveReference_t<Lhs>;  // Auxiliary type for the left-hand side composite type
-   using X2            = RemoveReference_t<Rhs>;  // Auxiliary type for the right-hand side composite type
-   using ET1           = ElementType_t<X1>;       // Element type of the left-hand side sparse vector expression
-   using ET2           = ElementType_t<X2>;       // Element type of the right-hand side dense vector expression
+   using CT1           = CompositeType_t<VT1>;    // Composite type of the left-hand side sparse vector expression
+   using CT2           = CompositeType_t<VT2>;    // Composite type of the right-hand side dense vector expression
+   using XT1           = RemoveReference_t<CT1>;  // Auxiliary type for the left-hand side composite type
+   using XT2           = RemoveReference_t<CT2>;  // Auxiliary type for the right-hand side composite type
+   using ET1           = ElementType_t<XT1>;      // Element type of the left-hand side sparse vector expression
+   using ET2           = ElementType_t<XT2>;      // Element type of the right-hand side dense vector expression
    using MultType      = MultTrait_t<ET1,ET2>;    // Multiplication result type
-   using ConstIterator = ConstIterator_t<X1>;     // Iterator type of the left-hand sparse vector expression
+   using ConstIterator = ConstIterator_t<XT1>;    // Iterator type of the left-hand sparse vector expression
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT1 );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( VT2 );
@@ -118,8 +118,8 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   Lhs left ( ~lhs );
-   Rhs right( ~rhs );
+   CT1 left ( ~lhs );
+   CT2 right( ~rhs );
 
    ConstIterator element( left.begin() );
    ConstIterator end    ( left.end()   );
