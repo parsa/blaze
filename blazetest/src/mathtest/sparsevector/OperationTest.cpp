@@ -459,7 +459,7 @@ void OperationTest::testMinimum()
 
       const int minimum = min( vec );
 
-      if( minimum != 0 ) {
+      if( minimum != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: First computation failed\n"
@@ -532,7 +532,7 @@ void OperationTest::testMaximum()
 
       const int maximum = max( vec );
 
-      if( maximum != 0 ) {
+      if( maximum != -1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: First computation failed\n"
