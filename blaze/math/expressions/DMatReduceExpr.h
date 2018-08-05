@@ -59,6 +59,7 @@
 #include <blaze/math/functors/Max.h>
 #include <blaze/math/functors/Min.h>
 #include <blaze/math/functors/Mult.h>
+#include <blaze/math/ReductionFlag.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/ReduceTrait.h>
@@ -1985,21 +1986,25 @@ inline decltype(auto) reduce_backend( const DenseMatrix<MT,true>& dm, OP op )
 // \return The result of the reduction operation.
 //
 // This function reduces the rows or columns of the given dense matrix \a dm by means of the
-// given reduction operation \a op. In case the reduction flag \a RF is set to 0, the elements
-// of the matrix are reduced along the 0th dimension of the matrix (i.e. column-wise) and the
-// result is a row vector. In case \a RF is set to 1, the elements of the matrix are reduced
-// along the 1st dimension of the matrix (i.e. row-wise) and the result is a column vector:
+// given reduction operation \a op. In case the reduction flag \a RF is set to \a blaze::columnwise,
+// the elements of the matrix are reduced column-wise and the result is a row vector. In case
+// \a RF is set to \a blaze::rowwise, the elements of the matrix are reduced row-wise and the
+// result is a column vector:
 
    \code
    blaze::DynamicMatrix<double> A;
+   blaze::DynamicVector<double,rowVector> colsum;
    // ... Resizing and initialization
-   const blaze::DynamicVector<double,rowVector> colsum( reduce<0UL>( A, Add() ) );
+
+   colsum = reduce<columnwise>( A, Add() );
    \endcode
 
    \code
    blaze::DynamicMatrix<double> A;
+   blaze::DynamicVector<double,columnVector> rowsum;
    // ... Resizing and initialization
-   const blaze::DynamicVector<double,columnVector> rowsum( reduce<1UL>( A, Add() ) );
+
+   rowsum = reduce<rowwise>( A, Add() );
    \endcode
 
 // Please note that the evaluation order of the reduction operation is unspecified. Thus the
@@ -2056,19 +2061,23 @@ inline decltype(auto) sum( const DenseMatrix<MT,SO>& dm )
 // \return The result of the reduction operation.
 //
 // This function reduces the rows or columns of the given dense matrix \a dm by means of
-// addition. In case the reduction flag \a RF is set to 0, the elements of the matrix are
-// reduced along the 0th dimension of the matrix (i.e. column-wise) and the result is a row
-// vector. In case \a RF is set to 1, the elements of the matrix are reduced along the 1st
-// dimension of the matrix (i.e. row-wise) and the result is a column vector:
+// addition. In case the reduction flag \a RF is set to \a blaze::columnwise, the elements of
+// the matrix are reduced column-wise and the result is a row vector. In case \a RF is set to
+// \a blaze::rowwise, the elements of the matrix are reduced row-wise and the result is a
+// column vector:
 
    \code
    blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
-   const blaze::DynamicVector<int,rowVector> colsum = sum<0UL>( A );  // Results in { 2, 3, 6 }
+   blaze::DynamicVector<int,rowVector> colsum;
+
+   colsum = sum<columnwise>( A );  // Results in { 2, 3, 6 }
    \endcode
 
    \code
    blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
-   const blaze::DynamicVector<int,columnVector> rowsum = sum<1UL>( A );  // Results in { 3, 8 }
+   blaze::DynamicVector<int,columnVector> rowsum;
+
+   rowsum = sum<rowwise>( A );  // Results in { 3, 8 }
    \endcode
 
 // Please note that the evaluation order of the reduction operation is unspecified.
@@ -2120,19 +2129,23 @@ inline decltype(auto) prod( const DenseMatrix<MT,SO>& dm )
 // \return The result of the reduction operation.
 //
 // This function reduces the rows or columns of the given dense matrix \a dm by means of
-// multiplication. In case the reduction flag \a RF is set to 0, the elements of the matrix
-// are reduced along the 0th dimension of the matrix (i.e. column-wise) and the result is a
-// row vector. In case \a RF is set to 1, the elements of the matrix are reduced along the
-// 1st dimension of the matrix (i.e. row-wise) and the result is a column vector:
+// multiplication. In case the reduction flag \a RF is set to \a blaze::columnwise, the elements
+// of the matrix are reduced column-wise and the result is a row vector. In case \a RF is set to
+// \a blaze::rowwise, the elements of the matrix are reduced row-wise and the result is a column
+// vector:
 
    \code
    blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
-   const blaze::DynamicVector<int,rowVector> colprod = prod<0UL>( A );  // Results in { 1, 0, 8 }
+   blaze::DynamicVector<int,rowVector> colprod;
+
+   colprod = prod<columnwise>( A );  // Results in { 1, 0, 8 }
    \endcode
 
    \code
    blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
-   const blaze::DynamicVector<int,columnVector> rowprod = prod<1UL>( A );  // Results in { 0, 12 }
+   blaze::DynamicVector<int,columnVector> rowprod;
+
+   rowprod = prod<rowwise>( A );  // Results in { 0, 12 }
    \endcode
 
 // Please note that the evaluation order of the reduction operation is unspecified.
@@ -2185,18 +2198,22 @@ inline decltype(auto) min( const DenseMatrix<MT,SO>& dm )
 // \return The smallest elements in each row/column.
 //
 // This function returns the smallest element of each row/column of the given dense matrix \a dm.
-// In case the reduction flag \a RF is set to 0, a row vector containing the the smallest element
-// of each column is returned. In case \a RF is set to 1, a column vector containing the smallest
-// element of each row is returned.
+// In case the reduction flag \a RF is set to \a blaze::columnwise, a row vector containing the
+// smallest element of each column is returned. In case \a RF is set to \a blaze::rowwise, a
+// column vector containing the smallest element of each row is returned.
 
    \code
    blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
-   const blaze::DynamicVector<int,rowVector> colmin = min<0UL>( A );  // Results in { 1, 0, 2 }
+   blaze::DynamicVector<int,rowVector> colmin;
+
+   colmin = min<columnwise>( A );  // Results in { 1, 0, 2 }
    \endcode
 
    \code
    blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
-   const blaze::DynamicVector<int,columnVector> rowmin = min<1UL>( A );  // Results in { 0, 1 }
+   blaze::DynamicVector<int,columnVector> rowmin;
+
+   rowmin = min<rowwise>( A );  // Results in { 0, 1 }
    \endcode
 */
 template< size_t RF    // Reduction flag
@@ -2247,18 +2264,22 @@ inline decltype(auto) max( const DenseMatrix<MT,SO>& dm )
 // \return The largest elements in each row/column.
 //
 // This function returns the largest element of each row/column of the given dense matrix \a dm.
-// In case the reduction flag \a RF is set to 0, a row vector containing the the largest element
-// of each column is returned. In case \a RF is set to 1, a column vector containing the largest
-// element of each row is returned.
+// In case the reduction flag \a RF is set to \a blaze::columnwise, a row vector containing the
+// largest element of each column is returned. In case \a RF is set to \a blaze::rowwise, a
+// column vector containing the largest element of each row is returned.
 
    \code
    blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
-   const blaze::DynamicVector<int,rowVector> colmax = max<0UL>( A );  // Results in { 1, 3, 4 }
+   blaze::DynamicVector<int,rowVector> colmax;
+
+   colmax = max<columnwise>( A );  // Results in { 1, 3, 4 }
    \endcode
 
    \code
    blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
-   const blaze::DynamicVector<int,columnVector> rowmax = max<1UL>( A );  // Results in { 2, 4 }
+   blaze::DynamicVector<int,columnVector> rowmax;
+
+   rowmax = max<rowwise>( A );  // Results in { 2, 4 }
    \endcode
 */
 template< size_t RF    // Reduction flag

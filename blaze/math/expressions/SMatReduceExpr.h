@@ -59,6 +59,7 @@
 #include <blaze/math/functors/Max.h>
 #include <blaze/math/functors/Min.h>
 #include <blaze/math/functors/Mult.h>
+#include <blaze/math/ReductionFlag.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/ReduceTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -1614,21 +1615,25 @@ inline decltype(auto) reduce_backend( const SparseMatrix<MT,true>& sm, OP op )
 // \return The result of the reduction operation.
 //
 // This function reduces the rows or columns of the given sparse matrix \a sm by means of the
-// given reduction operation \a op. In case the reduction flag \a RF is set to 0, the elements
-// of the matrix are reduced along the 0th dimension of the matrix (i.e. column-wise) and the
-// result is a row vector. In case \a RF is set to 1, the elements of the matrix are reduced
-// along the 1st dimension of the matrix (i.e. row-wise) and the result is a column vector:
+// given reduction operation \a op. In case the reduction flag \a RF is set to \a blaze::columnwise,
+// the elements of the matrix are reduced column-wise and the result is a row vector. In case
+// \a RF is set to \a blaze::rowwise, the elements of the matrix are reduced row-wise and the
+// result is a column vector:
 
    \code
    blaze::CompressedMatrix<double> A;
+   blaze::DynamicVector<double,rowVector> colsum;
    // ... Resizing and initialization
-   const blaze::DynamicVector<double,rowVector> colsum( reduce<0UL>( A, Add() ) );
+
+   colsum = reduce<columnwise>( A, Add() );
    \endcode
 
    \code
    blaze::CompressedMatrix<double> A;
+   blaze::DynamicVector<double,columnVector> rowsum;
    // ... Resizing and initialization
-   const blaze::DynamicVector<double,columnVector> rowsum( reduce<1UL>( A, Add() ) );
+
+   rowsum = reduce<rowwise>( A, Add() );
    \endcode
 
 // Please note that the evaluation order of the reduction operation is unspecified. Thus the
@@ -1686,19 +1691,23 @@ inline decltype(auto) sum( const SparseMatrix<MT,SO>& sm )
 // \return The result of the reduction operation.
 //
 // This function reduces the non-zero elements of the rows or columns of the given sparse matrix
-// \a sm by means of addition. In case the reduction flag \a RF is set to 0, the elements of the
-// matrix are reduced along the 0th dimension of the matrix (i.e. column-wise) and the result is
-// a row vector. In case \a RF is set to 1, the elements of the matrix are reduced along the 1st
-// dimension of the matrix (i.e. row-wise) and the result is a column vector:
+// \a sm by means of addition. In case the reduction flag \a RF is set to \a blaze::columnwise,
+// the elements of the matrix are reduced column-wise and the result is a row vector. In case
+// \a RF is set to \a blaze::rowwise, the elements of the matrix are reduced row-wise and the
+// result is a column vector:
 
    \code
    blaze::CompressedMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
-   const blaze::DynamicVector<int,rowVector> colsum = sum<0UL>( A );  // Results in { 2, 3, 6 }
+   blaze::DynamicVector<int,rowVector> colsum;
+
+   colsum = sum<columnwise>( A );  // Results in { 2, 3, 6 }
    \endcode
 
    \code
    blaze::CompressedMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
-   const blaze::DynamicVector<int,columnVector> rowsum = sum<1UL>( A );  // Results in { 3, 8 }
+   blaze::DynamicVector<int,columnVector> rowsum;
+
+   rowsum = sum<rowwise>( A );  // Results in { 3, 8 }
    \endcode
 
 // Please note that the evaluation order of the reduction operation is unspecified.
@@ -1750,20 +1759,24 @@ inline decltype(auto) prod( const SparseMatrix<MT,SO>& sm )
 // \param sm The given sparse matrix for the reduction operation.
 // \return The result of the reduction operation.
 //
-// This function reduces the non-zero elements of the rows or columns of the given sparse matrix
-// \a sm by means of multiplication. In case the reduction flag \a RF is set to 0, the elements
-// of the matrix are reduced along the 0th dimension of the matrix (i.e. column-wise) and the
-// result is a row vector. In case \a RF is set to 1, the elements of the matrix are reduced
-// along the 1st dimension of the matrix (i.e. row-wise) and the result is a column vector:
+// This function reduces the non-zero elements of the rows or columns of the given sparse
+// matrix \a sm by means of multiplication. In case the reduction flag \a RF is set to
+// \a blaze::columnwise, the elements of the matrix are reduced column-wise and the result
+// is a row vector. In case \a RF is set to \a blaze::rowwise, the elements of the matrix
+// are reduced row-wise and the result is a column vector:
 
    \code
    blaze::CompressedMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
-   const blaze::DynamicVector<int,rowVector> colsum = sum<0UL>( A );  // Results in { 1, 3, 8 }
+   blaze::DynamicVector<int,rowVector> colsum;
+
+   colsum = sum<columnwise>( A );  // Results in { 1, 3, 8 }
    \endcode
 
    \code
    blaze::CompressedMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
-   const blaze::DynamicVector<int,columnVector> rowsum = sum<1UL>( A );  // Results in { 2, 12 }
+   blaze::DynamicVector<int,columnVector> rowsum;
+
+   rowsum = sum<rowwise>( A );  // Results in { 2, 12 }
    \endcode
 
 // Please note that the evaluation order of the reduction operation is unspecified.
@@ -1820,21 +1833,25 @@ inline decltype(auto) min( const SparseMatrix<MT,SO>& sm )
 // \return The smallest elements in each row/column.
 //
 // This function returns the smallest non-zero element of each row/column of the given sparse
-// matrix \a sm. In case the reduction flag \a RF is set to 0, a row vector containing the the
-// smallest element of each column is returned. In case \a RF is set to 1, a column vector
-// containing the smallest element of each row is returned.
+// matrix \a sm. In case the reduction flag \a RF is set to \a blaze::columnwise, a row
+// vector containing the smallest element of each column is returned. In case \a RF is set to
+// \a blaze::rowwise, a column vector containing the smallest element of each row is returned.
 //
 // \note In case the sparse matrix is not completely filled, the implicit zero elements are NOT
 // taken into account:
 
    \code
    blaze::CompressedMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
-   const blaze::DynamicVector<int,rowVector> colmin = min<0UL>( A );  // Results in { 1, 3, 2 }
+   blaze::DynamicVector<int,rowVector> colmin;
+
+   colmin = min<columnwise>( A );  // Results in { 1, 3, 2 }
    \endcode
 
    \code
    blaze::CompressedMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
-   const blaze::DynamicVector<int,columnVector> rowmin = min<1UL>( A );  // Results in { 1, 1 }
+   blaze::DynamicVector<int,columnVector> rowmin;
+
+   rowmin = min<rowwise>( A );  // Results in { 1, 1 }
    \endcode
 */
 template< size_t RF    // Reduction flag
@@ -1889,21 +1906,25 @@ inline decltype(auto) max( const SparseMatrix<MT,SO>& sm )
 // \return The largest elements in each row/column.
 //
 // This function returns the largest element of each row/column of the given sparse matrix \a sm.
-// In case the reduction flag \a RF is set to 0, a row vector containing the the largest element
-// of each column is returned. In case \a RF is set to 1, a column vector containing the largest
-// element of each row is returned.
+// In case the reduction flag \a RF is set to \a blaze::columnwise, a row vector containing the
+// largest element of each column is returned. In case \a RF is set to \a blaze::rowwise, a column
+// vector containing the largest element of each row is returned.
 //
 // \note In case the sparse matrix is not completely filled, the implicit zero elements are NOT
 // taken into account:
 
    \code
    blaze::CompressedMatrix<int> A{ { -1, 0, -2 }, { -1, -3, -4 } };
-   const blaze::DynamicVector<int,rowVector> colmax = max<0UL>( A );  // Results in { -1, -3, -2 }
+   blaze::DynamicVector<int,rowVector> colmax;
+
+   colmax = max<columnwise>( A );  // Results in { -1, -3, -2 }
    \endcode
 
    \code
    blaze::CompressedMatrix<int> A{ { -1, 0, -2 }, { -1, -3, -4 } };
-   const blaze::DynamicVector<int,columnVector> rowmax = max<1UL>( A );  // Results in { -1, -1 }
+   blaze::DynamicVector<int,columnVector> rowmax;
+
+   rowmax = max<rowwise>( A );  // Results in { -1, -1 }
    \endcode
 */
 template< size_t RF    // Reduction flag
