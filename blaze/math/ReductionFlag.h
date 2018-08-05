@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/Math.h
-//  \brief Header file for the inclusion of the math module of the Blaze library
+//  \file blaze/math/ReductionFlag.h
+//  \brief Header file for the reduction flags
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
@@ -32,57 +32,64 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_MODULE_H_
-#define _BLAZE_MATH_MODULE_H_
+#ifndef _BLAZE_MATH_REDUCTIONFLAG_H_
+#define _BLAZE_MATH_REDUCTIONFLAG_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/Accuracy.h>
-#include <blaze/math/Aliases.h>
-#include <blaze/math/AlignmentFlag.h>
-#include <blaze/math/Band.h>
-#include <blaze/math/BLAS.h>
-#include <blaze/math/CompressedMatrix.h>
-#include <blaze/math/CompressedVector.h>
-#include <blaze/math/Constraints.h>
-#include <blaze/math/CustomMatrix.h>
-#include <blaze/math/CustomVector.h>
-#include <blaze/math/DiagonalMatrix.h>
-#include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/DynamicVector.h>
-#include <blaze/math/Epsilon.h>
-#include <blaze/math/Functors.h>
-#include <blaze/math/IdentityMatrix.h>
-#include <blaze/math/Infinity.h>
-#include <blaze/math/InitializerMatrix.h>
-#include <blaze/math/InitializerVector.h>
-#include <blaze/math/InversionFlag.h>
-#include <blaze/math/HermitianMatrix.h>
-#include <blaze/math/HybridMatrix.h>
-#include <blaze/math/HybridVector.h>
-#include <blaze/math/LAPACK.h>
-#include <blaze/math/LowerMatrix.h>
-#include <blaze/math/PaddingFlag.h>
-#include <blaze/math/ReductionFlag.h>
-#include <blaze/math/RelaxationFlag.h>
-#include <blaze/math/Serialization.h>
-#include <blaze/math/Shims.h>
-#include <blaze/math/SMP.h>
-#include <blaze/math/StaticMatrix.h>
-#include <blaze/math/StaticVector.h>
-#include <blaze/math/StorageOrder.h>
-#include <blaze/math/StrictlyLowerMatrix.h>
-#include <blaze/math/StrictlyUpperMatrix.h>
-#include <blaze/math/SymmetricMatrix.h>
-#include <blaze/math/Traits.h>
-#include <blaze/math/TransposeFlag.h>
-#include <blaze/math/TypeTraits.h>
-#include <blaze/math/UniLowerMatrix.h>
-#include <blaze/math/UniUpperMatrix.h>
-#include <blaze/math/UpperMatrix.h>
-#include <blaze/math/Views.h>
+#include <blaze/util/Types.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  REDUCTION FLAGS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Reduction flag for row-wise reduction operations.
+//
+// This flag can be used to perform row-wise reduction operations on matrices. The following
+// example shows the row-wise summation of a row-major matrix:
+
+   \code
+   using blaze::rowMajor;
+   using blaze::columnVector;
+
+   blaze::DynamicMatrix<int,rowMajor> A{ { 4, 1, 2 }, { -2, 0, 3 } };
+   blaze::DynamicVector<int,columnVector> v;
+
+   v = sum<rowwise>( A );  // Results in ( 7, 1 )
+   \endcode
+*/
+constexpr size_t rowwise = 1UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Reduction flag for column-wise reduction operations.
+//
+// This flag can be used to perform column-wise reduction operations on matrices. The following
+// example shows the column-wise summation of a column-major matrix:
+
+   \code
+   using blaze::columnMajor;
+   using blaze::rowVector;
+
+   blaze::DynamicMatrix<int,columnMajor> A{ { 4, 1, 2 }, { -2, 0, 3 } };
+   blaze::DynamicVector<int,rowVector> v;
+
+   v = sum<columnwise>( A );  // Results in ( 2, 1, 5 )
+   \endcode
+*/
+constexpr size_t columnwise = 0UL;
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
