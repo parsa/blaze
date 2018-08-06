@@ -1657,6 +1657,11 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, OP op )
 
    constexpr size_t SIMDSIZE = SIMDTrait<ET>::size;
 
+   alignas( AlignmentOf_v<ET> ) ET array1[SIMDSIZE];
+   alignas( AlignmentOf_v<ET> ) ET array2[SIMDSIZE];
+   alignas( AlignmentOf_v<ET> ) ET array3[SIMDSIZE];
+   alignas( AlignmentOf_v<ET> ) ET array4[SIMDSIZE];
+
    ET redux{};
 
    if( N >= SIMDSIZE )
@@ -1673,8 +1678,16 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, OP op )
          for( ; j<jpos; j+=SIMDSIZE ) {
             xmm1 = op( xmm1, tmp.load(0UL,j) );
          }
-         for( ; j<N; ++j ) {
-            xmm1[0] = op( xmm1[0], tmp(0UL,j) );
+
+         if( jpos < N )
+         {
+            storea( array1, xmm1 );
+
+            for( ; j<N; ++j ) {
+               array1[0UL] = op( array1[0UL], tmp(0UL,j) );
+            }
+
+            xmm1 = loada( array1 );
          }
       }
 
@@ -1694,11 +1707,25 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, OP op )
             xmm3 = op( xmm3, tmp.load(i+2UL,j) );
             xmm4 = op( xmm4, tmp.load(i+3UL,j) );
          }
-         for( ; j<N; ++j ) {
-            xmm1[0] = op( xmm1[0], tmp(i    ,j) );
-            xmm2[0] = op( xmm2[0], tmp(i+1UL,j) );
-            xmm3[0] = op( xmm3[0], tmp(i+2UL,j) );
-            xmm4[0] = op( xmm4[0], tmp(i+3UL,j) );
+
+         if( jpos < N )
+         {
+            storea( array1, xmm1 );
+            storea( array2, xmm2 );
+            storea( array3, xmm3 );
+            storea( array4, xmm4 );
+
+            for( ; j<N; ++j ) {
+               array1[0UL] = op( array1[0UL], tmp(i    ,j) );
+               array2[0UL] = op( array2[0UL], tmp(i+1UL,j) );
+               array3[0UL] = op( array3[0UL], tmp(i+2UL,j) );
+               array4[0UL] = op( array4[0UL], tmp(i+3UL,j) );
+            }
+
+            xmm1 = loada( array1 );
+            xmm2 = loada( array2 );
+            xmm3 = loada( array3 );
+            xmm4 = loada( array4 );
          }
 
          xmm1 = op( xmm1, xmm2 );
@@ -1716,9 +1743,19 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, OP op )
             xmm1 = op( xmm1, tmp.load(i    ,j) );
             xmm2 = op( xmm2, tmp.load(i+1UL,j) );
          }
-         for( ; j<N; ++j ) {
-            xmm1[0] = op( xmm1[0], tmp(i    ,j) );
-            xmm2[0] = op( xmm2[0], tmp(i+1UL,j) );
+
+         if( jpos < N )
+         {
+            storea( array1, xmm1 );
+            storea( array2, xmm2 );
+
+            for( ; j<N; ++j ) {
+               array1[0UL] = op( array1[0UL], tmp(i    ,j) );
+               array2[0UL] = op( array2[0UL], tmp(i+1UL,j) );
+            }
+
+            xmm1 = loada( array1 );
+            xmm2 = loada( array2 );
          }
 
          xmm1 = op( xmm1, xmm2 );
@@ -1734,8 +1771,16 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, OP op )
          for( ; j<jpos; j+=SIMDSIZE ) {
             xmm1 = op( xmm1, tmp.load(i,j) );
          }
-         for( ; j<N; ++j ) {
-            xmm1[0] = op( xmm1[0], tmp(i,j) );
+
+         if( jpos < N )
+         {
+            storea( array1, xmm1 );
+
+            for( ; j<N; ++j ) {
+               array1[0] = op( array1[0], tmp(i,j) );
+            }
+
+            xmm1 = loada( array1 );
          }
       }
 
