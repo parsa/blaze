@@ -241,34 +241,34 @@ class CompressedVector
       }
 
       template< typename Other >
-      inline EnableIf_t< IsSparseElement_v<Other>, Element& >
-         operator=( const Other& rhs )
+      inline auto operator=( const Other& rhs )
+         -> EnableIf_t< IsSparseElement_v<Other>, Element& >
       {
          this->value_ = rhs.value();
          return *this;
       }
 
       template< typename Other >
-      inline EnableIf_t< IsSparseElement_v< RemoveReference_t<Other> > &&
-                         IsRValueReference_v<Other&&>, Element& >
-         operator=( Other&& rhs )
+      inline auto operator=( Other&& rhs )
+         -> EnableIf_t< IsSparseElement_v< RemoveReference_t<Other> > &&
+                        IsRValueReference_v<Other&&>, Element& >
       {
          this->value_ = std::move( rhs.value() );
          return *this;
       }
 
       template< typename Other >
-      inline EnableIf_t< !IsSparseElement_v<Other>, Element& >
-         operator=( const Other& v )
+      inline auto operator=( const Other& v )
+         -> EnableIf_t< !IsSparseElement_v<Other>, Element& >
       {
          this->value_ = v;
          return *this;
       }
 
       template< typename Other >
-      inline EnableIf_t< !IsSparseElement_v< RemoveReference_t<Other> > &&
-                         IsRValueReference_v<Other&&>, Element& >
-         operator=( Other&& v )
+      inline auto operator=( Other&& v )
+         -> EnableIf_t< !IsSparseElement_v< RemoveReference_t<Other> > &&
+                        IsRValueReference_v<Other&&>, Element& >
       {
          this->value_ = std::move( v );
          return *this;

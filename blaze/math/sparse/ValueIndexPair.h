@@ -99,22 +99,22 @@ class ValueIndexPair
    // No explicitly declared move assignment operator.
 
    template< typename Other >
-   inline EnableIf_t< IsSparseElement_v<Other>, ValueIndexPair& >
-      operator=( const Other& rhs );
+   inline auto operator=( const Other& rhs )
+      -> EnableIf_t< IsSparseElement_v<Other>, ValueIndexPair& >;
 
    template< typename Other >
-   inline EnableIf_t< IsSparseElement_v< RemoveReference_t<Other> > &&
-                      IsRValueReference_v<Other&&>, ValueIndexPair& >
-      operator=( Other&& rhs );
+   inline auto operator=( Other&& rhs )
+      -> EnableIf_t< IsSparseElement_v< RemoveReference_t<Other> > &&
+                     IsRValueReference_v<Other&&>, ValueIndexPair& >;
 
    template< typename Other >
-   inline EnableIf_t< !IsSparseElement_v<Other>, ValueIndexPair& >
-      operator=( const Other& v );
+   inline auto operator=( const Other& v )
+      -> EnableIf_t< !IsSparseElement_v<Other>, ValueIndexPair& >;
 
    template< typename Other >
-   inline EnableIf_t< !IsSparseElement_v< RemoveReference_t<Other> > &&
-                      IsRValueReference_v<Other&&>, ValueIndexPair& >
-      operator=( Other&& v );
+   inline auto operator=( Other&& v )
+      -> EnableIf_t< !IsSparseElement_v< RemoveReference_t<Other> > &&
+                     IsRValueReference_v<Other&&>, ValueIndexPair& >;
 
    template< typename Other > inline ValueIndexPair& operator+=( const Other& v );
    template< typename Other > inline ValueIndexPair& operator-=( const Other& v );
@@ -213,8 +213,8 @@ inline ValueIndexPair<Type>::ValueIndexPair( const Type& v, size_t i )
 */
 template< typename Type >   // Type of the value element
 template< typename Other >  // Data type of the right-hand side value-index-pair
-inline EnableIf_t< IsSparseElement_v<Other>, ValueIndexPair<Type>& >
-   ValueIndexPair<Type>::operator=( const Other& rhs )
+inline auto ValueIndexPair<Type>::operator=( const Other& rhs )
+   -> EnableIf_t< IsSparseElement_v<Other>, ValueIndexPair& >
 {
    value_ = rhs.value();
    index_ = rhs.index();
@@ -235,9 +235,9 @@ inline EnableIf_t< IsSparseElement_v<Other>, ValueIndexPair<Type>& >
 */
 template< typename Type >   // Type of the value element
 template< typename Other >  // Data type of the right-hand side value-index-pair
-inline EnableIf_t< IsSparseElement_v< RemoveReference_t<Other> > &&
-                   IsRValueReference_v<Other&&>, ValueIndexPair<Type>& >
-   ValueIndexPair<Type>::operator=( Other&& rhs )
+inline auto ValueIndexPair<Type>::operator=( Other&& rhs )
+   -> EnableIf_t< IsSparseElement_v< RemoveReference_t<Other> > &&
+                  IsRValueReference_v<Other&&>, ValueIndexPair& >
 {
    value_ = std::move( rhs.value() );
    index_ = rhs.index();
@@ -254,8 +254,8 @@ inline EnableIf_t< IsSparseElement_v< RemoveReference_t<Other> > &&
 */
 template< typename Type >   // Type of the value element
 template< typename Other >  // Data type of the right-hand side value
-inline EnableIf_t< !IsSparseElement_v<Other>, ValueIndexPair<Type>& >
-   ValueIndexPair<Type>::operator=( const Other& v )
+inline auto ValueIndexPair<Type>::operator=( const Other& v )
+   -> EnableIf_t< !IsSparseElement_v<Other>, ValueIndexPair& >
 {
    value_ = v;
    return *this;
@@ -271,9 +271,9 @@ inline EnableIf_t< !IsSparseElement_v<Other>, ValueIndexPair<Type>& >
 */
 template< typename Type >   // Type of the value element
 template< typename Other >  // Data type of the right-hand side value
-inline EnableIf_t< !IsSparseElement_v< RemoveReference_t<Other> > &&
-                   IsRValueReference_v<Other&&>, ValueIndexPair<Type>& >
-   ValueIndexPair<Type>::operator=( Other&& v )
+inline auto ValueIndexPair<Type>::operator=( Other&& v )
+   -> EnableIf_t< !IsSparseElement_v< RemoveReference_t<Other> > &&
+                  IsRValueReference_v<Other&&>, ValueIndexPair& >
 {
    value_ = std::move( v );
    return *this;
