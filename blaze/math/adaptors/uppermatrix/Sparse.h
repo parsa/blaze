@@ -193,25 +193,31 @@ class UpperMatrix<MT,SO,false>
    inline UpperMatrix& operator=( UpperMatrix&& rhs ) noexcept;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsComputation_v<MT2>, UpperMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< IsComputation_v<MT2>, UpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsComputation_v<MT2>, UpperMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< IsComputation_v<MT2>, UpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsComputation_v<MT2>, UpperMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< IsComputation_v<MT2>, UpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsComputation_v<MT2>, UpperMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< IsComputation_v<MT2>, UpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsComputation_v<MT2>, UpperMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< IsComputation_v<MT2>, UpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsComputation_v<MT2>, UpperMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< IsComputation_v<MT2>, UpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline UpperMatrix& operator%=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator%=( const Matrix<MT2,SO2>& rhs ) -> UpperMatrix&;
    //@}
    //**********************************************************************************************
 
@@ -935,8 +941,8 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_t< IsComputation_v<MT2>, UpperMatrix<MT,SO,false>& >
-   UpperMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
+inline auto UpperMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< IsComputation_v<MT2>, UpperMatrix& >
 {
    if( !IsUpper_v<MT2> && !isUpper( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
@@ -973,8 +979,8 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsComputation_v<MT2>, UpperMatrix<MT,SO,false>& >
-   UpperMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
+inline auto UpperMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsComputation_v<MT2>, UpperMatrix& >
 {
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
@@ -1022,8 +1028,8 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_t< IsComputation_v<MT2>, UpperMatrix<MT,SO,false>& >
-   UpperMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
+inline auto UpperMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< IsComputation_v<MT2>, UpperMatrix& >
 {
    if( !IsUpper_v<MT2> && !isUpper( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
@@ -1060,8 +1066,8 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsComputation_v<MT2>, UpperMatrix<MT,SO,false>& >
-   UpperMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
+inline auto UpperMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsComputation_v<MT2>, UpperMatrix& >
 {
    if( IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
@@ -1109,8 +1115,8 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_t< IsComputation_v<MT2>, UpperMatrix<MT,SO,false>& >
-   UpperMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
+inline auto UpperMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< IsComputation_v<MT2>, UpperMatrix& >
 {
    if( !IsUpper_v<MT2> && !isUpper( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
@@ -1147,8 +1153,8 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsComputation_v<MT2>, UpperMatrix<MT,SO,false>& >
-   UpperMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
+inline auto UpperMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsComputation_v<MT2>, UpperMatrix& >
 {
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
@@ -1194,8 +1200,8 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline UpperMatrix<MT,SO,false>&
-   UpperMatrix<MT,SO,false>::operator%=( const Matrix<MT2,SO2>& rhs )
+inline auto UpperMatrix<MT,SO,false>::operator%=( const Matrix<MT2,SO2>& rhs )
+   -> UpperMatrix&
 {
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );

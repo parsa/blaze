@@ -694,31 +694,37 @@ class UpperMatrix<MT,SO,true>
    inline UpperMatrix& operator=( UpperMatrix&& rhs ) noexcept;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsComputation_v<MT2>, UpperMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< IsComputation_v<MT2>, UpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsComputation_v<MT2>, UpperMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< IsComputation_v<MT2>, UpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsComputation_v<MT2>, UpperMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< IsComputation_v<MT2>, UpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsComputation_v<MT2>, UpperMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< IsComputation_v<MT2>, UpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsComputation_v<MT2>, UpperMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< IsComputation_v<MT2>, UpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsComputation_v<MT2>, UpperMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< IsComputation_v<MT2>, UpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline UpperMatrix& operator%=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator%=( const Matrix<MT2,SO2>& rhs ) -> UpperMatrix&;
 
    template< typename ST >
-   inline EnableIf_t< IsNumeric_v<ST>, UpperMatrix >& operator*=( ST rhs );
+   inline auto operator*=( ST rhs ) -> EnableIf_t< IsNumeric_v<ST>, UpperMatrix& >;
 
    template< typename ST >
-   inline EnableIf_t< IsNumeric_v<ST>, UpperMatrix >& operator/=( ST rhs );
+   inline auto operator/=( ST rhs ) -> EnableIf_t< IsNumeric_v<ST>, UpperMatrix& >;
    //@}
    //**********************************************************************************************
 
@@ -1684,8 +1690,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_t< IsComputation_v<MT2>, UpperMatrix<MT,SO,true>& >
-   UpperMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
+inline auto UpperMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< IsComputation_v<MT2>, UpperMatrix& >
 {
    if( !IsUpper_v<MT2> && !isUpper( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
@@ -1719,8 +1725,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsComputation_v<MT2>, UpperMatrix<MT,SO,true>& >
-   UpperMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
+inline auto UpperMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsComputation_v<MT2>, UpperMatrix& >
 {
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
@@ -1765,8 +1771,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_t< IsComputation_v<MT2>, UpperMatrix<MT,SO,true>& >
-   UpperMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
+inline auto UpperMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< IsComputation_v<MT2>, UpperMatrix& >
 {
    if( !IsUpper_v<MT2> && !isUpper( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
@@ -1800,8 +1806,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsComputation_v<MT2>, UpperMatrix<MT,SO,true>& >
-   UpperMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
+inline auto UpperMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsComputation_v<MT2>, UpperMatrix& >
 {
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
@@ -1846,8 +1852,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_t< IsComputation_v<MT2>, UpperMatrix<MT,SO,true>& >
-   UpperMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
+inline auto UpperMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< IsComputation_v<MT2>, UpperMatrix& >
 {
    if( !IsUpper_v<MT2> && !isUpper( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
@@ -1881,8 +1887,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsComputation_v<MT2>, UpperMatrix<MT,SO,true>& >
-   UpperMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
+inline auto UpperMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsComputation_v<MT2>, UpperMatrix& >
 {
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
@@ -1925,8 +1931,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline UpperMatrix<MT,SO,true>&
-   UpperMatrix<MT,SO,true>::operator%=( const Matrix<MT2,SO2>& rhs )
+inline auto UpperMatrix<MT,SO,true>::operator%=( const Matrix<MT2,SO2>& rhs )
+   -> UpperMatrix&
 {
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to upper matrix" );
@@ -1954,8 +1960,8 @@ inline UpperMatrix<MT,SO,true>&
 template< typename MT    // Type of the adapted dense matrix
         , bool SO >      // Storage order of the adapted dense matrix
 template< typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_t< IsNumeric_v<ST>, UpperMatrix<MT,SO,true> >&
-   UpperMatrix<MT,SO,true>::operator*=( ST rhs )
+inline auto UpperMatrix<MT,SO,true>::operator*=( ST rhs )
+   -> EnableIf_t< IsNumeric_v<ST>, UpperMatrix& >
 {
    matrix_ *= rhs;
    return *this;
@@ -1974,8 +1980,8 @@ inline EnableIf_t< IsNumeric_v<ST>, UpperMatrix<MT,SO,true> >&
 template< typename MT    // Type of the adapted dense matrix
         , bool SO >      // Storage order of the adapted dense matrix
 template< typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_t< IsNumeric_v<ST>, UpperMatrix<MT,SO,true> >&
-   UpperMatrix<MT,SO,true>::operator/=( ST rhs )
+inline auto UpperMatrix<MT,SO,true>::operator/=( ST rhs )
+   -> EnableIf_t< IsNumeric_v<ST>, UpperMatrix& >
 {
    BLAZE_USER_ASSERT( !isZero( rhs ), "Division by zero detected" );
 

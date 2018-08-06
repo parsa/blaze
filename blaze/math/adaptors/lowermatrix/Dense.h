@@ -694,31 +694,37 @@ class LowerMatrix<MT,SO,true>
    inline LowerMatrix& operator=( LowerMatrix&& rhs ) noexcept;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsComputation_v<MT2>, LowerMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< IsComputation_v<MT2>, LowerMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsComputation_v<MT2>, LowerMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< IsComputation_v<MT2>, LowerMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsComputation_v<MT2>, LowerMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< IsComputation_v<MT2>, LowerMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsComputation_v<MT2>, LowerMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< IsComputation_v<MT2>, LowerMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsComputation_v<MT2>, LowerMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< IsComputation_v<MT2>, LowerMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsComputation_v<MT2>, LowerMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< IsComputation_v<MT2>, LowerMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline LowerMatrix& operator%=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator%=( const Matrix<MT2,SO2>& rhs ) -> LowerMatrix&;
 
    template< typename ST >
-   inline EnableIf_t< IsNumeric_v<ST>, LowerMatrix >& operator*=( ST rhs );
+   inline auto operator*=( ST rhs ) -> EnableIf_t< IsNumeric_v<ST>, LowerMatrix& >;
 
    template< typename ST >
-   inline EnableIf_t< IsNumeric_v<ST>, LowerMatrix >& operator/=( ST rhs );
+   inline auto operator/=( ST rhs ) -> EnableIf_t< IsNumeric_v<ST>, LowerMatrix& >;
    //@}
    //**********************************************************************************************
 
@@ -1684,8 +1690,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_t< IsComputation_v<MT2>, LowerMatrix<MT,SO,true>& >
-   LowerMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
+inline auto LowerMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< IsComputation_v<MT2>, LowerMatrix& >
 {
    if( !IsLower_v<MT2> && !isLower( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
@@ -1719,8 +1725,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsComputation_v<MT2>, LowerMatrix<MT,SO,true>& >
-   LowerMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
+inline auto LowerMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsComputation_v<MT2>, LowerMatrix& >
 {
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
@@ -1765,8 +1771,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_t< IsComputation_v<MT2>, LowerMatrix<MT,SO,true>& >
-   LowerMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
+inline auto LowerMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< IsComputation_v<MT2>, LowerMatrix& >
 {
    if( !IsLower_v<MT2> && !isLower( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
@@ -1800,8 +1806,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsComputation_v<MT2>, LowerMatrix<MT,SO,true>& >
-   LowerMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
+inline auto LowerMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsComputation_v<MT2>, LowerMatrix& >
 {
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
@@ -1846,8 +1852,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_t< IsComputation_v<MT2>, LowerMatrix<MT,SO,true>& >
-   LowerMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
+inline auto LowerMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< IsComputation_v<MT2>, LowerMatrix& >
 {
    if( !IsLower_v<MT2> && !isLower( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
@@ -1881,8 +1887,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsComputation_v<MT2>, LowerMatrix<MT,SO,true>& >
-   LowerMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
+inline auto LowerMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsComputation_v<MT2>, LowerMatrix& >
 {
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
@@ -1925,8 +1931,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline LowerMatrix<MT,SO,true>&
-   LowerMatrix<MT,SO,true>::operator%=( const Matrix<MT2,SO2>& rhs )
+inline auto LowerMatrix<MT,SO,true>::operator%=( const Matrix<MT2,SO2>& rhs )
+   -> LowerMatrix&
 {
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to lower matrix" );
@@ -1954,8 +1960,8 @@ inline LowerMatrix<MT,SO,true>&
 template< typename MT    // Type of the adapted dense matrix
         , bool SO >      // Storage order of the adapted dense matrix
 template< typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_t< IsNumeric_v<ST>, LowerMatrix<MT,SO,true> >&
-   LowerMatrix<MT,SO,true>::operator*=( ST rhs )
+inline auto LowerMatrix<MT,SO,true>::operator*=( ST rhs )
+   -> EnableIf_t< IsNumeric_v<ST>, LowerMatrix& >
 {
    matrix_ *= rhs;
    return *this;
@@ -1974,8 +1980,8 @@ inline EnableIf_t< IsNumeric_v<ST>, LowerMatrix<MT,SO,true> >&
 template< typename MT    // Type of the adapted dense matrix
         , bool SO >      // Storage order of the adapted dense matrix
 template< typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_t< IsNumeric_v<ST>, LowerMatrix<MT,SO,true> >&
-   LowerMatrix<MT,SO,true>::operator/=( ST rhs )
+inline auto LowerMatrix<MT,SO,true>::operator/=( ST rhs )
+   -> EnableIf_t< IsNumeric_v<ST>, LowerMatrix& >
 {
    BLAZE_USER_ASSERT( !isZero( rhs ), "Division by zero detected" );
 

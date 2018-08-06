@@ -196,31 +196,31 @@ class StrictlyUpperMatrix<MT,SO,false>
    inline StrictlyUpperMatrix& operator=( StrictlyUpperMatrix&& rhs ) noexcept;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
-      operator=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
-      operator=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
-      operator+=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
-      operator+=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
-      operator-=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
-      operator-=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline StrictlyUpperMatrix& operator%=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator%=( const Matrix<MT2,SO2>& rhs ) -> StrictlyUpperMatrix&;
    //@}
    //**********************************************************************************************
 
@@ -947,8 +947,8 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix<MT,SO,false>& >
-   StrictlyUpperMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
+inline auto StrictlyUpperMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
 {
    if( IsUniTriangular_v<MT2> ||
        ( !IsStrictlyUpper_v<MT2> && !isStrictlyUpper( ~rhs ) ) ) {
@@ -986,8 +986,8 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix<MT,SO,false>& >
-   StrictlyUpperMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
+inline auto StrictlyUpperMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
 {
    if( IsUniTriangular_v<MT2> || ( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
@@ -1035,8 +1035,8 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix<MT,SO,false>& >
-   StrictlyUpperMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
+inline auto StrictlyUpperMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
 {
    if( IsUniTriangular_v<MT2> ||
        ( !IsStrictlyUpper_v<MT2> && !isStrictlyUpper( ~rhs ) ) ) {
@@ -1074,8 +1074,8 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix<MT,SO,false>& >
-   StrictlyUpperMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
+inline auto StrictlyUpperMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
 {
    if( IsUniTriangular_v<MT2> || ( IsSquare_v<MT2> && !isSquare( ~rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
@@ -1123,8 +1123,8 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix<MT,SO,false>& >
-   StrictlyUpperMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
+inline auto StrictlyUpperMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
 {
    if( IsUniTriangular_v<MT2> ||
        ( !IsStrictlyUpper_v<MT2> && !isStrictlyUpper( ~rhs ) ) ) {
@@ -1162,8 +1162,8 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix<MT,SO,false>& >
-   StrictlyUpperMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
+inline auto StrictlyUpperMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
 {
    if( IsUniTriangular_v<MT2> || ( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
@@ -1209,8 +1209,8 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline StrictlyUpperMatrix<MT,SO,false>&
-   StrictlyUpperMatrix<MT,SO,false>::operator%=( const Matrix<MT2,SO2>& rhs )
+inline auto StrictlyUpperMatrix<MT,SO,false>::operator%=( const Matrix<MT2,SO2>& rhs )
+   -> StrictlyUpperMatrix&
 {
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );

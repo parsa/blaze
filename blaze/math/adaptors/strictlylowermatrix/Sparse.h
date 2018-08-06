@@ -197,31 +197,31 @@ class StrictlyLowerMatrix<MT,SO,false>
    inline StrictlyLowerMatrix& operator=( StrictlyLowerMatrix&& rhs ) noexcept;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
-      operator=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
-      operator=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
-      operator+=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
-      operator+=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
-      operator-=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
-      operator-=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline StrictlyLowerMatrix& operator%=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator%=( const Matrix<MT2,SO2>& rhs ) -> StrictlyLowerMatrix&;
    //@}
    //**********************************************************************************************
 
@@ -948,8 +948,8 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix<MT,SO,false>& >
-   StrictlyLowerMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
+inline auto StrictlyLowerMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
 {
    if( IsUniTriangular_v<MT2> ||
        ( !IsStrictlyLower_v<MT2> && !isStrictlyLower( ~rhs ) ) ) {
@@ -987,8 +987,8 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix<MT,SO,false>& >
-   StrictlyLowerMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
+inline auto StrictlyLowerMatrix<MT,SO,false>::operator=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
 {
    if( IsUniTriangular_v<MT2> || ( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
@@ -1036,8 +1036,8 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix<MT,SO,false>& >
-   StrictlyLowerMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
+inline auto StrictlyLowerMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
 {
    if( IsUniTriangular_v<MT2> ||
        ( !IsStrictlyLower_v<MT2> && !isStrictlyLower( ~rhs ) ) ) {
@@ -1075,8 +1075,8 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix<MT,SO,false>& >
-   StrictlyLowerMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
+inline auto StrictlyLowerMatrix<MT,SO,false>::operator+=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
 {
    if( IsUniTriangular_v<MT2> || ( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
@@ -1124,8 +1124,8 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix<MT,SO,false>& >
-   StrictlyLowerMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
+inline auto StrictlyLowerMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
 {
    if( IsUniTriangular_v<MT2> ||
        ( !IsStrictlyLower_v<MT2> && !isStrictlyLower( ~rhs ) ) ) {
@@ -1163,8 +1163,8 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix<MT,SO,false>& >
-   StrictlyLowerMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
+inline auto StrictlyLowerMatrix<MT,SO,false>::operator-=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsComputation_v<MT2>, StrictlyLowerMatrix& >
 {
    if( IsUniTriangular_v<MT2> || ( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );
@@ -1211,8 +1211,8 @@ template< typename MT   // Type of the adapted sparse matrix
         , bool SO >     // Storage order of the adapted sparse matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline StrictlyLowerMatrix<MT,SO,false>&
-   StrictlyLowerMatrix<MT,SO,false>::operator%=( const Matrix<MT2,SO2>& rhs )
+inline auto StrictlyLowerMatrix<MT,SO,false>::operator%=( const Matrix<MT2,SO2>& rhs )
+   -> StrictlyLowerMatrix&
 {
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly lower matrix" );

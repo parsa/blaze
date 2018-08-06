@@ -694,37 +694,37 @@ class StrictlyUpperMatrix<MT,SO,true>
    inline StrictlyUpperMatrix& operator=( StrictlyUpperMatrix&& rhs ) noexcept;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
-      operator=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
-      operator=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
-      operator+=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
-      operator+=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
-      operator-=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
-      operator-=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline StrictlyUpperMatrix& operator%=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator%=( const Matrix<MT2,SO2>& rhs ) -> StrictlyUpperMatrix&;
 
    template< typename ST >
-   inline EnableIf_t< IsNumeric_v<ST>, StrictlyUpperMatrix >& operator*=( ST rhs );
+   inline auto operator*=( ST rhs ) -> EnableIf_t< IsNumeric_v<ST>, StrictlyUpperMatrix& >;
 
    template< typename ST >
-   inline EnableIf_t< IsNumeric_v<ST>, StrictlyUpperMatrix >& operator/=( ST rhs );
+   inline auto operator/=( ST rhs ) -> EnableIf_t< IsNumeric_v<ST>, StrictlyUpperMatrix& >;
    //@}
    //**********************************************************************************************
 
@@ -1692,8 +1692,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix<MT,SO,true>& >
-   StrictlyUpperMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
+inline auto StrictlyUpperMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
 {
    if( IsUniTriangular_v<MT2> ||
        ( !IsStrictlyUpper_v<MT2> && !isStrictlyUpper( ~rhs ) ) ) {
@@ -1728,8 +1728,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix<MT,SO,true>& >
-   StrictlyUpperMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
+inline auto StrictlyUpperMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
 {
    if( IsUniTriangular_v<MT2> || ( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
@@ -1774,8 +1774,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix<MT,SO,true>& >
-   StrictlyUpperMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
+inline auto StrictlyUpperMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
 {
    if( IsUniTriangular_v<MT2> ||
        ( !IsStrictlyUpper_v<MT2> && !isStrictlyUpper( ~rhs ) ) ) {
@@ -1810,8 +1810,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix<MT,SO,true>& >
-   StrictlyUpperMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
+inline auto StrictlyUpperMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
 {
    if( IsUniTriangular_v<MT2> || ( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
@@ -1856,8 +1856,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix<MT,SO,true>& >
-   StrictlyUpperMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
+inline auto StrictlyUpperMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
 {
    if( !IsStrictlyUpper_v<MT2> && !isStrictlyUpper( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
@@ -1891,8 +1891,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix<MT,SO,true>& >
-   StrictlyUpperMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
+inline auto StrictlyUpperMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsComputation_v<MT2>, StrictlyUpperMatrix& >
 {
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
@@ -1935,8 +1935,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline StrictlyUpperMatrix<MT,SO,true>&
-   StrictlyUpperMatrix<MT,SO,true>::operator%=( const Matrix<MT2,SO2>& rhs )
+inline auto StrictlyUpperMatrix<MT,SO,true>::operator%=( const Matrix<MT2,SO2>& rhs )
+   -> StrictlyUpperMatrix&
 {
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to strictly upper matrix" );
@@ -1964,8 +1964,8 @@ inline StrictlyUpperMatrix<MT,SO,true>&
 template< typename MT    // Type of the adapted dense matrix
         , bool SO >      // Storage order of the adapted dense matrix
 template< typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_t< IsNumeric_v<ST>, StrictlyUpperMatrix<MT,SO,true> >&
-   StrictlyUpperMatrix<MT,SO,true>::operator*=( ST rhs )
+inline auto StrictlyUpperMatrix<MT,SO,true>::operator*=( ST rhs )
+   -> EnableIf_t< IsNumeric_v<ST>, StrictlyUpperMatrix& >
 {
    matrix_ *= rhs;
    return *this;
@@ -1984,8 +1984,8 @@ inline EnableIf_t< IsNumeric_v<ST>, StrictlyUpperMatrix<MT,SO,true> >&
 template< typename MT    // Type of the adapted dense matrix
         , bool SO >      // Storage order of the adapted dense matrix
 template< typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_t< IsNumeric_v<ST>, StrictlyUpperMatrix<MT,SO,true> >&
-   StrictlyUpperMatrix<MT,SO,true>::operator/=( ST rhs )
+inline auto StrictlyUpperMatrix<MT,SO,true>::operator/=( ST rhs )
+   -> EnableIf_t< IsNumeric_v<ST>, StrictlyUpperMatrix& >
 {
    BLAZE_USER_ASSERT( !isZero( rhs ), "Division by zero detected" );
 

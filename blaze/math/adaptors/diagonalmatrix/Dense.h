@@ -700,31 +700,37 @@ class DiagonalMatrix<MT,SO,true>
    inline DiagonalMatrix& operator=( DiagonalMatrix&& rhs ) noexcept;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsComputation_v<MT2>, DiagonalMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsComputation_v<MT2>, DiagonalMatrix& > operator=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsComputation_v<MT2>, DiagonalMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsComputation_v<MT2>, DiagonalMatrix& > operator+=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator+=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline DisableIf_t< IsComputation_v<MT2>, DiagonalMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
+      -> DisableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline EnableIf_t< IsComputation_v<MT2>, DiagonalMatrix& > operator-=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator-=( const Matrix<MT2,SO2>& rhs )
+      -> EnableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >;
 
    template< typename MT2, bool SO2 >
-   inline DiagonalMatrix& operator%=( const Matrix<MT2,SO2>& rhs );
+   inline auto operator%=( const Matrix<MT2,SO2>& rhs ) -> DiagonalMatrix&;
 
    template< typename ST >
-   inline EnableIf_t< IsNumeric_v<ST>, DiagonalMatrix >& operator*=( ST rhs );
+   inline auto operator*=( ST rhs ) -> EnableIf_t< IsNumeric_v<ST>, DiagonalMatrix& >;
 
    template< typename ST >
-   inline EnableIf_t< IsNumeric_v<ST>, DiagonalMatrix >& operator/=( ST rhs );
+   inline auto operator/=( ST rhs ) -> EnableIf_t< IsNumeric_v<ST>, DiagonalMatrix& >;
    //@}
    //**********************************************************************************************
 
@@ -1671,8 +1677,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_t< IsComputation_v<MT2>, DiagonalMatrix<MT,SO,true>& >
-   DiagonalMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
+inline auto DiagonalMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >
 {
    if( !IsDiagonal_v<MT2> && !isDiagonal( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
@@ -1706,8 +1712,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsComputation_v<MT2>, DiagonalMatrix<MT,SO,true>& >
-   DiagonalMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
+inline auto DiagonalMatrix<MT,SO,true>::operator=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >
 {
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
@@ -1752,8 +1758,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_t< IsComputation_v<MT2>, DiagonalMatrix<MT,SO,true>& >
-   DiagonalMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
+inline auto DiagonalMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >
 {
    if( !IsDiagonal_v<MT2> && !isDiagonal( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
@@ -1787,8 +1793,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsComputation_v<MT2>, DiagonalMatrix<MT,SO,true>& >
-   DiagonalMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
+inline auto DiagonalMatrix<MT,SO,true>::operator+=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >
 {
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
@@ -1833,8 +1839,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DisableIf_t< IsComputation_v<MT2>, DiagonalMatrix<MT,SO,true>& >
-   DiagonalMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
+inline auto DiagonalMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
+   -> DisableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >
 {
    if( !IsDiagonal_v<MT2> && !isDiagonal( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
@@ -1868,8 +1874,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline EnableIf_t< IsComputation_v<MT2>, DiagonalMatrix<MT,SO,true>& >
-   DiagonalMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
+inline auto DiagonalMatrix<MT,SO,true>::operator-=( const Matrix<MT2,SO2>& rhs )
+   -> EnableIf_t< IsComputation_v<MT2>, DiagonalMatrix& >
 {
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
@@ -1912,8 +1918,8 @@ template< typename MT   // Type of the adapted dense matrix
         , bool SO >     // Storage order of the adapted dense matrix
 template< typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
-inline DiagonalMatrix<MT,SO,true>&
-   DiagonalMatrix<MT,SO,true>::operator%=( const Matrix<MT2,SO2>& rhs )
+inline auto DiagonalMatrix<MT,SO,true>::operator%=( const Matrix<MT2,SO2>& rhs )
+   -> DiagonalMatrix&
 {
    if( !IsSquare_v<MT2> && !isSquare( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to diagonal matrix" );
@@ -1941,8 +1947,8 @@ inline DiagonalMatrix<MT,SO,true>&
 template< typename MT    // Type of the adapted dense matrix
         , bool SO >      // Storage order of the adapted dense matrix
 template< typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_t< IsNumeric_v<ST>, DiagonalMatrix<MT,SO,true> >&
-   DiagonalMatrix<MT,SO,true>::operator*=( ST scalar )
+inline auto DiagonalMatrix<MT,SO,true>::operator*=( ST scalar )
+   -> EnableIf_t< IsNumeric_v<ST>, DiagonalMatrix& >
 {
    diagonal( matrix_ ) *= scalar;
 
@@ -1962,8 +1968,8 @@ inline EnableIf_t< IsNumeric_v<ST>, DiagonalMatrix<MT,SO,true> >&
 template< typename MT    // Type of the adapted dense matrix
         , bool SO >      // Storage order of the adapted dense matrix
 template< typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_t< IsNumeric_v<ST>, DiagonalMatrix<MT,SO,true> >&
-   DiagonalMatrix<MT,SO,true>::operator/=( ST scalar )
+inline auto DiagonalMatrix<MT,SO,true>::operator/=( ST scalar )
+   -> EnableIf_t< IsNumeric_v<ST>, DiagonalMatrix& >
 {
    diagonal( matrix_ ) /= scalar;
 
