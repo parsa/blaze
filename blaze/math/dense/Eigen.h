@@ -103,8 +103,8 @@ template< typename MT  // Type of the matrix A
         , bool SO      // Storage order of the matrix A
         , typename VT  // Type of the vector w
         , bool TF >    // Transpose flag of the vector w
-inline EnableIf_t< IsSymmetric_v<MT> && IsFloatingPoint_v< ElementType_t<MT> > >
-   eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
+inline auto eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
+   -> EnableIf_t< IsSymmetric_v<MT> && IsFloatingPoint_v< ElementType_t<MT> > >
 {
    using Tmp = ResultType_t< RemoveAdaptor_t<MT> >;
 
@@ -144,8 +144,8 @@ template< typename MT  // Type of the matrix A
         , bool SO      // Storage order of the matrix A
         , typename VT  // Type of the vector w
         , bool TF >    // Transpose flag of the vector w
-inline EnableIf_t< IsHermitian_v<MT> && IsComplex_v< ElementType_t<MT> > >
-   eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
+inline auto eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
+   -> EnableIf_t< IsHermitian_v<MT> && IsComplex_v< ElementType_t<MT> > >
 {
    using Tmp = ResultType_t< RemoveAdaptor_t<MT> >;
 
@@ -185,9 +185,9 @@ template< typename MT  // Type of the matrix A
         , bool SO      // Storage order of the matrix A
         , typename VT  // Type of the vector w
         , bool TF >    // Transpose flag of the vector w
-inline DisableIf_t< ( IsSymmetric_v<MT> && IsFloatingPoint_v< ElementType_t<MT> > ) ||
-                    ( IsHermitian_v<MT> && IsComplex_v< ElementType_t<MT> > ) >
-   eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
+inline auto eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
+   -> DisableIf_t< ( IsSymmetric_v<MT> && IsFloatingPoint_v< ElementType_t<MT> > ) ||
+                   ( IsHermitian_v<MT> && IsComplex_v< ElementType_t<MT> > ) >
 {
    using Tmp = ResultType_t< RemoveAdaptor_t<MT> >;
 
@@ -336,8 +336,8 @@ template< typename MT1  // Type of the matrix A
         , bool TF       // Transpose flag of the vector w
         , typename MT2  // Type of the matrix V
         , bool SO2 >    // Storage order of the matrix V
-inline EnableIf_t< IsSymmetric_v<MT1> && IsFloatingPoint_v< ElementType_t<MT1> > >
-   eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& V )
+inline auto eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& V )
+   -> EnableIf_t< IsSymmetric_v<MT1> && IsFloatingPoint_v< ElementType_t<MT1> > >
 {
    using Tmp = ResultType_t< RemoveAdaptor_t<MT1> >;
 
@@ -383,8 +383,8 @@ template< typename MT1  // Type of the matrix A
         , bool TF       // Transpose flag of the vector w
         , typename MT2  // Type of the matrix V
         , bool SO2 >    // Storage order of the matrix V
-inline EnableIf_t< IsHermitian_v<MT1> && IsComplex_v< ElementType_t<MT1> > >
-   eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& V )
+inline auto eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& V )
+   -> EnableIf_t< IsHermitian_v<MT1> && IsComplex_v< ElementType_t<MT1> > >
 {
    using Tmp = ResultType_t< RemoveAdaptor_t<MT1> >;
 
@@ -430,9 +430,9 @@ template< typename MT1  // Type of the matrix A
         , bool TF       // Transpose flag of the vector w
         , typename MT2  // Type of the matrix V
         , bool SO2 >    // Storage order of the matrix V
-inline DisableIf_t< ( IsSymmetric_v<MT1> && IsFloatingPoint_v< ElementType_t<MT1> > ) ||
-                    ( IsHermitian_v<MT1> && IsComplex_v< ElementType_t<MT1> > ) >
-   eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& V )
+inline auto eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& V )
+   -> DisableIf_t< ( IsSymmetric_v<MT1> && IsFloatingPoint_v< ElementType_t<MT1> > ) ||
+                   ( IsHermitian_v<MT1> && IsComplex_v< ElementType_t<MT1> > ) >
 {
    using Tmp = ResultType_t< RemoveAdaptor_t<MT1> >;
 

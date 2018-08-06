@@ -91,31 +91,40 @@ namespace blaze {
 /*!\name DenseMatrix operators */
 //@{
 template< typename T1, typename T2 >
-inline EnableIf_t< IsNumeric_v<T2>, bool > operator==( const DenseMatrix<T1,false>& mat, T2 scalar );
+inline auto operator==( const DenseMatrix<T1,false>& mat, T2 scalar )
+   -> EnableIf_t< IsNumeric_v<T2>, bool >;
 
 template< typename T1, typename T2 >
-inline EnableIf_t< IsNumeric_v<T2>, bool > operator==( const DenseMatrix<T1,true>& mat, T2 scalar );
+inline auto operator==( const DenseMatrix<T1,true>& mat, T2 scalar )
+   -> EnableIf_t< IsNumeric_v<T2>, bool >;
 
 template< typename T1, typename T2, bool SO >
-inline EnableIf_t< IsNumeric_v<T2>, bool > operator==( T1 scalar, const DenseMatrix<T2,SO>& mat );
+inline auto operator==( T1 scalar, const DenseMatrix<T2,SO>& mat )
+   -> EnableIf_t< IsNumeric_v<T2>, bool >;
 
 template< typename T1, typename T2, bool SO >
-inline EnableIf_t< IsNumeric_v<T2>, bool > operator!=( const DenseMatrix<T1,SO>& mat, T2 scalar );
+inline auto operator!=( const DenseMatrix<T1,SO>& mat, T2 scalar )
+   -> EnableIf_t< IsNumeric_v<T2>, bool >;
 
 template< typename T1, typename T2, bool SO >
-inline EnableIf_t< IsNumeric_v<T2>, bool > operator!=( T1 scalar, const DenseMatrix<T2,SO>& mat );
+inline auto operator!=( T1 scalar, const DenseMatrix<T2,SO>& mat )
+   -> EnableIf_t< IsNumeric_v<T2>, bool >;
 
 template< typename MT, bool SO, typename ST >
-inline EnableIf_t< IsNumeric_v<ST>, MT& > operator*=( DenseMatrix<MT,SO>& mat, ST scalar );
+inline auto operator*=( DenseMatrix<MT,SO>& mat, ST scalar )
+   -> EnableIf_t< IsNumeric_v<ST>, MT& >;
 
 template< typename MT, bool SO, typename ST >
-inline EnableIf_t< IsNumeric_v<ST>, MT& > operator*=( DenseMatrix<MT,SO>&& mat, ST scalar );
+inline auto operator*=( DenseMatrix<MT,SO>&& mat, ST scalar )
+   -> EnableIf_t< IsNumeric_v<ST>, MT& >;
 
 template< typename MT, bool SO, typename ST >
-inline EnableIf_t< IsNumeric_v<ST>, MT& > operator/=( DenseMatrix<MT,SO>& mat, ST scalar );
+inline auto operator/=( DenseMatrix<MT,SO>& mat, ST scalar )
+   -> EnableIf_t< IsNumeric_v<ST>, MT& >;
 
 template< typename MT, bool SO, typename ST >
-inline EnableIf_t< IsNumeric_v<ST>, MT& > operator/=( DenseMatrix<MT,SO>&& mat, ST scalar );
+inline auto operator/=( DenseMatrix<MT,SO>&& mat, ST scalar )
+   -> EnableIf_t< IsNumeric_v<ST>, MT& >;
 //@}
 //*************************************************************************************************
 
@@ -134,7 +143,8 @@ inline EnableIf_t< IsNumeric_v<ST>, MT& > operator/=( DenseMatrix<MT,SO>&& mat, 
 */
 template< typename T1    // Type of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side scalar
-inline EnableIf_t< IsNumeric_v<T2>, bool > operator==( const DenseMatrix<T1,false>& mat, T2 scalar )
+inline auto operator==( const DenseMatrix<T1,false>& mat, T2 scalar )
+   -> EnableIf_t< IsNumeric_v<T2>, bool >
 {
    using CT1 = CompositeType_t<T1>;
 
@@ -168,7 +178,8 @@ inline EnableIf_t< IsNumeric_v<T2>, bool > operator==( const DenseMatrix<T1,fals
 */
 template< typename T1    // Type of the left-hand side dense matrix
         , typename T2 >  // Type of the right-hand side scalar
-inline EnableIf_t< IsNumeric_v<T2>, bool > operator==( const DenseMatrix<T1,true>& mat, T2 scalar )
+inline auto operator==( const DenseMatrix<T1,true>& mat, T2 scalar )
+   -> EnableIf_t< IsNumeric_v<T2>, bool >
 {
    using CT1 = CompositeType_t<T1>;
 
@@ -203,7 +214,8 @@ inline EnableIf_t< IsNumeric_v<T2>, bool > operator==( const DenseMatrix<T1,true
 template< typename T1  // Type of the left-hand side scalar
         , typename T2  // Type of the right-hand side dense matrix
         , bool SO >    // Storage order
-inline EnableIf_t< IsNumeric_v<T1>, bool > operator==( T1 scalar, const DenseMatrix<T2,SO>& mat )
+inline auto operator==( T1 scalar, const DenseMatrix<T2,SO>& mat )
+   -> EnableIf_t< IsNumeric_v<T1>, bool >
 {
    return ( mat == scalar );
 }
@@ -225,7 +237,8 @@ inline EnableIf_t< IsNumeric_v<T1>, bool > operator==( T1 scalar, const DenseMat
 template< typename T1  // Type of the left-hand side dense matrix
         , typename T2  // Type of the right-hand side scalar
         , bool SO >    // Storage order
-inline EnableIf_t< IsNumeric_v<T2>, bool > operator!=( const DenseMatrix<T1,SO>& mat, T2 scalar )
+inline auto operator!=( const DenseMatrix<T1,SO>& mat, T2 scalar )
+   -> EnableIf_t< IsNumeric_v<T2>, bool >
 {
    return !( mat == scalar );
 }
@@ -247,7 +260,8 @@ inline EnableIf_t< IsNumeric_v<T2>, bool > operator!=( const DenseMatrix<T1,SO>&
 template< typename T1  // Type of the left-hand side scalar
         , typename T2  // Type of the right-hand side dense matrix
         , bool SO >    // Storage order
-inline EnableIf_t< IsNumeric_v<T1>, bool > operator!=( T1 scalar, const DenseMatrix<T2,SO>& mat )
+inline auto operator!=( T1 scalar, const DenseMatrix<T2,SO>& mat )
+   -> EnableIf_t< IsNumeric_v<T1>, bool >
 {
    return !( mat == scalar );
 }
@@ -270,7 +284,8 @@ inline EnableIf_t< IsNumeric_v<T1>, bool > operator!=( T1 scalar, const DenseMat
 template< typename MT    // Type of the left-hand side dense matrix
         , bool SO        // Storage order
         , typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_t< IsNumeric_v<ST>, MT& > operator*=( DenseMatrix<MT,SO>& mat, ST scalar )
+inline auto operator*=( DenseMatrix<MT,SO>& mat, ST scalar )
+   -> EnableIf_t< IsNumeric_v<ST>, MT& >
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -307,7 +322,8 @@ inline EnableIf_t< IsNumeric_v<ST>, MT& > operator*=( DenseMatrix<MT,SO>& mat, S
 template< typename MT    // Type of the left-hand side dense matrix
         , bool SO        // Storage order
         , typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_t< IsNumeric_v<ST>, MT& > operator*=( DenseMatrix<MT,SO>&& mat, ST scalar )
+inline auto operator*=( DenseMatrix<MT,SO>&& mat, ST scalar )
+   -> EnableIf_t< IsNumeric_v<ST>, MT& >
 {
    return operator*=( ~mat, scalar );
 }
@@ -332,7 +348,8 @@ inline EnableIf_t< IsNumeric_v<ST>, MT& > operator*=( DenseMatrix<MT,SO>&& mat, 
 template< typename MT    // Type of the left-hand side dense matrix
         , bool SO        // Storage order
         , typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_t< IsNumeric_v<ST>, MT& > operator/=( DenseMatrix<MT,SO>& mat, ST scalar )
+inline auto operator/=( DenseMatrix<MT,SO>& mat, ST scalar )
+   -> EnableIf_t< IsNumeric_v<ST>, MT& >
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
@@ -373,7 +390,8 @@ inline EnableIf_t< IsNumeric_v<ST>, MT& > operator/=( DenseMatrix<MT,SO>& mat, S
 template< typename MT    // Type of the left-hand side dense matrix
         , bool SO        // Storage order
         , typename ST >  // Data type of the right-hand side scalar
-inline EnableIf_t< IsNumeric_v<ST>, MT& > operator/=( DenseMatrix<MT,SO>&& mat, ST scalar )
+inline auto operator/=( DenseMatrix<MT,SO>&& mat, ST scalar )
+   -> EnableIf_t< IsNumeric_v<ST>, MT& >
 {
    return operator/=( ~mat, scalar );
 }

@@ -91,8 +91,8 @@ void rq( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& R, DenseMatrix<MT3
 // reconstruction of the \c Q matrix from the RQ decomposition.
 */
 template< typename MT1 >  // Type of matrix A
-inline EnableIf_t<IsBuiltin_v< ElementType_t<MT1> > >
-   rq_backend( MT1& A, const ElementType_t<MT1>* tau )
+inline auto rq_backend( MT1& A, const ElementType_t<MT1>* tau )
+   -> EnableIf_t<IsBuiltin_v< ElementType_t<MT1> > >
 {
    orgrq( A, tau );
 }
@@ -113,8 +113,8 @@ inline EnableIf_t<IsBuiltin_v< ElementType_t<MT1> > >
 // reconstruction of the \c Q matrix from the RQ decomposition.
 */
 template< typename MT1 >  // Type of matrix A
-inline EnableIf_t<IsComplex_v< ElementType_t<MT1> > >
-   rq_backend( MT1& A, const ElementType_t<MT1>* tau )
+inline auto rq_backend( MT1& A, const ElementType_t<MT1>* tau )
+   -> EnableIf_t<IsComplex_v< ElementType_t<MT1> > >
 {
    ungrq( A, tau );
 }
