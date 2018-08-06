@@ -2162,7 +2162,8 @@ template< InversionFlag IF  // Inversion algorithm
         , bool SO           // Storage order
         , bool SF           // Symmetry flag
         , size_t... CRAs >  // Compile time row arguments
-inline DisableIf_t< HasMutableDataAccess_v<MT> > invert( Rows<MT,SO,true,SF,CRAs...>& r )
+inline auto invert( Rows<MT,SO,true,SF,CRAs...>& r )
+   -> DisableIf_t< HasMutableDataAccess_v<MT> >
 {
    using RT = ResultType_t< Rows<MT,SO,true,SF,CRAs...> >;
 

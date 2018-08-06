@@ -1232,9 +1232,9 @@ template< typename MT1          // Type of the matrix of the left-hand side band
         , ptrdiff_t... CBAs1    // Compile time band arguments of the left-hand side band
         , typename MT2          // Type of the matrix of the right-hand side band
         , ptrdiff_t... CBAs2 >  // Compile time band arguments of the right-hand side band
-inline DisableIf_t< IsSubmatrix_v<MT1> || IsSubmatrix_v<MT2>, bool >
-   isSame_backend( const Band<MT1,TF,DF,MF,CBAs1...>& a,
-                   const Band<MT2,TF,DF,MF,CBAs2...>& b ) noexcept
+inline auto isSame_backend( const Band<MT1,TF,DF,MF,CBAs1...>& a,
+                            const Band<MT2,TF,DF,MF,CBAs2...>& b ) noexcept
+   -> DisableIf_t< IsSubmatrix_v<MT1> || IsSubmatrix_v<MT2>, bool >
 {
    return ( isSame( a.operand(), b.operand() ) && ( a.band() == b.band() ) );
 }
@@ -1262,9 +1262,9 @@ template< typename MT1          // Type of the submatrix of the left-hand side b
         , ptrdiff_t... CBAs1    // Compile time band arguments of the left-hand side band
         , typename MT2          // Type of the matrix of the right-hand side band
         , ptrdiff_t... CBAs2 >  // Compile time band arguments of the right-hand side band
-inline EnableIf_t< IsSubmatrix_v<MT1> && !IsSubmatrix_v<MT2>, bool >
-   isSame_backend( const Band<MT1,TF,DF,MF,CBAs1...>& a,
-                   const Band<MT2,TF,DF,MF,CBAs2...>& b ) noexcept
+inline auto isSame_backend( const Band<MT1,TF,DF,MF,CBAs1...>& a,
+                            const Band<MT2,TF,DF,MF,CBAs2...>& b ) noexcept
+   -> EnableIf_t< IsSubmatrix_v<MT1> && !IsSubmatrix_v<MT2>, bool >
 {
    return ( isSame( a.operand().operand(), b.operand() ) &&
             ( a.size() == b.size() ) &&
@@ -1295,9 +1295,9 @@ template< typename MT1          // Type of the matrix of the left-hand side band
         , ptrdiff_t... CBAs1    // Compile time band arguments of the left-hand side band
         , typename MT2          // Type of the submatrix of the right-hand side band
         , ptrdiff_t... CBAs2 >  // Compile time band arguments of the right-hand side band
-inline EnableIf_t< !IsSubmatrix_v<MT1> && IsSubmatrix_v<MT2>, bool >
-   isSame_backend( const Band<MT1,TF,DF,MF,CBAs1...>& a,
-                   const Band<MT2,TF,DF,MF,CBAs2...>& b ) noexcept
+inline auto isSame_backend( const Band<MT1,TF,DF,MF,CBAs1...>& a,
+                            const Band<MT2,TF,DF,MF,CBAs2...>& b ) noexcept
+   -> EnableIf_t< !IsSubmatrix_v<MT1> && IsSubmatrix_v<MT2>, bool >
 {
    return ( isSame( a.operand(), b.operand().operand() ) &&
             ( a.size() == b.size() ) &&
@@ -1328,9 +1328,9 @@ template< typename MT1          // Type of the submatrix of the left-hand side b
         , ptrdiff_t... CBAs1    // Compile time band arguments of the left-hand side band
         , typename MT2          // Type of the submatrix of the right-hand side band
         , ptrdiff_t... CBAs2 >  // Compile time band arguments of the right-hand side band
-inline EnableIf_t< IsSubmatrix_v<MT1> && IsSubmatrix_v<MT2>, bool >
-   isSame_backend( const Band<MT1,TF,DF,MF,CBAs1...>& a,
-                   const Band<MT2,TF,DF,MF,CBAs2...>& b ) noexcept
+inline auto isSame_backend( const Band<MT1,TF,DF,MF,CBAs1...>& a,
+                            const Band<MT2,TF,DF,MF,CBAs2...>& b ) noexcept
+   -> EnableIf_t< IsSubmatrix_v<MT1> && IsSubmatrix_v<MT2>, bool >
 {
    return ( isSame( a.operand().operand(), b.operand().operand() ) &&
             ( a.size() == b.size() ) &&
