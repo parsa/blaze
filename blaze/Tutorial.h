@@ -1811,7 +1811,8 @@
 //
 // The \c min() and \c max() functions can be used for a single vector or multiple vectors. If
 // passed a single vector, the functions return the smallest and largest element of the given
-// dense or sparse vector, respectively:
+// dense vector or the smallest and largest non-zero element of the given sparse vector,
+// respectively:
 
    \code
    blaze::StaticVector<int,4UL,rowVector> a{ -5, 2,  7, -4 };
@@ -1820,19 +1821,17 @@
    max( a );  // Returns 7
    \endcode
 
-// In case the vector currently has a size of 0, both functions return 0. Additionally, in case
-// a given sparse vector is not completely filled, the zero elements are taken into account. For
-// example, the following compressed vector has only two non-zero elements. However, the minimum
-// of this vector is 0:
-
    \code
-   blaze::CompressedVector<int> b( 4UL, 2UL );
-   b[0] = 1;
-   b[2] = 3;
+   blaze::CompressedVector<int> b{ 1, 0, 3, 0 };
 
-   min( b );  // Returns 0
+   min( b );  // Returns 1
+   max( b );  // Returns 3
    \endcode
 
+// For more information on the \ref vector_operations_reduction_operations_min and
+// \ref vector_operations_reduction_operations_max reduction operations see the
+// \ref vector_operations_reduction_operations section.
+//
 // If passed two or more dense vectors, the \c min() and \c max() functions compute the
 // componentwise minimum or maximum of the given vectors, respectively:
 
@@ -2185,9 +2184,119 @@
 // releases of \b Blaze.
 //
 //
-// \n \section vector_operations_norms Norms
+// \n \section vector_operations_reduction_operations Reduction Operations
+// <hr>
 //
-// \n \subsection vector_operations_norms_norm norm()
+// \subsection vector_operations_reduction_operations_reduce reduce()
+//
+// The \c reduce() function performs a total reduction of the elements of the given dense vector
+// or the non-zero elements of the given sparse vector. The following examples demonstrate the
+// total reduction of a dense and sparse vector:
+
+   \code
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   const double totalsum1 = reduce( a, blaze::Add() );
+   const double totalsum2 = reduce( a, []( double a, double b ){ return a + b; } );
+   \endcode
+
+   \code
+   blaze::CompressedVector<double> a;
+   // ... Resizing and initialization
+   const double totalmin1 = reduce( a, blaze::Min() );
+   const double totalmin2 = reduce( a, []( double a, double b ){ return blaze::min( a, b ); } );
+   \endcode
+
+// As demonstrated in the examples it is possible to pass any binary callable as custom reduction
+// operation. However, for instance in the case of lambdas the vectorization of the reduction
+// operation is compiler dependent and might not perform at peak performance. However, it is also
+// possible to create vectorized custom operations. See \ref custom_operations for a detailed
+// overview of the possibilities of custom operations.
+//
+// Please note that the evaluation order of the \c reduce() function is unspecified. Thus the
+// behavior is non-deterministic if the given reduction operation is not associative or not
+// commutative. Also, the operation is undefined if the given reduction operation modifies the
+// values.
+//
+// \n \subsection vector_operations_reduction_operations_sum sum()
+//
+// The \c sum() function reduces the elements of the given dense vector or the non-zero elements
+// of the given sparse vector by means of addition:
+
+   \code
+   blaze::DynamicVector<int> a{ 1, 2, 3, 4 };
+   const int totalsum = sum( a );  // Results in 10
+   \endcode
+
+   \code
+   blaze::CompressedVector<int> a{ 1, 2, 3, 4 };
+   const int totalsum = sum( a );  // Results in 10
+   \endcode
+
+// Please note that the evaluation order of the \c sum() function is unspecified.
+//
+// \n \subsection vector_operations_reduction_operations_prod prod()
+//
+// The \c prod() function reduces the elements of the given dense vector or the non-zero elements
+// of the given sparse vector by means of multiplication:
+
+   \code
+   blaze::DynamicVector<int> a{ 1, 2, 3, 4 };
+   const int totalprod = prod( a );  // Results in 24
+   \endcode
+
+   \code
+   blaze::CompressedVector<int> a{ 1, 2, 3, 4 };
+   const int totalprod = prod( a );  // Results in 24
+   \endcode
+
+// \n \subsection vector_operations_reduction_operations_min min()
+//
+// The unary \c min() function returns the smallest element of the given dense vector or the
+// smallest non-zero element of the given sparse vector. It can only be used for element types
+// that support the smaller-than relationship. In case the given vector currently has a size
+// of 0, the returned value is the default value (e.g. 0 in case of fundamental data types).
+
+   \code
+   blaze::DynamicVector<int> a{ 1, -2, 3, 0 };
+   const int totalmin = min( a );  // Results in -2
+   \endcode
+
+   \code
+   blaze::CompressedVector<int> a{ 1, 0, 3, 0 };
+   const int totalmin = min( a );  // Results in 1
+   \endcode
+
+// \note In case the sparse vector is not completely filled, the implicit zero elements are NOT
+// taken into account. In the previous example the compressed vector has only 2 non-zero elements.
+// However, the minimum of the vector is 1.
+//
+// \n \subsection vector_operations_reduction_operations_max max()
+//
+// This unary \c max() function returns the largest element of the given dense vector or the
+// largest non-zero element of the given sparse vector. It can only be used for element types
+// that support the smaller-than relationship. In case the given vector currently has a size
+// of 0, the returned value is the default value (e.g. 0 in case of fundamental data types).
+
+   \code
+   blaze::DynamicVector<int> a{ 1, -2, 3, 0 };
+   const int totalmax = max( a );  // Results in 3
+   \endcode
+
+   \code
+   blaze::CompressedVector<int> a{ -1, 0, -3, 0 };
+   const int totalmin = max( a );  // Results in -1
+   \endcode
+
+// \note In case the sparse vector is not completely filled, the implicit zero elements are NOT
+// taken into account. In the previous example the compressed vector has only 2 non-zero elements.
+// However, the maximum of the vector is -1.
+//
+//
+// \n \section vector_operations_norms Norms
+// <hr>
+//
+// \subsection vector_operations_norms_norm norm()
 //
 // The \c norm() function computes the L2 norm of the given dense or sparse vector:
 
@@ -4357,9 +4466,275 @@
 // releases of \b Blaze.
 //
 //
-// \n \section matrix_operations_norms Norms
+// \n \section matrix_operations_reduction_operations Reduction Operations
+// <hr>
 //
-// \n \subsection matrix_operations_norms_norm norm()
+// \subsection matrix_operations_reduction_operations_reduce reduce()
+//
+// The \c reduce() function performs either a total reduction, a rowwise reduction or a columnwise
+// reduction of the elements of the given dense matrix or the non-zero elements of the given sparse
+// matrix. The following examples demonstrate the total reduction of a dense and sparse matrix:
+
+   \code
+   blaze::DynamicMatrix<double> A;
+   // ... Resizing and initialization
+
+   const double totalsum1 = reduce( A, blaze::Add() );
+   const double totalsum2 = reduce( A, []( double a, double b ){ return a + b; } );
+   \endcode
+
+   \code
+   blaze::CompressedMatrix<double> A;
+   // ... Resizing and initialization
+
+   const double totalsum1 = reduce( A, blaze::Add() );
+   const double totalsum2 = reduce( A, []( double a, double b ){ return a + b; } );
+   \endcode
+
+// By specifying \c blaze::columnwise or \c blaze::rowwise the \c reduce() function performs a
+// column-wise or row-wise reduction, respectively. In case \c blaze::columnwise is specified, the
+// (non-zero) elements of the matrix are reduced column-wise and the result is a row vector. In
+// case \c blaze::rowwise is specified, the (non-zero) elements of the matrix are reduced row-wise
+// and the result is a column vector:
+
+   \code
+   blaze::DynamicMatrix<double> A;
+   blaze::CompressedMatrix<double> B;
+   blaze::DynamicVector<double,rowVector> colsum1, colsum2;
+   // ... Resizing and initialization
+
+   colsum1 = reduce<columnwise>( A, blaze::Add() );
+   colsum2 = reduce<columnwise>( B, []( double a, double b ){ return a + b; } );
+   \endcode
+
+   \code
+   blaze::DynamicMatrix<double> A;
+   blaze::CompressedMatrix<double> B;
+   blaze::DynamicVector<double,columnVector> rowsum1, rowsum2;
+   // ... Resizing and initialization
+
+   rowsum1 = reduce<rowwise>( A, blaze::Add() );
+   rowsum2 = reduce<rowwise>( B, []( double a, double b ){ return a + b; } );
+   \endcode
+
+// As demonstrated in the examples it is possible to pass any binary callable as custom reduction
+// operation. However, for instance in the case of lambdas the vectorization of the reduction
+// operation is compiler dependent and might not perform at peak performance. However, it is also
+// possible to create vectorized custom operations. See \ref custom_operations for a detailed
+// overview of the possibilities of custom operations.
+//
+// Please note that the evaluation order of the \c reduce() function is unspecified. Thus the
+// behavior is non-deterministic if the given reduction operation is not associative or not
+// commutative. Also, the operation is undefined if the given reduction operation modifies the
+// values.
+//
+// \n \subsection matrix_operations_reduction_operations_sum sum()
+//
+// The \c sum() function reduces the elements of the given dense vector or the non-zero elements
+// of the given sparse vector by means of addition:
+
+   \code
+   blaze::DynamicMatrix<int> A{ { 1, 2 }, { 3, 4 } };
+
+   const int totalsum = sum( A );  // Results in 10
+   \endcode
+
+   \code
+   blaze::CompressedMatrix<int> a{ { 1, 2 }, { 3, 4 } };
+
+   const int totalsum = sum( A );  // Results in 10
+   \endcode
+
+// By specifying \c blaze::columnwise or \c blaze::rowwise the \c sum() function performs a
+// column-wise or row-wise summation, respectively. In case \c blaze::columnwise is specified,
+// the (non-zero) elements of the matrix are summed up column-wise and the result is a row vector.
+// In case \c blaze::rowwise is specified, the (non-zero) elements of the matrix are summed up
+// row-wise and the result is a column vector:
+
+   \code
+   using blaze::columnwise;
+
+   blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
+   blaze::CompressedMatrix<int> B{ { 1, 0, 2 }, { 1, 3, 4 } };
+   blaze::DynamicVector<int,rowVector> colsum1, colsum2;
+
+   colsum1 = sum<columnwise>( A );  // Results in ( 2, 3, 6 )
+   colsum2 = sum<columnwise>( B );  // Same result
+   \endcode
+
+   \code
+   using blaze::rowwise;
+
+   blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
+   blaze::CompressedMatrix<int> B{ { 1, 0, 2 }, { 1, 3, 4 } };
+   blaze::DynamicVector<int,columnVector> rowsum1, rowsum2;
+
+   rowsum1 = sum<rowwise>( A );  // Results in ( 3, 8 )
+   rowsum2 = sum<rowwise>( B );  // Same result
+   \endcode
+
+// Please note that the evaluation order of the \c sum() function is unspecified.
+//
+// \n \subsection matrix_operations_reduction_operations_prod prod()
+//
+// The \c prod() function reduces the elements of the given dense vector or the non-zero elements
+// of the given sparse vector by means of multiplication:
+
+   \code
+   blaze::DynamicMatrix<int> A{ { 1, 2 }, { 3, 4 } };
+
+   const int totalprod = prod( A );  // Results in 24
+   \endcode
+
+   \code
+   blaze::CompressedMatrix<int> A{ { 1, 2 }, { 3, 4 } };
+
+   const int totalprod = prod( A );  // Results in 24
+   \endcode
+
+// By specifying \c blaze::columnwise or \c blaze::rowwise the \c prod() function performs a
+// column-wise or row-wise multiplication, respectively. In case \c blaze::columnwise is specified,
+// the (non-zero) elements of the matrix are multiplied column-wise and the result is a row vector.
+// In case \c blaze::rowwise is specified, the (non-zero) elements of the matrix are multiplied
+// row-wise and the result is a column vector:
+
+   \code
+   using blaze::columnwise;
+
+   blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
+   blaze::CompressedMatrix<int> B{ { 1, 0, 2 }, { 1, 3, 4 } };
+   blaze::DynamicVector<int,rowVector> colprod1, colprod2;
+
+   colprod1 = prod<columnwise>( A );  // Results in ( 1, 0, 8 )
+   colprod2 = prod<columnwise>( A );  // Results in ( 1, 3, 8 )
+   \endcode
+
+   \code
+   using blaze::rowwise;
+
+   blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
+   blaze::CompressedMatrix<int> B{ { 1, 0, 2 }, { 1, 3, 4 } };
+   blaze::DynamicVector<int,columnVector> rowprod1, rowprod2;
+
+   rowprod1 = prod<rowwise>( A );  // Results in ( 0, 12 )
+   rowprod2 = prod<rowwise>( A );  // Results in ( 2, 12 )
+   \endcode
+
+// Please note that the evaluation order of the \c prod() function is unspecified.
+//
+// \n \subsection matrix_operations_reduction_operations_min min()
+//
+// This function returns the smallest element of the given dense matrix or the smallest non-zero
+// element of the given sparse matrix. This function can only be used for element types that
+// support the smaller-than relationship. In case the given matrix currently has either 0 rows or
+// 0 columns, the returned value is the default value (e.g. 0 in case of fundamental data types).
+
+   \code
+   blaze::DynamicMatrix<int> A{ { 1, 2 }, { 3, 4 } };
+
+   const int totalmin = min( A );  // Results in 1
+   \endcode
+
+   \code
+   blaze::CompressedMatrix<int> A{ { 1, 0 }, { 3, 0 } };
+
+   const int totalmin = min( A );  // Results in 1
+   \endcode
+
+// \note In case the sparse matrix is not completely filled, the implicit zero elements are NOT
+// taken into account. In the previous example the compressed matrix has only 2 non-zero elements.
+// However, the minimum of this matrix is 1.
+//
+// By specifying \c blaze::columnwise or \c blaze::rowwise the \c min() function determines the
+// smallest (non-zero) element in each row or column, respectively. In case \c blaze::columnwise
+// is specified, the smallest (non-zero) element of each column is determined and the result is
+// a row vector. In case \c blaze::rowwise is specified, the smallest (non-zero) element of each
+// row is determined and the result is a column vector.
+
+   \code
+   using blaze::columnwise;
+
+   blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
+   blaze::CompressedMatrix<int> B{ { 1, 0, 2 }, { 1, 3, 4 } };
+   blaze::DynamicVector<int,rowVector> colmin1, colmin2;
+
+   colmin1 = min<columnwise>( A );  // Results in ( 1, 0, 2 )
+   colmin2 = min<columnwise>( B );  // Results in ( 1, 3, 2 )
+   \endcode
+
+   \code
+   using blaze::rowwise;
+
+   blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
+   blaze::CompressedMatrix<int> B{ { 1, 0, 2 }, { 1, 3, 4 } };
+   blaze::DynamicVector<int,columnVector> rowmin1, rowmin2;
+
+   rowmin1 = min<rowwise>( A );  // Results in ( 0, 1 )
+   rowmin2 = min<rowwise>( B );  // Results in ( 1, 1 )
+   \endcode
+
+// \note In case the sparse matrix is not completely filled, the implicit zero elements are NOT
+// taken into account.
+//
+// \n \subsection matrix_operations_reduction_operations_max max()
+//
+// This function returns the largest element of the given dense matrix or the largest non-zero
+// element of the given sparse matrix. This function can only be used for element types that
+// support the smaller-than relationship. In case the given matrix currently has either 0 rows or
+// 0 columns, the returned value is the default value (e.g. 0 in case of fundamental data types).
+
+   \code
+   blaze::DynamicMatrix<int> A{ { 1, 2 }, { 3, 4 } };
+
+   const int totalmax = max( A );  // Results in 4
+   \endcode
+
+   \code
+   blaze::CompressedMatrix<int> A{ { -1, 0 }, { -3, 0 } };
+
+   const int totalmax = max( A );  // Results in -1
+   \endcode
+
+// \note In case the sparse matrix is not completely filled, the implicit zero elements are NOT
+// taken into account. In the previous example the compressed matrix has only 2 non-zero elements.
+// However, the maximum of this matrix is -1.
+//
+// By specifying \c blaze::columnwise or \c blaze::rowwise the \c min() function determines the
+// largest (non-zero) element in each row or column, respectively. In case \c blaze::columnwise
+// is specified, the largest (non-zero) element of each column is determined and the result is
+// a row vector. In case \c blaze::rowwise is specified, the largest (non-zero) element of each
+// row is determined and the result is a column vector.
+
+   \code
+   using blaze::columnwise;
+
+   blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
+   blaze::CompressedMatrix<int> B{ { -1, 0, -2 }, { -1, -3, -4 } };
+   blaze::DynamicVector<int,rowVector> colmax1, colmax2;
+
+   colmax1 = max<columnwise>( A );  // Results in ( 1, 3, 4 )
+   colmax2 = max<columnwise>( B );  // Results in ( -1, -3, -2 )
+   \endcode
+
+   \code
+   using blaze::rowwise;
+
+   blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
+   blaze::CompressedMatrix<int> B{ { -1, 0, -2 }, { -1, -3, -4 } };
+   blaze::DynamicVector<int,columnVector> rowmax1, rowmax2;
+
+   rowmax1 = max<rowwise>( A );  // Results in ( 2, 4 )
+   rowmax2 = max<rowwise>( B );  // Results in ( -1, -1 )
+   \endcode
+
+// \note In case the sparse matrix is not completely filled, the implicit zero elements are NOT
+// taken into account.
+//
+//
+// \n \section matrix_operations_norms Norms
+// <hr>
+//
+// \subsection matrix_operations_norms_norm norm()
 //
 // The \c norm() function computes the L2 norm of the given dense or sparse matrix:
 
