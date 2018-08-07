@@ -50,6 +50,7 @@
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/RowVector.h>
 #include <blaze/math/StaticVector.h>
+#include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/util/AlignedAllocator.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
@@ -214,13 +215,14 @@ void ClassTest::testAlignment( const std::string& type )
    using VectorType    = blaze::StaticVector<Type,7UL,blaze::rowVector>;
    using AllocatorType = blaze::AlignedAllocator<VectorType>;
 
-   const size_t alignment( blaze::AlignmentOf<Type>::value );
+   constexpr size_t alignment( blaze::AlignmentOf_v<Type> );
 
 
    //=====================================================================================
    // Single vector alignment test
    //=====================================================================================
 
+   if( blaze::IsAligned_v<VectorType> )
    {
       const VectorType vec;
 
@@ -243,6 +245,7 @@ void ClassTest::testAlignment( const std::string& type )
    // Static array alignment test
    //=====================================================================================
 
+   if( blaze::IsAligned_v<VectorType> )
    {
       const VectorType init;
       const std::array<VectorType,7UL> vecs{ init, init, init, init, init, init, init };
@@ -269,6 +272,7 @@ void ClassTest::testAlignment( const std::string& type )
    // Dynamic array alignment test
    //=====================================================================================
 
+   if( blaze::IsAligned_v<VectorType> )
    {
       const VectorType init;
       const std::vector<VectorType,AllocatorType> vecs( 7UL, init );
