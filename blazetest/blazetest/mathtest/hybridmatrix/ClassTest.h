@@ -50,6 +50,7 @@
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/HybridMatrix.h>
+#include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/util/AlignedAllocator.h>
 #include <blaze/util/constraints/SameType.h>
@@ -251,6 +252,7 @@ void ClassTest::testAlignment( const std::string& type )
    // Single matrix alignment test
    //=====================================================================================
 
+   if( blaze::IsAligned_v<RowMajorMatrixType> )
    {
       const RowMajorMatrixType mat;
 
@@ -273,6 +275,7 @@ void ClassTest::testAlignment( const std::string& type )
       }
    }
 
+   if( blaze::IsAligned_v<ColumnMajorMatrixType> )
    {
       const ColumnMajorMatrixType mat;
 
@@ -300,6 +303,7 @@ void ClassTest::testAlignment( const std::string& type )
    // Static array alignment test
    //=====================================================================================
 
+   if( blaze::IsAligned_v<RowMajorMatrixType> )
    {
       const RowMajorMatrixType init( 7UL, 5UL );
       const std::array<RowMajorMatrixType,7UL> mats{ init, init, init, init, init, init, init };
@@ -326,6 +330,7 @@ void ClassTest::testAlignment( const std::string& type )
       }
    }
 
+   if( blaze::IsAligned_v<ColumnMajorMatrixType> )
    {
       const ColumnMajorMatrixType init( 7UL, 5UL );
       const std::array<ColumnMajorMatrixType,7UL> mats{ init, init, init, init, init, init, init };
@@ -357,6 +362,7 @@ void ClassTest::testAlignment( const std::string& type )
    // Dynamic array alignment test
    //=====================================================================================
 
+   if( blaze::IsAligned_v<RowMajorMatrixType> )
    {
       const RowMajorMatrixType init( 7UL, 5UL );
       const std::vector<RowMajorMatrixType,RowMajorAllocatorType> mats( 7UL, init );
@@ -383,6 +389,7 @@ void ClassTest::testAlignment( const std::string& type )
       }
    }
 
+   if( blaze::IsAligned_v<ColumnMajorMatrixType> )
    {
       const ColumnMajorMatrixType init( 7UL, 5UL );
       const std::vector<ColumnMajorMatrixType,ColumnMajorAllocatorType> mats( 7UL, init );
