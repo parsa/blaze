@@ -43,7 +43,6 @@
 #include <algorithm>
 #include <utility>
 #include <blaze/math/Aliases.h>
-#include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/dense/DenseIterator.h>
@@ -118,6 +117,7 @@
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/AlignmentOf.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
@@ -226,6 +226,18 @@ template< typename Type                    // Data type of the matrix
 class HybridMatrix
    : public DenseMatrix< HybridMatrix<Type,M,N,SO>, SO >
 {
+ private:
+   //**********************************************************************************************
+   //! The number of elements packed within a single SIMD element.
+   static constexpr size_t SIMDSIZE = SIMDTrait<Type>::size;
+
+   //! Alignment adjustment.
+   static constexpr size_t NN = ( usePadding ? nextMultiple( N, SIMDSIZE ) : N );
+
+   //! Compilation switch for the choice of alignment.
+   static constexpr bool align = ( usePadding || NN % SIMDSIZE == 0UL );
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    using This          = HybridMatrix<Type,M,N,SO>;   //!< Type of this HybridMatrix instance.
@@ -243,8 +255,8 @@ class HybridMatrix
    using Pointer        = Type*;        //!< Pointer to a non-constant matrix value.
    using ConstPointer   = const Type*;  //!< Pointer to a constant matrix value.
 
-   using Iterator      = DenseIterator<Type,usePadding>;        //!< Iterator over non-constant elements.
-   using ConstIterator = DenseIterator<const Type,usePadding>;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,align>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,align>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -344,19 +356,19 @@ class HybridMatrix
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t           rows() const noexcept;
-   inline size_t           columns() const noexcept;
-   inline constexpr size_t spacing() const noexcept;
-   inline constexpr size_t capacity() const noexcept;
-   inline           size_t capacity( size_t i ) const noexcept;
-   inline size_t           nonZeros() const;
-   inline size_t           nonZeros( size_t i ) const;
-   inline void             reset();
-   inline void             reset( size_t i );
-   inline void             clear();
-          void             resize ( size_t m, size_t n, bool preserve=true );
-   inline void             extend ( size_t m, size_t n, bool preserve=true );
-   inline void             swap( HybridMatrix& m ) noexcept;
+          inline           size_t rows() const noexcept;
+          inline           size_t columns() const noexcept;
+   static inline constexpr size_t spacing() noexcept;
+   static inline constexpr size_t capacity() noexcept;
+          inline           size_t capacity( size_t i ) const noexcept;
+          inline           size_t nonZeros() const;
+          inline           size_t nonZeros( size_t i ) const;
+          inline           void   reset();
+          inline           void   reset( size_t i );
+          inline           void   clear();
+                           void   resize ( size_t m, size_t n, bool preserve=true );
+          inline           void   extend ( size_t m, size_t n, bool preserve=true );
+          inline           void   swap( HybridMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -439,11 +451,6 @@ class HybridMatrix
    /*! \endcond */
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   //! The number of elements packed within a single SIMD element.
-   static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
-   //**********************************************************************************************
-
  public:
    //**Debugging functions*************************************************************************
    /*!\name Debugging functions */
@@ -458,7 +465,7 @@ class HybridMatrix
    template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
    template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool isAligned() const noexcept;
+   static inline constexpr bool isAligned() noexcept;
 
    BLAZE_ALWAYS_INLINE SIMDType load ( size_t i, size_t j ) const noexcept;
    BLAZE_ALWAYS_INLINE SIMDType loada( size_t i, size_t j ) const noexcept;
@@ -509,25 +516,29 @@ class HybridMatrix
 
  private:
    //**********************************************************************************************
-   //! Alignment adjustment.
-   static constexpr size_t NN = ( usePadding ? nextMultiple( N, SIMDSIZE ) : N );
+   //! Alignment of the data elements.
+   static constexpr size_t Alignment =
+      ( align ? AlignmentOf_v<Type> : std::alignment_of<Type>::value );
+
+   //! Type of the aligned storage.
+   using AlignedStorage = AlignedArray<Type,M*NN,Alignment>;
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   AlignedArray<Type,M*NN> v_;  //!< The statically allocated matrix elements.
-                                /*!< Access to the matrix elements is gained via the function call
-                                     operator. In case of row-major order the memory layout of the
-                                     elements is
-                                     \f[\left(\begin{array}{*{5}{c}}
-                                     0            & 1             & 2             & \cdots & N-1         \\
-                                     N            & N+1           & N+2           & \cdots & 2 \cdot N-1 \\
-                                     \vdots       & \vdots        & \vdots        & \ddots & \vdots      \\
-                                     M \cdot N-N  & M \cdot N-N+1 & M \cdot N-N+2 & \cdots & M \cdot N-1 \\
-                                     \end{array}\right)\f]. */
-   size_t m_;                   //!< The current number of rows of the matrix.
-   size_t n_;                   //!< The current number of columns of the matrix.
+   AlignedStorage v_;  //!< The statically allocated matrix elements.
+                       /*!< Access to the matrix elements is gained via the function call
+                            operator. In case of row-major order the memory layout of the
+                            elements is
+                            \f[\left(\begin{array}{*{5}{c}}
+                            0            & 1             & 2             & \cdots & N-1         \\
+                            N            & N+1           & N+2           & \cdots & 2 \cdot N-1 \\
+                            \vdots       & \vdots        & \vdots        & \ddots & \vdots      \\
+                            M \cdot N-N  & M \cdot N-N+1 & M \cdot N-N+2 & \cdots & M \cdot N-1 \\
+                            \end{array}\right)\f]. */
+   size_t m_;          //!< The current number of rows of the matrix.
+   size_t n_;          //!< The current number of columns of the matrix.
    //@}
    //**********************************************************************************************
 
@@ -1681,7 +1692,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline constexpr size_t HybridMatrix<Type,M,N,SO>::spacing() const noexcept
+inline constexpr size_t HybridMatrix<Type,M,N,SO>::spacing() noexcept
 {
    return NN;
 }
@@ -1697,7 +1708,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline constexpr size_t HybridMatrix<Type,M,N,SO>::capacity() const noexcept
+inline constexpr size_t HybridMatrix<Type,M,N,SO>::capacity() noexcept
 {
    return M*NN;
 }
@@ -2413,9 +2424,9 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline bool HybridMatrix<Type,M,N,SO>::isAligned() const noexcept
+inline constexpr bool HybridMatrix<Type,M,N,SO>::isAligned() noexcept
 {
-   return ( usePadding || columns() % SIMDSIZE == 0UL );
+   return align;
 }
 //*************************************************************************************************
 
@@ -2442,7 +2453,7 @@ template< typename Type  // Data type of the matrix
 BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,SO>::SIMDType
    HybridMatrix<Type,M,N,SO>::load( size_t i, size_t j ) const noexcept
 {
-   if( usePadding )
+   if( align )
       return loada( i, j );
    else
       return loadu( i, j );
@@ -2545,7 +2556,7 @@ template< typename Type  // Data type of the matrix
 BLAZE_ALWAYS_INLINE void
    HybridMatrix<Type,M,N,SO>::store( size_t i, size_t j, const SIMDType& value ) noexcept
 {
-   if( usePadding )
+   if( align )
       storea( i, j, value );
    else
       storeu( i, j, value );
@@ -3274,6 +3285,18 @@ template< typename Type  // Data type of the matrix
 class HybridMatrix<Type,M,N,true>
    : public DenseMatrix< HybridMatrix<Type,M,N,true>, true >
 {
+ private:
+   //**********************************************************************************************
+   //! The number of elements packed within a single SIMD element.
+   static constexpr size_t SIMDSIZE = SIMDTrait<Type>::size;
+
+   //! Alignment adjustment.
+   static constexpr size_t MM = ( usePadding ? nextMultiple( M, SIMDSIZE ) : M );
+
+   //! Compilation switch for the choice of alignment.
+   static constexpr bool align = ( usePadding || MM % SIMDSIZE == 0UL );
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    using This          = HybridMatrix<Type,M,N,true>;   //!< Type of this HybridMatrix instance.
@@ -3291,8 +3314,8 @@ class HybridMatrix<Type,M,N,true>
    using Pointer        = Type*;        //!< Pointer to a non-constant matrix value.
    using ConstPointer   = const Type*;  //!< Pointer to a constant matrix value.
 
-   using Iterator      = DenseIterator<Type,usePadding>;        //!< Iterator over non-constant elements.
-   using ConstIterator = DenseIterator<const Type,usePadding>;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,align>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,align>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -3392,19 +3415,19 @@ class HybridMatrix<Type,M,N,true>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t           rows() const noexcept;
-   inline size_t           columns() const noexcept;
-   inline constexpr size_t spacing() const noexcept;
-   inline constexpr size_t capacity() const noexcept;
-   inline           size_t capacity( size_t j ) const noexcept;
-   inline size_t           nonZeros() const;
-   inline size_t           nonZeros( size_t j ) const;
-   inline void             reset();
-   inline void             reset( size_t i );
-   inline void             clear();
-          void             resize ( size_t m, size_t n, bool preserve=true );
-   inline void             extend ( size_t m, size_t n, bool preserve=true );
-   inline void             swap( HybridMatrix& m ) noexcept;
+          inline           size_t rows() const noexcept;
+          inline           size_t columns() const noexcept;
+   static inline constexpr size_t spacing() noexcept;
+   static inline constexpr size_t capacity() noexcept;
+          inline           size_t capacity( size_t j ) const noexcept;
+          inline           size_t nonZeros() const;
+          inline           size_t nonZeros( size_t j ) const;
+          inline           void   reset();
+          inline           void   reset( size_t i );
+          inline           void   clear();
+                           void   resize ( size_t m, size_t n, bool preserve=true );
+          inline           void   extend ( size_t m, size_t n, bool preserve=true );
+          inline           void   swap( HybridMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -3479,11 +3502,6 @@ class HybridMatrix<Type,M,N,true>
         IsColumnMajorMatrix_v<MT> );
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   //! The number of elements packed within a single SIMD element.
-   static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
-   //**********************************************************************************************
-
  public:
    //**Debugging functions*************************************************************************
    /*!\name Debugging functions */
@@ -3498,7 +3516,7 @@ class HybridMatrix<Type,M,N,true>
    template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
    template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool isAligned() const noexcept;
+   static inline constexpr bool isAligned() noexcept;
 
    BLAZE_ALWAYS_INLINE SIMDType load ( size_t i, size_t j ) const noexcept;
    BLAZE_ALWAYS_INLINE SIMDType loada( size_t i, size_t j ) const noexcept;
@@ -3549,18 +3567,21 @@ class HybridMatrix<Type,M,N,true>
 
  private:
    //**********************************************************************************************
-   //! Alignment adjustment.
-   static constexpr size_t MM = ( usePadding ? nextMultiple( M, SIMDSIZE ) : M );
+   //! Alignment of the data elements.
+   static constexpr size_t Alignment =
+      ( align ? AlignmentOf_v<Type> : std::alignment_of<Type>::value );
+
+   //! Type of the aligned storage.
+   using AlignedStorage = AlignedArray<Type,MM*N,Alignment>;
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   AlignedArray<Type,MM*N> v_;  //!< The statically allocated matrix elements.
-                                /*!< Access to the matrix elements is gained via the
-                                     function call operator. */
-   size_t m_;                   //!< The current number of rows of the matrix.
-   size_t n_;                   //!< The current number of columns of the matrix.
+   AlignedStorage v_;  //!< The statically allocated matrix elements.
+                       /*!< Access to the matrix elements is gained via the function call operator. */
+   size_t m_;          //!< The current number of rows of the matrix.
+   size_t n_;          //!< The current number of columns of the matrix.
    //@}
    //**********************************************************************************************
 
@@ -4736,7 +4757,7 @@ inline size_t HybridMatrix<Type,M,N,true>::columns() const noexcept
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline constexpr size_t HybridMatrix<Type,M,N,true>::spacing() const noexcept
+inline constexpr size_t HybridMatrix<Type,M,N,true>::spacing() noexcept
 {
    return MM;
 }
@@ -4753,7 +4774,7 @@ inline constexpr size_t HybridMatrix<Type,M,N,true>::spacing() const noexcept
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline constexpr size_t HybridMatrix<Type,M,N,true>::capacity() const noexcept
+inline constexpr size_t HybridMatrix<Type,M,N,true>::capacity() noexcept
 {
    return MM*N;
 }
@@ -5482,9 +5503,9 @@ inline bool HybridMatrix<Type,M,N,true>::isAliased( const Other* alias ) const n
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline bool HybridMatrix<Type,M,N,true>::isAligned() const noexcept
+inline constexpr bool HybridMatrix<Type,M,N,true>::isAligned() noexcept
 {
-   return ( usePadding || rows() % SIMDSIZE == 0UL );
+   return align;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5511,7 +5532,7 @@ template< typename Type  // Data type of the matrix
 BLAZE_ALWAYS_INLINE typename HybridMatrix<Type,M,N,true>::SIMDType
    HybridMatrix<Type,M,N,true>::load( size_t i, size_t j ) const noexcept
 {
-   if( usePadding )
+   if( align )
       return loada( i, j );
    else
       return loadu( i, j );
@@ -5614,7 +5635,7 @@ template< typename Type  // Data type of the matrix
 BLAZE_ALWAYS_INLINE void
    HybridMatrix<Type,M,N,true>::store( size_t i, size_t j, const SIMDType& value ) noexcept
 {
-   if( usePadding )
+   if( align )
       storea( i, j, value );
    else
       storeu( i, j, value );
@@ -6586,7 +6607,7 @@ struct HasMutableDataAccess< HybridMatrix<T,M,N,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
 struct IsAligned< HybridMatrix<T,M,N,SO> >
-   : public BoolConstant<usePadding>
+   : public BoolConstant< HybridMatrix<T,M,N,SO>::isAligned() >
 {};
 /*! \endcond */
 //*************************************************************************************************
