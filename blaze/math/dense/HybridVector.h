@@ -34,7 +34,6 @@
 #include <algorithm>
 #include <utility>
 #include <blaze/math/Aliases.h>
-#include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/TransposeFlag.h>
@@ -105,6 +104,7 @@
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/AlignmentOf.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/RemoveConst.h>
@@ -195,6 +195,18 @@ template< typename Type                     // Data type of the vector
 class HybridVector
    : public DenseVector< HybridVector<Type,N,TF>, TF >
 {
+ private:
+   //**********************************************************************************************
+   //! The number of elements packed within a single SIMD vector.
+   static constexpr size_t SIMDSIZE = SIMDTrait<Type>::size;
+
+   //! Alignment adjustment.
+   static constexpr size_t NN = ( usePadding ? nextMultiple( N, SIMDSIZE ) : N );
+
+   //! Compilation switch for the choice of alignment.
+   static constexpr bool align = ( NN >= SIMDSIZE );
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    using This          = HybridVector<Type,N,TF>;   //!< Type of this HybridVector instance.
@@ -211,8 +223,8 @@ class HybridVector
    using Pointer        = Type*;        //!< Pointer to a non-constant vector value.
    using ConstPointer   = const Type*;  //!< Pointer to a constant vector value.
 
-   using Iterator      = DenseIterator<Type,aligned>;        //!< Iterator over non-constant elements.
-   using ConstIterator = DenseIterator<const Type,aligned>;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,align>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,align>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -311,15 +323,15 @@ class HybridVector
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t size() const noexcept;
-   inline size_t spacing() const noexcept;
-   inline size_t capacity() const noexcept;
-   inline size_t nonZeros() const;
-   inline void   reset();
-   inline void   clear();
-   inline void   resize( size_t n, bool preserve=true );
-   inline void   extend( size_t n, bool preserve=true );
-   inline void   swap( HybridVector& v ) noexcept;
+          inline           size_t size() const noexcept;
+   static inline constexpr size_t spacing() noexcept;
+   static inline constexpr size_t capacity() noexcept;
+          inline           size_t nonZeros() const;
+          inline           void   reset();
+          inline           void   clear();
+          inline           void   resize( size_t n, bool preserve=true );
+          inline           void   extend( size_t n, bool preserve=true );
+          inline           void   swap( HybridVector& v ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -405,11 +417,6 @@ class HybridVector
    /*! \endcond */
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   //! The number of elements packed within a single SIMD element.
-   static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
-   //**********************************************************************************************
-
  public:
    //**Debugging functions*************************************************************************
    /*!\name Debugging functions */
@@ -424,7 +431,7 @@ class HybridVector
    template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
    template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   inline bool isAligned() const noexcept;
+   static inline constexpr bool isAligned() noexcept;
 
    BLAZE_ALWAYS_INLINE SIMDType load ( size_t index ) const noexcept;
    BLAZE_ALWAYS_INLINE SIMDType loada( size_t index ) const noexcept;
@@ -477,20 +484,24 @@ class HybridVector
 
  private:
    //**********************************************************************************************
-   //! Alignment adjustment.
-   static constexpr size_t NN = ( usePadding ? nextMultiple( N, SIMDSIZE ) : N );
+   //! Alignment of the data elements.
+   static constexpr size_t Alignment =
+      ( NN >= SIMDSIZE ? AlignmentOf_v<Type> : std::alignment_of<Type>::value );
+
+   //! Type of the aligned storage.
+   using AlignedStorage = AlignedArray<Type,NN,Alignment>;
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   AlignedArray<Type,NN> v_;  //!< The statically allocated vector elements.
-                              /*!< Access to the vector values is gained via the subscript
-                                   operator. The order of the elements is
-                                   \f[\left(\begin{array}{*{4}{c}}
-                                   0 & 1 & \cdots & N-1 \\
-                                   \end{array}\right)\f] */
-   size_t size_;              //!< The current size/dimension of the vector.
+   AlignedStorage v_;  //!< The statically allocated vector elements.
+                       /*!< Access to the vector values is gained via the subscript operator.
+                            The order of the elements is
+                            \f[\left(\begin{array}{*{4}{c}}
+                            0 & 1 & \cdots & N-1 \\
+                            \end{array}\right)\f] */
+   size_t size_;       //!< The current size/dimension of the vector.
    //@}
    //**********************************************************************************************
 
@@ -1429,7 +1440,7 @@ inline size_t HybridVector<Type,N,TF>::size() const noexcept
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline size_t HybridVector<Type,N,TF>::spacing() const noexcept
+inline constexpr size_t HybridVector<Type,N,TF>::spacing() noexcept
 {
    return NN;
 }
@@ -1444,7 +1455,7 @@ inline size_t HybridVector<Type,N,TF>::spacing() const noexcept
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline size_t HybridVector<Type,N,TF>::capacity() const noexcept
+inline constexpr size_t HybridVector<Type,N,TF>::capacity() noexcept
 {
    return NN;
 }
@@ -1911,9 +1922,9 @@ inline bool HybridVector<Type,N,TF>::isAliased( const Other* alias ) const noexc
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline bool HybridVector<Type,N,TF>::isAligned() const noexcept
+inline constexpr bool HybridVector<Type,N,TF>::isAligned() noexcept
 {
-   return true;
+   return align;
 }
 //*************************************************************************************************
 
@@ -2768,7 +2779,7 @@ struct HasMutableDataAccess< HybridVector<T,N,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
 struct IsAligned< HybridVector<T,N,TF> >
-   : public TrueType
+   : public BoolConstant< HybridVector<T,N,TF>::isAligned() >
 {};
 /*! \endcond */
 //*************************************************************************************************
