@@ -74,9 +74,15 @@ namespace blaze {
    \code
    blaze::CompressedVector<double> a;
    // ... Resizing and initialization
-   const double totalsum = reduce( a, Add() );
+
+   const double totalsum1 = reduce( a, blaze::Add() );
+   const double totalsum2 = reduce( a, []( double a, double b ){ return a + b; } );
    \endcode
 
+// As demonstrated in the example it is possible to pass any binary callable as custom reduction
+// operation. See \ref custom_operations for a detailed overview of the possibilities of custom
+// operations.
+//
 // Please note that the evaluation order of the reduction operation is unspecified. Thus the
 // behavior is non-deterministic if \a op is not associative or not commutative. Also, the
 // operation is undefined if the given reduction operation modifies the values.
@@ -126,6 +132,7 @@ inline decltype(auto) reduce( const SparseVector<VT,TF>& sv, OP op )
 
    \code
    blaze::CompressedVector<int> a{ 1, 2, 3, 4 };
+
    const int totalsum = sum( a );  // Results in 10
    \endcode
 
@@ -179,8 +186,8 @@ inline decltype(auto) prod( const SparseVector<VT,TF>& sv )
 //
 // This function returns the smallest non-zero element of the given sparse vector. This function
 // can only be used for element types that support the smaller-than relationship. In case the
-// vector currently has a size of 0, the returned value is the default value (e.g. 0 in case of
-// fundamental data types).
+// given vector currently has a size of 0, the returned value is the default value (e.g. 0 in
+// case of fundamental data types).
 //
 // \note In case the sparse vector is not completely filled, the implicit zero elements are NOT
 // taken into account. Example: the following compressed vector has only 2 non-zero elements.
@@ -211,8 +218,8 @@ inline decltype(auto) min( const SparseVector<VT,TF>& sv )
 //
 // This function returns the largest non-zero element of the given sparse vector. This function
 // can only be used for element types that support the smaller-than relationship. In case the
-// vector currently has a size of 0, the returned value is the default value (e.g. 0 in case of
-// fundamental data types).
+// given vector currently has a size of 0, the returned value is the default value (e.g. 0 in
+// case of fundamental data types).
 //
 // \note In case the sparse vector is not completely filled, the implicit zero elements are NOT
 // taken into account. Example: the following compressed vector has only 2 non-zero elements.

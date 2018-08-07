@@ -172,6 +172,7 @@ class DMatReduceExpr<0UL,MT,OP>
    /*!\brief Constructor for the DMatReduceExpr class.
    //
    // \param dm The matrix operand of the reduction expression.
+   // \param op The reduction operation.
    */
    explicit inline DMatReduceExpr( const MT& dm, OP op ) noexcept
       : dm_( dm )  // Dense matrix of the reduction expression
@@ -1059,6 +1060,7 @@ class DMatReduceExpr<1UL,MT,OP>
    /*!\brief Constructor for the DMatReduceExpr class.
    //
    // \param dm The matrix operand of the reduction expression.
+   // \param op The reduction operation.
    */
    explicit inline DMatReduceExpr( const MT& dm, OP op ) noexcept
       : dm_( dm )  // Dense matrix of the reduction expression
@@ -1521,14 +1523,12 @@ struct DMatReduceExprHelper
    //**********************************************************************************************
 
    //**SIMD support detection**********************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the detection of the SIMD capabilities of the given custom operation.
    struct UseSIMDEnabledFlag {
       static constexpr bool test( bool (*fnc)() ) { return fnc(); }
       static constexpr bool test( bool b ) { return b; }
       static constexpr bool value = test( OP::BLAZE_TEMPLATE simdEnabled<ET,ET> );
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -1963,9 +1963,17 @@ inline ElementType_t<MT> dmatreduce( const DenseMatrix<MT,true>& dm, OP op )
    \code
    blaze::DynamicMatrix<double> A;
    // ... Resizing and initialization
-   const double totalsum = reduce( A, Add() );
+
+   const double totalsum1 = reduce( A, blaze::Add() );
+   const double totalsum2 = reduce( A, []( double a, double b ){ return a + b; } );
    \endcode
 
+// As demonstrated in the example it is possible to pass any binary callable as custom reduction
+// operation. However, for instance in the case of lambdas the vectorization of the reduction
+// operation is compiler dependent and might not perform at peak performance. However, it is also
+// possible to create vectorized custom operations. See \ref custom_operations for a detailed
+// overview of the possibilities of custom operations.
+//
 // Please note that the evaluation order of the reduction operation is unspecified. Thus the
 // behavior is non-deterministic if \a op is not associative or not commutative. Also, the
 // operation is undefined if the given reduction operation modifies the values.
@@ -2037,21 +2045,33 @@ inline decltype(auto) reduce_backend( const DenseMatrix<MT,true>& dm, OP op )
 // result is a column vector:
 
    \code
+   using blaze::columnwise;
+
    blaze::DynamicMatrix<double> A;
-   blaze::DynamicVector<double,rowVector> colsum;
+   blaze::DynamicVector<double,rowVector> colsum1, colsum2;
    // ... Resizing and initialization
 
-   colsum = reduce<columnwise>( A, Add() );
+   colsum1 = reduce<columnwise>( A, blaze::Add() );
+   colsum2 = reduce<columnwise>( A, []( double a, double b ){ return a + b; } );
    \endcode
 
    \code
+   using blaze::rowwise;
+
    blaze::DynamicMatrix<double> A;
-   blaze::DynamicVector<double,columnVector> rowsum;
+   blaze::DynamicVector<double,columnVector> rowsum1, rowsum2;
    // ... Resizing and initialization
 
-   rowsum = reduce<rowwise>( A, Add() );
+   rowsum1 = reduce<rowwise>( A, blaze::Add() );
+   rowsum2 = reduce<rowwise>( A, []( double a, double b ){ return a + b; } );
    \endcode
 
+// As demonstrated in the examples it is possible to pass any binary callable as custom reduction
+// operation. However, for instance in the case of lambdas the vectorization of the reduction
+// operation is compiler dependent and might not perform at peak performance. However, it is also
+// possible to create vectorized custom operations. See \ref custom_operations for a detailed
+// overview of the possibilities of custom operations.
+//
 // Please note that the evaluation order of the reduction operation is unspecified. Thus the
 // behavior is non-deterministic if \a op is not associative or not commutative. Also, the
 // operation is undefined if the given reduction operation modifies the values.
@@ -2082,6 +2102,7 @@ inline decltype(auto) reduce( const DenseMatrix<MT,SO>& dm, OP op )
 
    \code
    blaze::DynamicMatrix<int> A{ { 1, 2 }, { 3, 4 } };
+
    const int totalsum = sum( A );  // Results in 10
    \endcode
 
@@ -2112,17 +2133,21 @@ inline decltype(auto) sum( const DenseMatrix<MT,SO>& dm )
 // column vector:
 
    \code
+   using blaze::columnwise;
+
    blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
    blaze::DynamicVector<int,rowVector> colsum;
 
-   colsum = sum<columnwise>( A );  // Results in { 2, 3, 6 }
+   colsum = sum<columnwise>( A );  // Results in ( 2, 3, 6 )
    \endcode
 
    \code
+   using blaze::rowwise;
+
    blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
    blaze::DynamicVector<int,columnVector> rowsum;
 
-   rowsum = sum<rowwise>( A );  // Results in { 3, 8 }
+   rowsum = sum<rowwise>( A );  // Results in ( 3, 8 )
    \endcode
 
 // Please note that the evaluation order of the reduction operation is unspecified.
@@ -2150,6 +2175,7 @@ inline decltype(auto) sum( const DenseMatrix<MT,SO>& dm )
 
    \code
    blaze::DynamicMatrix<int> A{ { 1, 2 }, { 3, 4 } };
+
    const int totalprod = prod( A );  // Results in 24
    \endcode
 
@@ -2180,17 +2206,21 @@ inline decltype(auto) prod( const DenseMatrix<MT,SO>& dm )
 // vector:
 
    \code
+   using blaze::columnwise;
+
    blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
    blaze::DynamicVector<int,rowVector> colprod;
 
-   colprod = prod<columnwise>( A );  // Results in { 1, 0, 8 }
+   colprod = prod<columnwise>( A );  // Results in ( 1, 0, 8 )
    \endcode
 
    \code
+   using blaze::rowwise;
+
    blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
    blaze::DynamicVector<int,columnVector> rowprod;
 
-   rowprod = prod<rowwise>( A );  // Results in { 0, 12 }
+   rowprod = prod<rowwise>( A );  // Results in ( 0, 12 )
    \endcode
 
 // Please note that the evaluation order of the reduction operation is unspecified.
@@ -2214,13 +2244,14 @@ inline decltype(auto) prod( const DenseMatrix<MT,SO>& dm )
 // \param dm The given dense matrix.
 // \return The smallest dense matrix element.
 //
-// This function returns the smallest element of the given dense matrix. This function can
-// only be used for element types that support the smaller-than relationship. In case the
-// matrix currently has either 0 rows or 0 columns, the returned value is the default value
-// (e.g. 0 in case of fundamental data types).
+// This function returns the smallest element of the given dense matrix. This function can only
+// be used for element types that support the smaller-than relationship. In case the given matrix
+// currently has either 0 rows or 0 columns, the returned value is the default value (e.g. 0 in
+// case of fundamental data types).
 
    \code
    blaze::DynamicMatrix<int> A{ { 1, 2 }, { 3, 4 } };
+
    const int totalmin = min( A );  // Results in 1
    \endcode
 */
@@ -2248,17 +2279,21 @@ inline decltype(auto) min( const DenseMatrix<MT,SO>& dm )
 // column vector containing the smallest element of each row is returned.
 
    \code
+   using blaze::columnwise;
+
    blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
    blaze::DynamicVector<int,rowVector> colmin;
 
-   colmin = min<columnwise>( A );  // Results in { 1, 0, 2 }
+   colmin = min<columnwise>( A );  // Results in ( 1, 0, 2 )
    \endcode
 
    \code
+   using blaze::rowwise;
+
    blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
    blaze::DynamicVector<int,columnVector> rowmin;
 
-   rowmin = min<rowwise>( A );  // Results in { 0, 1 }
+   rowmin = min<rowwise>( A );  // Results in ( 0, 1 )
    \endcode
 */
 template< size_t RF    // Reduction flag
@@ -2280,13 +2315,14 @@ inline decltype(auto) min( const DenseMatrix<MT,SO>& dm )
 // \param dm The given dense matrix.
 // \return The largest dense matrix element.
 //
-// This function returns the largest element of the given dense matrix. This function can
-// only be used for element types that support the smaller-than relationship. In case the
-// matrix currently has either 0 rows or 0 columns, the returned value is the default value
-// (e.g. 0 in case of fundamental data types).
+// This function returns the largest element of the given dense matrix. This function can only
+// be used for element types that support the smaller-than relationship. In case the given martix
+// currently has either 0 rows or 0 columns, the returned value is the default value (e.g. 0 in
+// case of fundamental data types).
 
    \code
    blaze::DynamicMatrix<int> A{ { 1, 2 }, { 3, 4 } };
+
    const int totalmax = max( A );  // Results in 4
    \endcode
 */
@@ -2314,17 +2350,21 @@ inline decltype(auto) max( const DenseMatrix<MT,SO>& dm )
 // column vector containing the largest element of each row is returned.
 
    \code
+   using blaze::columnwise;
+
    blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
    blaze::DynamicVector<int,rowVector> colmax;
 
-   colmax = max<columnwise>( A );  // Results in { 1, 3, 4 }
+   colmax = max<columnwise>( A );  // Results in ( 1, 3, 4 )
    \endcode
 
    \code
+   using blaze::rowwise;
+
    blaze::DynamicMatrix<int> A{ { 1, 0, 2 }, { 1, 3, 4 } };
    blaze::DynamicVector<int,columnVector> rowmax;
 
-   rowmax = max<rowwise>( A );  // Results in { 2, 4 }
+   rowmax = max<rowwise>( A );  // Results in ( 2, 4 )
    \endcode
 */
 template< size_t RF    // Reduction flag

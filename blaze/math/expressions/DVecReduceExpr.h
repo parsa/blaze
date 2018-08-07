@@ -90,14 +90,12 @@ struct DVecReduceExprHelper
    //**********************************************************************************************
 
    //**SIMD support detection**********************************************************************
-   /*! \cond BLAZE_INTERNAL */
    //! Helper structure for the detection of the SIMD capabilities of the given custom operation.
    struct UseSIMDEnabledFlag {
       static constexpr bool test( bool (*fnc)() ) { return fnc(); }
       static constexpr bool test( bool b ) { return b; }
       static constexpr bool value = test( OP::BLAZE_TEMPLATE simdEnabled<ET,ET> );
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -351,9 +349,17 @@ inline auto dvecreduce( const DenseVector<VT,TF>& dv, Add /*op*/ )
    \code
    blaze::DynamicVector<double> a;
    // ... Resizing and initialization
-   const double totalsum = reduce( a, Add() );
+
+   const double totalsum1 = reduce( a, blaze::Add() );
+   const double totalsum2 = reduce( a, []( double a, double b ){ return a + b; } );
    \endcode
 
+// As demonstrated in the example it is possible to pass any binary callable as custom reduction
+// operation. However, for instance in the case of lambdas the vectorization of the reduction
+// operation is compiler dependent and might not perform at peak performance. However, it is also
+// possible to create vectorized custom operations. See \ref custom_operations for a detailed
+// overview of the possibilities of custom operations.
+//
 // Please note that the evaluation order of the reduction operation is unspecified. Thus the
 // behavior is non-deterministic if \a op is not associative or not commutative. Also, the
 // operation is undefined if the given reduction operation modifies the values.
@@ -381,6 +387,7 @@ inline decltype(auto) reduce( const DenseVector<VT,TF>& dv, OP op )
 
    \code
    blaze::DynamicVector<int> a{ 1, 2, 3, 4 };
+
    const int totalsum = sum( a );  // Results in 10
    \endcode
 
@@ -432,7 +439,7 @@ inline decltype(auto) prod( const DenseVector<VT,TF>& dv )
 // \return The smallest dense vector element.
 //
 // This function returns the smallest element of the given dense vector. This function can
-// only be used for element types that support the smaller-than relationship. In case the
+// only be used for element types that support the smaller-than relationship. In case the given
 // vector currently has a size of 0, the returned value is the default value (e.g. 0 in case
 // of fundamental data types).
 
@@ -460,7 +467,7 @@ inline decltype(auto) min( const DenseVector<VT,TF>& dv )
 // \return The largest dense vector element.
 //
 // This function returns the largest element of the given dense vector. This function can
-// only be used for element types that support the smaller-than relationship. In case the
+// only be used for element types that support the smaller-than relationship. In case the given
 // vector currently has a size of 0, the returned value is the default value (e.g. 0 in case
 // of fundamental data types).
 
