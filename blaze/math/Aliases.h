@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
 
 
@@ -308,7 +307,7 @@ using Pointer_t = typename T::Pointer;
    \endcode
 */
 template< typename T1, typename T2 >
-using Rebind_t = typename T1::BLAZE_TEMPLATE Rebind<T2>::Other;
+using Rebind_t = typename T1::template Rebind<T2>::Other;
 //*************************************************************************************************
 
 
@@ -368,7 +367,7 @@ using RepresentedType_t = typename T::RepresentedType;
    \endcode
 */
 template< typename T, size_t... Ns >
-using Resize_t = typename T::BLAZE_TEMPLATE Resize<Ns...>::Other;
+using Resize_t = typename T::template Resize<Ns...>::Other;
 //*************************************************************************************************
 
 
