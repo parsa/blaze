@@ -1733,8 +1733,8 @@ inline Columns<MT,true,true,SF,CCAs...>&
    for( size_t j=0UL; j<columns(); ++j )
    {
       const size_t index ( idx(j) );
-      const size_t ibegin( IsLower_v<MT> ? ( IsStrictlyLower_v<MT> ? index+1UL : index ) : 0UL );
-      const size_t iend  ( IsUpper_v<MT> ? ( IsStrictlyUpper_v<MT> ? index : index+1UL ) : rows() );
+      const size_t ibegin( IsLower<MT>::value ? ( IsStrictlyLower_v<MT> ? index+1UL : index ) : 0UL );
+      const size_t iend  ( IsUpper<MT>::value ? ( IsStrictlyUpper_v<MT> ? index : index+1UL ) : rows() );
 
       for( size_t i=ibegin; i<iend; ++i ) {
          matrix_(i,index) *= scalar;
@@ -4938,8 +4938,8 @@ inline Columns<MT,false,true,false,CCAs...>&
    for( size_t j=0UL; j<columns(); ++j )
    {
       const size_t index ( idx(j) );
-      const size_t ibegin( IsLower_v<MT> ? ( IsStrictlyLower_v<MT> ? index+1UL : index ) : 0UL );
-      const size_t iend  ( IsUpper_v<MT> ? ( IsStrictlyUpper_v<MT> ? index : index+1UL ) : rows() );
+      const size_t ibegin( IsLower<MT>::value ? ( IsStrictlyLower_v<MT> ? index+1UL : index ) : 0UL );
+      const size_t iend  ( IsUpper<MT>::value ? ( IsStrictlyUpper_v<MT> ? index : index+1UL ) : rows() );
 
       for( size_t i=ibegin; i<iend; ++i ) {
          matrix_(i,index) *= scalar;

@@ -1627,7 +1627,7 @@ inline typename Band<MT,TF,false,false,CBAs...>::Iterator
    Band<MT,TF,false,false,CBAs...>::erase( Iterator first, Iterator last )
 {
    for( ; first!=last; ++first ) {
-      const size_t index( IsRowMajorMatrix_v<MT> ? first.row_ : first.column_ );
+      const size_t index( IsRowMajorMatrix<MT>::value ? first.row_ : first.column_ );
       matrix_.erase( index, first.pos_ );
    }
    return last;
@@ -1668,7 +1668,7 @@ inline void Band<MT,TF,false,false,CBAs...>::erase( Pred predicate )
 {
    for( Iterator element=begin(); element!=end(); ++element ) {
       if( predicate( element->value() ) ) {
-         const size_t index( IsRowMajorMatrix_v<MT> ? element.row_ : element.column_ );
+         const size_t index( IsRowMajorMatrix<MT>::value ? element.row_ : element.column_ );
          matrix_.erase( index, element.pos_ );
       }
    }
@@ -1710,7 +1710,7 @@ inline void Band<MT,TF,false,false,CBAs...>::erase( Iterator first, Iterator las
 {
    for( ; first!=last; ++first ) {
       if( predicate( first->value() ) ) {
-         const size_t index( IsRowMajorMatrix_v<MT> ? first.row_ : first.column_ );
+         const size_t index( IsRowMajorMatrix<MT>::value ? first.row_ : first.column_ );
          matrix_.erase( index, first.pos_ );
       }
    }

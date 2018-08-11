@@ -1728,8 +1728,8 @@ inline Rows<MT,true,true,SF,CRAs...>&
    for( size_t i=0UL; i<rows(); ++i )
    {
       const size_t index ( idx(i) );
-      const size_t jbegin( IsUpper_v<MT> ? ( IsStrictlyUpper_v<MT> ? index+1UL : index ) : 0UL );
-      const size_t jend  ( IsLower_v<MT> ? ( IsStrictlyLower_v<MT> ? index : index+1UL ) : columns() );
+      const size_t jbegin( IsUpper<MT>::value ? ( IsStrictlyUpper_v<MT> ? index+1UL : index ) : 0UL );
+      const size_t jend  ( IsLower<MT>::value ? ( IsStrictlyLower_v<MT> ? index : index+1UL ) : columns() );
 
       for( size_t j=jbegin; j<jend; ++j ) {
          matrix_(index,j) *= scalar;
@@ -4930,8 +4930,8 @@ inline Rows<MT,false,true,false,CRAs...>&
    for( size_t i=0UL; i<rows(); ++i )
    {
       const size_t index ( idx(i) );
-      const size_t jbegin( IsUpper_v<MT> ? ( IsStrictlyUpper_v<MT> ? index+1UL : index ) : 0UL );
-      const size_t jend  ( IsLower_v<MT> ? ( IsStrictlyLower_v<MT> ? index : index+1UL ) : columns() );
+      const size_t jbegin( IsUpper<MT>::value ? ( IsStrictlyUpper_v<MT> ? index+1UL : index ) : 0UL );
+      const size_t jend  ( IsLower<MT>::value ? ( IsStrictlyLower_v<MT> ? index : index+1UL ) : columns() );
 
       for( size_t j=jbegin; j<jend; ++j ) {
          matrix_(index,j) *= scalar;
