@@ -1828,8 +1828,7 @@
    max( b );  // Returns 3
    \endcode
 
-// For more information on the \ref vector_operations_reduction_operations_min and
-// \ref vector_operations_reduction_operations_max reduction operations see the
+// For more information on the unary \c min() and \c max() reduction operations see the
 // \ref vector_operations_reduction_operations section.
 //
 // If passed two or more dense vectors, the \c min() and \c max() functions compute the
@@ -1875,7 +1874,7 @@
 
 // \n \subsection vector_operators_sign sign()
 //
-// The \c sign() function can be used to evaluate the sign of each element of a vector \a v. For
+// The \c sign() function can be used to evaluate the sign of each element of a vector \a a. For
 // each element \c i the corresponding result is 1 if \a a[i] is greater than zero, 0 if \a a[i]
 // is zero, and -1 if \a a[i] is less than zero. For instance, the following use of the \c sign()
 // function
@@ -2281,7 +2280,7 @@
 //
 // \n \subsection vector_operations_reduction_operations_max max()
 //
-// This unary \c max() function returns the largest element of the given dense vector or the
+// The unary \c max() function returns the largest element of the given dense vector or the
 // largest non-zero element of the given sparse vector. It can only be used for element types
 // that support the smaller-than relationship. In case the given vector currently has a size
 // of 0, the returned value is the default value (e.g. 0 in case of fundamental data types).
@@ -4087,32 +4086,30 @@
 //
 // \subsection matrix_operations_min_max min() / max()
 //
-// The \c min() and \c max() functions can be used for a single matrix or multiple matrices. If
+// The \c min() and \c max() functions can be used for a single vector or multiple vectors. If
 // passed a single matrix, the functions return the smallest and largest element of the given
-// dense or sparse matrix, respectively:
+// dense matrix or the smallest and largest non-zero element of the given sparse matrix,
+// respectively:
 
    \code
-   using blaze::rowMajor;
-
-   blaze::StaticMatrix<int,2UL,3UL,rowMajor> A{ { -5, 2, 7 },
-                                                { -4, 0, 1 } };
+   blaze::StaticMatrix<int,2UL,3UL> A{ { -5, 2, 7 },
+                                       { -4, 0, 1 } };
 
    min( A );  // Returns -5
    max( A );  // Returns 7
    \endcode
 
-// In case the matrix currently has 0 rows or 0 columns, both functions return 0. Additionally, in
-// case a given sparse matrix is not completely filled, the zero elements are taken into account.
-// For example: the following compressed matrix has only 2 non-zero elements. However, the minimum
-// of this matrix is 0:
-
    \code
    blaze::CompressedMatrix<int> B{ { 1, 0, 3 },
                                    { 0, 0, 0 } };
 
-   min( B );  // Returns 0
+   min( B );  // Returns 1
+   max( B );  // Returns 3
    \endcode
 
+// For more information on the unary \c min() and \c max() reduction operations see the
+// \ref matrix_operations_reduction_operations section.
+//
 // If passed two or more dense matrices, the \c min() and \c max() functions compute the
 // componentwise minimum or maximum of the given matrices, respectively:
 
@@ -7896,7 +7893,7 @@
 
 // The \c subvector() function returns an expression representing the subvector view. The type of
 // this expression depends on the given subvector arguments, primarily the type of the vector and
-// the compile time arguments. If the type is required, it can be determined via \c decltype
+// the compile time arguments. If the type is required, it can be determined via the \c decltype
 // specifier:
 
    \code
@@ -8263,7 +8260,7 @@
 // that it is possible to use the same index multiple times. The \c elements() function returns an
 // expression representing the view on the selected elements. The type of this expression depends
 // on the given arguments, primarily the type of the vector and the compile time arguments. If the
-// type is required, it can be determined via \c decltype specifier:
+// type is required, it can be determined via the \c decltype specifier:
 
    \code
    using VectorType = blaze::DynamicVector<int>;
@@ -8547,7 +8544,7 @@
 
 // The \c submatrix() function returns an expression representing the submatrix view. The type of
 // this expression depends on the given submatrix arguments, primarily the type of the matrix and
-// the compile time arguments. If the type is required, it can be determined via \c decltype
+// the compile time arguments. If the type is required, it can be determined via the \c decltype
 // specifier:
 
    \code
@@ -8950,7 +8947,7 @@
 
 // The \c row() function returns an expression representing the row view. The type of this
 // expression depends on the given row arguments, primarily the type of the matrix and the compile
-// time arguments. If the type is required, it can be determined via \c decltype specifier:
+// time arguments. If the type is required, it can be determined via the \c decltype specifier:
 
    \code
    using MatrixType = blaze::DynamicMatrix<int>;
@@ -9270,7 +9267,7 @@
 // that it is possible to use the same index multiple times. The \c rows() function returns an
 // expression representing the view on the selected rows. The type of this expression depends
 // on the given arguments, primarily the type of the matrix and the compile time arguments. If
-// the type is required, it can be determined via \c decltype specifier:
+// the type is required, it can be determined via the \c decltype specifier:
 
    \code
    using MatrixType = blaze::DynamicMatrix<int>;
@@ -9577,7 +9574,8 @@
 
 // The \c column() function returns an expression representing the column view. The type of this
 // expression depends on the given column arguments, primarily the type of the matrix and the
-// compile time arguments. If the type is required, it can be determined via \c decltype specifier:
+// compile time arguments. If the type is required, it can be determined via the \c decltype
+// specifier:
 
    \code
    using MatrixType = blaze::DynamicMatrix<int>;
@@ -9897,7 +9895,7 @@
 // that it is possible to use the same index multiple times. The \c columns() function returns an
 // expression representing the view on the selected columns. The type of this expression depends
 // on the given arguments, primarily the type of the matrix and the compile time arguments. If
-// the type is required, it can be determined via \c decltype specifier:
+// the type is required, it can be determined via the \c decltype specifier:
 
    \code
    using MatrixType = blaze::DynamicMatrix<int>;
