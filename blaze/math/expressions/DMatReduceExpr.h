@@ -383,7 +383,7 @@ class DMatReduceExpr<0UL,MT,OP>
          }
       }
       else {
-         const ResultType tmp( rhs );
+         const ResultType tmp( serial( rhs ) );
          addAssign( ~lhs, tmp );
       }
    }
@@ -451,7 +451,7 @@ class DMatReduceExpr<0UL,MT,OP>
          }
       }
       else {
-         const ResultType tmp( rhs );
+         const ResultType tmp( serial( rhs ) );
          subAssign( ~lhs, tmp );
       }
    }
@@ -519,7 +519,7 @@ class DMatReduceExpr<0UL,MT,OP>
          }
       }
       else {
-         const ResultType tmp( rhs );
+         const ResultType tmp( serial( rhs ) );
          multAssign( ~lhs, tmp );
       }
    }
