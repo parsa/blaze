@@ -2196,6 +2196,7 @@
    \code
    blaze::DynamicVector<double> a;
    // ... Resizing and initialization
+
    const double totalsum1 = reduce( a, blaze::Add() );
    const double totalsum2 = reduce( a, []( double a, double b ){ return a + b; } );
    \endcode
@@ -2203,6 +2204,7 @@
    \code
    blaze::CompressedVector<double> a;
    // ... Resizing and initialization
+
    const double totalmin1 = reduce( a, blaze::Min() );
    const double totalmin2 = reduce( a, []( double a, double b ){ return blaze::min( a, b ); } );
    \endcode
@@ -2225,11 +2227,13 @@
 
    \code
    blaze::DynamicVector<int> a{ 1, 2, 3, 4 };
+
    const int totalsum = sum( a );  // Results in 10
    \endcode
 
    \code
    blaze::CompressedVector<int> a{ 1, 2, 3, 4 };
+
    const int totalsum = sum( a );  // Results in 10
    \endcode
 
@@ -2242,11 +2246,13 @@
 
    \code
    blaze::DynamicVector<int> a{ 1, 2, 3, 4 };
+
    const int totalprod = prod( a );  // Results in 24
    \endcode
 
    \code
    blaze::CompressedVector<int> a{ 1, 2, 3, 4 };
+
    const int totalprod = prod( a );  // Results in 24
    \endcode
 
@@ -2259,11 +2265,13 @@
 
    \code
    blaze::DynamicVector<int> a{ 1, -2, 3, 0 };
+
    const int totalmin = min( a );  // Results in -2
    \endcode
 
    \code
    blaze::CompressedVector<int> a{ 1, 0, 3, 0 };
+
    const int totalmin = min( a );  // Results in 1
    \endcode
 
@@ -2280,11 +2288,13 @@
 
    \code
    blaze::DynamicVector<int> a{ 1, -2, 3, 0 };
+
    const int totalmax = max( a );  // Results in 3
    \endcode
 
    \code
    blaze::CompressedVector<int> a{ -1, 0, -3, 0 };
+
    const int totalmin = max( a );  // Results in -1
    \endcode
 
@@ -4624,10 +4634,11 @@
 //
 // \n \subsection matrix_operations_reduction_operations_min min()
 //
-// This function returns the smallest element of the given dense matrix or the smallest non-zero
-// element of the given sparse matrix. This function can only be used for element types that
-// support the smaller-than relationship. In case the given matrix currently has either 0 rows or
-// 0 columns, the returned value is the default value (e.g. 0 in case of fundamental data types).
+// The unary \c min() function returns the smallest element of the given dense matrix or the
+// smallest non-zero element of the given sparse matrix. This function can only be used for
+// element types that support the smaller-than relationship. In case the given matrix currently
+// has either 0 rows or 0 columns, the returned value is the default value (e.g. 0 in case of
+// fundamental data types).
 
    \code
    blaze::DynamicMatrix<int> A{ { 1, 2 }, { 3, 4 } };
@@ -4678,10 +4689,11 @@
 //
 // \n \subsection matrix_operations_reduction_operations_max max()
 //
-// This function returns the largest element of the given dense matrix or the largest non-zero
-// element of the given sparse matrix. This function can only be used for element types that
-// support the smaller-than relationship. In case the given matrix currently has either 0 rows or
-// 0 columns, the returned value is the default value (e.g. 0 in case of fundamental data types).
+// The unary \c max() function returns the largest element of the given dense matrix or the
+// largest non-zero element of the given sparse matrix. This function can only be used for
+// element types that support the smaller-than relationship. In case the given matrix currently
+// has either 0 rows or 0 columns, the returned value is the default value (e.g. 0 in case of
+// fundamental data types).
 
    \code
    blaze::DynamicMatrix<int> A{ { 1, 2 }, { 3, 4 } };
@@ -4699,7 +4711,7 @@
 // taken into account. In the previous example the compressed matrix has only 2 non-zero elements.
 // However, the maximum of this matrix is -1.
 //
-// By specifying \c blaze::columnwise or \c blaze::rowwise the \c min() function determines the
+// By specifying \c blaze::columnwise or \c blaze::rowwise the \c max() function determines the
 // largest (non-zero) element in each row or column, respectively. In case \c blaze::columnwise
 // is specified, the largest (non-zero) element of each column is determined and the result is
 // a row vector. In case \c blaze::rowwise is specified, the largest (non-zero) element of each
