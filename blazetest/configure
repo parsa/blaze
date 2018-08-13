@@ -105,7 +105,7 @@ BLAZE_PATH="${INSTALL_PATH%%/blazetest}"
 CXXFLAGS="$CXXFLAGS -isystem $INSTALL_PATH -isystem $BLAZE_PATH "
 
 BOOST_INCLUDE_PATH=${BOOST_INCLUDE_PATH%"/"}
-if [ -n "$BOOST_INCLUDE_PATH" ]; then
+if [ "$BOOST" = "yes" ] && [ -n "$BOOST_INCLUDE_PATH" ]; then
    if [[ ! "$CXXFLAGS" =~ "$BOOST_INCLUDE_PATH " ]]; then
       CXXFLAGS="${CXXFLAGS%" "} -isystem $BOOST_INCLUDE_PATH "
    fi
@@ -124,22 +124,28 @@ CXXFLAGS=${CXXFLAGS%" "}
 LIBRARIES="$LIBRARY_DIRECTIVES"
 
 BOOST_LIBRARY_PATH=${BOOST_LIBRARY_PATH%"/"}
-if [ -n "$BOOST_LIBRARY_PATH" ] && [[ ! "$LIBRARIES" =~ "$BOOST_LIBRARY_PATH " ]]; then
-   LIBRARIES="${LIBRARIES%" "} -L$BOOST_LIBRARY_PATH "
+if [ "$BOOST" = "yes" ]; then
+   if [ -n "$BOOST_LIBRARY_PATH" ] && [[ ! "$LIBRARIES" =~ "$BOOST_LIBRARY_PATH " ]]; then
+      LIBRARIES="${LIBRARIES%" "} -L$BOOST_LIBRARY_PATH "
+   fi
 fi
 
 BOOST_SYSTEM_LIBRARY=${BOOST_SYSTEM_LIBRARY#"lib"}
-if [ -n "$BOOST_SYSTEM_LIBRARY" ]; then
-   LIBRARIES="${LIBRARIES%" "} -l$BOOST_SYSTEM_LIBRARY"
-else
-   LIBRARIES="${LIBRARIES%" "} -lboost_system"
+if [ "$BOOST" = "yes" ]; then
+   if [ -n "$BOOST_SYSTEM_LIBRARY" ]; then
+      LIBRARIES="${LIBRARIES%" "} -l$BOOST_SYSTEM_LIBRARY"
+   else
+      LIBRARIES="${LIBRARIES%" "} -lboost_system"
+   fi
 fi
 
 BOOST_THREAD_LIBRARY=${BOOST_THREAD_LIBRARY#"lib"}
-if [ -n "$BOOST_THREAD_LIBRARY" ]; then
-   LIBRARIES="${LIBRARIES%" "} -l$BOOST_THREAD_LIBRARY"
-else
-   LIBRARIES="${LIBRARIES%" "} -lboost_thread"
+if [ "$BOOST" = "yes" ]; then
+   if [ -n "$BOOST_THREAD_LIBRARY" ]; then
+      LIBRARIES="${LIBRARIES%" "} -l$BOOST_THREAD_LIBRARY"
+   else
+      LIBRARIES="${LIBRARIES%" "} -lboost_thread"
+   fi
 fi
 
 BLAS_LIBRARY_PATH=${BLAS_LIBRARY_PATH%"/"}

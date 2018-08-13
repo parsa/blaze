@@ -37,18 +37,21 @@ CXX=
 # Special compiler flags
 CXXFLAGS=
 
-# Configuration of the boost library
-# The boost library (see www.boost.org) is precondition for the Blaze library and the
-# Blaze benchmark suite, i.e., it is not possible to compile the library without boost.
-# Blaze requires you to have at least the boost version 1.54.0 or higher installed on
-# your system. In case the boost include directory is not set, it is assumed that the
-# boost headers are installed in standard paths (as for instance '/usr/include/boost').
-# Additionally, it is necessary to specify the library path of the boost libraries and
-# the name of the boost system and thread libraries (as for instance 'boost_thread-mt').
-# In case the library path is not explicitly specified, it is assumed that the libraries
-# are installed in standard paths (for example '/usr/lib/' or '/usr/lib64/'). If the
-# name of a library is not specified, it is assumed that the library has a default name
-# ('libboost_system.*' and 'libboost_thread.*', respectively).
+# Configuration of the Boost library
+# The BOOST switch should be set to 'yes' if Boost threads are used for the shared memory
+# parallelization of Blaze operations. In that case the Boost library (see www.boost.org) is
+# precondition for the Blaze test suite, i.e. it is not possible to compile and/or run the
+# tests without Boost. It is recommended to use the newest Boost library available, but Blaze
+# requires at minimum the Boost version 1.54.0. If Boost is activated, it is necessary to
+# specify the Boost include path. If the include path is is not set it is assumed that the
+# Boost headers are installed in standard paths (as for instance '/usr/include/boost').
+# Additionally, it is necessary to specify the library path of the Boost libraries and the
+# name of the Boost system and thread libraries (as for instance 'boost_thread-mt'). In case
+# the library path is not explicitly specified, it is assumed that the libraries are installed
+# in standard paths (for example '/usr/lib/' or '/usr/lib64/'). If the name of a library is
+# not specified, it is assumed that the library has a default name ('libboost_system.*' and
+# 'libboost_thread.*', respectively).
+BOOST="no"
 BOOST_INCLUDE_PATH=
 BOOST_LIBRARY_PATH=
 BOOST_SYSTEM_LIBRARY=
