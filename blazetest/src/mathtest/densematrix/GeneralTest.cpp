@@ -79,6 +79,7 @@ GeneralTest::GeneralTest()
    testIsIdentity();
    testMinimum();
    testMaximum();
+   testSoftmax();
    testTrace();
    testL1Norm();
    testL2Norm();
@@ -3979,8 +3980,8 @@ void GeneralTest::testIsIdentity()
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c min() function for dense matrices template. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c min() function for dense matrices. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
 */
 void GeneralTest::testMinimum()
 {
@@ -4272,8 +4273,8 @@ void GeneralTest::testMinimum()
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c max() function for dense matrices template. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c max() function for dense matrices. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
 */
 void GeneralTest::testMaximum()
 {
@@ -4562,13 +4563,82 @@ void GeneralTest::testMaximum()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c softmax() function for dense matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c softmax() function for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testSoftmax()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major softmax()";
+
+      blaze::DynamicMatrix<double,blaze::rowMajor> A( 2UL, 2UL );
+      randomize( A, -5.0, 5.0 );
+
+      const auto B = softmax( A );
+
+      if( B(0,0) <= 0.0 || B(0,0) > 1.0 ||
+          B(0,1) <= 0.0 || B(0,1) > 1.0 ||
+          B(1,0) <= 0.0 || B(1,0) > 1.0 ||
+          B(1,1) <= 0.0 || B(1,1) > 1.0 ||
+          !isEqual( sum( B ), 1.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Softmax computation failed\n"
+             << " Details:\n"
+             << "   Result: " << sum( B ) << "\n"
+             << "   Expected result: 1\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major softmax()";
+
+      blaze::DynamicMatrix<double,blaze::columnMajor> A( 2UL, 2UL );
+      randomize( A, -5.0, 5.0 );
+
+      const auto B = softmax( A );
+
+      if( B(0,0) <= 0.0 || B(0,0) > 1.0 ||
+          B(0,1) <= 0.0 || B(0,1) > 1.0 ||
+          B(1,0) <= 0.0 || B(1,0) > 1.0 ||
+          B(1,1) <= 0.0 || B(1,1) > 1.0 ||
+          !isEqual( sum( B ), 1.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Softmax computation failed\n"
+             << " Details:\n"
+             << "   Result: " << sum( B ) << "\n"
+             << "   Expected result: 1\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c trace() function for dense matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c trace() function for dense matrices template. In case
-// an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c trace() function for dense matrices. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
 */
 void GeneralTest::testTrace()
 {
@@ -4717,13 +4787,13 @@ void GeneralTest::testTrace()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c l1Norm() function for sparse matrices.
+/*!\brief Test of the \c l1Norm() function for dense matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c l1Norm() function for sparse matrices template. In
-// case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c l1Norm() function for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
 */
 void GeneralTest::testL1Norm()
 {
@@ -4852,13 +4922,13 @@ void GeneralTest::testL1Norm()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c l2Norm() function for sparse matrices.
+/*!\brief Test of the \c l2Norm() function for dense matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c l2Norm() function for sparse matrices template. In
-// case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c l2Norm() function for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
 */
 void GeneralTest::testL2Norm()
 {
@@ -4987,13 +5057,13 @@ void GeneralTest::testL2Norm()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c l3Norm() function for sparse matrices.
+/*!\brief Test of the \c l3Norm() function for dense matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c l3Norm() function for sparse matrices template. In
-// case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c l3Norm() function for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
 */
 void GeneralTest::testL3Norm()
 {
@@ -5122,13 +5192,13 @@ void GeneralTest::testL3Norm()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c l4Norm() function for sparse matrices.
+/*!\brief Test of the \c l4Norm() function for dense matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c l4Norm() function for sparse matrices template. In
-// case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c l4Norm() function for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
 */
 void GeneralTest::testL4Norm()
 {
@@ -5253,13 +5323,13 @@ void GeneralTest::testL4Norm()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c lpNorm() function for sparse matrices.
+/*!\brief Test of the \c lpNorm() function for dense matrices.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c lpNorm() function for sparse matrices template. In
-// case an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c lpNorm() function for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
 */
 void GeneralTest::testLpNorm()
 {

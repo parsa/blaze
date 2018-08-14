@@ -103,6 +103,7 @@ class GeneralTest
    void testIsIdentity();
    void testMinimum();
    void testMaximum();
+   void testSoftmax();
    void testTrace();
    void testL1Norm();
    void testL2Norm();
