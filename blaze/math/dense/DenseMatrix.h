@@ -444,6 +444,9 @@ bool isDiagonal( const DenseMatrix<MT,SO>& dm );
 
 template< bool RF, typename MT, bool SO >
 bool isIdentity( const DenseMatrix<MT,SO>& dm );
+
+template< typename MT, bool SO >
+auto softmax( const DenseMatrix<MT,SO>& dm );
 //@}
 //*************************************************************************************************
 
@@ -1574,6 +1577,29 @@ bool isIdentity( const DenseMatrix<MT,SO>& dm )
    }
 
    return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the softmax function for the given dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix for the softmax computation.
+// \return The resulting matrix.
+//
+// This function computes the softmax function (i.e. the normalized exponential function) for
+// the given dense matrix \a dm (see also https://en.wikipedia.org/wiki/Softmax_function). The
+// resulting dense matrix consists of real values in the range (0..1], which add up to 1.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+auto softmax( const DenseMatrix<MT,SO>& dm )
+{
+   auto tmp( evaluate( exp( ~dm ) ) );
+   const auto scalar( sum( ~tmp ) );
+   tmp /= scalar;
+   return tmp;
 }
 //*************************************************************************************************
 
