@@ -10188,9 +10188,9 @@
    #include <blaze/math/Band.h>
    \endcode
 
-// The band index must be in the range from \f$[1-M..N-1]\f$, where \c M is the total number of
-// rows and \c N is the total number of columns, and can be specified both at compile time or at
-// runtime:
+// The band index must be in the range from \f$[min(0,1-M)..max(0,N-1)]\f$, where \c M is the
+// total number of rows and \c N is the total number of columns, and can be specified both at
+// compile time or at runtime:
 
    \code
    blaze::DynamicMatrix<double,blaze::rowMajor> A;
