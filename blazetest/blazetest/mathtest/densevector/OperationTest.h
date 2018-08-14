@@ -88,6 +88,7 @@ class OperationTest
    void testNormalize();
    void testMinimum();
    void testMaximum();
+   void testSoftmax();
    void testL1Norm();
    void testL2Norm();
    void testL3Norm();

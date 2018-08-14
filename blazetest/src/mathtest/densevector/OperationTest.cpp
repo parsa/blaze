@@ -70,6 +70,7 @@ OperationTest::OperationTest()
    testNormalize();
    testMinimum();
    testMaximum();
+   testSoftmax();
    testL1Norm();
    testL2Norm();
    testL3Norm();
@@ -401,8 +402,8 @@ void OperationTest::testNormalize()
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c min() function for dense vectors template. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c min() function for dense vectors. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
 */
 void OperationTest::testMinimum()
 {
@@ -489,8 +490,8 @@ void OperationTest::testMinimum()
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c max() function for dense vectors template. In case an
-// error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c max() function for dense vectors. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
 */
 void OperationTest::testMaximum()
 {
@@ -572,13 +573,48 @@ void OperationTest::testMaximum()
 
 
 //*************************************************************************************************
+/*!\brief Test of the \c softmax() function for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c softmax() function for dense vectors. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testSoftmax()
+{
+   test_ = "softmax() function";
+
+   blaze::DynamicVector<double,blaze::rowVector> a( 4UL );
+   randomize( a, -5.0, 5.0 );
+
+   const auto b = softmax( a );
+
+   if( b[0] <= 0.0 || b[0] > 1.0 ||
+       b[1] <= 0.0 || b[1] > 1.0 ||
+       b[2] <= 0.0 || b[2] > 1.0 ||
+       b[3] <= 0.0 || b[3] > 1.0 ||
+       !isEqual( sum( b ), 1.0 ) ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Softmax computation failed\n"
+          << " Details:\n"
+          << "   Result: " << sum( b ) << "\n"
+          << "   Expected result: 1\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the \c l1Norm() function for dense vectors.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c l1Norm() function for dense vectors template. In case
-// an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c l1Norm() function for dense vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
 */
 void OperationTest::testL1Norm()
 {
@@ -641,8 +677,8 @@ void OperationTest::testL1Norm()
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c l2Norm() function for dense vectors template. In case
-// an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c l2Norm() function for dense vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
 */
 void OperationTest::testL2Norm()
 {
@@ -705,8 +741,8 @@ void OperationTest::testL2Norm()
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c l3Norm() function for dense vectors template. In case
-// an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c l3Norm() function for dense vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
 */
 void OperationTest::testL3Norm()
 {
@@ -769,8 +805,8 @@ void OperationTest::testL3Norm()
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c l4Norm() function for dense vectors template. In case
-// an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c l4Norm() function for dense vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
 */
 void OperationTest::testL4Norm()
 {
@@ -833,8 +869,8 @@ void OperationTest::testL4Norm()
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c lpNorm() function for dense vectors template. In case
-// an error is detected, a \a std::runtime_error exception is thrown.
+// This function performs a test of the \c lpNorm() function for dense vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
 */
 void OperationTest::testLpNorm()
 {
