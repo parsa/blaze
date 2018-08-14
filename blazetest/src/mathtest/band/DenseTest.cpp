@@ -114,7 +114,106 @@ void DenseTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "Row-major Band constructor";
+      test_ = "Row-major Band constructor (0x0)";
+
+      MT mat;
+
+      // 1st lower matrix band
+      try {
+         blaze::band( mat, -1L );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // 0th matrix band (diagonal)
+      {
+         BT band0 = blaze::band( mat, 0L );
+
+         checkSize    ( band0, 0UL );
+         checkCapacity( band0, 0UL );
+         checkNonZeros( band0, 0UL );
+      }
+
+      // 1st upper matrix band
+      try {
+         blaze::band( mat, 1L );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Row-major Band constructor (0x2)";
+
+      MT mat( 0UL, 2UL );
+
+      // 1st lower matrix band
+      try {
+         blaze::band( mat, -1L );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // 0th matrix band (diagonal)
+      {
+         BT band0 = blaze::band( mat, 0L );
+
+         checkSize    ( band0, 0UL );
+         checkCapacity( band0, 0UL );
+         checkNonZeros( band0, 0UL );
+      }
+
+      // 1st upper matrix
+      {
+         BT band1 = blaze::band( mat, 1L );
+
+         checkSize    ( band1, 0UL );
+         checkCapacity( band1, 0UL );
+         checkNonZeros( band1, 0UL );
+      }
+
+      // 2nd upper matrix band
+      try {
+         blaze::band( mat, 2L );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Row-major Band constructor (2x0)";
+
+      MT mat( 2UL, 0UL );
+
+      // 2nd lower matrix band
+      try {
+         blaze::band( mat, -2L );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // 1st lower matrix band
+      {
+         BT band1 = blaze::band( mat, -1L );
+
+         checkSize    ( band1, 0UL );
+         checkCapacity( band1, 0UL );
+         checkNonZeros( band1, 0UL );
+      }
+
+      // 0th matrix band (diagonal)
+      {
+         BT band0 = blaze::band( mat, 0L );
+
+         checkSize    ( band0, 0UL );
+         checkCapacity( band0, 0UL );
+         checkNonZeros( band0, 0UL );
+      }
+
+      // 1st upper matrix band
+      try {
+         blaze::band( mat, 1L );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Row-major Band constructor (4x6)";
 
       initialize();
 
@@ -308,7 +407,106 @@ void DenseTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "Column-major Band constructor";
+      test_ = "Column-major Band constructor (0x0)";
+
+      OMT tmat;
+
+      // 1st lower matrix band
+      try {
+         blaze::band( tmat, -1L );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // 0th matrix band (diagonal)
+      {
+         OBT band0 = blaze::band( tmat, 0L );
+
+         checkSize    ( band0, 0UL );
+         checkCapacity( band0, 0UL );
+         checkNonZeros( band0, 0UL );
+      }
+
+      // 1st upper matrix band
+      try {
+         blaze::band( tmat, 1L );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Column-major Band constructor (0x2)";
+
+      OMT tmat( 0UL, 2UL );
+
+      // 1st lower matrix band
+      try {
+         blaze::band( tmat, -1L );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // 0th matrix band (diagonal)
+      {
+         OBT band0 = blaze::band( tmat, 0L );
+
+         checkSize    ( band0, 0UL );
+         checkCapacity( band0, 0UL );
+         checkNonZeros( band0, 0UL );
+      }
+
+      // 1st upper matrix
+      {
+         OBT band1 = blaze::band( tmat, 1L );
+
+         checkSize    ( band1, 0UL );
+         checkCapacity( band1, 0UL );
+         checkNonZeros( band1, 0UL );
+      }
+
+      // 2nd upper matrix band
+      try {
+         blaze::band( tmat, 2L );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Column-major Band constructor (2x0)";
+
+      OMT tmat( 2UL, 0UL );
+
+      // 2nd lower matrix band
+      try {
+         blaze::band( tmat, -2L );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // 1st lower matrix band
+      {
+         OBT band1 = blaze::band( tmat, -1L );
+
+         checkSize    ( band1, 0UL );
+         checkCapacity( band1, 0UL );
+         checkNonZeros( band1, 0UL );
+      }
+
+      // 0th matrix band (diagonal)
+      {
+         OBT band0 = blaze::band( tmat, 0L );
+
+         checkSize    ( band0, 0UL );
+         checkCapacity( band0, 0UL );
+         checkNonZeros( band0, 0UL );
+      }
+
+      // 1st upper matrix band
+      try {
+         blaze::band( tmat, 1L );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Column-major Band constructor (6x4)";
 
       initialize();
 
