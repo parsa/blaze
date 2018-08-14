@@ -371,7 +371,7 @@ inline decltype(auto) diagonal( Matrix<MT,SO>& matrix, RDAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<0L>( ~matrix, args... );
+   return band<0L>( ~matrix, unchecked, args... );
 }
 //*************************************************************************************************
 
@@ -406,7 +406,7 @@ inline decltype(auto) diagonal( const Matrix<MT,SO>& matrix, RDAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<0L>( ~matrix, args... );
+   return band<0L>( ~matrix, unchecked, args... );
 }
 //*************************************************************************************************
 
@@ -430,7 +430,7 @@ inline decltype(auto) diagonal( Matrix<MT,SO>&& matrix, RDAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<0L>( ~matrix, args... );
+   return band<0L>( ~matrix, unchecked, args... );
 }
 //*************************************************************************************************
 
