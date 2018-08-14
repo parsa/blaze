@@ -1205,7 +1205,7 @@ inline bool isIntact( const Band<MT,TF,DF,MF,CBAs...>& band ) noexcept
    const ptrdiff_t index( band.band() );
 
    return ( ( index >= 0L || size_t( -index ) < band.operand().rows()    ) &&
-            ( index <  0L || size_t(  index ) < band.operand().columns() ) &&
+            ( index <= 0L || size_t(  index ) < band.operand().columns() ) &&
             isIntact( band.operand() ) );
 }
 /*! \endcond */

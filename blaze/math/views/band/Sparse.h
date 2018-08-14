@@ -644,8 +644,8 @@ inline Band<MT,TF,false,false,CBAs...>::Band( MT& matrix, RBAs... args )
       }
    }
    else {
-      BLAZE_USER_ASSERT( band() < 0L || column() < matrix.columns(), "Invalid band access index" );
-      BLAZE_USER_ASSERT( band() > 0L || row() < matrix.rows(), "Invalid band access index" );
+      BLAZE_USER_ASSERT( band() <= 0L || column() < matrix.columns(), "Invalid band access index" );
+      BLAZE_USER_ASSERT( band() >= 0L || row() < matrix.rows(), "Invalid band access index" );
    }
 }
 /*! \endcond */
@@ -2250,8 +2250,8 @@ class Band<MT,TF,false,true,CBAs...>
          }
       }
       else {
-         BLAZE_USER_ASSERT( band() < 0L || column() < mmm.columns(), "Invalid band access index" );
-         BLAZE_USER_ASSERT( band() > 0L || row() < mmm.rows(), "Invalid band access index" );
+         BLAZE_USER_ASSERT( band() <= 0L || column() < mmm.columns(), "Invalid band access index" );
+         BLAZE_USER_ASSERT( band() >= 0L || row() < mmm.rows(), "Invalid band access index" );
       }
    }
    //**********************************************************************************************
