@@ -1854,6 +1854,21 @@
    max( a - c, c + d );  // Results in ( 0 4 14 6 )
    \endcode
 
+// \n \subsection vector_operators_softmax softmax()
+//
+// The <a href="https://en.wikipedia.org/wiki/Softmax_function">softmax function</a>, also called
+// the normalized exponential function, of a given dense vector can be computed via \c softmax().
+// The resulting dense vector consists of real values in the range (0..1], which add up to 1.
+
+   \code
+   blaze::StaticVector<double,7UL,rowVector> x{ 1.0, 2.0, 3.0, 4.0, 1.0, 2.0, 3.0 };
+   blaze::StaticVector<double,7UL,rowVector> y;
+
+   // Evaluating the softmax function
+   y = softmax( x );     // Results in ( 0.024 0.064 0.175 0.475 0.024 0.064 0.175 )
+   double s = sum( y );  // Results in 1
+   \endcode
+
 // \n \subsection vector_operators_abs abs()
 //
 // The \c abs() function can be used to compute the absolute values of each element of a vector.
@@ -4128,6 +4143,25 @@
    \code
    min( A + B + C );  // Returns -9, i.e. the smallest value of the resulting matrix
    max( A - B - C );  // Returns 11, i.e. the largest value of the resulting matrix
+   \endcode
+
+// \n \subsection matrix_operators_softmax softmax()
+//
+// The <a href="https://en.wikipedia.org/wiki/Softmax_function">softmax function</a>, also called
+// the normalized exponential function, of a given dense matrix can be computed via \c softmax().
+// The resulting dense matrix consists of real values in the range (0..1], which add up to 1.
+
+   \code
+   blaze::StaticMatrix<double,3UL,3UL> A{ { 1.0, 2.0, 3.0 }
+                                        , { 4.0, 1.0, 2.0 }
+                                        , { 3.0, 4.0, 1.0 } };
+   blaze::StaticMatrix<double,3UL,3UL> B;
+
+   // Evaluating the softmax function
+   B = softmax( A );     // Results in ( 0.0157764 0.0428847 0.116573  )
+                         //            ( 0.316878  0.0157764 0.0428847 )
+                         //            ( 0.116573  0.316878  0.0157764 )
+   double s = sum( B );  // Results in 1
    \endcode
 
 // \n \subsection matrix_operators_trace trace()
