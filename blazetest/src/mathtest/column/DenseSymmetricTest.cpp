@@ -114,7 +114,19 @@ void DenseSymmetricTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "Row-major Column constructor";
+      test_ = "Row-major Column constructor (0x0)";
+
+      MT mat;
+
+      // 0th matrix column
+      try {
+         blaze::column( mat, 0UL );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Row-major Column constructor (4x4)";
 
       initialize();
 
@@ -193,6 +205,12 @@ void DenseSymmetricTest::testConstructors()
             throw std::runtime_error( oss.str() );
          }
       }
+
+      // 4th matrix column
+      try {
+         blaze::column( mat_, 4UL );
+      }
+      catch( std::invalid_argument& ) {}
    }
 
 
@@ -201,7 +219,19 @@ void DenseSymmetricTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "Column-major Column constructor";
+      test_ = "Column-major Column constructor (0x0)";
+
+      MT tmat;
+
+      // 0th matrix column
+      try {
+         blaze::column( tmat, 0UL );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Column-major Column constructor (4x4)";
 
       initialize();
 
@@ -280,6 +310,12 @@ void DenseSymmetricTest::testConstructors()
             throw std::runtime_error( oss.str() );
          }
       }
+
+      // 4th matrix column
+      try {
+         blaze::column( tmat_, 4UL );
+      }
+      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************

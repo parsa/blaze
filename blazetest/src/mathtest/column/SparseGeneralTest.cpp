@@ -119,7 +119,49 @@ void SparseGeneralTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "Row-major Column constructor";
+      test_ = "Row-major Column constructor (0x0)";
+
+      MT mat;
+
+      // 0th matrix column
+      try {
+         blaze::column( mat, 0UL );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Row-major Column constructor (0x2)";
+
+      MT mat( 0UL, 2UL );
+
+      // 0th matrix column
+      {
+         CT col0 = blaze::column( mat, 0UL );
+
+         checkSize    ( col0, 0UL );
+         checkCapacity( col0, 0UL );
+         checkNonZeros( col0, 0UL );
+      }
+
+      // 1st matrix column
+      {
+         CT col1 = blaze::column( mat, 1UL );
+
+         checkSize    ( col1, 0UL );
+         checkCapacity( col1, 0UL );
+         checkNonZeros( col1, 0UL );
+      }
+
+      // 2nd matrix column
+      try {
+         blaze::column( mat, 2UL );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Row-major Column constructor (4x5)";
 
       initialize();
 
@@ -212,6 +254,12 @@ void SparseGeneralTest::testConstructors()
             throw std::runtime_error( oss.str() );
          }
       }
+
+      // 5th matrix column
+      try {
+         blaze::column( mat_, 5UL );
+      }
+      catch( std::invalid_argument& ) {}
    }
 
 
@@ -220,7 +268,49 @@ void SparseGeneralTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "Column-major Column constructor";
+      test_ = "Column-major Column constructor (0x0)";
+
+      MT tmat;
+
+      // 0th matrix column
+      try {
+         blaze::column( tmat, 0UL );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Column-major Column constructor (0x2)";
+
+      MT tmat( 0UL, 2UL );
+
+      // 0th matrix column
+      {
+         CT col0 = blaze::column( tmat, 0UL );
+
+         checkSize    ( col0, 0UL );
+         checkCapacity( col0, 0UL );
+         checkNonZeros( col0, 0UL );
+      }
+
+      // 1st matrix column
+      {
+         CT col1 = blaze::column( tmat, 1UL );
+
+         checkSize    ( col1, 0UL );
+         checkCapacity( col1, 0UL );
+         checkNonZeros( col1, 0UL );
+      }
+
+      // 2nd matrix column
+      try {
+         blaze::column( tmat, 2UL );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Column-major Column constructor (4x5)";
 
       initialize();
 
@@ -313,6 +403,12 @@ void SparseGeneralTest::testConstructors()
             throw std::runtime_error( oss.str() );
          }
       }
+
+      // 5th matrix column
+      try {
+         blaze::column( tmat_, 5UL );
+      }
+      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************
