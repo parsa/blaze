@@ -147,6 +147,7 @@
 //    <li> \ref intra_statement_optimization </li>
 //    <li> \ref blaze_references </li>
 //    <li> \ref faq </li>
+//    <li> \ref issue_creation_guidelines </li>
 // </ul>
 */
 //*************************************************************************************************
@@ -14847,6 +14848,204 @@
 //
 // Please note that the extend to which \b Blaze uses LAPACK kernels can change in future releases
 // of \b Blaze!
+*/
+//*************************************************************************************************
+
+
+//**FAQ********************************************************************************************
+/*!\page issue_creation_guidelines Guidelines for Creating Issues
+//
+// \tableofcontents
+//
+//
+// One of the most important aspects of the **Blaze** project is the
+// <a href="https://bitbucket.org/blaze-lib/blaze/issues">issue management</a> on the official
+// **Blaze** Bitbucket page. We cordially invite all **Blaze** users to submit feature requests
+// and bug reports, as we believe that this is a significant part of making **Blaze** a better
+// library. However, we are asking to follow a small set of guidelines when creating an issue
+// to facilitate the issue management on our side and also to make issues more useful for users
+// of **Blaze**.
+//
+//
+// <hr>
+// \section issues_title Title
+//
+// The title is the most important detail of an issue. A well chosen title makes it easy to grasp
+// the idea of an issue and improves the discoverability. Therefore, please choose a title that
+// is ...
+//
+//  - ... as descriptive as possible;
+//  - ... as concise as possible;
+//  - ... as unambiguous as possible.
+//
+// Also, please create a separate issue for each idea/problem/etc. A very general title or an
+// \"and\" in the title could be an indication that the issue is not specific enough and should
+// be split into several issues.
+//
+// \subsection issues_title_good_examples Good Examples
+//
+//  - \"Provide support for AVX-512 SIMD operations\"
+//  - \"Add support for the Boost Multiprecision Library\"
+//  - \"Introduce reduction operations into Blaze\"
+//  - \"Compilation error on KNL with -march=knl\"
+//
+// \subsection issues_title_bad_examples Bad Examples
+//
+//  - \"Several requests\" (instead create separate issues for each single request)
+//  - \"Improve the performance\" (instead specify which operation should perform better)
+//  - \"Blaze library compilation error\" (instead try to be more specific)
+//
+//
+// <hr>
+// \section issues_description Description
+//
+// The description should help us to understand your idea or problem in as much detail as possible.
+// Also, it helps to clearly spell out your expectations (how a feature is supposed to work, how
+// the behavior should be, etc.). Please spend a couple of minutes to try to make the description
+// as comprehensive as possible.
+//
+//
+// <hr>
+// \section issues_assignee Assignee
+//
+// There is no need to assign the issue to a particular person. It is perfectly ok if you just
+// ignore this setting.
+//
+//
+// <hr>
+// \section issues_kind Kind of Issue
+//
+// There are four kinds of issues available in the Bitbucket issue tracker: \ref issues_kind_bug,
+// \ref issues_kind_enhancement, \ref issues_kind_proposal, and \ref issues_kind_task. In the
+// following we try to give guidelines on which kind to choose for a particular issue:
+//
+// \subsection issues_kind_bug Bug
+//
+// Please choose the category bug if ...
+//
+//  - ... you experience a compilation error despite your best efforts to get it right;
+//  - ... you experience a crash/failure despite your best efforts to get it right;
+//  - ... you experience problems when combining features;
+//  - ... a feature does not work as specified/documented (i.e. can be considered broken).
+//
+// Please **don't** choose the category bug if ...
+//
+//  - ... you feel a feature should work differently than it currently does (instead create a
+//        \ref issues_kind_proposal with a convincing title and description);
+//  - ... you are not sure how to use a feature (instead create an \ref issues_kind_enhancement
+//        issue to extend the documentation);
+//  - ... you are missing a feature (instead create a \ref issues_kind_proposal or
+//        \ref issues_kind_enhancement issue).
+//
+// If you select the category bug, please also try to provide a minimum example that fails.
+// That helps us to minimize the time to resolve the bug.
+//
+// As we try to keep **Blaze** bug-free, we will always prioritize bug issues. However, we will
+// also quickly close bug issues as \"wontfix\" if the described issue is not a bug (i.e. one of
+// the problems mentioned above). We will **not** relabel a bug issue to \ref issues_kind_enhancement
+// or \ref issues_kind_proposal, even if they would be reasonable extensions to **Blaze**.
+//
+// \subsection issues_kind_enhancement Enhancement
+//
+// Please choose the category \ref issues_kind_enhancement if ...
+//
+//  - ... you need an add-on to an existing feature;
+//  - ... you need an extension of an existing feature;
+//  - ... you need an extended documentation for an existing feature.
+//
+// \ref issues_kind_enhancement is very similar to \ref issues_kind_proposal, so we don't mind
+// if an \ref issues_kind_enhancement is labeled as a \ref issues_kind_proposal or vice versa.
+// Just make sure you don't request an extension or new feature as a \ref issues_kind_bug.
+//
+// \subsection issues_kind_proposal Proposal
+//
+// Please choose the category \ref issues_kind_proposal if ...
+//
+//  - ... you want to request a new feature;
+//  - ... you want to change an existing feature.
+//
+// \ref issues_kind_proposal is very similar to \ref issues_kind_enhancement, so we don't mind if
+// a \ref issues_kind_proposal is labeled as an \ref issues_kind_enhancement or vice versa. Just
+// make sure you don't request an extension or new feature as a \ref issues_kind_bug.
+//
+// \subsection issues_kind_task Task
+//
+// Please choose the category \ref issues_kind_task if ...
+//
+//  - ... you want us to do something not feature related;
+//  - ... you have something else in mind which does not fall in the other three categories.
+//
+//
+// <hr>
+// \section issues_priority Priority
+//
+// Via the priority of an issue you can tell us how important the issue is to you. Therefore the
+// priority can have an influence on when we will deal with the issue. However, unfortunately we
+// don't have an infinite amount of time and we can not deal with an arbitrary amount of issues
+// at the same time. We will therefore take the priority into account, but mainly schedule the
+// issues based on impact to all **Blaze** users and the estimated time to resolve it.
+//
+// You can choose between \ref issues_priority_blocker, \ref issues_priority_critical,
+// \ref issues_priority_major, \ref issues_priority_minor, and \ref issues_priority_trivial.
+//
+// \subsection issues_priority_blocker Blocker
+//
+// Please choose a \ref issues_priority_blocker priority if ...
+//
+//  - ... you cannot work with **Blaze** due to the described bug;
+//  - ... the bug likely has an influence on **all** **Blaze** users.
+//
+// Please note that the categories \ref issues_kind_enhancement or \ref issues_kind_proposal
+// should never be a \ref issues_priority_blocker!
+//
+// \subsection issues_priority_critical Critical
+//
+// Please choose a \ref issues_priority_critical priority if ...
+//
+//  - ... you can work around a bug, but the workaround is (much) slower or awful;
+//  - ... you cannot use **Blaze** without the proposed feature;
+//  - ... you consider it to be essential for **all** **Blaze** users.
+//
+// \subsection issues_priority_major Major
+//
+// Please choose a \ref issues_priority_major priority if ...
+//
+//  - ... a bug or feature request is not \ref issues_priority_critical, but still very important
+//        to you;
+//  - ... you consider it to have a \ref issues_priority_major impact on most **Blaze** users.
+//
+// The \ref issues_priority_major category is the default setting in Bitbucket and we therefore
+// consider it as the default priority for issues.
+//
+// \subsection issues_priority_minor Minor
+//
+// Please choose a \ref issues_priority_minor priority if ...
+//
+//  - ... a bug does not affect many **Blaze** users;
+//  - ... a feature request would only be useful for a small number of **Blaze** users;
+//  - ... a feature would be nice to have, but is not particularly important.
+//
+// \subsection issues_priority_trivial Trivial
+//
+// Please choose a \ref issues_priority_trivial priority if ...
+//
+//  - ... a bug hardly affects anyone;
+//  - ... a feature request would only be useful for very few **Blaze** users;
+//  - ... the expected time to resolve an issue is very small.
+//
+//
+// <hr>
+// \section issues_attachment Attachments
+//
+// You can always provide us with additional information in the form of attachments. Feel free
+// to attach something to the issue if ...
+//
+//  - ... it can help us to analyze a bug;
+//  - ... you have some source code that demonstrates a problem;
+//  - ... you already have a working prototype that sketches the idea;
+//  - ... you have additional resources that could help us.
+//
+// We appreciate anything that simplifies our work and speeds up our progress.
 */
 //*************************************************************************************************
 
