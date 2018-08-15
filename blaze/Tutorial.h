@@ -146,6 +146,7 @@
 //    <li> \ref block_vectors_and_matrices </li>
 //    <li> \ref intra_statement_optimization </li>
 //    <li> \ref blaze_references </li>
+//    <li> \ref faq </li>
 // </ul>
 */
 //*************************************************************************************************
@@ -14702,6 +14703,150 @@
       year      = 2012
    }
    \endcode
+*/
+//*************************************************************************************************
+
+
+//**FAQ********************************************************************************************
+/*!\page faq Frequently Asked Questions (FAQ)
+//
+// \tableofcontents
+//
+//
+// <hr>
+// \section faq_padding A StaticVector/StaticMatrix is larger than expected. Is this a bug?
+//
+// The size of a \c StaticVector, \c StaticMatrix, \c HybridVector, or \c HybridMatrix can
+// indeed be larger than expected:
+
+   \code
+   StaticVector<int,3> a;
+   StaticMatrix<int,3,3> A;
+
+   sizeof( a );  // Evaluates to 16, 32, or even 64, but not 12
+   sizeof( A );  // Evaluates to 48, 96, or even 144, but not 36
+   \endcode
+
+// In order to achieve the maximum possible performance the \b Blaze library tries to enable
+// SIMD vectorization even for small vectors. For that reason \b Blaze by default uses padding
+// elements for all dense vectors and matrices to guarantee that at least a single SIMD vector
+// can be loaded. Depending on the used SIMD technology that can significantly increase the size
+// of a \c StaticVector, \c StaticMatrix, \c HybridVector or \c HybridMatrix:
+
+   \code
+   StaticVector<int,3> a;
+   StaticMatrix<int,3,3> A;
+
+   sizeof( a );  // Evaluates to 16 in case of SSE, 32 in case of AVX, and 64 in case of AVX-512
+                 // (under the assumption that an integer occupies 4 bytes)
+   sizeof( A );  // Evaluates to 48 in case of SSE, 96 in case of AVX, and 144 in case of AVX-512
+                 // (under the assumption that an integer occupies 4 bytes)
+   \endcode
+
+// The configuration file <tt>./blaze/config/Optimizations.h</tt> provides a compile time switch
+// that can be used to (de-)activate padding:
+
+   \code
+   #define BLAZE_USE_PADDING 1
+   \endcode
+
+// Alternatively it is possible to (de-)activate padding via command line or by defining this
+// symbol manually before including any \b Blaze header file:
+
+   \code
+   #define BLAZE_USE_PADDING 1
+   #include <blaze/Blaze.h>
+   \endcode
+
+// If \c BLAZE_USE_PADDING is set to 1 padding is enabled for all dense vectors and matrices, if
+// it is set to 0 padding is disabled. Note however that disabling padding can considerably reduce
+// the performance of all dense vector and matrix operations!
+//
+//
+// <hr>
+// \section faq_alignment Despite disabling padding, a StaticVector/StaticMatrix is still larger than expected. Is this a bug?
+//
+// Despite disabling padding via the \c BLAZE_USE_PADDING compile time switch (see \ref faq_padding),
+// the size of a \c StaticVector, \c StaticMatrix, \c HybridVector, or \c HybridMatrix can still
+// be larger than expected:
+
+   \code
+   #define BLAZE_USE_PADDING 1
+   #include <blaze/Blaze.h>
+
+   StaticVector<int,3> a;
+   StaticVector<int,5> b;
+
+   sizeof( a );  // Always evaluates to 12
+   sizeof( b );  // Evaluates to 32 with SSE (larger than expected) and to 20 with AVX or AVX-512 (expected)
+   \endcode
+
+// The reason for this behavior is the used SIMD technology. If SSE is used, which provides 128
+// bit wide registers, a single SIMD pack can usually hold 4 integers (128 bit divided by 32 bit).
+// Since the second vector contains enough elements is possible to benefit from vectorization.
+// However, SSE requires an alignment of 16 bytes, which ultimately results in a total size of
+// 32 bytes for the \c StaticVector (2 times 16 bytes due to 5 integer elements). If AVX or AVX-512
+// is used, which provide 256 bit or 512 bit wide registers, a single SIMD vector can hold 8 or 16
+// integers, respectively. Even the second vector does not hold enough elements to benefit from
+// vectorization, which is why \b Blaze does not enforce a 32 byte (for AVX) or even 64 byte
+// alignment (for AVX-512).
+//
+// It is possible to disable the vectorization entirely by the compile time switch in the
+// <tt>./blaze/config/Vectorization.h</tt> configuration file:
+
+   \code
+   #define BLAZE_USE_VECTORIZATION 1
+   \endcode
+
+// It is also possible to (de-)activate vectorization via command line or by defining this symbol
+// manually before including any \b Blaze header file:
+
+   \code
+   #define BLAZE_USE_VECTORIZATION 1
+   #include <blaze/Blaze.h>
+   \endcode
+
+// In case the switch is set to 1, vectorization is enabled and the \b Blaze library is allowed
+// to use intrinsics and the necessary alignment to speed up computations. In case the switch is
+// set to 0, vectorization is disabled entirely and the \b Blaze library chooses default,
+// non-vectorized functionality for the operations. Note that deactivating the vectorization may
+// pose a severe performance limitation for a large number of operations!
+//
+//
+// <hr>
+// \section faq_blas To which extend does Blaze make use of BLAS functions under the hood?
+//
+// Currently the only BLAS functions that are utilized by \b Blaze are the \c gemm() functions
+// for the multiplication of two dense matrices (i.e. \c sgemm(), \c dgemm(), \c cgemm(), and
+// \c zgemm()). All other operations are always and unconditionally performed by native \b Blaze
+// kernels.
+//
+// The \c BLAZE_BLAS_MODE config switch (see <tt>./blaze/config/BLAS.h</tt>) determines whether
+// \b Blaze is allowed to use BLAS kernels. If \c BLAZE_BLAS_MODE is set to 0 then \b Blaze
+// does not utilize the BLAS kernels and unconditionally uses its own custom kernels. If
+// \c BLAZE_BLAS_MODE is set to 1 then \b Blaze is allowed to choose between using BLAS kernels
+// or its own custom kernels. In case of the dense matrix multiplication this decision is based
+// on the size of the dense matrices. For large matrices, \b Blaze uses the BLAS kernels, for
+// small matrices it uses its own custom kernels. The threshold for this decision can be
+// configured via the \c BLAZE_DMATDMATMULT_THRESHOLD, \c BLAZE_DMATTDMATMULT_THRESHOLD,
+// \c BLAZE_TDMATDMATMULT_THRESHOLD and \c BLAZE_TDMATTDMATMULT_THRESHOLD config switches
+// (see <tt>./blaze/config/Thresholds.h</tt>).
+//
+// Please note that the extend to which \b Blaze uses BLAS kernels can change in future releases
+// of \b Blaze!
+//
+//
+// <hr>
+// \section faq_lapack To which extend does Blaze make use of LAPACK functions under the hood?
+//
+// \b Blaze uses LAPACK functions for matrix decomposition, matrix inversion, computing the
+// determinants and eigenvalues, and the SVD. In contrast to the BLAS functionality (see
+// \ref faq_blas), you cannot disable LAPACK or switch to custom kernels. In case you try to
+// use any of these functionalities, but do not provide (i.e. link) a LAPACK library you will
+// get link time errors.
+//
+// Please note that the extend to which \b Blaze uses LAPACK kernels can change in future releases
+// of \b Blaze!
 */
 //*************************************************************************************************
 
