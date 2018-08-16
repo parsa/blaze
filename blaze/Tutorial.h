@@ -145,9 +145,9 @@
 //    <li> \ref lapack_functions </li>
 //    <li> \ref block_vectors_and_matrices </li>
 //    <li> \ref intra_statement_optimization </li>
-//    <li> \ref blaze_references </li>
 //    <li> \ref faq </li>
 //    <li> \ref issue_creation_guidelines </li>
+//    <li> \ref blaze_references </li>
 // </ul>
 */
 //*************************************************************************************************
@@ -14665,45 +14665,7 @@
    y = eval( A * B ) * x;
    \endcode
 
-// \n Previous: \ref block_vectors_and_matrices
-*/
-//*************************************************************************************************
-
-
-//**Blaze References*******************************************************************************
-/*!\page blaze_references Blaze References
-//
-// In case you need references to the \b Blaze library (for papers or other publications), please
-// feel free to use one of the following references:
-
-   \code
-   @misc{blazelib,
-      author       = "Klaus {Iglberger}",
-      title        = "Blaze C++ Linear Algebra Library",
-      howpublished = "https://bitbucket.org/blaze-lib",
-      year         = 2012
-   }
-   \endcode
-
-   \code
-   @article{iglberger2012_1,
-      author  = "Klaus {Iglberger} and Georg {Hager} and Jan {Treibig} and Ulrich {R{\"u}de}",
-      title   = "Expression Templates Revisited: A Performance Analysis of Current Methodologies",
-      journal = "SIAM Journal on Scientific Computing",
-      year    = 2012,
-      volume  = 34(2),
-      pages   = C42--C69
-   }
-   \endcode
-
-   \code
-   @inproceedings{iglberger2012_2,
-      author    = "Klaus {Iglberger} and Georg {Hager} and Jan {Treibig} and Ulrich {R{\"u}de}",
-      title     = "High Performance Smart Expression Template Math Libraries",
-      booktitle = "Proceedings of the 2nd International Workshop on New Algorithms and Programming Models for the Manycore Era (APMM 2012) at HPCS 2012",
-      year      = 2012
-   }
-   \endcode
+// \n Previous: \ref block_vectors_and_matrices &nbsp; &nbsp; Next: \ref faq \n
 */
 //*************************************************************************************************
 
@@ -14848,23 +14810,25 @@
 //
 // Please note that the extend to which \b Blaze uses LAPACK kernels can change in future releases
 // of \b Blaze!
+//
+// \n Previous: \ref intra_statement_optimization &nbsp; &nbsp; Next: \ref issue_creation_guidelines \n
 */
 //*************************************************************************************************
 
 
 //**FAQ********************************************************************************************
-/*!\page issue_creation_guidelines Guidelines for Creating Issues
+/*!\page issue_creation_guidelines Issue Creation Guidelines
 //
 // \tableofcontents
 //
 //
-// One of the most important aspects of the **Blaze** project is the
+// One of the most important aspects of the \b Blaze project is the
 // <a href="https://bitbucket.org/blaze-lib/blaze/issues">issue management</a> on the official
-// **Blaze** Bitbucket page. We cordially invite all **Blaze** users to submit feature requests
-// and bug reports, as we believe that this is a significant part of making **Blaze** a better
+// \b Blaze Bitbucket page. We cordially invite all \b Blaze users to submit feature requests
+// and bug reports, as we believe that this is a significant part of making \b Blaze a better
 // library. However, we are asking to follow a small set of guidelines when creating an issue
 // to facilitate the issue management on our side and also to make issues more useful for users
-// of **Blaze**.
+// of \b Blaze.
 //
 //
 // <hr>
@@ -14921,14 +14885,14 @@
 //
 // \subsection issues_kind_bug Bug
 //
-// Please choose the category bug if ...
+// Please choose the category \ref issues_kind_bug if ...
 //
 //  - ... you experience a compilation error despite your best efforts to get it right;
 //  - ... you experience a crash/failure despite your best efforts to get it right;
 //  - ... you experience problems when combining features;
 //  - ... a feature does not work as specified/documented (i.e. can be considered broken).
 //
-// Please **don't** choose the category bug if ...
+// Please \b don't choose the category \ref issues_kind_bug if ...
 //
 //  - ... you feel a feature should work differently than it currently does (instead create a
 //        \ref issues_kind_proposal with a convincing title and description);
@@ -14937,13 +14901,13 @@
 //  - ... you are missing a feature (instead create a \ref issues_kind_proposal or
 //        \ref issues_kind_enhancement issue).
 //
-// If you select the category bug, please also try to provide a minimum example that fails.
-// That helps us to minimize the time to resolve the bug.
+// If you select the category \ref issues_kind_bug, please also try to provide a minimum example
+// that fails. That helps us to minimize the time to resolve the bug.
 //
-// As we try to keep **Blaze** bug-free, we will always prioritize bug issues. However, we will
+// As we try to keep \b Blaze bug-free, we will always prioritize bug issues. However, we will
 // also quickly close bug issues as \"wontfix\" if the described issue is not a bug (i.e. one of
-// the problems mentioned above). We will **not** relabel a bug issue to \ref issues_kind_enhancement
-// or \ref issues_kind_proposal, even if they would be reasonable extensions to **Blaze**.
+// the problems mentioned above). We will \b not relabel a bug issue to \ref issues_kind_enhancement
+// or \ref issues_kind_proposal, even if they would be reasonable extensions to \b Blaze.
 //
 // \subsection issues_kind_enhancement Enhancement
 //
@@ -14983,7 +14947,7 @@
 // priority can have an influence on when we will deal with the issue. However, unfortunately we
 // don't have an infinite amount of time and we can not deal with an arbitrary amount of issues
 // at the same time. We will therefore take the priority into account, but mainly schedule the
-// issues based on impact to all **Blaze** users and the estimated time to resolve it.
+// issues based on impact to all \b Blaze users and the estimated time to resolve it.
 //
 // You can choose between \ref issues_priority_blocker, \ref issues_priority_critical,
 // \ref issues_priority_major, \ref issues_priority_minor, and \ref issues_priority_trivial.
@@ -14992,8 +14956,8 @@
 //
 // Please choose a \ref issues_priority_blocker priority if ...
 //
-//  - ... you cannot work with **Blaze** due to the described bug;
-//  - ... the bug likely has an influence on **all** **Blaze** users.
+//  - ... you cannot work with \b Blaze due to the described \ref issues_kind_bug;
+//  - ... the \ref issues_kind_bug likely has an influence on \b all \b Blaze users.
 //
 // Please note that the categories \ref issues_kind_enhancement or \ref issues_kind_proposal
 // should never be a \ref issues_priority_blocker!
@@ -15002,17 +14966,17 @@
 //
 // Please choose a \ref issues_priority_critical priority if ...
 //
-//  - ... you can work around a bug, but the workaround is (much) slower or awful;
-//  - ... you cannot use **Blaze** without the proposed feature;
-//  - ... you consider it to be essential for **all** **Blaze** users.
+//  - ... you can work around a \ref issues_kind_bug, but the workaround is (much) slower or awful;
+//  - ... you cannot use \b Blaze without the proposed feature;
+//  - ... you consider it to be essential for \b all \b Blaze users.
 //
 // \subsection issues_priority_major Major
 //
 // Please choose a \ref issues_priority_major priority if ...
 //
-//  - ... a bug or feature request is not \ref issues_priority_critical, but still very important
-//        to you;
-//  - ... you consider it to have a \ref issues_priority_major impact on most **Blaze** users.
+//  - ... a \ref issues_kind_bug or feature request is not \ref issues_priority_critical, but
+//        still very important to you;
+//  - ... you consider it to have a \ref issues_priority_major impact on most \b Blaze users.
 //
 // The \ref issues_priority_major category is the default setting in Bitbucket and we therefore
 // consider it as the default priority for issues.
@@ -15021,16 +14985,16 @@
 //
 // Please choose a \ref issues_priority_minor priority if ...
 //
-//  - ... a bug does not affect many **Blaze** users;
-//  - ... a feature request would only be useful for a small number of **Blaze** users;
+//  - ... a \ref issues_kind_bug does not affect many \b Blaze users;
+//  - ... a feature request would only be useful for a small number of \b Blaze users;
 //  - ... a feature would be nice to have, but is not particularly important.
 //
 // \subsection issues_priority_trivial Trivial
 //
 // Please choose a \ref issues_priority_trivial priority if ...
 //
-//  - ... a bug hardly affects anyone;
-//  - ... a feature request would only be useful for very few **Blaze** users;
+//  - ... a \ref issues_kind_bug hardly affects anyone;
+//  - ... a feature request would only be useful for very few \b Blaze users;
 //  - ... the expected time to resolve an issue is very small.
 //
 //
@@ -15040,12 +15004,54 @@
 // You can always provide us with additional information in the form of attachments. Feel free
 // to attach something to the issue if ...
 //
-//  - ... it can help us to analyze a bug;
+//  - ... it can help us to analyze a \ref issues_kind_bug;
 //  - ... you have some source code that demonstrates a problem;
 //  - ... you already have a working prototype that sketches the idea;
 //  - ... you have additional resources that could help us.
 //
 // We appreciate anything that simplifies our work and speeds up our progress.
+//
+// \n Previous: \ref faq &nbsp; &nbsp; Next: \ref blaze_references \n
+*/
+//*************************************************************************************************
+
+
+//**Blaze References*******************************************************************************
+/*!\page blaze_references Blaze References
+//
+// In case you need references to the \b Blaze library (for papers or other publications), please
+// feel free to use one of the following references:
+
+   \code
+   @misc{blazelib,
+      author       = "Klaus {Iglberger}",
+      title        = "Blaze C++ Linear Algebra Library",
+      howpublished = "https://bitbucket.org/blaze-lib",
+      year         = 2012
+   }
+   \endcode
+
+   \code
+   @article{iglberger2012_1,
+      author  = "Klaus {Iglberger} and Georg {Hager} and Jan {Treibig} and Ulrich {R{\"u}de}",
+      title   = "Expression Templates Revisited: A Performance Analysis of Current Methodologies",
+      journal = "SIAM Journal on Scientific Computing",
+      year    = 2012,
+      volume  = 34(2),
+      pages   = C42--C69
+   }
+   \endcode
+
+   \code
+   @inproceedings{iglberger2012_2,
+      author    = "Klaus {Iglberger} and Georg {Hager} and Jan {Treibig} and Ulrich {R{\"u}de}",
+      title     = "High Performance Smart Expression Template Math Libraries",
+      booktitle = "Proceedings of the 2nd International Workshop on New Algorithms and Programming Models for the Manycore Era (APMM 2012) at HPCS 2012",
+      year      = 2012
+   }
+   \endcode
+
+// \n Previous: \ref issue_creation_guidelines
 */
 //*************************************************************************************************
 
