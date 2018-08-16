@@ -67,6 +67,7 @@
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/IntegerSequence.h>
 #include <blaze/math/InversionFlag.h>
+#include <blaze/math/ReductionFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/StorageOrder.h>
@@ -1290,11 +1291,11 @@ inline decltype(auto) elements( const TVecMatMultExpr<VT>& vector, REAs... args 
 template< size_t... CEAs      // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
-inline decltype(auto) elements( const MatReduceExpr<0UL,VT>& vector, REAs... args )
+inline decltype(auto) elements( const MatReduceExpr<VT,columnwise>& vector, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce<0UL>( columns<CEAs...>( (~vector).operand(), args... ), (~vector).operation() );
+   return reduce<columnwise>( columns<CEAs...>( (~vector).operand(), args... ), (~vector).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************

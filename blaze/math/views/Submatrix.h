@@ -62,6 +62,7 @@
 #include <blaze/math/expressions/TVecMatMultExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/InversionFlag.h>
+#include <blaze/math/ReductionFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
@@ -1809,14 +1810,15 @@ template< AlignmentFlag AF    // Alignment flag
         , size_t... CSAs      // Compile time subvector arguments
         , typename VT         // Vector base type of the expression
         , typename... RSAs >  // Runtime subvector arguments
-inline decltype(auto) subvector( const MatReduceExpr<0UL,VT>& vector, RSAs... args )
+inline decltype(auto) subvector( const MatReduceExpr<VT,columnwise>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    const SubvectorData<CSAs...> sd( args... );
    const size_t M( (~vector).operand().rows() );
 
-   return reduce<0UL>( submatrix<AF>( (~vector).operand(), 0UL, sd.offset(), M, sd.size() ), (~vector).operation() );
+   decltype(auto) sm( submatrix<AF>( (~vector).operand(), 0UL, sd.offset(), M, sd.size() ) );
+   return reduce<columnwise>( sm, (~vector).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1838,14 +1840,15 @@ template< AlignmentFlag AF    // Alignment flag
         , size_t... CSAs      // Compile time subvector arguments
         , typename VT         // Vector base type of the expression
         , typename... RSAs >  // Runtime subvector arguments
-inline decltype(auto) subvector( const MatReduceExpr<1UL,VT>& vector, RSAs... args )
+inline decltype(auto) subvector( const MatReduceExpr<VT,rowwise>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    const SubvectorData<CSAs...> sd( args... );
    const size_t N( (~vector).operand().columns() );
 
-   return reduce<1UL>( submatrix<AF>( (~vector).operand(), sd.offset(), 0UL, sd.size(), N ), (~vector).operation() );
+   decltype(auto) sm( submatrix<AF>( (~vector).operand(), sd.offset(), 0UL, sd.size(), N ) );
+   return reduce<rowwise>( sm, (~vector).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************

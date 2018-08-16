@@ -62,8 +62,8 @@ namespace blaze {
 // publicly from the MatReduceExpr base class, the IsMatReduceExpr type trait recognizes the
 // class as valid matrix reduction expression template.
 */
-template< size_t RF      // Reduction flag
-        , typename VT >  // Vector base type of the expression
+template< typename VT  // Vector base type of the expression
+        , size_t RF >  // Reduction flag
 struct MatReduceExpr
    : public ReduceExpr<VT>
 {};
