@@ -51,12 +51,12 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  GLOBAL OPERATORS
+//  GLOBAL FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name Vector operators */
+/*!\name Vector functions */
 //@{
 template< typename T1, typename T2 >
 inline decltype(auto) inner( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs );
@@ -87,9 +87,6 @@ inline decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,false>&
 
 template< typename T1, typename T2 >
 inline decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs );
-
-template< typename VT, bool TF >
-inline std::ostream& operator<<( std::ostream& os, const Vector<VT,TF>& v );
 //@}
 //*************************************************************************************************
 
@@ -275,6 +272,23 @@ inline decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,true>& 
 {
    return trans(~lhs) * (~rhs);
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\name Vector operators */
+//@{
+template< typename VT, bool TF >
+inline std::ostream& operator<<( std::ostream& os, const Vector<VT,TF>& v );
+//@}
 //*************************************************************************************************
 
 
