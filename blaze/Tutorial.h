@@ -14811,6 +14811,23 @@
 // Please note that the extend to which \b Blaze uses LAPACK kernels can change in future releases
 // of \b Blaze!
 //
+//
+// <hr>
+// \section faq_compile_times The compile time is too high if I include <blaze/Blaze.h>. Can I reduce it?
+//
+// The include file <tt><blaze/Blaze.h></tt> includes the entire functionality of the \b Blaze
+// library, which by now is several hundred thousand lines of source code. That means that a lot
+// of source code has to be parsed whenever <tt><blaze/Blaze.h></tt> is encountered. However, it
+// is rare that everything is required within a single compilation unit. Therefore it is easily
+// possible to reduce compile times by including only those \b Blaze features that are used within
+// the compilation unit. For instance, instead of including <tt><blaze/Blaze.h></tt> it could be
+// enough to include <tt><blaze/math/DynamicVector.h></tt>, which would reduce the compilation
+// times by about 20%.
+//
+// Additionally we are taking care to implement new \b Blaze functionality such that compile times
+// do not explode and try to reduce the compile times of existing features. Thus newer releases of
+// \b Blaze can also improve compile times.
+//
 // \n Previous: \ref intra_statement_optimization &nbsp; &nbsp; Next: \ref issue_creation_guidelines \n
 */
 //*************************************************************************************************
