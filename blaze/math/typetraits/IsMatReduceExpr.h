@@ -64,11 +64,11 @@ struct IsMatReduceExprHelper
 {
  private:
    //**********************************************************************************************
-   template< size_t N, typename U >
-   static TrueType test( const MatReduceExpr<N,U>& );
+   template< typename U, size_t N >
+   static TrueType test( const MatReduceExpr<U,N>& );
 
-   template< size_t N, typename U >
-   static TrueType test( const volatile MatReduceExpr<N,U>& );
+   template< typename U, size_t N >
+   static TrueType test( const volatile MatReduceExpr<U,N>& );
 
    static FalseType test( ... );
    //**********************************************************************************************
