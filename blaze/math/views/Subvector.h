@@ -74,7 +74,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/PtrdiffT.h>
-#include <blaze/util/SmallVector.h>
+#include <blaze/util/SmallArray.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
@@ -1754,7 +1754,7 @@ inline decltype(auto)
       }
    }
 
-   SmallVector<size_t,128UL> newIndices( indices, indices+n );
+   SmallArray<size_t,128UL> newIndices( indices, indices+n );
    std::for_each( newIndices.begin(), newIndices.end(),
                   [offset=sv.offset()]( size_t& index ){ index += offset; } );
 
@@ -1801,7 +1801,7 @@ inline decltype(auto)
       }
    }
 
-   SmallVector<size_t,128UL> newIndices( indices, indices+n );
+   SmallArray<size_t,128UL> newIndices( indices, indices+n );
    std::for_each( newIndices.begin(), newIndices.end(),
                   [offset=sv.offset()]( size_t& index ){ index += offset; } );
 
@@ -1848,7 +1848,7 @@ inline decltype(auto)
       }
    }
 
-   SmallVector<size_t,128UL> newIndices( indices, indices+n );
+   SmallArray<size_t,128UL> newIndices( indices, indices+n );
    std::for_each( newIndices.begin(), newIndices.end(),
                   [offset=sv.offset()]( size_t& index ){ index += offset; } );
 

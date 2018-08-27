@@ -94,6 +94,7 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/PtrdiffT.h>
+#include <blaze/util/SmallArray.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
@@ -2495,7 +2496,7 @@ inline decltype(auto)
       }
    }
 
-   SmallVector<size_t,128UL> newIndices( indices, indices+n );
+   SmallArray<size_t,128UL> newIndices( indices, indices+n );
    std::for_each( newIndices.begin(), newIndices.end(),
                   [row=sm.row()]( size_t& index ){ index += row; } );
 
@@ -2543,7 +2544,7 @@ inline decltype(auto)
       }
    }
 
-   SmallVector<size_t,128UL> newIndices( indices, indices+n );
+   SmallArray<size_t,128UL> newIndices( indices, indices+n );
    std::for_each( newIndices.begin(), newIndices.end(),
                   [row=sm.row()]( size_t& index ){ index += row; } );
 
@@ -2591,7 +2592,7 @@ inline decltype(auto)
       }
    }
 
-   SmallVector<size_t,128UL> newIndices( indices, indices+n );
+   SmallArray<size_t,128UL> newIndices( indices, indices+n );
    std::for_each( newIndices.begin(), newIndices.end(),
                   [row=sm.row()]( size_t& index ){ index += row; } );
 
@@ -3243,7 +3244,7 @@ inline decltype(auto)
       }
    }
 
-   SmallVector<size_t,128UL> newIndices( indices, indices+n );
+   SmallArray<size_t,128UL> newIndices( indices, indices+n );
    std::for_each( newIndices.begin(), newIndices.end(),
                   [column=sm.column()]( size_t& index ){ index += column; } );
 
@@ -3291,7 +3292,7 @@ inline decltype(auto)
       }
    }
 
-   SmallVector<size_t,128UL> newIndices( indices, indices+n );
+   SmallArray<size_t,128UL> newIndices( indices, indices+n );
    std::for_each( newIndices.begin(), newIndices.end(),
                   [column=sm.column()]( size_t& index ){ index += column; } );
 
@@ -3339,7 +3340,7 @@ inline decltype(auto)
       }
    }
 
-   SmallVector<size_t,128UL> newIndices( indices, indices+n );
+   SmallArray<size_t,128UL> newIndices( indices, indices+n );
    std::for_each( newIndices.begin(), newIndices.end(),
                   [column=sm.column()]( size_t& index ){ index += column; } );
 

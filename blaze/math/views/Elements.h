@@ -76,7 +76,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/PtrdiffT.h>
-#include <blaze/util/SmallVector.h>
+#include <blaze/util/SmallArray.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
@@ -495,7 +495,7 @@ template< typename VT         // Type of the vector
         , typename T          // Type of the element indices
         , size_t N            // Number of preallocated elements
         , typename... REAs >  // Optional arguments
-inline decltype(auto) elements( VT&& vector, const SmallVector<T,N>& indices, REAs... args )
+inline decltype(auto) elements( VT&& vector, const SmallArray<T,N>& indices, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1073,7 +1073,7 @@ inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>& e,
    }
 
    decltype(auto) oldIndices( e.idces() );
-   SmallVector<size_t,128UL> newIndices;
+   SmallArray<size_t,128UL> newIndices;
    newIndices.reserve( n );
 
    for( size_t i=0UL; i<n; ++i ) {
@@ -1123,7 +1123,7 @@ inline decltype(auto) elements( const Elements<VT,TF,DF,CEAs...>& e,
    }
 
    decltype(auto) oldIndices( e.idces() );
-   SmallVector<size_t,128UL> newIndices;
+   SmallArray<size_t,128UL> newIndices;
    newIndices.reserve( n );
 
    for( size_t i=0UL; i<n; ++i ) {
@@ -1173,7 +1173,7 @@ inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>&& e,
    }
 
    decltype(auto) oldIndices( e.idces() );
-   SmallVector<size_t,128UL> newIndices;
+   SmallArray<size_t,128UL> newIndices;
    newIndices.reserve( n );
 
    for( size_t i=0UL; i<n; ++i ) {
@@ -1309,7 +1309,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   SmallVector<size_t,128UL> indices( size );
+   SmallArray<size_t,128UL> indices( size );
    std::iota( indices.begin(), indices.end(), index );
 
    return elements( e, indices.data(), indices.size(), args... );
@@ -1343,7 +1343,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   SmallVector<size_t,128UL> indices( size );
+   SmallArray<size_t,128UL> indices( size );
    std::iota( indices.begin(), indices.end(), index );
 
    return elements( e, indices.data(), indices.size(), args... );
@@ -1377,7 +1377,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   SmallVector<size_t,128UL> indices( size );
+   SmallArray<size_t,128UL> indices( size );
    std::iota( indices.begin(), indices.end(), index );
 
    return elements( std::move( e ), indices.data(), indices.size(), args... );

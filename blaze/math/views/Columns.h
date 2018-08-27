@@ -88,7 +88,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/PtrdiffT.h>
-#include <blaze/util/SmallVector.h>
+#include <blaze/util/SmallArray.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/Unused.h>
@@ -506,7 +506,7 @@ template< typename MT         // Type of the matrix
         , typename T          // Type of the column indices
         , size_t N            // Number of preallocated elements
         , typename... RCAs >  // Optional arguments
-inline decltype(auto) columns( MT&& matrix, const SmallVector<T,N>& indices, RCAs... args )
+inline decltype(auto) columns( MT&& matrix, const SmallArray<T,N>& indices, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1129,7 +1129,7 @@ inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>& c, const T* indices
    }
 
    decltype(auto) oldIndices( c.idces() );
-   SmallVector<size_t,128UL> newIndices;
+   SmallArray<size_t,128UL> newIndices;
    newIndices.reserve( n );
 
    for( size_t i=0UL; i<n; ++i ) {
@@ -1179,7 +1179,7 @@ inline decltype(auto) columns( const Columns<MT,SO,DF,SF,CCAs...>& c, const T* i
    }
 
    decltype(auto) oldIndices( c.idces() );
-   SmallVector<size_t,128UL> newIndices;
+   SmallArray<size_t,128UL> newIndices;
    newIndices.reserve( n );
 
    for( size_t i=0UL; i<n; ++i ) {
@@ -1229,7 +1229,7 @@ inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>&& c, const T* indice
    }
 
    decltype(auto) oldIndices( c.idces() );
-   SmallVector<size_t,128UL> newIndices;
+   SmallArray<size_t,128UL> newIndices;
    newIndices.reserve( n );
 
    for( size_t i=0UL; i<n; ++i ) {

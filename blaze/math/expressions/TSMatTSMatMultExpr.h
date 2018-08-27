@@ -81,7 +81,7 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/SmallVector.h>
+#include <blaze/util/SmallArray.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -524,9 +524,9 @@ class TSMatTSMatMultExpr
       nonzeros = 0UL;
 
       // Performing the matrix-matrix multiplication
-      SmallVector<ElementType,128UL> values ( (~lhs).rows(), ElementType() );
-      SmallVector<bool,128UL>        valid  ( (~lhs).rows(), false );
-      SmallVector<size_t,128UL>      indices( (~lhs).rows(), 0UL );
+      SmallArray<ElementType,128UL> values ( (~lhs).rows(), ElementType() );
+      SmallArray<bool,128UL>        valid  ( (~lhs).rows(), false );
+      SmallArray<size_t,128UL>      indices( (~lhs).rows(), 0UL );
       size_t minIndex( inf ), maxIndex( 0UL );
 
       for( size_t j=0UL; j<(~lhs).columns(); ++j )
