@@ -14,6 +14,7 @@ ComplexUnsignedShort
 Char
 Double
 Float
+IncludeTest
 Int
 Long
 Short

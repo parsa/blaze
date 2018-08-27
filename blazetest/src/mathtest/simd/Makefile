@@ -84,6 +84,8 @@ Double: Double.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 Float: Float.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+IncludeTest: IncludeTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 Int: Int.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 Long: Long.o
