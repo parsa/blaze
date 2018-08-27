@@ -35,7 +35,7 @@
 # Build rules
 default: all
 
-all: shims simd blas lapack typetraits traits \
+all: shims simd blas lapack typetraits traits constraints \
      densevector sparsevector densematrix sparsematrix \
      staticvector hybridvector dynamicvector customvector initializervector compressedvector \
      staticmatrix hybridmatrix dynamicmatrix custommatrix initializermatrix compressedmatrix \
@@ -68,7 +68,7 @@ essential: all
 
 single: all
 
-noop: shims simd blas lapack typetraits traits \
+noop: shims simd blas lapack typetraits traits constraints \
       densevector sparsevector densematrix sparsematrix \
       staticvector hybridvector dynamicvector customvector initializervector compressedvector \
       staticmatrix hybridmatrix dynamicmatrix custommatrix initializermatrix compressedmatrix \
@@ -109,6 +109,11 @@ typetraits:
 
 traits:
 	@$(MAKE) --no-print-directory -C ./traits $(MAKECMDGOALS)
+
+constraints:
+	@echo
+	@echo "Building the constraints operation tests..."
+	@$(MAKE) --no-print-directory -C ./constraints $(MAKECMDGOALS)
 
 densevector:
 	@echo
@@ -635,6 +640,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./lapack reset
 	@$(MAKE) --no-print-directory -C ./typetraits reset
 	@$(MAKE) --no-print-directory -C ./traits reset
+	@$(MAKE) --no-print-directory -C ./constraints reset
 	@$(MAKE) --no-print-directory -C ./densevector reset
 	@$(MAKE) --no-print-directory -C ./sparsevector reset
 	@$(MAKE) --no-print-directory -C ./densematrix reset
@@ -747,6 +753,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./lapack clean
 	@$(MAKE) --no-print-directory -C ./typetraits clean
 	@$(MAKE) --no-print-directory -C ./traits clean
+	@$(MAKE) --no-print-directory -C ./constraints clean
 	@$(MAKE) --no-print-directory -C ./densevector clean
 	@$(MAKE) --no-print-directory -C ./sparsevector clean
 	@$(MAKE) --no-print-directory -C ./densematrix clean
@@ -855,7 +862,7 @@ clean:
 
 # Setting the independent commands
 .PHONY: default all essential single noop reset clean \
-        shims simd blas lapack typetraits traits \
+        shims simd blas lapack typetraits traits constraints \
         densevector sparsevector densematrix sparsematrix \
         staticvector hybridvector dynamicvector customvector initializervector compressedvector \
         staticmatrix hybridmatrix dynamicmatrix custommatrix initializermatrix compressedmatrix \
