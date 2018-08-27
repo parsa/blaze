@@ -2,6 +2,7 @@
 *.o
 DecompositionTest
 EigenvalueTest
+IncludeTest
 InversionTest
 SingularValueTest
 SolverTest

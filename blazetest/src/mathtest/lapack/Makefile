@@ -58,19 +58,16 @@ noop: $(BIN)
 # Build rules
 DecompositionTest: DecompositionTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-
 EigenvalueTest: EigenvalueTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-
+IncludeTest: IncludeTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 InversionTest: InversionTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-
 SingularValueTest: SingularValueTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-
 SolverTest: SolverTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-
 SubstitutionTest: SubstitutionTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
