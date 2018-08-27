@@ -35,7 +35,7 @@
 # Build rules
 default: all
 
-all: shims simd blas lapack typetraits traits constraints \
+all: shims simd blas lapack typetraits traits constraints functors \
      densevector sparsevector densematrix sparsematrix \
      staticvector hybridvector dynamicvector customvector initializervector compressedvector \
      staticmatrix hybridmatrix dynamicmatrix custommatrix initializermatrix compressedmatrix \
@@ -68,7 +68,7 @@ essential: all
 
 single: all
 
-noop: shims simd blas lapack typetraits traits constraints \
+noop: shims simd blas lapack typetraits traits constraints functors \
       densevector sparsevector densematrix sparsematrix \
       staticvector hybridvector dynamicvector customvector initializervector compressedvector \
       staticmatrix hybridmatrix dynamicmatrix custommatrix initializermatrix compressedmatrix \
@@ -114,6 +114,11 @@ constraints:
 	@echo
 	@echo "Building the constraints operation tests..."
 	@$(MAKE) --no-print-directory -C ./constraints $(MAKECMDGOALS)
+
+functors:
+	@echo
+	@echo "Building the functors operation tests..."
+	@$(MAKE) --no-print-directory -C ./functors $(MAKECMDGOALS)
 
 densevector:
 	@echo
@@ -641,6 +646,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./typetraits reset
 	@$(MAKE) --no-print-directory -C ./traits reset
 	@$(MAKE) --no-print-directory -C ./constraints reset
+	@$(MAKE) --no-print-directory -C ./functors reset
 	@$(MAKE) --no-print-directory -C ./densevector reset
 	@$(MAKE) --no-print-directory -C ./sparsevector reset
 	@$(MAKE) --no-print-directory -C ./densematrix reset
@@ -754,6 +760,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./typetraits clean
 	@$(MAKE) --no-print-directory -C ./traits clean
 	@$(MAKE) --no-print-directory -C ./constraints clean
+	@$(MAKE) --no-print-directory -C ./functors clean
 	@$(MAKE) --no-print-directory -C ./densevector clean
 	@$(MAKE) --no-print-directory -C ./sparsevector clean
 	@$(MAKE) --no-print-directory -C ./densematrix clean
@@ -862,7 +869,7 @@ clean:
 
 # Setting the independent commands
 .PHONY: default all essential single noop reset clean \
-        shims simd blas lapack typetraits traits constraints \
+        shims simd blas lapack typetraits traits constraints functors \
         densevector sparsevector densematrix sparsematrix \
         staticvector hybridvector dynamicvector customvector initializervector compressedvector \
         staticmatrix hybridmatrix dynamicmatrix custommatrix initializermatrix compressedmatrix \
