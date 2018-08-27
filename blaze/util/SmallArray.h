@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/SmallVector.h
-//  \brief Header file for the SmallVector implementation
+//  \file blaze/util/SmallArray.h
+//  \brief Header file for the SmallArray implementation
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_SMALLVECTOR_H_
-#define _BLAZE_UTIL_SMALLVECTOR_H_
+#ifndef _BLAZE_UTIL_SMALLARRAY_H_
+#define _BLAZE_UTIL_SMALLARRAY_H_
 
 
 //*************************************************************************************************
@@ -67,26 +67,26 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Implementation of a dynamic vector with small vector optimization.
+/*!\brief Implementation of a dynamic array with small array optimization.
 // \ingroup util
 //
-// The SmallVector class template is a hybrid data structure between a static array and a dynamic
-// vector. It provides static, in-place memory for up to \a N elements of type \a T, but can grow
+// The SmallArray class template is a hybrid data structure between a static array and a dynamic
+// array. It provides static, in-place memory for up to \a N elements of type \a T, but can grow
 // beyond this size by allocating dynamic memory via its allocator of type \a A.
 */
 template< typename T                        // Data type of the elements
         , size_t N                          // Number of preallocated elements
         , typename A = std::allocator<T> >  // Type of the allocator
-class SmallVector
+class SmallArray
    : private A
 {
  public:
    //**Type definitions****************************************************************************
-   using ElementType    = T;         //!< Type of the vector elements.
-   using Pointer        = T*;        //!< Pointer to a non-constant vector element.
-   using ConstPointer   = const T*;  //!< Pointer to a constant vector element.
-   using Reference      = T&;        //!< Reference to a non-constant vector element.
-   using ConstReference = const T&;  //!< Reference to a constant vector element.
+   using ElementType    = T;         //!< Type of the array elements.
+   using Pointer        = T*;        //!< Pointer to a non-constant array element.
+   using ConstPointer   = const T*;  //!< Pointer to a constant array element.
+   using Reference      = T&;        //!< Reference to a non-constant array element.
+   using ConstReference = const T&;  //!< Reference to a constant array element.
    using Iterator       = T*;        //!< Iterator over non-constant elements.
    using ConstIterator  = const T*;  //!< Iterator over constant elements.
    //**********************************************************************************************
@@ -94,25 +94,25 @@ class SmallVector
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SmallVector( const A& alloc = A() );
-   explicit inline SmallVector( size_t n, const A& alloc = A() );
-   explicit inline SmallVector( size_t n, const T& init, const A& alloc = A() );
+   explicit inline SmallArray( const A& alloc = A() );
+   explicit inline SmallArray( size_t n, const A& alloc = A() );
+   explicit inline SmallArray( size_t n, const T& init, const A& alloc = A() );
 
    template< typename InputIt >
-   explicit inline SmallVector( InputIt first, InputIt last, const A& alloc = A() );
+   explicit inline SmallArray( InputIt first, InputIt last, const A& alloc = A() );
 
    template< typename U >
-   explicit inline SmallVector( initializer_list<U> list, const A& alloc = A() );
+   explicit inline SmallArray( initializer_list<U> list, const A& alloc = A() );
 
-   inline SmallVector( const SmallVector& sv );
-   inline SmallVector( SmallVector&& sv );
+   inline SmallArray( const SmallArray& sv );
+   inline SmallArray( SmallArray&& sv );
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
    /*!\name Destructor */
    //@{
-   inline ~SmallVector();
+   inline ~SmallArray();
    //@}
    //**********************************************************************************************
 
@@ -138,10 +138,10 @@ class SmallVector
    /*!\name Assignment operators */
    //@{
    template< typename U >
-   inline SmallVector& operator=( initializer_list<U> list );
+   inline SmallArray& operator=( initializer_list<U> list );
 
-   inline SmallVector& operator=( const SmallVector& rhs );
-   inline SmallVector& operator=( SmallVector&& rhs );
+   inline SmallArray& operator=( const SmallArray& rhs );
+   inline SmallArray& operator=( SmallArray&& rhs );
    //@}
    //**********************************************************************************************
 
@@ -163,7 +163,7 @@ class SmallVector
           Iterator insert( Iterator pos, T&& value );
           Iterator erase( Iterator pos );
           Iterator erase( Iterator first, Iterator last );
-          void     swap( SmallVector& sv ) noexcept( IsNothrowMoveConstructible_v<T> );
+          void     swap( SmallArray& sv ) noexcept( IsNothrowMoveConstructible_v<T> );
    //@}
    //**********************************************************************************************
 
@@ -177,7 +177,7 @@ class SmallVector
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SmallVector( size_t n, const A& alloc, Uninitialized );
+   explicit inline SmallArray( size_t n, const A& alloc, Uninitialized );
    //@}
    //**********************************************************************************************
 
@@ -226,30 +226,30 @@ class SmallVector
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief The (default) constructor for SmallVector.
+/*!\brief The (default) constructor for SmallArray.
 //
 // \param alloc Allocator for all memory allocations of this container.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline SmallVector<T,N,A>::SmallVector( const A& alloc )
-   : SmallVector( 0UL, alloc, Uninitialized() )
+inline SmallArray<T,N,A>::SmallArray( const A& alloc )
+   : SmallArray( 0UL, alloc, Uninitialized() )
 {}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Constructor for a vector of size \a n. No element initialization is performed!
+/*!\brief Constructor for an array of size \a n. No element initialization is performed!
 //
-// \param n The initial size of the vector.
+// \param n The initial size of the array.
 // \param alloc Allocator for all memory allocations of this container.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline SmallVector<T,N,A>::SmallVector( size_t n, const A& alloc )
-   : SmallVector( n, alloc, Uninitialized() )
+inline SmallArray<T,N,A>::SmallArray( size_t n, const A& alloc )
+   : SmallArray( n, alloc, Uninitialized() )
 {
    std::uninitialized_fill( begin_, end_, T() );
 }
@@ -257,19 +257,19 @@ inline SmallVector<T,N,A>::SmallVector( size_t n, const A& alloc )
 
 
 //*************************************************************************************************
-/*!\brief Constructor for a vector of size \a n.
+/*!\brief Constructor for an array of size \a n.
 //
-// \param n The initial size of the vector.
-// \param init The initial value of the vector elements.
+// \param n The initial size of the array.
+// \param init The initial value of the array elements.
 // \param alloc Allocator for all memory allocations of this container.
 //
-// All vector elements are initialized with the specified value.
+// All array elements are initialized with the specified value.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline SmallVector<T,N,A>::SmallVector( size_t n, const T& init, const A& alloc )
-   : SmallVector( n, alloc, Uninitialized() )
+inline SmallArray<T,N,A>::SmallArray( size_t n, const T& init, const A& alloc )
+   : SmallArray( n, alloc, Uninitialized() )
 {
    std::uninitialized_fill( begin_, end_, init );
 }
@@ -287,8 +287,8 @@ template< typename T          // Data type of the elements
         , size_t N            // Number of preallocated elements
         , typename A >        // Type of the allocator
 template< typename InputIt >  // Type of the iterators
-inline SmallVector<T,N,A>::SmallVector( InputIt first, InputIt last, const A& alloc )
-   : SmallVector( std::distance( first, last ), alloc, Uninitialized() )
+inline SmallArray<T,N,A>::SmallArray( InputIt first, InputIt last, const A& alloc )
+   : SmallArray( std::distance( first, last ), alloc, Uninitialized() )
 {
    std::uninitialized_copy( first, last, begin_ );
 }
@@ -296,27 +296,27 @@ inline SmallVector<T,N,A>::SmallVector( InputIt first, InputIt last, const A& al
 
 
 //*************************************************************************************************
-/*!\brief List initialization of all vector elements.
+/*!\brief List initialization of all array elements.
 //
 // \param list The initializer list.
 // \param alloc Allocator for all memory allocations of this container.
 //
-// This constructor provides the option to explicitly initialize the elements of the small vector
+// This constructor provides the option to explicitly initialize the elements of the small array
 // within a constructor call:
 
    \code
-   blaze::SmallVector<double,8UL> v1{ 4.2, 6.3, -1.2 };
+   blaze::SmallArray<double,8UL> v1{ 4.2, 6.3, -1.2 };
    \endcode
 
-// The vector is sized according to the size of the initializer list and all its elements are
+// The array is sized according to the size of the initializer list and all its elements are
 // copy initialized by the elements of the given initializer list.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
 template< typename U >  // Type of the initializer list elements
-inline SmallVector<T,N,A>::SmallVector( initializer_list<U> list, const A& alloc )
-   : SmallVector( list.size(), alloc, Uninitialized() )
+inline SmallArray<T,N,A>::SmallArray( initializer_list<U> list, const A& alloc )
+   : SmallArray( list.size(), alloc, Uninitialized() )
 {
    std::uninitialized_copy( list.begin(), list.end(), begin_ );
 }
@@ -324,15 +324,15 @@ inline SmallVector<T,N,A>::SmallVector( initializer_list<U> list, const A& alloc
 
 
 //*************************************************************************************************
-/*!\brief The copy constructor for SmallVector.
+/*!\brief The copy constructor for SmallArray.
 //
-// \param sv The small vector to be copied.
+// \param sv The small array to be copied.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline SmallVector<T,N,A>::SmallVector( const SmallVector& sv )
-   : SmallVector( sv.size(), A(), Uninitialized() )
+inline SmallArray<T,N,A>::SmallArray( const SmallArray& sv )
+   : SmallArray( sv.size(), A(), Uninitialized() )
 {
    std::uninitialized_copy( sv.begin(), sv.end(), begin_ );
 }
@@ -340,14 +340,14 @@ inline SmallVector<T,N,A>::SmallVector( const SmallVector& sv )
 
 
 //*************************************************************************************************
-/*!\brief The move constructor for SmallVector.
+/*!\brief The move constructor for SmallArray.
 //
-// \param sv The small vector to be moved into this instance.
+// \param sv The small array to be moved into this instance.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline SmallVector<T,N,A>::SmallVector( SmallVector&& sv )
+inline SmallArray<T,N,A>::SmallArray( SmallArray&& sv )
    // arr_ is intentionally not initialized
    : A     ()             // Base class initialization
    , begin_( sv.begin_ )  // Pointer to the beginning of the currently used storage
@@ -369,15 +369,15 @@ inline SmallVector<T,N,A>::SmallVector( SmallVector&& sv )
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary constructor for SmallVector.
+/*!\brief Auxiliary constructor for SmallArray.
 //
-// \param n The initial size of the vector.
+// \param n The initial size of the array.
 // \param alloc Allocator for all memory allocations of this container.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline SmallVector<T,N,A>::SmallVector( size_t n, const A& alloc, Uninitialized )
+inline SmallArray<T,N,A>::SmallArray( size_t n, const A& alloc, Uninitialized )
    // v_ is intentionally not initialized
    // begin_ is intentionally not initialized
    // end_ is intentionally not initialized
@@ -407,12 +407,12 @@ inline SmallVector<T,N,A>::SmallVector( size_t n, const A& alloc, Uninitialized 
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief The destructor for DynamicVector.
+/*!\brief The destructor for SmallArray.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline SmallVector<T,N,A>::~SmallVector()
+inline SmallArray<T,N,A>::~SmallArray()
 {
    using blaze::destroy;
 
@@ -435,7 +435,7 @@ inline SmallVector<T,N,A>::~SmallVector()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Subscript operator for the direct access to the vector elements.
+/*!\brief Subscript operator for the direct access to the array elements.
 //
 // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
@@ -446,17 +446,17 @@ inline SmallVector<T,N,A>::~SmallVector()
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline typename SmallVector<T,N,A>::Reference
-   SmallVector<T,N,A>::operator[]( size_t index ) noexcept
+inline typename SmallArray<T,N,A>::Reference
+   SmallArray<T,N,A>::operator[]( size_t index ) noexcept
 {
-   BLAZE_USER_ASSERT( index < size(), "Invalid small vector access index" );
+   BLAZE_USER_ASSERT( index < size(), "Invalid small array access index" );
    return begin_[index];
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Subscript operator for the direct access to the vector elements.
+/*!\brief Subscript operator for the direct access to the array elements.
 //
 // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference-to-const to the accessed value.
@@ -467,21 +467,21 @@ inline typename SmallVector<T,N,A>::Reference
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline typename SmallVector<T,N,A>::ConstReference
-   SmallVector<T,N,A>::operator[]( size_t index ) const noexcept
+inline typename SmallArray<T,N,A>::ConstReference
+   SmallArray<T,N,A>::operator[]( size_t index ) const noexcept
 {
-   BLAZE_USER_ASSERT( index < size(), "Invalid small vector access index" );
+   BLAZE_USER_ASSERT( index < size(), "Invalid small array access index" );
    return begin_[index];
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Checked access to the vector elements.
+/*!\brief Checked access to the array elements.
 //
 // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
-// \exception std::out_of_range Invalid small vector access index.
+// \exception std::out_of_range Invalid small array access index.
 //
 // In contrast to the subscript operator this function always performs a check of the given
 // access index.
@@ -489,11 +489,11 @@ inline typename SmallVector<T,N,A>::ConstReference
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline typename SmallVector<T,N,A>::Reference
-   SmallVector<T,N,A>::at( size_t index )
+inline typename SmallArray<T,N,A>::Reference
+   SmallArray<T,N,A>::at( size_t index )
 {
    if( index >= size() ) {
-      BLAZE_THROW_OUT_OF_RANGE( "Invalid small vector access index" );
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid small array access index" );
    }
    return begin_[index];
 }
@@ -501,11 +501,11 @@ inline typename SmallVector<T,N,A>::Reference
 
 
 //*************************************************************************************************
-/*!\brief Checked access to the vector elements.
+/*!\brief Checked access to the array elements.
 //
 // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
 // \return Reference to the accessed value.
-// \exception std::out_of_range Invalid small vector access index.
+// \exception std::out_of_range Invalid small array access index.
 //
 // In contrast to the subscript operator this function always performs a check of the given
 // access index.
@@ -513,11 +513,11 @@ inline typename SmallVector<T,N,A>::Reference
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline typename SmallVector<T,N,A>::ConstReference
-   SmallVector<T,N,A>::at( size_t index ) const
+inline typename SmallArray<T,N,A>::ConstReference
+   SmallArray<T,N,A>::at( size_t index ) const
 {
    if( index >= size() ) {
-      BLAZE_THROW_OUT_OF_RANGE( "Invalid small vector access index" );
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid small array access index" );
    }
    return begin_[index];
 }
@@ -525,17 +525,17 @@ inline typename SmallVector<T,N,A>::ConstReference
 
 
 //*************************************************************************************************
-/*!\brief Low-level data access to the vector elements.
+/*!\brief Low-level data access to the array elements.
 //
 // \return Pointer to the internal element storage.
 //
-// This function returns a pointer to the internal storage of the small vector.
+// This function returns a pointer to the internal storage of the small array.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline typename SmallVector<T,N,A>::Pointer
-   SmallVector<T,N,A>::data() noexcept
+inline typename SmallArray<T,N,A>::Pointer
+   SmallArray<T,N,A>::data() noexcept
 {
    return begin_;
 }
@@ -543,17 +543,17 @@ inline typename SmallVector<T,N,A>::Pointer
 
 
 //*************************************************************************************************
-/*!\brief Low-level data access to the vector elements.
+/*!\brief Low-level data access to the array elements.
 //
 // \return Pointer to the internal element storage.
 //
-// This function returns a pointer to the internal storage of the small vector.
+// This function returns a pointer to the internal storage of the small array.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline typename SmallVector<T,N,A>::ConstPointer
-   SmallVector<T,N,A>::data() const noexcept
+inline typename SmallArray<T,N,A>::ConstPointer
+   SmallArray<T,N,A>::data() const noexcept
 {
    return begin_;
 }
@@ -561,15 +561,15 @@ inline typename SmallVector<T,N,A>::ConstPointer
 
 
 //*************************************************************************************************
-/*!\brief Returns an iterator to the first element of the small vector.
+/*!\brief Returns an iterator to the first element of the small array.
 //
-// \return Iterator to the first element of the small vector.
+// \return Iterator to the first element of the small array.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline typename SmallVector<T,N,A>::Iterator
-   SmallVector<T,N,A>::begin() noexcept
+inline typename SmallArray<T,N,A>::Iterator
+   SmallArray<T,N,A>::begin() noexcept
 {
    return begin_;
 }
@@ -577,15 +577,15 @@ inline typename SmallVector<T,N,A>::Iterator
 
 
 //*************************************************************************************************
-/*!\brief Returns an iterator to the first element of the small vector.
+/*!\brief Returns an iterator to the first element of the small array.
 //
-// \return Iterator to the first element of the small vector.
+// \return Iterator to the first element of the small array.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline typename SmallVector<T,N,A>::ConstIterator
-   SmallVector<T,N,A>::begin() const noexcept
+inline typename SmallArray<T,N,A>::ConstIterator
+   SmallArray<T,N,A>::begin() const noexcept
 {
    return begin_;
 }
@@ -593,15 +593,15 @@ inline typename SmallVector<T,N,A>::ConstIterator
 
 
 //*************************************************************************************************
-/*!\brief Returns an iterator to the first element of the small vector.
+/*!\brief Returns an iterator to the first element of the small array.
 //
-// \return Iterator to the first element of the small vector.
+// \return Iterator to the first element of the small array.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline typename SmallVector<T,N,A>::ConstIterator
-   SmallVector<T,N,A>::cbegin() const noexcept
+inline typename SmallArray<T,N,A>::ConstIterator
+   SmallArray<T,N,A>::cbegin() const noexcept
 {
    return begin_;
 }
@@ -609,15 +609,15 @@ inline typename SmallVector<T,N,A>::ConstIterator
 
 
 //*************************************************************************************************
-/*!\brief Returns an iterator just past the last element of the small vector.
+/*!\brief Returns an iterator just past the last element of the small array.
 //
-// \return Iterator just past the last element of the small vector.
+// \return Iterator just past the last element of the small array.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline typename SmallVector<T,N,A>::Iterator
-   SmallVector<T,N,A>::end() noexcept
+inline typename SmallArray<T,N,A>::Iterator
+   SmallArray<T,N,A>::end() noexcept
 {
    return end_;
 }
@@ -625,15 +625,15 @@ inline typename SmallVector<T,N,A>::Iterator
 
 
 //*************************************************************************************************
-/*!\brief Returns an iterator just past the last element of the small vector.
+/*!\brief Returns an iterator just past the last element of the small array.
 //
-// \return Iterator just past the last element of the small vector.
+// \return Iterator just past the last element of the small array.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline typename SmallVector<T,N,A>::ConstIterator
-   SmallVector<T,N,A>::end() const noexcept
+inline typename SmallArray<T,N,A>::ConstIterator
+   SmallArray<T,N,A>::end() const noexcept
 {
    return end_;
 }
@@ -641,15 +641,15 @@ inline typename SmallVector<T,N,A>::ConstIterator
 
 
 //*************************************************************************************************
-/*!\brief Returns an iterator just past the last element of the small vector.
+/*!\brief Returns an iterator just past the last element of the small array.
 //
-// \return Iterator just past the last element of the small vector.
+// \return Iterator just past the last element of the small array.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline typename SmallVector<T,N,A>::ConstIterator
-   SmallVector<T,N,A>::cend() const noexcept
+inline typename SmallArray<T,N,A>::ConstIterator
+   SmallArray<T,N,A>::cend() const noexcept
 {
    return end_;
 }
@@ -665,26 +665,26 @@ inline typename SmallVector<T,N,A>::ConstIterator
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief List assignment to all vector elements.
+/*!\brief List assignment to all array elements.
 //
 // \param list The initializer list.
 //
 // This assignment operator offers the option to directly assign to all elements of the small
-// vector by means of an initializer list:
+// array by means of an initializer list:
 
    \code
-   blaze::SmallVector<double,8UL> v;
+   blaze::SmallArray<double,8UL> v;
    v = { 4.2, 6.3, -1.2 };
    \endcode
 
-// The vector is resized according to the size of the initializer list and all its elements are
+// The array is resized according to the size of the initializer list and all its elements are
 // assigned the values from the given initializer list.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
 template< typename U >  // Type of the initializer list elements
-inline SmallVector<T,N,A>& SmallVector<T,N,A>::operator=( initializer_list<U> list )
+inline SmallArray<T,N,A>& SmallArray<T,N,A>::operator=( initializer_list<U> list )
 {
    resize( list.size() );
    std::copy( list.begin(), list.end(), begin_ );
@@ -695,18 +695,18 @@ inline SmallVector<T,N,A>& SmallVector<T,N,A>::operator=( initializer_list<U> li
 
 
 //*************************************************************************************************
-/*!\brief Copy assignment operator for SmallVector.
+/*!\brief Copy assignment operator for SmallArray.
 //
-// \param rhs Vector to be copied.
-// \return Reference to the assigned vector.
+// \param rhs Array to be copied.
+// \return Reference to the assigned array.
 //
-// The vector is resized according to the given small vector and initialized as a copy of this
-// vector.
+// The array is resized according to the given small array and initialized as a copy of this
+// array.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline SmallVector<T,N,A>& SmallVector<T,N,A>::operator=( const SmallVector& rhs )
+inline SmallArray<T,N,A>& SmallArray<T,N,A>::operator=( const SmallArray& rhs )
 {
    resize( rhs.size() );
    std::copy( rhs.begin(), rhs.end(), begin_ );
@@ -717,15 +717,15 @@ inline SmallVector<T,N,A>& SmallVector<T,N,A>::operator=( const SmallVector& rhs
 
 
 //*************************************************************************************************
-/*!\brief Move assignment operator for SmallVector.
+/*!\brief Move assignment operator for SmallArray.
 //
-// \param rhs The vector to be moved into this instance.
-// \return Reference to the assigned vector.
+// \param rhs The array to be moved into this instance.
+// \return Reference to the assigned array.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline SmallVector<T,N,A>& SmallVector<T,N,A>::operator=( SmallVector&& rhs )
+inline SmallArray<T,N,A>& SmallArray<T,N,A>::operator=( SmallArray&& rhs )
 {
    resize( rhs.size() );
    std::move( rhs.begin(), rhs.end(), begin_ );
@@ -744,14 +744,14 @@ inline SmallVector<T,N,A>& SmallVector<T,N,A>::operator=( SmallVector&& rhs )
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Returns whether the vector is empty.
+/*!\brief Returns whether the array is empty.
 //
-// \return \a true in case the vector is empty, \a false if not.
+// \return \a true in case the array is empty, \a false if not.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline bool SmallVector<T,N,A>::empty() const noexcept
+inline bool SmallArray<T,N,A>::empty() const noexcept
 {
    return begin_ == end_;
 }
@@ -759,14 +759,14 @@ inline bool SmallVector<T,N,A>::empty() const noexcept
 
 
 //*************************************************************************************************
-/*!\brief Returns the current size/dimension of the small vector.
+/*!\brief Returns the current size/dimension of the small array.
 //
-// \return The current size of the small vector.
+// \return The current size of the small array.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline size_t SmallVector<T,N,A>::size() const noexcept
+inline size_t SmallArray<T,N,A>::size() const noexcept
 {
    return end_ - begin_;
 }
@@ -774,14 +774,14 @@ inline size_t SmallVector<T,N,A>::size() const noexcept
 
 
 //*************************************************************************************************
-/*!\brief Returns the maximum capacity of the small vector.
+/*!\brief Returns the maximum capacity of the small array.
 //
-// \return The capacity of the small vector.
+// \return The capacity of the small array.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline size_t SmallVector<T,N,A>::capacity() const noexcept
+inline size_t SmallArray<T,N,A>::capacity() const noexcept
 {
    return final_ - begin_;
 }
@@ -789,16 +789,16 @@ inline size_t SmallVector<T,N,A>::capacity() const noexcept
 
 
 //*************************************************************************************************
-/*!\brief Clearing the vector.
+/*!\brief Clearing the array.
 //
 // \return void
 //
-// After the clear() function, the size of the vector is 0.
+// After the clear() function, the size of the array is 0.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline void SmallVector<T,N,A>::clear()
+inline void SmallArray<T,N,A>::clear()
 {
    using blaze::destroy;
 
@@ -816,19 +816,19 @@ inline void SmallVector<T,N,A>::clear()
 
 
 //*************************************************************************************************
-/*!\brief Changing the size of the vector.
+/*!\brief Changing the size of the array.
 //
-// \param n The new size of the vector.
+// \param n The new size of the array.
 // \return void
 //
-// This function resizes the vector using the given size to \a n. During this operation, new
-// dynamic memory may be allocated in case the capacity of the vector is too small. New vector
+// This function resizes the array using the given size to \a n. During this operation, new
+// dynamic memory may be allocated in case the capacity of the array is too small. New array
 // elements are not initialized!
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-void SmallVector<T,N,A>::resize( size_t n )
+void SmallArray<T,N,A>::resize( size_t n )
 {
    using blaze::destroy;
 
@@ -848,20 +848,20 @@ void SmallVector<T,N,A>::resize( size_t n )
 
 
 //*************************************************************************************************
-/*!\brief Changing the size of the vector.
+/*!\brief Changing the size of the array.
 //
-// \param n The new size of the vector.
-// \param value The initial value of new vector elements.
+// \param n The new size of the array.
+// \param value The initial value of new array elements.
 // \return void
 //
-// This function resizes the vector using the given size to \a n. During this operation, new
-// dynamic memory may be allocated in case the capacity of the vector is too small. New vector
+// This function resizes the array using the given size to \a n. During this operation, new
+// dynamic memory may be allocated in case the capacity of the array is too small. New array
 // elements are initialized to \a value!
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-void SmallVector<T,N,A>::resize( size_t n, const T& value )
+void SmallArray<T,N,A>::resize( size_t n, const T& value )
 {
    using blaze::destroy;
 
@@ -881,18 +881,18 @@ void SmallVector<T,N,A>::resize( size_t n, const T& value )
 
 
 //*************************************************************************************************
-/*!\brief Setting the minimum capacity of the vector.
+/*!\brief Setting the minimum capacity of the array.
 //
-// \param n The new minimum capacity of the vector.
+// \param n The new minimum capacity of the array.
 // \return void
 //
-// This function increases the capacity of the vector to at least \a n elements. The current
-// values of the vector elements are preserved.
+// This function increases the capacity of the array to at least \a n elements. The current
+// values of the array elements are preserved.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-void SmallVector<T,N,A>::reserve( size_t n )
+void SmallArray<T,N,A>::reserve( size_t n )
 {
    using blaze::destroy;
 
@@ -929,14 +929,14 @@ void SmallVector<T,N,A>::reserve( size_t n )
 //
 // \return void
 //
-// This function minimizes the capacity of the vector by removing unused capacity. Please note
+// This function minimizes the capacity of the array by removing unused capacity. Please note
 // that in case a reallocation occurs, all iterators (including end() iterators), all pointers
-// and references to elements of this vector are invalidated.
+// and references to elements of this array are invalidated.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-void SmallVector<T,N,A>::shrinkToFit()
+void SmallArray<T,N,A>::shrinkToFit()
 {
    using blaze::destroy;
 
@@ -966,15 +966,15 @@ void SmallVector<T,N,A>::shrinkToFit()
 
 
 //*************************************************************************************************
-/*!\brief Adding an element to the end of the small vector.
+/*!\brief Adding an element to the end of the small array.
 //
-// \param value The element to be added to the end of the small vector.
+// \param value The element to be added to the end of the small array.
 // \return void
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-void SmallVector<T,N,A>::pushBack( const T& value )
+void SmallArray<T,N,A>::pushBack( const T& value )
 {
    using blaze::max;
 
@@ -991,15 +991,15 @@ void SmallVector<T,N,A>::pushBack( const T& value )
 
 
 //*************************************************************************************************
-/*!\brief Adding an element to the end of the small vector.
+/*!\brief Adding an element to the end of the small array.
 //
-// \param value The element to be added to the end of the small vector.
+// \param value The element to be added to the end of the small array.
 // \return void
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-void SmallVector<T,N,A>::pushBack( T&& value )
+void SmallArray<T,N,A>::pushBack( T&& value )
 {
    using blaze::max;
 
@@ -1016,7 +1016,7 @@ void SmallVector<T,N,A>::pushBack( T&& value )
 
 
 //*************************************************************************************************
-/*!\brief Inserting an element at the specified position into the small vector.
+/*!\brief Inserting an element at the specified position into the small array.
 //
 // \param pos The position of the new element.
 // \param value The value of the element to be inserted.
@@ -1025,8 +1025,8 @@ void SmallVector<T,N,A>::pushBack( T&& value )
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-typename SmallVector<T,N,A>::Iterator
-   SmallVector<T,N,A>::insert( Iterator pos, const T& value )
+typename SmallArray<T,N,A>::Iterator
+   SmallArray<T,N,A>::insert( Iterator pos, const T& value )
 {
    using blaze::destroy;
 
@@ -1085,7 +1085,7 @@ typename SmallVector<T,N,A>::Iterator
 
 
 //*************************************************************************************************
-/*!\brief Inserting an element at the specified position into the small vector.
+/*!\brief Inserting an element at the specified position into the small array.
 //
 // \param pos The position of the new element.
 // \param value The value of the element to be inserted.
@@ -1094,8 +1094,8 @@ typename SmallVector<T,N,A>::Iterator
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-typename SmallVector<T,N,A>::Iterator
-   SmallVector<T,N,A>::insert( Iterator pos, T&& value )
+typename SmallArray<T,N,A>::Iterator
+   SmallArray<T,N,A>::insert( Iterator pos, T&& value )
 {
    using blaze::destroy;
 
@@ -1154,18 +1154,18 @@ typename SmallVector<T,N,A>::Iterator
 
 
 //*************************************************************************************************
-/*!\brief Erasing an element from the small vector.
+/*!\brief Erasing an element from the small array.
 //
 // \param pos Iterator to the element to be erased.
 // \return Iterator to the element after the erased element.
 //
-// This function erases an element from the small vector.
+// This function erases an element from the small array.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-typename SmallVector<T,N,A>::Iterator
-   SmallVector<T,N,A>::erase( Iterator pos )
+typename SmallArray<T,N,A>::Iterator
+   SmallArray<T,N,A>::erase( Iterator pos )
 {
    std::move( pos+1UL, end_, pos );
    --end_;
@@ -1177,19 +1177,19 @@ typename SmallVector<T,N,A>::Iterator
 
 
 //*************************************************************************************************
-/*!\brief Erasing a range of elements from the small vector.
+/*!\brief Erasing a range of elements from the small array.
 //
 // \param first Iterator to first element to be erased.
 // \param last Iterator just past the last element to be erased.
 // \return Iterator to the element after the erased element.
 //
-// This function erases a range of elements from the small vector.
+// This function erases a range of elements from the small array.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-typename SmallVector<T,N,A>::Iterator
-   SmallVector<T,N,A>::erase( Iterator first, Iterator last )
+typename SmallArray<T,N,A>::Iterator
+   SmallArray<T,N,A>::erase( Iterator first, Iterator last )
 {
    using blaze::destroy;
 
@@ -1207,19 +1207,19 @@ typename SmallVector<T,N,A>::Iterator
 
 
 //*************************************************************************************************
-/*!\brief Swapping the contents of two small vectors.
+/*!\brief Swapping the contents of two small arrays.
 //
-// \param sv The small vector to be swapped.
+// \param sv The small array to be swapped.
 // \return void
 //
-// This function swaps the contents of two small vectors. Please note that this function is only
+// This function swaps the contents of two small arrays. Please note that this function is only
 // guaranteed to not throw an exception if the move constructor of the underlying data type \a T
 // is guaranteed to be noexcept.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-void SmallVector<T,N,A>::swap( SmallVector& sv ) noexcept( IsNothrowMoveConstructible_v<T> )
+void SmallArray<T,N,A>::swap( SmallArray& sv ) noexcept( IsNothrowMoveConstructible_v<T> )
 {
    using std::swap;
    using blaze::destroy;
@@ -1285,14 +1285,14 @@ void SmallVector<T,N,A>::swap( SmallVector& sv ) noexcept( IsNothrowMoveConstruc
 
 
 //*************************************************************************************************
-/*!\brief Returns whether the small vector uses its dynamic storage.
+/*!\brief Returns whether the small array uses its dynamic storage.
 //
 // \return \a true in case the dynamic storage is in use, \a false if not.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline bool SmallVector<T,N,A>::isDynamic() const noexcept
+inline bool SmallArray<T,N,A>::isDynamic() const noexcept
 {
    return begin_ != reinterpret_cast<const T*>( v_ );
 }
@@ -1303,62 +1303,62 @@ inline bool SmallVector<T,N,A>::isDynamic() const noexcept
 
 //=================================================================================================
 //
-//  SMALLVECTOR OPERATORS
+//  SMALLARRAY OPERATORS
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name SmallVector operators */
+/*!\name SmallArray operators */
 //@{
 template< typename T1, size_t N1, typename A1, typename T2, size_t N2, typename A2 >
-inline bool operator==( const SmallVector<T1,N1,A1>& lhs, const SmallVector<T2,N2,A2>& rhs );
+inline bool operator==( const SmallArray<T1,N1,A1>& lhs, const SmallArray<T2,N2,A2>& rhs );
 
 template< typename T1, size_t N1, typename A1, typename T2, size_t N2, typename A2 >
-inline bool operator!=( const SmallVector<T1,N1,A1>& lhs, const SmallVector<T2,N2,A2>& rhs );
+inline bool operator!=( const SmallArray<T1,N1,A1>& lhs, const SmallArray<T2,N2,A2>& rhs );
 
 template< typename T, size_t N, typename A >
-inline typename SmallVector<T,N,A>::Iterator begin( SmallVector<T,N,A>& sv );
+inline typename SmallArray<T,N,A>::Iterator begin( SmallArray<T,N,A>& sv );
 
 template< typename T, size_t N, typename A >
-inline typename SmallVector<T,N,A>::ConstIterator begin( const SmallVector<T,N,A>& sv );
+inline typename SmallArray<T,N,A>::ConstIterator begin( const SmallArray<T,N,A>& sv );
 
 template< typename T, size_t N, typename A >
-inline typename SmallVector<T,N,A>::ConstIterator cbegin( const SmallVector<T,N,A>& sv );
+inline typename SmallArray<T,N,A>::ConstIterator cbegin( const SmallArray<T,N,A>& sv );
 
 template< typename T, size_t N, typename A >
-inline typename SmallVector<T,N,A>::Iterator end( SmallVector<T,N,A>& sv );
+inline typename SmallArray<T,N,A>::Iterator end( SmallArray<T,N,A>& sv );
 
 template< typename T, size_t N, typename A >
-inline typename SmallVector<T,N,A>::ConstIterator end( const SmallVector<T,N,A>& sv );
+inline typename SmallArray<T,N,A>::ConstIterator end( const SmallArray<T,N,A>& sv );
 
 template< typename T, size_t N, typename A >
-inline typename SmallVector<T,N,A>::ConstIterator cend( const SmallVector<T,N,A>& sv );
+inline typename SmallArray<T,N,A>::ConstIterator cend( const SmallArray<T,N,A>& sv );
 
 template< typename T, size_t N, typename A >
-inline void clear( SmallVector<T,N,A>& sv );
+inline void clear( SmallArray<T,N,A>& sv );
 
 template< typename T, size_t N, typename A >
-inline void swap( SmallVector<T,N,A>& a, SmallVector<T,N,A>& b )
+inline void swap( SmallArray<T,N,A>& a, SmallArray<T,N,A>& b )
    noexcept( IsNothrowMoveConstructible_v<T> );
 //@}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Equality operator for the comparison of two dense vectors.
+/*!\brief Equality operator for the comparison of two dense arrays.
 // \ingroup util
 //
-// \param lhs The left-hand side small vector for the comparison.
-// \param rhs The right-hand side small vector for the comparison.
-// \return \a true if the two vectors are equal, \a false if not.
+// \param lhs The left-hand side small array for the comparison.
+// \param rhs The right-hand side small array for the comparison.
+// \return \a true if the two arrays are equal, \a false if not.
 */
-template< typename T1    // Data type of the elements of the left-hand side vector
-        , size_t N1      // Number of elements of the left-hand side vector
-        , typename A1    // Type of the allocator of the left-hand side vector
-        , typename T2    // Data type of the elements of the right-hand side vector
-        , size_t N2      // Number of elements of the right-hand side vector
-        , typename A2 >  // Type of the allocator of the right-hand side vector
-inline bool operator==( const SmallVector<T1,N1,A1>& lhs, const SmallVector<T2,N2,A2>& rhs )
+template< typename T1    // Data type of the elements of the left-hand side array
+        , size_t N1      // Number of elements of the left-hand side array
+        , typename A1    // Type of the allocator of the left-hand side array
+        , typename T2    // Data type of the elements of the right-hand side array
+        , size_t N2      // Number of elements of the right-hand side array
+        , typename A2 >  // Type of the allocator of the right-hand side array
+inline bool operator==( const SmallArray<T1,N1,A1>& lhs, const SmallArray<T2,N2,A2>& rhs )
 {
    if( lhs.size() != rhs.size() ) return false;
 
@@ -1368,20 +1368,20 @@ inline bool operator==( const SmallVector<T1,N1,A1>& lhs, const SmallVector<T2,N
 
 
 //*************************************************************************************************
-/*!\brief Inequality operator for the comparison of two dense vectors.
+/*!\brief Inequality operator for the comparison of two dense arrays.
 // \ingroup util
 //
-// \param lhs The left-hand side small vector for the comparison.
-// \param rhs The right-hand side small vector for the comparison.
-// \return \a true if the two vectors are not equal, \a false if they are equal.
+// \param lhs The left-hand side small array for the comparison.
+// \param rhs The right-hand side small array for the comparison.
+// \return \a true if the two arrays are not equal, \a false if they are equal.
 */
-template< typename T1    // Data type of the elements of the left-hand side vector
-        , size_t N1      // Number of elements of the left-hand side vector
-        , typename A1    // Type of the allocator of the left-hand side vector
-        , typename T2    // Data type of the elements of the right-hand side vector
-        , size_t N2      // Number of elements of the right-hand side vector
-        , typename A2 >  // Type of the allocator of the right-hand side vector
-inline bool operator!=( const SmallVector<T1,N1,A1>& lhs, const SmallVector<T2,N2,A2>& rhs )
+template< typename T1    // Data type of the elements of the left-hand side array
+        , size_t N1      // Number of elements of the left-hand side array
+        , typename A1    // Type of the allocator of the left-hand side array
+        , typename T2    // Data type of the elements of the right-hand side array
+        , size_t N2      // Number of elements of the right-hand side array
+        , typename A2 >  // Type of the allocator of the right-hand side array
+inline bool operator!=( const SmallArray<T1,N1,A1>& lhs, const SmallArray<T2,N2,A2>& rhs )
 {
    return !( lhs == rhs );
 }
@@ -1389,14 +1389,14 @@ inline bool operator!=( const SmallVector<T1,N1,A1>& lhs, const SmallVector<T2,N
 
 
 //*************************************************************************************************
-/*!\brief Returns an iterator to the first element of the given small vector.
+/*!\brief Returns an iterator to the first element of the given small array.
 // \ingroup util
 //
-// \param sv The given small vector.
-// \return Iterator to the first element of the given small vector.
+// \param sv The given small array.
+// \return Iterator to the first element of the given small array.
 */
 template< typename T, size_t N, typename A >
-inline typename SmallVector<T,N,A>::Iterator begin( SmallVector<T,N,A>& sv )
+inline typename SmallArray<T,N,A>::Iterator begin( SmallArray<T,N,A>& sv )
 {
    return sv.begin();
 }
@@ -1404,14 +1404,14 @@ inline typename SmallVector<T,N,A>::Iterator begin( SmallVector<T,N,A>& sv )
 
 
 //*************************************************************************************************
-/*!\brief Returns an iterator to the first element of the given small vector.
+/*!\brief Returns an iterator to the first element of the given small array.
 // \ingroup util
 //
-// \param sv The given small vector.
-// \return Iterator to the first element of the given small vector.
+// \param sv The given small array.
+// \return Iterator to the first element of the given small array.
 */
 template< typename T, size_t N, typename A >
-inline typename SmallVector<T,N,A>::ConstIterator begin( const SmallVector<T,N,A>& sv )
+inline typename SmallArray<T,N,A>::ConstIterator begin( const SmallArray<T,N,A>& sv )
 {
    return sv.begin();
 }
@@ -1419,14 +1419,14 @@ inline typename SmallVector<T,N,A>::ConstIterator begin( const SmallVector<T,N,A
 
 
 //*************************************************************************************************
-/*!\brief Returns an iterator to the first element of the given small vector.
+/*!\brief Returns an iterator to the first element of the given small array.
 // \ingroup util
 //
-// \param sv The given small vector.
-// \return Iterator to the first element of the given small vector.
+// \param sv The given small array.
+// \return Iterator to the first element of the given small array.
 */
 template< typename T, size_t N, typename A >
-inline typename SmallVector<T,N,A>::ConstIterator cbegin( const SmallVector<T,N,A>& sv )
+inline typename SmallArray<T,N,A>::ConstIterator cbegin( const SmallArray<T,N,A>& sv )
 {
    return sv.begin();
 }
@@ -1434,14 +1434,14 @@ inline typename SmallVector<T,N,A>::ConstIterator cbegin( const SmallVector<T,N,
 
 
 //*************************************************************************************************
-/*!\brief Returns an iterator just past the last element of the given small vector.
+/*!\brief Returns an iterator just past the last element of the given small array.
 // \ingroup util
 //
-// \param sv The given small vector.
-// \return Iterator just past the last element of the given small vector.
+// \param sv The given small array.
+// \return Iterator just past the last element of the given small array.
 */
 template< typename T, size_t N, typename A >
-inline typename SmallVector<T,N,A>::Iterator end( SmallVector<T,N,A>& sv )
+inline typename SmallArray<T,N,A>::Iterator end( SmallArray<T,N,A>& sv )
 {
    return sv.end();
 }
@@ -1449,14 +1449,14 @@ inline typename SmallVector<T,N,A>::Iterator end( SmallVector<T,N,A>& sv )
 
 
 //*************************************************************************************************
-/*!\brief Returns an iterator just past the last element of the given small vector.
+/*!\brief Returns an iterator just past the last element of the given small array.
 // \ingroup util
 //
-// \param sv The given small vector.
-// \return Iterator just past the last element of the given small vector.
+// \param sv The given small array.
+// \return Iterator just past the last element of the given small array.
 */
 template< typename T, size_t N, typename A >
-inline typename SmallVector<T,N,A>::ConstIterator end( const SmallVector<T,N,A>& sv )
+inline typename SmallArray<T,N,A>::ConstIterator end( const SmallArray<T,N,A>& sv )
 {
    return sv.end();
 }
@@ -1464,14 +1464,14 @@ inline typename SmallVector<T,N,A>::ConstIterator end( const SmallVector<T,N,A>&
 
 
 //*************************************************************************************************
-/*!\brief Returns an iterator just past the last element of the given small vector.
+/*!\brief Returns an iterator just past the last element of the given small array.
 // \ingroup util
 //
-// \param sv The given small vector.
-// \return Iterator just past the last element of the given small vector.
+// \param sv The given small array.
+// \return Iterator just past the last element of the given small array.
 */
 template< typename T, size_t N, typename A >
-inline typename SmallVector<T,N,A>::ConstIterator cend( SmallVector<T,N,A>& sv )
+inline typename SmallArray<T,N,A>::ConstIterator cend( SmallArray<T,N,A>& sv )
 {
    return sv.end();
 }
@@ -1479,16 +1479,16 @@ inline typename SmallVector<T,N,A>::ConstIterator cend( SmallVector<T,N,A>& sv )
 
 
 //*************************************************************************************************
-/*!\brief Clearing the given small vector.
+/*!\brief Clearing the given small array.
 // \ingroup util
 //
-// \param sv The small vector to be cleared.
+// \param sv The small array to be cleared.
 // \return void
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline void clear( SmallVector<T,N,A>& sv )
+inline void clear( SmallArray<T,N,A>& sv )
 {
    sv.clear();
 }
@@ -1496,21 +1496,21 @@ inline void clear( SmallVector<T,N,A>& sv )
 
 
 //*************************************************************************************************
-/*!\brief Swapping the contents of two small vectors.
+/*!\brief Swapping the contents of two small arrays.
 // \ingroup util
 //
-// \param a The first vector to be swapped.
-// \param b The second vector to be swapped.
+// \param a The first array to be swapped.
+// \param b The second array to be swapped.
 // \return void
 //
-// This function swaps the contents of two small vectors. Please note that this function is only
+// This function swaps the contents of two small arrays. Please note that this function is only
 // guaranteed to not throw an exception if the move constructor of the underlying data type \a T
 // is guaranteed to be noexcept.
 */
 template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
-inline void swap( SmallVector<T,N,A>& a, SmallVector<T,N,A>& b )
+inline void swap( SmallArray<T,N,A>& a, SmallArray<T,N,A>& b )
    noexcept( IsNothrowMoveConstructible_v<T> )
 {
    a.swap( b );
