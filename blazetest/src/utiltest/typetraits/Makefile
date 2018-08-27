@@ -56,6 +56,8 @@ noop: $(BIN)
 
 
 # Build rules
+IncludeTest: IncludeTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 OperationTest: OperationTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
