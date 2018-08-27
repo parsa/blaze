@@ -1,6 +1,6 @@
 #==================================================================================================
 #
-#  Makefile for the smallvector module of the Blaze test suite
+#  Makefile for the smallarray module of the Blaze test suite
 #
 #  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved - All Rights Reserved
 #

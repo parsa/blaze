@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/utiltest/smallvector/ClassTest.h
-//  \brief Header file for the SmallVector test
+//  \file blazetest/utiltest/smallarray/ClassTest.h
+//  \brief Header file for the SmallArray test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_UTILTEST_SMALLVECTOR_CLASSTEST_H_
-#define _BLAZETEST_UTILTEST_SMALLVECTOR_CLASSTEST_H_
+#ifndef _BLAZETEST_UTILTEST_SMALLARRAY_CLASSTEST_H_
+#define _BLAZETEST_UTILTEST_SMALLARRAY_CLASSTEST_H_
 
 
 //*************************************************************************************************
@@ -44,14 +44,14 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <blaze/util/SmallVector.h>
+#include <blaze/util/SmallArray.h>
 
 
 namespace blazetest {
 
 namespace utiltest {
 
-namespace smallvector {
+namespace smallarray {
 
 //=================================================================================================
 //
@@ -60,9 +60,9 @@ namespace smallvector {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for the test of the SmallVector class template.
+/*!\brief Auxiliary class for the test of the SmallArray class template.
 //
-// This class represents the collection of tests for the SmallVector class template.
+// This class represents the collection of tests for the SmallArray class template.
 */
 class ClassTest
 {
@@ -98,10 +98,10 @@ class ClassTest
    void testSwap        ();
 
    template< typename Type >
-   void checkSize( const Type& vector, size_t expectedSize ) const;
+   void checkSize( const Type& array, size_t expectedSize ) const;
 
    template< typename Type >
-   void checkCapacity( const Type& vector, size_t minCapacity ) const;
+   void checkCapacity( const Type& array, size_t minCapacity ) const;
    //@}
    //**********************************************************************************************
 
@@ -124,25 +124,25 @@ class ClassTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Checking the size of the given small vector.
+/*!\brief Checking the size of the given small array.
 //
-// \param vector The small vector to be checked.
-// \param expectedSize The expected size of the small vector.
+// \param array The small array to be checked.
+// \param expectedSize The expected size of the small array.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the size of the given small vector. In case the actual size does not
+// This function checks the size of the given small array. In case the actual size does not
 // correspond to the given expected size, a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the small vector
-void ClassTest::checkSize( const Type& vector, size_t expectedSize ) const
+template< typename Type >  // Type of the small array
+void ClassTest::checkSize( const Type& array, size_t expectedSize ) const
 {
-   if( vector.size() != expectedSize ) {
+   if( array.size() != expectedSize ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid size detected\n"
           << " Details:\n"
-          << "   Size         : " << vector.size() << "\n"
+          << "   Size         : " << array.size() << "\n"
           << "   Expected size: " << expectedSize << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -151,26 +151,26 @@ void ClassTest::checkSize( const Type& vector, size_t expectedSize ) const
 
 
 //*************************************************************************************************
-/*!\brief Checking the capacity of the given small vector.
+/*!\brief Checking the capacity of the given small array.
 //
-// \param vector The small vector to be checked.
-// \param minCapacity The expected minimum capacity of the small vector.
+// \param array The small array to be checked.
+// \param minCapacity The expected minimum capacity of the small array.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the capacity of the given small vector. In case the actual capacity
+// This function checks the capacity of the given small array. In case the actual capacity
 // is smaller than the given expected minimum capacity, a \a std::runtime_error exception is
 // thrown.
 */
-template< typename Type >  // Type of the small vector
-void ClassTest::checkCapacity( const Type& vector, size_t minCapacity ) const
+template< typename Type >  // Type of the small array
+void ClassTest::checkCapacity( const Type& array, size_t minCapacity ) const
 {
-   if( vector.capacity() < minCapacity ) {
+   if( array.capacity() < minCapacity ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid capacity detected\n"
           << " Details:\n"
-          << "   Capacity                 : " << vector.capacity() << "\n"
+          << "   Capacity                 : " << array.capacity() << "\n"
           << "   Expected minimum capacity: " << minCapacity << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -187,15 +187,15 @@ void ClassTest::checkCapacity( const Type& vector, size_t minCapacity ) const
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Global output operator for small vectors.
+/*!\brief Global output operator for small arrays.
 //
 // \param os Reference to the output stream.
-// \param v Reference to a constant small vector object.
+// \param v Reference to a constant small array object.
 // \return Reference to the output stream.
 */
 template< typename Type  // Data type of the elements
         , size_t N >     // Number of elements
-inline std::ostream& operator<<( std::ostream& os, const blaze::SmallVector<Type,N>& sv )
+inline std::ostream& operator<<( std::ostream& os, const blaze::SmallArray<Type,N>& sv )
 {
    os << "(";
    for( const Type& value : sv )
@@ -216,7 +216,7 @@ inline std::ostream& operator<<( std::ostream& os, const blaze::SmallVector<Type
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the SmallVector class template.
+/*!\brief Testing the functionality of the SmallArray class template.
 //
 // \return void
 */
@@ -237,14 +237,14 @@ inline void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the SmallVector class test.
+/*!\brief Macro for the execution of the SmallArray class test.
 */
-#define RUN_SMALLVECTOR_CLASS_TEST \
-   blazetest::utiltest::smallvector::runTest();
+#define RUN_SMALLARRAY_CLASS_TEST \
+   blazetest::utiltest::smallarray::runTest();
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace smallvector
+} // namespace smallarray
 
 } // namespace utiltest
 

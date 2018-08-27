@@ -1,7 +1,7 @@
 #!/bin/bash
 #==================================================================================================
 #
-#  Run script for the smallvector module of the Blaze test suite
+#  Run script for the smallarray module of the Blaze test suite
 #
 #  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 #
@@ -33,8 +33,8 @@
 #==================================================================================================
 
 
-SMALLVECTOR_PATH=$( dirname "${BASH_SOURCE[0]}" )
+SMALLARRAY_PATH=$( dirname "${BASH_SOURCE[0]}" )
 
-echo " Running SmallVector tests..."
+echo " Running SmallArray tests..."
 
-EXE=$SMALLVECTOR_PATH/ClassTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$SMALLARRAY_PATH/ClassTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

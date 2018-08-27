@@ -35,7 +35,7 @@
 # Build rules
 default: all
 
-all: constraints alignedallocator memory numericcast smallvector typetraits valuetraits
+all: constraints alignedallocator memory numericcast smallarray typetraits valuetraits
 
 essential: all
 
@@ -60,10 +60,10 @@ numericcast:
 	@echo "Building the numeric cast tests..."
 	@$(MAKE) --no-print-directory -C ./numericcast $(MAKECMDGOALS)
 
-smallvector:
+smallarray:
 	@echo
-	@echo "Building the small vector tests..."
-	@$(MAKE) --no-print-directory -C ./smallvector $(MAKECMDGOALS)
+	@echo "Building the small array tests..."
+	@$(MAKE) --no-print-directory -C ./smallarray $(MAKECMDGOALS)
 
 typetraits:
 	@echo
@@ -81,7 +81,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./alignedallocator reset
 	@$(MAKE) --no-print-directory -C ./memory reset
 	@$(MAKE) --no-print-directory -C ./numericcast reset
-	@$(MAKE) --no-print-directory -C ./smallvector reset
+	@$(MAKE) --no-print-directory -C ./smallarray reset
 	@$(MAKE) --no-print-directory -C ./typetraits reset
 	@$(MAKE) --no-print-directory -C ./valuetraits reset
 
@@ -89,11 +89,11 @@ clean:
 	@$(MAKE) --no-print-directory -C ./alignedallocator clean
 	@$(MAKE) --no-print-directory -C ./memory clean
 	@$(MAKE) --no-print-directory -C ./numericcast clean
-	@$(MAKE) --no-print-directory -C ./smallvector clean
+	@$(MAKE) --no-print-directory -C ./smallarray clean
 	@$(MAKE) --no-print-directory -C ./typetraits clean
 	@$(MAKE) --no-print-directory -C ./valuetraits clean
 
 
 # Setting the independent commands
 .PHONY: default all essential single reset clean \
-        alignedallocator memory numericcast smallvector typetraits valuetraits
+        alignedallocator memory numericcast smallarray typetraits valuetraits

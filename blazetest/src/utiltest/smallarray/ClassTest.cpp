@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/utiltest/smallvector/ClassTest.cpp
-//  \brief Source file for the SmallVector class test
+//  \file src/utiltest/smallarray/ClassTest.cpp
+//  \brief Source file for the SmallArray class test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
@@ -41,7 +41,7 @@
 #include <iostream>
 #include <list>
 #include <blaze/util/Random.h>
-#include <blazetest/utiltest/smallvector/ClassTest.h>
+#include <blazetest/utiltest/smallarray/ClassTest.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
 
@@ -50,7 +50,7 @@ namespace blazetest {
 
 namespace utiltest {
 
-namespace smallvector {
+namespace smallarray {
 
 //=================================================================================================
 //
@@ -59,7 +59,7 @@ namespace smallvector {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the SmallVector class test.
+/*!\brief Constructor for the SmallArray class test.
 //
 // \exception std::runtime_error Operation error detected.
 */
@@ -91,12 +91,12 @@ ClassTest::ClassTest()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the SmallVector constructors.
+/*!\brief Test of the SmallArray constructors.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all constructors of the SmallVector class template.
+// This function performs a test of all constructors of the SmallArray class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testConstructors()
@@ -106,9 +106,9 @@ void ClassTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "SmallVector default constructor";
+      test_ = "SmallArray default constructor";
 
-      blaze::SmallVector<int,5UL> vec;
+      blaze::SmallArray<int,5UL> vec;
 
       checkSize( vec, 0UL );
    }
@@ -119,35 +119,35 @@ void ClassTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "SmallVector size constructor (size 0)";
+      test_ = "SmallArray size constructor (size 0)";
 
-      blaze::SmallVector<int,5UL> vec( 0UL );
+      blaze::SmallArray<int,5UL> vec( 0UL );
 
       checkSize( vec, 0UL );
    }
 
    {
-      test_ = "SmallVector size constructor (size 4)";
+      test_ = "SmallArray size constructor (size 4)";
 
-      blaze::SmallVector<int,5UL> vec( 4UL );
+      blaze::SmallArray<int,5UL> vec( 4UL );
 
       checkSize    ( vec, 4UL );
       checkCapacity( vec, 4UL );
    }
 
    {
-      test_ = "SmallVector size constructor (size 5)";
+      test_ = "SmallArray size constructor (size 5)";
 
-      blaze::SmallVector<int,5UL> vec( 5UL );
+      blaze::SmallArray<int,5UL> vec( 5UL );
 
       checkSize    ( vec, 5UL );
       checkCapacity( vec, 5UL );
    }
 
    {
-      test_ = "SmallVector size constructor (size 6)";
+      test_ = "SmallArray size constructor (size 6)";
 
-      blaze::SmallVector<int,5UL> vec( 6UL );
+      blaze::SmallArray<int,5UL> vec( 6UL );
 
       checkSize    ( vec, 6UL );
       checkCapacity( vec, 6UL );
@@ -159,17 +159,17 @@ void ClassTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "SmallVector homogeneous initialization constructor (size 0)";
+      test_ = "SmallArray homogeneous initialization constructor (size 0)";
 
-      blaze::SmallVector<int,5UL> vec( 0UL, 2 );
+      blaze::SmallArray<int,5UL> vec( 0UL, 2 );
 
       checkSize( vec, 0UL );
    }
 
    {
-      test_ = "SmallVector homogeneous initialization constructor (size 4)";
+      test_ = "SmallArray homogeneous initialization constructor (size 4)";
 
-      blaze::SmallVector<int,5UL> vec( 4UL, 2 );
+      blaze::SmallArray<int,5UL> vec( 4UL, 2 );
 
       checkSize    ( vec, 4UL );
       checkCapacity( vec, 4UL );
@@ -186,9 +186,9 @@ void ClassTest::testConstructors()
    }
 
    {
-      test_ = "SmallVector homogeneous initialization constructor (size 5)";
+      test_ = "SmallArray homogeneous initialization constructor (size 5)";
 
-      blaze::SmallVector<int,5UL> vec( 5UL, 2 );
+      blaze::SmallArray<int,5UL> vec( 5UL, 2 );
 
       checkSize    ( vec, 5UL );
       checkCapacity( vec, 5UL );
@@ -205,9 +205,9 @@ void ClassTest::testConstructors()
    }
 
    {
-      test_ = "SmallVector homogeneous initialization constructor (size 6)";
+      test_ = "SmallArray homogeneous initialization constructor (size 6)";
 
-      blaze::SmallVector<int,5UL> vec( 6UL, 2 );
+      blaze::SmallArray<int,5UL> vec( 6UL, 2 );
 
       checkSize    ( vec, 6UL );
       checkCapacity( vec, 6UL );
@@ -229,10 +229,10 @@ void ClassTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "SmallVector range constructor (size 4)";
+      test_ = "SmallArray range constructor (size 4)";
 
       std::list<int> list{ 1, 2, 3, 4 };
-      blaze::SmallVector<int,5UL> vec( list.begin(), list.end() );
+      blaze::SmallArray<int,5UL> vec( list.begin(), list.end() );
 
       checkSize    ( vec, 4UL );
       checkCapacity( vec, 4UL );
@@ -249,10 +249,10 @@ void ClassTest::testConstructors()
    }
 
    {
-      test_ = "SmallVector range constructor (size 5)";
+      test_ = "SmallArray range constructor (size 5)";
 
       std::list<int> list{ 1, 2, 3, 4, 5 };
-      blaze::SmallVector<int,5UL> vec( list.begin(), list.end() );
+      blaze::SmallArray<int,5UL> vec( list.begin(), list.end() );
 
       checkSize    ( vec, 5UL );
       checkCapacity( vec, 5UL );
@@ -269,10 +269,10 @@ void ClassTest::testConstructors()
    }
 
    {
-      test_ = "SmallVector range constructor (size 6)";
+      test_ = "SmallArray range constructor (size 6)";
 
       std::list<int> list{ 1, 2, 3, 4, 5, 6 };
-      blaze::SmallVector<int,6UL> vec( list.begin(), list.end() );
+      blaze::SmallArray<int,6UL> vec( list.begin(), list.end() );
 
       checkSize    ( vec, 6UL );
       checkCapacity( vec, 6UL );
@@ -294,9 +294,9 @@ void ClassTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "SmallVector initializer list constructor (size 4)";
+      test_ = "SmallArray initializer list constructor (size 4)";
 
-      blaze::SmallVector<int,5UL> vec{ 1, 2, 3, 4 };
+      blaze::SmallArray<int,5UL> vec{ 1, 2, 3, 4 };
 
       checkSize    ( vec, 4UL );
       checkCapacity( vec, 4UL );
@@ -313,9 +313,9 @@ void ClassTest::testConstructors()
    }
 
    {
-      test_ = "SmallVector initializer list constructor (size 5)";
+      test_ = "SmallArray initializer list constructor (size 5)";
 
-      blaze::SmallVector<int,5UL> vec{ 1, 2, 3, 4, 5 };
+      blaze::SmallArray<int,5UL> vec{ 1, 2, 3, 4, 5 };
 
       checkSize    ( vec, 5UL );
       checkCapacity( vec, 5UL );
@@ -332,9 +332,9 @@ void ClassTest::testConstructors()
    }
 
    {
-      test_ = "SmallVector initializer list constructor (size 6)";
+      test_ = "SmallArray initializer list constructor (size 6)";
 
-      blaze::SmallVector<int,6UL> vec{ 1, 2, 3, 4, 5, 6 };
+      blaze::SmallArray<int,6UL> vec{ 1, 2, 3, 4, 5, 6 };
 
       checkSize    ( vec, 6UL );
       checkCapacity( vec, 6UL );
@@ -356,20 +356,20 @@ void ClassTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "SmallVector copy constructor (size 0)";
+      test_ = "SmallArray copy constructor (size 0)";
 
-      blaze::SmallVector<int,5UL> vec1( 0UL );
-      blaze::SmallVector<int,5UL> vec2( vec1 );
+      blaze::SmallArray<int,5UL> vec1( 0UL );
+      blaze::SmallArray<int,5UL> vec2( vec1 );
 
       checkSize    ( vec2, 0UL );
       checkCapacity( vec2, 0UL );
    }
 
    {
-      test_ = "SmallVector copy constructor (size 4)";
+      test_ = "SmallArray copy constructor (size 4)";
 
-      blaze::SmallVector<int,5UL> vec1{ 1, 2, 3, 4 };
-      blaze::SmallVector<int,5UL> vec2( vec1 );
+      blaze::SmallArray<int,5UL> vec1{ 1, 2, 3, 4 };
+      blaze::SmallArray<int,5UL> vec2( vec1 );
 
       checkSize    ( vec2, 4UL );
       checkCapacity( vec2, 4UL );
@@ -386,10 +386,10 @@ void ClassTest::testConstructors()
    }
 
    {
-      test_ = "SmallVector copy constructor (size 5)";
+      test_ = "SmallArray copy constructor (size 5)";
 
-      blaze::SmallVector<int,5UL> vec1{ 1, 2, 3, 4, 5 };
-      blaze::SmallVector<int,5UL> vec2( vec1 );
+      blaze::SmallArray<int,5UL> vec1{ 1, 2, 3, 4, 5 };
+      blaze::SmallArray<int,5UL> vec2( vec1 );
 
       checkSize    ( vec2, 5UL );
       checkCapacity( vec2, 5UL );
@@ -406,10 +406,10 @@ void ClassTest::testConstructors()
    }
 
    {
-      test_ = "SmallVector copy constructor (size 6)";
+      test_ = "SmallArray copy constructor (size 6)";
 
-      blaze::SmallVector<int,5UL> vec1{ 1, 2, 3, 4, 5, 6 };
-      blaze::SmallVector<int,5UL> vec2( vec1 );
+      blaze::SmallArray<int,5UL> vec1{ 1, 2, 3, 4, 5, 6 };
+      blaze::SmallArray<int,5UL> vec2( vec1 );
 
       checkSize    ( vec2, 6UL );
       checkCapacity( vec2, 6UL );
@@ -431,20 +431,20 @@ void ClassTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "SmallVector move constructor (size 0)";
+      test_ = "SmallArray move constructor (size 0)";
 
-      blaze::SmallVector<int,5UL> vec1( 0UL );
-      blaze::SmallVector<int,5UL> vec2( std::move( vec1 ) );
+      blaze::SmallArray<int,5UL> vec1( 0UL );
+      blaze::SmallArray<int,5UL> vec2( std::move( vec1 ) );
 
       checkSize    ( vec2, 0UL );
       checkCapacity( vec2, 0UL );
    }
 
    {
-      test_ = "SmallVector move constructor (size 4)";
+      test_ = "SmallArray move constructor (size 4)";
 
-      blaze::SmallVector<int,5UL> vec1{ 1, 2, 3, 4 };
-      blaze::SmallVector<int,5UL> vec2( std::move( vec1 ) );
+      blaze::SmallArray<int,5UL> vec1{ 1, 2, 3, 4 };
+      blaze::SmallArray<int,5UL> vec2( std::move( vec1 ) );
 
       checkSize    ( vec2, 4UL );
       checkCapacity( vec2, 4UL );
@@ -461,10 +461,10 @@ void ClassTest::testConstructors()
    }
 
    {
-      test_ = "SmallVector move constructor (size 5)";
+      test_ = "SmallArray move constructor (size 5)";
 
-      blaze::SmallVector<int,5UL> vec1{ 1, 2, 3, 4, 5 };
-      blaze::SmallVector<int,5UL> vec2( std::move( vec1 ) );
+      blaze::SmallArray<int,5UL> vec1{ 1, 2, 3, 4, 5 };
+      blaze::SmallArray<int,5UL> vec2( std::move( vec1 ) );
 
       checkSize    ( vec2, 5UL );
       checkCapacity( vec2, 5UL );
@@ -481,10 +481,10 @@ void ClassTest::testConstructors()
    }
 
    {
-      test_ = "SmallVector move constructor (size 6)";
+      test_ = "SmallArray move constructor (size 6)";
 
-      blaze::SmallVector<int,5UL> vec1{ 1, 2, 3, 4, 5, 6 };
-      blaze::SmallVector<int,5UL> vec2( std::move( vec1 ) );
+      blaze::SmallArray<int,5UL> vec1{ 1, 2, 3, 4, 5, 6 };
+      blaze::SmallArray<int,5UL> vec2( std::move( vec1 ) );
 
       checkSize    ( vec2, 6UL );
       checkCapacity( vec2, 6UL );
@@ -504,12 +504,12 @@ void ClassTest::testConstructors()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SmallVector assignment operators.
+/*!\brief Test of the SmallArray assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all assignment operators of the SmallVector class template.
+// This function performs a test of all assignment operators of the SmallArray class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testAssignment()
@@ -519,9 +519,9 @@ void ClassTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "SmallVector initializer list assignment (size 3 to 4)";
+      test_ = "SmallArray initializer list assignment (size 3 to 4)";
 
-      blaze::SmallVector<int,5UL> vec{ 11, 12, 13 };
+      blaze::SmallArray<int,5UL> vec{ 11, 12, 13 };
       vec = { 1, 2, 3, 4 };
 
       checkSize    ( vec, 4UL );
@@ -539,9 +539,9 @@ void ClassTest::testAssignment()
    }
 
    {
-      test_ = "SmallVector initializer list assignment (size 8 to 4)";
+      test_ = "SmallArray initializer list assignment (size 8 to 4)";
 
-      blaze::SmallVector<int,5UL> vec{ 11, 12, 13, 14, 15, 16, 17, 18 };
+      blaze::SmallArray<int,5UL> vec{ 11, 12, 13, 14, 15, 16, 17, 18 };
       vec = { 1, 2, 3, 4 };
 
       checkSize    ( vec, 4UL );
@@ -559,9 +559,9 @@ void ClassTest::testAssignment()
    }
 
    {
-      test_ = "SmallVector initializer list assignment (size 3 to 5)";
+      test_ = "SmallArray initializer list assignment (size 3 to 5)";
 
-      blaze::SmallVector<int,5UL> vec{ 11, 12, 13 };
+      blaze::SmallArray<int,5UL> vec{ 11, 12, 13 };
       vec = { 1, 2, 3, 4, 5 };
 
       checkSize    ( vec, 5UL );
@@ -579,9 +579,9 @@ void ClassTest::testAssignment()
    }
 
    {
-      test_ = "SmallVector initializer list assignment (size 8 to 5)";
+      test_ = "SmallArray initializer list assignment (size 8 to 5)";
 
-      blaze::SmallVector<int,5UL> vec{ 11, 12, 13, 14, 15, 16, 17, 18 };
+      blaze::SmallArray<int,5UL> vec{ 11, 12, 13, 14, 15, 16, 17, 18 };
       vec = { 1, 2, 3, 4, 5 };
 
       checkSize    ( vec, 5UL );
@@ -599,9 +599,9 @@ void ClassTest::testAssignment()
    }
 
    {
-      test_ = "SmallVector initializer list assignment (size 3 to 6)";
+      test_ = "SmallArray initializer list assignment (size 3 to 6)";
 
-      blaze::SmallVector<int,5UL> vec{ 11, 12, 13 };
+      blaze::SmallArray<int,5UL> vec{ 11, 12, 13 };
       vec = { 1, 2, 3, 4, 5, 6 };
 
       checkSize    ( vec, 6UL );
@@ -619,9 +619,9 @@ void ClassTest::testAssignment()
    }
 
    {
-      test_ = "SmallVector initializer list assignment (size 8 to 6)";
+      test_ = "SmallArray initializer list assignment (size 8 to 6)";
 
-      blaze::SmallVector<int,5UL> vec{ 11, 12, 13, 14, 15, 16, 17, 18 };
+      blaze::SmallArray<int,5UL> vec{ 11, 12, 13, 14, 15, 16, 17, 18 };
       vec = { 1, 2, 3, 4, 5, 6 };
 
       checkSize    ( vec, 6UL );
@@ -644,10 +644,10 @@ void ClassTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "SmallVector copy assignment (size 4)";
+      test_ = "SmallArray copy assignment (size 4)";
 
-      blaze::SmallVector<int,5UL> vec1{ 1, 2, 3, 4 };
-      blaze::SmallVector<int,5UL> vec2;
+      blaze::SmallArray<int,5UL> vec1{ 1, 2, 3, 4 };
+      blaze::SmallArray<int,5UL> vec2;
       vec2 = vec1;
 
       checkSize    ( vec2, 4UL );
@@ -665,10 +665,10 @@ void ClassTest::testAssignment()
    }
 
    {
-      test_ = "SmallVector copy assignment (size 5)";
+      test_ = "SmallArray copy assignment (size 5)";
 
-      blaze::SmallVector<int,5UL> vec1{ 1, 2, 3, 4, 5 };
-      blaze::SmallVector<int,5UL> vec2;
+      blaze::SmallArray<int,5UL> vec1{ 1, 2, 3, 4, 5 };
+      blaze::SmallArray<int,5UL> vec2;
       vec2 = vec1;
 
       checkSize    ( vec2, 5UL );
@@ -686,10 +686,10 @@ void ClassTest::testAssignment()
    }
 
    {
-      test_ = "SmallVector copy assignment (size 6)";
+      test_ = "SmallArray copy assignment (size 6)";
 
-      blaze::SmallVector<int,5UL> vec1{ 1, 2, 3, 4, 5, 6 };
-      blaze::SmallVector<int,5UL> vec2;
+      blaze::SmallArray<int,5UL> vec1{ 1, 2, 3, 4, 5, 6 };
+      blaze::SmallArray<int,5UL> vec2;
       vec2 = vec1;
 
       checkSize    ( vec2, 6UL );
@@ -707,16 +707,16 @@ void ClassTest::testAssignment()
    }
 
    {
-      test_ = "SmallVector copy assignment stress test";
+      test_ = "SmallArray copy assignment stress test";
 
-      blaze::SmallVector<int,5UL> vec1;
+      blaze::SmallArray<int,5UL> vec1;
       const int min( randmin );
       const int max( randmax );
 
       for( size_t i=0UL; i<100UL; ++i )
       {
          const size_t size( blaze::rand<size_t>( 0UL, 10UL ) );
-         blaze::SmallVector<int,5UL> vec2( size );
+         blaze::SmallArray<int,5UL> vec2( size );
          for( int& element : vec2 ) {
             element = blaze::rand<int>( min, max );
          }
@@ -741,32 +741,10 @@ void ClassTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "SmallVector move assignment (size 3 to 4)";
+      test_ = "SmallArray move assignment (size 3 to 4)";
 
-      blaze::SmallVector<int,5UL> vec1{ 1, 2, 3, 4 };
-      blaze::SmallVector<int,5UL> vec2{ 11, 12, 13 };
-
-      vec2 = std::move( vec1 );
-
-      checkSize    ( vec2, 4UL );
-      checkCapacity( vec2, 4UL );
-
-      if( vec2[0] != 1 || vec2[1] != 2 || vec2[2] != 3 || vec2[3] != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Assignment failed\n"
-             << " Details:\n"
-             << "   Result:\n" << vec2 << "\n"
-             << "   Expected result:\n( 1 2 3 4 )\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      test_ = "SmallVector move assignment (size 8 to 4)";
-
-      blaze::SmallVector<int,5UL> vec1{ 1, 2, 3, 4 };
-      blaze::SmallVector<int,5UL> vec2{ 11, 12, 13, 14, 15, 16, 17, 18 };
+      blaze::SmallArray<int,5UL> vec1{ 1, 2, 3, 4 };
+      blaze::SmallArray<int,5UL> vec2{ 11, 12, 13 };
 
       vec2 = std::move( vec1 );
 
@@ -785,10 +763,32 @@ void ClassTest::testAssignment()
    }
 
    {
-      test_ = "SmallVector move assignment (size 3 to 5)";
+      test_ = "SmallArray move assignment (size 8 to 4)";
 
-      blaze::SmallVector<int,5UL> vec1{ 1, 2, 3, 4, 5 };
-      blaze::SmallVector<int,5UL> vec2{ 11, 12, 13 };
+      blaze::SmallArray<int,5UL> vec1{ 1, 2, 3, 4 };
+      blaze::SmallArray<int,5UL> vec2{ 11, 12, 13, 14, 15, 16, 17, 18 };
+
+      vec2 = std::move( vec1 );
+
+      checkSize    ( vec2, 4UL );
+      checkCapacity( vec2, 4UL );
+
+      if( vec2[0] != 1 || vec2[1] != 2 || vec2[2] != 3 || vec2[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec2 << "\n"
+             << "   Expected result:\n( 1 2 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "SmallArray move assignment (size 3 to 5)";
+
+      blaze::SmallArray<int,5UL> vec1{ 1, 2, 3, 4, 5 };
+      blaze::SmallArray<int,5UL> vec2{ 11, 12, 13 };
 
       vec2 = std::move( vec1 );
 
@@ -807,10 +807,10 @@ void ClassTest::testAssignment()
    }
 
    {
-      test_ = "SmallVector move assignment (size 8 to 5)";
+      test_ = "SmallArray move assignment (size 8 to 5)";
 
-      blaze::SmallVector<int,5UL> vec1{ 1, 2, 3, 4, 5 };
-      blaze::SmallVector<int,5UL> vec2{ 11, 12, 13, 14, 15, 16, 17, 18 };
+      blaze::SmallArray<int,5UL> vec1{ 1, 2, 3, 4, 5 };
+      blaze::SmallArray<int,5UL> vec2{ 11, 12, 13, 14, 15, 16, 17, 18 };
 
       vec2 = std::move( vec1 );
 
@@ -829,10 +829,10 @@ void ClassTest::testAssignment()
    }
 
    {
-      test_ = "SmallVector move assignment (size 3 to 6)";
+      test_ = "SmallArray move assignment (size 3 to 6)";
 
-      blaze::SmallVector<int,5UL> vec1{ 1, 2, 3, 4, 5, 6 };
-      blaze::SmallVector<int,5UL> vec2{ 11, 12, 13 };
+      blaze::SmallArray<int,5UL> vec1{ 1, 2, 3, 4, 5, 6 };
+      blaze::SmallArray<int,5UL> vec2{ 11, 12, 13 };
 
       vec2 = std::move( vec1 );
 
@@ -851,10 +851,10 @@ void ClassTest::testAssignment()
    }
 
    {
-      test_ = "SmallVector move assignment (size 8 to 6)";
+      test_ = "SmallArray move assignment (size 8 to 6)";
 
-      blaze::SmallVector<int,5UL> vec1{ 1, 2, 3, 4, 5, 6 };
-      blaze::SmallVector<int,5UL> vec2{ 11, 12, 13, 14, 15, 16, 17, 18 };
+      blaze::SmallArray<int,5UL> vec1{ 1, 2, 3, 4, 5, 6 };
+      blaze::SmallArray<int,5UL> vec2{ 11, 12, 13, 14, 15, 16, 17, 18 };
 
       vec2 = std::move( vec1 );
 
@@ -876,22 +876,22 @@ void ClassTest::testAssignment()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SmallVector subscript operator.
+/*!\brief Test of the SmallArray subscript operator.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
 // This function performs a test of adding and accessing elements via the subscript operator
-// of the SmallVector class template. In case an error is detected, a \a std::runtime_error
+// of the SmallArray class template. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
 void ClassTest::testSubscript()
 {
    {
-      test_ = "SmallVector::operator[] (size 4)";
+      test_ = "SmallArray::operator[] (size 4)";
 
       // Assignment to the element at index 2
-      blaze::SmallVector<int,5UL> vec{ 0, 0, 1, 0 };
+      blaze::SmallArray<int,5UL> vec{ 0, 0, 1, 0 };
 
       checkSize    ( vec, 4UL );
       checkCapacity( vec, 4UL );
@@ -1004,10 +1004,10 @@ void ClassTest::testSubscript()
    }
 
    {
-      test_ = "SmallVector::operator[] (size 7)";
+      test_ = "SmallArray::operator[] (size 7)";
 
       // Assignment to the element at index 2
-      blaze::SmallVector<int,5UL> vec{ 0, 0, 1, 0, 0, 0, 0 };
+      blaze::SmallArray<int,5UL> vec{ 0, 0, 1, 0, 0, 0, 0 };
 
       checkSize    ( vec, 7UL );
       checkCapacity( vec, 7UL );
@@ -1139,22 +1139,22 @@ void ClassTest::testSubscript()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c at() member function of the SmallVector class template.
+/*!\brief Test of the \c at() member function of the SmallArray class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
 // This function performs a test of adding and accessing elements via the \c at() member function
-// of the SmallVector class template. In case an error is detected, a \a std::runtime_error
+// of the SmallArray class template. In case an error is detected, a \a std::runtime_error
 // exception is thrown.
 */
 void ClassTest::testAt()
 {
    {
-      test_ = "SmallVector::at() (size 4)";
+      test_ = "SmallArray::at() (size 4)";
 
       // Assignment to the element at index 2
-      blaze::SmallVector<int,5UL> vec{ 0, 0, 1, 0 };
+      blaze::SmallArray<int,5UL> vec{ 0, 0, 1, 0 };
 
       checkSize    ( vec, 4UL );
       checkCapacity( vec, 4UL );
@@ -1267,10 +1267,10 @@ void ClassTest::testAt()
    }
 
    {
-      test_ = "SmallVector::at() (size 7)";
+      test_ = "SmallArray::at() (size 7)";
 
       // Assignment to the element at index 2
-      blaze::SmallVector<int,5UL> vec{ 0, 0, 1, 0, 0, 0, 0 };
+      blaze::SmallArray<int,5UL> vec{ 0, 0, 1, 0, 0, 0, 0 };
 
       checkSize    ( vec, 7UL );
       checkCapacity( vec, 7UL );
@@ -1402,21 +1402,21 @@ void ClassTest::testAt()
 
 
 //*************************************************************************************************
-/*!\brief Test of the SmallVector iterator implementation.
+/*!\brief Test of the SmallArray iterator implementation.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the iterator implementation of the SmallVector class
+// This function performs a test of the iterator implementation of the SmallArray class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testIterator()
 {
-   using VectorType    = blaze::SmallVector<int,5UL>;
-   using Iterator      = VectorType::Iterator;
-   using ConstIterator = VectorType::ConstIterator;
+   using ArrayType     = blaze::SmallArray<int,5UL>;
+   using Iterator      = ArrayType::Iterator;
+   using ConstIterator = ArrayType::ConstIterator;
 
-   VectorType vec{ 1, 0, -2, -3 };
+   ArrayType vec{ 1, 0, -2, -3 };
 
    // Testing the Iterator default constructor
    {
@@ -1697,31 +1697,31 @@ void ClassTest::testIterator()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c clear() member function of the SmallVector class template.
+/*!\brief Test of the \c clear() member function of the SmallArray class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c clear() member function of the SmallVector class
+// This function performs a test of the \c clear() member function of the SmallArray class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testClear()
 {
-   test_ = "SmallVector::clear()";
+   test_ = "SmallArray::clear()";
 
-   // Clearing a default constructed vector
+   // Clearing a default constructed array
    {
-      blaze::SmallVector<int,5UL> vec;
+      blaze::SmallArray<int,5UL> vec;
 
       clear( vec );
 
       checkSize( vec, 0UL );
    }
 
-   // Clearing an initialized vector
+   // Clearing an initialized array
    {
       // Initialization check
-      blaze::SmallVector<int,5UL> vec{ 1, 2, 3, 4 };
+      blaze::SmallArray<int,5UL> vec{ 1, 2, 3, 4 };
 
       checkSize    ( vec, 4UL );
       checkCapacity( vec, 4UL );
@@ -1736,7 +1736,7 @@ void ClassTest::testClear()
          throw std::runtime_error( oss.str() );
       }
 
-      // Clearing the vector
+      // Clearing the array
       clear( vec );
 
       checkSize( vec, 0UL );
@@ -1746,21 +1746,21 @@ void ClassTest::testClear()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c resize() member function of the SmallVector class template.
+/*!\brief Test of the \c resize() member function of the SmallArray class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c resize() member function of the SmallVector class
+// This function performs a test of the \c resize() member function of the SmallArray class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testResize()
 {
    {
-      test_ = "SmallVector::resize( size_t )";
+      test_ = "SmallArray::resize( size_t )";
 
       // Initialization check
-      blaze::SmallVector<int,5UL> vec;
+      blaze::SmallArray<int,5UL> vec;
 
       checkSize( vec, 0UL );
 
@@ -1852,10 +1852,10 @@ void ClassTest::testResize()
    }
 
    {
-      test_ = "SmallVector::resize( size_t, const Type& )";
+      test_ = "SmallArray::resize( size_t, const Type& )";
 
       // Initialization check
-      blaze::SmallVector<int,5UL> vec;
+      blaze::SmallArray<int,5UL> vec;
 
       checkSize( vec, 0UL );
 
@@ -1938,30 +1938,30 @@ void ClassTest::testResize()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c reserve() member function of the SmallVector class template.
+/*!\brief Test of the \c reserve() member function of the SmallArray class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c reserve() member function of the SmallVector class
+// This function performs a test of the \c reserve() member function of the SmallArray class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testReserve()
 {
-   test_ = "SmallVector::reserve()";
+   test_ = "SmallArray::reserve()";
 
    // Initialization check
-   blaze::SmallVector<int,5UL> vec;
+   blaze::SmallArray<int,5UL> vec;
 
    checkSize( vec, 0UL );
 
-   // Increasing the capacity of the vector
+   // Increasing the capacity of the array
    vec.reserve( 4UL );
 
    checkSize    ( vec, 0UL );
    checkCapacity( vec, 4UL );
 
-   // Further increasing the capacity of the vector
+   // Further increasing the capacity of the array
    vec.reserve( 8UL );
 
    checkSize    ( vec, 0UL );
@@ -1971,21 +1971,21 @@ void ClassTest::testReserve()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c shrinkToFit() member function of the SmallVector class template.
+/*!\brief Test of the \c shrinkToFit() member function of the SmallArray class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c shrinkToFit() member function of the SmallVector class
+// This function performs a test of the \c shrinkToFit() member function of the SmallArray class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testShrinkToFit()
 {
-   test_ = "SmallVector::shrinkToFit()";
+   test_ = "SmallArray::shrinkToFit()";
 
-   // Shrinking a vector without excessive capacity
+   // Shrinking an array without excessive capacity
    {
-      blaze::SmallVector<int,5UL> vec{ 1, 2, 3, 4 };
+      blaze::SmallArray<int,5UL> vec{ 1, 2, 3, 4 };
 
       vec.shrinkToFit();
 
@@ -1995,7 +1995,7 @@ void ClassTest::testShrinkToFit()
       if( vec.capacity() > 5UL ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Shrinking the vector failed\n"
+             << " Error: Shrinking the array failed\n"
              << " Details:\n"
              << "   Capacity: " << vec.capacity() << "\n";
          throw std::runtime_error( oss.str() );
@@ -2004,7 +2004,7 @@ void ClassTest::testShrinkToFit()
       if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Shrinking the vector failed\n"
+             << " Error: Shrinking the array failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
              << "   Expected result:\n( 1 2 3 4 )\n";
@@ -2012,9 +2012,9 @@ void ClassTest::testShrinkToFit()
       }
    }
 
-   // Shrinking a vector with excessive capacity (size 4)
+   // Shrinking an array with excessive capacity (size 4)
    {
-      blaze::SmallVector<int,5UL> vec{ 1, 2, 3, 4 };
+      blaze::SmallArray<int,5UL> vec{ 1, 2, 3, 4 };
       vec.reserve( 100UL );
 
       vec.shrinkToFit();
@@ -2025,7 +2025,7 @@ void ClassTest::testShrinkToFit()
       if( vec.capacity() > 5UL ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Shrinking the vector failed\n"
+             << " Error: Shrinking the array failed\n"
              << " Details:\n"
              << "   Capacity: " << vec.capacity() << "\n";
          throw std::runtime_error( oss.str() );
@@ -2034,7 +2034,7 @@ void ClassTest::testShrinkToFit()
       if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Shrinking the vector failed\n"
+             << " Error: Shrinking the array failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
              << "   Expected result:\n( 1 2 3 4 )\n";
@@ -2042,9 +2042,9 @@ void ClassTest::testShrinkToFit()
       }
    }
 
-   // Shrinking a vector with excessive capacity (size 8)
+   // Shrinking an array with excessive capacity (size 8)
    {
-      blaze::SmallVector<int,5UL> vec{ 1, 2, 3, 4, 5, 6, 7, 8 };
+      blaze::SmallArray<int,5UL> vec{ 1, 2, 3, 4, 5, 6, 7, 8 };
       vec.reserve( 100UL );
 
       vec.shrinkToFit();
@@ -2055,7 +2055,7 @@ void ClassTest::testShrinkToFit()
       if( vec.capacity() > 8UL ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Shrinking the vector failed\n"
+             << " Error: Shrinking the array failed\n"
              << " Details:\n"
              << "   Capacity: " << vec.capacity() << "\n";
          throw std::runtime_error( oss.str() );
@@ -2065,7 +2065,7 @@ void ClassTest::testShrinkToFit()
           vec[4] != 5 || vec[5] != 6 || vec[6] != 7 || vec[7] != 8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Shrinking the vector failed\n"
+             << " Error: Shrinking the array failed\n"
              << " Details:\n"
              << "   Result:\n" << vec << "\n"
              << "   Expected result:\n( 1 2 3 4 5 6 7 8 )\n";
@@ -2077,20 +2077,20 @@ void ClassTest::testShrinkToFit()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c pushBack() member function of the SmallVector class template.
+/*!\brief Test of the \c pushBack() member function of the SmallArray class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c pushBack() member function of the SmallVector class
+// This function performs a test of the \c pushBack() member function of the SmallArray class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testPushBack()
 {
    {
-      test_ = "SmallVector::pushBack() (size 4)";
+      test_ = "SmallArray::pushBack() (size 4)";
 
-      blaze::SmallVector<int,5UL> vec;
+      blaze::SmallArray<int,5UL> vec;
 
       checkSize( vec, 0UL );
 
@@ -2136,22 +2136,22 @@ void ClassTest::testPushBack()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c insert() member function of the SmallVector class template.
+/*!\brief Test of the \c insert() member function of the SmallArray class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c insert() member function of the SmallVector class
+// This function performs a test of the \c insert() member function of the SmallArray class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testInsert()
 {
    {
-      // Inserting into an empty small vector
+      // Inserting into an empty small array
       {
-         test_ = "SmallVector::insert( Iterator, const Type& ) (empty vector)";
+         test_ = "SmallArray::insert( Iterator, const Type& ) (empty array)";
 
-         blaze::SmallVector<int,5UL> vec;
+         blaze::SmallArray<int,5UL> vec;
          int value = 1;
 
          auto pos = vec.insert( vec.begin(), value );
@@ -2180,11 +2180,11 @@ void ClassTest::testInsert()
          }
       }
 
-      // Inserting at the beginning of a small vector (x 2 3 4)
+      // Inserting at the beginning of a small array (x 2 3 4)
       {
-         test_ = "SmallVector::insert( Iterator, const Type& ) (x 2 3 4)";
+         test_ = "SmallArray::insert( Iterator, const Type& ) (x 2 3 4)";
 
-         blaze::SmallVector<int,5UL> vec{ 2, 3, 4 };
+         blaze::SmallArray<int,5UL> vec{ 2, 3, 4 };
          int value = 1;
 
          auto pos = vec.insert( vec.begin(), value );
@@ -2213,11 +2213,11 @@ void ClassTest::testInsert()
          }
       }
 
-      // Inserting in the middle of a small vector (1 x 3 4)
+      // Inserting in the middle of a small array (1 x 3 4)
       {
-         test_ = "SmallVector::insert( Iterator, const Type& ) (1 x 3 4)";
+         test_ = "SmallArray::insert( Iterator, const Type& ) (1 x 3 4)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 3, 4 };
+         blaze::SmallArray<int,5UL> vec{ 1, 3, 4 };
          int value = 2;
 
          auto pos = vec.insert( vec.begin()+1UL, value );
@@ -2246,11 +2246,11 @@ void ClassTest::testInsert()
          }
       }
 
-      // Inserting at the end of a small vector (1 2 3 x)
+      // Inserting at the end of a small array (1 2 3 x)
       {
-         test_ = "SmallVector::insert( Iterator, const Type& ) (1 2 3 x)";
+         test_ = "SmallArray::insert( Iterator, const Type& ) (1 2 3 x)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 2, 3 };
+         blaze::SmallArray<int,5UL> vec{ 1, 2, 3 };
          int value = 4;
 
          auto pos = vec.insert( vec.end(), value );
@@ -2279,11 +2279,11 @@ void ClassTest::testInsert()
          }
       }
 
-      // Inserting at the beginning of a small vector (x 2 3 4 5 6)
+      // Inserting at the beginning of a small array (x 2 3 4 5 6)
       {
-         test_ = "SmallVector::insert( Iterator, const Type& ) (x 2 3 4 5 6)";
+         test_ = "SmallArray::insert( Iterator, const Type& ) (x 2 3 4 5 6)";
 
-         blaze::SmallVector<int,5UL> vec{ 2, 3, 4, 5, 6 };
+         blaze::SmallArray<int,5UL> vec{ 2, 3, 4, 5, 6 };
          int value = 1;
 
          auto pos = vec.insert( vec.begin(), value );
@@ -2312,11 +2312,11 @@ void ClassTest::testInsert()
          }
       }
 
-      // Inserting in the middle of a small vector (1 x 3 4 5 6)
+      // Inserting in the middle of a small array (1 x 3 4 5 6)
       {
-         test_ = "SmallVector::insert( Iterator, const Type& ) (1 x 3 4 5 6)";
+         test_ = "SmallArray::insert( Iterator, const Type& ) (1 x 3 4 5 6)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 3, 4, 5, 6 };
+         blaze::SmallArray<int,5UL> vec{ 1, 3, 4, 5, 6 };
          int value = 2;
 
          auto pos = vec.insert( vec.begin()+1UL, value );
@@ -2345,11 +2345,11 @@ void ClassTest::testInsert()
          }
       }
 
-      // Inserting at the end of a small vector (1 2 3 4 5 x)
+      // Inserting at the end of a small array (1 2 3 4 5 x)
       {
-         test_ = "SmallVector::insert( Iterator, const Type& ) (1 2 3 4 5 x)";
+         test_ = "SmallArray::insert( Iterator, const Type& ) (1 2 3 4 5 x)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 2, 3, 4, 5 };
+         blaze::SmallArray<int,5UL> vec{ 1, 2, 3, 4, 5 };
          int value = 6;
 
          auto pos = vec.insert( vec.end(), value );
@@ -2378,11 +2378,11 @@ void ClassTest::testInsert()
          }
       }
 
-      // Inserting at the beginning of a small vector (x 2 3 4 5 6 7 8)
+      // Inserting at the beginning of a small array (x 2 3 4 5 6 7 8)
       {
-         test_ = "SmallVector::insert( Iterator, const Type& ) (x 2 3 4 5 6 7 8)";
+         test_ = "SmallArray::insert( Iterator, const Type& ) (x 2 3 4 5 6 7 8)";
 
-         blaze::SmallVector<int,5UL> vec{ 2, 3, 4, 5, 6, 7, 8 };
+         blaze::SmallArray<int,5UL> vec{ 2, 3, 4, 5, 6, 7, 8 };
          int value = 1;
 
          auto pos = vec.insert( vec.begin(), value );
@@ -2412,11 +2412,11 @@ void ClassTest::testInsert()
          }
       }
 
-      // Inserting in the middle of a small vector (1 x 3 4 5 6 7 8 )
+      // Inserting in the middle of a small array (1 x 3 4 5 6 7 8 )
       {
-         test_ = "SmallVector::insert( Iterator, const Type& ) (1 x 3 4 5 6 7 8)";
+         test_ = "SmallArray::insert( Iterator, const Type& ) (1 x 3 4 5 6 7 8)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 3, 4, 5, 6, 7, 8 };
+         blaze::SmallArray<int,5UL> vec{ 1, 3, 4, 5, 6, 7, 8 };
          int value = 2;
 
          auto pos = vec.insert( vec.begin()+1UL, value );
@@ -2446,11 +2446,11 @@ void ClassTest::testInsert()
          }
       }
 
-      // Inserting at the end of a small vector (1 2 3 4 5 6 7 x)
+      // Inserting at the end of a small array (1 2 3 4 5 6 7 x)
       {
-         test_ = "SmallVector::insert( Iterator, const Type& ) (1 2 3 4 5 6 7 x)";
+         test_ = "SmallArray::insert( Iterator, const Type& ) (1 2 3 4 5 6 7 x)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 2, 3, 4, 5, 6, 7 };
+         blaze::SmallArray<int,5UL> vec{ 1, 2, 3, 4, 5, 6, 7 };
          int value = 8;
 
          auto pos = vec.insert( vec.end(), value );
@@ -2482,11 +2482,11 @@ void ClassTest::testInsert()
    }
 
    {
-      // Inserting into an empty small vector
+      // Inserting into an empty small array
       {
-         test_ = "SmallVector::insert( Iterator, Type&& ) (empty vector)";
+         test_ = "SmallArray::insert( Iterator, Type&& ) (empty array)";
 
-         blaze::SmallVector<int,5UL> vec;
+         blaze::SmallArray<int,5UL> vec;
 
          auto pos = vec.insert( vec.begin(), 1 );
 
@@ -2514,11 +2514,11 @@ void ClassTest::testInsert()
          }
       }
 
-      // Inserting at the beginning of a small vector (x 2 3 4)
+      // Inserting at the beginning of a small array (x 2 3 4)
       {
-         test_ = "SmallVector::insert( Iterator, Type&& ) (x 2 3 4)";
+         test_ = "SmallArray::insert( Iterator, Type&& ) (x 2 3 4)";
 
-         blaze::SmallVector<int,5UL> vec{ 2, 3, 4 };
+         blaze::SmallArray<int,5UL> vec{ 2, 3, 4 };
 
          auto pos = vec.insert( vec.begin(), 1 );
 
@@ -2546,11 +2546,11 @@ void ClassTest::testInsert()
          }
       }
 
-      // Inserting in the middle of a small vector (1 x 3 4)
+      // Inserting in the middle of a small array (1 x 3 4)
       {
-         test_ = "SmallVector::insert( Iterator, Type&& ) (1 x 3 4)";
+         test_ = "SmallArray::insert( Iterator, Type&& ) (1 x 3 4)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 3, 4 };
+         blaze::SmallArray<int,5UL> vec{ 1, 3, 4 };
 
          auto pos = vec.insert( vec.begin()+1UL, 2 );
 
@@ -2578,11 +2578,11 @@ void ClassTest::testInsert()
          }
       }
 
-      // Inserting at the end of a small vector (1 2 3 x)
+      // Inserting at the end of a small array (1 2 3 x)
       {
-         test_ = "SmallVector::insert( Iterator, Type&& ) (1 2 3 x)";
+         test_ = "SmallArray::insert( Iterator, Type&& ) (1 2 3 x)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 2, 3 };
+         blaze::SmallArray<int,5UL> vec{ 1, 2, 3 };
 
          auto pos = vec.insert( vec.end(), 4 );
 
@@ -2610,11 +2610,11 @@ void ClassTest::testInsert()
          }
       }
 
-      // Inserting at the beginning of a small vector (x 2 3 4 5 6)
+      // Inserting at the beginning of a small array (x 2 3 4 5 6)
       {
-         test_ = "SmallVector::insert( Iterator, Type&& ) (x 2 3 4 5 6)";
+         test_ = "SmallArray::insert( Iterator, Type&& ) (x 2 3 4 5 6)";
 
-         blaze::SmallVector<int,5UL> vec{ 2, 3, 4, 5, 6 };
+         blaze::SmallArray<int,5UL> vec{ 2, 3, 4, 5, 6 };
 
          auto pos = vec.insert( vec.begin(), 1 );
 
@@ -2642,11 +2642,11 @@ void ClassTest::testInsert()
          }
       }
 
-      // Inserting in the middle of a small vector (1 x 3 4 5 6)
+      // Inserting in the middle of a small array (1 x 3 4 5 6)
       {
-         test_ = "SmallVector::insert( Iterator, Type&& ) (1 x 3 4 5 6)";
+         test_ = "SmallArray::insert( Iterator, Type&& ) (1 x 3 4 5 6)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 3, 4, 5, 6 };
+         blaze::SmallArray<int,5UL> vec{ 1, 3, 4, 5, 6 };
 
          auto pos = vec.insert( vec.begin()+1UL, 2 );
 
@@ -2674,11 +2674,11 @@ void ClassTest::testInsert()
          }
       }
 
-      // Inserting at the end of a small vector (1 2 3 4 5 x)
+      // Inserting at the end of a small array (1 2 3 4 5 x)
       {
-         test_ = "SmallVector::insert( Iterator, Type&& ) (1 2 3 4 5 x)";
+         test_ = "SmallArray::insert( Iterator, Type&& ) (1 2 3 4 5 x)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 2, 3, 4, 5 };
+         blaze::SmallArray<int,5UL> vec{ 1, 2, 3, 4, 5 };
 
          auto pos = vec.insert( vec.end(), 6 );
 
@@ -2706,11 +2706,11 @@ void ClassTest::testInsert()
          }
       }
 
-      // Inserting at the beginning of a small vector (x 2 3 4 5 6 7 8)
+      // Inserting at the beginning of a small array (x 2 3 4 5 6 7 8)
       {
-         test_ = "SmallVector::insert( Iterator, Type&& ) (x 2 3 4 5 6 7 8)";
+         test_ = "SmallArray::insert( Iterator, Type&& ) (x 2 3 4 5 6 7 8)";
 
-         blaze::SmallVector<int,5UL> vec{ 2, 3, 4, 5, 6, 7, 8 };
+         blaze::SmallArray<int,5UL> vec{ 2, 3, 4, 5, 6, 7, 8 };
 
          auto pos = vec.insert( vec.begin(), 1 );
 
@@ -2739,11 +2739,11 @@ void ClassTest::testInsert()
          }
       }
 
-      // Inserting in the middle of a small vector (1 x 3 4 5 6 7 8 )
+      // Inserting in the middle of a small array (1 x 3 4 5 6 7 8 )
       {
-         test_ = "SmallVector::insert( Iterator, Type&& ) (1 x 3 4 5 6 7 8)";
+         test_ = "SmallArray::insert( Iterator, Type&& ) (1 x 3 4 5 6 7 8)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 3, 4, 5, 6, 7, 8 };
+         blaze::SmallArray<int,5UL> vec{ 1, 3, 4, 5, 6, 7, 8 };
 
          auto pos = vec.insert( vec.begin()+1UL, 2 );
 
@@ -2772,11 +2772,11 @@ void ClassTest::testInsert()
          }
       }
 
-      // Inserting at the end of a small vector (1 2 3 4 5 6 7 x)
+      // Inserting at the end of a small array (1 2 3 4 5 6 7 x)
       {
-         test_ = "SmallVector::insert( Iterator, Type&& ) (1 2 3 4 5 6 7 x)";
+         test_ = "SmallArray::insert( Iterator, Type&& ) (1 2 3 4 5 6 7 x)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 2, 3, 4, 5, 6, 7 };
+         blaze::SmallArray<int,5UL> vec{ 1, 2, 3, 4, 5, 6, 7 };
 
          auto pos = vec.insert( vec.end(), 8 );
 
@@ -2810,22 +2810,22 @@ void ClassTest::testInsert()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c erase() member function of the SmallVector class template.
+/*!\brief Test of the \c erase() member function of the SmallArray class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c erase() member function of the SmallVector class
+// This function performs a test of the \c erase() member function of the SmallArray class
 // template. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testErase()
 {
    {
-      // Erasing from the beginning of a small vector
+      // Erasing from the beginning of a small array
       {
-         test_ = "SmallVector::erase( Iterator ) (x 2 3 4)";
+         test_ = "SmallArray::erase( Iterator ) (x 2 3 4)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 2, 3, 4 };
+         blaze::SmallArray<int,5UL> vec{ 1, 2, 3, 4 };
 
          auto pos = vec.erase( vec.begin() );
 
@@ -2853,11 +2853,11 @@ void ClassTest::testErase()
          }
       }
 
-      // Erasing from the middle of a small vector
+      // Erasing from the middle of a small array
       {
-         test_ = "SmallVector::erase( Iterator ) (1 x 3 4)";
+         test_ = "SmallArray::erase( Iterator ) (1 x 3 4)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 2, 3, 4 };
+         blaze::SmallArray<int,5UL> vec{ 1, 2, 3, 4 };
 
          auto pos = vec.erase( vec.begin()+1UL );
 
@@ -2885,11 +2885,11 @@ void ClassTest::testErase()
          }
       }
 
-      // Erasing from the end of a small vector
+      // Erasing from the end of a small array
       {
-         test_ = "SmallVector::erase( Iterator ) (1 2 3 x)";
+         test_ = "SmallArray::erase( Iterator ) (1 2 3 x)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 2, 3, 4 };
+         blaze::SmallArray<int,5UL> vec{ 1, 2, 3, 4 };
 
          auto pos = vec.erase( vec.begin()+3UL );
 
@@ -2916,11 +2916,11 @@ void ClassTest::testErase()
          }
       }
 
-      // Erasing from the beginning of a small vector
+      // Erasing from the beginning of a small array
       {
-         test_ = "SmallVector::erase( Iterator ) (x 2 3 4 5 6)";
+         test_ = "SmallArray::erase( Iterator ) (x 2 3 4 5 6)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 2, 3, 4, 5, 6 };
+         blaze::SmallArray<int,5UL> vec{ 1, 2, 3, 4, 5, 6 };
 
          auto pos = vec.erase( vec.begin() );
 
@@ -2948,11 +2948,11 @@ void ClassTest::testErase()
          }
       }
 
-      // Erasing from the middle of a small vector
+      // Erasing from the middle of a small array
       {
-         test_ = "SmallVector::erase( Iterator ) (1 2 x 4 5 6)";
+         test_ = "SmallArray::erase( Iterator ) (1 2 x 4 5 6)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 2, 3, 4, 5, 6 };
+         blaze::SmallArray<int,5UL> vec{ 1, 2, 3, 4, 5, 6 };
 
          auto pos = vec.erase( vec.begin()+2UL );
 
@@ -2980,11 +2980,11 @@ void ClassTest::testErase()
          }
       }
 
-      // Erasing from the end of a small vector
+      // Erasing from the end of a small array
       {
-         test_ = "SmallVector::erase( Iterator ) (1 2 3 4 5 x)";
+         test_ = "SmallArray::erase( Iterator ) (1 2 3 4 5 x)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 2, 3, 4, 5, 6 };
+         blaze::SmallArray<int,5UL> vec{ 1, 2, 3, 4, 5, 6 };
 
          auto pos = vec.erase( vec.begin()+5UL );
 
@@ -3013,11 +3013,11 @@ void ClassTest::testErase()
    }
 
    {
-      // Erasing from the beginning of a small vector
+      // Erasing from the beginning of a small array
       {
-         test_ = "SmallVector::erase( Iterator, Iterator ) (x x 3 4)";
+         test_ = "SmallArray::erase( Iterator, Iterator ) (x x 3 4)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 2, 3, 4 };
+         blaze::SmallArray<int,5UL> vec{ 1, 2, 3, 4 };
 
          auto pos = vec.erase( vec.begin(), vec.begin()+2UL );
 
@@ -3045,11 +3045,11 @@ void ClassTest::testErase()
          }
       }
 
-      // Erasing from the middle of a small vector
+      // Erasing from the middle of a small array
       {
-         test_ = "SmallVector::erase( Iterator, Iterator ) (1 x x 4)";
+         test_ = "SmallArray::erase( Iterator, Iterator ) (1 x x 4)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 2, 3, 4 };
+         blaze::SmallArray<int,5UL> vec{ 1, 2, 3, 4 };
 
          auto pos = vec.erase( vec.begin()+1UL, vec.begin()+3UL );
 
@@ -3077,11 +3077,11 @@ void ClassTest::testErase()
          }
       }
 
-      // Erasing from the end of a small vector
+      // Erasing from the end of a small array
       {
-         test_ = "SmallVector::erase( Iterator, Iterator ) (1 2 x x)";
+         test_ = "SmallArray::erase( Iterator, Iterator ) (1 2 x x)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 2, 3, 4 };
+         blaze::SmallArray<int,5UL> vec{ 1, 2, 3, 4 };
 
          auto pos = vec.erase( vec.begin()+2UL, vec.begin()+4UL );
 
@@ -3108,11 +3108,11 @@ void ClassTest::testErase()
          }
       }
 
-      // Erasing from the beginning of a small vector
+      // Erasing from the beginning of a small array
       {
-         test_ = "SmallVector::erase( Iterator, Iterator ) (x x 3 4 5 6)";
+         test_ = "SmallArray::erase( Iterator, Iterator ) (x x 3 4 5 6)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 2, 3, 4, 5, 6 };
+         blaze::SmallArray<int,5UL> vec{ 1, 2, 3, 4, 5, 6 };
 
          auto pos = vec.erase( vec.begin(), vec.begin()+2UL );
 
@@ -3140,11 +3140,11 @@ void ClassTest::testErase()
          }
       }
 
-      // Erasing from the middle of a small vector
+      // Erasing from the middle of a small array
       {
-         test_ = "SmallVector::erase( Iterator, Iterator ) (1 2 x x 5 6)";
+         test_ = "SmallArray::erase( Iterator, Iterator ) (1 2 x x 5 6)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 2, 3, 4, 5, 6 };
+         blaze::SmallArray<int,5UL> vec{ 1, 2, 3, 4, 5, 6 };
 
          auto pos = vec.erase( vec.begin()+2UL, vec.begin()+4UL );
 
@@ -3172,11 +3172,11 @@ void ClassTest::testErase()
          }
       }
 
-      // Erasing from the end of a small vector
+      // Erasing from the end of a small array
       {
-         test_ = "SmallVector::erase( Iterator, Iterator ) (1 2 3 4 x x)";
+         test_ = "SmallArray::erase( Iterator, Iterator ) (1 2 3 4 x x)";
 
-         blaze::SmallVector<int,5UL> vec{ 1, 2, 3, 4, 5, 6 };
+         blaze::SmallArray<int,5UL> vec{ 1, 2, 3, 4, 5, 6 };
 
          auto pos = vec.erase( vec.begin()+4UL, vec.begin()+6UL );
 
@@ -3209,21 +3209,21 @@ void ClassTest::testErase()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c swap() functionality of the SmallVector class template.
+/*!\brief Test of the \c swap() functionality of the SmallArray class template.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c swap() function of the SmallVector class template.
+// This function performs a test of the \c swap() function of the SmallArray class template.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void ClassTest::testSwap()
 {
    {
-      test_ = "SmallVector swap (size 3 and size 4)";
+      test_ = "SmallArray swap (size 3 and size 4)";
 
-      blaze::SmallVector<int,5UL> vec1{ 1, 2, 3 };
-      blaze::SmallVector<int,5UL> vec2{ 4, 3, 2, 1 };
+      blaze::SmallArray<int,5UL> vec1{ 1, 2, 3 };
+      blaze::SmallArray<int,5UL> vec2{ 4, 3, 2, 1 };
 
       swap( vec1, vec2 );
 
@@ -3233,7 +3233,7 @@ void ClassTest::testSwap()
       if( vec1[0] != 4 || vec1[1] != 3 || vec1[2] != 2 || vec1[3] != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the first vector failed\n"
+             << " Error: Swapping the first array failed\n"
              << " Details:\n"
              << "   Result:\n" << vec1 << "\n"
              << "   Expected result:\n( 4 3 2 1 )\n";
@@ -3246,7 +3246,7 @@ void ClassTest::testSwap()
       if( vec2[0] != 1 || vec2[1] != 2 || vec2[2] != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the second vector failed\n"
+             << " Error: Swapping the second array failed\n"
              << " Details:\n"
              << "   Result:\n" << vec1 << "\n"
              << "   Expected result:\n( 1 2 3 )\n";
@@ -3255,10 +3255,10 @@ void ClassTest::testSwap()
    }
 
    {
-      test_ = "SmallVector swap (size 3 and size 7)";
+      test_ = "SmallArray swap (size 3 and size 7)";
 
-      blaze::SmallVector<int,5UL> vec1{ 1, 2, 3 };
-      blaze::SmallVector<int,5UL> vec2{ 7, 6, 5, 4, 3, 2, 1 };
+      blaze::SmallArray<int,5UL> vec1{ 1, 2, 3 };
+      blaze::SmallArray<int,5UL> vec2{ 7, 6, 5, 4, 3, 2, 1 };
 
       swap( vec1, vec2 );
 
@@ -3269,7 +3269,7 @@ void ClassTest::testSwap()
           vec1[4] != 3 || vec1[5] != 2 || vec1[6] != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the first vector failed\n"
+             << " Error: Swapping the first array failed\n"
              << " Details:\n"
              << "   Result:\n" << vec1 << "\n"
              << "   Expected result:\n( 7 6 5 4 3 2 1 )\n";
@@ -3282,7 +3282,7 @@ void ClassTest::testSwap()
       if( vec2[0] != 1 || vec2[1] != 2 || vec2[2] != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the second vector failed\n"
+             << " Error: Swapping the second array failed\n"
              << " Details:\n"
              << "   Result:\n" << vec1 << "\n"
              << "   Expected result:\n( 1 2 3 )\n";
@@ -3291,10 +3291,10 @@ void ClassTest::testSwap()
    }
 
    {
-      test_ = "SmallVector swap (size 8 and size 4)";
+      test_ = "SmallArray swap (size 8 and size 4)";
 
-      blaze::SmallVector<int,5UL> vec1{ 1, 2, 3, 4, 5, 6, 7, 8 };
-      blaze::SmallVector<int,5UL> vec2{ 4, 3, 2, 1 };
+      blaze::SmallArray<int,5UL> vec1{ 1, 2, 3, 4, 5, 6, 7, 8 };
+      blaze::SmallArray<int,5UL> vec2{ 4, 3, 2, 1 };
 
       swap( vec1, vec2 );
 
@@ -3304,7 +3304,7 @@ void ClassTest::testSwap()
       if( vec1[0] != 4 || vec1[1] != 3 || vec1[2] != 2 || vec1[3] != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the first vector failed\n"
+             << " Error: Swapping the first array failed\n"
              << " Details:\n"
              << "   Result:\n" << vec1 << "\n"
              << "   Expected result:\n( 4 3 2 1 )\n";
@@ -3318,7 +3318,7 @@ void ClassTest::testSwap()
           vec2[4] != 5 || vec2[5] != 6 || vec2[6] != 7 || vec2[7] != 8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the second vector failed\n"
+             << " Error: Swapping the second array failed\n"
              << " Details:\n"
              << "   Result:\n" << vec1 << "\n"
              << "   Expected result:\n( 1 2 3 4 5 6 7 8 )\n";
@@ -3327,10 +3327,10 @@ void ClassTest::testSwap()
    }
 
    {
-      test_ = "SmallVector swap (size 8 and size 7)";
+      test_ = "SmallArray swap (size 8 and size 7)";
 
-      blaze::SmallVector<int,5UL> vec1{ 1, 2, 3, 4, 5, 6, 7, 8 };
-      blaze::SmallVector<int,5UL> vec2{ 7, 6, 5, 4, 3, 2, 1 };
+      blaze::SmallArray<int,5UL> vec1{ 1, 2, 3, 4, 5, 6, 7, 8 };
+      blaze::SmallArray<int,5UL> vec2{ 7, 6, 5, 4, 3, 2, 1 };
 
       swap( vec1, vec2 );
 
@@ -3341,7 +3341,7 @@ void ClassTest::testSwap()
           vec1[4] != 3 || vec1[5] != 2 || vec1[6] != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the first vector failed\n"
+             << " Error: Swapping the first array failed\n"
              << " Details:\n"
              << "   Result:\n" << vec1 << "\n"
              << "   Expected result:\n( 7 6 5 4 3 2 1 )\n";
@@ -3355,7 +3355,7 @@ void ClassTest::testSwap()
           vec2[4] != 5 || vec2[5] != 6 || vec2[6] != 7 || vec2[7] != 8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Swapping the second vector failed\n"
+             << " Error: Swapping the second array failed\n"
              << " Details:\n"
              << "   Result:\n" << vec1 << "\n"
              << "   Expected result:\n( 1 2 3 4 5 6 7 8 )\n";
@@ -3365,7 +3365,7 @@ void ClassTest::testSwap()
 }
 //*************************************************************************************************
 
-} // namespace smallvector
+} // namespace smallarray
 
 } // namespace utiltest
 
@@ -3383,14 +3383,14 @@ void ClassTest::testSwap()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running SmallVector class test..." << std::endl;
+   std::cout << "   Running SmallArray class test..." << std::endl;
 
    try
    {
-      RUN_SMALLVECTOR_CLASS_TEST;
+      RUN_SMALLARRAY_CLASS_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during SmallVector class test:\n"
+      std::cerr << "\n\n ERROR DETECTED during SmallArray class test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }
