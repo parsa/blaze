@@ -32,14 +32,32 @@
 #==================================================================================================
 
 
+# Including the compiler and library settings
+ifneq ($(MAKECMDGOALS),reset)
+ifneq ($(MAKECMDGOALS),clean)
+-include ../../Makeconfig
+endif
+endif
+
+
+# Setting the source, object and dependency files
+SRC = $(wildcard ./*.cpp)
+DEP = $(SRC:.cpp=.d)
+OBJ = $(SRC:.cpp=.o)
+BIN = $(SRC:.cpp=)
+
+
 # Build rules
 default: all
 
-all: addtrait crosstrait divtrait maptrait multtrait schurtrait subtrait
+all: $(BIN) addtrait crosstrait divtrait maptrait multtrait schurtrait subtrait
 
 essential: all
 
 single: all
+
+IncludeTest: IncludeTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 
 # Internal rules
@@ -81,6 +99,7 @@ subtrait:
 
 # Cleanup
 reset:
+	@$(RM) $(OBJ) $(BIN)
 	@$(MAKE) --no-print-directory -C ./addtrait reset
 	@$(MAKE) --no-print-directory -C ./crosstrait reset
 	@$(MAKE) --no-print-directory -C ./divtrait reset
@@ -90,6 +109,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./subtrait reset
 
 clean:
+	@$(RM) $(OBJ) $(BIN) $(DEP)
 	@$(MAKE) --no-print-directory -C ./addtrait clean
 	@$(MAKE) --no-print-directory -C ./crosstrait clean
 	@$(MAKE) --no-print-directory -C ./divtrait clean
