@@ -82,21 +82,28 @@ class ValueIndexPair
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
+   /*!\name Constructors */
+   //@{
    inline ValueIndexPair();
    inline ValueIndexPair( const Type& v, size_t i );
-   // No explicitly declared copy constructor.
-   // No explicitly declared move constructor.
+
+   ValueIndexPair( const ValueIndexPair& ) = default;
+   ValueIndexPair( ValueIndexPair&& ) = default;
+   //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~ValueIndexPair() = default;
+   //@}
    //**********************************************************************************************
 
-   //**Operators***********************************************************************************
-   /*!\name Operators */
+   //**Assignment operators************************************************************************
+   /*!\name Assignment operators */
    //@{
-   // No explicitly declared copy assignment operator.
-   // No explicitly declared move assignment operator.
+   ValueIndexPair& operator=( const ValueIndexPair& ) = default;
+   ValueIndexPair& operator=( ValueIndexPair&& ) = default;
 
    template< typename Other >
    inline auto operator=( const Other& rhs )

@@ -235,12 +235,16 @@ class InitializerMatrix
    //@{
    explicit inline InitializerMatrix( initializer_list< initializer_list<Type> > list ) noexcept;
    explicit inline InitializerMatrix( initializer_list< initializer_list<Type> > list, size_t n );
-   // No explicitly declared copy constructor.
+
+   InitializerMatrix( const InitializerMatrix& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~InitializerMatrix() = default;
+   //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************
@@ -260,7 +264,7 @@ class InitializerMatrix
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   InitializerMatrix( const InitializerMatrix& ) = delete;
+   InitializerMatrix& operator=( const InitializerMatrix& ) = delete;
    //@}
    //**********************************************************************************************
 

@@ -85,20 +85,24 @@ class DenseIterator
    template< typename Other, bool AF2 >
    inline DenseIterator( const DenseIterator<Other,AF2>& it ) noexcept;
 
-   // No explicitly declared copy constructor.
+   DenseIterator( const DenseIterator& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~DenseIterator() = default;
+   //@}
    //**********************************************************************************************
 
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   // No explicitly declared copy assignment operator.
    inline DenseIterator& operator+=( ptrdiff_t inc ) noexcept;
    inline DenseIterator& operator-=( ptrdiff_t inc ) noexcept;
+
+   DenseIterator& operator=( const DenseIterator& ) = default;
    //@}
    //**********************************************************************************************
 

@@ -375,13 +375,16 @@ class IdentityMatrix
    template< typename MT, bool SO2 >
    explicit inline IdentityMatrix( const Matrix<MT,SO2>& m );
 
-   // No explicitly declared copy constructor.
-   // No explicitly declared move constructor.
+   IdentityMatrix( const IdentityMatrix& ) = default;
+   IdentityMatrix( IdentityMatrix&& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~IdentityMatrix() = default;
+   //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************
@@ -402,8 +405,8 @@ class IdentityMatrix
    template< typename MT, bool SO2 >
    inline IdentityMatrix& operator=( const Matrix<MT,SO2>& rhs );
 
-   // No explicitly declared copy assignment operator.
-   // No explicitly declared move assignment operator.
+   IdentityMatrix& operator=( const IdentityMatrix& ) = default;
+   IdentityMatrix& operator=( IdentityMatrix&& ) = default;
    //@}
    //**********************************************************************************************
 

@@ -231,12 +231,16 @@ class InitializerVector
    //@{
    explicit inline InitializerVector( initializer_list<Type> list ) noexcept;
    explicit inline InitializerVector( initializer_list<Type> list, size_t n );
-   // No explicitly declared copy constructor.
+
+   InitializerVector( const InitializerVector& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~InitializerVector() = default;
+   //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************
@@ -255,7 +259,7 @@ class InitializerVector
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   InitializerVector( const InitializerVector& ) = delete;
+   InitializerVector& operator=( const InitializerVector& ) = delete;
    //@}
    //**********************************************************************************************
 

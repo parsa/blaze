@@ -80,12 +80,25 @@ class SharedValue
    //@{
    explicit inline SharedValue();
    explicit inline SharedValue( const Type& value );
-   // No explicitly declared copy constructor.
+
+   SharedValue( const SharedValue& ) = default;
+   SharedValue( SharedValue&& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~SharedValue() = default;
+   //@}
+   //**********************************************************************************************
+
+   //**Assignment operators************************************************************************
+   /*!\name Assignment operators */
+   //@{
+   SharedValue& operator=( const SharedValue& ) = default;
+   SharedValue& operator=( SharedValue&& ) = default;
+   //@}
    //**********************************************************************************************
 
    //**Access operators****************************************************************************

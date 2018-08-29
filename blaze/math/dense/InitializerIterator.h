@@ -76,20 +76,25 @@ class InitializerIterator
    //@{
    explicit inline InitializerIterator() noexcept;
    explicit inline InitializerIterator( size_t index, initializer_list<Type> list ) noexcept;
-   // No explicitly declared copy constructor.
+
+   InitializerIterator( const InitializerIterator& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~InitializerIterator() = default;
+   //@}
    //**********************************************************************************************
 
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   // No explicitly declared copy assignment operator.
    inline InitializerIterator& operator+=( ptrdiff_t inc ) noexcept;
    inline InitializerIterator& operator-=( ptrdiff_t dec ) noexcept;
+
+   InitializerIterator& operator=( const InitializerIterator& ) = default;
    //@}
    //**********************************************************************************************
 
