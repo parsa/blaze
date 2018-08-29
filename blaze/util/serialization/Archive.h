@@ -43,7 +43,6 @@
 #include <memory>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/NonCopyable.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 
@@ -139,7 +138,6 @@ namespace blaze {
 */
 template< typename Stream >  // Type of the bound stream
 class Archive
-   : private NonCopyable
 {
  public:
    //**Constructors********************************************************************************
@@ -149,11 +147,25 @@ class Archive
    explicit inline Archive( Args&&... args );
 
    explicit inline Archive( Stream& stream );
+
+   Archive( const Archive& ) = delete;
+   Archive( Archive&& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~Archive() = default;
+   //@}
+   //**********************************************************************************************
+
+   //**Assignment operators************************************************************************
+   /*!\name Assignment operators */
+   //@{
+   Archive& operator=( const Archive& ) = delete;
+   Archive& operator=( Archive&& ) = default;
+   //@}
    //**********************************************************************************************
 
    //**Operators***********************************************************************************
@@ -204,7 +216,6 @@ class Archive
    //**********************************************************************************************
 
  private:
-
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{

@@ -114,11 +114,17 @@ class AlignedArray
 
    template< typename... Ts >
    explicit inline constexpr AlignedArray( const Ts&... args );
+
+   AlignedArray( const AlignedArray& ) = default;
+   AlignedArray( AlignedArray&& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~AlignedArray() = default;
+   //@}
    //**********************************************************************************************
 
    //**Conversion operators************************************************************************
@@ -144,6 +150,14 @@ class AlignedArray
    inline           Iterator       end   () noexcept;
    inline constexpr ConstIterator  end   () const noexcept;
    inline constexpr ConstIterator  cend  () const noexcept;
+   //@}
+   //**********************************************************************************************
+
+   //**Assignment operators************************************************************************
+   /*!\name Assignment operators */
+   //@{
+   AlignedArray& operator=( const AlignedArray& ) = default;
+   AlignedArray& operator=( AlignedArray&& ) = default;
    //@}
    //**********************************************************************************************
 

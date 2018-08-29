@@ -67,24 +67,18 @@ class UnsignedValue
    /*!\name Constructors */
    //@{
    explicit inline UnsignedValue( T value=0 );
-   // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
 
-   //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
-   //**********************************************************************************************
-
-   //**Assignment operator*************************************************************************
-   /*!\name Assignment operator */
+   //**Assignment operators************************************************************************
+   /*!\name Assignment operators */
    //@{
    inline UnsignedValue& operator=( T value );
-   // No explicitly declared copy assignment operator.
    //@}
    //**********************************************************************************************
 
-   //**Conversion operator*************************************************************************
-   /*!\name Conversion operator */
+   //**Conversion operators************************************************************************
+   /*!\name Conversion operators */
    //@{
    inline operator T() const;
    //@}
@@ -118,7 +112,7 @@ class UnsignedValue
 
 //=================================================================================================
 //
-//  CONSTRUCTOR
+//  CONSTRUCTORS
 //
 //=================================================================================================
 
