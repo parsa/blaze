@@ -159,12 +159,16 @@ class Column<MT,true,false,SF,CCAs...>
    //@{
    template< typename... RCAs >
    explicit inline Column( MT& matrix, RCAs... args );
-   // No explicitly declared copy constructor.
+
+   Column( const Column& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~Column() = default;
+   //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************
@@ -2440,12 +2444,16 @@ class Column<MT,false,false,false,CCAs...>
    //@{
    template< typename... RCAs >
    explicit inline Column( MT& matrix, RCAs... args );
-   // No explicitly declared copy constructor.
+
+   Column( const Column& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~Column() = default;
+   //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************
@@ -4116,12 +4124,16 @@ class Column<MT,false,false,true,CCAs...>
    //@{
    template< typename... RCAs >
    explicit inline Column( MT& matrix, RCAs... args );
-   // No explicitly declared copy constructor.
+
+   Column( const Column& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~Column() = default;
+   //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************

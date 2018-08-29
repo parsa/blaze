@@ -187,13 +187,16 @@ class Columns<MT,true,true,SF,CCAs...>
    template< typename... RCAs >
    explicit inline Columns( MT& matrix, RCAs... args );
 
-   inline Columns( const Columns& ) = default;
-   inline Columns( Columns&& ) = default;
+   Columns( const Columns& ) = default;
+   Columns( Columns&& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~Columns() = default;
+   //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************
@@ -3494,13 +3497,16 @@ class Columns<MT,false,true,false,CCAs...>
    template< typename... RCAs >
    explicit inline Columns( MT& matrix, RCAs... args );
 
-   inline Columns( const Columns& ) = default;
-   inline Columns( Columns&& ) = default;
+   Columns( const Columns& ) = default;
+   Columns( Columns&& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~Columns() = default;
+   //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************
@@ -5891,13 +5897,16 @@ class Columns<MT,false,true,true,CCAs...>
    template< typename... RCAs >
    explicit inline Columns( MT& matrix, RCAs... args );
 
-   inline Columns( const Columns& ) = default;
-   inline Columns( Columns&& ) = default;
+   Columns( const Columns& ) = default;
+   Columns( Columns&& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~Columns() = default;
+   //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************

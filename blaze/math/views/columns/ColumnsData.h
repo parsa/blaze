@@ -77,16 +77,23 @@ struct ColumnsData
    //@{
    template< typename... RCAs >
    explicit inline ColumnsData( RCAs... args ) noexcept;
-   // No explicitly declared copy constructor.
+
+   ColumnsData( const ColumnsData& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~ColumnsData() = default;
+   //@}
    //**********************************************************************************************
 
    //**Assignment operators************************************************************************
+   /*!\name Assignment operators */
+   //@{
    ColumnsData& operator=( const ColumnsData& ) = delete;
+   //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
@@ -212,17 +219,23 @@ struct ColumnsData<>
    template< typename T, typename... RCAs >
    explicit inline ColumnsData( const T* indices, size_t n, RCAs... args );
 
-   inline ColumnsData( const ColumnsData& ) = default;
-   inline ColumnsData( ColumnsData&& ) = default;
+   ColumnsData( const ColumnsData& ) = default;
+   ColumnsData( ColumnsData&& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~ColumnsData() = default;
+   //@}
    //**********************************************************************************************
 
    //**Assignment operators************************************************************************
+   /*!\name Assignment operators */
+   //@{
    ColumnsData& operator=( const ColumnsData& ) = delete;
+   //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************

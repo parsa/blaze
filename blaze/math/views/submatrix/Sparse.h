@@ -444,12 +444,16 @@ class Submatrix<MT,AF,false,false,CSAs...>
    //@{
    template< typename... RSAs >
    explicit inline Submatrix( MT& matrix, RSAs... args );
-   // No explicitly declared copy constructor.
+
+   Submatrix( const Submatrix& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~Submatrix() = default;
+   //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************
@@ -2892,12 +2896,16 @@ class Submatrix<MT,AF,true,false,CSAs...>
    //@{
    template< typename... RSAs >
    explicit inline Submatrix( MT& matrix, RSAs... args );
-   // No explicitly declared copy constructor.
+
+   Submatrix( const Submatrix& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~Submatrix() = default;
+   //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************

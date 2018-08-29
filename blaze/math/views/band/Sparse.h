@@ -476,12 +476,16 @@ class Band<MT,TF,false,false,CBAs...>
    //@{
    template< typename... RBAs >
    explicit inline Band( MT& matrix, RBAs... args );
-   // No explicitly declared copy constructor.
+
+   Band( const Band& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~Band() = default;
+   //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************

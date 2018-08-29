@@ -74,17 +74,20 @@ class NegativeAccuracy
    //**********************************************************************************************
 
  private:
-   //**Constructor*********************************************************************************
-   /*!\name Constructor */
+   //**Constructors********************************************************************************
+   /*!\name Constructors */
    //@{
    explicit inline constexpr NegativeAccuracy();
-   // No explicitly declared copy constructor.
+   NegativeAccuracy( const NegativeAccuracy& ) = default;
    //@}
    //**********************************************************************************************
 
  public:
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~NegativeAccuracy() = default;
+   //@}
    //**********************************************************************************************
 
    //**Unary plus/minus operators******************************************************************
@@ -103,15 +106,15 @@ class NegativeAccuracy
    //@}
    //**********************************************************************************************
 
- private:
    //**Forbidden operations************************************************************************
    /*!\name Forbidden operations */
    //@{
-   NegativeAccuracy& operator=( const NegativeAccuracy& );  //!< Copy assignment operator (private & undefined)
-   void* operator&() const;                                 //!< Address operator (private & undefined)
+   NegativeAccuracy& operator=( const NegativeAccuracy& ) = delete;
+   void* operator&() const = delete;
    //@}
    //**********************************************************************************************
 
+ private:
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    friend class Accuracy;
@@ -125,7 +128,7 @@ class NegativeAccuracy
 
 //=================================================================================================
 //
-//  CONSTRUCTOR
+//  CONSTRUCTORS
 //
 //=================================================================================================
 
@@ -502,16 +505,19 @@ class Accuracy
    using NegativeType = NegativeAccuracy<Accuracy>;  //!< The negated accuracy type.
    //**********************************************************************************************
 
-   //**Constructor*********************************************************************************
-   /*!\name Constructor */
+   //**Constructors********************************************************************************
+   /*!\name Constructors */
    //@{
    explicit inline constexpr Accuracy();
-   // No explicitly declared copy constructor.
+   Accuracy( const Accuracy& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~Accuracy() = default;
+   //@}
    //**********************************************************************************************
 
    //**Unary plus/minus operators******************************************************************
@@ -530,12 +536,11 @@ class Accuracy
    //@}
    //**********************************************************************************************
 
- private:
    //**Forbidden operations************************************************************************
    /*!\name Forbidden operations */
    //@{
-   Accuracy& operator=( const Accuracy& );  //!< Copy assignment operator (private & undefined)
-   void* operator&() const;                 //!< Address operator (private & undefined)
+   Accuracy& operator=( const Accuracy& ) = delete;
+   void* operator&() const = delete;
    //@}
    //**********************************************************************************************
 };
@@ -546,7 +551,7 @@ class Accuracy
 
 //=================================================================================================
 //
-//  CONSTRUCTOR
+//  CONSTRUCTORS
 //
 //=================================================================================================
 

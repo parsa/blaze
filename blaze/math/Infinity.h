@@ -93,17 +93,20 @@ class NegativeInfinity
    //**********************************************************************************************
 
  private:
-   //**Constructor*********************************************************************************
-   /*!\name Constructor */
+   //**Constructors********************************************************************************
+   /*!\name Constructors */
    //@{
    explicit inline constexpr NegativeInfinity();
-   // No explicitly declared copy constructor.
+   NegativeInfinity( const NegativeInfinity& ) = default;
    //@}
    //**********************************************************************************************
 
  public:
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~NegativeInfinity() = default;
+   //@}
    //**********************************************************************************************
 
    //**Conversion operators************************************************************************
@@ -132,15 +135,15 @@ class NegativeInfinity
    //@}
    //**********************************************************************************************
 
- private:
    //**Forbidden operations************************************************************************
    /*!\name Forbidden operations */
    //@{
-   NegativeInfinity& operator=( const NegativeInfinity& ninf );  //!< Copy assignment operator (private & undefined)
-   void* operator&() const;                                      //!< Address operator (private & undefined)
+   NegativeInfinity& operator=( const NegativeInfinity& ) = delete;
+   void* operator&() const = delete;
    //@}
    //**********************************************************************************************
 
+ private:
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    friend class Infinity;
@@ -154,7 +157,7 @@ class NegativeInfinity
 
 //=================================================================================================
 //
-//  CONSTRUCTOR
+//  CONSTRUCTORS
 //
 //=================================================================================================
 
@@ -529,15 +532,19 @@ class Infinity
    using NegativeType = NegativeInfinity<Infinity>;  //!< The negative infinity type.
    //**********************************************************************************************
 
-   //**Constructor*********************************************************************************
-   /*!\name Constructor */
+   //**Constructors********************************************************************************
+   /*!\name Constructors */
    //@{
    explicit inline constexpr Infinity();
+   Infinity( const Infinity& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~Infinity() = default;
+   //@}
    //**********************************************************************************************
 
    //**Conversion operators************************************************************************
@@ -579,12 +586,11 @@ class Infinity
    //@}
    //**********************************************************************************************
 
- private:
    //**Forbidden operations************************************************************************
    /*!\name Forbidden operations */
    //@{
-   Infinity& operator=( const Infinity& inf );  //!< Copy assignment operator (private & undefined)
-   void* operator&() const;                     //!< Address operator (private & undefined)
+   Infinity& operator=( const Infinity& ) = delete;
+   void* operator&() const = delete;
    //@}
    //**********************************************************************************************
 };
@@ -595,7 +601,7 @@ class Infinity
 
 //=================================================================================================
 //
-//  CONSTRUCTOR
+//  CONSTRUCTORS
 //
 //=================================================================================================
 

@@ -74,17 +74,20 @@ class NegativeEpsilon
    //**********************************************************************************************
 
  private:
-   //**Constructor*********************************************************************************
-   /*!\name Constructor */
+   //**Constructors********************************************************************************
+   /*!\name Constructors */
    //@{
    explicit inline constexpr NegativeEpsilon();
-   // No explicitly declared copy constructor.
+   NegativeEpsilon( const NegativeEpsilon& ) = default;
    //@}
    //**********************************************************************************************
 
  public:
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~NegativeEpsilon() = default;
+   //@}
    //**********************************************************************************************
 
    //**Unary plus/minus operators******************************************************************
@@ -103,15 +106,15 @@ class NegativeEpsilon
    //@}
    //**********************************************************************************************
 
- private:
    //**Forbidden operations************************************************************************
    /*!\name Forbidden operations */
    //@{
-   NegativeEpsilon& operator=( const NegativeEpsilon& );  //!< Copy assignment operator (private & undefined)
-   void* operator&() const;                               //!< Address operator (private & undefined)
+   NegativeEpsilon& operator=( const NegativeEpsilon& ) = delete;
+   void* operator&() const = delete;
    //@}
    //**********************************************************************************************
 
+ private:
    //**Friend declarations*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    friend class Epsilon;
@@ -125,7 +128,7 @@ class NegativeEpsilon
 
 //=================================================================================================
 //
-//  CONSTRUCTOR
+//  CONSTRUCTORS
 //
 //=================================================================================================
 
@@ -501,16 +504,19 @@ class Epsilon
    using NegativeType = NegativeEpsilon<Epsilon>;  //!< The negative epsilon type.
    //**********************************************************************************************
 
-   //**Constructor*********************************************************************************
-   /*!\name Constructor */
+   //**Constructors********************************************************************************
+   /*!\name Constructors */
    //@{
    explicit inline constexpr Epsilon();
-   // No explicitly declared copy constructor.
+   Epsilon( const Epsilon& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~Epsilon() = default;
+   //@}
    //**********************************************************************************************
 
    //**Unary plus/minus operators******************************************************************
@@ -529,12 +535,11 @@ class Epsilon
    //@}
    //**********************************************************************************************
 
- private:
    //**Forbidden operations************************************************************************
    /*!\name Forbidden operations */
    //@{
-   Epsilon& operator=( const Epsilon& );  //!< Copy assignment operator (private & undefined)
-   void* operator&() const;               //!< Address operator (private & undefined)
+   Epsilon& operator=( const Epsilon& ) = delete;
+   void* operator&() const = delete;
    //@}
    //**********************************************************************************************
 };
@@ -545,7 +550,7 @@ class Epsilon
 
 //=================================================================================================
 //
-//  CONSTRUCTOR
+//  CONSTRUCTORS
 //
 //=================================================================================================
 

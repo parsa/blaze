@@ -91,16 +91,23 @@ struct RowData<>
    //@{
    template< typename... RRAs >
    explicit inline RowData( size_t index, RRAs... args );
-   // No explicitly declared copy constructor.
+
+   RowData( const RowData& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~RowData() = default;
+   //@}
    //**********************************************************************************************
 
    //**Assignment operators************************************************************************
+   /*!\name Assignment operators */
+   //@{
    RowData& operator=( const RowData& ) = delete;
+   //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
@@ -178,16 +185,23 @@ struct RowData<Index>
    //@{
    template< typename... RRAs >
    explicit inline RowData( RRAs... args );
-   // No explicitly declared copy constructor.
+
+   RowData( const RowData& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~RowData() = default;
+   //@}
    //**********************************************************************************************
 
    //**Assignment operators************************************************************************
+   /*!\name Assignment operators */
+   //@{
    RowData& operator=( const RowData& ) = delete;
+   //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************

@@ -91,16 +91,23 @@ struct BandData<>
    //@{
    template< typename... RBAs >
    explicit inline BandData( ptrdiff_t index, RBAs... args );
-   // No explicitly declared copy constructor.
+
+   BandData( const BandData& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~BandData() = default;
+   //@}
    //**********************************************************************************************
 
    //**Assignment operators************************************************************************
+   /*!\name Assignment operators */
+   //@{
    BandData& operator=( const BandData& ) = delete;
+   //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
@@ -212,16 +219,23 @@ struct BandData<I>
    //@{
    template< typename... RBAs >
    explicit inline BandData( RBAs... args );
-   // No explicitly declared copy constructor.
+
+   BandData( const BandData& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~BandData() = default;
+   //@}
    //**********************************************************************************************
 
    //**Assignment operators************************************************************************
+   /*!\name Assignment operators */
+   //@{
    BandData& operator=( const BandData& ) = delete;
+   //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************

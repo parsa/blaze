@@ -77,16 +77,23 @@ struct RowsData
    //@{
    template< typename... RRAs >
    explicit inline RowsData( RRAs... args ) noexcept;
-   // No explicitly declared copy constructor.
+
+   RowsData( const RowsData& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~RowsData() = default;
+   //@}
    //**********************************************************************************************
 
    //**Assignment operators************************************************************************
+   /*!\name Assignment operators */
+   //@{
    RowsData& operator=( const RowsData& ) = delete;
+   //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
@@ -212,17 +219,23 @@ struct RowsData<>
    template< typename T, typename... RRAs >
    explicit inline RowsData( const T* indices, size_t n, RRAs... args );
 
-   inline RowsData( const RowsData& ) = default;
-   inline RowsData( RowsData&& ) = default;
+   RowsData( const RowsData& ) = default;
+   RowsData( RowsData&& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~RowsData() = default;
+   //@}
    //**********************************************************************************************
 
    //**Assignment operators************************************************************************
+   /*!\name Assignment operators */
+   //@{
    RowsData& operator=( const RowsData& ) = delete;
+   //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************

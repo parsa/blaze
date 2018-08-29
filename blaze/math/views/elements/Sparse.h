@@ -443,13 +443,16 @@ class Elements<VT,TF,false,CEAs...>
    template< typename... REAs >
    explicit inline Elements( VT& vector, REAs... args );
 
-   inline Elements( const Elements& ) = default;
-   inline Elements( Elements&& ) = default;
+   Elements( const Elements& ) = default;
+   Elements( Elements&& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~Elements() = default;
+   //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************

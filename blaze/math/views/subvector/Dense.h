@@ -576,12 +576,16 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
    //@{
    template< typename... RSAs >
    explicit inline Subvector( VT& vector, RSAs... args );
-   // No explicitly declared copy constructor.
+
+   Subvector( const Subvector& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~Subvector() = default;
+   //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************
@@ -2707,12 +2711,16 @@ class Subvector<VT,aligned,TF,true,CSAs...>
    //@{
    template< typename... RSAs >
    explicit inline Subvector( VT& vector, RSAs... args );
-   // No explicitly declared copy constructor.
+
+   Subvector( const Subvector& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~Subvector() = default;
+   //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************

@@ -178,12 +178,16 @@ class Row<MT,true,true,SF,CRAs...>
    //@{
    template< typename... RRAs >
    explicit inline Row( MT& matrix, RRAs... args );
-   // No explicitly declared copy constructor.
+
+   Row( const Row& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~Row() = default;
+   //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************
@@ -2631,12 +2635,16 @@ class Row<MT,false,true,false,CRAs...>
    //@{
    template< typename... RRAs >
    explicit inline Row( MT& matrix, RRAs... args );
-   // No explicitly declared copy constructor.
+
+   Row( const Row& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~Row() = default;
+   //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************
@@ -4192,12 +4200,16 @@ class Row<MT,false,true,true,CRAs...>
    //@{
    template< typename... RRAs >
    explicit inline Row( MT& matrix, RRAs... args );
-   // No explicitly declared copy constructor.
+
+   Row( const Row& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~Row() = default;
+   //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************

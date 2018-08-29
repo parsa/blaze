@@ -160,13 +160,16 @@ class Rows<MT,true,false,SF,CRAs...>
    template< typename... RRAs >
    explicit inline Rows( MT& matrix, RRAs... args );
 
-   inline Rows( const Rows& ) = default;
-   inline Rows( Rows&& ) = default;
+   Rows( const Rows& ) = default;
+   Rows( Rows&& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~Rows() = default;
+   //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************
@@ -2604,13 +2607,16 @@ class Rows<MT,false,false,false,CRAs...>
    template< typename... RRAs >
    explicit inline Rows( MT& matrix, RRAs... args );
 
-   inline Rows( const Rows& ) = default;
-   inline Rows( Rows&& ) = default;
+   Rows( const Rows& ) = default;
+   Rows( Rows&& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~Rows() = default;
+   //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************
@@ -4719,13 +4725,16 @@ class Rows<MT,false,false,true,CRAs...>
    template< typename... RRAs >
    explicit inline Rows( MT& matrix, RRAs... args );
 
-   inline Rows( const Rows& ) = default;
-   inline Rows( Rows&& ) = default;
+   Rows( const Rows& ) = default;
+   Rows( Rows&& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~Rows() = default;
+   //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************

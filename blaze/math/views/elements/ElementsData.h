@@ -83,16 +83,23 @@ struct ElementsData
    //@{
    template< typename... REAs >
    explicit inline ElementsData( REAs... args ) noexcept;
-   // No explicitly declared copy constructor.
+
+   ElementsData( const ElementsData& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~ElementsData() = default;
+   //@}
    //**********************************************************************************************
 
    //**Assignment operators************************************************************************
+   /*!\name Assignment operators */
+   //@{
    ElementsData& operator=( const ElementsData& ) = delete;
+   //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
@@ -218,17 +225,23 @@ struct ElementsData<>
    template< typename T, typename... REAs >
    explicit inline ElementsData( const T* indices, size_t n, REAs... args );
 
-   inline ElementsData( const ElementsData& ) = default;
-   inline ElementsData( ElementsData&& ) = default;
+   ElementsData( const ElementsData& ) = default;
+   ElementsData( ElementsData&& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
-   // No explicitly declared destructor.
+   /*!\name Destructor */
+   //@{
+   ~ElementsData() = default;
+   //@}
    //**********************************************************************************************
 
    //**Assignment operators************************************************************************
+   /*!\name Assignment operators */
+   //@{
    ElementsData& operator=( const ElementsData& ) = delete;
+   //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
