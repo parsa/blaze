@@ -62,10 +62,15 @@ endif()
 # Configure LAPACK
 #==================================================================================================
 
-find_package(LAPACK REQUIRED)
-target_link_libraries(blaze INTERFACE $<BUILD_INTERFACE:${LAPACK_LIBRARIES}>)
-target_compile_options(blaze INTERFACE $<BUILD_INTERFACE:${LAPACK_LINKER_FLAGS}>)
+# Strictly speaking, LAPACK is only needed during runtime. However, this check here in combination with making LAPACK REQUIRED
+# makes sure that packagers don't accidently forget the runtime dependency on LAPACK.
+option(WITH_LAPACK "If enabled, checks for the presence of LAPACK during configuration. Disable if you plan on not using LAPACK during runtime." ON)
 
+if(WITH_LAPACK)
+    find_package(LAPACK REQUIRED)
+    target_link_libraries(blaze INTERFACE $<BUILD_INTERFACE:${LAPACK_LIBRARIES}>)
+    target_compile_options(blaze INTERFACE $<BUILD_INTERFACE:${LAPACK_LINKER_FLAGS}>)
+endif()
 
 #==================================================================================================
 # Configure cache size
