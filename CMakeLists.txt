@@ -371,8 +371,8 @@ write_basic_package_version_file(
    COMPATIBILITY SameMajorVersion
    )
 
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/blaze DESTINATION include)
 install(DIRECTORY blaze DESTINATION include)
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/blaze DESTINATION include)
 install(TARGETS blaze EXPORT blazeTargets)
 
 configure_file(
