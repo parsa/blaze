@@ -919,7 +919,7 @@ class DMatDeclSymExpr
 */
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
-        , typename = DisableIf_t< IsSymmetric_v<MT> || IsUniTriangular_v<MT> > >
+        , DisableIf_t< IsSymmetric_v<MT> || IsUniTriangular_v<MT> >* = nullptr >
 inline const DMatDeclSymExpr<MT,SO> declsym_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -945,7 +945,7 @@ inline const DMatDeclSymExpr<MT,SO> declsym_backend( const DenseMatrix<MT,SO>& d
 */
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
-        , typename = EnableIf_t< !IsSymmetric_v<MT> && IsUniTriangular_v<MT> > >
+        , EnableIf_t< !IsSymmetric_v<MT> && IsUniTriangular_v<MT> >* = nullptr >
 inline const IdentityMatrix<ElementType_t<MT>,SO> declsym_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -971,7 +971,7 @@ inline const IdentityMatrix<ElementType_t<MT>,SO> declsym_backend( const DenseMa
 */
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
-        , typename = EnableIf_t< IsSymmetric_v<MT> > >
+        , EnableIf_t< IsSymmetric_v<MT> >* = nullptr >
 inline const MT& declsym_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1043,7 +1043,7 @@ inline decltype(auto) declsym( const DenseMatrix<MT,SO>& dm )
 template< typename MT  // Type of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO      // Storage order
-        , typename = DisableIf_t< IsSymmetric_v<MT> > >
+        , DisableIf_t< IsSymmetric_v<MT> >* = nullptr >
 inline decltype(auto) declsym( const DMatScalarMultExpr<MT,ST,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;

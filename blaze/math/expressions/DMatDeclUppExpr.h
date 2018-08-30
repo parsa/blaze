@@ -919,7 +919,7 @@ class DMatDeclUppExpr
 */
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
-        , typename = DisableIf_t< IsUpper_v<MT> || IsUniLower_v<MT> > >
+        , DisableIf_t< IsUpper_v<MT> || IsUniLower_v<MT> >* = nullptr >
 inline const DMatDeclUppExpr<MT,SO> declupp_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -945,7 +945,7 @@ inline const DMatDeclUppExpr<MT,SO> declupp_backend( const DenseMatrix<MT,SO>& d
 */
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
-        , typename = EnableIf_t< !IsUpper_v<MT> && IsUniLower_v<MT> > >
+        , EnableIf_t< !IsUpper_v<MT> && IsUniLower_v<MT> >* = nullptr >
 inline const IdentityMatrix<ElementType_t<MT>,SO> declupp_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -971,7 +971,7 @@ inline const IdentityMatrix<ElementType_t<MT>,SO> declupp_backend( const DenseMa
 */
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
-        , typename = EnableIf_t< IsUpper_v<MT> > >
+        , EnableIf_t< IsUpper_v<MT> >* = nullptr >
 inline const MT& declupp_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1042,7 +1042,7 @@ inline decltype(auto) declupp( const DenseMatrix<MT,SO>& dm )
 template< typename MT  // Type of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO      // Storage order
-        , typename = DisableIf_t< IsUpper_v<MT> > >
+        , DisableIf_t< IsUpper_v<MT> >* = nullptr >
 inline decltype(auto) declupp( const DMatScalarMultExpr<MT,ST,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;

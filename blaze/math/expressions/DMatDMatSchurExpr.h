@@ -1047,8 +1047,8 @@ class DMatDMatSchurExpr
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , bool SO       // Storage order
-        , typename = DisableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
-                                  ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) > >
+        , DisableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
+                       ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
 inline const DMatDMatSchurExpr<MT1,MT2,SO>
    dmatdmatschur( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
 {
@@ -1079,8 +1079,8 @@ inline const DMatDMatSchurExpr<MT1,MT2,SO>
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , bool SO       // Storage order
-        , typename = EnableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
-                                 ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) > >
+        , EnableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
+                      ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
 inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, SO >
    dmatdmatschur( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
 {

@@ -1621,7 +1621,7 @@ inline decltype(auto) clamp( const DenseVector<VT,TF>& dv, const DT& min, const 
 template< typename VT  // Type of the dense vector
         , bool TF      // Transpose flag
         , typename ST  // Type of the scalar exponent
-        , typename = EnableIf_t< IsNumeric_v<ST> > >
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
 inline decltype(auto) pow( const DenseVector<VT,TF>& dv, ST exp )
 {
    BLAZE_FUNCTION_TRACE;

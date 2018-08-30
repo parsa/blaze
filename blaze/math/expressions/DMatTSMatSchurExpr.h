@@ -910,8 +910,8 @@ class DMatTSMatSchurExpr
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side sparse matrix
-        , typename = DisableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
-                                  ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) > >
+        , DisableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
+                       ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
 inline const DMatTSMatSchurExpr<MT1,MT2>
    dmattsmatschur( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
 {
@@ -941,8 +941,8 @@ inline const DMatTSMatSchurExpr<MT1,MT2>
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side sparse matrix
-        , typename = EnableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
-                                 ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) > >
+        , EnableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
+                      ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
 inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, true >
    dmattsmatschur( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
 {
@@ -1020,8 +1020,8 @@ inline decltype(auto)
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side sparse matrix
-        , typename = DisableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
-                                  ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) > >
+        , DisableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
+                       ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
 inline const DMatTSMatSchurExpr<MT1,MT2>
    tdmattsmatschur( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,true>& rhs )
 {
@@ -1050,8 +1050,8 @@ inline const DMatTSMatSchurExpr<MT1,MT2>
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side sparse matrix
-        , typename = EnableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
-                                 ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) > >
+        , EnableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
+                      ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
 inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, true >
    tdmattsmatschur( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,true>& rhs )
 {

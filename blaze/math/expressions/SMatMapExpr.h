@@ -1502,7 +1502,7 @@ inline decltype(auto) clamp( const SparseMatrix<MT,SO>& sm, const DT& min, const
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
         , typename ST  // Type of the scalar exponent
-        , typename = EnableIf_t< IsNumeric_v<ST> > >
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
 inline decltype(auto) pow( const SparseMatrix<MT,SO>& sm, ST exp )
 {
    BLAZE_FUNCTION_TRACE;

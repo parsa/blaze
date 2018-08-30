@@ -917,7 +917,7 @@ class DMatDeclDiagExpr
 */
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
-        , typename = DisableIf_t< IsDiagonal_v<MT> > >
+        , DisableIf_t< IsDiagonal_v<MT> >* = nullptr >
 inline const DMatDeclDiagExpr<MT,SO> decldiag_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -943,7 +943,7 @@ inline const DMatDeclDiagExpr<MT,SO> decldiag_backend( const DenseMatrix<MT,SO>&
 */
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
-        , typename = EnableIf_t< IsDiagonal_v<MT> > >
+        , EnableIf_t< IsDiagonal_v<MT> >* = nullptr >
 inline const MT& decldiag_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1014,7 +1014,7 @@ inline decltype(auto) decldiag( const DenseMatrix<MT,SO>& dm )
 template< typename MT  // Type of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO      // Storage order
-        , typename = DisableIf_t< IsDiagonal_v<MT> > >
+        , DisableIf_t< IsDiagonal_v<MT> >* = nullptr >
 inline decltype(auto) decldiag( const DMatScalarMultExpr<MT,ST,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;

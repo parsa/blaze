@@ -893,7 +893,7 @@ struct SMatScalarDivExprHelper
 template< typename MT  // Type of the left-hand side sparse matrix
         , bool SO      // Storage order of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar
-        , typename = EnableIf_t< IsNumeric_v<ST> > >
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
 inline decltype(auto) operator/( const SparseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -938,7 +938,7 @@ template< typename MT   // Type of the sparse matrix of the left-hand side expre
         , typename ST1  // Type of the scalar of the left-hand side expression
         , bool SO       // Storage order of the sparse matrix
         , typename ST2  // Type of the right-hand side scalar
-        , typename = EnableIf_t< IsNumeric_v<ST2> && ( IsInvertible_v<ST1> || IsInvertible_v<ST2> ) > >
+        , EnableIf_t< IsNumeric_v<ST2> && ( IsInvertible_v<ST1> || IsInvertible_v<ST2> ) >* = nullptr >
 inline decltype(auto) operator*( const SMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -966,7 +966,7 @@ template< typename ST1  // Type of the left-hand side scalar
         , typename MT   // Type of the sparse matrix of the right-hand side expression
         , typename ST2  // Type of the scalar of the right-hand side expression
         , bool SO       // Storage order of the sparse matrix
-        , typename = EnableIf_t< IsNumeric_v<ST1> && ( IsInvertible_v<ST1> || IsInvertible_v<ST2> ) > >
+        , EnableIf_t< IsNumeric_v<ST1> && ( IsInvertible_v<ST1> || IsInvertible_v<ST2> ) >* = nullptr >
 inline decltype(auto) operator*( ST1 scalar, const SMatScalarDivExpr<MT,ST2,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
@@ -994,7 +994,7 @@ template< typename MT   // Type of the sparse matrix of the left-hand side expre
         , typename ST1  // Type of the scalar of the left-hand side expression
         , bool SO       // Storage order of the sparse matrix
         , typename ST2  // Type of the right-hand side scalar
-        , typename = EnableIf_t< IsNumeric_v<ST2> > >
+        , EnableIf_t< IsNumeric_v<ST2> >* = nullptr >
 inline decltype(auto) operator/( const SMatScalarDivExpr<MT,ST1,SO>& mat, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;

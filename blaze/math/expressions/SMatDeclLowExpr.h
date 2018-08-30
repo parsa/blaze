@@ -891,7 +891,7 @@ class SMatDeclLowExpr
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
-        , typename = DisableIf_t< IsLower_v<MT> || IsUniUpper_v<MT> > >
+        , DisableIf_t< IsLower_v<MT> || IsUniUpper_v<MT> >* = nullptr >
 inline const SMatDeclLowExpr<MT,SO> decllow_backend( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -917,7 +917,7 @@ inline const SMatDeclLowExpr<MT,SO> decllow_backend( const SparseMatrix<MT,SO>& 
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
-        , typename = EnableIf_t< !IsLower_v<MT> && IsUniUpper_v<MT> > >
+        , EnableIf_t< !IsLower_v<MT> && IsUniUpper_v<MT> >* = nullptr >
 inline const IdentityMatrix<ElementType_t<MT>,SO> decllow_backend( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -943,7 +943,7 @@ inline const IdentityMatrix<ElementType_t<MT>,SO> decllow_backend( const SparseM
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
-        , typename = EnableIf_t< IsLower_v<MT> > >
+        , EnableIf_t< IsLower_v<MT> >* = nullptr >
 inline const MT& decllow_backend( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1014,7 +1014,7 @@ inline decltype(auto) decllow( const SparseMatrix<MT,SO>& sm )
 template< typename MT  // Type of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO      // Storage order
-        , typename = DisableIf_t< IsLower_v<MT> > >
+        , DisableIf_t< IsLower_v<MT> >* = nullptr >
 inline decltype(auto) decllow( const SMatScalarMultExpr<MT,ST,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;

@@ -1375,7 +1375,7 @@ inline decltype(auto) clamp( const SparseVector<VT,TF>& sv, const DT& min, const
 template< typename VT  // Type of the sparse vector
         , bool TF      // Transpose flag
         , typename ST  // Type of the scalar exponent
-        , typename = EnableIf_t< IsNumeric_v<ST> > >
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
 inline decltype(auto) pow( const SparseVector<VT,TF>& sv, ST exp )
 {
    BLAZE_FUNCTION_TRACE;

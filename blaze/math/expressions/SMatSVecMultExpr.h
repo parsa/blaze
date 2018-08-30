@@ -923,7 +923,7 @@ class SMatSVecMultExpr
 */
 template< typename MT  // Type of the left-hand side sparse matrix
         , typename VT  // Type of the right-hand side sparse vector
-        , typename = DisableIf_t< IsSymmetric_v<MT> > >
+        , DisableIf_t< IsSymmetric_v<MT> >* = nullptr >
 inline const SMatSVecMultExpr<MT,VT>
    smatsvecmult( const SparseMatrix<MT,false>& mat, const SparseVector<VT,false>& vec )
 {
@@ -953,7 +953,7 @@ inline const SMatSVecMultExpr<MT,VT>
 */
 template< typename MT  // Type of the left-hand side sparse matrix
         , typename VT  // Type of the right-hand side sparse vector
-        , typename = EnableIf_t< IsSymmetric_v<MT> > >
+        , EnableIf_t< IsSymmetric_v<MT> >* = nullptr >
 inline decltype(auto)
    smatsvecmult( const SparseMatrix<MT,false>& mat, const SparseVector<VT,false>& vec )
 {

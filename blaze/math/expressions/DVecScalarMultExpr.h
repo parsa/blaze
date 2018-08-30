@@ -1067,7 +1067,7 @@ inline decltype(auto) operator-( const DenseVector<VT,TF>& dv )
 template< typename VT  // Type of the left-hand side dense vector
         , typename ST  // Type of the right-hand side scalar
         , bool TF      // Transpose flag
-        , typename = EnableIf_t< IsNumeric_v<ST> > >
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
 inline decltype(auto) operator*( const DenseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1104,7 +1104,7 @@ inline decltype(auto) operator*( const DenseVector<VT,TF>& vec, ST scalar )
 template< typename ST  // Type of the left-hand side scalar
         , typename VT  // Type of the right-hand side dense vector
         , bool TF      // Transpose flag
-        , typename = EnableIf_t< IsNumeric_v<ST> > >
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
 inline decltype(auto) operator*( ST scalar, const DenseVector<VT,TF>& vec )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1218,7 +1218,7 @@ template< typename VT   // Type of the dense vector of the left-hand side expres
         , typename ST1  // Type of the scalar of the left-hand side expression
         , bool TF       // Transpose flag of the dense vector
         , typename ST2  // Type of the right-hand side scalar
-        , typename = EnableIf_t< IsNumeric_v<ST2> > >
+        , EnableIf_t< IsNumeric_v<ST2> >* = nullptr >
 inline decltype(auto) operator*( const DVecScalarMultExpr<VT,ST1,TF>& vec, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1246,7 +1246,7 @@ template< typename ST1  // Type of the left-hand side scalar
         , typename VT   // Type of the dense vector of the right-hand side expression
         , typename ST2  // Type of the scalar of the right-hand side expression
         , bool TF       // Transpose flag of the dense vector
-        , typename = EnableIf_t< IsNumeric_v<ST1> > >
+        , EnableIf_t< IsNumeric_v<ST1> >* = nullptr >
 inline decltype(auto) operator*( ST1 scalar, const DVecScalarMultExpr<VT,ST2,TF>& vec )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1274,7 +1274,7 @@ template< typename VT   // Type of the dense vector of the left-hand side expres
         , typename ST1  // Type of the scalar of the left-hand side expression
         , bool TF       // Transpose flag of the dense vector
         , typename ST2  // Type of the right-hand side scalar
-        , typename = EnableIf_t< ( IsNumeric_v<ST2> && ( IsInvertible_v<ST1> || IsInvertible_v<ST2> ) ) > >
+        , EnableIf_t< ( IsNumeric_v<ST2> && ( IsInvertible_v<ST1> || IsInvertible_v<ST2> ) ) >* = nullptr >
 inline decltype(auto) operator/( const DVecScalarMultExpr<VT,ST1,TF>& vec, ST2 scalar )
 {
    BLAZE_FUNCTION_TRACE;

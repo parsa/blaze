@@ -919,7 +919,7 @@ class DMatDeclLowExpr
 */
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
-        , typename = DisableIf_t< IsLower_v<MT> || IsUniUpper_v<MT> > >
+        , DisableIf_t< IsLower_v<MT> || IsUniUpper_v<MT> >* = nullptr >
 inline const DMatDeclLowExpr<MT,SO> decllow_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -945,7 +945,7 @@ inline const DMatDeclLowExpr<MT,SO> decllow_backend( const DenseMatrix<MT,SO>& d
 */
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
-        , typename = EnableIf_t< !IsLower_v<MT> && IsUniUpper_v<MT> > >
+        , EnableIf_t< !IsLower_v<MT> && IsUniUpper_v<MT> >* = nullptr >
 inline const IdentityMatrix<ElementType_t<MT>,SO> decllow_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -971,7 +971,7 @@ inline const IdentityMatrix<ElementType_t<MT>,SO> decllow_backend( const DenseMa
 */
 template< typename MT  // Type of the dense matrix
         , bool SO      // Storage order
-        , typename = EnableIf_t< IsLower_v<MT> > >
+        , EnableIf_t< IsLower_v<MT> >* = nullptr >
 inline const MT& decllow_backend( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1042,7 +1042,7 @@ inline decltype(auto) decllow( const DenseMatrix<MT,SO>& dm )
 template< typename MT  // Type of the left-hand side dense matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO      // Storage order
-        , typename = DisableIf_t< IsLower_v<MT> > >
+        , DisableIf_t< IsLower_v<MT> >* = nullptr >
 inline decltype(auto) decllow( const DMatScalarMultExpr<MT,ST,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;

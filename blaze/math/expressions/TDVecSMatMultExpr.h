@@ -872,7 +872,7 @@ class TDVecSMatMultExpr
 */
 template< typename VT  // Type of the left-hand side dense vector
         , typename MT  // Type of the right-hand side sparse matrix
-        , typename = DisableIf_t< IsSymmetric_v<MT> > >
+        , DisableIf_t< IsSymmetric_v<MT> >* = nullptr >
 inline const TDVecSMatMultExpr<VT,MT>
    tdvecsmatmult( const DenseVector<VT,true>& vec, const SparseMatrix<MT,false>& mat )
 {
@@ -902,7 +902,7 @@ inline const TDVecSMatMultExpr<VT,MT>
 */
 template< typename VT  // Type of the left-hand side dense vector
         , typename MT  // Type of the right-hand side sparse matrix
-        , typename = EnableIf_t< IsSymmetric_v<MT> > >
+        , EnableIf_t< IsSymmetric_v<MT> >* = nullptr >
 inline decltype(auto)
    tdvecsmatmult( const DenseVector<VT,true>& vec, const SparseMatrix<MT,false>& mat )
 {

@@ -928,14 +928,14 @@ class DMatTDMatSchurExpr
 // This function implements a performance optimized treatment of the Schur product between a
 // row-major dense matrix and a column-major dense matrix.
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , EnableIf_t< !IsSymmetric_v<MT1> &&
+                      !IsSymmetric_v<MT2> &&
+                      !( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) &&
+                      !( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
 inline const DMatTDMatSchurExpr<MT1,MT2>
-   dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs,
-                   EnableIf_t< !IsSymmetric_v<MT1> &&
-                               !IsSymmetric_v<MT2> &&
-                               !( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) &&
-                               !( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr )
+   dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -961,14 +961,14 @@ inline const DMatTDMatSchurExpr<MT1,MT2>
 // This function implements a performance optimized treatment of the Schur product of a symmetric
 // row-major dense matrix and a column-major dense matrix.
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , EnableIf_t< IsSymmetric_v<MT1> &&
+                      !IsSymmetric_v<MT2> &&
+                      !( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) &&
+                      !( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
 inline decltype(auto)
-   dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs,
-                   EnableIf_t< IsSymmetric_v<MT1> &&
-                               !IsSymmetric_v<MT2> &&
-                               !( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) &&
-                               !( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr )
+   dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -994,13 +994,13 @@ inline decltype(auto)
 // This function implements a performance optimized treatment of the Schur product of a (potentially
 // symmetric) row-major dense matrix and a symmetric column-major dense matrix.
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , EnableIf_t< IsSymmetric_v<MT2> &&
+                      !( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) &&
+                      !( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
 inline decltype(auto)
-   dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs,
-                   EnableIf_t< IsSymmetric_v<MT2> &&
-                               !( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) &&
-                               !( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr )
+   dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1026,12 +1026,12 @@ inline decltype(auto)
 // This function implements a performance optimized treatment of the Schur product between a
 // unitriangular row-major dense matrix and a unitriangular column-major dense matrix.
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , EnableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
+                      ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
 inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, false >
-   dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs,
-                   EnableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
-                               ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr )
+   dmattdmatschur( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1104,14 +1104,14 @@ inline decltype(auto)
 // This function implements a performance optimized treatment of the Schur product between a
 // column-major dense matrix and a row-major dense matrix.
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , EnableIf_t< !IsSymmetric_v<MT1> &&
+                      !IsSymmetric_v<MT2> &&
+                      !( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) &&
+                      !( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
 inline const DMatTDMatSchurExpr<MT1,MT2>
-   tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs,
-                   EnableIf_t< !IsSymmetric_v<MT1> &&
-                               !IsSymmetric_v<MT2> &&
-                               !( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) &&
-                               !( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr )
+   tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1137,14 +1137,14 @@ inline const DMatTDMatSchurExpr<MT1,MT2>
 // This function implements a performance optimized treatment of the Schur product of a
 // column-major dense matrix and a symmetric row-major dense matrix.
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , EnableIf_t< !IsSymmetric_v<MT1> &&
+                      IsSymmetric_v<MT2> &&
+                      !( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) &&
+                      !( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
 inline decltype(auto)
-   tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs,
-                   EnableIf_t< !IsSymmetric_v<MT1> &&
-                               IsSymmetric_v<MT2> &&
-                               !( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) &&
-                               !( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr )
+   tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1170,13 +1170,13 @@ inline decltype(auto)
 // This function implements a performance optimized treatment of the Schur product of a symmetric
 // column-major dense matrix and a (potentially symmetric) row-major dense matrix.
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , EnableIf_t< IsSymmetric_v<MT1> &&
+                      !( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) &&
+                      !( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
 inline decltype(auto)
-   tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs,
-                   EnableIf_t< IsSymmetric_v<MT1> &&
-                               !( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) &&
-                               !( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr )
+   tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1202,12 +1202,12 @@ inline decltype(auto)
 // This function implements a performance optimized treatment of the Schur product between a
 // unitriangular column-major dense matrix and a unitriangular row-major dense matrix.
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , EnableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
+                      ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
 inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, false >
-   tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs,
-                   EnableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
-                               ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr )
+   tdmatdmatschur( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 

@@ -891,7 +891,7 @@ class SMatDeclSymExpr
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
-        , typename = DisableIf_t< IsSymmetric_v<MT> || IsUniTriangular_v<MT> > >
+        , DisableIf_t< IsSymmetric_v<MT> || IsUniTriangular_v<MT> >* = nullptr >
 inline const SMatDeclSymExpr<MT,SO> declsym_backend( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -917,7 +917,7 @@ inline const SMatDeclSymExpr<MT,SO> declsym_backend( const SparseMatrix<MT,SO>& 
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
-        , typename = EnableIf_t< !IsSymmetric_v<MT> && IsUniTriangular_v<MT> > >
+        , EnableIf_t< !IsSymmetric_v<MT> && IsUniTriangular_v<MT> >* = nullptr >
 inline const IdentityMatrix<ElementType_t<MT>,SO> declsym_backend( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -943,7 +943,7 @@ inline const IdentityMatrix<ElementType_t<MT>,SO> declsym_backend( const SparseM
 */
 template< typename MT  // Type of the sparse matrix
         , bool SO      // Storage order
-        , typename = EnableIf_t< IsSymmetric_v<MT> > >
+        , EnableIf_t< IsSymmetric_v<MT> >* = nullptr >
 inline const MT& declsym_backend( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1015,7 +1015,7 @@ inline decltype(auto) declsym( const SparseMatrix<MT,SO>& sm )
 template< typename MT  // Type of the left-hand side sparse matrix
         , typename ST  // Type of the right-hand side scalar value
         , bool SO      // Storage order
-        , typename = DisableIf_t< IsSymmetric_v<MT> > >
+        , DisableIf_t< IsSymmetric_v<MT> >* = nullptr >
 inline decltype(auto) declsym( const SMatScalarMultExpr<MT,ST,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;

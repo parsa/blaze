@@ -873,11 +873,11 @@ class DMatTDMatAddExpr
 // This function implements a performance optimized treatment of the addition of a row-major
 // dense matrix and a column-major dense matrix.
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , EnableIf_t< !IsSymmetric_v<MT1> && !IsSymmetric_v<MT2> >* = nullptr >
 inline const DMatTDMatAddExpr<MT1,MT2>
-   dmattdmatadd( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs,
-                 EnableIf_t< !IsSymmetric_v<MT1> && !IsSymmetric_v<MT2> >* = nullptr )
+   dmattdmatadd( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -903,11 +903,11 @@ inline const DMatTDMatAddExpr<MT1,MT2>
 // This function implements a performance optimized treatment of the addition of a symmetric
 // row-major dense matrix and a column-major dense matrix.
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , EnableIf_t< IsSymmetric_v<MT1> && !IsSymmetric_v<MT2> >* = nullptr >
 inline decltype(auto)
-   dmattdmatadd( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs,
-                 EnableIf_t< IsSymmetric_v<MT1> && !IsSymmetric_v<MT2> >* = nullptr )
+   dmattdmatadd( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -933,11 +933,11 @@ inline decltype(auto)
 // This function implements a performance optimized treatment of the addition of a (potentially
 // symmetric) row-major dense matrix and a symmetric column-major dense matrix.
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , EnableIf_t< IsSymmetric_v<MT2> >* = nullptr >
 inline decltype(auto)
-   dmattdmatadd( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs,
-                 EnableIf_t< IsSymmetric_v<MT2> >* = nullptr )
+   dmattdmatadd( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1008,11 +1008,11 @@ inline decltype(auto)
 // This function implements a performance optimized treatment of the addition of a column-major
 // dense matrix and a row-major dense matrix.
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , EnableIf_t< !IsSymmetric_v<MT1> && !IsSymmetric_v<MT2> >* = nullptr >
 inline const DMatTDMatAddExpr<MT2,MT1>
-   tdmatdmatadd( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs,
-                 EnableIf_t< !IsSymmetric_v<MT1> && !IsSymmetric_v<MT2> >* = nullptr )
+   tdmatdmatadd( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1038,11 +1038,11 @@ inline const DMatTDMatAddExpr<MT2,MT1>
 // This function implements a performance optimized treatment of the addition of a column-major
 // dense matrix and a symmetric row-major dense matrix.
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , EnableIf_t< !IsSymmetric_v<MT1> && IsSymmetric_v<MT2> >* = nullptr >
 inline decltype(auto)
-   tdmatdmatadd( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs,
-                 EnableIf_t< !IsSymmetric_v<MT1> && IsSymmetric_v<MT2> >* = nullptr )
+   tdmatdmatadd( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1068,11 +1068,11 @@ inline decltype(auto)
 // This function implements a performance optimized treatment of the addition of a symmetric
 // column-major dense matrix and a (potentially symmetric) row-major dense matrix.
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix >
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix >
+        , EnableIf_t< IsSymmetric_v<MT1> >* = nullptr >
 inline decltype(auto)
-   tdmatdmatadd( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs,
-                 EnableIf_t< IsSymmetric_v<MT1> >* = nullptr )
+   tdmatdmatadd( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
