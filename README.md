@@ -226,3 +226,5 @@ Jeff Pollock -- CMake extensions
 Darcy Beurle -- Integration of **Blaze** into the Compiler Explorer
 
 Robert Schumacher -- CMake fixes
+
+Jan Rudolph -- CMake fixes
