@@ -50,6 +50,7 @@
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/Columns.h>
 #include <blaze/math/constraints/ColumnVector.h>
+#include <blaze/math/constraints/Commutative.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/ConstDataAccess.h>
 #include <blaze/math/constraints/Contiguous.h>
