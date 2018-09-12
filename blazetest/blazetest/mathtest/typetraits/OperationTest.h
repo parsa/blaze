@@ -75,6 +75,7 @@ class OperationTest
    //@{
    void testIsColumnMajorMatrix();
    void testIsColumnVector();
+   void testIsCommutative();
    void testIsDiagonal();
    void testIsIdentity();
    void testIsLower();

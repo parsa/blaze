@@ -43,6 +43,7 @@
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/ColumnVector.h>
+#include <blaze/math/constraints/Commutative.h>
 #include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/constraints/Identity.h>
 #include <blaze/math/constraints/Lower.h>
@@ -64,6 +65,7 @@
 #include <blaze/math/UpperMatrix.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
+#include <blaze/math/typetraits/IsCommutative.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
@@ -105,6 +107,7 @@ OperationTest::OperationTest()
 {
    testIsColumnMajorMatrix();
    testIsColumnVector();
+   testIsCommutative();
    testIsDiagonal();
    testIsIdentity();
    testIsLower();
@@ -188,6 +191,39 @@ void OperationTest::testIsColumnVector()
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type4 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type5 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMN_VECTOR_TYPE( Type6 );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the mathematical 'IsCommutative' type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the mathematical 'IsCommutative' type trait.
+// In case an error is detected, a compilation error is created.
+*/
+void OperationTest::testIsCommutative()
+{
+   using VT = blaze::StaticVector<int,3UL>;
+   using MT = blaze::StaticMatrix<int,3UL,3UL>;
+
+   using Type1 = double;
+   using Type2 = blaze::complex<double>;
+   using Type3 = blaze::DynamicVector<int>;
+   using Type4 = blaze::DynamicVector<VT>;
+   using Type5 = blaze::DynamicVector<MT>;
+   using Type6 = blaze::DynamicMatrix<int>;
+   using Type7 = blaze::DynamicMatrix<VT>;
+   using Type8 = blaze::DynamicMatrix<MT>;
+
+   BLAZE_CONSTRAINT_MUST_BE_COMMUTATIVE_TYPES    ( Type1, Type2 );
+   BLAZE_CONSTRAINT_MUST_BE_COMMUTATIVE_TYPES    ( Type3, Type3 );
+   BLAZE_CONSTRAINT_MUST_BE_COMMUTATIVE_TYPES    ( Type7, Type7 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMMUTATIVE_TYPES( Type6, Type3 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMMUTATIVE_TYPES( Type5, Type4 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMMUTATIVE_TYPES( Type7, Type8 );
 }
 //*************************************************************************************************
 
