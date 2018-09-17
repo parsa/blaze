@@ -45,13 +45,13 @@
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BLASCompatible.h>
 #include <blaze/math/constraints/Computation.h>
+#include <blaze/math/constraints/Contiguous.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/lapack/clapack/geev.h>
 #include <blaze/math/shims/Equal.h>
-#include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
 #include <blaze/util/Assert.h>
@@ -187,31 +187,17 @@ inline EnableIf_t< IsComplex_v< ElementType_t<MT> > >
    int lda ( numeric_cast<int>( (~A).spacing() ) );
    int info( 0 );
 
-   CT* wptr( (~w).data() );
-   std::unique_ptr<CT[]> wtmp;
-
-   if( !IsContiguous_v<VT> ) {
-      wtmp.reset( new CT[n] );
-      wptr = wtmp.get();
-   }
-
    int lwork( 2*n + 2 );
    const std::unique_ptr<CT[]> work ( new CT[lwork] );
    const std::unique_ptr<BT[]> rwork( new BT[2*n] );
 
-   geev( 'N', 'N', n, (~A).data(), lda, wptr,
+   geev( 'N', 'N', n, (~A).data(), lda, (~w).data(),
          nullptr, 1, nullptr, 1, work.get(), lwork, rwork.get(), &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for eigenvalue computation" );
 
    if( info > 0 ) {
       BLAZE_THROW_LAPACK_ERROR( "Eigenvalue computation failed" );
-   }
-
-   if( !IsContiguous_v<VT> ) {
-      for( size_t i=0UL; i<(~A).rows(); ++i ) {
-         (~w)[i] = wptr[i];
-      }
    }
 }
 /*! \endcond */
@@ -282,10 +268,12 @@ inline void geev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT );
+   BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
+   BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_t<VT> );
 
@@ -441,19 +429,11 @@ inline EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
    int ldvl( numeric_cast<int>( (~VL).spacing() ) );
    int info( 0 );
 
-   CT* wptr( (~w).data() );
-   std::unique_ptr<CT[]> wtmp;
-
-   if( !IsContiguous_v<VT> ) {
-      wtmp.reset( new CT[n] );
-      wptr = wtmp.get();
-   }
-
    int lwork( 2*n + 2 );
    const std::unique_ptr<CT[]> work ( new CT[lwork] );
    const std::unique_ptr<BT[]> rwork( new BT[2*n] );
 
-   geev( ( SO1 ? 'V' : 'N' ), ( SO1 ? 'N' : 'V' ), n, (~A).data(), lda, wptr,
+   geev( ( SO1 ? 'V' : 'N' ), ( SO1 ? 'N' : 'V' ), n, (~A).data(), lda, (~w).data(),
          ( SO1 ? (~VL).data() : nullptr ), ( SO1 ? ldvl : 1 ),
          ( SO1 ? nullptr : (~VL).data() ), ( SO1 ? 1 : ldvl ),
          work.get(), lwork, rwork.get(), &info );
@@ -462,12 +442,6 @@ inline EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
 
    if( info > 0 ) {
       BLAZE_THROW_LAPACK_ERROR( "Eigenvalue computation failed" );
-   }
-
-   if( !IsContiguous_v<VT> ) {
-      for( size_t i=0UL; i<(~A).rows(); ++i ) {
-         (~w)[i] = wptr[i];
-      }
    }
 }
 /*! \endcond */
@@ -554,16 +528,19 @@ inline void geev( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, DenseVector
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
+   BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT2 );
+   BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_t<MT2> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
+   BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_t<VT> );
 
@@ -720,19 +697,11 @@ inline EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
    int ldvr( numeric_cast<int>( (~VR).spacing() ) );
    int info( 0 );
 
-   CT* wptr( (~w).data() );
-   std::unique_ptr<CT[]> wtmp;
-
-   if( !IsContiguous_v<VT> ) {
-      wtmp.reset( new CT[n] );
-      wptr = wtmp.get();
-   }
-
    int lwork( 2*n + 2 );
    const std::unique_ptr<CT[]> work ( new CT[lwork] );
    const std::unique_ptr<BT[]> rwork( new BT[2*n] );
 
-   geev( ( SO1 ? 'N' : 'V' ), ( SO1 ? 'V' : 'N' ), n, (~A).data(), lda, wptr,
+   geev( ( SO1 ? 'N' : 'V' ), ( SO1 ? 'V' : 'N' ), n, (~A).data(), lda, (~w).data(),
          ( SO1 ? nullptr : (~VR).data() ), ( SO1 ? 1 : ldvr ),
          ( SO1 ? (~VR).data() : nullptr ), ( SO1 ? ldvr : 1 ),
          work.get(), lwork, rwork.get(), &info );
@@ -741,12 +710,6 @@ inline EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
 
    if( info > 0 ) {
       BLAZE_THROW_LAPACK_ERROR( "Eigenvalue computation failed" );
-   }
-
-   if( !IsContiguous_v<VT> ) {
-      for( size_t i=0UL; i<(~A).rows(); ++i ) {
-         (~w)[i] = wptr[i];
-      }
    }
 }
 /*! \endcond */
@@ -1017,19 +980,11 @@ inline EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
    int ldvr( numeric_cast<int>( (~VR).spacing() ) );
    int info( 0 );
 
-   CT* wptr( (~w).data() );
-   std::unique_ptr<CT[]> wtmp;
-
-   if( !IsContiguous_v<VT> ) {
-      wtmp.reset( new CT[n] );
-      wptr = wtmp.get();
-   }
-
    int lwork( 2*n + 2 );
    const std::unique_ptr<CT[]> work ( new CT[lwork] );
    const std::unique_ptr<BT[]> rwork( new BT[2*n] );
 
-   geev( 'V', 'V', n, (~A).data(), lda, wptr,
+   geev( 'V', 'V', n, (~A).data(), lda, (~w).data(),
          ( SO1 ? (~VL).data() : (~VR).data() ), ( SO1 ? ldvl : ldvr ),
          ( SO1 ? (~VR).data() : (~VL).data() ), ( SO1 ? ldvr : ldvl ),
          work.get(), lwork, rwork.get(), &info );
@@ -1038,12 +993,6 @@ inline EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
 
    if( info > 0 ) {
       BLAZE_THROW_LAPACK_ERROR( "Eigenvalue computation failed" );
-   }
-
-   if( !IsContiguous_v<VT> ) {
-      for( size_t i=0UL; i<(~A).rows(); ++i ) {
-         (~w)[i] = wptr[i];
-      }
    }
 }
 /*! \endcond */
