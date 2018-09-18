@@ -611,12 +611,18 @@ class DVecDVecDivExpr
    {
       BLAZE_FUNCTION_TRACE;
 
+      using ET = ElementType_t<VT>;
+
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( !IsComputation_v<VT1> && isSame( ~lhs, rhs.lhs_ ) ) {
          divAssign( ~lhs, rhs.rhs_ );
       }
-      else if( IsSame_v<VT,ResultType> || IsSame_v< ElementType_t<VT>, ElementType_t<VT1> > ) {
+      else if( ( IsSame_v<VT,ResultType> || IsSame_v<ET,ET1> ) && !rhs.rhs_.isAliased( &(~lhs) ) ) {
          assign   ( ~lhs, rhs.lhs_ );
          divAssign( ~lhs, rhs.rhs_ );
       }
@@ -824,12 +830,18 @@ class DVecDVecDivExpr
    {
       BLAZE_FUNCTION_TRACE;
 
+      using ET = ElementType_t<VT>;
+
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       if( !IsComputation_v<VT1> && isSame( ~lhs, rhs.lhs_ ) ) {
          smpDivAssign( ~lhs, rhs.rhs_ );
       }
-      else if( IsSame_v<VT,ResultType> || IsSame_v< ElementType_t<VT>, ElementType_t<VT1> > ) {
+      else if( ( IsSame_v<VT,ResultType> || IsSame_v<ET,ET1> ) && !rhs.rhs_.isAliased( &(~lhs) ) ) {
          smpAssign   ( ~lhs, rhs.lhs_ );
          smpDivAssign( ~lhs, rhs.rhs_ );
       }
