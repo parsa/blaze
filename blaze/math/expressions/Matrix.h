@@ -339,6 +339,9 @@ template< typename MT, bool SO >
 inline const typename MT::ResultType evaluate( const Matrix<MT,SO>& matrix );
 
 template< typename MT, bool SO >
+BLAZE_ALWAYS_INLINE constexpr bool isEmpty( const Matrix<MT,SO>& matrix ) noexcept;
+
+template< typename MT, bool SO >
 BLAZE_ALWAYS_INLINE bool isSquare( const Matrix<MT,SO>& matrix ) noexcept;
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
@@ -906,6 +909,25 @@ inline const typename MT::ResultType evaluate( const Matrix<MT,SO>& matrix )
 {
    const typename MT::ResultType tmp( ~matrix );
    return tmp;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given matrix is empty.
+// \ingroup matrix
+//
+// \param matrix The matrix to be checked.
+// \return \a true if the matrix is empty, \a false if not.
+//
+// This function checks if the total number of elements of the given matrix is zero. If the
+// total number of elements is zero the function returns \a true, otherwise it returns \a false.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+BLAZE_ALWAYS_INLINE constexpr bool isEmpty( const Matrix<MT,SO>& matrix ) noexcept
+{
+   return size( ~matrix ) == 0UL;
 }
 //*************************************************************************************************
 
