@@ -100,14 +100,26 @@ void AliasingTest::testDMatDMatMax()
    // Maximum
    //=====================================================================================
 
-   // Assignment to left-hand side operand
+   // Assignment to left-hand side operand (1)
    {
-      test_ = "DMatDMatMax - Assignment to left-hand side operand";
+      test_ = "DMatDMatMax - Assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ = max( dC3x3_, dD3x3_ );
       dC3x3_  = max( dC3x3_, dD3x3_ );
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Assignment to left-hand side operand (2)
+   {
+      test_ = "DMatDMatMax - Assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ = max( dC3x3_, eval( dD3x3_ ) );
+      dC3x3_  = max( dC3x3_, eval( dD3x3_ ) );
 
       checkResult( dC3x3_, result_ );
    }
@@ -136,14 +148,26 @@ void AliasingTest::testDMatDMatMax()
       checkResult( dB4x3_, result_ );
    }
 
-   // Assignment to right-hand side operand
+   // Assignment to right-hand side operand (1)
    {
-      test_ = "DMatDMatMax - Assignment to right-hand side operand";
+      test_ = "DMatDMatMax - Assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ = max( dC3x3_, dD3x3_ );
       dD3x3_  = max( dC3x3_, dD3x3_ );
+
+      checkResult( dD3x3_, result_ );
+   }
+
+   // Assignment to right-hand side operand (2)
+   {
+      test_ = "DMatDMatMax - Assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ = max( eval( dC3x3_ ), dD3x3_ );
+      dD3x3_  = max( eval( dC3x3_ ), dD3x3_ );
 
       checkResult( dD3x3_, result_ );
    }
@@ -170,6 +194,30 @@ void AliasingTest::testDMatDMatMax()
       dB4x3_  = max( dC3x3_, ( dA3x4_ * dB4x3_ ) );
 
       checkResult( dB4x3_, result_ );
+   }
+
+   // Complex operation: A = max( ( 2*A ), ( B * C ) )
+   {
+      test_ = "DMatDMatMax - Complex operation: A = max( ( 2*A ), ( B * C ) )";
+
+      initialize();
+
+      result_ = max( ( 2*dC3x3_ ), ( dA3x4_ * dB4x3_ ) );
+      dC3x3_  = max( ( 2*dC3x3_ ), ( dA3x4_ * dB4x3_ ) );
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Complex operation: A = max( ( B * C ), ( 2*A ) )
+   {
+      test_ = "DMatDMatMax - Complex operation: A = max( ( B * C ), ( 2*A ) )";
+
+      initialize();
+
+      result_ = max( ( dA3x4_ * dB4x3_ ), ( 2*dC3x3_ ) );
+      dC3x3_  = max( ( dA3x4_ * dB4x3_ ), ( 2*dC3x3_ ) );
+
+      checkResult( dC3x3_, result_ );
    }
 
    // Complex operation: A = max( B, ( A + C * D ) )
@@ -201,15 +249,28 @@ void AliasingTest::testDMatDMatMax()
    // Maximum with addition assignment
    //=====================================================================================
 
-   // Addition assignment to left-hand side operand
+   // Addition assignment to left-hand side operand (1)
    {
-      test_ = "DMatDMatMax - Addition assignment to left-hand side operand";
+      test_ = "DMatDMatMax - Addition assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ =  dC3x3_;
       result_ += max( dC3x3_, dD3x3_ );
       dC3x3_  += max( dC3x3_, dD3x3_ );
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Addition assignment to left-hand side operand (2)
+   {
+      test_ = "DMatDMatMax - Addition assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ += max( dC3x3_, eval( dD3x3_ ) );
+      dC3x3_  += max( dC3x3_, eval( dD3x3_ ) );
 
       checkResult( dC3x3_, result_ );
    }
@@ -240,15 +301,28 @@ void AliasingTest::testDMatDMatMax()
       checkResult( dD3x3_, result_ );
    }
 
-   // Addition assignment to right-hand side operand
+   // Addition assignment to right-hand side operand (1)
    {
-      test_ = "DMatDMatMax - Addition assignment to right-hand side operand";
+      test_ = "DMatDMatMax - Addition assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ =  dD3x3_;
       result_ += max( dC3x3_, dD3x3_ );
       dD3x3_  += max( dC3x3_, dD3x3_ );
+
+      checkResult( dD3x3_, result_ );
+   }
+
+   // Addition assignment to right-hand side operand (2)
+   {
+      test_ = "DMatDMatMax - Addition assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ =  dD3x3_;
+      result_ += max( eval( dC3x3_ ), dD3x3_ );
+      dD3x3_  += max( eval( dC3x3_ ), dD3x3_ );
 
       checkResult( dD3x3_, result_ );
    }
@@ -277,6 +351,32 @@ void AliasingTest::testDMatDMatMax()
       dE3x3_  += max( dC3x3_, ( dD3x3_ * dE3x3_ ) );
 
       checkResult( dE3x3_, result_ );
+   }
+
+   // Complex operation: A += max( ( 2*A ), ( B * C ) )
+   {
+      test_ = "DMatDMatMax - Complex operation: A += max( ( 2*A ), ( B * C ) )";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ += max( ( 2*dC3x3_ ), ( dA3x4_ * dB4x3_ ) );
+      dC3x3_  += max( ( 2*dC3x3_ ), ( dA3x4_ * dB4x3_ ) );
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Complex operation: A += max( ( B * C ), ( 2*A ) )
+   {
+      test_ = "DMatDMatMax - Complex operation: A += max( ( B * C ), ( 2*A ) )";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ += max( ( dA3x4_ * dB4x3_ ), ( 2*dC3x3_ ) );
+      dC3x3_  += max( ( dA3x4_ * dB4x3_ ), ( 2*dC3x3_ ) );
+
+      checkResult( dC3x3_, result_ );
    }
 
    // Complex operation: A += max( B, ( A + C * D ) )
@@ -310,15 +410,28 @@ void AliasingTest::testDMatDMatMax()
    // Maximum with subtraction assignment
    //=====================================================================================
 
-   // Subtraction assignment to left-hand side operand
+   // Subtraction assignment to left-hand side operand (1)
    {
-      test_ = "DMatDMatMax - Subtraction assignment to left-hand side operand";
+      test_ = "DMatDMatMax - Subtraction assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ =  dC3x3_;
       result_ -= max( dC3x3_, dD3x3_ );
       dC3x3_  -= max( dC3x3_, dD3x3_ );
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Subtraction assignment to left-hand side operand (2)
+   {
+      test_ = "DMatDMatMax - Subtraction assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ -= max( dC3x3_, eval( dD3x3_ ) );
+      dC3x3_  -= max( dC3x3_, eval( dD3x3_ ) );
 
       checkResult( dC3x3_, result_ );
    }
@@ -349,15 +462,28 @@ void AliasingTest::testDMatDMatMax()
       checkResult( dD3x3_, result_ );
    }
 
-   // Subtraction assignment to right-hand side operand
+   // Subtraction assignment to right-hand side operand (1)
    {
-      test_ = "DMatDMatMax - Subtraction assignment to right-hand side operand";
+      test_ = "DMatDMatMax - Subtraction assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ =  dD3x3_;
       result_ -= max( dC3x3_, dD3x3_ );
       dD3x3_  -= max( dC3x3_, dD3x3_ );
+
+      checkResult( dD3x3_, result_ );
+   }
+
+   // Subtraction assignment to right-hand side operand (2)
+   {
+      test_ = "DMatDMatMax - Subtraction assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ =  dD3x3_;
+      result_ -= max( eval( dC3x3_ ), dD3x3_ );
+      dD3x3_  -= max( eval( dC3x3_ ), dD3x3_ );
 
       checkResult( dD3x3_, result_ );
    }
@@ -386,6 +512,32 @@ void AliasingTest::testDMatDMatMax()
       dE3x3_  -= max( dC3x3_, ( dD3x3_ * dE3x3_ ) );
 
       checkResult( dE3x3_, result_ );
+   }
+
+   // Complex operation: A -= max( ( 2*A ), ( B * C ) )
+   {
+      test_ = "DMatDMatMax - Complex operation: A -= max( ( 2*A ), ( B * C ) )";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ -= max( ( 2*dC3x3_ ), ( dA3x4_ * dB4x3_ ) );
+      dC3x3_  -= max( ( 2*dC3x3_ ), ( dA3x4_ * dB4x3_ ) );
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Complex operation: A -= max( ( B * C ), ( 2*A ) )
+   {
+      test_ = "DMatDMatMax - Complex operation: A -= max( ( B * C ), ( 2*A ) )";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ -= max( ( dA3x4_ * dB4x3_ ), ( 2*dC3x3_ ) );
+      dC3x3_  -= max( ( dA3x4_ * dB4x3_ ), ( 2*dC3x3_ ) );
+
+      checkResult( dC3x3_, result_ );
    }
 
    // Complex operation: A -= max( B, ( A + C * D ) )
@@ -419,15 +571,28 @@ void AliasingTest::testDMatDMatMax()
    // Schur product with Schur product assignment
    //=====================================================================================
 
-   // Schur product assignment to left-hand side operand
+   // Schur product assignment to left-hand side operand (1)
    {
-      test_ = "DMatDMatMax - Schur product assignment to left-hand side operand";
+      test_ = "DMatDMatMax - Schur product assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ =  dC3x3_;
       result_ %= max( dC3x3_, dD3x3_ );
       dC3x3_  %= max( dC3x3_, dD3x3_ );
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Schur product assignment to left-hand side operand (2)
+   {
+      test_ = "DMatDMatMax - Schur product assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ %= max( dC3x3_, eval( dD3x3_ ) );
+      dC3x3_  %= max( dC3x3_, eval( dD3x3_ ) );
 
       checkResult( dC3x3_, result_ );
    }
@@ -458,15 +623,28 @@ void AliasingTest::testDMatDMatMax()
       checkResult( dD3x3_, result_ );
    }
 
-   // Schur product assignment to right-hand side operand
+   // Schur product assignment to right-hand side operand (1)
    {
-      test_ = "DMatDMatMax - Schur product assignment to right-hand side operand";
+      test_ = "DMatDMatMax - Schur product assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ =  dD3x3_;
       result_ %= max( dC3x3_, dD3x3_ );
       dD3x3_  %= max( dC3x3_, dD3x3_ );
+
+      checkResult( dD3x3_, result_ );
+   }
+
+   // Schur product assignment to right-hand side operand (2)
+   {
+      test_ = "DMatDMatMax - Schur product assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ =  dD3x3_;
+      result_ %= max( eval( dC3x3_ ), dD3x3_ );
+      dD3x3_  %= max( eval( dC3x3_ ), dD3x3_ );
 
       checkResult( dD3x3_, result_ );
    }
@@ -495,6 +673,32 @@ void AliasingTest::testDMatDMatMax()
       dE3x3_  %= max( dC3x3_, ( dD3x3_ * dE3x3_ ) );
 
       checkResult( dE3x3_, result_ );
+   }
+
+   // Complex operation: A %= max( ( 2*A ), ( B * C ) )
+   {
+      test_ = "DMatDMatMax - Complex operation: A %= max( ( 2*A ), ( B * C ) )";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ %= max( ( 2*dC3x3_ ), ( dA3x4_ * dB4x3_ ) );
+      dC3x3_  %= max( ( 2*dC3x3_ ), ( dA3x4_ * dB4x3_ ) );
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Complex operation: A %= max( ( B * C ), ( 2*A ) )
+   {
+      test_ = "DMatDMatMax - Complex operation: A %= max( ( B * C ), ( 2*A ) )";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ %= max( ( dA3x4_ * dB4x3_ ), ( 2*dC3x3_ ) );
+      dC3x3_  %= max( ( dA3x4_ * dB4x3_ ), ( 2*dC3x3_ ) );
+
+      checkResult( dC3x3_, result_ );
    }
 
    // Complex operation: A %= max( B, ( A + C * D ) )
@@ -528,15 +732,28 @@ void AliasingTest::testDMatDMatMax()
    // Maximum with multiplication assignment
    //=====================================================================================
 
-   // Multiplication assignment to left-hand side operand
+   // Multiplication assignment to left-hand side operand (1)
    {
-      test_ = "DMatDMatMax - Multiplication assignment to left-hand side operand";
+      test_ = "DMatDMatMax - Multiplication assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ =  dC3x3_;
       result_ *= max( dC3x3_, dD3x3_ );
       dC3x3_  *= max( dC3x3_, dD3x3_ );
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Multiplication assignment to left-hand side operand (2)
+   {
+      test_ = "DMatDMatMax - Multiplication assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ *= max( dC3x3_, eval( dD3x3_ ) );
+      dC3x3_  *= max( dC3x3_, eval( dD3x3_ ) );
 
       checkResult( dC3x3_, result_ );
    }
@@ -567,15 +784,28 @@ void AliasingTest::testDMatDMatMax()
       checkResult( dD3x3_, result_ );
    }
 
-   // Multiplication assignment to right-hand side operand
+   // Multiplication assignment to right-hand side operand (1)
    {
-      test_ = "DMatDMatMax - Multiplication assignment to right-hand side operand";
+      test_ = "DMatDMatMax - Multiplication assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ =  dD3x3_;
       result_ *= max( dC3x3_, dD3x3_ );
       dD3x3_  *= max( dC3x3_, dD3x3_ );
+
+      checkResult( dD3x3_, result_ );
+   }
+
+   // Multiplication assignment to right-hand side operand (2)
+   {
+      test_ = "DMatDMatMax - Multiplication assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ =  dD3x3_;
+      result_ *= max( eval( dC3x3_ ), dD3x3_ );
+      dD3x3_  *= max( eval( dC3x3_ ), dD3x3_ );
 
       checkResult( dD3x3_, result_ );
    }
@@ -604,6 +834,32 @@ void AliasingTest::testDMatDMatMax()
       dE3x3_  *= max( dC3x3_, ( dD3x3_ * dE3x3_ ) );
 
       checkResult( dE3x3_, result_ );
+   }
+
+   // Complex operation: A *= max( ( 2*A ), ( B * C ) )
+   {
+      test_ = "DMatDMatMax - Complex operation: A *= max( ( 2*A ), ( B * C ) )";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ *= max( ( 2*dC3x3_ ), ( dA3x4_ * dB4x3_ ) );
+      dC3x3_  *= max( ( 2*dC3x3_ ), ( dA3x4_ * dB4x3_ ) );
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Complex operation: A *= max( ( B * C ), ( 2*A ) )
+   {
+      test_ = "DMatDMatMax - Complex operation: A *= max( ( B * C ), ( 2*A ) )";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ *= max( ( dA3x4_ * dB4x3_ ), ( 2*dC3x3_ ) );
+      dC3x3_  *= max( ( dA3x4_ * dB4x3_ ), ( 2*dC3x3_ ) );
+
+      checkResult( dC3x3_, result_ );
    }
 
    // Complex operation: A *= max( B, ( A + C * D ) )
@@ -650,14 +906,26 @@ void AliasingTest::testDMatTDMatMax()
    // Maximum
    //=====================================================================================
 
-   // Assignment to left-hand side operand
+   // Assignment to left-hand side operand (1)
    {
-      test_ = "DMatTDMatMax - Assignment to left-hand side operand";
+      test_ = "DMatTDMatMax - Assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ = max( dC3x3_, tdD3x3_ );
       dC3x3_  = max( dC3x3_, tdD3x3_ );
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Assignment to left-hand side operand (2)
+   {
+      test_ = "DMatTDMatMax - Assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ = max( dC3x3_, eval( tdD3x3_ ) );
+      dC3x3_  = max( dC3x3_, eval( tdD3x3_ ) );
 
       checkResult( dC3x3_, result_ );
    }
@@ -686,14 +954,26 @@ void AliasingTest::testDMatTDMatMax()
       checkResult( dB4x3_, result_ );
    }
 
-   // Assignment to right-hand side operand
+   // Assignment to right-hand side operand (1)
    {
-      test_ = "DMatTDMatMax - Assignment to right-hand side operand";
+      test_ = "DMatTDMatMax - Assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ = max( dC3x3_, tdD3x3_ );
       tdD3x3_ = max( dC3x3_, tdD3x3_ );
+
+      checkResult( tdD3x3_, result_ );
+   }
+
+   // Assignment to right-hand side operand (2)
+   {
+      test_ = "DMatTDMatMax - Assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ = max( eval( dC3x3_ ), tdD3x3_ );
+      tdD3x3_ = max( eval( dC3x3_ ), tdD3x3_ );
 
       checkResult( tdD3x3_, result_ );
    }
@@ -720,6 +1000,30 @@ void AliasingTest::testDMatTDMatMax()
       tdB4x3_ = max( dC3x3_, ( tdA3x4_ * tdB4x3_ ) );
 
       checkResult( tdB4x3_, result_ );
+   }
+
+   // Complex operation: A = max( ( 2*A ), ( B * C ) )
+   {
+      test_ = "DMatDMatMax - Complex operation: A = max( ( 2*A ), ( B * C ) )";
+
+      initialize();
+
+      result_ = max( ( 2*dC3x3_ ), ( tdA3x4_ * tdB4x3_ ) );
+      dC3x3_  = max( ( 2*dC3x3_ ), ( tdA3x4_ * tdB4x3_ ) );
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Complex operation: A = max( ( B * C ), ( 2*A ) )
+   {
+      test_ = "DMatDMatMax - Complex operation: A = max( ( B * C ), ( 2*A ) )";
+
+      initialize();
+
+      result_ = max( ( dA3x4_ * dB4x3_ ), ( 2*tdC3x3_ ) );
+      tdC3x3_ = max( ( dA3x4_ * dB4x3_ ), ( 2*tdC3x3_ ) );
+
+      checkResult( tdC3x3_, result_ );
    }
 
    // Complex operation: A = max( B, ( A + C * D ) )
@@ -751,15 +1055,28 @@ void AliasingTest::testDMatTDMatMax()
    // Maximum with addition assignment
    //=====================================================================================
 
-   // Addition assignment to left-hand side operand
+   // Addition assignment to left-hand side operand (1)
    {
-      test_ = "DMatTDMatMax - Addition assignment to left-hand side operand";
+      test_ = "DMatTDMatMax - Addition assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ =  dC3x3_;
       result_ += max( dC3x3_, tdD3x3_ );
       dC3x3_  += max( dC3x3_, tdD3x3_ );
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Addition assignment to left-hand side operand (2)
+   {
+      test_ = "DMatTDMatMax - Addition assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ += max( dC3x3_, eval( tdD3x3_ ) );
+      dC3x3_  += max( dC3x3_, eval( tdD3x3_ ) );
 
       checkResult( dC3x3_, result_ );
    }
@@ -790,15 +1107,28 @@ void AliasingTest::testDMatTDMatMax()
       checkResult( dD3x3_, result_ );
    }
 
-   // Addition assignment to right-hand side operand
+   // Addition assignment to right-hand side operand (1)
    {
-      test_ = "DMatTDMatMax - Addition assignment to right-hand side operand";
+      test_ = "DMatTDMatMax - Addition assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ =  tdD3x3_;
       result_ += max( dC3x3_, tdD3x3_ );
       tdD3x3_ += max( dC3x3_, tdD3x3_ );
+
+      checkResult( tdD3x3_, result_ );
+   }
+
+   // Addition assignment to right-hand side operand (2)
+   {
+      test_ = "DMatTDMatMax - Addition assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ =  tdD3x3_;
+      result_ += max( eval( dC3x3_ ), tdD3x3_ );
+      tdD3x3_ += max( eval( dC3x3_ ), tdD3x3_ );
 
       checkResult( tdD3x3_, result_ );
    }
@@ -827,6 +1157,32 @@ void AliasingTest::testDMatTDMatMax()
       tdE3x3_ += max( dC3x3_, ( tdD3x3_ * tdE3x3_ ) );
 
       checkResult( tdE3x3_, result_ );
+   }
+
+   // Complex operation: A += max( ( 2*A ), ( B * C ) )
+   {
+      test_ = "DMatDMatMax - Complex operation: A += max( ( 2*A ), ( B * C ) )";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ += max( ( 2*dC3x3_ ), ( tdA3x4_ * tdB4x3_ ) );
+      dC3x3_  += max( ( 2*dC3x3_ ), ( tdA3x4_ * tdB4x3_ ) );
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Complex operation: A += max( ( B * C ), ( 2*A ) )
+   {
+      test_ = "DMatDMatMax - Complex operation: A += max( ( B * C ), ( 2*A ) )";
+
+      initialize();
+
+      result_ =  tdC3x3_;
+      result_ += max( ( dA3x4_ * dB4x3_ ), ( 2*tdC3x3_ ) );
+      tdC3x3_ += max( ( dA3x4_ * dB4x3_ ), ( 2*tdC3x3_ ) );
+
+      checkResult( tdC3x3_, result_ );
    }
 
    // Complex operation: A += max( B, ( A + C * D ) )
@@ -860,15 +1216,28 @@ void AliasingTest::testDMatTDMatMax()
    // Maximum with subtraction assignment
    //=====================================================================================
 
-   // Subtraction assignment to left-hand side operand
+   // Subtraction assignment to left-hand side operand (1)
    {
-      test_ = "DMatTDMatMax - Subtraction assignment to left-hand side operand";
+      test_ = "DMatTDMatMax - Subtraction assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ =  dC3x3_;
       result_ -= max( dC3x3_, tdD3x3_ );
       dC3x3_  -= max( dC3x3_, tdD3x3_ );
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Subtraction assignment to left-hand side operand (2)
+   {
+      test_ = "DMatTDMatMax - Subtraction assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ -= max( dC3x3_, eval( tdD3x3_ ) );
+      dC3x3_  -= max( dC3x3_, eval( tdD3x3_ ) );
 
       checkResult( dC3x3_, result_ );
    }
@@ -899,15 +1268,28 @@ void AliasingTest::testDMatTDMatMax()
       checkResult( dD3x3_, result_ );
    }
 
-   // Subtraction assignment to right-hand side operand
+   // Subtraction assignment to right-hand side operand (1)
    {
-      test_ = "DMatTDMatMax - Subtraction assignment to right-hand side operand";
+      test_ = "DMatTDMatMax - Subtraction assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ =  tdD3x3_;
       result_ -= max( dC3x3_, tdD3x3_ );
       tdD3x3_ -= max( dC3x3_, tdD3x3_ );
+
+      checkResult( tdD3x3_, result_ );
+   }
+
+   // Subtraction assignment to right-hand side operand (2)
+   {
+      test_ = "DMatTDMatMax - Subtraction assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ =  tdD3x3_;
+      result_ -= max( eval( dC3x3_ ), tdD3x3_ );
+      tdD3x3_ -= max( eval( dC3x3_ ), tdD3x3_ );
 
       checkResult( tdD3x3_, result_ );
    }
@@ -936,6 +1318,32 @@ void AliasingTest::testDMatTDMatMax()
       tdE3x3_ -= max( dC3x3_, ( tdD3x3_ * tdE3x3_ ) );
 
       checkResult( tdE3x3_, result_ );
+   }
+
+   // Complex operation: A -= max( ( 2*A ), ( B * C ) )
+   {
+      test_ = "DMatDMatMax - Complex operation: A -= max( ( 2*A ), ( B * C ) )";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ -= max( ( 2*dC3x3_ ), ( tdA3x4_ * tdB4x3_ ) );
+      dC3x3_  -= max( ( 2*dC3x3_ ), ( tdA3x4_ * tdB4x3_ ) );
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Complex operation: A -= max( ( B * C ), ( 2*A ) )
+   {
+      test_ = "DMatDMatMax - Complex operation: A -= max( ( B * C ), ( 2*A ) )";
+
+      initialize();
+
+      result_ =  tdC3x3_;
+      result_ -= max( ( dA3x4_ * dB4x3_ ), ( 2*tdC3x3_ ) );
+      tdC3x3_ -= max( ( dA3x4_ * dB4x3_ ), ( 2*tdC3x3_ ) );
+
+      checkResult( tdC3x3_, result_ );
    }
 
    // Complex operation: A -= max( B, ( A + C * D ) )
@@ -969,15 +1377,28 @@ void AliasingTest::testDMatTDMatMax()
    // Schur product with Schur product assignment
    //=====================================================================================
 
-   // Schur product assignment to left-hand side operand
+   // Schur product assignment to left-hand side operand (1)
    {
-      test_ = "DMatTDMatMax - Schur product assignment to left-hand side operand";
+      test_ = "DMatTDMatMax - Schur product assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ =  dC3x3_;
       result_ %= max( dC3x3_, tdD3x3_ );
       dC3x3_  %= max( dC3x3_, tdD3x3_ );
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Schur product assignment to left-hand side operand (2)
+   {
+      test_ = "DMatTDMatMax - Schur product assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ %= max( dC3x3_, eval( tdD3x3_ ) );
+      dC3x3_  %= max( dC3x3_, eval( tdD3x3_ ) );
 
       checkResult( dC3x3_, result_ );
    }
@@ -1008,15 +1429,28 @@ void AliasingTest::testDMatTDMatMax()
       checkResult( dD3x3_, result_ );
    }
 
-   // Schur product assignment to right-hand side operand
+   // Schur product assignment to right-hand side operand (1)
    {
-      test_ = "DMatTDMatMax - Schur product assignment to right-hand side operand";
+      test_ = "DMatTDMatMax - Schur product assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ =  tdD3x3_;
       result_ %= max( dC3x3_, tdD3x3_ );
       tdD3x3_ %= max( dC3x3_, tdD3x3_ );
+
+      checkResult( tdD3x3_, result_ );
+   }
+
+   // Schur product assignment to right-hand side operand (2)
+   {
+      test_ = "DMatTDMatMax - Schur product assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ =  tdD3x3_;
+      result_ %= max( eval( dC3x3_ ), tdD3x3_ );
+      tdD3x3_ %= max( eval( dC3x3_ ), tdD3x3_ );
 
       checkResult( tdD3x3_, result_ );
    }
@@ -1045,6 +1479,32 @@ void AliasingTest::testDMatTDMatMax()
       tdE3x3_ %= max( dC3x3_, ( tdD3x3_ * tdE3x3_ ) );
 
       checkResult( tdE3x3_, result_ );
+   }
+
+   // Complex operation: A %= max( ( 2*A ), ( B * C ) )
+   {
+      test_ = "DMatDMatMax - Complex operation: A %= max( ( 2*A ), ( B * C ) )";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ %= max( ( 2*dC3x3_ ), ( tdA3x4_ * tdB4x3_ ) );
+      dC3x3_  %= max( ( 2*dC3x3_ ), ( tdA3x4_ * tdB4x3_ ) );
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Complex operation: A %= max( ( B * C ), ( 2*A ) )
+   {
+      test_ = "DMatDMatMax - Complex operation: A %= max( ( B * C ), ( 2*A ) )";
+
+      initialize();
+
+      result_ =  tdC3x3_;
+      result_ %= max( ( dA3x4_ * dB4x3_ ), ( 2*tdC3x3_ ) );
+      tdC3x3_ %= max( ( dA3x4_ * dB4x3_ ), ( 2*tdC3x3_ ) );
+
+      checkResult( tdC3x3_, result_ );
    }
 
    // Complex operation: A %= max( B, ( A + C * D ) )
@@ -1078,15 +1538,28 @@ void AliasingTest::testDMatTDMatMax()
    // Maximum with multiplication assignment
    //=====================================================================================
 
-   // Multiplication assignment to left-hand side operand
+   // Multiplication assignment to left-hand side operand (1)
    {
-      test_ = "DMatTDMatMax - Multiplication assignment to left-hand side operand";
+      test_ = "DMatTDMatMax - Multiplication assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ =  dC3x3_;
       result_ *= max( dC3x3_, tdD3x3_ );
       dC3x3_  *= max( dC3x3_, tdD3x3_ );
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Multiplication assignment to left-hand side operand (2)
+   {
+      test_ = "DMatTDMatMax - Multiplication assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ *= max( dC3x3_, eval( tdD3x3_ ) );
+      dC3x3_  *= max( dC3x3_, eval( tdD3x3_ ) );
 
       checkResult( dC3x3_, result_ );
    }
@@ -1117,15 +1590,28 @@ void AliasingTest::testDMatTDMatMax()
       checkResult( dD3x3_, result_ );
    }
 
-   // Multiplication assignment to right-hand side operand
+   // Multiplication assignment to right-hand side operand (1)
    {
-      test_ = "DMatTDMatMax - Multiplication assignment to right-hand side operand";
+      test_ = "DMatTDMatMax - Multiplication assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ =  tdD3x3_;
       result_ *= max( dC3x3_, tdD3x3_ );
       tdD3x3_ *= max( dC3x3_, tdD3x3_ );
+
+      checkResult( tdD3x3_, result_ );
+   }
+
+   // Multiplication assignment to right-hand side operand (2)
+   {
+      test_ = "DMatTDMatMax - Multiplication assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ =  tdD3x3_;
+      result_ *= max( eval( dC3x3_ ), tdD3x3_ );
+      tdD3x3_ *= max( eval( dC3x3_ ), tdD3x3_ );
 
       checkResult( tdD3x3_, result_ );
    }
@@ -1154,6 +1640,32 @@ void AliasingTest::testDMatTDMatMax()
       tdE3x3_ *= max( dC3x3_, ( tdD3x3_ * tdE3x3_ ) );
 
       checkResult( tdE3x3_, result_ );
+   }
+
+   // Complex operation: A *= max( ( 2*A ), ( B * C ) )
+   {
+      test_ = "DMatDMatMax - Complex operation: A *= max( ( 2*A ), ( B * C ) )";
+
+      initialize();
+
+      result_ =  dC3x3_;
+      result_ *= max( ( 2*dC3x3_ ), ( tdA3x4_ * tdB4x3_ ) );
+      dC3x3_  *= max( ( 2*dC3x3_ ), ( tdA3x4_ * tdB4x3_ ) );
+
+      checkResult( dC3x3_, result_ );
+   }
+
+   // Complex operation: A *= max( ( B * C ), ( 2*A ) )
+   {
+      test_ = "DMatDMatMax - Complex operation: A *= max( ( B * C ), ( 2*A ) )";
+
+      initialize();
+
+      result_ =  tdC3x3_;
+      result_ *= max( ( dA3x4_ * dB4x3_ ), ( 2*tdC3x3_ ) );
+      tdC3x3_ *= max( ( dA3x4_ * dB4x3_ ), ( 2*tdC3x3_ ) );
+
+      checkResult( tdC3x3_, result_ );
    }
 
    // Complex operation: A *= max( B, ( A + C * D ) )
