@@ -479,7 +479,7 @@ class SMatDMatSchurExpr
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return ( lhs_.canAlias( alias ) || rhs_.canAlias( alias ) );
+      return ( lhs_.canAlias( alias ) || rhs_.isAliased( alias ) );
    }
    //**********************************************************************************************
 
