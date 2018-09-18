@@ -59,6 +59,7 @@
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsCommutative.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
@@ -628,21 +629,22 @@ class DMatDMatSchurExpr
 
    //**Assignment to dense matrices****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a dense matrix-dense matrix Schur product to a dense matrix.
+   /*!\brief Assignment of a non-commutative dense matrix-dense matrix Schur product to a
+   //        dense matrix.
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.
    // \param rhs The right-hand side Schur product expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized assignment of a dense matrix-dense
-   // matrix Schur product expression to a dense matrix. Due to the explicit application of
-   // the SFINAE principle, this function can only be selected by the compiler in case either
-   // of the two operands requires an intermediate evaluation.
+   // This function implements the performance optimized assignment of a non-commutative dense
+   // matrix-dense matrix Schur product expression to a dense matrix. Due to the explicit
+   // application of the SFINAE principle, this function can only be selected by the compiler
+   // in case either of the two operands requires an intermediate evaluation.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
+   friend inline EnableIf_t< UseAssign_v<MT> && !IsCommutative_v<MT1,MT2> >
       assign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -652,6 +654,49 @@ class DMatDMatSchurExpr
 
       if( !IsOperation_v<MT1> && isSame( ~lhs, rhs.lhs_ ) ) {
          schurAssign( ~lhs, rhs.rhs_ );
+      }
+      else {
+         CT1 A( serial( rhs.lhs_ ) );
+         CT2 B( serial( rhs.rhs_ ) );
+         assign( ~lhs, A % B );
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Assignment to dense matrices****************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Assignment of a commutative dense matrix-dense matrix Schur product to a dense matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side Schur product expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized assignment of a commutative dense
+   // matrix-dense matrix Schur product expression to a dense matrix. Due to the explicit
+   // application of the SFINAE principle, this function can only be selected by the compiler
+   // in case either of the two operands requires an intermediate evaluation.
+   */
+   template< typename MT  // Type of the target dense matrix
+           , bool SO2 >   // Storage order of the target dense matrix
+   friend inline EnableIf_t< UseAssign_v<MT> && IsCommutative_v<MT1,MT2> >
+      assign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      if( !IsOperation_v<MT1> && isSame( ~lhs, rhs.lhs_ ) ) {
+         schurAssign( ~lhs, rhs.rhs_ );
+      }
+      else if( !IsOperation_v<MT2> && isSame( ~lhs, rhs.rhs_ ) ) {
+         schurAssign( ~lhs, rhs.lhs_ );
+      }
+      else if( !RequiresEvaluation_v<MT2> ) {
+         assign     ( ~lhs, rhs.rhs_ );
+         schurAssign( ~lhs, rhs.lhs_ );
       }
       else {
          assign     ( ~lhs, rhs.lhs_ );
@@ -778,21 +823,57 @@ class DMatDMatSchurExpr
 
    //**Schur product assignment to dense matrices**************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Schur product assignment of a dense matrix-dense matrix Schur product to a dense matrix.
+   /*!\brief Schur product assignment of a non-commutative dense matrix-dense matrix Schur
+   //        product to a dense matrix.
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.
    // \param rhs The right-hand side Schur product expression for the Schur product.
    // \return void
    //
-   // This function implements the performance optimized Schur product assignment of a dense matrix-
-   // dense matrix Schur product expression to a dense matrix. Due to the explicit application of
-   // the SFINAE principle, this function can only be selected by the compiler in case either
-   // of the operands requires an intermediate evaluation.
+   // This function implements the performance optimized Schur product assignment of a
+   // non-commutative dense matrix-dense matrix Schur product expression to a dense matrix. Due
+   // to the explicit application of the SFINAE principle, this function can only be selected by
+   // the compiler in case either of the operands requires an intermediate evaluation.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
+   friend inline EnableIf_t< UseAssign_v<MT> && !IsCommutative_v<MT1,MT2> >
+      schurAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      const ResultType tmp( serial( rhs ) );
+      schurAssign( ~lhs, tmp );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Schur product assignment to dense matrices**************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Schur product assignment of a commutative dense matrix-dense matrix Schur product
+   //        to a dense matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side Schur product expression for the Schur product.
+   // \return void
+   //
+   // This function implements the performance optimized Schur product assignment of a
+   // commutative dense matrix-dense matrix Schur product expression to a dense matrix. Due
+   // to the explicit application of the SFINAE principle, this function can only be selected
+   // by the compiler in case either of the operands requires an intermediate evaluation.
+   */
+   template< typename MT  // Type of the target dense matrix
+           , bool SO2 >   // Storage order of the target dense matrix
+   friend inline EnableIf_t< UseAssign_v<MT> && IsCommutative_v<MT1,MT2> >
       schurAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -800,8 +881,14 @@ class DMatDMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      schurAssign( ~lhs, rhs.lhs_ );
-      schurAssign( ~lhs, rhs.rhs_ );
+      if( !RequiresEvaluation_v<MT2> ) {
+         schurAssign( ~lhs, rhs.rhs_ );
+         schurAssign( ~lhs, rhs.lhs_ );
+      }
+      else {
+         schurAssign( ~lhs, rhs.lhs_ );
+         schurAssign( ~lhs, rhs.rhs_ );
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -820,21 +907,22 @@ class DMatDMatSchurExpr
 
    //**SMP assignment to dense matrices************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP assignment of a dense matrix-dense matrix Schur product to a dense matrix.
+   /*!\brief SMP assignment of non-commutative a dense matrix-dense matrix Schur product to a
+   //        dense matrix.
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.
    // \param rhs The right-hand side Schur product expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized SMP assignment of a dense matrix-dense
-   // matrix Schur product expression to a dense matrix. Due to the explicit application of the
-   // SFINAE principle, this function can only be selected by the compiler in case the expression
-   // specific parallel evaluation strategy is selected.
+   // This function implements the performance optimized SMP assignment of a non-commutative
+   // dense matrix-dense matrix Schur product expression to a dense matrix. Due to the explicit
+   // application of the SFINAE principle, this function can only be selected by the compiler
+   // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
+   friend inline EnableIf_t< UseSMPAssign_v<MT> && !IsCommutative_v<MT1,MT2> >
       smpAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -844,6 +932,50 @@ class DMatDMatSchurExpr
 
       if( !IsOperation_v<MT1> && isSame( ~lhs, rhs.lhs_ ) ) {
          smpSchurAssign( ~lhs, rhs.rhs_ );
+      }
+      else {
+         CT1 A( rhs.lhs_ );
+         CT2 B( rhs.rhs_ );
+         smpAssign( ~lhs, A % B );
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP assignment to dense matrices************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of commutative a dense matrix-dense matrix Schur product to a
+   //        dense matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side Schur product expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized SMP assignment of a commutative dense
+   // matrix-dense matrix Schur product expression to a dense matrix. Due to the explicit
+   // application of the SFINAE principle, this function can only be selected by the compiler
+   // in case the expression specific parallel evaluation strategy is selected.
+   */
+   template< typename MT  // Type of the target dense matrix
+           , bool SO2 >   // Storage order of the target dense matrix
+   friend inline EnableIf_t< UseSMPAssign_v<MT> && IsCommutative_v<MT1,MT2> >
+      smpAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      if( !IsOperation_v<MT1> && isSame( ~lhs, rhs.lhs_ ) ) {
+         smpSchurAssign( ~lhs, rhs.rhs_ );
+      }
+      else if( !IsOperation_v<MT2> && isSame( ~lhs, rhs.rhs_ ) ) {
+         smpSchurAssign( ~lhs, rhs.lhs_ );
+      }
+      else if( !RequiresEvaluation_v<MT2> ) {
+         smpAssign     ( ~lhs, rhs.rhs_ );
+         smpSchurAssign( ~lhs, rhs.lhs_ );
       }
       else {
          smpAssign     ( ~lhs, rhs.lhs_ );
@@ -971,8 +1103,8 @@ class DMatDMatSchurExpr
 
    //**SMP Schur product assignment to dense matrices**********************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP Schur product assignment of a dense matrix-dense matrix Schur product to a
-   //        dense matrix.
+   /*!\brief SMP Schur product assignment of a non-commutative dense matrix-dense matrix Schur
+   //        product to a dense matrix.
    // \ingroup dense_matrix
    //
    // \param lhs The target left-hand side dense matrix.
@@ -980,13 +1112,48 @@ class DMatDMatSchurExpr
    // \return void
    //
    // This function implements the performance optimized SMP Schur product assignment of a
-   // dense matrix-dense matrix Schur product expression to a dense matrix. Due to the explicit
-   // application of the SFINAE principle, this function can only be selected by the compiler
-   // in case the expression specific parallel evaluation strategy is selected.
+   // non-commutative dense matrix-dense matrix Schur product expression to a dense matrix. Due
+   // to the explicit application of the SFINAE principle, this function can only be selected by
+   // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
+   friend inline EnableIf_t< UseSMPAssign_v<MT> && !IsCommutative_v<MT1,MT2> >
+      smpSchurAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ResultType, SO );
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      const ResultType tmp( rhs );
+      smpSchurAssign( ~lhs, tmp );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP Schur product assignment to dense matrices**********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP Schur product assignment of a commutative dense matrix-dense matrix Schur
+   //        product to a dense matrix.
+   // \ingroup dense_matrix
+   //
+   // \param lhs The target left-hand side dense matrix.
+   // \param rhs The right-hand side Schur product expression for the Schur product.
+   // \return void
+   //
+   // This function implements the performance optimized SMP Schur product assignment of a
+   // commutative dense matrix-dense matrix Schur product expression to a dense matrix. Due to
+   // the explicit application of the SFINAE principle, this function can only be selected by
+   // the compiler in case the expression specific parallel evaluation strategy is selected.
+   */
+   template< typename MT  // Type of the target dense matrix
+           , bool SO2 >   // Storage order of the target dense matrix
+   friend inline EnableIf_t< UseSMPAssign_v<MT> && IsCommutative_v<MT1,MT2> >
       smpSchurAssign( DenseMatrix<MT,SO2>& lhs, const DMatDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -994,8 +1161,14 @@ class DMatDMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      smpSchurAssign( ~lhs, rhs.lhs_ );
-      smpSchurAssign( ~lhs, rhs.rhs_ );
+      if( !RequiresEvaluation_v<MT2> ) {
+         smpSchurAssign( ~lhs, rhs.rhs_ );
+         smpSchurAssign( ~lhs, rhs.lhs_ );
+      }
+      else {
+         smpSchurAssign( ~lhs, rhs.lhs_ );
+         smpSchurAssign( ~lhs, rhs.rhs_ );
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
