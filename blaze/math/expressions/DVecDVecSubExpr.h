@@ -616,6 +616,11 @@ class DVecDVecSubExpr
       if( !IsComputation_v<VT1> && isSame( ~lhs, rhs.lhs_ ) ) {
          subAssign( ~lhs, rhs.rhs_ );
       }
+      else if( ( !IsComputation_v<VT2> && isSame( ~lhs, rhs.rhs_ ) ) ||
+               ( !RequiresEvaluation_v<VT2> && rhs.rhs_.isAliased( &(~lhs) ) ) ) {
+         assign   ( ~lhs, -rhs.rhs_ );
+         addAssign( ~lhs,  rhs.lhs_ );
+      }
       else {
          assign   ( ~lhs, rhs.lhs_ );
          subAssign( ~lhs, rhs.rhs_ );
@@ -678,8 +683,14 @@ class DVecDVecSubExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      addAssign( ~lhs, rhs.lhs_ );
-      subAssign( ~lhs, rhs.rhs_ );
+      if( !RequiresEvaluation_v<VT2> ) {
+         subAssign( ~lhs, rhs.rhs_ );
+         addAssign( ~lhs, rhs.lhs_ );
+      }
+      else {
+         addAssign( ~lhs, rhs.lhs_ );
+         subAssign( ~lhs, rhs.rhs_ );
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -710,8 +721,14 @@ class DVecDVecSubExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      subAssign( ~lhs, rhs.lhs_ );
-      addAssign( ~lhs, rhs.rhs_ );
+      if( !RequiresEvaluation_v<VT2> ) {
+         addAssign( ~lhs, rhs.rhs_ );
+         subAssign( ~lhs, rhs.lhs_ );
+      }
+      else {
+         subAssign( ~lhs, rhs.lhs_ );
+         addAssign( ~lhs, rhs.rhs_ );
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -817,6 +834,11 @@ class DVecDVecSubExpr
       if( !IsComputation_v<VT1> && isSame( ~lhs, rhs.lhs_ ) ) {
          smpSubAssign( ~lhs, rhs.rhs_ );
       }
+      else if( ( !IsComputation_v<VT2> && isSame( ~lhs, rhs.rhs_ ) ) ||
+               ( !RequiresEvaluation_v<VT2> && rhs.rhs_.isAliased( &(~lhs) ) ) ) {
+         smpAssign   ( ~lhs, -rhs.rhs_ );
+         smpAddAssign( ~lhs,  rhs.lhs_ );
+      }
       else {
          smpAssign   ( ~lhs, rhs.lhs_ );
          smpSubAssign( ~lhs, rhs.rhs_ );
@@ -879,8 +901,14 @@ class DVecDVecSubExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpAddAssign( ~lhs, rhs.lhs_ );
-      smpSubAssign( ~lhs, rhs.rhs_ );
+      if( !RequiresEvaluation_v<VT2> ) {
+         smpSubAssign( ~lhs, rhs.rhs_ );
+         smpAddAssign( ~lhs, rhs.lhs_ );
+      }
+      else {
+         smpAddAssign( ~lhs, rhs.lhs_ );
+         smpSubAssign( ~lhs, rhs.rhs_ );
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -911,8 +939,14 @@ class DVecDVecSubExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpSubAssign( ~lhs, rhs.lhs_ );
-      smpAddAssign( ~lhs, rhs.rhs_ );
+      if( !RequiresEvaluation_v<VT2> ) {
+         smpAddAssign( ~lhs, rhs.rhs_ );
+         smpSubAssign( ~lhs, rhs.lhs_ );
+      }
+      else {
+         smpSubAssign( ~lhs, rhs.lhs_ );
+         smpAddAssign( ~lhs, rhs.rhs_ );
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
