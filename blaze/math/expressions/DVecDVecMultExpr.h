@@ -57,6 +57,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsCommutative.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsPadded.h>
@@ -593,20 +594,55 @@ class DVecDVecMultExpr
 
    //**Assignment to dense vectors*****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a dense vector-dense vector multiplication to a dense vector.
+   /*!\brief Assignment of a non-commutative dense vector-dense vector multiplication to a
+   //        dense vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
    // \param rhs The right-hand side multiplication expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized assignment of a dense vector-dense
-   // vector multiplication expression to a dense vector. Due to the explicit application of
-   // the SFINAE principle, this function can only be selected by the compiler in case either
-   // of the two operands requires an intermediate evaluation.
+   // This function implements the performance optimized assignment of a non-commutative dense
+   // vector-dense vector multiplication expression to a dense vector. Due to the explicit
+   // application of the SFINAE principle, this function can only be selected by the compiler
+   // in case either of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT> >
+   friend inline EnableIf_t< UseAssign_v<VT> && !IsCommutative_v<VT1,VT2> >
+      assign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      if( !IsComputation_v<VT1> && isSame( ~lhs, rhs.lhs_ ) ) {
+         multAssign( ~lhs, rhs.rhs_ );
+      }
+      else {
+         CT1 a( serial( rhs.lhs_ ) );
+         CT2 b( serial( rhs.rhs_ ) );
+         assign( ~lhs, a * b );
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Assignment to dense vectors*****************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Assignment of a commutative dense vector-dense vector multiplication to a dense vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side multiplication expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized assignment of a commutative dense
+   // vector-dense vector multiplication expression to a dense vector. Due to the explicit
+   // application of the SFINAE principle, this function can only be selected by the compiler
+   // in case either of the two operands requires an intermediate evaluation.
+   */
+   template< typename VT >  // Type of the target dense vector
+   friend inline EnableIf_t< UseAssign_v<VT> && IsCommutative_v<VT1,VT2> >
       assign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -617,6 +653,10 @@ class DVecDVecMultExpr
          multAssign( ~lhs, rhs.rhs_ );
       }
       else if( !IsComputation_v<VT2> && isSame( ~lhs, rhs.rhs_ ) ) {
+         multAssign( ~lhs, rhs.lhs_ );
+      }
+      else if( !RequiresEvaluation_v<VT2> ) {
+         assign    ( ~lhs, rhs.rhs_ );
          multAssign( ~lhs, rhs.lhs_ );
       }
       else {
@@ -733,58 +773,74 @@ class DVecDVecMultExpr
 
    //**Multiplication assignment to dense vectors**************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Multiplication assignment of a dense vector-dense vector multiplication to a dense vector.
+   /*!\brief Multiplication assignment of a non-commutative dense vector-dense vector
+   //        multiplication to a dense vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
    // \param rhs The right-hand side multiplication expression to be multiplied.
    // \return void
    //
-   // This function implements the performance optimized multiplication assignment of a dense
-   // vector-dense vector multiplication expression to a dense vector. Due to the explicit
-   // application of the SFINAE principle, this function can only be selected by the compiler
-   // in case either of the operands requires an intermediate evaluation.
+   // This function implements the performance optimized multiplication assignment of a
+   // non-commutative dense vector-dense vector multiplication expression to a dense vector. Due
+   // to the explicit application of the SFINAE principle, this function can only be selected by
+   // the compiler in case either of the operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT> >
+   friend inline EnableIf_t< UseAssign_v<VT> && !IsCommutative_v<VT1,VT2> >
+      multAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      const ResultType tmp( serial( rhs ) );
+      multAssign( ~lhs, tmp );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Multiplication assignment to dense vectors**************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Multiplication assignment of a commutative dense vector-dense vector multiplication
+   //        to a dense vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side multiplication expression to be multiplied.
+   // \return void
+   //
+   // This function implements the performance optimized multiplication assignment of a
+   // commutative dense vector-dense vector multiplication expression to a dense vector. Due
+   // to the explicit application of the SFINAE principle, this function can only be selected
+   // by the compiler in case either of the operands requires an intermediate evaluation.
+   */
+   template< typename VT >  // Type of the target dense vector
+   friend inline EnableIf_t< UseAssign_v<VT> && IsCommutative_v<VT1,VT2> >
       multAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      multAssign( ~lhs, rhs.lhs_ );
-      multAssign( ~lhs, rhs.rhs_ );
+      if( !RequiresEvaluation_v<VT2> ) {
+         multAssign( ~lhs, rhs.rhs_ );
+         multAssign( ~lhs, rhs.lhs_ );
+      }
+      else {
+         multAssign( ~lhs, rhs.lhs_ );
+         multAssign( ~lhs, rhs.rhs_ );
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
 
    //**Multiplication assignment to sparse vectors*************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Multiplication assignment of a dense vector-dense vector multiplication to a sparse vector.
-   // \ingroup dense_vector
-   //
-   // \param lhs The target left-hand side sparse vector.
-   // \param rhs The right-hand side multiplication expression to be multiplied.
-   // \return void
-   //
-   // This function implements the performance optimized multiplication assignment of a dense
-   // vector-dense vector multiplication expression to a sparse vector. Due to the explicit
-   // application of the SFINAE principle, this function can only be selected by the compiler
-   // in case either of the operands requires an intermediate evaluation.
-   */
-   template< typename VT >  // Type of the target sparse vector
-   friend inline EnableIf_t< UseAssign_v<VT> >
-      multAssign( SparseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      multAssign( ~lhs, rhs.lhs_ );
-      multAssign( ~lhs, rhs.rhs_ );
-   }
-   /*! \endcond */
+   // No special implementation for the multiplication assignment to sparse vectors.
    //**********************************************************************************************
 
    //**Division assignment to dense vectors********************************************************
@@ -825,20 +881,56 @@ class DVecDVecMultExpr
 
    //**SMP assignment to dense vectors*************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP assignment of a dense vector-dense vector multiplication to a dense vector.
+   /*!\brief SMP assignment of a non-commutative dense vector-dense vector multiplication to a
+   //        dense vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
    // \param rhs The right-hand side multiplication expression to be assigned.
    // \return void
    //
-   // This function implements the performance optimized SMP assignment of a dense vector-dense
-   // vector multiplication expression to a dense vector. Due to the explicit application of the
-   // SFINAE principle, this function can only be selected by the compiler in case the expression
-   // specific parallel evaluation strategy is selected.
+   // This function implements the performance optimized SMP assignment of a non-commutative
+   // dense vector-dense vector multiplication expression to a dense vector. Due to the explicit
+   // application of the SFINAE principle, this function can only be selected by the compiler in
+   // case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> >
+   friend inline EnableIf_t< UseSMPAssign_v<VT> && !IsCommutative_v<VT1,VT2> >
+      smpAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      if( !IsComputation_v<VT1> && isSame( ~lhs, rhs.lhs_ ) ) {
+         multAssign( ~lhs, rhs.rhs_ );
+      }
+      else {
+         CT1 a( rhs.lhs_ );
+         CT2 b( rhs.rhs_ );
+         smpAssign( ~lhs, a * b );
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP assignment to dense vectors*************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP assignment of a commutative dense vector-dense vector multiplication to a
+   //        dense vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side multiplication expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized SMP assignment of a commutative dense
+   // vector-dense vector multiplication expression to a dense vector. Due to the explicit
+   // application of the SFINAE principle, this function can only be selected by the compiler
+   // in case the expression specific parallel evaluation strategy is selected.
+   */
+   template< typename VT >  // Type of the target dense vector
+   friend inline EnableIf_t< UseSMPAssign_v<VT> && IsCommutative_v<VT1,VT2> >
       smpAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
@@ -849,6 +941,10 @@ class DVecDVecMultExpr
          smpMultAssign( ~lhs, rhs.rhs_ );
       }
       else if( !IsComputation_v<VT2> && isSame( ~lhs, rhs.rhs_ ) ) {
+         smpMultAssign( ~lhs, rhs.lhs_ );
+      }
+      else if( !RequiresEvaluation_v<VT2> ) {
+         smpAssign    ( ~lhs, rhs.rhs_ );
          smpMultAssign( ~lhs, rhs.lhs_ );
       }
       else {
@@ -966,8 +1062,8 @@ class DVecDVecMultExpr
 
    //**SMP multiplication assignment to dense vectors**********************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP multiplication assignment of a dense vector-dense vector multiplication to a
-   //        dense vector.
+   /*!\brief SMP multiplication assignment of a non-commutative dense vector-dense vector
+   //        multiplication to a dense vector.
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side dense vector.
@@ -975,51 +1071,65 @@ class DVecDVecMultExpr
    // \return void
    //
    // This function implements the performance optimized SMP multiplication assignment of a
-   // dense vector-dense vector multiplication expression to a dense vector. Due to the explicit
-   // application of the SFINAE principle, this function can only be selected by the compiler in
-   // case the expression specific parallel evaluation strategy is selected.
+   // non-commutative dense vector-dense vector multiplication expression to a dense vector. Due
+   // to the explicit application of the SFINAE principle, this function can only be selected by
+   // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> >
+   friend inline EnableIf_t< UseSMPAssign_v<VT> && !IsCommutative_v<VT1,VT2> >
+      smpMultAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType, TF );
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+      const ResultType tmp( rhs );
+      smpMultAssign( ~lhs, tmp );
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**SMP multiplication assignment to dense vectors**********************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief SMP multiplication assignment of a commutative dense vector-dense vector
+   //        multiplication to a dense vector.
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side multiplication expression to be multiplied.
+   // \return void
+   //
+   // This function implements the performance optimized SMP multiplication assignment of a
+   // commutative dense vector-dense vector multiplication expression to a dense vector. Due
+   // to the explicit application of the SFINAE principle, this function can only be selected
+   // by the compiler in case the expression specific parallel evaluation strategy is selected.
+   */
+   template< typename VT >  // Type of the target dense vector
+   friend inline EnableIf_t< UseSMPAssign_v<VT> && IsCommutative_v<VT1,VT2> >
       smpMultAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      smpMultAssign( ~lhs, rhs.lhs_ );
-      smpMultAssign( ~lhs, rhs.rhs_ );
+      if( !RequiresEvaluation_v<VT2> ) {
+         smpMultAssign( ~lhs, rhs.rhs_ );
+         smpMultAssign( ~lhs, rhs.lhs_ );
+      }
+      else {
+         smpMultAssign( ~lhs, rhs.lhs_ );
+         smpMultAssign( ~lhs, rhs.rhs_ );
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
 
    //**SMP multiplication assignment to sparse vectors*********************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP multiplication assignment of a dense vector-dense vector multiplication to a
-   //        sparse vector.
-   // \ingroup dense_vector
-   //
-   // \param lhs The target left-hand side sparse vector.
-   // \param rhs The right-hand side multiplication expression to be multiplied.
-   // \return void
-   //
-   // This function implements the performance optimized SMP multiplication assignment of a
-   // dense vector-dense vector multiplication expression to a sparse vector. Due to the explicit
-   // application of the SFINAE principle, this function can only be selected by the compiler in
-   // case the expression specific parallel evaluation strategy is selected.
-   */
-   template< typename VT >  // Type of the target sparse vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> >
-      smpMultAssign( SparseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      smpMultAssign( ~lhs, rhs.lhs_ );
-      smpMultAssign( ~lhs, rhs.rhs_ );
-   }
-   /*! \endcond */
+   // No special implementation for the SMP multiplication assignment to sparse vectors.
    //**********************************************************************************************
 
    //**SMP division assignment to dense vectors****************************************************
