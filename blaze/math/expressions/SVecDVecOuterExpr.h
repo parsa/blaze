@@ -590,11 +590,9 @@ class SVecDVecOuterExpr
    static inline EnableIf_t< UseDefaultKernel_v<MT,VT3,VT4> >
       selectAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
+      const auto end( x.end() );
 
-      const ConstIterator end( x.end() );
-
-      for( ConstIterator element=x.begin(); element!=end; ++element ) {
+      for( auto element=x.begin(); element!=end; ++element ) {
          if( !isDefault( element->value() ) ) {
             for( size_t j=0UL; j<y.size(); ++j ) {
                (~A)(element->index(),j) = element->value() * y[j];
@@ -625,8 +623,6 @@ class SVecDVecOuterExpr
    static inline EnableIf_t< UseVectorizedKernel_v<MT,VT3,VT4> >
       selectAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
-
       constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT4> );
 
       const size_t N( (~A).columns() );
@@ -634,10 +630,10 @@ class SVecDVecOuterExpr
       const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
 
-      const ConstIterator begin( x.begin() );
-      const ConstIterator end  ( x.end()   );
+      const auto begin( x.begin() );
+      const auto end  ( x.end()   );
 
-      for( ConstIterator element=begin; element!=end; ++element )
+      for( auto element=begin; element!=end; ++element )
       {
          const SIMDTrait_t<ElementType> x1( set( element->value() ) );
 
@@ -679,8 +675,6 @@ class SVecDVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
-
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
 
@@ -689,11 +683,11 @@ class SVecDVecOuterExpr
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      const ConstIterator end( x.end() );
+      const auto end( x.end() );
 
       for( size_t i=0UL; i<y.size(); ++i ) {
          if( !isDefault( y[i] ) ) {
-            for( ConstIterator element=x.begin(); element!=end; ++element ) {
+            for( auto element=x.begin(); element!=end; ++element ) {
                (~lhs)(element->index(),i) = element->value() * y[i];
             }
          }
@@ -724,8 +718,6 @@ class SVecDVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()    , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns() , "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
-
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
 
@@ -738,8 +730,8 @@ class SVecDVecOuterExpr
       (~lhs).reserve( x.nonZeros() * y.size() );
 
       // Performing the outer product
-      const ConstIterator begin( x.begin() );
-      const ConstIterator end  ( x.end()   );
+      const auto begin( x.begin() );
+      const auto end  ( x.end()   );
 
       if( begin == end )
          return;
@@ -748,7 +740,7 @@ class SVecDVecOuterExpr
 
       size_t index( 0UL );
 
-      for( ConstIterator element=begin; element!=end; ++element ) {
+      for( auto element=begin; element!=end; ++element ) {
          if( !isDefault( element->value() ) ) {
             for( ; index < element->index(); ++index ) {
                (~lhs).finalize( index );
@@ -793,8 +785,6 @@ class SVecDVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).columns()  == rhs.columns() , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( (~lhs).capacity() >= rhs.nonZeros(), "Insufficient capacity"     );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
-
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
 
@@ -803,15 +793,15 @@ class SVecDVecOuterExpr
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      const ConstIterator begin( x.begin() );
-      const ConstIterator end  ( x.end()   );
+      const auto begin( x.begin() );
+      const auto end  ( x.end()   );
 
       if( begin == end )
          return;
 
       for( size_t i=0UL; i<y.size(); ++i ) {
          if( !isDefault( y[i] ) ) {
-            for( ConstIterator element=begin; element!=end; ++element ) {
+            for( auto element=begin; element!=end; ++element ) {
                (~lhs).append( element->index(), i, element->value() * y[i] );
             }
          }
@@ -877,11 +867,9 @@ class SVecDVecOuterExpr
    static inline EnableIf_t< UseDefaultKernel_v<MT,VT3,VT4> >
       selectAddAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
+      const auto end( x.end() );
 
-      const ConstIterator end( x.end() );
-
-      for( ConstIterator element=x.begin(); element!=end; ++element ) {
+      for( auto element=x.begin(); element!=end; ++element ) {
          if( !isDefault( element->value() ) ) {
             for( size_t i=0UL; i<y.size(); ++i ) {
                (~A)(element->index(),i) += element->value() * y[i];
@@ -912,8 +900,6 @@ class SVecDVecOuterExpr
    static inline EnableIf_t< UseVectorizedKernel_v<MT,VT3,VT4> >
       selectAddAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
-
       constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT4> );
 
       const size_t N( (~A).columns() );
@@ -921,10 +907,10 @@ class SVecDVecOuterExpr
       const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
 
-      const ConstIterator begin( x.begin() );
-      const ConstIterator end  ( x.end()   );
+      const auto begin( x.begin() );
+      const auto end  ( x.end()   );
 
-      for( ConstIterator element=begin; element!=end; ++element )
+      for( auto element=begin; element!=end; ++element )
       {
          if( isDefault( element->value() ) ) continue;
 
@@ -968,8 +954,6 @@ class SVecDVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
-
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
 
@@ -978,11 +962,11 @@ class SVecDVecOuterExpr
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      const ConstIterator end( x.end() );
+      const auto end( x.end() );
 
       for( size_t i=0UL; i<y.size(); ++i ) {
          if( !isDefault( y[i] ) ) {
-            for( ConstIterator element=x.begin(); element!=end; ++element ) {
+            for( auto element=x.begin(); element!=end; ++element ) {
                (~lhs)(element->index(),i) += element->value() * y[i];
             }
          }
@@ -1051,11 +1035,9 @@ class SVecDVecOuterExpr
    static inline EnableIf_t< UseDefaultKernel_v<MT,VT3,VT4> >
       selectSubAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
+      const auto end( x.end() );
 
-      const ConstIterator end( x.end() );
-
-      for( ConstIterator element=x.begin(); element!=end; ++element ) {
+      for( auto element=x.begin(); element!=end; ++element ) {
          if( !isDefault( element->value() ) ) {
             for( size_t i=0UL; i<y.size(); ++i ) {
                (~A)(element->index(),i) -= element->value() * y[i];
@@ -1086,8 +1068,6 @@ class SVecDVecOuterExpr
    static inline EnableIf_t< UseVectorizedKernel_v<MT,VT3,VT4> >
       selectSubAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
-
       constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT4> );
 
       const size_t N( (~A).columns() );
@@ -1095,10 +1075,10 @@ class SVecDVecOuterExpr
       const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
 
-      const ConstIterator begin( x.begin() );
-      const ConstIterator end  ( x.end()   );
+      const auto begin( x.begin() );
+      const auto end  ( x.end()   );
 
-      for( ConstIterator element=begin; element!=end; ++element )
+      for( auto element=begin; element!=end; ++element )
       {
          if( isDefault( element->value() ) ) continue;
 
@@ -1142,8 +1122,6 @@ class SVecDVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
-
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
 
@@ -1152,11 +1130,11 @@ class SVecDVecOuterExpr
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      const ConstIterator end( x.end() );
+      const auto end( x.end() );
 
       for( size_t i=0UL; i<y.size(); ++i ) {
          if( !isDefault( y[i] ) ) {
-            for( ConstIterator element=x.begin(); element!=end; ++element ) {
+            for( auto element=x.begin(); element!=end; ++element ) {
                (~lhs)(element->index(),i) -= element->value() * y[i];
             }
          }
@@ -1225,13 +1203,11 @@ class SVecDVecOuterExpr
    static inline EnableIf_t< UseDefaultKernel_v<MT,VT3,VT4> >
       selectSchurAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
-
-      const ConstIterator end( x.end() );
+      const auto end( x.end() );
 
       size_t i( 0UL );
 
-      for( ConstIterator element=x.begin(); element!=end; ++element )
+      for( auto element=x.begin(); element!=end; ++element )
       {
          if( isDefault( element->value() ) ) continue;
 
@@ -1275,8 +1251,6 @@ class SVecDVecOuterExpr
    static inline EnableIf_t< UseVectorizedKernel_v<MT,VT3,VT4> >
       selectSchurAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
-
       constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT4> );
 
       const size_t M( (~A).rows()    );
@@ -1285,12 +1259,12 @@ class SVecDVecOuterExpr
       const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
 
-      const ConstIterator begin( x.begin() );
-      const ConstIterator end  ( x.end()   );
+      const auto begin( x.begin() );
+      const auto end  ( x.end()   );
 
       size_t i( 0UL );
 
-      for( ConstIterator element=begin; element!=end; ++element )
+      for( auto element=begin; element!=end; ++element )
       {
          if( isDefault( element->value() ) ) continue;
 
@@ -1346,8 +1320,6 @@ class SVecDVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<LT> >;
-
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense vector operand
 
@@ -1356,13 +1328,13 @@ class SVecDVecOuterExpr
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      const ConstIterator end( x.end() );
+      const auto end( x.end() );
 
       for( size_t j=0UL; j<y.size(); ++j )
       {
          size_t i( 0UL );
 
-         for( ConstIterator element=x.begin(); element!=end; ++element, ++i ) {
+         for( auto element=x.begin(); element!=end; ++element, ++i ) {
             for( ; i<element->index(); ++i )
                reset( (~lhs)(i,j) );
             (~lhs)(element->index(),j) *= element->value() * y[j];

@@ -523,8 +523,6 @@ class SMatDMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<CT1> >;
-
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense matrix operand
 
@@ -536,7 +534,7 @@ class SMatDMatSchurExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
       for( size_t i=0UL; i<(~lhs).rows(); ++i ) {
-         for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
+         for( auto element=A.begin(i); element!=A.end(i); ++element )
             (~lhs)(i,element->index()) = element->value() * B(i,element->index());
       }
    }
@@ -564,8 +562,6 @@ class SMatDMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<CT1> >;
-
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense matrix operand
 
@@ -581,7 +577,7 @@ class SMatDMatSchurExpr
 
       // Performing the Schur product
       for( size_t i=0UL; i<(~lhs).rows(); ++i ) {
-         for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
+         for( auto element=A.begin(i); element!=A.end(i); ++element )
             (~lhs).append( i, element->index(), element->value() * B(i,element->index()) );
          (~lhs).finalize( i );
       }
@@ -611,8 +607,6 @@ class SMatDMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<CT1> >;
-
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense matrix operand
 
@@ -629,8 +623,8 @@ class SMatDMatSchurExpr
       // Counting the number of elements per column
       std::vector<size_t> nonzeros( n, 0UL );
       for( size_t i=0UL; i<m; ++i ) {
-         const ConstIterator lend( A.end(i) );
-         for( ConstIterator l=A.begin(i); l!=lend; ++l ) {
+         const auto lend( A.end(i) );
+         for( auto l=A.begin(i); l!=lend; ++l ) {
             ++nonzeros[l->index()];
          }
       }
@@ -642,7 +636,7 @@ class SMatDMatSchurExpr
 
       // Performing the Schur product
       for( size_t i=0UL; i<m; ++i ) {
-         for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
+         for( auto element=A.begin(i); element!=A.end(i); ++element )
             (~lhs).append( i, element->index(), element->value() * B(i,element->index()) );
       }
    }
@@ -671,8 +665,6 @@ class SMatDMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<CT1> >;
-
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense matrix operand
 
@@ -684,7 +676,7 @@ class SMatDMatSchurExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
       for( size_t i=0UL; i<(~lhs).rows(); ++i ) {
-         for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
+         for( auto element=A.begin(i); element!=A.end(i); ++element )
             (~lhs)(i,element->index()) += element->value() * B(i,element->index());
       }
    }
@@ -717,8 +709,6 @@ class SMatDMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<CT1> >;
-
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense matrix operand
 
@@ -730,7 +720,7 @@ class SMatDMatSchurExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
       for( size_t i=0UL; i<(~lhs).rows(); ++i ) {
-         for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
+         for( auto element=A.begin(i); element!=A.end(i); ++element )
             (~lhs)(i,element->index()) -= element->value() * B(i,element->index());
       }
    }
@@ -763,8 +753,6 @@ class SMatDMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<CT1> >;
-
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense matrix operand
 
@@ -777,8 +765,8 @@ class SMatDMatSchurExpr
 
       for( size_t i=0UL; i<(~lhs).rows(); ++i )
       {
-         const ConstIterator end( A.end(i) );
-         ConstIterator begin( A.begin(i) );
+         const auto end( A.end(i) );
+         auto begin( A.begin(i) );
          size_t j( 0UL );
 
          for( ; begin!=end; ++begin ) {

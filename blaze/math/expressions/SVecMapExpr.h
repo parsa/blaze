@@ -517,12 +517,10 @@ class SVecMapExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using Iterator = Iterator_t<VT2>;
-
       assign( ~lhs, rhs.sv_ );
 
-      const Iterator end( (~lhs).end() );
-      for( Iterator element=(~lhs).begin(); element!=end; ++element ) {
+      const auto end( (~lhs).end() );
+      for( auto element=(~lhs).begin(); element!=end; ++element ) {
          element->value() = rhs.op_( element->value() );
       }
    }

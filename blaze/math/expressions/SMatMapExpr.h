@@ -567,15 +567,13 @@ class SMatMapExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using Iterator = Iterator_t<MT2>;
-
       assign( ~lhs, rhs.sm_ );
 
       const size_t m( rhs.rows() );
 
       for( size_t i=0UL; i<m; ++i ) {
-         const Iterator end( (~lhs).end(i) );
-         for( Iterator element=(~lhs).begin(i); element!=end; ++element ) {
+         const auto end( (~lhs).end(i) );
+         for( auto element=(~lhs).begin(i); element!=end; ++element ) {
             element->value() = rhs.op_( element->value() );
          }
       }
@@ -608,15 +606,13 @@ class SMatMapExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using Iterator = Iterator_t<MT2>;
-
       assign( ~lhs, rhs.sm_ );
 
       const size_t n( rhs.columns() );
 
       for( size_t j=0UL; j<n; ++j ) {
-         const Iterator end( (~lhs).end(j) );
-         for( Iterator element=(~lhs).begin(j); element!=end; ++element ) {
+         const auto end( (~lhs).end(j) );
+         for( auto element=(~lhs).begin(j); element!=end; ++element ) {
             element->value() = rhs.op_( element->value() );
          }
       }

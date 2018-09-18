@@ -66,7 +66,6 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TypeList.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -108,14 +107,13 @@ decltype(auto) norm_backend( const SparseVector<VT,TF>& sv, Abs abs, Power power
    using CT = CompositeType_t<VT>;
    using ET = ElementType_t<VT>;
    using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
-   using Iterator = ConstIterator_t< RemoveReference_t<CT> >;
 
    if( (~sv).size() == 0UL ) return RT();
 
    CT tmp( ~sv );
 
-   const Iterator end( tmp.end() );
-   Iterator element( tmp.begin() );
+   const auto end( tmp.end() );
+   auto element( tmp.begin() );
 
    if( element == end ) return RT();
 

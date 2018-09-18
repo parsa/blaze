@@ -77,6 +77,7 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Maximum.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
 
 
@@ -523,8 +524,6 @@ class DMatSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
 
@@ -536,7 +535,7 @@ class DMatSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
       for( size_t i=0UL; i<(~lhs).rows(); ++i ) {
-         for( ConstIterator element=B.begin(i); element!=B.end(i); ++element )
+         for( auto element=B.begin(i); element!=B.end(i); ++element )
             (~lhs)(i,element->index()) = A(i,element->index()) * element->value();
       }
    }
@@ -564,8 +563,6 @@ class DMatSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
 
@@ -581,7 +578,7 @@ class DMatSMatSchurExpr
 
       // Performing the Schur product
       for( size_t i=0UL; i<(~lhs).rows(); ++i ) {
-         for( ConstIterator element=B.begin(i); element!=B.end(i); ++element )
+         for( auto element=B.begin(i); element!=B.end(i); ++element )
             (~lhs).append( i, element->index(), A(i,element->index()) * element->value() );
          (~lhs).finalize( i );
       }
@@ -611,8 +608,6 @@ class DMatSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
 
@@ -629,8 +624,8 @@ class DMatSMatSchurExpr
       // Counting the number of elements per column
       std::vector<size_t> nonzeros( n, 0UL );
       for( size_t i=0UL; i<m; ++i ) {
-         const ConstIterator lend( B.end(i) );
-         for( ConstIterator l=B.begin(i); l!=lend; ++l ) {
+         const auto lend( B.end(i) );
+         for( auto l=B.begin(i); l!=lend; ++l ) {
             ++nonzeros[l->index()];
          }
       }
@@ -642,7 +637,7 @@ class DMatSMatSchurExpr
 
       // Performing the Schur product
       for( size_t i=0UL; i<(~lhs).rows(); ++i ) {
-         for( ConstIterator element=B.begin(i); element!=B.end(i); ++element )
+         for( auto element=B.begin(i); element!=B.end(i); ++element )
             (~lhs).append( i, element->index(), A(i,element->index()) * element->value() );
       }
    }
@@ -671,8 +666,6 @@ class DMatSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
 
@@ -684,7 +677,7 @@ class DMatSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
       for( size_t i=0UL; i<(~lhs).rows(); ++i ) {
-         for( ConstIterator element=B.begin(i); element!=B.end(i); ++element )
+         for( auto element=B.begin(i); element!=B.end(i); ++element )
             (~lhs)(i,element->index()) += A(i,element->index()) * element->value();
       }
    }
@@ -717,8 +710,6 @@ class DMatSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
 
@@ -730,7 +721,7 @@ class DMatSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
       for( size_t i=0UL; i<(~lhs).rows(); ++i ) {
-         for( ConstIterator element=B.begin(i); element!=B.end(i); ++element )
+         for( auto element=B.begin(i); element!=B.end(i); ++element )
             (~lhs)(i,element->index()) -= A(i,element->index()) * element->value();
       }
    }
@@ -763,8 +754,6 @@ class DMatSMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
 
@@ -777,8 +766,8 @@ class DMatSMatSchurExpr
 
       for( size_t i=0UL; i<(~lhs).rows(); ++i )
       {
-         const ConstIterator end( B.end(i) );
-         ConstIterator begin( B.begin(i) );
+         const auto end( B.end(i) );
+         auto begin( B.begin(i) );
          size_t j( 0UL );
 
          for( ; begin!=end; ++begin ) {

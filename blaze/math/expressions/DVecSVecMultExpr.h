@@ -479,8 +479,6 @@ class DVecSVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -488,7 +486,7 @@ class DVecSVecMultExpr
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
 
-      for( ConstIterator element=y.begin(); element!=y.end(); ++element )
+      for( auto element=y.begin(); element!=y.end(); ++element )
          (~lhs)[element->index()] = x[element->index()] * element->value();
    }
    /*! \endcond */
@@ -516,8 +514,6 @@ class DVecSVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -529,7 +525,7 @@ class DVecSVecMultExpr
       (~lhs).reserve( y.nonZeros() );
 
       // Performing the vector multiplication
-      for( ConstIterator element=y.begin(); element!=y.end(); ++element )
+      for( auto element=y.begin(); element!=y.end(); ++element )
          (~lhs).append( element->index(), x[element->index()] * element->value() );
    }
    /*! \endcond */
@@ -557,8 +553,6 @@ class DVecSVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -566,7 +560,7 @@ class DVecSVecMultExpr
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
 
-      for( ConstIterator element=y.begin(); element!=y.end(); ++element )
+      for( auto element=y.begin(); element!=y.end(); ++element )
          (~lhs)[element->index()] += x[element->index()] * element->value();
    }
    /*! \endcond */
@@ -598,8 +592,6 @@ class DVecSVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -607,7 +599,7 @@ class DVecSVecMultExpr
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
 
-      for( ConstIterator element=y.begin(); element!=y.end(); ++element )
+      for( auto element=y.begin(); element!=y.end(); ++element )
          (~lhs)[element->index()] -= x[element->index()] * element->value();
    }
    /*! \endcond */
@@ -639,8 +631,6 @@ class DVecSVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using ConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -648,8 +638,8 @@ class DVecSVecMultExpr
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
 
-      const ConstIterator end( y.end() );
-      ConstIterator begin( y.begin() );
+      const auto end( y.end() );
+      auto begin( y.begin() );
       size_t i( 0UL );
 
       for( ; begin!=end; ++begin ) {
