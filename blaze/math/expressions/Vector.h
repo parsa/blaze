@@ -86,7 +86,7 @@ struct Vector
    //
    // \return Reference of the actual type of the vector.
    */
-   BLAZE_ALWAYS_INLINE VectorType& operator~() noexcept {
+   BLAZE_ALWAYS_INLINE constexpr VectorType& operator~() noexcept {
       return *static_cast<VectorType*>( this );
    }
    //**********************************************************************************************
@@ -96,7 +96,7 @@ struct Vector
    //
    // \return Const reference of the actual type of the vector.
    */
-   BLAZE_ALWAYS_INLINE const VectorType& operator~() const noexcept {
+   BLAZE_ALWAYS_INLINE constexpr const VectorType& operator~() const noexcept {
       return *static_cast<const VectorType*>( this );
    }
    //**********************************************************************************************

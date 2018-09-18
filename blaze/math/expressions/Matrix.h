@@ -90,7 +90,7 @@ struct Matrix
    //
    // \return Reference of the actual type of the matrix.
    */
-   BLAZE_ALWAYS_INLINE MatrixType& operator~() noexcept {
+   BLAZE_ALWAYS_INLINE constexpr MatrixType& operator~() noexcept {
       return *static_cast<MatrixType*>( this );
    }
    //**********************************************************************************************
@@ -100,7 +100,7 @@ struct Matrix
    //
    // \return Constant reference of the actual type of the matrix.
    */
-   BLAZE_ALWAYS_INLINE const MatrixType& operator~() const noexcept {
+   BLAZE_ALWAYS_INLINE constexpr const MatrixType& operator~() const noexcept {
       return *static_cast<const MatrixType*>( this );
    }
    //**********************************************************************************************
