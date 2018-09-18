@@ -152,7 +152,7 @@ void EigenvalueTest::testGeev()
 {
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
-   test_ = "General matrix eigenvalue computation";
+   test_ = "General matrix eigenvalue computation (geev)";
 
    using CT = blaze::If_t< blaze::IsComplex_v<Type>, Type, blaze::complex<Type> >;
 
