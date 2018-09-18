@@ -103,14 +103,26 @@ void AliasingTest::testDVecSVecSub()
    // Subtraction
    //=====================================================================================
 
-   // Assignment to left-hand side operand
+   // Assignment to left-hand side operand (1)
    {
-      test_ = "DVecSVecSub - Assignment to left-hand side operand";
+      test_ = "DVecSVecSub - Assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ = db3_ - sb3_;
       db3_    = db3_ - sb3_;
+
+      checkResult( db3_, result_ );
+   }
+
+   // Assignment to left-hand side operand (2)
+   {
+      test_ = "DVecSVecSub - Assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ = db3_ - eval( sb3_ );
+      db3_    = db3_ - eval( sb3_ );
 
       checkResult( db3_, result_ );
    }
@@ -139,14 +151,26 @@ void AliasingTest::testDVecSVecSub()
       checkResult( da4_, result_ );
    }
 
-   // Assignment to right-hand side operand
+   // Assignment to right-hand side operand (1)
    {
-      test_ = "DVecSVecSub - Assignment to right-hand side operand";
+      test_ = "DVecSVecSub - Assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ = db3_ - sb3_;
       sb3_    = db3_ - sb3_;
+
+      checkResult( sb3_, result_ );
+   }
+
+   // Assignment to right-hand side operand (2)
+   {
+      test_ = "DVecSVecSub - Assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ = eval( db3_ ) - sb3_;
+      sb3_    = eval( db3_ ) - sb3_;
 
       checkResult( sb3_, result_ );
    }
@@ -175,20 +199,57 @@ void AliasingTest::testDVecSVecSub()
       checkResult( sa4_, result_ );
    }
 
+   // Complex operation: a = ( ( 2*a ) ) - ( A * b );
+   {
+      test_ = "DVecSVecAdd - Complex operation: a = ( 2*a ) - ( A * b );";
+
+      initialize();
+
+      result_ = ( 2*db3_ ) - ( sA3x4_ * sa4_ );
+      db3_    = ( 2*db3_ ) - ( sA3x4_ * sa4_ );
+
+      checkResult( db3_, result_ );
+   }
+
+   // Complex operation: a = ( A * b ) - ( 2*a );
+   {
+      test_ = "DVecSVecAdd - Complex operation: a = ( A * b ) - ( 2*a );";
+
+      initialize();
+
+      result_ = ( dA3x4_ * da4_ ) - ( 2*sb3_ );
+      sb3_    = ( dA3x4_ * da4_ ) - ( 2*sb3_ );
+
+      checkResult( sb3_, result_ );
+   }
+
 
    //=====================================================================================
    // Subtraction with addition assignment
    //=====================================================================================
 
-   // Addition assignment to left-hand side operand
+   // Addition assignment to left-hand side operand (1)
    {
-      test_ = "DVecSVecSub - Addition assignment to left-hand side operand";
+      test_ = "DVecSVecSub - Addition assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ =  db3_;
       result_ += db3_ - sb3_;
       db3_    += db3_ - sb3_;
+
+      checkResult( db3_, result_ );
+   }
+
+   // Addition assignment to left-hand side operand (2)
+   {
+      test_ = "DVecSVecSub - Addition assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ += db3_ - eval( sb3_ );
+      db3_    += db3_ - eval( sb3_ );
 
       checkResult( db3_, result_ );
    }
@@ -206,15 +267,28 @@ void AliasingTest::testDVecSVecSub()
       checkResult( db3_, result_ );
    }
 
-   // Addition assignment to right-hand side operand
+   // Addition assignment to right-hand side operand (1)
    {
-      test_ = "DVecSVecSub - Addition assignment to right-hand side operand";
+      test_ = "DVecSVecSub - Addition assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ =  sb3_;
       result_ += db3_ - sb3_;
       sb3_    += db3_ - sb3_;
+
+      checkResult( sb3_, result_ );
+   }
+
+   // Addition assignment to right-hand side operand (2)
+   {
+      test_ = "DVecSVecSub - Addition assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ =  sb3_;
+      result_ += eval( db3_ ) - sb3_;
+      sb3_    += eval( db3_ ) - sb3_;
 
       checkResult( sb3_, result_ );
    }
@@ -232,20 +306,59 @@ void AliasingTest::testDVecSVecSub()
       checkResult( sb3_, result_ );
    }
 
+   // Complex operation: a += ( 2*a ) - ( A * b );
+   {
+      test_ = "DVecSVecAdd - Complex operation: a += ( 2*a ) - ( A * b );";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ += ( 2*db3_ ) - ( sA3x4_ * sa4_ );
+      db3_    += ( 2*db3_ ) - ( sA3x4_ * sa4_ );
+
+      checkResult( db3_, result_ );
+   }
+
+   // Complex operation: a += ( A * b ) - ( 2*a );
+   {
+      test_ = "DVecSVecAdd - Complex operation: a += ( A * b ) - ( 2*a );";
+
+      initialize();
+
+      result_ =  sb3_;
+      result_ += ( dA3x4_ * da4_ ) - ( 2*sb3_ );
+      sb3_    += ( dA3x4_ * da4_ ) - ( 2*sb3_ );
+
+      checkResult( sb3_, result_ );
+   }
+
 
    //=====================================================================================
    // Subtraction with subtraction assignment
    //=====================================================================================
 
-   // Subtraction assignment to left-hand side operand
+   // Subtraction assignment to left-hand side operand (1)
    {
-      test_ = "DVecSVecSub - Subtraction assignment to left-hand side operand";
+      test_ = "DVecSVecSub - Subtraction assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ =  db3_;
       result_ -= db3_ - sb3_;
       db3_    -= db3_ - sb3_;
+
+      checkResult( db3_, result_ );
+   }
+
+   // Subtraction assignment to left-hand side operand (2)
+   {
+      test_ = "DVecSVecSub - Subtraction assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ -= db3_ - eval( sb3_ );
+      db3_    -= db3_ - eval( sb3_ );
 
       checkResult( db3_, result_ );
    }
@@ -263,15 +376,28 @@ void AliasingTest::testDVecSVecSub()
       checkResult( db3_, result_ );
    }
 
-   // Subtraction assignment to right-hand side operand
+   // Subtraction assignment to right-hand side operand (1)
    {
-      test_ = "DVecSVecSub - Subtraction assignment to right-hand side operand";
+      test_ = "DVecSVecSub - Subtraction assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ =  sb3_;
       result_ -= db3_ - sb3_;
       sb3_    -= db3_ - sb3_;
+
+      checkResult( sb3_, result_ );
+   }
+
+   // Subtraction assignment to right-hand side operand (2)
+   {
+      test_ = "DVecSVecSub - Subtraction assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ =  sb3_;
+      result_ -= eval( db3_ ) - sb3_;
+      sb3_    -= eval( db3_ ) - sb3_;
 
       checkResult( sb3_, result_ );
    }
@@ -289,20 +415,59 @@ void AliasingTest::testDVecSVecSub()
       checkResult( sb3_, result_ );
    }
 
+   // Complex operation: a -= ( 2*a ) - ( A * b );
+   {
+      test_ = "DVecSVecAdd - Complex operation: a -= ( 2*a ) - ( A * b );";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ -= ( 2*db3_ ) - ( sA3x4_ * sa4_ );
+      db3_    -= ( 2*db3_ ) - ( sA3x4_ * sa4_ );
+
+      checkResult( db3_, result_ );
+   }
+
+   // Complex operation: a -= ( A * b ) - ( 2*a );
+   {
+      test_ = "DVecSVecAdd - Complex operation: a -= ( A * b ) - ( 2*a );";
+
+      initialize();
+
+      result_ =  sb3_;
+      result_ -= ( dA3x4_ * da4_ ) - ( 2*sb3_ );
+      sb3_    -= ( dA3x4_ * da4_ ) - ( 2*sb3_ );
+
+      checkResult( sb3_, result_ );
+   }
+
 
    //=====================================================================================
    // Subtraction with multiplication assignment
    //=====================================================================================
 
-   // Multiplication assignment to left-hand side operand
+   // Multiplication assignment to left-hand side operand (1)
    {
-      test_ = "DVecSVecSub - Multiplication assignment to left-hand side operand";
+      test_ = "DVecSVecSub - Multiplication assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ =  db3_;
       result_ *= db3_ - sb3_;
       db3_    *= db3_ - sb3_;
+
+      checkResult( db3_, result_ );
+   }
+
+   // Multiplication assignment to left-hand side operand (2)
+   {
+      test_ = "DVecSVecSub - Multiplication assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ *= db3_ - eval( sb3_ );
+      db3_    *= db3_ - eval( sb3_ );
 
       checkResult( db3_, result_ );
    }
@@ -320,15 +485,28 @@ void AliasingTest::testDVecSVecSub()
       checkResult( db3_, result_ );
    }
 
-   // Multiplication assignment to right-hand side operand
+   // Multiplication assignment to right-hand side operand (1)
    {
-      test_ = "DVecSVecSub - Multiplication assignment to right-hand side operand";
+      test_ = "DVecSVecSub - Multiplication assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ =  sb3_;
       result_ *= db3_ - sb3_;
       sb3_    *= db3_ - sb3_;
+
+      checkResult( sb3_, result_ );
+   }
+
+   // Multiplication assignment to right-hand side operand (2)
+   {
+      test_ = "DVecSVecSub - Multiplication assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ =  sb3_;
+      result_ *= eval( db3_ ) - sb3_;
+      sb3_    *= eval( db3_ ) - sb3_;
 
       checkResult( sb3_, result_ );
    }
@@ -342,6 +520,32 @@ void AliasingTest::testDVecSVecSub()
       result_ =  sb3_;
       result_ *= db3_ - ( sB3x3_ * sb3_ );
       sb3_    *= db3_ - ( sB3x3_ * sb3_ );
+
+      checkResult( sb3_, result_ );
+   }
+
+   // Complex operation: a *= ( 2*a ) - ( A * b );
+   {
+      test_ = "DVecSVecAdd - Complex operation: a *= ( 2*a ) - ( A * b );";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ *= ( 2*db3_ ) - ( sA3x4_ * sa4_ );
+      db3_    *= ( 2*db3_ ) - ( sA3x4_ * sa4_ );
+
+      checkResult( db3_, result_ );
+   }
+
+   // Complex operation: a *= ( A * b ) - ( 2*a );
+   {
+      test_ = "DVecSVecAdd - Complex operation: a *= ( A * b ) - ( 2*a );";
+
+      initialize();
+
+      result_ =  sb3_;
+      result_ *= ( dA3x4_ * da4_ ) - ( 2*sb3_ );
+      sb3_    *= ( dA3x4_ * da4_ ) - ( 2*sb3_ );
 
       checkResult( sb3_, result_ );
    }
