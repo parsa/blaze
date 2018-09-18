@@ -102,14 +102,26 @@ void AliasingTest::testDVecDVecMax()
    // Maximum
    //=====================================================================================
 
-   // Assignment to left-hand side operand
+   // Assignment to left-hand side operand (1)
    {
-      test_ = "DVecDVecMax - Assignment to left-hand side operand";
+      test_ = "DVecDVecMax - Assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ = max( db3_, dc3_ );
       db3_    = max( db3_, dc3_ );
+
+      checkResult( db3_, result_ );
+   }
+
+   // Assignment to left-hand side operand (2)
+   {
+      test_ = "DVecDVecMax - Assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ = max( db3_, eval( dc3_ ) );
+      db3_    = max( db3_, eval( dc3_ ) );
 
       checkResult( db3_, result_ );
    }
@@ -150,14 +162,26 @@ void AliasingTest::testDVecDVecMax()
       checkResult( da4_, result_ );
    }
 
-   // Assignment to right-hand side operand
+   // Assignment to right-hand side operand (1)
    {
-      test_ = "DVecDVecMax - Assignment to right-hand side operand";
+      test_ = "DVecDVecMax - Assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ = max( db3_, dc3_ );
       dc3_    = max( db3_, dc3_ );
+
+      checkResult( dc3_, result_ );
+   }
+
+   // Assignment to right-hand side operand (2)
+   {
+      test_ = "DVecDVecMax - Assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ = max( eval( db3_ ), dc3_ );
+      dc3_    = max( eval( db3_ ), dc3_ );
 
       checkResult( dc3_, result_ );
    }
@@ -198,6 +222,30 @@ void AliasingTest::testDVecDVecMax()
       checkResult( da4_, result_ );
    }
 
+   // Complex operation: a = max( ( 2*a ), ( A * b ) );
+   {
+      test_ = "DVecDVecAdd - Complex operation: a = max( ( 2*a ), ( A * b ) );";
+
+      initialize();
+
+      result_ = max( ( 2*db3_ ), ( dA3x4_ * da4_ ) );
+      db3_    = max( ( 2*db3_ ), ( dA3x4_ * da4_ ) );
+
+      checkResult( db3_, result_ );
+   }
+
+   // Complex operation: a = max( ( A * b ), ( 2*a ) );
+   {
+      test_ = "DVecDVecAdd - Complex operation: a = max( ( A * b ), ( 2*a ) );";
+
+      initialize();
+
+      result_ = max( ( dA3x4_ * da4_ ), ( 2*db3_ ) );
+      db3_    = max( ( dA3x4_ * da4_ ), ( 2*db3_ ) );
+
+      checkResult( db3_, result_ );
+   }
+
    // Complex operation: a = max( b, ( a + A * c ) );
    {
       test_ = "DVecDVecMax - Complex operation: a = max( b, ( a + A * c ) );";
@@ -227,15 +275,28 @@ void AliasingTest::testDVecDVecMax()
    // Maximum with addition assignment
    //=====================================================================================
 
-   // Addition assignment to left-hand side operand
+   // Addition assignment to left-hand side operand (1)
    {
-      test_ = "DVecDVecMax - Addition assignment to left-hand side operand";
+      test_ = "DVecDVecMax - Addition assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ =  db3_;
       result_ += max( db3_, dc3_ );
       db3_    += max( db3_, dc3_ );
+
+      checkResult( db3_, result_ );
+   }
+
+   // Addition assignment to left-hand side operand (2)
+   {
+      test_ = "DVecDVecMax - Addition assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ += max( db3_, eval( dc3_ ) );
+      db3_    += max( db3_, eval( dc3_ ) );
 
       checkResult( db3_, result_ );
    }
@@ -266,15 +327,28 @@ void AliasingTest::testDVecDVecMax()
       checkResult( sb3_, result_ );
    }
 
-   // Addition assignment to right-hand side operand
+   // Addition assignment to right-hand side operand (1)
    {
-      test_ = "DVecDVecMax - Addition assignment to right-hand side operand";
+      test_ = "DVecDVecMax - Addition assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ =  dc3_;
       result_ += max( db3_, dc3_ );
       dc3_    += max( db3_, dc3_ );
+
+      checkResult( dc3_, result_ );
+   }
+
+   // Addition assignment to right-hand side operand (2)
+   {
+      test_ = "DVecDVecMax - Addition assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ =  dc3_;
+      result_ += max( eval( db3_ ), dc3_ );
+      dc3_    += max( eval( db3_ ), dc3_ );
 
       checkResult( dc3_, result_ );
    }
@@ -303,6 +377,32 @@ void AliasingTest::testDVecDVecMax()
       sb3_    += max( db3_, ( dB3x3_ * sb3_ ) );
 
       checkResult( sb3_, result_ );
+   }
+
+   // Complex operation: a += max( ( 2*a ), ( A * b ) );
+   {
+      test_ = "DVecDVecAdd - Complex operation: a += max( ( 2*a ), ( A * b ) );";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ += max( ( 2*db3_ ), ( dA3x4_ * da4_ ) );
+      db3_    += max( ( 2*db3_ ), ( dA3x4_ * da4_ ) );
+
+      checkResult( db3_, result_ );
+   }
+
+   // Complex operation: a += max( ( A * b ), ( 2*a ) );
+   {
+      test_ = "DVecDVecAdd - Complex operation: a += max( ( A * b ), ( 2*a ) );";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ += max( ( dA3x4_ * da4_ ), ( 2*db3_ ) );
+      db3_    += max( ( dA3x4_ * da4_ ), ( 2*db3_ ) );
+
+      checkResult( db3_, result_ );
    }
 
    // Complex operation: a += max( b, ( a + A * c ) );
@@ -336,15 +436,28 @@ void AliasingTest::testDVecDVecMax()
    // Maximum with subtraction assignment
    //=====================================================================================
 
-   // Subtraction assignment to left-hand side operand
+   // Subtraction assignment to left-hand side operand (1)
    {
-      test_ = "DVecDVecMax - Subtraction assignment to left-hand side operand";
+      test_ = "DVecDVecMax - Subtraction assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ =  db3_;
       result_ -= max( db3_, dc3_ );
       db3_    -= max( db3_, dc3_ );
+
+      checkResult( db3_, result_ );
+   }
+
+   // Subtraction assignment to left-hand side operand (2)
+   {
+      test_ = "DVecDVecMax - Subtraction assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ -= max( db3_, eval( dc3_ ) );
+      db3_    -= max( db3_, eval( dc3_ ) );
 
       checkResult( db3_, result_ );
    }
@@ -375,15 +488,28 @@ void AliasingTest::testDVecDVecMax()
       checkResult( sb3_, result_ );
    }
 
-   // Subtraction assignment to right-hand side operand
+   // Subtraction assignment to right-hand side operand (1)
    {
-      test_ = "DVecDVecMax - Subtraction assignment to right-hand side operand";
+      test_ = "DVecDVecMax - Subtraction assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ =  dc3_;
       result_ -= max( db3_, dc3_ );
       dc3_    -= max( db3_, dc3_ );
+
+      checkResult( dc3_, result_ );
+   }
+
+   // Subtraction assignment to right-hand side operand (2)
+   {
+      test_ = "DVecDVecMax - Subtraction assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ =  dc3_;
+      result_ -= max( eval( db3_ ), dc3_ );
+      dc3_    -= max( eval( db3_ ), dc3_ );
 
       checkResult( dc3_, result_ );
    }
@@ -412,6 +538,32 @@ void AliasingTest::testDVecDVecMax()
       sb3_    -= max( db3_, ( dB3x3_ * sb3_ ) );
 
       checkResult( sb3_, result_ );
+   }
+
+   // Complex operation: a -= max( ( 2*a ), ( A * b ) );
+   {
+      test_ = "DVecDVecAdd - Complex operation: a -= max( ( 2*a ), ( A * b ) );";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ -= max( ( 2*db3_ ), ( dA3x4_ * da4_ ) );
+      db3_    -= max( ( 2*db3_ ), ( dA3x4_ * da4_ ) );
+
+      checkResult( db3_, result_ );
+   }
+
+   // Complex operation: a -= max( ( A * b ), ( 2*a ) );
+   {
+      test_ = "DVecDVecAdd - Complex operation: a -= max( ( A * b ), ( 2*a ) );";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ -= max( ( dA3x4_ * da4_ ), ( 2*db3_ ) );
+      db3_    -= max( ( dA3x4_ * da4_ ), ( 2*db3_ ) );
+
+      checkResult( db3_, result_ );
    }
 
    // Complex operation: a -= max( b, ( a + A * c ) );
@@ -445,15 +597,28 @@ void AliasingTest::testDVecDVecMax()
    // Maximum with multiplication assignment
    //=====================================================================================
 
-   // Multiplication assignment to left-hand side operand
+   // Multiplication assignment to left-hand side operand (1)
    {
-      test_ = "DVecDVecMax - Multiplication assignment to left-hand side operand";
+      test_ = "DVecDVecMax - Multiplication assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ =  db3_;
       result_ *= max( db3_, dc3_ );
       db3_    *= max( db3_, dc3_ );
+
+      checkResult( db3_, result_ );
+   }
+
+   // Multiplication assignment to left-hand side operand (2)
+   {
+      test_ = "DVecDVecMax - Multiplication assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ *= max( db3_, eval( dc3_ ) );
+      db3_    *= max( db3_, eval( dc3_ ) );
 
       checkResult( db3_, result_ );
    }
@@ -484,15 +649,28 @@ void AliasingTest::testDVecDVecMax()
       checkResult( sb3_, result_ );
    }
 
-   // Multiplication assignment to right-hand side operand
+   // Multiplication assignment to right-hand side operand (1)
    {
-      test_ = "DVecDVecMax - Multiplication assignment to right-hand side operand";
+      test_ = "DVecDVecMax - Multiplication assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ =  dc3_;
       result_ *= max( db3_, dc3_ );
       dc3_    *= max( db3_, dc3_ );
+
+      checkResult( dc3_, result_ );
+   }
+
+   // Multiplication assignment to right-hand side operand (2)
+   {
+      test_ = "DVecDVecMax - Multiplication assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ =  dc3_;
+      result_ *= max( eval( db3_ ), dc3_ );
+      dc3_    *= max( eval( db3_ ), dc3_ );
 
       checkResult( dc3_, result_ );
    }
@@ -521,6 +699,32 @@ void AliasingTest::testDVecDVecMax()
       sb3_    *= max( db3_, ( dB3x3_ * sb3_ ) );
 
       checkResult( sb3_, result_ );
+   }
+
+   // Complex operation: a *= max( ( 2*a ), ( A * b ) );
+   {
+      test_ = "DVecDVecAdd - Complex operation: a *= max( ( 2*a ), ( A * b ) );";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ *= max( ( 2*db3_ ), ( dA3x4_ * da4_ ) );
+      db3_    *= max( ( 2*db3_ ), ( dA3x4_ * da4_ ) );
+
+      checkResult( db3_, result_ );
+   }
+
+   // Complex operation: a *= max( ( A * b ), ( 2*a ) );
+   {
+      test_ = "DVecDVecAdd - Complex operation: a *= max( ( A * b ), ( 2*a ) );";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ *= max( ( dA3x4_ * da4_ ), ( 2*db3_ ) );
+      db3_    *= max( ( dA3x4_ * da4_ ), ( 2*db3_ ) );
+
+      checkResult( db3_, result_ );
    }
 
    // Complex operation: a *= max( b, ( a + A * c ) );
