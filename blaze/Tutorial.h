@@ -1444,7 +1444,7 @@
 // \n \section vector_operations_non_modifying_operations Non-Modifying Operations
 // <hr>
 //
-// \subsection vector_operations_size .size()
+// \subsection vector_operations_size .size() / size()
 //
 // Via the \c size() member function, the current size of a dense or sparse vector can be queried:
 
@@ -1470,7 +1470,7 @@
    size( A * v2 );  // Returns 15, i.e. the size of the resulting vector
    \endcode
 
-// \n \subsection vector_operations_capacity .capacity()
+// \n \subsection vector_operations_capacity .capacity() / capacity()
 //
 // Via the \c capacity() (member) function the internal capacity of a dense or sparse vector
 // can be queried. Note that the capacity of a vector doesn't have to be equal to the size
@@ -1495,7 +1495,7 @@
    capacity( A * v1 );  // Compilation error!
    \endcode
 
-// \n \subsection vector_operations_nonzeros .nonZeros()
+// \n \subsection vector_operations_nonzeros .nonZeros() / nonZeros()
 //
 // For both dense and sparse vectors the number of non-zero elements can be determined via the
 // \c nonZeros() member function. Sparse vectors directly return their number of non-zero
@@ -3493,7 +3493,7 @@
 // \n \section matrix_operations_non_modifying_operations Non-Modifying Operations
 // <hr>
 //
-// \subsection matrix_operations_rows .rows()
+// \subsection matrix_operations_rows .rows() / rows()
 //
 // The current number of rows of a matrix can be acquired via the \c rows() member function:
 
@@ -3518,7 +3518,7 @@
    rows( M1 * M2 );  // Returns 10, i.e. the number of rows of the resulting matrix
    \endcode
 
-// \n \subsection matrix_operations_columns .columns()
+// \n \subsection matrix_operations_columns .columns() / columns()
 //
 // The current number of columns of a matrix can be acquired via the \c columns() member function:
 
@@ -3542,7 +3542,21 @@
    columns( M1 * M2 );  // Returns 7, i.e. the number of columns of the resulting matrix
    \endcode
 
-// \subsection matrix_operations_spacing .spacing()
+// \subsection matrix_operations_spacing size()
+//
+// The \c size() function returns the total number of elements of a matrix:
+
+   \code
+   // Instantiating a dynamic matrix with 6 rows and 8 columns
+   blaze::DynamicMatrix<int> M1( 6UL, 8UL );
+   size( M1 );   // Returns 48
+
+   // Instantiating a compressed matrix with 8 rows and 7 columns
+   blaze::CompressedMatrix<double> M2( 8UL, 7UL );
+   size( M2 );  // Returns 56
+   \endcode
+
+// \subsection matrix_operations_spacing .spacing() / spacing()
 //
 // The total number of elements of a row or column of a dense matrix, including potential padding
 // elements, can be acquired via the \c spacing member function. In case of a row-major matrix
@@ -3568,7 +3582,7 @@
    spacing( M2 );  // Returns the total number of elements in a column
    \endcode
 
-// \n \subsection matrix_operations_capacity .capacity()
+// \n \subsection matrix_operations_capacity .capacity() / capacity()
 //
 // The \c capacity() member function returns the internal capacity of a dense or sparse matrix.
 // Note that the capacity of a matrix doesn't have to be equal to the size of a matrix. In case of
@@ -3593,7 +3607,7 @@
    capacity( M1 * M2 );  // Compilation error!
    \endcode
 
-// \n \subsection matrix_operations_nonzeros .nonZeros()
+// \n \subsection matrix_operations_nonzeros .nonZeros() / nonZeros()
 //
 // For both dense and sparse matrices the current number of non-zero elements can be queried
 // via the \c nonZeros() member function. In case of matrices there are two flavors of the
