@@ -50,12 +50,14 @@
 #include <blaze/math/lapack/geev.h>
 #include <blaze/math/lapack/heevd.h>
 #include <blaze/math/lapack/syevd.h>
+#include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 
@@ -106,16 +108,16 @@ template< typename MT  // Type of the matrix A
 inline auto eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    -> EnableIf_t< IsSymmetric_v<MT> && IsFloatingPoint_v< ElementType_t<MT> > >
 {
-   using Tmp = ResultType_t< RemoveAdaptor_t<MT> >;
+   using ATmp = ResultType_t< RemoveAdaptor_t<MT> >;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( Tmp );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( Tmp );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( Tmp );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<Tmp> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( ATmp );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( ATmp );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
-   Tmp tmp( A );
+   ATmp Atmp( A );
 
-   syevd( tmp, ~w, 'N', 'L' );
+   syevd( Atmp, ~w, 'N', 'L' );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -147,16 +149,16 @@ template< typename MT  // Type of the matrix A
 inline auto eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    -> EnableIf_t< IsHermitian_v<MT> && IsComplex_v< ElementType_t<MT> > >
 {
-   using Tmp = ResultType_t< RemoveAdaptor_t<MT> >;
+   using ATmp = ResultType_t< RemoveAdaptor_t<MT> >;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( Tmp );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( Tmp );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( Tmp );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<Tmp> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( ATmp );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( ATmp );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
-   Tmp tmp( A );
+   ATmp Atmp( A );
 
-   heevd( tmp, ~w, 'N', 'L' );
+   heevd( Atmp, ~w, 'N', 'L' );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -189,16 +191,16 @@ inline auto eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    -> DisableIf_t< ( IsSymmetric_v<MT> && IsFloatingPoint_v< ElementType_t<MT> > ) ||
                    ( IsHermitian_v<MT> && IsComplex_v< ElementType_t<MT> > ) >
 {
-   using Tmp = ResultType_t< RemoveAdaptor_t<MT> >;
+   using ATmp = ResultType_t< RemoveAdaptor_t<MT> >;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( Tmp );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( Tmp );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( Tmp );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<Tmp> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( ATmp );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( ATmp );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
-   Tmp tmp( A );
+   ATmp Atmp( A );
 
-   geev( tmp, ~w );
+   geev( Atmp, ~w );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -304,7 +306,15 @@ inline void eigen( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
 
-   eigen_backend( ~A, ~w );
+   using WTmp = If_t< IsContiguous_v<VT>, VT&, ResultType_t<VT> >;
+
+   WTmp wtmp( ~w );
+
+   eigen_backend( ~A, wtmp );
+
+   if( IsContiguous_v<VT> ) {
+      (~w) = wtmp;
+   }
 }
 //*************************************************************************************************
 
@@ -339,18 +349,18 @@ template< typename MT1  // Type of the matrix A
 inline auto eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& V )
    -> EnableIf_t< IsSymmetric_v<MT1> && IsFloatingPoint_v< ElementType_t<MT1> > >
 {
-   using Tmp = ResultType_t< RemoveAdaptor_t<MT1> >;
+   using ATmp = ResultType_t< RemoveAdaptor_t<MT1> >;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( Tmp );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( Tmp );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( Tmp );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<Tmp> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( ATmp );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( ATmp );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
-   Tmp tmp( A );
+   ATmp Atmp( A );
 
-   syevd( tmp, ~w, 'V', 'L' );
+   syevd( Atmp, ~w, 'V', 'L' );
 
-   (~V) = tmp;
+   (~V) = Atmp;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -386,18 +396,18 @@ template< typename MT1  // Type of the matrix A
 inline auto eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& V )
    -> EnableIf_t< IsHermitian_v<MT1> && IsComplex_v< ElementType_t<MT1> > >
 {
-   using Tmp = ResultType_t< RemoveAdaptor_t<MT1> >;
+   using ATmp = ResultType_t< RemoveAdaptor_t<MT1> >;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( Tmp );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( Tmp );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( Tmp );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<Tmp> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( ATmp );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( ATmp );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
-   Tmp tmp( A );
+   ATmp Atmp( A );
 
-   heevd( tmp, ~w, 'V', 'L' );
+   heevd( Atmp, ~w, 'V', 'L' );
 
-   (~V) = tmp;
+   (~V) = Atmp;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -434,19 +444,19 @@ inline auto eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
    -> DisableIf_t< ( IsSymmetric_v<MT1> && IsFloatingPoint_v< ElementType_t<MT1> > ) ||
                    ( IsHermitian_v<MT1> && IsComplex_v< ElementType_t<MT1> > ) >
 {
-   using Tmp = ResultType_t< RemoveAdaptor_t<MT1> >;
+   using ATmp = ResultType_t< RemoveAdaptor_t<MT1> >;
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( Tmp );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( Tmp );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( Tmp );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<Tmp> );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( ATmp );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( ATmp );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
-   Tmp tmp( A );
+   ATmp Atmp( A );
 
    if( IsRowMajorMatrix_v<MT1> )
-      geev( tmp, ~V, ~w );
+      geev( Atmp, ~V, ~w );
    else
-      geev( tmp, ~w, ~V );
+      geev( Atmp, ~w, ~V );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -572,7 +582,21 @@ inline void eigen( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMa
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT2 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
 
-   eigen_backend( ~A, ~w, ~V );
+   using WTmp = If_t< IsContiguous_v<VT>, VT&, ResultType_t<VT> >;
+   using VTmp = If_t< IsContiguous_v<MT2>, MT2&, ResultType_t<MT2> >;
+
+   WTmp wtmp( ~w );
+   VTmp Vtmp( ~V );
+
+   eigen_backend( ~A, wtmp, Vtmp );
+
+   if( !IsContiguous_v<VT> ) {
+      (~w) = wtmp;
+   }
+
+   if( !IsContiguous_v<MT2> ) {
+      (~V) = Vtmp;
+   }
 }
 //*************************************************************************************************
 
