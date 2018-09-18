@@ -102,14 +102,26 @@ void AliasingTest::testDVecDVecDiv()
    // Division
    //=====================================================================================
 
-   // Assignment to left-hand side operand
+   // Assignment to left-hand side operand (1)
    {
-      test_ = "DVecDVecDiv - Assignment to left-hand side operand";
+      test_ = "DVecDVecDiv - Assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ = db3_ / dc3_;
       db3_    = db3_ / dc3_;
+
+      checkResult( db3_, result_ );
+   }
+
+   // Assignment to left-hand side operand (2)
+   {
+      test_ = "DVecDVecDiv - Assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ = db3_ / eval( dc3_ );
+      db3_    = db3_ / eval( dc3_ );
 
       checkResult( db3_, result_ );
    }
@@ -150,14 +162,26 @@ void AliasingTest::testDVecDVecDiv()
       checkResult( da4_, result_ );
    }
 
-   // Assignment to right-hand side operand
+   // Assignment to right-hand side operand (1)
    {
-      test_ = "DVecDVecDiv - Assignment to right-hand side operand";
+      test_ = "DVecDVecDiv - Assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ = db3_ / dc3_;
       dc3_    = db3_ / dc3_;
+
+      checkResult( dc3_, result_ );
+   }
+
+   // Assignment to right-hand side operand (2)
+   {
+      test_ = "DVecDVecDiv - Assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ = eval( db3_ ) / dc3_;
+      dc3_    = eval( db3_ ) / dc3_;
 
       checkResult( dc3_, result_ );
    }
@@ -198,6 +222,30 @@ void AliasingTest::testDVecDVecDiv()
       checkResult( da4_, result_ );
    }
 
+   // Complex operation: a = ( 2*a ) / ( A * b );
+   {
+      test_ = "DVecDVecDiv - Complex operation: a = ( 2*a ) / ( A * b );";
+
+      initialize();
+
+      result_ = ( 2*db3_ ) / ( dA3x4_ * da4_ );
+      db3_    = ( 2*db3_ ) / ( dA3x4_ * da4_ );
+
+      checkResult( db3_, result_ );
+   }
+
+   // Complex operation: a = ( A * b ) / ( 2*a );
+   {
+      test_ = "DVecDVecDiv - Complex operation: a = ( A * b ) / ( 2*a );";
+
+      initialize();
+
+      result_ = ( dA3x4_ * da4_ ) / ( 2*db3_ );
+      db3_    = ( dA3x4_ * da4_ ) / ( 2*db3_ );
+
+      checkResult( db3_, result_ );
+   }
+
    // Complex operation: a = b / ( a + A * c );
    {
       test_ = "DVecDVecDiv - Complex operation: a = b / ( a + A * c );";
@@ -227,15 +275,28 @@ void AliasingTest::testDVecDVecDiv()
    // Division with addition assignment
    //=====================================================================================
 
-   // Addition assignment to left-hand side operand
+   // Addition assignment to left-hand side operand (1)
    {
-      test_ = "DVecDVecDiv - Addition assignment to left-hand side operand";
+      test_ = "DVecDVecDiv - Addition assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ =  db3_;
       result_ += db3_ / dc3_;
       db3_    += db3_ / dc3_;
+
+      checkResult( db3_, result_ );
+   }
+
+   // Addition assignment to left-hand side operand (2)
+   {
+      test_ = "DVecDVecDiv - Addition assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ += db3_ / eval( dc3_ );
+      db3_    += db3_ / eval( dc3_ );
 
       checkResult( db3_, result_ );
    }
@@ -266,15 +327,28 @@ void AliasingTest::testDVecDVecDiv()
       checkResult( sb3_, result_ );
    }
 
-   // Addition assignment to right-hand side operand
+   // Addition assignment to right-hand side operand (1)
    {
-      test_ = "DVecDVecDiv - Addition assignment to right-hand side operand";
+      test_ = "DVecDVecDiv - Addition assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ =  dc3_;
       result_ += db3_ / dc3_;
       dc3_    += db3_ / dc3_;
+
+      checkResult( dc3_, result_ );
+   }
+
+   // Addition assignment to right-hand side operand (2)
+   {
+      test_ = "DVecDVecDiv - Addition assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ =  dc3_;
+      result_ += eval( db3_ ) / dc3_;
+      dc3_    += eval( db3_ ) / dc3_;
 
       checkResult( dc3_, result_ );
    }
@@ -303,6 +377,32 @@ void AliasingTest::testDVecDVecDiv()
       sb3_    += db3_ / ( dB3x3_ * sb3_ );
 
       checkResult( sb3_, result_ );
+   }
+
+   // Complex operation: a += ( 2*a ) / ( A * b );
+   {
+      test_ = "DVecDVecDiv - Complex operation: a += ( 2*a ) / ( A * b );";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ += ( 2*db3_ ) / ( dA3x4_ * da4_ );
+      db3_    += ( 2*db3_ ) / ( dA3x4_ * da4_ );
+
+      checkResult( db3_, result_ );
+   }
+
+   // Complex operation: a += ( A * b ) / ( 2*a );
+   {
+      test_ = "DVecDVecDiv - Complex operation: a += ( A * b ) / ( 2*a );";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ += ( dA3x4_ * da4_ ) / ( 2*db3_ );
+      db3_    += ( dA3x4_ * da4_ ) / ( 2*db3_ );
+
+      checkResult( db3_, result_ );
    }
 
    // Complex operation: a += b / ( a + A * c );
@@ -336,15 +436,28 @@ void AliasingTest::testDVecDVecDiv()
    // Division with subtraction assignment
    //=====================================================================================
 
-   // Subtraction assignment to left-hand side operand
+   // Subtraction assignment to left-hand side operand (1)
    {
-      test_ = "DVecDVecDiv - Subtraction assignment to left-hand side operand";
+      test_ = "DVecDVecDiv - Subtraction assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ =  db3_;
       result_ -= db3_ / dc3_;
       db3_    -= db3_ / dc3_;
+
+      checkResult( db3_, result_ );
+   }
+
+   // Subtraction assignment to left-hand side operand (2)
+   {
+      test_ = "DVecDVecDiv - Subtraction assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ -= db3_ / eval( dc3_ );
+      db3_    -= db3_ / eval( dc3_ );
 
       checkResult( db3_, result_ );
    }
@@ -375,15 +488,28 @@ void AliasingTest::testDVecDVecDiv()
       checkResult( sb3_, result_ );
    }
 
-   // Subtraction assignment to right-hand side operand
+   // Subtraction assignment to right-hand side operand (1)
    {
-      test_ = "DVecDVecDiv - Subtraction assignment to right-hand side operand";
+      test_ = "DVecDVecDiv - Subtraction assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ =  dc3_;
       result_ -= db3_ / dc3_;
       dc3_    -= db3_ / dc3_;
+
+      checkResult( dc3_, result_ );
+   }
+
+   // Subtraction assignment to right-hand side operand (2)
+   {
+      test_ = "DVecDVecDiv - Subtraction assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ =  dc3_;
+      result_ -= eval( db3_ ) / dc3_;
+      dc3_    -= eval( db3_ ) / dc3_;
 
       checkResult( dc3_, result_ );
    }
@@ -412,6 +538,32 @@ void AliasingTest::testDVecDVecDiv()
       sb3_    -= db3_ / ( dB3x3_ * sb3_ );
 
       checkResult( sb3_, result_ );
+   }
+
+   // Complex operation: a -= ( 2*a ) / ( A * b );
+   {
+      test_ = "DVecDVecDiv - Complex operation: a -= ( 2*a ) / ( A * b );";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ -= ( 2*db3_ ) / ( dA3x4_ * da4_ );
+      db3_    -= ( 2*db3_ ) / ( dA3x4_ * da4_ );
+
+      checkResult( db3_, result_ );
+   }
+
+   // Complex operation: a -= ( A * b ) / ( 2*a );
+   {
+      test_ = "DVecDVecDiv - Complex operation: a -= ( A * b ) / ( 2*a );";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ -= ( dA3x4_ * da4_ ) / ( 2*db3_ );
+      db3_    -= ( dA3x4_ * da4_ ) / ( 2*db3_ );
+
+      checkResult( db3_, result_ );
    }
 
    // Complex operation: a -= b / ( a + A * c );
@@ -445,15 +597,28 @@ void AliasingTest::testDVecDVecDiv()
    // Division with multiplication assignment
    //=====================================================================================
 
-   // Multiplication assignment to left-hand side operand
+   // Multiplication assignment to left-hand side operand (1)
    {
-      test_ = "DVecDVecDiv - Multiplication assignment to left-hand side operand";
+      test_ = "DVecDVecDiv - Multiplication assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ =  db3_;
       result_ *= db3_ / dc3_;
       db3_    *= db3_ / dc3_;
+
+      checkResult( db3_, result_ );
+   }
+
+   // Multiplication assignment to left-hand side operand (2)
+   {
+      test_ = "DVecDVecDiv - Multiplication assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ *= db3_ / eval( dc3_ );
+      db3_    *= db3_ / eval( dc3_ );
 
       checkResult( db3_, result_ );
    }
@@ -484,15 +649,28 @@ void AliasingTest::testDVecDVecDiv()
       checkResult( sb3_, result_ );
    }
 
-   // Multiplication assignment to right-hand side operand
+   // Multiplication assignment to right-hand side operand (1)
    {
-      test_ = "DVecDVecDiv - Multiplication assignment to right-hand side operand";
+      test_ = "DVecDVecDiv - Multiplication assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ =  dc3_;
       result_ *= db3_ / dc3_;
       dc3_    *= db3_ / dc3_;
+
+      checkResult( dc3_, result_ );
+   }
+
+   // Multiplication assignment to right-hand side operand (2)
+   {
+      test_ = "DVecDVecDiv - Multiplication assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ =  dc3_;
+      result_ *= eval( db3_ ) / dc3_;
+      dc3_    *= eval( db3_ ) / dc3_;
 
       checkResult( dc3_, result_ );
    }
@@ -521,6 +699,32 @@ void AliasingTest::testDVecDVecDiv()
       sb3_    *= db3_ / ( dB3x3_ * sb3_ );
 
       checkResult( sb3_, result_ );
+   }
+
+   // Complex operation: a *= ( 2*a ) / ( A * b );
+   {
+      test_ = "DVecDVecDiv - Complex operation: a *= ( 2*a ) / ( A * b );";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ *= ( 2*db3_ ) / ( dA3x4_ * da4_ );
+      db3_    *= ( 2*db3_ ) / ( dA3x4_ * da4_ );
+
+      checkResult( db3_, result_ );
+   }
+
+   // Complex operation: a *= ( A * b ) / ( 2*a );
+   {
+      test_ = "DVecDVecDiv - Complex operation: a *= ( A * b ) / ( 2*a );";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ *= ( dA3x4_ * da4_ ) / ( 2*db3_ );
+      db3_    *= ( dA3x4_ * da4_ ) / ( 2*db3_ );
+
+      checkResult( db3_, result_ );
    }
 
    // Complex operation: a *= b / ( a + A * c );
@@ -554,15 +758,28 @@ void AliasingTest::testDVecDVecDiv()
    // Division with division assignment
    //=====================================================================================
 
-   // Division assignment to left-hand side operand
+   // Division assignment to left-hand side operand (1)
    {
-      test_ = "DVecDVecDiv - Division assignment to left-hand side operand";
+      test_ = "DVecDVecDiv - Division assignment to left-hand side operand (1)";
 
       initialize();
 
       result_ =  db3_;
       result_ /= db3_ / dc3_;
       db3_    /= db3_ / dc3_;
+
+      checkResult( db3_, result_ );
+   }
+
+   // Division assignment to left-hand side operand (2)
+   {
+      test_ = "DVecDVecDiv - Division assignment to left-hand side operand (2)";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ /= db3_ / eval( dc3_ );
+      db3_    /= db3_ / eval( dc3_ );
 
       checkResult( db3_, result_ );
    }
@@ -593,15 +810,28 @@ void AliasingTest::testDVecDVecDiv()
       checkResult( sb3_, result_ );
    }
 
-   // Division assignment to right-hand side operand
+   // Division assignment to right-hand side operand (1)
    {
-      test_ = "DVecDVecDiv - Division assignment to right-hand side operand";
+      test_ = "DVecDVecDiv - Division assignment to right-hand side operand (1)";
 
       initialize();
 
       result_ =  dc3_;
       result_ /= db3_ / dc3_;
       dc3_    /= db3_ / dc3_;
+
+      checkResult( dc3_, result_ );
+   }
+
+   // Division assignment to right-hand side operand (2)
+   {
+      test_ = "DVecDVecDiv - Division assignment to right-hand side operand (2)";
+
+      initialize();
+
+      result_ =  dc3_;
+      result_ /= eval( db3_ ) / dc3_;
+      dc3_    /= eval( db3_ ) / dc3_;
 
       checkResult( dc3_, result_ );
    }
@@ -632,9 +862,35 @@ void AliasingTest::testDVecDVecDiv()
       checkResult( sb3_, result_ );
    }
 
-   // Complex operation: a *= ( b * 5 ) / ( a + A * c );
+   // Complex operation: a /= ( 2*a ) / ( A * b );
    {
-      test_ = "DVecDVecDiv - Complex operation: a *= ( b * 5 ) / ( a + A * c );";
+      test_ = "DVecDVecDiv - Complex operation: a /= ( 10*a ) / ( A * b );";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ /= ( 10*db3_ ) / ( dA3x4_ * da4_ );
+      db3_    /= ( 10*db3_ ) / ( dA3x4_ * da4_ );
+
+      checkResult( db3_, result_ );
+   }
+
+   // Complex operation: a /= ( 5 * A * b ) / ( 2*a );
+   {
+      test_ = "DVecDVecDiv - Complex operation: a /= ( 5 * A * b ) / ( 2*a );";
+
+      initialize();
+
+      result_ =  db3_;
+      result_ /= ( 5 * dA3x4_ * da4_ ) / ( 2*db3_ );
+      db3_    /= ( 5 * dA3x4_ * da4_ ) / ( 2*db3_ );
+
+      checkResult( db3_, result_ );
+   }
+
+   // Complex operation: a /= ( b * 20 ) / ( a + A * c );
+   {
+      test_ = "DVecDVecDiv - Complex operation: a /= ( b * 20 ) / ( a + A * c );";
 
       initialize();
 
@@ -645,9 +901,9 @@ void AliasingTest::testDVecDVecDiv()
       checkResult( dc3_, result_ );
    }
 
-   // Complex operation: a *= ( A * b + a ) / c;
+   // Complex operation: a /= ( A * b + a ) / c;
    {
-      test_ = "DVecDVecDiv - Complex operation: a *= ( A * b + a ) / c;";
+      test_ = "DVecDVecDiv - Complex operation: a /= ( A * b + a ) / c;";
 
       initialize();
 
