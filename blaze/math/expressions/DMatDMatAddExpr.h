@@ -652,6 +652,10 @@ class DMatDMatAddExpr
       else if( !IsOperation_v<MT2> && isSame( ~lhs, rhs.rhs_ ) ) {
          addAssign( ~lhs, rhs.lhs_ );
       }
+      else if( !RequiresEvaluation_v<MT2> ) {
+         assign   ( ~lhs, rhs.rhs_ );
+         addAssign( ~lhs, rhs.lhs_ );
+      }
       else {
          assign   ( ~lhs, rhs.lhs_ );
          addAssign( ~lhs, rhs.rhs_ );
@@ -723,8 +727,14 @@ class DMatDMatAddExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      addAssign( ~lhs, rhs.lhs_ );
-      addAssign( ~lhs, rhs.rhs_ );
+      if( !RequiresEvaluation_v<MT2> ) {
+         addAssign( ~lhs, rhs.rhs_ );
+         addAssign( ~lhs, rhs.lhs_ );
+      }
+      else {
+         addAssign( ~lhs, rhs.lhs_ );
+         addAssign( ~lhs, rhs.rhs_ );
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -757,8 +767,14 @@ class DMatDMatAddExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      subAssign( ~lhs, rhs.lhs_ );
-      subAssign( ~lhs, rhs.rhs_ );
+      if( !RequiresEvaluation_v<MT2> ) {
+         subAssign( ~lhs, rhs.rhs_ );
+         subAssign( ~lhs, rhs.lhs_ );
+      }
+      else {
+         subAssign( ~lhs, rhs.lhs_ );
+         subAssign( ~lhs, rhs.rhs_ );
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -843,6 +859,10 @@ class DMatDMatAddExpr
       else if( !IsOperation_v<MT2> && isSame( ~lhs, rhs.rhs_ ) ) {
          smpAddAssign( ~lhs, rhs.lhs_ );
       }
+      else if( !RequiresEvaluation_v<MT2> ) {
+         smpAssign   ( ~lhs, rhs.rhs_ );
+         smpAddAssign( ~lhs, rhs.lhs_ );
+      }
       else {
          smpAssign   ( ~lhs, rhs.lhs_ );
          smpAddAssign( ~lhs, rhs.rhs_ );
@@ -914,8 +934,14 @@ class DMatDMatAddExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      smpAddAssign( ~lhs, rhs.lhs_ );
-      smpAddAssign( ~lhs, rhs.rhs_ );
+      if( !RequiresEvaluation_v<MT2> ) {
+         smpAddAssign( ~lhs, rhs.rhs_ );
+         smpAddAssign( ~lhs, rhs.lhs_ );
+      }
+      else {
+         smpAddAssign( ~lhs, rhs.lhs_ );
+         smpAddAssign( ~lhs, rhs.rhs_ );
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -948,8 +974,14 @@ class DMatDMatAddExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      smpSubAssign( ~lhs, rhs.lhs_ );
-      smpSubAssign( ~lhs, rhs.rhs_ );
+      if( !RequiresEvaluation_v<MT2> ) {
+         smpSubAssign( ~lhs, rhs.rhs_ );
+         smpSubAssign( ~lhs, rhs.lhs_ );
+      }
+      else {
+         smpSubAssign( ~lhs, rhs.lhs_ );
+         smpSubAssign( ~lhs, rhs.rhs_ );
+      }
    }
    /*! \endcond */
    //**********************************************************************************************
