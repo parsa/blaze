@@ -134,7 +134,7 @@ template< typename VT, bool TF >
 BLAZE_ALWAYS_INLINE typename VT::ConstIterator cend( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-BLAZE_ALWAYS_INLINE size_t size( const Vector<VT,TF>& vector ) noexcept;
+BLAZE_ALWAYS_INLINE constexpr size_t size( const Vector<VT,TF>& vector ) noexcept;
 
 template< typename VT, bool TF >
 BLAZE_ALWAYS_INLINE size_t capacity( const Vector<VT,TF>& vector ) noexcept;
@@ -150,6 +150,9 @@ BLAZE_ALWAYS_INLINE void shrinkToFit( Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
 inline const typename VT::ResultType evaluate( const Vector<VT,TF>& vector );
+
+template< typename VT, bool TF >
+BLAZE_ALWAYS_INLINE constexpr bool isEmpty( const Vector<VT,TF>& vector ) noexcept;
 
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
 BLAZE_ALWAYS_INLINE bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>& b ) noexcept;
@@ -262,7 +265,7 @@ BLAZE_ALWAYS_INLINE typename VT::ConstIterator cend( const Vector<VT,TF>& vector
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-BLAZE_ALWAYS_INLINE size_t size( const Vector<VT,TF>& vector ) noexcept
+BLAZE_ALWAYS_INLINE constexpr size_t size( const Vector<VT,TF>& vector ) noexcept
 {
    return (~vector).size();
 }
@@ -509,6 +512,25 @@ inline const typename VT::ResultType evaluate( const Vector<VT,TF>& vector )
 {
    const typename VT::ResultType tmp( ~vector );
    return tmp;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given vector is empty.
+// \ingroup vector
+//
+// \param vector The vector to be checked.
+// \return \a true if the vector is empty, \a false if not.
+//
+// This function checks if the total number of elements of the given vector is zero. If the
+// total number of elements is zero the function returns \a true, otherwise it returns \a false.
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+BLAZE_ALWAYS_INLINE constexpr bool isEmpty( const Vector<VT,TF>& vector ) noexcept
+{
+   return size( ~vector ) == 0UL;
 }
 //*************************************************************************************************
 
