@@ -1522,6 +1522,17 @@
    nonZeros( A * v1 );  // Estimates the number of non-zero elements in the vector expression
    \endcode
 
+// \n \subsection vector_operations_isempty isEmpty()
+//
+// The \c isEmpty() function returns whether the total number of elements of the vector is zero:
+
+   \code
+   blaze::DynamicVector<int> a;  // Create an empty vector
+   isEmpty( a );                 // Returns true
+   a.resize( 10 );               // Resize to 10 elements
+   isEmpty( a );                 // Returns false
+   \endcode
+
 // \n \subsection vector_operations_isnan isnan()
 //
 // The \c isnan() function provides the means to check a dense or sparse vector for non-a-number
@@ -3647,6 +3658,19 @@
    nonZeros( M2, 3 );  // Has the same effect as the member function
 
    nonZeros( M1 * M2 );  // Estimates the number of non-zero elements in the matrix expression
+   \endcode
+
+// \n \subsection matrix_operations_isempty isEmpty()
+//
+// The \c isEmpty() function returns whether the total number of elements of the matrix is zero:
+
+   \code
+   blaze::DynamicMatrix<int> A;  // Create an empty matrix
+   isEmpty( A );                 // Returns true
+   a.resize( 5, 0 );             // Resize to a 5x0 matrix
+   isEmpty( A );                 // Returns true
+   a.resize( 5, 3 );             // Resize to a 5x3 matrix
+   isEmpty( A );                 // Returns false
    \endcode
 
 // \n \subsection matrix_operations_isnan isnan()
