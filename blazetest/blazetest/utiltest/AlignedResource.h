@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blazetest/utiltest/AlignedResource.h
-//  \brief Header file for the AlignedResource class template
+//  \brief Header file for the AlignedResource class
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
@@ -62,7 +62,8 @@ namespace utiltest {
 // counted via the InstanceCounter class and guaranteed to be 64-bit aligned. Additionally, it
 // provides a data member that is guaranteed to be initialized to 7 via the default constructor.
 */
-class alignas( 64UL ) AlignedResource : public InstanceCounter<AlignedResource>
+class alignas( 64UL ) AlignedResource
+   : public InstanceCounter<AlignedResource>
 {
  public:
    //**Constructors********************************************************************************
