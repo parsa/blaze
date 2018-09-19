@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blazetest/utiltest/Resource.h
-//  \brief Header file for Resource class template
+//  \brief Header file for the Resource class
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
@@ -59,7 +59,8 @@ namespace utiltest {
 // The Resource class represents an important resource for testing purposes. It is instance
 // counted via the InstanceCounter class.
 */
-class Resource : public InstanceCounter<Resource>
+class Resource
+   : public InstanceCounter<Resource>
 {};
 //*************************************************************************************************
 
