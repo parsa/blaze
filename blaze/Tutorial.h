@@ -115,10 +115,10 @@
 //    </li>
 //    <li> \ref shared_memory_parallelization
 //       <ul>
-//          <li> \ref openmp_parallelization </li>
+//          <li> \ref hpx_parallelization </li>
 //          <li> \ref cpp_threads_parallelization </li>
 //          <li> \ref boost_threads_parallelization </li>
-//          <li> \ref hpx_parallelization </li>
+//          <li> \ref openmp_parallelization </li>
 //          <li> \ref serial_execution </li>
 //       </ul>
 //    </li>
@@ -3553,7 +3553,7 @@
    columns( M1 * M2 );  // Returns 7, i.e. the number of columns of the resulting matrix
    \endcode
 
-// \subsection matrix_operations_spacing size()
+// \subsection matrix_operations_size size()
 //
 // The \c size() function returns the total number of elements of a matrix:
 
@@ -11002,10 +11002,10 @@
 // multicore CPU, computations have to be parallelized across all available cores of a CPU.
 // For this purpose, \b Blaze provides four different shared memory parallelization techniques:
 //
-//  - \ref openmp_parallelization
+//  - \ref hpx_parallelization
 //  - \ref cpp_threads_parallelization
 //  - \ref boost_threads_parallelization
-//  - \ref hpx_parallelization
+//  - \ref openmp_parallelization
 //
 // When any of the shared memory parallelization techniques is activated, all arithmetic
 // operations on dense vectors and matrices (including additions, subtractions, multiplications,
@@ -11015,7 +11015,264 @@
 //
 //  - \ref serial_execution
 //
-// \n Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref openmp_parallelization
+// \n Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref hpx_parallelization
+*/
+//*************************************************************************************************
+
+
+//**HPX Parallelization****************************************************************************
+/*!\page hpx_parallelization HPX Parallelization
+//
+// \tableofcontents
+//
+//
+// The first shared memory parallelization provided with \b Blaze is based on
+// <a href="http://stellar.cct.lsu.edu/projects/hpx/">HPX</a>.
+//
+//
+// \n \section hpx_setup HPX Setup
+// <hr>
+//
+// In order to enable the HPX-based parallelization, the following steps have to be taken: First,
+// the \c BLAZE_USE_HPX_THREADS command line argument has to be explicitly specified during
+// compilation:
+
+   \code
+   ... -DBLAZE_USE_HPX_THREADS ...
+   \endcode
+
+// Second, the HPX library and depending libraries such as Boost, hwloc, etc. have to be linked.
+// And third, the HPX threads have to be initialized by a call to the \c hpx::init() function (see
+// the <a href="http://stellar.cct.lsu.edu/files/hpx_0.9.0/docs/hpx/tutorial.html">HPX tutorial</a>
+// for further details). These three actions will cause the \b Blaze library to automatically try
+// to run all operations in parallel with the specified number of HPX threads.
+//
+// Note that the HPX-based parallelization has priority over the OpenMP-based, C++11 thread-based,
+// and Boost thread-based parallelizations, i.e. is preferred in case multiple parallelizations
+// are enabled in combination with the HPX thread parallelization.
+//
+// The number of threads used by the HPX backend has to be specified via the command line:
+
+   \code
+   ... --hpx:threads 4 ...
+   \endcode
+
+// Please note that the \b Blaze library does not limit the available number of threads. Therefore
+// it is in YOUR responsibility to choose an appropriate number of threads. The best performance,
+// though, can be expected if the specified number of threads matches the available number of
+// cores.
+//
+// In order to query the number of threads used for the parallelization of operations, the
+// \c getNumThreads() function can be used:
+
+   \code
+   const size_t threads = blaze::getNumThreads();
+   \endcode
+
+// In the context of HPX threads, the function will return the actual number of threads used by
+// the HPX subsystem.
+//
+//
+// \n \section hpx_configuration HPX Configuration
+// <hr>
+//
+// As in case of the other shared memory parallelizations \b Blaze is not unconditionally running
+// an operation in parallel (see for instance \ref openmp_parallelization). Only in case a given
+// operation is large enough and exceeds a certain threshold the operation is executed in parallel.
+// All thresholds related to the HPX-based parallelization are contained within the configuration
+// file <tt><blaze/config/Thresholds.h></tt>.
+//
+// Please note that these thresholds are highly sensitiv to the used system architecture and
+// the shared memory parallelization technique. Therefore the default values cannot guarantee
+// maximum performance for all possible situations and configurations. They merely provide a
+// reasonable standard for the current CPU generation. Also note that the provided defaults
+// have been determined using the OpenMP parallelization and require individual adaption for
+// the HPX-based parallelization.
+//
+// \n Previous: \ref shared_memory_parallelization &nbsp; &nbsp; Next: \ref cpp_threads_parallelization
+*/
+//*************************************************************************************************
+
+
+//**C++11 Thread Parallelization*******************************************************************
+/*!\page cpp_threads_parallelization C++11 Thread Parallelization
+//
+// \tableofcontents
+//
+//
+// In addition to the HPX-based shared memory parallelization, starting with \b Blaze 2.1,
+// \b Blaze also provides a shared memory parallelization based on C++11 threads.
+//
+//
+// \n \section cpp_threads_setup C++11 Thread Setup
+// <hr>
+//
+// In order to enable the C++11 thread-based parallelization, first the according C++11-specific
+// compiler flags have to be used and second the \c BLAZE_USE_CPP_THREADS command line argument
+// has to be explicitly specified. For instance, in case of the GNU C++ and Clang compilers the
+// compiler flags have to be extended by
+
+   \code
+   ... -std=c++11 -DBLAZE_USE_CPP_THREADS ...
+   \endcode
+
+// This simple action will cause the \b Blaze library to automatically try to run all operations
+// in parallel with the specified number of C++11 threads. Note that in case both HPX and C++11
+// threads are enabled on the command line, the HPX-based parallelization has priority and is
+// preferred.
+//
+// The number of threads can be either specified via the environment variable \c BLAZE_NUM_THREADS
+
+   \code
+   export BLAZE_NUM_THREADS=4  // Unix systems
+   set BLAZE_NUM_THREADS=4     // Windows systems
+   \endcode
+
+// or alternatively via the \c setNumThreads() function provided by the \b Blaze library:
+
+   \code
+   blaze::setNumThreads( 4 );
+   \endcode
+
+// Please note that the \b Blaze library does not limit the available number of threads. Therefore
+// it is in YOUR responsibility to choose an appropriate number of threads. The best performance,
+// though, can be expected if the specified number of threads matches the available number of
+// cores.
+//
+// In order to query the number of threads used for the parallelization of operations, the
+// \c getNumThreads() function can be used:
+
+   \code
+   const size_t threads = blaze::getNumThreads();
+   \endcode
+
+// In the context of C++11 threads, the function will return the previously specified number of
+// threads.
+//
+//
+// \n \section cpp_threads_configuration C++11 Thread Configuration
+// <hr>
+//
+// As in case of the OpenMP-based parallelization \b Blaze is not unconditionally running an
+// operation in parallel. In case \b Blaze deems the parallel execution as counterproductive for
+// the overall performance, the operation is executed serially. One of the main reasons for not
+// executing an operation in parallel is the size of the operands. For instance, a vector addition
+// is only executed in parallel if the size of both vector operands exceeds a certain threshold.
+// Otherwise, the performance could seriously decrease due to the overhead caused by the thread
+// setup. However, in order to be able to adjust the \b Blaze library to a specific system, it
+// is possible to configure these thresholds manually. All thresholds are contained within the
+// configuration file <tt><blaze/config/Thresholds.h></tt>.
+//
+// Please note that these thresholds are highly sensitiv to the used system architecture and
+// the shared memory parallelization technique. Therefore the default values cannot guarantee
+// maximum performance for all possible situations and configurations. They merely provide a
+// reasonable standard for the current CPU generation. Also note that the provided defaults
+// have been determined using the OpenMP parallelization and require individual adaption for
+// the C++11 thread parallelization.
+//
+//
+// \n \section cpp_threads_known_issues Known Issues
+// <hr>
+//
+// There is a known issue in Visual Studio 2012 and 2013 that may cause C++11 threads to hang
+// if their destructor is executed after the \c main() function:
+//
+//    http://connect.microsoft.com/VisualStudio/feedback/details/747145
+//
+// Unfortunately, the C++11 parallelization of the \b Blaze library is affected from this bug.
+// In order to circumvent this problem, \b Blaze provides the \c shutDownThreads() function,
+// which can be used to manually destroy all threads at the end of the \c main() function:
+
+   \code
+   int main()
+   {
+      // ... Using the C++11 thread parallelization of Blaze
+
+      shutDownThreads();
+   }
+   \endcode
+
+// Please note that this function may only be used at the end of the \c main() function. After
+// this function no further computation may be executed! Also note that this function has an
+// effect for Visual Studio compilers only and doesn't need to be used with any other compiler.
+//
+// \n Previous: \ref hpx_parallelization &nbsp; &nbsp; Next: \ref boost_threads_parallelization
+*/
+//*************************************************************************************************
+
+
+//**Boost Thread Parallelization*******************************************************************
+/*!\page boost_threads_parallelization Boost Thread Parallelization
+//
+// \tableofcontents
+//
+//
+// The third available shared memory parallelization provided with \b Blaze is based
+// on <a href="https://www.boost.org/doc/libs/1_68_0/doc/html/thread.html">Boost threads</a>.
+//
+//
+// \n \section boost_threads_setup Boost Thread Setup
+// <hr>
+//
+// In order to enable the Boost thread-based parallelization, two steps have to be taken: First,
+// the \c BLAZE_USE_BOOST_THREADS command line argument has to be explicitly specified during
+// compilation:
+
+   \code
+   ... -DBLAZE_USE_BOOST_THREADS ...
+   \endcode
+
+// Second, the according Boost libraries have to be linked. These two simple actions will cause
+// the \b Blaze library to automatically try to run all operations in parallel with the specified
+// number of Boost threads. Note that the HPX-based and C++11 thread-based parallelizations have
+// priority, i.e. are preferred in case either is enabled in combination with the Boost thread
+// parallelization.
+//
+// The number of threads can be either specified via the environment variable \c BLAZE_NUM_THREADS
+
+   \code
+   export BLAZE_NUM_THREADS=4  // Unix systems
+   set BLAZE_NUM_THREADS=4     // Windows systems
+   \endcode
+
+// or alternatively via the \c setNumThreads() function provided by the \b Blaze library:
+
+   \code
+   blaze::setNumThreads( 4 );
+   \endcode
+
+// Please note that the \b Blaze library does not limit the available number of threads. Therefore
+// it is in YOUR responsibility to choose an appropriate number of threads. The best performance,
+// though, can be expected if the specified number of threads matches the available number of
+// cores.
+//
+// In order to query the number of threads used for the parallelization of operations, the
+// \c getNumThreads() function can be used:
+
+   \code
+   const size_t threads = blaze::getNumThreads();
+   \endcode
+
+// In the context of Boost threads, the function will return the previously specified number of
+// threads.
+//
+//
+// \n \section boost_threads_configuration Boost Thread Configuration
+// <hr>
+//
+// As in case of the other shared memory parallelizations \b Blaze is not unconditionally running
+// an operation in parallel (see \ref openmp_parallelization or \ref cpp_threads_parallelization).
+// All thresholds related to the Boost thread parallelization are also contained within the
+// configuration file <tt><blaze/config/Thresholds.h></tt>.
+//
+// Please note that these thresholds are highly sensitiv to the used system architecture and
+// the shared memory parallelization technique. Therefore the default values cannot guarantee
+// maximum performance for all possible situations and configurations. They merely provide a
+// reasonable standard for the current CPU generation. Also note that the provided defaults
+// have been determined using the OpenMP parallelization and require individual adaption for
+// the Boost thread parallelization.
+//
+// \n Previous: \ref cpp_threads_parallelization &nbsp; &nbsp; Next: \ref openmp_parallelization
 */
 //*************************************************************************************************
 
@@ -11024,6 +11281,10 @@
 /*!\page openmp_parallelization OpenMP Parallelization
 //
 // \tableofcontents
+//
+//
+// The fourth and final shared memory parallelization provided with \b Blaze is based on
+// <a href="https://www.openmp.org">OpenMP</a>.
 //
 //
 // \n \section openmp_setup OpenMP Setup
@@ -11039,7 +11300,9 @@
    \endcode
 
 // This simple action will cause the \b Blaze library to automatically try to run all operations
-// in parallel with the specified number of threads.
+// in parallel with the specified number of threads. Note however that the HPX-based, the C++11
+// thread-based, and the Boost thread-based parallelizations have priority, i.e. are preferred in
+// case either is enabled in combination with the OpenMP thread parallelization.
 //
 // As common for OpenMP, the number of threads can be specified either via an environment variable
 
@@ -11259,263 +11522,6 @@
 // Please note that the use of the \c BLAZE_SERIAL_SECTION (see also \ref serial_execution) does
 // NOT work in this context!
 //
-// \n Previous: \ref shared_memory_parallelization &nbsp; &nbsp; Next: \ref cpp_threads_parallelization
-*/
-//*************************************************************************************************
-
-
-//**C++11 Thread Parallelization*******************************************************************
-/*!\page cpp_threads_parallelization C++11 Thread Parallelization
-//
-// \tableofcontents
-//
-//
-// In addition to the OpenMP-based shared memory parallelization, starting with \b Blaze 2.1,
-// \b Blaze also provides a shared memory parallelization based on C++11 threads.
-//
-//
-// \n \section cpp_threads_setup C++11 Thread Setup
-// <hr>
-//
-// In order to enable the C++11 thread-based parallelization, first the according C++11-specific
-// compiler flags have to be used and second the \c BLAZE_USE_CPP_THREADS command line argument
-// has to be explicitly specified. For instance, in case of the GNU C++ and Clang compilers the
-// compiler flags have to be extended by
-
-   \code
-   ... -std=c++11 -DBLAZE_USE_CPP_THREADS ...
-   \endcode
-
-// This simple action will cause the \b Blaze library to automatically try to run all operations
-// in parallel with the specified number of C++11 threads. Note that in case both OpenMP and C++11
-// threads are enabled on the command line, the OpenMP-based parallelization has priority and
-// is preferred.
-//
-// The number of threads can be either specified via the environment variable \c BLAZE_NUM_THREADS
-
-   \code
-   export BLAZE_NUM_THREADS=4  // Unix systems
-   set BLAZE_NUM_THREADS=4     // Windows systems
-   \endcode
-
-// or alternatively via the \c setNumThreads() function provided by the \b Blaze library:
-
-   \code
-   blaze::setNumThreads( 4 );
-   \endcode
-
-// Please note that the \b Blaze library does not limit the available number of threads. Therefore
-// it is in YOUR responsibility to choose an appropriate number of threads. The best performance,
-// though, can be expected if the specified number of threads matches the available number of
-// cores.
-//
-// In order to query the number of threads used for the parallelization of operations, the
-// \c getNumThreads() function can be used:
-
-   \code
-   const size_t threads = blaze::getNumThreads();
-   \endcode
-
-// In the context of C++11 threads, the function will return the previously specified number of
-// threads.
-//
-//
-// \n \section cpp_threads_configuration C++11 Thread Configuration
-// <hr>
-//
-// As in case of the OpenMP-based parallelization \b Blaze is not unconditionally running an
-// operation in parallel. In case \b Blaze deems the parallel execution as counterproductive for
-// the overall performance, the operation is executed serially. One of the main reasons for not
-// executing an operation in parallel is the size of the operands. For instance, a vector addition
-// is only executed in parallel if the size of both vector operands exceeds a certain threshold.
-// Otherwise, the performance could seriously decrease due to the overhead caused by the thread
-// setup. However, in order to be able to adjust the \b Blaze library to a specific system, it
-// is possible to configure these thresholds manually. All thresholds are contained within the
-// configuration file <tt><blaze/config/Thresholds.h></tt>.
-//
-// Please note that these thresholds are highly sensitiv to the used system architecture and
-// the shared memory parallelization technique. Therefore the default values cannot guarantee
-// maximum performance for all possible situations and configurations. They merely provide a
-// reasonable standard for the current CPU generation. Also note that the provided defaults
-// have been determined using the OpenMP parallelization and require individual adaption for
-// the C++11 thread parallelization.
-//
-//
-// \n \section cpp_threads_known_issues Known Issues
-// <hr>
-//
-// There is a known issue in Visual Studio 2012 and 2013 that may cause C++11 threads to hang
-// if their destructor is executed after the \c main() function:
-//
-//    http://connect.microsoft.com/VisualStudio/feedback/details/747145
-//
-// Unfortunately, the C++11 parallelization of the \b Blaze library is affected from this bug.
-// In order to circumvent this problem, \b Blaze provides the \c shutDownThreads() function,
-// which can be used to manually destroy all threads at the end of the \c main() function:
-
-   \code
-   int main()
-   {
-      // ... Using the C++11 thread parallelization of Blaze
-
-      shutDownThreads();
-   }
-   \endcode
-
-// Please note that this function may only be used at the end of the \c main() function. After
-// this function no further computation may be executed! Also note that this function has an
-// effect for Visual Studio compilers only and doesn't need to be used with any other compiler.
-//
-// \n Previous: \ref openmp_parallelization &nbsp; &nbsp; Next: \ref boost_threads_parallelization
-*/
-//*************************************************************************************************
-
-
-//**Boost Thread Parallelization*******************************************************************
-/*!\page boost_threads_parallelization Boost Thread Parallelization
-//
-// \tableofcontents
-//
-//
-// The third available shared memory parallelization provided with \b Blaze is based on Boost
-// threads.
-//
-//
-// \n \section boost_threads_setup Boost Thread Setup
-// <hr>
-//
-// In order to enable the Boost thread-based parallelization, two steps have to be taken: First,
-// the \c BLAZE_USE_BOOST_THREADS command line argument has to be explicitly specified during
-// compilation:
-
-   \code
-   ... -DBLAZE_USE_BOOST_THREADS ...
-   \endcode
-
-// Second, the according Boost libraries have to be linked. These two simple actions will cause
-// the \b Blaze library to automatically try to run all operations in parallel with the specified
-// number of Boost threads. Note that the OpenMP-based and C++11 thread-based parallelizations
-// have priority, i.e. are preferred in case either is enabled in combination with the Boost
-// thread parallelization.
-//
-// The number of threads can be either specified via the environment variable \c BLAZE_NUM_THREADS
-
-   \code
-   export BLAZE_NUM_THREADS=4  // Unix systems
-   set BLAZE_NUM_THREADS=4     // Windows systems
-   \endcode
-
-// or alternatively via the \c setNumThreads() function provided by the \b Blaze library:
-
-   \code
-   blaze::setNumThreads( 4 );
-   \endcode
-
-// Please note that the \b Blaze library does not limit the available number of threads. Therefore
-// it is in YOUR responsibility to choose an appropriate number of threads. The best performance,
-// though, can be expected if the specified number of threads matches the available number of
-// cores.
-//
-// In order to query the number of threads used for the parallelization of operations, the
-// \c getNumThreads() function can be used:
-
-   \code
-   const size_t threads = blaze::getNumThreads();
-   \endcode
-
-// In the context of Boost threads, the function will return the previously specified number of
-// threads.
-//
-//
-// \n \section boost_threads_configuration Boost Thread Configuration
-// <hr>
-//
-// As in case of the other shared memory parallelizations \b Blaze is not unconditionally running
-// an operation in parallel (see \ref openmp_parallelization or \ref cpp_threads_parallelization).
-// All thresholds related to the Boost thread parallelization are also contained within the
-// configuration file <tt><blaze/config/Thresholds.h></tt>.
-//
-// Please note that these thresholds are highly sensitiv to the used system architecture and
-// the shared memory parallelization technique. Therefore the default values cannot guarantee
-// maximum performance for all possible situations and configurations. They merely provide a
-// reasonable standard for the current CPU generation. Also note that the provided defaults
-// have been determined using the OpenMP parallelization and require individual adaption for
-// the Boost thread parallelization.
-//
-// \n Previous: \ref cpp_threads_parallelization &nbsp; &nbsp; Next: \ref hpx_parallelization
-*/
-//*************************************************************************************************
-
-
-//**HPX Parallelization****************************************************************************
-/*!\page hpx_parallelization HPX Parallelization
-//
-// \tableofcontents
-//
-//
-// The fourth and final shared memory parallelization provided with \b Blaze is based on
-// <a href="http://stellar.cct.lsu.edu/projects/hpx/">HPX</a>.
-//
-//
-// \n \section hpx_setup HPX Setup
-// <hr>
-//
-// In order to enable the HPX-based parallelization, the following steps have to be taken: First,
-// the \c BLAZE_USE_HPX_THREADS command line argument has to be explicitly specified during
-// compilation:
-
-   \code
-   ... -DBLAZE_USE_HPX_THREADS ...
-   \endcode
-
-// Second, the HPX library and depending libraries such as Boost, hwloc, etc. have to be linked.
-// And third, the HPX threads have to be initialized by a call to the \c hpx::init() function (see
-// the <a href="http://stellar.cct.lsu.edu/files/hpx_0.9.0/docs/hpx/tutorial.html">HPX tutorial</a>
-// for further details). These three actions will cause the \b Blaze library to automatically try
-// to run all operations in parallel with the specified number of HPX threads.
-//
-// Note that the OpenMP-based, C++11 thread-based, and Boost thread-based parallelizations have
-// priority, i.e. are preferred in case either is enabled in combination with the HPX thread
-// parallelization.
-//
-// The number of threads used by the HPX backend has to be specified via the command line:
-
-   \code
-   ... --hpx:threads 4 ...
-   \endcode
-
-// Please note that the \b Blaze library does not limit the available number of threads. Therefore
-// it is in YOUR responsibility to choose an appropriate number of threads. The best performance,
-// though, can be expected if the specified number of threads matches the available number of
-// cores.
-//
-// In order to query the number of threads used for the parallelization of operations, the
-// \c getNumThreads() function can be used:
-
-   \code
-   const size_t threads = blaze::getNumThreads();
-   \endcode
-
-// In the context of HPX threads, the function will return the actual number of threads used by
-// the HPX subsystem.
-//
-//
-// \n \section hpx_configuration HPX Configuration
-// <hr>
-//
-// As in case of the other shared memory parallelizations \b Blaze is not unconditionally running
-// an operation in parallel (see for instance \ref openmp_parallelization). Only in case a given
-// operation is large enough and exceeds a certain threshold the operation is executed in parallel.
-// All thresholds related to the HPX-based parallelization are contained within the configuration
-// file <tt><blaze/config/Thresholds.h></tt>.
-//
-// Please note that these thresholds are highly sensitiv to the used system architecture and
-// the shared memory parallelization technique. Therefore the default values cannot guarantee
-// maximum performance for all possible situations and configurations. They merely provide a
-// reasonable standard for the current CPU generation. Also note that the provided defaults
-// have been determined using the OpenMP parallelization and require individual adaption for
-// the HPX-based parallelization.
-//
 // \n Previous: \ref boost_threads_parallelization &nbsp; &nbsp; Next: \ref serial_execution
 */
 //*************************************************************************************************
@@ -11599,7 +11605,7 @@
 // In case the \c BLAZE_USE_SHARED_MEMORY_PARALLELIZATION switch is set to 0, the shared memory
 // parallelization is deactivated altogether.
 //
-// \n Previous: \ref hpx_parallelization &nbsp; &nbsp; Next: \ref serialization
+// \n Previous: \ref openmp_parallelization &nbsp; &nbsp; Next: \ref serialization
 */
 //*************************************************************************************************
 
