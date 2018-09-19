@@ -42,12 +42,12 @@
 
 #include <blaze/system/SMP.h>
 
-#if BLAZE_OPENMP_PARALLEL_MODE
-#include <blaze/math/smp/openmp/DenseMatrix.h>
+#if BLAZE_HPX_PARALLEL_MODE
+#include <blaze/math/smp/hpx/DenseMatrix.h>
 #elif BLAZE_CPP_THREADS_PARALLEL_MODE || BLAZE_BOOST_THREADS_PARALLEL_MODE
 #include <blaze/math/smp/threads/DenseMatrix.h>
-#elif BLAZE_HPX_PARALLEL_MODE
-#include <blaze/math/smp/hpx/DenseMatrix.h>
+#elif BLAZE_OPENMP_PARALLEL_MODE
+#include <blaze/math/smp/openmp/DenseMatrix.h>
 #else
 #include <blaze/math/smp/default/DenseMatrix.h>
 #endif

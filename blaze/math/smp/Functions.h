@@ -42,12 +42,12 @@
 
 #include <blaze/system/SMP.h>
 
-#if BLAZE_OPENMP_PARALLEL_MODE
-#include <blaze/math/smp/openmp/Functions.h>
+#if BLAZE_HPX_PARALLEL_MODE
+#include <blaze/math/smp/hpx/Functions.h>
 #elif BLAZE_CPP_THREADS_PARALLEL_MODE || BLAZE_BOOST_THREADS_PARALLEL_MODE
 #include <blaze/math/smp/threads/Functions.h>
-#elif BLAZE_HPX_PARALLEL_MODE
-#include <blaze/math/smp/hpx/Functions.h>
+#elif BLAZE_OPENMP_PARALLEL_MODE
+#include <blaze/math/smp/openmp/Functions.h>
 #else
 #include <blaze/math/smp/default/Functions.h>
 #endif
