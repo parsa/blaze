@@ -1,6 +1,6 @@
 #==================================================================================================
 #
-#  Makefile for the traits module of the Blaze test suite
+#  Makefile for the expandtrait module of the Blaze test suite
 #
 #  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved - All Rights Reserved
 #
@@ -35,7 +35,7 @@
 # Including the compiler and library settings
 ifneq ($(MAKECMDGOALS),reset)
 ifneq ($(MAKECMDGOALS),clean)
--include ../../Makeconfig
+-include ../../../Makeconfig
 endif
 endif
 
@@ -47,85 +47,38 @@ OBJ = $(SRC:.cpp=.o)
 BIN = $(SRC:.cpp=)
 
 
-# Build rules
+# General rules
 default: all
+all: $(BIN)
+essential: $(BIN)
+single: $(BIN)
+noop: $(BIN)
 
-all: $(BIN) addtrait crosstrait divtrait expandtrait maptrait multtrait schurtrait subtrait
 
-essential: all
-
-single: all
-
-IncludeTest: IncludeTest.o
+# Build rules
+ClassTest: ClassTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-
-
-# Internal rules
-addtrait:
-	@echo
-	@echo "Building the AddTrait tests..."
-	@$(MAKE) --no-print-directory -C ./addtrait $(MAKECMDGOALS)
-
-crosstrait:
-	@echo
-	@echo "Building the CrossTrait tests..."
-	@$(MAKE) --no-print-directory -C ./crosstrait $(MAKECMDGOALS)
-
-divtrait:
-	@echo
-	@echo "Building the DivTrait tests..."
-	@$(MAKE) --no-print-directory -C ./divtrait $(MAKECMDGOALS)
-
-expandtrait:
-	@echo
-	@echo "Building the ExpandTrait tests..."
-	@$(MAKE) --no-print-directory -C ./expandtrait $(MAKECMDGOALS)
-
-maptrait:
-	@echo
-	@echo "Building the MapTrait tests..."
-	@$(MAKE) --no-print-directory -C ./maptrait $(MAKECMDGOALS)
-
-multtrait:
-	@echo
-	@echo "Building the MultTrait tests..."
-	@$(MAKE) --no-print-directory -C ./multtrait $(MAKECMDGOALS)
-
-schurtrait:
-	@echo
-	@echo "Building the SchurTrait tests..."
-	@$(MAKE) --no-print-directory -C ./schurtrait $(MAKECMDGOALS)
-
-subtrait:
-	@echo
-	@echo "Building the SubTrait tests..."
-	@$(MAKE) --no-print-directory -C ./subtrait $(MAKECMDGOALS)
 
 
 # Cleanup
 reset:
 	@$(RM) $(OBJ) $(BIN)
-	@$(MAKE) --no-print-directory -C ./addtrait reset
-	@$(MAKE) --no-print-directory -C ./crosstrait reset
-	@$(MAKE) --no-print-directory -C ./divtrait reset
-	@$(MAKE) --no-print-directory -C ./expandtrait reset
-	@$(MAKE) --no-print-directory -C ./maptrait reset
-	@$(MAKE) --no-print-directory -C ./multtrait reset
-	@$(MAKE) --no-print-directory -C ./schurtrait reset
-	@$(MAKE) --no-print-directory -C ./subtrait reset
-
 clean:
 	@$(RM) $(OBJ) $(BIN) $(DEP)
-	@$(MAKE) --no-print-directory -C ./addtrait clean
-	@$(MAKE) --no-print-directory -C ./crosstrait clean
-	@$(MAKE) --no-print-directory -C ./divtrait clean
-	@$(MAKE) --no-print-directory -C ./expandtrait clean
-	@$(MAKE) --no-print-directory -C ./maptrait clean
-	@$(MAKE) --no-print-directory -C ./multtrait clean
-	@$(MAKE) --no-print-directory -C ./schurtrait clean
-	@$(MAKE) --no-print-directory -C ./subtrait clean
+
+
+# Makefile includes
+ifneq ($(MAKECMDGOALS),reset)
+ifneq ($(MAKECMDGOALS),clean)
+-include $(DEP)
+endif
+endif
+
+
+# Makefile generation
+%.d: %.cpp
+	@$(CXX) -MM -MP -MT "$*.o $*.d" -MF $@ $(CXXFLAGS) $<
 
 
 # Setting the independent commands
-.PHONY: default all essential single reset clean \
-        addtrait crosstrait divtrait expandtrait maptrait multtrait schurtrait subtrait
+.PHONY: default all essential single noop reset clean
