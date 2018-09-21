@@ -49,6 +49,7 @@
 #include <blaze/math/expressions/SVecDVecInnerExpr.h>
 #include <blaze/math/expressions/SVecDVecMultExpr.h>
 #include <blaze/math/expressions/SVecEvalExpr.h>
+#include <blaze/math/expressions/SVecExpandExpr.h>
 #include <blaze/math/expressions/SVecMapExpr.h>
 #include <blaze/math/expressions/SVecNormExpr.h>
 #include <blaze/math/expressions/SVecReduceExpr.h>
