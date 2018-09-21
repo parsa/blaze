@@ -58,6 +58,7 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/ExpandTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
@@ -6129,6 +6130,29 @@ struct UnaryMapTraitEval2< T, OP
    using ET = ElementType_t<T>;
 
    using Type = CompressedMatrix< MapTrait_t<ET,OP>, StorageOrder_v<T> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  EXPANDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T  // Type to be expanded
+        , size_t E >  // Compile time expansion
+struct ExpandTraitEval2< T, E
+                       , EnableIf_t< IsSparseVector_v<T> > >
+{
+   static constexpr bool TF = ( IsColumnVector_v<T> ? columnMajor : rowMajor );
+
+   using Type = CompressedMatrix< ElementType_t<T>, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
