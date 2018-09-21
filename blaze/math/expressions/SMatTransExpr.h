@@ -146,7 +146,7 @@ class SMatTransExpr
    //! Data type for composite expression templates.
    using CompositeType = If_t< useAssign, const ResultType, const SMatTransExpr& >;
 
-   //! Iterator over the elements of the dense matrix.
+   //! Iterator over the elements of the sparse matrix.
    using ConstIterator = GetConstIterator_t<MT>;
 
    //! Composite data type of the sparse matrix expression.
