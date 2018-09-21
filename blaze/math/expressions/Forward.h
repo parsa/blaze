@@ -94,6 +94,7 @@ template< typename, typename, bool > class DVecDVecMultExpr;
 template< typename, typename > class DVecDVecOuterExpr;
 template< typename, typename, bool > class DVecDVecSubExpr;
 template< typename, bool > class DVecEvalExpr;
+template< typename, bool, size_t... > class DVecExpandExpr;
 template< typename, typename, bool > class DVecMapExpr;
 template< typename, typename, bool > class DVecScalarDivExpr;
 template< typename, typename, bool > class DVecScalarMultExpr;
@@ -522,7 +523,7 @@ decltype(auto) serial( const SparseMatrix<MT,SO>& );
 
 
 template< typename MT, bool SO >
-inline decltype(auto) inv( const DenseMatrix<MT,SO>& );
+decltype(auto) inv( const DenseMatrix<MT,SO>& );
 
 
 template< typename VT, bool TF, typename OP >
@@ -569,39 +570,46 @@ template< size_t RF, typename MT, bool SO, typename OP >
 decltype(auto) reduce( const SparseMatrix<MT,SO>&, OP );
 
 
-template< typename MT, bool SO >
-inline decltype(auto) declsym( const DenseMatrix<MT,SO>& );
+template< typename VT, bool TF >
+decltype(auto) expand( const DenseVector<VT,TF>&, size_t );
 
-template< typename MT, bool SO >
-inline decltype(auto) declsym( const SparseMatrix<MT,SO>& );
-
-
-template< typename MT, bool SO >
-inline decltype(auto) declherm( const DenseMatrix<MT,SO>& );
-
-template< typename MT, bool SO >
-inline decltype(auto) declherm( const SparseMatrix<MT,SO>& );
+template< size_t E, typename VT, bool TF >
+decltype(auto) expand( const DenseVector<VT,TF>& );
 
 
 template< typename MT, bool SO >
-inline decltype(auto) decllow( const DenseMatrix<MT,SO>& dm );
+decltype(auto) declsym( const DenseMatrix<MT,SO>& );
 
 template< typename MT, bool SO >
-inline decltype(auto) decllow( const SparseMatrix<MT,SO>& sm );
-
-
-template< typename MT, bool SO >
-inline decltype(auto) declupp( const DenseMatrix<MT,SO>& dm );
-
-template< typename MT, bool SO >
-inline decltype(auto) declupp( const SparseMatrix<MT,SO>& sm );
+decltype(auto) declsym( const SparseMatrix<MT,SO>& );
 
 
 template< typename MT, bool SO >
-inline decltype(auto) decldiag( const DenseMatrix<MT,SO>& dm );
+decltype(auto) declherm( const DenseMatrix<MT,SO>& );
 
 template< typename MT, bool SO >
-inline decltype(auto) decldiag( const SparseMatrix<MT,SO>& sm );
+decltype(auto) declherm( const SparseMatrix<MT,SO>& );
+
+
+template< typename MT, bool SO >
+decltype(auto) decllow( const DenseMatrix<MT,SO>& dm );
+
+template< typename MT, bool SO >
+decltype(auto) decllow( const SparseMatrix<MT,SO>& sm );
+
+
+template< typename MT, bool SO >
+decltype(auto) declupp( const DenseMatrix<MT,SO>& dm );
+
+template< typename MT, bool SO >
+decltype(auto) declupp( const SparseMatrix<MT,SO>& sm );
+
+
+template< typename MT, bool SO >
+decltype(auto) decldiag( const DenseMatrix<MT,SO>& dm );
+
+template< typename MT, bool SO >
+decltype(auto) decldiag( const SparseMatrix<MT,SO>& sm );
 
 } // namespace blaze
 
