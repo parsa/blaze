@@ -387,8 +387,8 @@ void AliasingTest::testDMatSMatSub()
       initialize();
 
       result_ =  dC3x3_;
-      result_ -= dC3x3_ - eval( sC3x3_ )
-      dC3x3_  -= dC3x3_ - eval( sC3x3_ )
+      result_ -= dC3x3_ - eval( sC3x3_ );
+      dC3x3_  -= dC3x3_ - eval( sC3x3_ );
 
       checkResult( dC3x3_, result_ );
    }
