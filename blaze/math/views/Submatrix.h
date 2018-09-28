@@ -60,6 +60,7 @@
 #include <blaze/math/expressions/MatVecMultExpr.h>
 #include <blaze/math/expressions/SchurExpr.h>
 #include <blaze/math/expressions/TVecMatMultExpr.h>
+#include <blaze/math/expressions/VecExpandExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/InversionFlag.h>
 #include <blaze/math/ReductionFlag.h>
@@ -79,6 +80,7 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/TransposeFlag.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/math/views/column/ColumnData.h>
 #include <blaze/math/views/row/RowData.h>
@@ -1301,6 +1303,84 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    return trans( submatrix<AF>( (~matrix).operand(), column, row, n, m, args... ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given vector expansion operation.
+// \ingroup submatrix
+//
+// \param matrix The constant vector expansion operation.
+// \param args Optional submatrix arguments.
+// \return View on the specified submatrix of the expansion operation.
+//
+// This function returns an expression representing the specified submatrix of the given vector
+// expansion operation.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename MT         // Matrix base type of the expression
+        , size_t... CEAs      // Compile time expansion arguments
+        , typename... RSAs >  // Optional submatrix arguments
+inline decltype(auto) submatrix( const VecExpandExpr<MT,CEAs...>& matrix, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using VT = VectorType_t< RemoveReference_t< decltype( (~matrix).operand() ) > >;
+
+   constexpr bool TF( TransposeFlag_v<VT> );
+
+   constexpr size_t index    ( TF ? J : I );
+   constexpr size_t size     ( TF ? N : M );
+   constexpr size_t expansion( TF ? M : N );
+
+   return expand<expansion>( subvector<index,size>( (~matrix).operand(), args... ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given vector expansion operation.
+// \ingroup submatrix
+//
+// \param matrix The constant vector expansion operation.
+// \param row The index of the first row of the submatrix.
+// \param column The index of the first column of the submatrix.
+// \param m The number of rows of the submatrix.
+// \param n The number of columns of the submatrix.
+// \param args Optional submatrix arguments.
+// \return View on the specified submatrix of the expansion operation.
+//
+// This function returns an expression representing the specified submatrix of the given vector
+// expansion operation.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , typename MT         // Matrix base type of the expression
+        , size_t... CEAs      // Compile time expansion arguments
+        , typename... RSAs >  // Optional submatrix arguments
+inline decltype(auto)
+   submatrix( const VecExpandExpr<MT,CEAs...>& matrix,
+              size_t row, size_t column, size_t m, size_t n, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using VT = VectorType_t< RemoveReference_t< decltype( (~matrix).operand() ) > >;
+
+   constexpr bool TF( TransposeFlag_v<VT> );
+
+   const size_t index    ( TF ? column : row );
+   const size_t size     ( TF ? n : m );
+   const size_t expansion( TF ? m : n );
+
+   return expand( subvector( (~matrix).operand(), index, size, args... ), expansion );
 }
 /*! \endcond */
 //*************************************************************************************************
