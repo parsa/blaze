@@ -63,6 +63,7 @@
 #include <blaze/math/expressions/MatTransExpr.h>
 #include <blaze/math/expressions/SchurExpr.h>
 #include <blaze/math/expressions/TVecMatMultExpr.h>
+#include <blaze/math/expressions/VecExpandExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/IntegerSequence.h>
@@ -89,8 +90,10 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/SmallArray.h>
+#include <blaze/util/StaticAssert.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/AlwaysFalse.h>
 #include <blaze/util/Unused.h>
 
 
@@ -539,7 +542,7 @@ inline decltype(auto) columns( MT&& matrix, const SmallArray<T,N>& indices, RCAs
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
 inline decltype(auto) columns( const MatMatAddExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -566,7 +569,7 @@ inline decltype(auto) columns( const MatMatAddExpr<MT>& matrix, RCAs... args )
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
 inline decltype(auto) columns( const MatMatSubExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -593,7 +596,7 @@ inline decltype(auto) columns( const MatMatSubExpr<MT>& matrix, RCAs... args )
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
 inline decltype(auto) columns( const SchurExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -620,7 +623,7 @@ inline decltype(auto) columns( const SchurExpr<MT>& matrix, RCAs... args )
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
 inline decltype(auto) columns( const MatMatMultExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -646,7 +649,7 @@ inline decltype(auto) columns( const MatMatMultExpr<MT>& matrix, RCAs... args )
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
 inline decltype(auto) columns( const VecTVecMultExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -672,7 +675,7 @@ inline decltype(auto) columns( const VecTVecMultExpr<MT>& matrix, RCAs... args )
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
 inline decltype(auto) columns( const MatScalarMultExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -698,7 +701,7 @@ inline decltype(auto) columns( const MatScalarMultExpr<MT>& matrix, RCAs... args
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
 inline decltype(auto) columns( const MatScalarDivExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -716,7 +719,7 @@ inline decltype(auto) columns( const MatScalarDivExpr<MT>& matrix, RCAs... args 
 //
 // \param matrix The constant unary matrix map operation.
 // \param args The runtime column arguments.
-// \return View on the specified selection of columns on the multiplication.
+// \return View on the specified selection of columns on the unary map operation.
 //
 // This function returns an expression representing the specified selection of columns on the
 // given unary matrix map operation.
@@ -724,7 +727,7 @@ inline decltype(auto) columns( const MatScalarDivExpr<MT>& matrix, RCAs... args 
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
 inline decltype(auto) columns( const MatMapExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -742,7 +745,7 @@ inline decltype(auto) columns( const MatMapExpr<MT>& matrix, RCAs... args )
 //
 // \param matrix The constant binary matrix map operation.
 // \param args The runtime column arguments.
-// \return View on the specified selection of columns on the multiplication.
+// \return View on the specified selection of columns on the binary map operation.
 //
 // This function returns an expression representing the specified selection of columns on the
 // given binary matrix map operation.
@@ -750,7 +753,7 @@ inline decltype(auto) columns( const MatMapExpr<MT>& matrix, RCAs... args )
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
 inline decltype(auto) columns( const MatMatMapExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -770,7 +773,7 @@ inline decltype(auto) columns( const MatMatMapExpr<MT>& matrix, RCAs... args )
 //
 // \param matrix The constant matrix evaluation operation.
 // \param args The runtime column arguments.
-// \return View on the specified selection of columns on the multiplication.
+// \return View on the specified selection of columns on the evaluation operation.
 //
 // This function returns an expression representing the specified selection of columns on the
 // given matrix evaluation operation.
@@ -778,7 +781,7 @@ inline decltype(auto) columns( const MatMatMapExpr<MT>& matrix, RCAs... args )
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
 inline decltype(auto) columns( const MatEvalExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -796,7 +799,7 @@ inline decltype(auto) columns( const MatEvalExpr<MT>& matrix, RCAs... args )
 //
 // \param matrix The constant matrix serialization operation.
 // \param args The runtime column arguments.
-// \return View on the specified selection of columns on the multiplication.
+// \return View on the specified selection of columns on the serialization operation.
 //
 // This function returns an expression representing the specified selection of columns on the
 // given matrix serialization operation.
@@ -804,7 +807,7 @@ inline decltype(auto) columns( const MatEvalExpr<MT>& matrix, RCAs... args )
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
 inline decltype(auto) columns( const MatSerialExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -822,7 +825,7 @@ inline decltype(auto) columns( const MatSerialExpr<MT>& matrix, RCAs... args )
 //
 // \param matrix The constant matrix declaration operation.
 // \param args The runtime column arguments.
-// \return View on the specified selection of columns on the multiplication.
+// \return View on the specified selection of columns on the declaration operation.
 //
 // This function returns an expression representing the specified selection of columns on the
 // given matrix declaration operation.
@@ -830,7 +833,7 @@ inline decltype(auto) columns( const MatSerialExpr<MT>& matrix, RCAs... args )
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
 inline decltype(auto) columns( const DeclExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -848,7 +851,7 @@ inline decltype(auto) columns( const DeclExpr<MT>& matrix, RCAs... args )
 //
 // \param matrix The constant matrix transpose operation.
 // \param args The runtime column arguments.
-// \return View on the specified selection of columns on the multiplication.
+// \return View on the specified selection of columns on the transpose operation.
 //
 // This function returns an expression representing the specified selection of columns on the
 // given matrix transpose operation.
@@ -856,12 +859,39 @@ inline decltype(auto) columns( const DeclExpr<MT>& matrix, RCAs... args )
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
-        , typename = EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) > >
+        , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
 inline decltype(auto) columns( const MatTransExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    return trans( rows<CCAs...>( (~matrix).operand(), args... ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of columns on the given vector expansion operation.
+// \ingroup columns
+//
+// \param matrix The constant vector expansion operation.
+// \param args The runtime column arguments.
+// \return void
+//
+// This operation is currently not supported. The attempt to create a view on a selection of
+// columns on a vector expansion operation will result in a compilation error.
+*/
+template< size_t... CCAs    // Compile time column arguments
+        , typename MT       // Matrix base type of the expression
+        , size_t... CEAs    // Compile time expansion arguments
+        , typename... RCAs  // Runtime column arguments
+        , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
+inline void columns( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... args )
+{
+   UNUSED_PARAMETER( matrix, args... );
+
+   BLAZE_STATIC_ASSERT_MSG( AlwaysFalse_v<MT>, "Unsupported operation" );
 }
 /*! \endcond */
 //*************************************************************************************************
