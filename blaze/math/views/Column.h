@@ -54,6 +54,7 @@
 #include <blaze/math/expressions/MatSerialExpr.h>
 #include <blaze/math/expressions/MatTransExpr.h>
 #include <blaze/math/expressions/SchurExpr.h>
+#include <blaze/math/expressions/VecExpandExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
@@ -72,9 +73,11 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/AlwaysFalse.h>
 #include <blaze/util/Unused.h>
 
 
@@ -714,6 +717,32 @@ inline decltype(auto) column( const MatTransExpr<MT>& matrix, RCAs... args )
    BLAZE_FUNCTION_TRACE;
 
    return trans( row<CCAs...>( (~matrix).operand(), args... ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given vector expansion operation.
+// \ingroup column
+//
+// \param matrix The constant vector expansion operation.
+// \param args The runtime column arguments
+// \return void
+//
+// This operation is currently not supported. The attempt to create a view on a specific column
+// of a vector expansion operation will result in a compilation error.
+*/
+template< size_t... CCAs      // Compile time column arguments
+        , typename MT         // Matrix base type of the expression
+        , size_t... CEAs      // Compile time expansion arguments
+        , typename... RCAs >  // Runtime column arguments
+inline void column( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... args )
+{
+   UNUSED_PARAMETER( matrix, args... );
+
+   BLAZE_STATIC_ASSERT_MSG( AlwaysFalse_v<MT>, "Unsupported operation" );
 }
 /*! \endcond */
 //*************************************************************************************************
