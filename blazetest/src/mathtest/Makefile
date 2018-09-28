@@ -53,6 +53,7 @@ all: shims simd blas lapack typetraits traits constraints functors \
      dvecdvecdiv svecdvecdiv \
      dvecdvecmin dvecdvecmax \
      dvecreduce svecreduce \
+     dvecexpand \
      dmatdvecmult dmatsvecmult smatdvecmult smatsvecmult \
      tdvecdmatmult tsvecdmatmult tdvecsmatmult tsvecsmatmult \
      dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
@@ -440,6 +441,11 @@ svecreduce:
 	@echo "Building the sparse vector reduction tests..."
 	@$(MAKE) --no-print-directory -C ./svecreduce $(MAKECMDGOALS)
 
+dvecexpand:
+	@echo
+	@echo "Building the dense vector expansion tests..."
+	@$(MAKE) --no-print-directory -C ./dvecexpand $(MAKECMDGOALS)
+
 dmatdvecmult:
 	@echo
 	@echo "Building the dense matrix/dense vector multiplication tests..."
@@ -711,6 +717,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./dvecdvecmax reset
 	@$(MAKE) --no-print-directory -C ./dvecreduce reset
 	@$(MAKE) --no-print-directory -C ./svecreduce reset
+	@$(MAKE) --no-print-directory -C ./dvecexpand reset
 	@$(MAKE) --no-print-directory -C ./dmatdvecmult reset
 	@$(MAKE) --no-print-directory -C ./dmatsvecmult reset
 	@$(MAKE) --no-print-directory -C ./smatdvecmult reset
@@ -825,6 +832,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./dvecdvecmax clean
 	@$(MAKE) --no-print-directory -C ./dvecreduce clean
 	@$(MAKE) --no-print-directory -C ./svecreduce clean
+	@$(MAKE) --no-print-directory -C ./dvecexpand clean
 	@$(MAKE) --no-print-directory -C ./dmatdvecmult clean
 	@$(MAKE) --no-print-directory -C ./dmatsvecmult clean
 	@$(MAKE) --no-print-directory -C ./smatdvecmult clean
@@ -887,6 +895,7 @@ clean:
         dvecdvecdiv svecdvecdiv \
         dvecdvecmin dvecdvecmax \
         dvecreduce svecreduce \
+        dvecexpand \
         dmatdvecmult dmatsvecmult smatdvecmult smatsvecmult \
         tdvecdmatmult tsvecdmatmult tdvecsmatmult tsvecsmatmult \
         dmatdmatadd dmatsmatadd smatdmatadd smatsmatadd \
