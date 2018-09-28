@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/DeclExpr.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatEvalExpr.h>
@@ -53,6 +54,7 @@
 #include <blaze/math/expressions/MatSerialExpr.h>
 #include <blaze/math/expressions/MatTransExpr.h>
 #include <blaze/math/expressions/SchurExpr.h>
+#include <blaze/math/expressions/VecExpandExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
@@ -62,6 +64,8 @@
 #include <blaze/math/typetraits/IsSubmatrix.h>
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/math/typetraits/TransposeFlag.h>
+#include <blaze/math/views/band/BandData.h>
 #include <blaze/math/views/band/BaseTemplate.h>
 #include <blaze/math/views/band/Dense.h>
 #include <blaze/math/views/band/Sparse.h>
@@ -78,6 +82,7 @@
 #include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -777,6 +782,41 @@ inline decltype(auto) band( const MatTransExpr<MT>& matrix, RBAs... args )
    BLAZE_FUNCTION_TRACE;
 
    return band<-CBAs...>( (~matrix).operand(), -args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific band of the given vector expansion operation.
+// \ingroup band
+//
+// \param matrix The constant vector expansion operation.
+// \param args The runtime band arguments.
+// \return View on the specified band of the expansion operation.
+//
+// This function returns an expression representing the specified band of the given vector
+// expansion operation.
+*/
+template< ptrdiff_t... CBAs   // Compile time band arguments
+        , typename MT         // Type of the matrix
+        , size_t... CEAs      // Compile time expansion arguments
+        , typename... RBAs >  // Runtime band arguments
+inline decltype(auto) band( const VecExpandExpr<MT,CEAs...>& matrix, RBAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using VT = VectorType_t< RemoveReference_t< decltype( (~matrix).operand() ) > >;
+
+   constexpr bool TF( TransposeFlag_v<VT> );
+
+   const BandData<CBAs...> bd( args... );
+
+   const size_t index( TF ? bd.column() : bd.row() );
+   const size_t size ( min( (~matrix).rows() - bd.row(), (~matrix).columns() - bd.column() ) );
+
+   return subvector( transTo<defaultTransposeFlag>( (~matrix).operand() ), index, size, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
