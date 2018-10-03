@@ -172,7 +172,7 @@ template< typename T >  // Type of the SIMD element
 BLAZE_ALWAYS_INLINE void setzero( SIMDi32<T>& value ) noexcept
 {
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-   (~value).value = _mm512_setzero_epi32();
+   (~value).value = _mm512_setzero_si512();
 #elif BLAZE_AVX2_MODE
    (~value).value = _mm256_setzero_si256();
 #elif BLAZE_SSE2_MODE
@@ -195,7 +195,7 @@ template< typename T >  // Type of the SIMD element
 BLAZE_ALWAYS_INLINE void setzero( SIMDci32<T>& value ) noexcept
 {
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-   (~value).value = _mm512_setzero_epi32();
+   (~value).value = _mm512_setzero_si512();
 #elif BLAZE_AVX2_MODE
    (~value).value = _mm256_setzero_si256();
 #elif BLAZE_SSE2_MODE
@@ -226,7 +226,7 @@ template< typename T >  // Type of the SIMD element
 BLAZE_ALWAYS_INLINE void setzero( SIMDi64<T>& value ) noexcept
 {
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-   (~value).value = _mm512_setzero_epi32();
+   (~value).value = _mm512_setzero_si512();
 #elif BLAZE_AVX2_MODE
    (~value).value = _mm256_setzero_si256();
 #elif BLAZE_SSE2_MODE
@@ -249,7 +249,7 @@ template< typename T >  // Type of the SIMD element
 BLAZE_ALWAYS_INLINE void setzero( SIMDci64<T>& value ) noexcept
 {
 #if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-   (~value).value = _mm512_setzero_epi32();
+   (~value).value = _mm512_setzero_si512();
 #elif BLAZE_AVX2_MODE
    (~value).value = _mm256_setzero_si256();
 #elif BLAZE_SSE2_MODE

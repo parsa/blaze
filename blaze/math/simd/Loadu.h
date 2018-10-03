@@ -210,7 +210,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,4UL>
 #if BLAZE_AVX512F_MODE
    return _mm512_maskz_loadu_epi32( 0xFFFF, reinterpret_cast<const __m512i*>( address ) );
 #elif BLAZE_MIC_MODE
-   __m512i v1 = _mm512_setzero_epi32();
+   __m512i v1 = _mm512_setzero_si512();
    v1 = _mm512_loadunpacklo_epi32( v1, address );
    v1 = _mm512_loadunpackhi_epi32( v1, address+16UL );
    return v1;
@@ -245,7 +245,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,4UL>
 #if BLAZE_AVX512F_MODE
    return _mm512_maskz_loadu_epi32( 0xFFFF, address );
 #elif BLAZE_MIC_MODE
-   __m512i v1 = _mm512_setzero_epi32();
+   __m512i v1 = _mm512_setzero_si512();
    v1 = _mm512_loadunpacklo_epi32( v1, address );
    v1 = _mm512_loadunpackhi_epi32( v1, address+8UL );
    return v1;
@@ -286,7 +286,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,8UL>
 #if BLAZE_AVX512F_MODE
    return _mm512_maskz_loadu_epi64( 0xFF, address );
 #elif BLAZE_MIC_MODE
-   __m512i v1 = _mm512_setzero_epi32();
+   __m512i v1 = _mm512_setzero_si512();
    v1 = _mm512_loadunpacklo_epi64( v1, address );
    v1 = _mm512_loadunpackhi_epi64( v1, address+8UL );
    return v1;
@@ -321,7 +321,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,8UL>
 #if BLAZE_AVX512F_MODE
    return _mm512_maskz_loadu_epi64( 0xFF, address );
 #elif BLAZE_MIC_MODE
-   __m512i v1 = _mm512_setzero_epi32();
+   __m512i v1 = _mm512_setzero_si512();
    v1 = _mm512_loadunpacklo_epi64( v1, address );
    v1 = _mm512_loadunpackhi_epi64( v1, address+4UL );
    return v1;

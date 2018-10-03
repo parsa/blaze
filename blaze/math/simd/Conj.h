@@ -103,7 +103,7 @@ BLAZE_ALWAYS_INLINE const T conj( const SIMDi16<T>& a ) noexcept
 BLAZE_ALWAYS_INLINE const SIMDcint16 conj( const SIMDcint16& a ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
-   return _mm512_mask_sub_epi16( a.value, 0XAAAAAAAA, _mm512_setzero_epi32(), a.value );
+   return _mm512_mask_sub_epi16( a.value, 0XAAAAAAAA, _mm512_setzero_si512(), a.value );
 }
 #elif BLAZE_AVX2_MODE
 {
@@ -206,7 +206,7 @@ BLAZE_ALWAYS_INLINE const T conj( const SIMDi64<T>& a ) noexcept
 BLAZE_ALWAYS_INLINE const SIMDcint64 conj( const SIMDcint64& a ) noexcept
 #if BLAZE_AVX512F_MODE
 {
-   return _mm512_mask_sub_epi64( a.value, 0XAA, _mm512_setzero_epi32(), a.value );
+   return _mm512_mask_sub_epi64( a.value, 0XAA, _mm512_setzero_si512(), a.value );
 }
 #else
 = delete;

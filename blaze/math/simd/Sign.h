@@ -69,7 +69,7 @@ namespace blaze {
 BLAZE_ALWAYS_INLINE SIMDint8 sign( const SIMDint8& a ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
-   const __m512i   zero ( _mm512_setzero_epi8() );
+   const __m512i   zero ( _mm512_setzero_si512() );
    const __mmask64 mask1( _mm512_cmplt_epi8_mask( zero, a.value ) );
    const __mmask64 mask2( _mm512_cmplt_epi8_mask( a.value, zero ) );
    const __m512i   xmm1 ( _mm512_mask_blend_epi8( mask1, zero, _mm512_set1_epi8( 1 ) ) );
@@ -112,7 +112,7 @@ BLAZE_ALWAYS_INLINE SIMDint8 sign( const SIMDint8& a ) noexcept
 BLAZE_ALWAYS_INLINE SIMDint16 sign( const SIMDint16& a ) noexcept
 #if BLAZE_AVX512BW_MODE
 {
-   const __m512i   zero ( _mm512_setzero_epi16() );
+   const __m512i   zero ( _mm512_setzero_si512() );
    const __mmask32 mask1( _mm512_cmplt_epi16_mask( zero, a.value ) );
    const __mmask32 mask2( _mm512_cmplt_epi16_mask( a.value, zero ) );
    const __m512i   xmm1 ( _mm512_mask_blend_epi16( mask1, zero, _mm512_set1_epi16( 1 ) ) );
@@ -155,7 +155,7 @@ BLAZE_ALWAYS_INLINE SIMDint16 sign( const SIMDint16& a ) noexcept
 BLAZE_ALWAYS_INLINE SIMDint32 sign( const SIMDint32& a ) noexcept
 #if BLAZE_AVX512F_MODE
 {
-   const __m512i   zero ( _mm512_setzero_epi32() );
+   const __m512i   zero ( _mm512_setzero_si512() );
    const __mmask16 mask1( _mm512_cmplt_epi32_mask( zero, a.value ) );
    const __mmask16 mask2( _mm512_cmplt_epi32_mask( a.value, zero ) );
    const __m512i   xmm1 ( _mm512_mask_blend_epi32( mask1, zero, _mm512_set1_epi32( 1 ) ) );
@@ -198,7 +198,7 @@ BLAZE_ALWAYS_INLINE SIMDint32 sign( const SIMDint32& a ) noexcept
 BLAZE_ALWAYS_INLINE SIMDint64 sign( const SIMDint64& a ) noexcept
 #if BLAZE_AVX512F_MODE
 {
-   const __m512i  zero ( _mm512_setzero_epi32() );
+   const __m512i  zero ( _mm512_setzero_si512() );
    const __mmask8 mask1( _mm512_cmplt_epi64_mask( zero, a.value ) );
    const __mmask8 mask2( _mm512_cmplt_epi64_mask( a.value, zero ) );
    const __m512i  xmm1 ( _mm512_mask_blend_epi64( mask1, zero, _mm512_set1_epi64( 1L ) ) );
