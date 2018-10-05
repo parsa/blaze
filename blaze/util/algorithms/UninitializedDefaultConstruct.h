@@ -40,50 +40,11 @@
 // Includes
 //*************************************************************************************************
 
-#include <iterator>
+#include <blaze/system/Standard.h>
+#if BLAZE_CPP17_MODE
 #include <memory>
-
-
-namespace blaze {
-
-//=================================================================================================
-//
-//  UNINITIALIZED_DEFAULT_CONSTRUCT ALGORITHM
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Default constructs elements in the given range.
-// \ingroup algorithms
-//
-// \param first Iterator to the first element of the range.
-// \param last Iterator to the element one past the last element of the range.
-// \return void
-//
-// This function default constructs elements in the given range \f$ [first,last) \f$. The range
-// is assumed to be uninitialized.
-*/
-template< class ForwardIt >
-void uninitialized_default_construct( ForwardIt first, ForwardIt last )
-{
-   using Value = typename std::iterator_traits<ForwardIt>::value_type;
-
-   ForwardIt current( first );
-
-   try {
-      for( ; current!=last; ++current ) {
-         ::new ( std::addressof( *current ) ) Value;
-      }
-   }
-   catch (...) {
-      for( ; first!=current; ++first ) {
-         first->~Value();
-      }
-      throw;
-   }
-}
-//*************************************************************************************************
-
-} // namespace blaze
+#else
+#include <blaze/util/algorithms/stubs/UninitializedDefaultConstruct.h>
+#endif
 
 #endif

@@ -354,8 +354,8 @@ inline SmallArray<T,N,A>::SmallArray( SmallArray&& sa )
       begin_ = reinterpret_cast<T*>( v_ );
       end_   = begin_ + sa.size();
       final_ = begin_ + N;
-      uninitialized_move( sa.begin_, sa.end_, begin_ );
-      destroy( sa.begin_, sa.end_ );
+      std::uninitialized_move( sa.begin_, sa.end_, begin_ );
+      std::destroy( sa.begin_, sa.end_ );
    }
 
    sa.begin_ = reinterpret_cast<T*>( sa.v_ );
@@ -411,9 +411,7 @@ template< typename T    // Data type of the elements
         , typename A >  // Type of the allocator
 inline SmallArray<T,N,A>::~SmallArray()
 {
-   using blaze::destroy;
-
-   destroy( begin_, end_ );
+   std::destroy( begin_, end_ );
 
    if( isDynamic() ) {
       deallocate( begin_, capacity() );
@@ -726,7 +724,7 @@ inline SmallArray<T,N,A>& SmallArray<T,N,A>::operator=( SmallArray&& rhs )
 {
    resize( rhs.size() );
    std::move( rhs.begin_, rhs.end_, begin_ );
-   destroy( rhs.begin_, rhs.end_ );
+   std::destroy( rhs.begin_, rhs.end_ );
 
    rhs.begin_ = reinterpret_cast<T*>( rhs.v_ );
    rhs.end_   = rhs.begin_;
@@ -802,9 +800,7 @@ template< typename T    // Data type of the elements
         , typename A >  // Type of the allocator
 inline void SmallArray<T,N,A>::clear()
 {
-   using blaze::destroy;
-
-   destroy( begin_, end_ );
+   std::destroy( begin_, end_ );
 
    if( isDynamic() ) {
       deallocate( begin_, capacity() );
@@ -832,17 +828,15 @@ template< typename T    // Data type of the elements
         , typename A >  // Type of the allocator
 void SmallArray<T,N,A>::resize( size_t n )
 {
-   using blaze::destroy;
-
    if( n > size() )
    {
       reserve( n );
-      uninitialized_default_construct( begin_+size(), begin_+n );
+      std::uninitialized_default_construct( begin_+size(), begin_+n );
       end_ = begin_ + n;
    }
    else if( n < size() )
    {
-      destroy( begin_+n, end_ );
+      std::destroy( begin_+n, end_ );
       end_ = begin_ + n;
    }
 }
@@ -865,8 +859,6 @@ template< typename T    // Data type of the elements
         , typename A >  // Type of the allocator
 void SmallArray<T,N,A>::resize( size_t n, const T& value )
 {
-   using blaze::destroy;
-
    if( n > size() )
    {
       reserve( n );
@@ -875,7 +867,7 @@ void SmallArray<T,N,A>::resize( size_t n, const T& value )
    }
    else if( n < size() )
    {
-      destroy( begin_+n, end_ );
+      std::destroy( begin_+n, end_ );
       end_ = begin_ + n;
    }
 }
@@ -896,8 +888,6 @@ template< typename T    // Data type of the elements
         , typename A >  // Type of the allocator
 void SmallArray<T,N,A>::reserve( size_t n )
 {
-   using blaze::destroy;
-
    const size_t oldCapacity( capacity() );
 
    if( n > oldCapacity )
@@ -906,13 +896,13 @@ void SmallArray<T,N,A>::reserve( size_t n )
       T* tmp( allocate( n ) );
 
       if( IsNothrowMoveConstructible_v<T> ) {
-         uninitialized_move( begin_, end_, tmp );
+         std::uninitialized_move( begin_, end_, tmp );
       }
       else {
          std::uninitialized_copy( begin_, end_, tmp );
       }
 
-      destroy( begin_, end_ );
+      std::destroy( begin_, end_ );
 
       if( isDynamic() ) {
          deallocate( begin_, oldCapacity );
@@ -940,8 +930,6 @@ template< typename T    // Data type of the elements
         , typename A >  // Type of the allocator
 void SmallArray<T,N,A>::shrinkToFit()
 {
-   using blaze::destroy;
-
    const size_t oldCapacity( capacity() );
    const size_t oldSize    ( size() );
 
@@ -950,13 +938,13 @@ void SmallArray<T,N,A>::shrinkToFit()
       T* tmp( allocate( oldSize ) );
 
       if( IsNothrowMoveConstructible_v<T> ) {
-         uninitialized_move( begin_, end_, tmp );
+         std::uninitialized_move( begin_, end_, tmp );
       }
       else {
          std::uninitialized_copy( begin_, end_, tmp );
       }
 
-      destroy( begin_, end_ );
+      std::destroy( begin_, end_ );
       deallocate( begin_, oldCapacity );
 
       final_ = tmp + oldSize;
@@ -1030,8 +1018,6 @@ template< typename T    // Data type of the elements
 typename SmallArray<T,N,A>::Iterator
    SmallArray<T,N,A>::insert( Iterator pos, const T& value )
 {
-   using blaze::destroy;
-
    const size_t oldCapacity( capacity() );
    const size_t oldSize    ( size() );
 
@@ -1043,10 +1029,10 @@ typename SmallArray<T,N,A>::Iterator
       T* tmp   ( allocate( newCapacity ) );
       T* newpos( tmp + index );
 
-      uninitialized_move( begin_, pos, tmp );
+      std::uninitialized_move( begin_, pos, tmp );
       ::new ( newpos ) T( value );
-      uninitialized_move( pos, end_, tmp+index+1UL );
-      destroy( begin_, end_ );
+      std::uninitialized_move( pos, end_, tmp+index+1UL );
+      std::destroy( begin_, end_ );
 
       if( isDynamic() ) {
          deallocate( begin_, capacity() );
@@ -1071,12 +1057,12 @@ typename SmallArray<T,N,A>::Iterator
 
       try {
          std::move_backward( pos, tmp, end_ );
-         destroy_at( pos );
+         std::destroy_at( pos );
          ::new ( pos ) T( value );
          ++end_;
       }
       catch( ... ) {
-         destroy_at( end_ );
+         std::destroy_at( end_ );
          throw;
       }
 
@@ -1099,8 +1085,6 @@ template< typename T    // Data type of the elements
 typename SmallArray<T,N,A>::Iterator
    SmallArray<T,N,A>::insert( Iterator pos, T&& value )
 {
-   using blaze::destroy;
-
    const size_t oldCapacity( capacity() );
    const size_t oldSize    ( size() );
 
@@ -1112,10 +1096,10 @@ typename SmallArray<T,N,A>::Iterator
       T* tmp   ( allocate( newCapacity ) );
       T* newpos( tmp + index );
 
-      uninitialized_move( begin_, pos, tmp );
+      std::uninitialized_move( begin_, pos, tmp );
       ::new ( newpos ) T( std::move( value ) );
-      uninitialized_move( pos, end_, tmp+index+1UL );
-      destroy( begin_, end_ );
+      std::uninitialized_move( pos, end_, tmp+index+1UL );
+      std::destroy( begin_, end_ );
 
       if( isDynamic() ) {
          deallocate( begin_, capacity() );
@@ -1140,12 +1124,12 @@ typename SmallArray<T,N,A>::Iterator
 
       try {
          std::move_backward( pos, tmp, end_ );
-         destroy_at( pos );
+         std::destroy_at( pos );
          ::new ( pos ) T( std::move( value ) );
          ++end_;
       }
       catch( ... ) {
-         destroy_at( end_ );
+         std::destroy_at( end_ );
          throw;
       }
 
@@ -1171,7 +1155,7 @@ typename SmallArray<T,N,A>::Iterator
 {
    std::move( pos+1UL, end_, pos );
    --end_;
-   destroy_at( end_ );
+   std::destroy_at( end_ );
 
    return pos;
 }
@@ -1193,15 +1177,13 @@ template< typename T    // Data type of the elements
 typename SmallArray<T,N,A>::Iterator
    SmallArray<T,N,A>::erase( Iterator first, Iterator last )
 {
-   using blaze::destroy;
-
    BLAZE_USER_ASSERT( first <= last, "Invalid range detected" );
 
    const size_t n( last - first );
 
    std::move( last, end_, first );
    end_ -= n;
-   destroy( end_, end_+n );
+   std::destroy( end_, end_+n );
 
    return first;
 }
@@ -1224,7 +1206,6 @@ template< typename T    // Data type of the elements
 void SmallArray<T,N,A>::swap( SmallArray& sa ) noexcept( IsNothrowMoveConstructible_v<T> )
 {
    using std::swap;
-   using blaze::destroy;
 
    if( isDynamic() && sa.isDynamic() )
    {
@@ -1236,8 +1217,8 @@ void SmallArray<T,N,A>::swap( SmallArray& sa ) noexcept( IsNothrowMoveConstructi
    {
       const size_t n( sa.size() );
 
-      uninitialized_move( sa.begin_, sa.end_, reinterpret_cast<T*>( v_ ) );
-      destroy( sa.begin_, sa.end_ );
+      std::uninitialized_move( sa.begin_, sa.end_, reinterpret_cast<T*>( v_ ) );
+      std::destroy( sa.begin_, sa.end_ );
 
       sa.begin_ = begin_;
       sa.end_   = end_;
@@ -1251,8 +1232,8 @@ void SmallArray<T,N,A>::swap( SmallArray& sa ) noexcept( IsNothrowMoveConstructi
    {
       const size_t n( size() );
 
-      uninitialized_move( begin_, end_, reinterpret_cast<T*>( sa.v_ ) );
-      destroy( begin_, end_ );
+      std::uninitialized_move( begin_, end_, reinterpret_cast<T*>( sa.v_ ) );
+      std::destroy( begin_, end_ );
 
       begin_ = sa.begin_;
       end_   = sa.end_;
@@ -1267,8 +1248,8 @@ void SmallArray<T,N,A>::swap( SmallArray& sa ) noexcept( IsNothrowMoveConstructi
       const size_t n( size() - sa.size() );
       const auto pos = std::swap_ranges( sa.begin_, sa.end_, begin_ );
 
-      uninitialized_move( pos, end_, sa.end_ );
-      destroy( pos, end_ );
+      std::uninitialized_move( pos, end_, sa.end_ );
+      std::destroy( pos, end_ );
       end_    -= n;
       sa.end_ += n;
    }
@@ -1277,8 +1258,8 @@ void SmallArray<T,N,A>::swap( SmallArray& sa ) noexcept( IsNothrowMoveConstructi
       const size_t n( sa.size() - size() );
       const auto pos = std::swap_ranges( begin_, end_, sa.begin_ );
 
-      uninitialized_move( pos, sa.end_, end_ );
-      destroy( pos, sa.end_ );
+      std::uninitialized_move( pos, sa.end_, end_ );
+      std::destroy( pos, sa.end_ );
       end_    += n;
       sa.end_ -= n;
    }

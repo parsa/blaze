@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/algorithms/UninitializedValueConstruct.h
-//  \brief Headerfile for the generic uninitialized_value_construct algorithm
+//  \file blaze/util/algorithms/stubs/Destroy.h
+//  \brief Headerfile for the stub for the std::destroy algorithm
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
@@ -32,19 +32,45 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_ALGORITHMS_UNINITIALIZEDVALUECONSTRUCT_H_
-#define _BLAZE_UTIL_ALGORITHMS_UNINITIALIZEDVALUECONSTRUCT_H_
+#ifndef _BLAZE_UTIL_ALGORITHMS_STUBS_DESTROY_H_
+#define _BLAZE_UTIL_ALGORITHMS_STUBS_DESTROY_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/system/Standard.h>
-#if BLAZE_CPP17_MODE
 #include <memory>
-#else
-#include <blaze/util/algorithms/stubs/UninitializedValueConstruct.h>
-#endif
+#include <blaze/util/algorithms/DestroyAt.h>
+
+
+namespace std {
+
+//=================================================================================================
+//
+//  DESTROY ALGORITHM
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Destroys the given range of objects .
+// \ingroup algorithms
+//
+// \param first Iterator to the first element to be destroyed.
+// \param last Iterator to the element one past the last element to be destroyed.
+// \return void
+//
+// This function explicitly calls the destructor of all object in the given range.
+*/
+template< typename ForwardIt >
+void destroy( ForwardIt first, ForwardIt last )
+{
+   for( ; first!=last; ++first ) {
+      destroy_at( std::addressof( *first ) );
+   }
+}
+//*************************************************************************************************
+
+} // namespace std
 
 #endif

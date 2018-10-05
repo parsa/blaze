@@ -40,37 +40,11 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/system/Standard.h>
+#if BLAZE_CPP17_MODE
 #include <memory>
-#include <blaze/util/algorithms/DestroyAt.h>
-
-
-namespace blaze {
-
-//=================================================================================================
-//
-//  DESTROY_AT ALGORITHM
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Destroys the given range of objects .
-// \ingroup algorithms
-//
-// \param first Iterator to the first element to be destroyed.
-// \param last Iterator to the element one past the last element to be destroyed.
-// \return void
-//
-// This function explicitly calls the destructor of all object in the given range.
-*/
-template< typename ForwardIt >
-void destroy( ForwardIt first, ForwardIt last )
-{
-   for( ; first!=last; ++first ) {
-      destroy_at( std::addressof( *first ) );
-   }
-}
-//*************************************************************************************************
-
-} // namespace blaze
+#else
+#include <blaze/util/algorithms/stubs/Destroy.h>
+#endif
 
 #endif

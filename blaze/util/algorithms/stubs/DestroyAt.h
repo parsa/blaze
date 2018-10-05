@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/algorithms/UninitializedValueConstruct.h
-//  \brief Headerfile for the generic uninitialized_value_construct algorithm
+//  \file blaze/util/algorithms/stubs/DestroyAt.h
+//  \brief Headerfile for the stub for the std::destroy_at algorithm
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
@@ -32,19 +32,34 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_ALGORITHMS_UNINITIALIZEDVALUECONSTRUCT_H_
-#define _BLAZE_UTIL_ALGORITHMS_UNINITIALIZEDVALUECONSTRUCT_H_
+#ifndef _BLAZE_UTIL_ALGORITHMS_STUBS_DESTROYAT_H_
+#define _BLAZE_UTIL_ALGORITHMS_STUBS_DESTROYAT_H_
 
+
+namespace std {
+
+//=================================================================================================
+//
+//  DESTROY_AT ALGORITHM
+//
+//=================================================================================================
 
 //*************************************************************************************************
-// Includes
+/*!\brief Destroys the object at the given address.
+// \ingroup algorithms
+//
+// \param p The address of the object to be destroyed.
+// \return void
+//
+// This function explicitly calls the destructor of the object at the given address.
+*/
+template< typename T >
+void destroy_at( T* p ) noexcept
+{
+   p->~T();
+}
 //*************************************************************************************************
 
-#include <blaze/system/Standard.h>
-#if BLAZE_CPP17_MODE
-#include <memory>
-#else
-#include <blaze/util/algorithms/stubs/UninitializedValueConstruct.h>
-#endif
+} // namespace std
 
 #endif
