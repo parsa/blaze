@@ -119,9 +119,11 @@ struct RowsData
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if BLAZE_CPP14_MODE
 // Definition and initialization of the static member variables
 template< size_t... CRAs >  // Compile time row arguments
 constexpr typename RowsData<CRAs...>::Indices RowsData<CRAs...>::indices_;
+#endif
 /*! \endcond */
 //*************************************************************************************************
 

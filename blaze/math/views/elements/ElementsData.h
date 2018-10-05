@@ -125,9 +125,11 @@ struct ElementsData
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if BLAZE_CPP14_MODE
 // Definition and initialization of the static member variables
 template< size_t... CEAs >  // Compile time element arguments
 constexpr typename ElementsData<CEAs...>::Indices ElementsData<CEAs...>::indices_;
+#endif
 /*! \endcond */
 //*************************************************************************************************
 

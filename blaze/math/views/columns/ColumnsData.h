@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/system/Standard.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/SmallArray.h>
 #include <blaze/util/Types.h>
@@ -119,9 +120,11 @@ struct ColumnsData
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+#if BLAZE_CPP14_MODE
 // Definition and initialization of the static member variables
 template< size_t... CCAs >  // Compile time column arguments
 constexpr typename ColumnsData<CCAs...>::Indices ColumnsData<CCAs...>::indices_;
+#endif
 /*! \endcond */
 //*************************************************************************************************
 
