@@ -255,6 +255,7 @@
 #include <blaze/math/typetraits/YieldsStrictlyUpper.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/math/typetraits/YieldsTriangular.h>
+#include <blaze/math/typetraits/YieldsUniform.h>
 #include <blaze/math/typetraits/YieldsUniLower.h>
 #include <blaze/math/typetraits/YieldsUniTriangular.h>
 #include <blaze/math/typetraits/YieldsUniUpper.h>
