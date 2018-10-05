@@ -100,6 +100,9 @@ template< typename MT       // Type of the dense matrix
 struct DMatNormHelper
 {
    //**Type definitions****************************************************************************
+   //! Element type of the dense matrix expression.
+   using ET = ElementType_t<MT>;
+
    //! Composite type of the dense matrix expression.
    using CT = RemoveReference_t< CompositeType_t<MT> >;
    //**********************************************************************************************
@@ -113,7 +116,11 @@ struct DMatNormHelper
 
    //! Helper structure for the detection of the SIMD capabilities of the given custom operation.
    struct UseSIMDEnabledFlag {
-      static constexpr bool value = Power::BLAZE_TEMPLATE simdEnabled< ElementType_t<MT> >();
+      static constexpr bool test( bool (*fnc)() ) { return fnc(); }
+      static constexpr bool test( bool b ) { return b; }
+      static constexpr bool value =
+         test( Abs::BLAZE_TEMPLATE simdEnabled<ET> ) &&
+         test( Power::BLAZE_TEMPLATE simdEnabled<ET> );
    };
    //**********************************************************************************************
 

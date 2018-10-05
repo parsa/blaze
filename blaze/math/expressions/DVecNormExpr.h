@@ -101,6 +101,9 @@ template< typename VT       // Type of the dense vector
 struct DVecNormHelper
 {
    //**Type definitions****************************************************************************
+   //! Element type of the dense vector expression.
+   using ET = ElementType_t<VT>;
+
    //! Composite type of the dense vector expression.
    using CT = RemoveReference_t< CompositeType_t<VT> >;
    //**********************************************************************************************
@@ -114,7 +117,11 @@ struct DVecNormHelper
 
    //! Helper structure for the detection of the SIMD capabilities of the given custom operation.
    struct UseSIMDEnabledFlag {
-      static constexpr bool value = Power::BLAZE_TEMPLATE simdEnabled< ElementType_t<VT> >();
+      static constexpr bool test( bool (*fnc)() ) { return fnc(); }
+      static constexpr bool test( bool b ) { return b; }
+      static constexpr bool value =
+         test( Abs::BLAZE_TEMPLATE simdEnabled<ET> ) &&
+         test( Power::BLAZE_TEMPLATE simdEnabled<ET> );
    };
    //**********************************************************************************************
 
