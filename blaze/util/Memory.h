@@ -225,8 +225,6 @@ EnableIf_t< IsBuiltin_v<T> > deallocate( T* address ) noexcept
    if( address == nullptr )
       return;
 
-   constexpr size_t alignment( AlignmentOf_v<T> );
-
    deallocate_backend( address );
 }
 //*************************************************************************************************
