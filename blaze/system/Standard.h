@@ -53,18 +53,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if __cplusplus >= 201103L && __cplusplus < 201402L
-#  define BLAZE_CPP11_MODE 1
-#else
-#  define BLAZE_CPP11_MODE 0
-#endif
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-#if __cplusplus >= 201402L && __cplusplus < 201703L
+#if ( __cplusplus >= 201402L && __cplusplus < 201703L ) || ( _MSVC_LANG >= 201402L && _MSVC_LANG < 201703L )
 #  define BLAZE_CPP14_MODE 1
 #else
 #  define BLAZE_CPP14_MODE 0
@@ -75,7 +64,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if __cplusplus >= 201703L
+#if ( __cplusplus >= 201703L ) || ( _MSVC_LANG >= 201703L )
 #  define BLAZE_CPP17_MODE 1
 #else
 #  define BLAZE_CPP17_MODE 0
@@ -96,10 +85,8 @@
 /*! \cond BLAZE_INTERNAL */
 namespace {
 
-BLAZE_STATIC_ASSERT( BLAZE_CPP11_MODE || BLAZE_CPP14_MODE || BLAZE_CPP17_MODE );
-BLAZE_STATIC_ASSERT( !BLAZE_CPP11_MODE || ( !BLAZE_CPP14_MODE && !BLAZE_CPP17_MODE ) );
-BLAZE_STATIC_ASSERT( !BLAZE_CPP14_MODE || ( !BLAZE_CPP11_MODE && !BLAZE_CPP17_MODE ) );
-BLAZE_STATIC_ASSERT( !BLAZE_CPP17_MODE || ( !BLAZE_CPP11_MODE && !BLAZE_CPP14_MODE ) );
+BLAZE_STATIC_ASSERT( BLAZE_CPP14_MODE || BLAZE_CPP17_MODE );
+BLAZE_STATIC_ASSERT( !BLAZE_CPP14_MODE || !BLAZE_CPP17_MODE );
 
 }
 /*! \endcond */
