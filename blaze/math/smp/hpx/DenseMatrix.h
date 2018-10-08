@@ -46,6 +46,11 @@
 #include <blaze/math/constraints/SMPAssignable.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
+#include <blaze/math/functors/AddAssign.h>
+#include <blaze/math/functors/Assign.h>
+#include <blaze/math/functors/MultAssign.h>
+#include <blaze/math/functors/SchurAssign.h>
+#include <blaze/math/functors/SubAssign.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/smp/SerialSection.h>
 #include <blaze/math/smp/ThreadMapping.h>
