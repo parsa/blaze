@@ -64,6 +64,11 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
+#include <blaze/math/traits/DeclDiagTrait.h>
+#include <blaze/math/traits/DeclHermTrait.h>
+#include <blaze/math/traits/DeclLowTrait.h>
+#include <blaze/math/traits/DeclSymTrait.h>
+#include <blaze/math/traits/DeclUppTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -217,7 +222,19 @@ class DMatSMatMultExpr
    //! Type of this DMatSMatMultExpr instance.
    using This = DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF>;
 
-   using ResultType    = MultTrait_t<RT1,RT2>;         //!< Result type for expression template evaluations.
+   //! Result type for expression template evaluations.
+   using ResultType = typename If_t< HERM
+                                   , DeclHermTrait< MultTrait_t<RT1,RT2> >
+                                   , If_t< SYM
+                                         , DeclSymTrait< MultTrait_t<RT1,RT2> >
+                                         , If_t< LOW
+                                               , If_t< UPP
+                                                     , DeclDiagTrait< MultTrait_t<RT1,RT2> >
+                                                     , DeclLowTrait< MultTrait_t<RT1,RT2> > >
+                                               , If_t< UPP
+                                                     , DeclUppTrait< MultTrait_t<RT1,RT2> >
+                                                     , MultTrait<RT1,RT2> > > > >::Type;
+
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
@@ -1907,9 +1924,7 @@ struct IsAligned< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsSymmetric< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public BoolConstant< SF ||
-                          ( HF && IsBuiltin_v< ElementType_t< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> > > ) ||
-                          ( LF && UF ) >
+   : public IsSymmetric< ResultType_t< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1925,9 +1940,9 @@ struct IsSymmetric< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SF, bool LF, bool UF >
-struct IsHermitian< DMatSMatMultExpr<MT1,MT2,SF,true,LF,UF> >
-   : public TrueType
+template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
+struct IsHermitian< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
+   : public IsHermitian< ResultType_t< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1945,9 +1960,7 @@ struct IsHermitian< DMatSMatMultExpr<MT1,MT2,SF,true,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsLower< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public BoolConstant< LF ||
-                          ( IsLower_v<MT1> && IsLower_v<MT2> ) ||
-                          ( ( SF || HF ) && IsUpper_v<MT1> && IsUpper_v<MT2> ) >
+   : public IsLower< ResultType_t< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1965,8 +1978,7 @@ struct IsLower< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsUniLower< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public BoolConstant< ( IsUniLower_v<MT1> && IsUniLower_v<MT2> ) ||
-                          ( ( SF || HF ) && IsUniUpper_v<MT1> && IsUniUpper_v<MT2> ) >
+   : public IsUniLower< ResultType_t< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1984,11 +1996,7 @@ struct IsUniLower< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsStrictlyLower< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public BoolConstant< ( IsStrictlyLower_v<MT1> && IsLower_v<MT2> ) ||
-                          ( IsStrictlyLower_v<MT2> && IsLower_v<MT1> ) ||
-                          ( ( SF || HF ) &&
-                            ( ( IsStrictlyUpper_v<MT1> && IsUpper_v<MT2> ) ||
-                              ( IsStrictlyUpper_v<MT2> && IsUpper_v<MT1> ) ) ) >
+   : public IsStrictlyLower< ResultType_t< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2006,9 +2014,7 @@ struct IsStrictlyLower< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsUpper< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public BoolConstant< UF ||
-                          ( IsUpper_v<MT1> && IsUpper_v<MT2> ) ||
-                          ( ( SF || HF ) && IsLower_v<MT1> && IsLower_v<MT2> ) >
+   : public IsUpper< ResultType_t< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2026,8 +2032,7 @@ struct IsUpper< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsUniUpper< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public BoolConstant< ( IsUniUpper_v<MT1> && IsUniUpper_v<MT2> ) ||
-                          ( ( SF || HF ) && IsUniLower_v<MT1> && IsUniLower_v<MT2> ) >
+   : public IsUniUpper< ResultType_t< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2045,11 +2050,7 @@ struct IsUniUpper< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsStrictlyUpper< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public BoolConstant< ( IsStrictlyUpper_v<MT1> && IsUpper_v<MT2> ) ||
-                          ( IsStrictlyUpper_v<MT2> && IsUpper_v<MT1> ) ||
-                          ( ( SF || HF ) &&
-                            ( ( IsStrictlyLower_v<MT1> && IsLower_v<MT2> ) ||
-                              ( IsStrictlyLower_v<MT2> && IsLower_v<MT1> ) ) ) >
+   : public IsStrictlyUpper< ResultType_t< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
