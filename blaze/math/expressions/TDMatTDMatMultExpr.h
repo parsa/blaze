@@ -67,6 +67,11 @@
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
+#include <blaze/math/traits/DeclDiagTrait.h>
+#include <blaze/math/traits/DeclHermTrait.h>
+#include <blaze/math/traits/DeclLowTrait.h>
+#include <blaze/math/traits/DeclSymTrait.h>
+#include <blaze/math/traits/DeclUppTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -262,7 +267,19 @@ class TDMatTDMatMultExpr
    //! Type of this TDMatTDMatMultExpr instance.
    using This = TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>;
 
-   using ResultType    = MultTrait_t<RT1,RT2>;         //!< Result type for expression template evaluations.
+   //! Result type for expression template evaluations.
+   using ResultType = typename If_t< HERM
+                                   , DeclHermTrait< MultTrait_t<RT1,RT2> >
+                                   , If_t< SYM
+                                         , DeclSymTrait< MultTrait_t<RT1,RT2> >
+                                         , If_t< LOW
+                                               , If_t< UPP
+                                                     , DeclDiagTrait< MultTrait_t<RT1,RT2> >
+                                                     , DeclLowTrait< MultTrait_t<RT1,RT2> > >
+                                               , If_t< UPP
+                                                     , DeclUppTrait< MultTrait_t<RT1,RT2> >
+                                                     , MultTrait<RT1,RT2> > > > >::Type;
+
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
@@ -4727,14 +4744,27 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DMatScalarMultExpr<MMM,ST,true>;  //!< Type of this DMatScalarMultExpr instance.
-   using ResultType    = MultTrait_t<RES,ST>;              //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_t<ResultType>;       //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;      //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<ResultType>;        //!< Resulting element type.
-   using SIMDType      = SIMDTrait_t<ElementType>;         //!< Resulting SIMD element type.
-   using ReturnType    = const ElementType;                //!< Return type for expression template evaluations.
-   using CompositeType = const ResultType;                 //!< Data type for composite expression templates.
+   using This = DMatScalarMultExpr<MMM,ST,true>;  //!< Type of this DMatScalarMultExpr instance.
+
+   //! Result type for expression template evaluations.
+   using ResultType = typename If_t< HERM
+                                   , DeclHermTrait< MultTrait_t<RES,ST> >
+                                   , If_t< SYM
+                                         , DeclSymTrait< MultTrait_t<RES,ST> >
+                                         , If_t< LOW
+                                               , If_t< UPP
+                                                     , DeclDiagTrait< MultTrait_t<RES,ST> >
+                                                     , DeclLowTrait< MultTrait_t<RES,ST> > >
+                                               , If_t< UPP
+                                                     , DeclUppTrait< MultTrait_t<RES,ST> >
+                                                     , MultTrait<RES,ST> > > > >::Type;
+
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
+   using SIMDType      = SIMDTrait_t<ElementType>;     //!< Resulting SIMD element type.
+   using ReturnType    = const ElementType;            //!< Return type for expression template evaluations.
+   using CompositeType = const ResultType;             //!< Data type for composite expression templates.
 
    //! Composite type of the left-hand side dense matrix expression.
    using LeftOperand = const TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>;
@@ -9173,9 +9203,7 @@ struct IsAligned< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsSymmetric< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public BoolConstant< SF ||
-                          ( HF && IsBuiltin_v< ElementType_t< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> > > ) ||
-                          ( LF && UF ) >
+   : public IsSymmetric< ResultType_t< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -9191,9 +9219,9 @@ struct IsSymmetric< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SF, bool LF, bool UF >
-struct IsHermitian< TDMatTDMatMultExpr<MT1,MT2,SF,true,LF,UF> >
-   : public TrueType
+template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
+struct IsHermitian< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
+   : public IsHermitian< ResultType_t< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -9211,9 +9239,7 @@ struct IsHermitian< TDMatTDMatMultExpr<MT1,MT2,SF,true,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsLower< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public BoolConstant< LF ||
-                          ( IsLower_v<MT1> && IsLower_v<MT2> ) ||
-                          ( ( SF || HF ) && IsUpper_v<MT1> && IsUpper_v<MT2> ) >
+   : public IsLower< ResultType_t< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -9231,8 +9257,7 @@ struct IsLower< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsUniLower< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public BoolConstant< ( IsUniLower_v<MT1> && IsUniLower_v<MT2> ) ||
-                          ( ( SF || HF ) && IsUniUpper_v<MT1> && IsUniUpper_v<MT2> ) >
+   : public IsUniLower< ResultType_t< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -9250,11 +9275,7 @@ struct IsUniLower< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsStrictlyLower< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public BoolConstant< ( IsStrictlyLower_v<MT1> && IsLower_v<MT2> ) ||
-                          ( IsStrictlyLower_v<MT2> && IsLower_v<MT1> ) ||
-                          ( ( SF || HF ) &&
-                            ( ( IsStrictlyUpper_v<MT1> && IsUpper_v<MT2> ) ||
-                              ( IsStrictlyUpper_v<MT2> && IsUpper_v<MT1> ) ) ) >
+   : public IsStrictlyLower< ResultType_t< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -9272,9 +9293,7 @@ struct IsStrictlyLower< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsUpper< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public BoolConstant< UF ||
-                          ( IsUpper_v<MT1> && IsUpper_v<MT2> ) ||
-                          ( ( SF || HF ) && IsLower_v<MT1> && IsLower_v<MT2> ) >
+   : public IsUpper< ResultType_t< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -9292,8 +9311,7 @@ struct IsUpper< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsUniUpper< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public BoolConstant< ( IsUniUpper_v<MT1> && IsUniUpper_v<MT2> ) ||
-                          ( ( SF || HF ) && IsUniLower_v<MT1> && IsUniLower_v<MT2> ) >
+   : public IsUniUpper< ResultType_t< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -9311,11 +9329,7 @@ struct IsUniUpper< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsStrictlyUpper< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public BoolConstant< ( IsStrictlyUpper_v<MT1> && IsUpper_v<MT2> ) ||
-                          ( IsStrictlyUpper_v<MT2> && IsUpper_v<MT1> ) ||
-                          ( ( SF || HF ) &&
-                            ( ( IsStrictlyLower_v<MT1> && IsLower_v<MT2> ) ||
-                              ( IsStrictlyLower_v<MT2> && IsLower_v<MT1> ) ) ) >
+   : public IsStrictlyUpper< ResultType_t< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF> > >
 {};
 /*! \endcond */
 //*************************************************************************************************
