@@ -40,11 +40,50 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/system/Standard.h>
-#if BLAZE_CPP17_MODE
+#include <iterator>
 #include <memory>
-#else
-#include <blaze/util/algorithms/stubs/UninitializedValueConstruct.h>
-#endif
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  UNINITIALIZED_VALUE_CONSTRUCT ALGORITHM
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Value constructs elements in the given range.
+// \ingroup algorithms
+//
+// \param first Iterator to the first element of the range.
+// \param last Iterator to the element one past the last element of the range.
+// \return void
+//
+// This function value constructs elements in the given range \f$ [first,last) \f$. The range
+// is assumed to be uninitialized.
+*/
+template< class ForwardIt >
+void uninitialized_value_construct( ForwardIt first, ForwardIt last )
+{
+   using Value = typename std::iterator_traits<ForwardIt>::value_type;
+
+   ForwardIt current( first );
+
+   try {
+      for( ; current!=last; ++current ) {
+         ::new ( std::addressof( *current ) ) Value();
+      }
+   }
+   catch (...) {
+      for( ; first!=current; ++first ) {
+         first->~Value();
+      }
+      throw;
+   }
+}
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif

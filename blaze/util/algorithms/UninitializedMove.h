@@ -40,11 +40,54 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/system/Standard.h>
-#if BLAZE_CPP17_MODE
+#include <iterator>
 #include <memory>
-#else
-#include <blaze/util/algorithms/stubs/UninitializedMove.h>
-#endif
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  UNINITIALIZED_MOVE ALGORITHM
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Move the elements from the given source range to the uninitialized destination range.
+// \ingroup algorithms
+//
+// \param first Iterator to the first element of the source range.
+// \param last Iterator to the element one past the last element of the source range.
+// \param dest Iterator to the first element of the destination range.
+// \return Output iterator to the element one past the last copied element.
+//
+// This function moves the elements from the source range \f$ [first,last) \f$ to the specified
+// destination range. The destination range is assumed to be uninitialized, i.e. the elements
+// are move constructed.
+*/
+template< typename InputIt
+        , typename ForwardIt >
+ForwardIt uninitialized_move( InputIt first, InputIt last, ForwardIt dest )
+{
+   using Value = typename std::iterator_traits<ForwardIt>::value_type;
+
+   ForwardIt current( dest );
+
+   try {
+      for( ; first!=last; ++first, ++current ) {
+         ::new ( std::addressof( *current ) ) Value( std::move( *first ) );
+      }
+      return current;
+   }
+   catch( ... ) {
+      for( ; dest != current; ++dest ) {
+         dest->~Value();
+      }
+      throw;
+   }
+}
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif

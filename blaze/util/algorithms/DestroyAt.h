@@ -36,15 +36,30 @@
 #define _BLAZE_UTIL_ALGORITHMS_DESTROYAT_H_
 
 
+namespace blaze {
+
+//=================================================================================================
+//
+//  DESTROY_AT ALGORITHM
+//
+//=================================================================================================
+
 //*************************************************************************************************
-// Includes
+/*!\brief Destroys the object at the given address.
+// \ingroup algorithms
+//
+// \param p The address of the object to be destroyed.
+// \return void
+//
+// This function explicitly calls the destructor of the object at the given address.
+*/
+template< typename T >
+void destroy_at( T* p ) noexcept
+{
+   p->~T();
+}
 //*************************************************************************************************
 
-#include <blaze/system/Standard.h>
-#if BLAZE_CPP17_MODE
-#include <memory>
-#else
-#include <blaze/util/algorithms/stubs/DestroyAt.h>
-#endif
+} // namespace blaze
 
 #endif
