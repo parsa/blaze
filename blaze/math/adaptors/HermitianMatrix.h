@@ -1477,7 +1477,7 @@ struct BinaryMapTraitEval1< T1, T2, OP
 template< typename MT, bool SO, bool DF >
 struct DeclSymTrait< HermitianMatrix<MT,SO,DF> >
 {
-   using Type = HermitianMatrix<MT,SO,DF>;
+   using Type = SymmetricMatrix<MT,SO,DF>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1515,7 +1515,7 @@ struct DeclHermTrait< HermitianMatrix<MT,SO,DF> >
 template< typename MT, bool SO, bool DF >
 struct DeclLowTrait< HermitianMatrix<MT,SO,DF> >
 {
-   using Type = HermitianMatrix<MT,SO,DF>;
+   using Type = DiagonalMatrix<MT,SO,DF>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1534,7 +1534,7 @@ struct DeclLowTrait< HermitianMatrix<MT,SO,DF> >
 template< typename MT, bool SO, bool DF >
 struct DeclUppTrait< HermitianMatrix<MT,SO,DF> >
 {
-   using Type = HermitianMatrix<MT,SO,DF>;
+   using Type = DiagonalMatrix<MT,SO,DF>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1553,7 +1553,7 @@ struct DeclUppTrait< HermitianMatrix<MT,SO,DF> >
 template< typename MT, bool SO, bool DF >
 struct DeclDiagTrait< HermitianMatrix<MT,SO,DF> >
 {
-   using Type = HermitianMatrix<MT,SO,DF>;
+   using Type = DiagonalMatrix<MT,SO,DF>;
 };
 /*! \endcond */
 //*************************************************************************************************
