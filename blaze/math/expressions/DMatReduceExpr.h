@@ -2004,7 +2004,8 @@ template< size_t RF      // Reduction flag
         , typename OP >  // Type of the reduction operation
 inline const DMatReduceExpr<MT,OP,RF> reduce_backend( const DenseMatrix<MT,false>& dm, OP op )
 {
-   return DMatReduceExpr<MT,OP,RF>( ~dm, op );
+   using ReturnType = const DMatReduceExpr<MT,OP,RF>;
+   return ReturnType( ~dm, op );
 }
 /*! \endcond */
 //*************************************************************************************************

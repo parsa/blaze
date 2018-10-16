@@ -1587,7 +1587,8 @@ template< size_t RF      // Reduction flag
         , typename OP >  // Type of the reduction operation
 inline const SMatReduceExpr<MT,OP,RF> reduce_backend( const SparseMatrix<MT,false>& sm, OP op )
 {
-   return SMatReduceExpr<MT,OP,RF>( ~sm, op );
+   using ReturnType = const SMatReduceExpr<MT,OP,RF>;
+   return ReturnType( ~sm, op );
 }
 /*! \endcond */
 //*************************************************************************************************
