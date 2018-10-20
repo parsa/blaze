@@ -188,7 +188,7 @@ struct DeclHermTraitEval< MT
                                         Size_v<MT,1UL> == DefaultSize_v ||
                                         Size_v<MT,0UL> == Size_v<MT,1UL> ) > >
 {
-   using Type = HermitianMatrix<MT>;
+   using Type = HermitianMatrix<typename MT::ResultType>;
 };
 /*! \endcond */
 //*************************************************************************************************
