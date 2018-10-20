@@ -188,7 +188,7 @@ struct DeclDiagTraitEval< MT
                                         Size_v<MT,1UL> == DefaultSize_v ||
                                         Size_v<MT,0UL> == Size_v<MT,1UL> ) > >
 {
-   using Type = DiagonalMatrix<MT>;
+   using Type = DiagonalMatrix<typename MT::ResultType>;
 };
 /*! \endcond */
 //*************************************************************************************************
