@@ -50,7 +50,8 @@ BIN = $(SRC:.cpp=)
 # Build rules
 default: all
 
-all: $(BIN) addtrait crosstrait divtrait expandtrait maptrait multtrait schurtrait subtrait
+all: $(BIN) addtrait crosstrait declsymtrait divtrait \
+     expandtrait maptrait multtrait schurtrait subtrait
 
 essential: all
 
@@ -70,6 +71,11 @@ crosstrait:
 	@echo
 	@echo "Building the CrossTrait tests..."
 	@$(MAKE) --no-print-directory -C ./crosstrait $(MAKECMDGOALS)
+
+declsymtrait:
+	@echo
+	@echo "Building the DeclSymTrait tests..."
+	@$(MAKE) --no-print-directory -C ./declsymtrait $(MAKECMDGOALS)
 
 divtrait:
 	@echo
@@ -107,6 +113,7 @@ reset:
 	@$(RM) $(OBJ) $(BIN)
 	@$(MAKE) --no-print-directory -C ./addtrait reset
 	@$(MAKE) --no-print-directory -C ./crosstrait reset
+	@$(MAKE) --no-print-directory -C ./declsymtrait reset
 	@$(MAKE) --no-print-directory -C ./divtrait reset
 	@$(MAKE) --no-print-directory -C ./expandtrait reset
 	@$(MAKE) --no-print-directory -C ./maptrait reset
@@ -118,6 +125,7 @@ clean:
 	@$(RM) $(OBJ) $(BIN) $(DEP)
 	@$(MAKE) --no-print-directory -C ./addtrait clean
 	@$(MAKE) --no-print-directory -C ./crosstrait clean
+	@$(MAKE) --no-print-directory -C ./declsymtrait clean
 	@$(MAKE) --no-print-directory -C ./divtrait clean
 	@$(MAKE) --no-print-directory -C ./expandtrait clean
 	@$(MAKE) --no-print-directory -C ./maptrait clean
@@ -128,4 +136,5 @@ clean:
 
 # Setting the independent commands
 .PHONY: default all essential single reset clean \
-        addtrait crosstrait divtrait expandtrait maptrait multtrait schurtrait subtrait
+        addtrait crosstrait declsymtrait divtrait \
+        expandtrait maptrait multtrait schurtrait subtrait
