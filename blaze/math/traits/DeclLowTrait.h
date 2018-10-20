@@ -188,7 +188,7 @@ struct DeclLowTraitEval< MT
                                        Size_v<MT,1UL> == DefaultSize_v ||
                                        Size_v<MT,0UL> == Size_v<MT,1UL> ) > >
 {
-   using Type = LowerMatrix<MT>;
+   using Type = LowerMatrix<typename MT::ResultType>;
 };
 /*! \endcond */
 //*************************************************************************************************
