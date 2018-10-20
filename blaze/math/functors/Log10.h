@@ -46,8 +46,10 @@
 #include <blaze/math/typetraits/HasSIMDLog10.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
+#include <blaze/math/typetraits/YieldsUniform.h>
 #include <blaze/system/Inline.h>
 
 
@@ -108,6 +110,24 @@ struct Log10
    }
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSUNIFORM SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T >
+struct YieldsUniform<Log10,T>
+   : public IsUniform<T>
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

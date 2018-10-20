@@ -45,7 +45,9 @@
 #include <blaze/math/simd/Exp10.h>
 #include <blaze/math/typetraits/HasSIMDExp10.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
+#include <blaze/math/typetraits/YieldsUniform.h>
 #include <blaze/system/Inline.h>
 
 
@@ -106,6 +108,24 @@ struct Exp10
    }
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSUNIFORM SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T >
+struct YieldsUniform<Exp10,T>
+   : public IsUniform<T>
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

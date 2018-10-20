@@ -45,7 +45,9 @@
 #include <blaze/math/simd/Erfc.h>
 #include <blaze/math/typetraits/HasSIMDErfc.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
+#include <blaze/math/typetraits/YieldsUniform.h>
 #include <blaze/system/Inline.h>
 
 
@@ -106,6 +108,24 @@ struct Erfc
    }
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSUNIFORM SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T >
+struct YieldsUniform<Erfc,T>
+   : public IsUniform<T>
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

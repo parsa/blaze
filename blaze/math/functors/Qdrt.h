@@ -43,6 +43,24 @@
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Qdrt.h>
 #include <blaze/math/typetraits/HasSIMDSqrt.h>
+#include <blaze/math/typetraits/IsHermitian.h>
+#include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniform.h>
+#include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniUpper.h>
+#include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/YieldsHermitian.h>
+#include <blaze/math/typetraits/YieldsLower.h>
+#include <blaze/math/typetraits/YieldsStrictlyLower.h>
+#include <blaze/math/typetraits/YieldsStrictlyUpper.h>
+#include <blaze/math/typetraits/YieldsSymmetric.h>
+#include <blaze/math/typetraits/YieldsUniform.h>
+#include <blaze/math/typetraits/YieldsUniLower.h>
+#include <blaze/math/typetraits/YieldsUniUpper.h>
+#include <blaze/math/typetraits/YieldsUpper.h>
 #include <blaze/system/Inline.h>
 
 
@@ -103,6 +121,168 @@ struct Qdrt
    }
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSUNIFORM SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T >
+struct YieldsUniform<Qdrt,T>
+   : public IsUniform<T>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSSYMMETRIC SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsSymmetric<Qdrt,MT>
+   : public IsSymmetric<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSHERMITIAN SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsHermitian<Qdrt,MT>
+   : public IsHermitian<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSLOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsLower<Qdrt,MT>
+   : public IsLower<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSUNILOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsUniLower<Qdrt,MT>
+   : public IsUniLower<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSSTRICTLYLOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsStrictlyLower<Qdrt,MT>
+   : public IsStrictlyLower<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsUpper<Qdrt,MT>
+   : public IsUpper<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSUNIUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsUniUpper<Qdrt,MT>
+   : public IsUniUpper<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSSTRICTLYUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct YieldsStrictlyUpper<Qdrt,MT>
+   : public IsStrictlyUpper<MT>
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

@@ -48,10 +48,12 @@
 #include <blaze/math/typetraits/HasSIMDPow.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
+#include <blaze/math/typetraits/YieldsUniform.h>
 #include <blaze/math/typetraits/YieldsUniLower.h>
 #include <blaze/math/typetraits/YieldsUniUpper.h>
 #include <blaze/system/Inline.h>
@@ -137,6 +139,24 @@ struct UnaryPow
    /*! \endcond */
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSUNIFORM SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename ET, typename T >
+struct YieldsUniform<UnaryPow<ET>,T>
+   : public IsUniform<T>
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

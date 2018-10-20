@@ -45,7 +45,9 @@
 #include <blaze/math/simd/InvCbrt.h>
 #include <blaze/math/typetraits/HasSIMDInvCbrt.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
+#include <blaze/math/typetraits/YieldsUniform.h>
 #include <blaze/system/Inline.h>
 
 
@@ -106,6 +108,24 @@ struct InvCbrt
    }
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSUNIFORM SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T >
+struct YieldsUniform<InvCbrt,T>
+   : public IsUniform<T>
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 
