@@ -1609,7 +1609,7 @@ struct DeclLowTrait< StrictlyUpperMatrix<MT,SO,DF> >
 template< typename MT, bool SO, bool DF >
 struct DeclUppTrait< StrictlyUpperMatrix<MT,SO,DF> >
 {
-   using Type = DiagonalMatrix<MT>;
+   using Type = StrictlyUpperMatrix<MT>;
 };
 /*! \endcond */
 //*************************************************************************************************

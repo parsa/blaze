@@ -188,7 +188,7 @@ struct DeclUppTraitEval< MT
                                        Size_v<MT,1UL> == DefaultSize_v ||
                                        Size_v<MT,0UL> == Size_v<MT,1UL> ) > >
 {
-   using Type = UpperMatrix<MT>;
+   using Type = UpperMatrix<typename MT::ResultType>;
 };
 /*! \endcond */
 //*************************************************************************************************
