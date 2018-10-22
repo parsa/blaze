@@ -89,7 +89,6 @@
 #include <blaze/math/typetraits/IsStrictlyTriangular.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsTriangular.h>
-#include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -13465,24 +13464,6 @@ struct Size< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, 1UL >
 template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
 struct IsAligned< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
    : public BoolConstant< IsAligned_v<MT1> && IsAligned_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUNILOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
-struct IsUniLower< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public IsUniLower< ResultType_t< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF> > >
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -58,7 +58,6 @@
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsTemporary.h>
-#include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/util/Assert.h>
@@ -754,24 +753,6 @@ inline decltype(auto)
 
    return lhs.leftOperand() - ( lhs.rightOperand() + (~rhs) );
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUNILOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SO >
-struct IsUniLower< SMatDMatSubExpr<MT1,MT2,SO> >
-   : public BoolConstant< IsUniLower_v<MT1> && IsStrictlyLower_v<MT2> >
-{};
 /*! \endcond */
 //*************************************************************************************************
 
