@@ -109,6 +109,7 @@ OperationTest::OperationTest()
    testIsColumnVector();
    testIsCommutative();
    testIsDiagonal();
+   testIsHermitian();
    testIsIdentity();
    testIsLower();
    testIsMatrix();
@@ -270,6 +271,84 @@ void OperationTest::testIsDiagonal()
    BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE    ( Type10 );
    BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE    ( Type11 );
    BLAZE_CONSTRAINT_MUST_BE_DIAGONAL_MATRIX_TYPE    ( Type12 );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the mathematical 'IsHermitian' type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the mathematical 'IsHermitian' type trait.
+// In case an error is detected, a compilation error is created.
+*/
+void OperationTest::testIsHermitian()
+{
+   using blaze::complex;
+   using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+   using blaze::HermitianMatrix;
+   using blaze::DiagonalMatrix;
+   using blaze::IdentityMatrix;
+   using blaze::Decay_t;
+
+   using Type1  = DynamicMatrix<int>;
+   using Type2  = const DynamicMatrix<int>;
+   using Type3  = volatile DynamicMatrix<int>;
+   using Type4  = SymmetricMatrix< DynamicMatrix<int> >;
+   using Type5  = const SymmetricMatrix< DynamicMatrix<int> >;
+   using Type6  = volatile SymmetricMatrix< DynamicMatrix<int> >;
+   using Type7  = SymmetricMatrix< DynamicMatrix< complex<int> > >;
+   using Type8  = const SymmetricMatrix< DynamicMatrix< complex<int> > >;
+   using Type9  = volatile SymmetricMatrix< DynamicMatrix< complex<int> > >;
+   using Type10 = HermitianMatrix< DynamicMatrix<int> >;
+   using Type11 = const HermitianMatrix< DynamicMatrix<int> >;
+   using Type12 = volatile HermitianMatrix< DynamicMatrix<int> >;
+   using Type13 = HermitianMatrix< DynamicMatrix< complex<int> > >;
+   using Type14 = const HermitianMatrix< DynamicMatrix< complex<int> > >;
+   using Type15 = volatile HermitianMatrix< DynamicMatrix< complex<int> > >;
+   using Type16 = DiagonalMatrix< DynamicMatrix<int> >;
+   using Type17 = const DiagonalMatrix< DynamicMatrix<int> >;
+   using Type18 = volatile DiagonalMatrix< DynamicMatrix<int> >;
+   using Type19 = DiagonalMatrix< DynamicMatrix< complex<int> > >;
+   using Type20 = const DiagonalMatrix< DynamicMatrix< complex<int> > >;
+   using Type21 = volatile DiagonalMatrix< DynamicMatrix< complex<int> > >;
+   using Type22 = IdentityMatrix<int>;
+   using Type23 = const IdentityMatrix<int>;
+   using Type24 = volatile IdentityMatrix<int>;
+   using Type25 = IdentityMatrix< complex<int> >;
+   using Type26 = const IdentityMatrix< complex<int> >;
+   using Type27 = volatile IdentityMatrix< complex<int> >;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type1  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type2  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type3  );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type4  );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type5  );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type6  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type7  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type8  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type9  );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type10 );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type11 );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type12 );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type13 );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type14 );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type15 );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type16 );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type17 );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type18 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type19 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type20 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( Type21 );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type22 );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type23 );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type24 );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type25 );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type26 );
+   BLAZE_CONSTRAINT_MUST_BE_HERMITIAN_MATRIX_TYPE    ( Type27 );
 }
 //*************************************************************************************************
 
