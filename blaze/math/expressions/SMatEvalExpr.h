@@ -49,7 +49,6 @@
 #include <blaze/math/expressions/MatEvalExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
@@ -833,24 +832,6 @@ inline decltype(auto) eval( const SMatEvalExpr<MT,SO>& sm )
 {
    return sm;
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISHERMITIAN SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsHermitian< SMatEvalExpr<MT,SO> >
-   : public IsHermitian<MT>
-{};
 /*! \endcond */
 //*************************************************************************************************
 
