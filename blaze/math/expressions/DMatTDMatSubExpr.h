@@ -57,7 +57,6 @@
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsOperation.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
@@ -1173,24 +1172,6 @@ inline decltype(auto)
 template< typename MT1, typename MT2 >
 struct IsAligned< DMatTDMatSubExpr<MT1,MT2> >
    : public BoolConstant< IsAligned_v<MT1> && IsAligned_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISLOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsLower< DMatTDMatSubExpr<MT1,MT2> >
-   : public BoolConstant< IsLower_v<MT1> && IsLower_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

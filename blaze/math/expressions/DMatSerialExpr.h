@@ -50,7 +50,6 @@
 #include <blaze/math/expressions/MatSerialExpr.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUniLower.h>
@@ -862,24 +861,6 @@ inline decltype(auto) serial( const DMatSerialExpr<MT,SO>& dm )
 template< typename MT, bool SO >
 struct IsAligned< DMatSerialExpr<MT,SO> >
    : public IsAligned<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISLOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsLower< DMatSerialExpr<MT,SO> >
-   : public IsLower<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -59,7 +59,6 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
@@ -1106,24 +1105,6 @@ struct IsAligned< DMatDeclSymExpr<MT,SO> >
 template< typename MT, bool SO >
 struct IsSymmetric< DMatDeclSymExpr<MT,SO> >
    : public TrueType
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISLOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsLower< DMatDeclSymExpr<MT,SO> >
-   : public IsLower<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

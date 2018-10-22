@@ -59,7 +59,6 @@
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
@@ -1269,29 +1268,6 @@ struct IsAligned< DMatTDMatMapExpr<MT1,MT2,OP> >
 template< typename MT1, typename MT2, typename OP >
 struct IsPadded< DMatTDMatMapExpr<MT1,MT2,OP> >
    : public BoolConstant< IsPadded_v<MT1> && IsPadded_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISLOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsLower< DMatTDMatMapExpr<MT1,MT2,Min> >
-   : public BoolConstant< IsLower_v<MT1> && IsLower_v<MT2> >
-{};
-
-template< typename MT1, typename MT2 >
-struct IsLower< DMatTDMatMapExpr<MT1,MT2,Max> >
-   : public BoolConstant< IsLower_v<MT1> && IsLower_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

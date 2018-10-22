@@ -60,7 +60,6 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsInvertible.h>
-#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMultExpr.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
@@ -1210,24 +1209,6 @@ struct IsAligned< DMatScalarDivExpr<MT,ST,SO> >
 template< typename MT, typename ST, bool SO >
 struct IsPadded< DMatScalarDivExpr<MT,ST,SO> >
    : public IsPadded<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISLOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST, bool SO >
-struct IsLower< DMatScalarDivExpr<MT,ST,SO> >
-   : public IsLower<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

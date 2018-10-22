@@ -58,7 +58,6 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
@@ -931,24 +930,6 @@ inline decltype(auto)
    using ReturnType = const SMatTSMatAddExpr<MT2,MT1>;
    return ReturnType( ~rhs, ~lhs );
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISLOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsLower< SMatTSMatAddExpr<MT1,MT2> >
-   : public BoolConstant< IsLower_v<MT1> && IsLower_v<MT2> >
-{};
-/*! \endcond */
 //*************************************************************************************************
 
 
