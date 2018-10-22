@@ -40,8 +40,9 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
 
 
 namespace blaze {
@@ -51,6 +52,32 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T > struct IsUniLower;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the IsUniLower type trait.
+// \ingroup math_traits
+*/
+template< typename T
+        , typename = void >
+struct IsUniLowerHelper
+   : public FalseType
+{};
+
+template< typename T >  // Type of the operand
+struct IsUniLowerHelper< T, EnableIf_t< IsExpression_v<T> > >
+   : public IsUniLower< typename T::ResultType >::Type
+{};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Compile time check for lower unitriangular matrices.
@@ -84,7 +111,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsUniLower
-   : public FalseType
+   : public IsUniLowerHelper<T>
 {};
 //*************************************************************************************************
 
