@@ -40,8 +40,9 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
 
 
 namespace blaze {
@@ -51,6 +52,32 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T > struct IsHermitian;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the IsHermitian type trait.
+// \ingroup math_traits
+*/
+template< typename T
+        , typename = void >
+struct IsHermitianHelper
+   : public FalseType
+{};
+
+template< typename T >  // Type of the operand
+struct IsHermitianHelper< T, EnableIf_t< IsExpression_v<T> > >
+   : public IsHermitian< typename T::ResultType >::Type
+{};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Compile time check for Hermitian matrices.
@@ -83,7 +110,7 @@ namespace blaze {
 */
 template< typename T >
 struct IsHermitian
-   : public FalseType
+   : public IsHermitianHelper<T>
 {};
 //*************************************************************************************************
 
