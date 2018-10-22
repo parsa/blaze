@@ -67,7 +67,6 @@
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
@@ -1343,24 +1342,6 @@ struct IsAligned< DMatDMatSchurExpr<MT1,MT2,SO> >
 template< typename MT1, typename MT2, bool SO >
 struct IsPadded< DMatDMatSchurExpr<MT1,MT2,SO> >
    : public BoolConstant< IsPadded_v<MT1> && IsPadded_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSYMMETRIC SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SO >
-struct IsSymmetric< DMatDMatSchurExpr<MT1,MT2,SO> >
-   : public BoolConstant< IsSymmetric_v<MT1> && IsSymmetric_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

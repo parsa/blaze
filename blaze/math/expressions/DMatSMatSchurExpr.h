@@ -63,7 +63,6 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
@@ -1117,24 +1116,6 @@ struct Size< DMatSMatSchurExpr<MT1,MT2>, 0UL >
 template< typename MT1, typename MT2 >
 struct Size< DMatSMatSchurExpr<MT1,MT2>, 1UL >
    : public Maximum< Size<MT1,1UL>, Size<MT2,1UL> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSYMMETRIC SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsSymmetric< DMatSMatSchurExpr<MT1,MT2> >
-   : public BoolConstant< IsSymmetric_v<MT1> && IsSymmetric_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

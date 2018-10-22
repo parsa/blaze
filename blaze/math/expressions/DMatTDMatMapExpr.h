@@ -1279,29 +1279,6 @@ struct IsPadded< DMatTDMatMapExpr<MT1,MT2,OP> >
 
 //=================================================================================================
 //
-//  ISSYMMETRIC SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsSymmetric< DMatTDMatMapExpr<MT1,MT2,Min> >
-   : public BoolConstant< IsSymmetric_v<MT1> && IsSymmetric_v<MT2> >
-{};
-
-template< typename MT1, typename MT2 >
-struct IsSymmetric< DMatTDMatMapExpr<MT1,MT2,Max> >
-   : public BoolConstant< IsSymmetric_v<MT1> && IsSymmetric_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  ISHERMITIAN SPECIALIZATIONS
 //
 //=================================================================================================

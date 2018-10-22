@@ -62,7 +62,6 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
@@ -70,7 +69,6 @@
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/typetraits/YieldsHermitian.h>
-#include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/math/typetraits/YieldsUniLower.h>
 #include <blaze/math/typetraits/YieldsUniUpper.h>
 #include <blaze/util/Assert.h>
@@ -2364,24 +2362,6 @@ inline decltype(auto) imag( const SMatMapExpr<MT,Imag,SO>& sm )
 
    return sm;
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSYMMETRIC SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename OP, bool SO >
-struct IsSymmetric< SMatMapExpr<MT,OP,SO> >
-   : public YieldsSymmetric<OP,MT>
-{};
 /*! \endcond */
 //*************************************************************************************************
 

@@ -66,7 +66,6 @@
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
@@ -75,7 +74,6 @@
 #include <blaze/math/typetraits/YieldsLower.h>
 #include <blaze/math/typetraits/YieldsStrictlyLower.h>
 #include <blaze/math/typetraits/YieldsStrictlyUpper.h>
-#include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/math/typetraits/YieldsUniLower.h>
 #include <blaze/math/typetraits/YieldsUniUpper.h>
 #include <blaze/math/typetraits/YieldsUpper.h>
@@ -1342,24 +1340,6 @@ struct IsAligned< DMatDMatMapExpr<MT1,MT2,OP,SO> >
 template< typename MT1, typename MT2, typename OP, bool SO >
 struct IsPadded< DMatDMatMapExpr<MT1,MT2,OP,SO> >
    : public BoolConstant< IsPadded_v<MT1> && IsPadded_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSYMMETRIC SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, typename OP, bool SO >
-struct IsSymmetric< DMatDMatMapExpr<MT1,MT2,OP,SO> >
-   : public YieldsSymmetric<OP,MT1,MT2>
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -60,7 +60,6 @@
 #include <blaze/math/typetraits/IsOperation.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
@@ -807,24 +806,6 @@ inline decltype(auto)
 
    return ( lhs.leftOperand() - (~rhs) ) + lhs.rightOperand();
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSYMMETRIC SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SO >
-struct IsSymmetric< DMatSMatAddExpr<MT1,MT2,SO> >
-   : public BoolConstant< IsSymmetric_v<MT1> && IsSymmetric_v<MT2> >
-{};
 /*! \endcond */
 //*************************************************************************************************
 

@@ -59,7 +59,6 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
@@ -1026,24 +1025,6 @@ inline decltype(auto) declherm( const SMatScalarMultExpr<MT,ST,SO>& sm )
 
    return declherm( sm.leftOperand() ) * sm.rightOperand();
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSYMMETRIC SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsSymmetric< SMatDeclHermExpr<MT,SO> >
-   : public IsSymmetric<MT>
-{};
 /*! \endcond */
 //*************************************************************************************************
 

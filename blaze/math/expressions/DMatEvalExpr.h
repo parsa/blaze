@@ -54,7 +54,6 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
@@ -842,24 +841,6 @@ inline decltype(auto) eval( const DMatEvalExpr<MT,SO>& dm )
 template< typename MT, bool SO >
 struct IsAligned< DMatEvalExpr<MT,SO> >
    : public IsAligned<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSYMMETRIC SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsSymmetric< DMatEvalExpr<MT,SO> >
-   : public IsSymmetric<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
