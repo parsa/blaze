@@ -49,7 +49,6 @@
 #include <blaze/math/expressions/MatSerialExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
@@ -850,24 +849,6 @@ inline decltype(auto) serial( const SMatSerialExpr<MT,SO>& sm )
 {
    return sm;
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYLOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsStrictlyLower< SMatSerialExpr<MT,SO> >
-   : public IsStrictlyLower<MT>
-{};
 /*! \endcond */
 //*************************************************************************************************
 

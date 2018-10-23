@@ -58,7 +58,6 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
@@ -2357,24 +2356,6 @@ inline decltype(auto) imag( const SMatMapExpr<MT,Imag,SO>& sm )
 
    return sm;
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYLOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename OP, bool SO >
-struct IsStrictlyLower< SMatMapExpr<MT,OP,SO> >
-   : public IsStrictlyLower<MT>
-{};
 /*! \endcond */
 //*************************************************************************************************
 
