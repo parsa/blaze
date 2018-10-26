@@ -59,7 +59,6 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
@@ -1115,24 +1114,6 @@ struct Size< TSMatDMatSchurExpr<MT1,MT2>, 0UL >
 template< typename MT1, typename MT2 >
 struct Size< TSMatDMatSchurExpr<MT1,MT2>, 1UL >
    : public Maximum< Size<MT1,1UL>, Size<MT2,1UL> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsStrictlyUpper< TSMatDMatSchurExpr<MT1,MT2> >
-   : public BoolConstant< IsStrictlyUpper_v<MT1> || IsStrictlyUpper_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

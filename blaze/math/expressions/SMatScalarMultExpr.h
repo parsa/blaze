@@ -57,7 +57,6 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsInvertible.h>
-#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
@@ -1449,24 +1448,6 @@ inline decltype(auto)
 
    return ( lhs.leftOperand() * rhs.leftOperand() ) * ( lhs.rightOperand() * rhs.rightOperand() );
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST, bool SO >
-struct IsStrictlyUpper< SMatScalarMultExpr<MT,ST,SO> >
-   : public IsStrictlyUpper<MT>
-{};
 /*! \endcond */
 //*************************************************************************************************
 

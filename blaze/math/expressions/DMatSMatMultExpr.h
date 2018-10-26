@@ -1908,24 +1908,6 @@ struct IsAligned< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
 /*! \endcond */
 //*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SF, bool HF, bool LF, bool UF >
-struct IsStrictlyUpper< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> >
-   : public IsStrictlyUpper< ResultType_t< DMatSMatMultExpr<MT1,MT2,SF,HF,LF,UF> > >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

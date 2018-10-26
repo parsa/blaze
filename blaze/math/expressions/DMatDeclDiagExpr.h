@@ -60,7 +60,6 @@
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
-#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -1110,24 +1109,6 @@ struct IsLower< DMatDeclDiagExpr<MT,SO> >
 template< typename MT, bool SO >
 struct IsUpper< DMatDeclDiagExpr<MT,SO> >
    : public TrueType
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatDeclDiagExpr<MT,SO> >
-   : public IsStrictlyUpper<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

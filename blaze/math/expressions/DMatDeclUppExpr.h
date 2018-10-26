@@ -59,7 +59,6 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -1101,24 +1100,6 @@ struct IsAligned< DMatDeclUppExpr<MT,SO> >
 template< typename MT, bool SO >
 struct IsUpper< DMatDeclUppExpr<MT,SO> >
    : public TrueType
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatDeclUppExpr<MT,SO> >
-   : public IsStrictlyUpper<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

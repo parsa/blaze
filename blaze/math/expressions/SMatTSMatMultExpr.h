@@ -58,9 +58,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
-#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
-#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/system/Thresholds.h>
@@ -1206,25 +1204,6 @@ inline decltype(auto)
    using ReturnType = const SMatTSMatMultExpr<MT1,MT2>;
    return ReturnType( ~lhs, ~rhs );
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsStrictlyUpper< SMatTSMatMultExpr<MT1,MT2> >
-   : public BoolConstant< ( IsStrictlyUpper_v<MT1> && IsUpper_v<MT2> ) ||
-                          ( IsStrictlyUpper_v<MT2> && IsUpper_v<MT1> ) >
-{};
-/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

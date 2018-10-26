@@ -60,7 +60,6 @@
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
-#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
@@ -1101,24 +1100,6 @@ struct IsAligned< DMatDeclHermExpr<MT,SO> >
 template< typename MT, bool SO >
 struct IsHermitian< DMatDeclHermExpr<MT,SO> >
    : public TrueType
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatDeclHermExpr<MT,SO> >
-   : public IsStrictlyUpper<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -55,7 +55,6 @@
 #include <blaze/math/sparse/Forward.h>
 #include <blaze/math/traits/DeclUppTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -1037,24 +1036,6 @@ inline decltype(auto) declupp( const SMatScalarMultExpr<MT,ST,SO>& sm )
 template< typename MT, bool SO >
 struct IsUpper< SMatDeclUppExpr<MT,SO> >
    : public TrueType
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsStrictlyUpper< SMatDeclUppExpr<MT,SO> >
-   : public IsStrictlyUpper<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

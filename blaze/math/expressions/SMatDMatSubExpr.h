@@ -55,7 +55,6 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -750,24 +749,6 @@ inline decltype(auto)
 
    return lhs.leftOperand() - ( lhs.rightOperand() + (~rhs) );
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SO >
-struct IsStrictlyUpper< SMatDMatSubExpr<MT1,MT2,SO> >
-   : public BoolConstant< IsStrictlyUpper_v<MT1> && IsStrictlyUpper_v<MT2> >
-{};
 /*! \endcond */
 //*************************************************************************************************
 

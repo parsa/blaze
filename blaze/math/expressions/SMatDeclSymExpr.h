@@ -55,7 +55,6 @@
 #include <blaze/math/sparse/Forward.h>
 #include <blaze/math/traits/DeclSymTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -1037,24 +1036,6 @@ inline decltype(auto) declsym( const SMatScalarMultExpr<MT,ST,SO>& sm )
 template< typename MT, bool SO >
 struct IsSymmetric< SMatDeclSymExpr<MT,SO> >
    : public TrueType
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsStrictlyUpper< SMatDeclSymExpr<MT,SO> >
-   : public IsStrictlyUpper<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -50,7 +50,6 @@
 #include <blaze/math/expressions/MatEvalExpr.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
@@ -835,24 +834,6 @@ inline decltype(auto) eval( const DMatEvalExpr<MT,SO>& dm )
 template< typename MT, bool SO >
 struct IsAligned< DMatEvalExpr<MT,SO> >
    : public IsAligned<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsStrictlyUpper< DMatEvalExpr<MT,SO> >
-   : public IsStrictlyUpper<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

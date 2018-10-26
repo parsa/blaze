@@ -49,7 +49,6 @@
 #include <blaze/math/expressions/MatSerialExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
@@ -847,24 +846,6 @@ inline decltype(auto) serial( const SMatSerialExpr<MT,SO>& sm )
 {
    return sm;
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsStrictlyUpper< SMatSerialExpr<MT,SO> >
-   : public IsStrictlyUpper<MT>
-{};
 /*! \endcond */
 //*************************************************************************************************
 

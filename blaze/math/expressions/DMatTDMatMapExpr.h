@@ -52,15 +52,12 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatMatMapExpr.h>
-#include <blaze/math/functors/Max.h>
-#include <blaze/math/functors/Min.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsPadded.h>
-#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/system/Blocking.h>
@@ -1264,29 +1261,6 @@ struct IsAligned< DMatTDMatMapExpr<MT1,MT2,OP> >
 template< typename MT1, typename MT2, typename OP >
 struct IsPadded< DMatTDMatMapExpr<MT1,MT2,OP> >
    : public BoolConstant< IsPadded_v<MT1> && IsPadded_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsStrictlyUpper< DMatTDMatMapExpr<MT1,MT2,Min> >
-   : public BoolConstant< IsStrictlyUpper_v<MT1> && IsStrictlyUpper_v<MT2> >
-{};
-
-template< typename MT1, typename MT2 >
-struct IsStrictlyUpper< DMatTDMatMapExpr<MT1,MT2,Max> >
-   : public BoolConstant< IsStrictlyUpper_v<MT1> && IsStrictlyUpper_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

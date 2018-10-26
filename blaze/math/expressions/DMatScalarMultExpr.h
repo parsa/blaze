@@ -61,7 +61,6 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsInvertible.h>
 #include <blaze/math/typetraits/IsPadded.h>
-#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
@@ -1715,24 +1714,6 @@ struct IsAligned< DMatScalarMultExpr<MT,ST,SO> >
 template< typename MT, typename ST, bool SO >
 struct IsPadded< DMatScalarMultExpr<MT,ST,SO> >
    : public IsPadded<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISSTRICTLYUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST, bool SO >
-struct IsStrictlyUpper< DMatScalarMultExpr<MT,ST,SO> >
-   : public IsStrictlyUpper<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
