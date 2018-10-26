@@ -62,7 +62,7 @@ namespace blaze {
 // any given data type to its default value. Values of built-in data type are reset to zero.
 */
 template< typename Type >
-BLAZE_ALWAYS_INLINE void reset( Type& resettable )
+BLAZE_ALWAYS_INLINE constexpr void reset( Type& resettable )
 {
    resettable = Type();
 }
