@@ -57,8 +57,6 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
-#include <blaze/math/typetraits/IsUniLower.h>
-#include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -800,24 +798,6 @@ inline decltype(auto) trans( const SMatScalarMultExpr<MT,ST,SO>& sm )
 
    return trans( sm.leftOperand() ) * sm.rightOperand();
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUNIUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsUniUpper< SMatTransExpr<MT,SO> >
-   : public IsUniLower<MT>
-{};
 /*! \endcond */
 //*************************************************************************************************
 
