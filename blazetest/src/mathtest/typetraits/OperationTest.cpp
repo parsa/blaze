@@ -123,6 +123,7 @@ OperationTest::OperationTest()
    testIsMatrix();
    testIsRowVector();
    testIsStrictlyLower();
+   testIsStrictlyUpper();
    testIsSymmetric();
    testIsUniLower();
    testIsUniUpper();
@@ -584,28 +585,86 @@ void OperationTest::testIsStrictlyLower()
    using Type1  = DynamicMatrix<int>;
    using Type2  = const DynamicMatrix<int>;
    using Type3  = volatile DynamicMatrix<int>;
-   using Type4  = StrictlyLowerMatrix< DynamicMatrix<int> >;
-   using Type5  = const StrictlyLowerMatrix< DynamicMatrix<int> >;
-   using Type6  = volatile StrictlyLowerMatrix< DynamicMatrix<int> >;
-   using Type7  = StrictlyUpperMatrix< DynamicMatrix<int> >;
-   using Type8  = const StrictlyUpperMatrix< DynamicMatrix<int> >;
-   using Type9  = volatile StrictlyUpperMatrix< DynamicMatrix<int> >;
-   using Type10 = DiagonalMatrix< DynamicMatrix<int> >;
-   using Type11 = const DiagonalMatrix< DynamicMatrix<int> >;
-   using Type12 = volatile DiagonalMatrix< DynamicMatrix<int> >;
+   using Type4  = LowerMatrix< DynamicMatrix<int> >;
+   using Type5  = const LowerMatrix< DynamicMatrix<int> >;
+   using Type6  = volatile LowerMatrix< DynamicMatrix<int> >;
+   using Type7  = StrictlyLowerMatrix< DynamicMatrix<int> >;
+   using Type8  = const StrictlyLowerMatrix< DynamicMatrix<int> >;
+   using Type9  = volatile StrictlyLowerMatrix< DynamicMatrix<int> >;
+   using Type10 = StrictlyUpperMatrix< DynamicMatrix<int> >;
+   using Type11 = const StrictlyUpperMatrix< DynamicMatrix<int> >;
+   using Type12 = volatile StrictlyUpperMatrix< DynamicMatrix<int> >;
+   using Type13 = DiagonalMatrix< DynamicMatrix<int> >;
+   using Type14 = const DiagonalMatrix< DynamicMatrix<int> >;
+   using Type15 = volatile DiagonalMatrix< DynamicMatrix<int> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type1  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type2  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type3  );
-   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE    ( Type4  );
-   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE    ( Type5  );
-   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE    ( Type6  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type7  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type8  );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type9  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type4  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type5  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type6  );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE    ( Type7  );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE    ( Type8  );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_LOWER_MATRIX_TYPE    ( Type9  );
    BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type10 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type11 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type12 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type13 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type14 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_LOWER_MATRIX_TYPE( Type15 );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the mathematical 'IsStrictlyUpper' type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the mathematical 'IsStrictlyUpper' type trait.
+// In case an error is detected, a compilation error is created.
+*/
+void OperationTest::testIsStrictlyUpper()
+{
+   using blaze::DynamicMatrix;
+   using blaze::StrictlyLowerMatrix;
+   using blaze::UpperMatrix;
+   using blaze::StrictlyUpperMatrix;
+   using blaze::DiagonalMatrix;
+
+   using Type1  = DynamicMatrix<int>;
+   using Type2  = const DynamicMatrix<int>;
+   using Type3  = volatile DynamicMatrix<int>;
+   using Type4  = StrictlyLowerMatrix< DynamicMatrix<int> >;
+   using Type5  = const StrictlyLowerMatrix< DynamicMatrix<int> >;
+   using Type6  = volatile StrictlyLowerMatrix< DynamicMatrix<int> >;
+   using Type7  = UpperMatrix< DynamicMatrix<int> >;
+   using Type8  = const UpperMatrix< DynamicMatrix<int> >;
+   using Type9  = volatile UpperMatrix< DynamicMatrix<int> >;
+   using Type10 = StrictlyUpperMatrix< DynamicMatrix<int> >;
+   using Type11 = const StrictlyUpperMatrix< DynamicMatrix<int> >;
+   using Type12 = volatile StrictlyUpperMatrix< DynamicMatrix<int> >;
+   using Type13 = DiagonalMatrix< DynamicMatrix<int> >;
+   using Type14 = const DiagonalMatrix< DynamicMatrix<int> >;
+   using Type15 = volatile DiagonalMatrix< DynamicMatrix<int> >;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type1  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type2  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type3  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type4  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type5  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type6  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type7  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type8  );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type9  );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE    ( Type10 );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE    ( Type11 );
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_UPPER_MATRIX_TYPE    ( Type12 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type13 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type14 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_UPPER_MATRIX_TYPE( Type15 );
 }
 //*************************************************************************************************
 

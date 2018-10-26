@@ -84,6 +84,7 @@ class OperationTest
    void testIsRowMajorMatrix();
    void testIsRowVector();
    void testIsStrictlyLower();
+   void testIsStrictlyUpper();
    void testIsSymmetric();
    void testIsUniLower();
    void testIsUniUpper();
