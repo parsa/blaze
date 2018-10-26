@@ -63,7 +63,6 @@
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
-#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
@@ -1141,24 +1140,6 @@ inline decltype(auto)
 
    return smattsmatschur( ~lhs, ~rhs );
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsUpper< SMatTSMatSchurExpr<MT1,MT2> >
-   : public BoolConstant< IsUpper_v<MT1> || IsUpper_v<MT2> >
-{};
-/*! \endcond */
 //*************************************************************************************************
 
 

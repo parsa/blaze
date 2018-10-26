@@ -61,7 +61,6 @@
 #include <blaze/math/typetraits/IsMultExpr.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsTemporary.h>
-#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
@@ -1008,24 +1007,6 @@ inline decltype(auto) operator/( const SMatScalarDivExpr<MT,ST1,SO>& mat, ST2 sc
       return ReturnType( mat.leftOperand(), mat.rightOperand() * scalar );
    }
 }
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename ST, bool SO >
-struct IsUpper< SMatScalarDivExpr<MT,ST,SO> >
-   : public IsUpper<MT>
-{};
 /*! \endcond */
 //*************************************************************************************************
 

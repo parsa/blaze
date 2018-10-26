@@ -63,7 +63,6 @@
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
-#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
@@ -882,24 +881,6 @@ inline decltype(auto)
    using ReturnType = const SMatTSMatSubExpr<MT1,MT2>;
    return ReturnType( ~lhs, ~rhs );
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsUpper< SMatTSMatSubExpr<MT1,MT2> >
-   : public BoolConstant< IsUpper_v<MT1> && IsUpper_v<MT2> >
-{};
-/*! \endcond */
 //*************************************************************************************************
 
 

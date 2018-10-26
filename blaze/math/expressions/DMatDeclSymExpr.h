@@ -63,7 +63,6 @@
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
-#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
@@ -1103,24 +1102,6 @@ struct IsAligned< DMatDeclSymExpr<MT,SO> >
 template< typename MT, bool SO >
 struct IsSymmetric< DMatDeclSymExpr<MT,SO> >
    : public TrueType
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsUpper< DMatDeclSymExpr<MT,SO> >
-   : public IsUpper<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************

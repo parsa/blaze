@@ -59,12 +59,9 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
-#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
@@ -1104,24 +1101,6 @@ struct IsAligned< DMatDeclLowExpr<MT,SO> >
 template< typename MT, bool SO >
 struct IsLower< DMatDeclLowExpr<MT,SO> >
    : public TrueType
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsUpper< DMatDeclLowExpr<MT,SO> >
-   : public BoolConstant< IsSymmetric_v<MT> || IsHermitian_v<MT> || IsUpper_v<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************

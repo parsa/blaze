@@ -62,7 +62,6 @@
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
-#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/system/Blocking.h>
 #include <blaze/system/Thresholds.h>
@@ -1170,24 +1169,6 @@ inline decltype(auto)
 template< typename MT1, typename MT2 >
 struct IsAligned< DMatTDMatSubExpr<MT1,MT2> >
    : public BoolConstant< IsAligned_v<MT1> && IsAligned_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsUpper< DMatTDMatSubExpr<MT1,MT2> >
-   : public BoolConstant< IsUpper_v<MT1> && IsUpper_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

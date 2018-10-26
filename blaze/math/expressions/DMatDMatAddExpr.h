@@ -63,7 +63,6 @@
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
-#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Thresholds.h>
@@ -1127,24 +1126,6 @@ struct IsAligned< DMatDMatAddExpr<MT1,MT2,SO> >
 template< typename MT1, typename MT2, bool SO >
 struct IsPadded< DMatDMatAddExpr<MT1,MT2,SO> >
    : public BoolConstant< IsPadded_v<MT1> && IsPadded_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2, bool SO >
-struct IsUpper< DMatDMatAddExpr<MT1,MT2,SO> >
-   : public BoolConstant< IsUpper_v<MT1> && IsUpper_v<MT2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

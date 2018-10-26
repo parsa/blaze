@@ -55,12 +55,9 @@
 #include <blaze/math/sparse/Forward.h>
 #include <blaze/math/traits/DeclLowTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
-#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
@@ -1040,24 +1037,6 @@ inline decltype(auto) decllow( const SMatScalarMultExpr<MT,ST,SO>& sm )
 template< typename MT, bool SO >
 struct IsLower< SMatDeclLowExpr<MT,SO> >
    : public TrueType
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsUpper< SMatDeclLowExpr<MT,SO> >
-   : public BoolConstant< IsSymmetric_v<MT> || IsHermitian_v<MT> || IsUpper_v<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -61,13 +61,11 @@
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
-#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/typetraits/YieldsStrictlyUpper.h>
 #include <blaze/math/typetraits/YieldsUniUpper.h>
-#include <blaze/math/typetraits/YieldsUpper.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -2505,24 +2503,6 @@ struct IsAligned< DMatMapExpr<MT,OP,SO> >
 template< typename MT, typename OP, bool SO >
 struct IsPadded< DMatMapExpr<MT,OP,SO> >
    : public IsPadded<MT>
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, typename OP, bool SO >
-struct IsUpper< DMatMapExpr<MT,OP,SO> >
-   : public YieldsUpper<OP,MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
