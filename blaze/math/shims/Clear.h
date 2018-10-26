@@ -62,7 +62,7 @@ namespace blaze {
 // data type to its default state. Values of built-in data type are reset to zero.
 */
 template< typename Type >
-BLAZE_ALWAYS_INLINE void clear( Type& clearable )
+BLAZE_ALWAYS_INLINE constexpr void clear( Type& clearable )
 {
    clearable = Type(0);
 }
