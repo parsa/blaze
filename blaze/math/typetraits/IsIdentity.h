@@ -64,23 +64,13 @@ namespace blaze {
 // \a value is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
-   using blaze::rowMajor;
+   using UniLowerMatrixType = blaze::UniLowerMatrix< DynamicMatrix<int> >;
+   using DiagonalMatrixType = blaze::DiagonalMatrix< StaticMatrix<float,3UL,3UL> >;
 
-   using StaticMatrixType     = blaze::StaticMatrix<double,3UL,3UL,rowMajor>;
-   using DynamicMatrixType    = blaze::DynamicMatrix<float,rowMajor>;
-   using CompressedMatrixType = blaze::CompressedMatrix<int,rowMajor>;
-
-   using IdentityStaticType     = blaze::IdentityMatrix<StaticMatrixType>;
-   using IdentityDynamicType    = blaze::IdentityMatrix<DynamicMatrixType>;
-   using IdentityCompressedType = blaze::IdentityMatrix<CompressedMatrixType>;
-
-   using LowerStaticType  = blaze::LowerMatrix<StaticMatrixType>;
-   using UpperDynamicType = blaze::UpperMatrix<DynamicMatrixType>;
-
-   blaze::IsIdentity< IdentityStaticType >::value           // Evaluates to 1
-   blaze::IsIdentity< const IdentityDynamicType >::Type     // Results in TrueType
-   blaze::IsIdentity< volatile IdentityCompressedType >     // Is derived from TrueType
-   blaze::IsIdentity< LowerStaticMatrixType >::value        // Evaluates to 0
+   blaze::IsIdentity< IdentityMatrix<int> >::value          // Evaluates to 1
+   blaze::IsIdentity< const IdentityMatrix<float> >::Type   // Results in TrueType
+   blaze::IsIdentity< volatile IdentityMatrix<double> >     // Is derived from TrueType
+   blaze::IsIdentity< DynamicMatrix<int> >::value           // Evaluates to 0
    blaze::IsIdentity< const UpperDynamicMatrixType >::Type  // Results in FalseType
    blaze::IsIdentity< volatile CompressedMatrixType >       // Is derived from FalseType
    \endcode
