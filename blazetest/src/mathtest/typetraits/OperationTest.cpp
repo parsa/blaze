@@ -54,6 +54,7 @@
 #include <blaze/math/constraints/StrictlyLower.h>
 #include <blaze/math/constraints/StrictlyUpper.h>
 #include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/constraints/Uniform.h>
 #include <blaze/math/constraints/UniLower.h>
 #include <blaze/math/constraints/UniUpper.h>
 #include <blaze/math/constraints/Upper.h>
@@ -78,7 +79,10 @@
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
@@ -125,6 +129,7 @@ OperationTest::OperationTest()
    testIsStrictlyLower();
    testIsStrictlyUpper();
    testIsSymmetric();
+   testIsUniform();
    testIsUniLower();
    testIsUniUpper();
    testIsUpper();
@@ -730,6 +735,37 @@ void OperationTest::testIsSymmetric()
 
 
 //*************************************************************************************************
+/*!\brief Test of the mathematical 'IsUniform' type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the mathematical 'IsUniform' type trait.
+// In case an error is detected, a compilation error is created.
+*/
+void OperationTest::testIsUniform()
+{
+   using blaze::DynamicMatrix;
+   using blaze::SymmetricMatrix;
+
+   using Type1 = DynamicMatrix<int>;
+   using Type2 = const DynamicMatrix<int>;
+   using Type3 = volatile DynamicMatrix<int>;
+   using Type4 = SymmetricMatrix< DynamicMatrix<int> >;
+   using Type5 = const SymmetricMatrix< DynamicMatrix<int> >;
+   using Type6 = volatile SymmetricMatrix< DynamicMatrix<int> >;
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type2 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type3 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type4 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type5 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNILOWER_MATRIX_TYPE( Type6 );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Test of the mathematical 'IsUniLower' type trait.
 //
 // \return void
@@ -741,7 +777,6 @@ void OperationTest::testIsSymmetric()
 void OperationTest::testIsUniLower()
 {
    using blaze::DynamicMatrix;
-   using blaze::SymmetricMatrix;
    using blaze::LowerMatrix;
    using blaze::UniLowerMatrix;
    using blaze::UniUpperMatrix;
@@ -801,7 +836,6 @@ void OperationTest::testIsUniLower()
 void OperationTest::testIsUniUpper()
 {
    using blaze::DynamicMatrix;
-   using blaze::SymmetricMatrix;
    using blaze::UniLowerMatrix;
    using blaze::UniUpperMatrix;
    using blaze::UpperMatrix;
