@@ -345,7 +345,6 @@ template< typename VT  // Type of the sparse vector
 bool isUniform( const SparseVector<VT,TF>& sv )
 {
    using CT = CompositeType_t<VT>;
-   using ConstReference = ConstReference_t< RemoveReference_t<CT> >;
    using ConstIterator = ConstIterator_t< RemoveReference_t<CT> >;
 
    if( IsUniform_v<VT> || (~sv).size() < 2UL )
@@ -362,7 +361,7 @@ bool isUniform( const SparseVector<VT,TF>& sv )
    }
    else
    {
-      ConstReference cmp( a[0] );
+      const auto& cmp( a[0] );
       ConstIterator element( a.begin() );
 
       ++element;
