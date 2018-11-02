@@ -759,7 +759,7 @@ bool isUniform_backend( const DenseMatrix<MT,false>& dm, FalseType )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    != 0UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() != 0UL, "Invalid number of columns detected" );
 
-   ConstReference_t<MT> cmp( (~dm)(0UL,0UL) );
+   const auto& cmp( (~dm)(0UL,0UL) );
 
    for( size_t i=0UL; i<(~dm).rows(); ++i ) {
       for( size_t j=0UL; j<(~dm).columns(); ++j ) {
@@ -792,7 +792,7 @@ bool isUniform_backend( const DenseMatrix<MT,true>& dm, FalseType )
    BLAZE_INTERNAL_ASSERT( (~dm).rows()    != 0UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~dm).columns() != 0UL, "Invalid number of columns detected" );
 
-   ConstReference_t<MT> cmp( (~dm)(0UL,0UL) );
+   const auto& cmp( (~dm)(0UL,0UL) );
 
    for( size_t j=0UL; j<(~dm).columns(); ++j ) {
       for( size_t i=0UL; i<(~dm).rows(); ++i ) {
