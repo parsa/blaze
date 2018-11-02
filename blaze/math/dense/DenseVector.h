@@ -459,15 +459,12 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 bool isUniform( const DenseVector<VT,TF>& dv )
 {
-   using CT = CompositeType_t<VT>;
-   using ConstReference = ConstReference_t< RemoveReference_t<CT> >;
-
    if( IsUniform_v<VT> || (~dv).size() < 2UL )
       return true;
 
-   CT a( ~dv );  // Evaluation of the dense vector operand
+   CompositeType_t<VT> a( ~dv );  // Evaluation of the dense vector operand
 
-   ConstReference cmp( a[0UL] );
+   const auto& cmp( a[0UL] );
 
    for( size_t i=1UL; i<a.size(); ++i ) {
       if( a[i] != cmp )
