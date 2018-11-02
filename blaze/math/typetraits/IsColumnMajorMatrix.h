@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/util/FalseType.h>
@@ -65,18 +64,20 @@ struct IsColumnMajorMatrixHelper
 {
  private:
    //**********************************************************************************************
-   template< typename MT >
-   static TrueType test( const Matrix<MT,columnMajor>& );
+   static T* create();
 
    template< typename MT >
-   static TrueType test( const volatile Matrix<MT,columnMajor>& );
+   static TrueType test( const Matrix<MT,columnMajor>* );
+
+   template< typename MT >
+   static TrueType test( const volatile Matrix<MT,columnMajor>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -112,6 +113,19 @@ template< typename T >
 struct IsColumnMajorMatrix
    : public IsColumnMajorMatrixHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsColumnMajorMatrix type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsColumnMajorMatrix<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

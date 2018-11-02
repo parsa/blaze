@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/expressions/CrossExpr.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
@@ -64,18 +63,20 @@ struct IsCrossExprHelper
 {
  private:
    //**********************************************************************************************
-   template< typename VT >
-   static TrueType test( const CrossExpr<VT>& );
+   static T* create();
 
    template< typename VT >
-   static TrueType test( const volatile CrossExpr<VT>& );
+   static TrueType test( const CrossExpr<VT>* );
+
+   template< typename VT >
+   static TrueType test( const volatile CrossExpr<VT>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -98,6 +99,19 @@ template< typename T >
 struct IsCrossExpr
    : public IsCrossExprHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsCrossExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsCrossExpr<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/expressions/AddExpr.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
@@ -64,18 +63,20 @@ struct IsAddExprHelper
 {
  private:
    //**********************************************************************************************
-   template< typename U >
-   static TrueType test( const AddExpr<U>& );
+   static T* create();
 
    template< typename U >
-   static TrueType test( const volatile AddExpr<U>& );
+   static TrueType test( const AddExpr<U>* );
+
+   template< typename U >
+   static TrueType test( const volatile AddExpr<U>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -98,6 +99,19 @@ template< typename T >
 struct IsAddExpr
    : public IsAddExprHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsAddExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsAddExpr<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

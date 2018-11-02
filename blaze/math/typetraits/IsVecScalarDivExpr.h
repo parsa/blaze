@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/expressions/VecScalarDivExpr.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
@@ -64,18 +63,20 @@ struct IsVecScalarDivExprHelper
 {
  private:
    //**********************************************************************************************
-   template< typename VT >
-   static TrueType test( const VecScalarDivExpr<VT>& );
+   static T* create();
 
    template< typename VT >
-   static TrueType test( const volatile VecScalarDivExpr<VT>& );
+   static TrueType test( const VecScalarDivExpr<VT>* );
+
+   template< typename VT >
+   static TrueType test( const volatile VecScalarDivExpr<VT>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -99,6 +100,19 @@ template< typename T >
 struct IsVecScalarDivExpr
    : public IsVecScalarDivExprHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsVecScalarDivExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsVecScalarDivExpr<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

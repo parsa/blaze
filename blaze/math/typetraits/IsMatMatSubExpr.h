@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/expressions/MatMatSubExpr.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
@@ -64,18 +63,20 @@ struct IsMatMatSubExprHelper
 {
  private:
    //**********************************************************************************************
-   template< typename MT >
-   static TrueType test( const MatMatSubExpr<MT>& );
+   static T* create();
 
    template< typename MT >
-   static TrueType test( const volatile MatMatSubExpr<MT>& );
+   static TrueType test( const MatMatSubExpr<MT>* );
+
+   template< typename MT >
+   static TrueType test( const volatile MatMatSubExpr<MT>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -98,6 +99,19 @@ template< typename T >
 struct IsMatMatSubExpr
    : public IsMatMatSubExprHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsMatMatSubExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsMatMatSubExpr<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

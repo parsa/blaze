@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
@@ -64,18 +63,20 @@ struct IsDenseVectorHelper
 {
  private:
    //**********************************************************************************************
-   template< typename VT, bool TF >
-   static TrueType test( const DenseVector<VT,TF>& );
+   static T* create();
 
    template< typename VT, bool TF >
-   static TrueType test( const volatile DenseVector<VT,TF>& );
+   static TrueType test( const DenseVector<VT,TF>* );
+
+   template< typename VT, bool TF >
+   static TrueType test( const volatile DenseVector<VT,TF>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -105,6 +106,19 @@ template< typename T >
 struct IsDenseVector
    : public IsDenseVectorHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsDenseVector type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsDenseVector<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

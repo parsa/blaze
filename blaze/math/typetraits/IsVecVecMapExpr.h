@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/expressions/VecVecMapExpr.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
@@ -64,18 +63,20 @@ struct IsVecVecMapExprHelper
 {
  private:
    //**********************************************************************************************
-   template< typename VT >
-   static TrueType test( const VecVecMapExpr<VT>& );
+   static T* create();
 
    template< typename VT >
-   static TrueType test( const volatile VecVecMapExpr<VT>& );
+   static TrueType test( const VecVecMapExpr<VT>* );
+
+   template< typename VT >
+   static TrueType test( const volatile VecVecMapExpr<VT>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -98,6 +99,19 @@ template< typename T >
 struct IsVecVecMapExpr
    : public IsVecVecMapExprHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsVecVecMapExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsVecVecMapExpr<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

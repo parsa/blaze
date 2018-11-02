@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
@@ -64,18 +63,20 @@ struct IsVecTVecMultExprHelper
 {
  private:
    //**********************************************************************************************
-   template< typename MT >
-   static TrueType test( const VecTVecMultExpr<MT>& );
+   static T* create();
 
    template< typename MT >
-   static TrueType test( const volatile VecTVecMultExpr<MT>& );
+   static TrueType test( const VecTVecMultExpr<MT>* );
+
+   template< typename MT >
+   static TrueType test( const volatile VecTVecMultExpr<MT>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -99,6 +100,19 @@ template< typename T >
 struct IsVecTVecMultExpr
    : public IsVecTVecMultExprHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsVecTVecMultExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsVecTVecMultExpr<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

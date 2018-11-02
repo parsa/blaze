@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/expressions/MatReduceExpr.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
@@ -64,18 +63,20 @@ struct IsMatReduceExprHelper
 {
  private:
    //**********************************************************************************************
-   template< typename U, size_t N >
-   static TrueType test( const MatReduceExpr<U,N>& );
+   static T* create();
 
    template< typename U, size_t N >
-   static TrueType test( const volatile MatReduceExpr<U,N>& );
+   static TrueType test( const MatReduceExpr<U,N>* );
+
+   template< typename U, size_t N >
+   static TrueType test( const volatile MatReduceExpr<U,N>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -98,6 +99,19 @@ template< typename T >
 struct IsMatReduceExpr
    : public IsMatReduceExprHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsMatReduceExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsMatReduceExpr<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/expressions/Expression.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
@@ -64,18 +63,20 @@ struct IsExpressionHelper
 {
  private:
    //**********************************************************************************************
-   template< typename U >
-   static TrueType test( const Expression<U>& );
+   static T* create();
 
    template< typename U >
-   static TrueType test( const volatile Expression<U>& );
+   static TrueType test( const Expression<U>* );
+
+   template< typename U >
+   static TrueType test( const volatile Expression<U>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -97,6 +98,19 @@ template< typename T >
 struct IsExpression
    : public IsExpressionHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsExpression type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsExpression<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

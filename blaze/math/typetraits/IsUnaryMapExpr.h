@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/expressions/UnaryMapExpr.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
@@ -64,18 +63,20 @@ struct IsUnaryMapExprHelper
 {
  private:
    //**********************************************************************************************
-   template< typename U >
-   static TrueType test( const UnaryMapExpr<U>& );
+   static T* create();
 
    template< typename U >
-   static TrueType test( const volatile UnaryMapExpr<U>& );
+   static TrueType test( const UnaryMapExpr<U>* );
+
+   template< typename U >
+   static TrueType test( const volatile UnaryMapExpr<U>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -97,6 +98,19 @@ template< typename T >
 struct IsUnaryMapExpr
    : public IsUnaryMapExprHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsUnaryMapExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsUnaryMapExpr<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/expressions/Matrix.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
@@ -64,18 +63,20 @@ struct IsMatrixHelper
 {
  private:
    //**********************************************************************************************
-   template< typename MT, bool SO >
-   static TrueType test( const Matrix<MT,SO>& );
+   static T* create();
 
    template< typename MT, bool SO >
-   static TrueType test( const volatile Matrix<MT,SO>& );
+   static TrueType test( const Matrix<MT,SO>* );
+
+   template< typename MT, bool SO >
+   static TrueType test( const volatile Matrix<MT,SO>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -105,6 +106,19 @@ template< typename T >
 struct IsMatrix
    : public IsMatrixHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsMatrix type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsMatrix<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

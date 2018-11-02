@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/expressions/Declaration.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
@@ -64,18 +63,20 @@ struct IsDeclarationHelper
 {
  private:
    //**********************************************************************************************
-   template< typename U >
-   static TrueType test( const Declaration<U>& );
+   static T* create();
 
    template< typename U >
-   static TrueType test( const volatile Declaration<U>& );
+   static TrueType test( const Declaration<U>* );
+
+   template< typename U >
+   static TrueType test( const volatile Declaration<U>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -97,6 +98,19 @@ template< typename T >
 struct IsDeclaration
    : public IsDeclarationHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsDeclaration type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsDeclaration<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

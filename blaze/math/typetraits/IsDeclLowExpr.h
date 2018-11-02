@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/expressions/DeclLowExpr.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
@@ -64,18 +63,20 @@ struct IsDeclLowExprHelper
 {
  private:
    //**********************************************************************************************
-   template< typename MT >
-   static TrueType test( const DeclLowExpr<MT>& );
+   static T* create();
 
    template< typename MT >
-   static TrueType test( const volatile DeclLowExpr<MT>& );
+   static TrueType test( const DeclLowExpr<MT>* );
+
+   template< typename MT >
+   static TrueType test( const volatile DeclLowExpr<MT>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -97,6 +98,19 @@ template< typename T >
 struct IsDeclLowExpr
    : public IsDeclLowExprHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsDeclLowExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsDeclLowExpr<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

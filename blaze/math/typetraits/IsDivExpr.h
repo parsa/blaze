@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/expressions/DivExpr.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
@@ -64,18 +63,20 @@ struct IsDivExprHelper
 {
  private:
    //**********************************************************************************************
-   template< typename U >
-   static TrueType test( const DivExpr<U>& );
+   static T* create();
 
    template< typename U >
-   static TrueType test( const volatile DivExpr<U>& );
+   static TrueType test( const DivExpr<U>* );
+
+   template< typename U >
+   static TrueType test( const volatile DivExpr<U>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -99,6 +100,19 @@ template< typename T >
 struct IsDivExpr
    : public IsDivExprHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsDivExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsDivExpr<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

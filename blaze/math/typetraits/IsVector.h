@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/expressions/Vector.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
@@ -64,18 +63,20 @@ struct IsVectorHelper
 {
  private:
    //**********************************************************************************************
-   template< typename VT, bool TF >
-   static TrueType test( const Vector<VT,TF>& );
+   static T* create();
 
    template< typename VT, bool TF >
-   static TrueType test( const volatile Vector<VT,TF>& );
+   static TrueType test( const Vector<VT,TF>* );
+
+   template< typename VT, bool TF >
+   static TrueType test( const volatile Vector<VT,TF>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -106,6 +107,19 @@ template< typename T >
 struct IsVector
    : public IsVectorHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsVector type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsVector<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/expressions/BinaryMapExpr.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
@@ -64,18 +63,20 @@ struct IsBinaryMapExprHelper
 {
  private:
    //**********************************************************************************************
-   template< typename U >
-   static TrueType test( const BinaryMapExpr<U>& );
+   static T* create();
 
    template< typename U >
-   static TrueType test( const volatile BinaryMapExpr<U>& );
+   static TrueType test( const BinaryMapExpr<U>* );
+
+   template< typename U >
+   static TrueType test( const volatile BinaryMapExpr<U>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -97,6 +98,19 @@ template< typename T >
 struct IsBinaryMapExpr
    : public IsBinaryMapExprHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsBinaryMapExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsBinaryMapExpr<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

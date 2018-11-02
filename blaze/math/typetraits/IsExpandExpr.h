@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/expressions/ExpandExpr.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
@@ -64,18 +63,20 @@ struct IsExpandExprHelper
 {
  private:
    //**********************************************************************************************
-   template< typename U >
-   static TrueType test( const ExpandExpr<U>& );
+   static T* create();
 
    template< typename U >
-   static TrueType test( const volatile ExpandExpr<U>& );
+   static TrueType test( const ExpandExpr<U>* );
+
+   template< typename U >
+   static TrueType test( const volatile ExpandExpr<U>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -97,6 +98,19 @@ template< typename T >
 struct IsExpandExpr
    : public IsExpandExprHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsExpandExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsExpandExpr<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

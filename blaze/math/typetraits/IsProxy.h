@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/proxy/Forward.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
@@ -64,18 +63,20 @@ struct IsProxyHelper
 {
  private:
    //**********************************************************************************************
-   template< typename PT, typename RT >
-   static TrueType test( const Proxy<PT,RT>& );
+   static T* create();
 
    template< typename PT, typename RT >
-   static TrueType test( const volatile Proxy<PT,RT>& );
+   static TrueType test( const Proxy<PT,RT>* );
+
+   template< typename PT, typename RT >
+   static TrueType test( const volatile Proxy<PT,RT>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -110,6 +111,19 @@ template< typename T >
 struct IsProxy
    : public IsProxyHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsProxy type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsProxy<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

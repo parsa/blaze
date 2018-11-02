@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/expressions/SubExpr.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
@@ -64,18 +63,20 @@ struct IsSubExprHelper
 {
  private:
    //**********************************************************************************************
-   template< typename U >
-   static TrueType test( const SubExpr<U>& );
+   static T* create();
 
    template< typename U >
-   static TrueType test( const volatile SubExpr<U>& );
+   static TrueType test( const SubExpr<U>* );
+
+   template< typename U >
+   static TrueType test( const volatile SubExpr<U>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -98,6 +99,19 @@ template< typename T >
 struct IsSubExpr
    : public IsSubExprHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsSubExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsSubExpr<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

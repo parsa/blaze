@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/expressions/DeclUppExpr.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
@@ -64,18 +63,20 @@ struct IsDeclUppExprHelper
 {
  private:
    //**********************************************************************************************
-   template< typename MT >
-   static TrueType test( const DeclUppExpr<MT>& );
+   static T* create();
 
    template< typename MT >
-   static TrueType test( const volatile DeclUppExpr<MT>& );
+   static TrueType test( const DeclUppExpr<MT>* );
+
+   template< typename MT >
+   static TrueType test( const volatile DeclUppExpr<MT>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -97,6 +98,19 @@ template< typename T >
 struct IsDeclUppExpr
    : public IsDeclUppExprHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsDeclUppExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsDeclUppExpr<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

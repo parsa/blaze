@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/simd/SIMDPack.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
@@ -64,18 +63,20 @@ struct IsSIMDPackHelper
 {
  private:
    //**********************************************************************************************
-   template< typename U >
-   static TrueType test( const SIMDPack<U>& );
+   static T* create();
 
    template< typename U >
-   static TrueType test( const volatile SIMDPack<U>& );
+   static TrueType test( const SIMDPack<U>* );
+
+   template< typename U >
+   static TrueType test( const volatile SIMDPack<U>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -140,6 +141,19 @@ template< typename T >
 struct IsSIMDPack
    : public IsSIMDPackHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsSIMDPack type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsSIMDPack<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 

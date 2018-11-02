@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
 #include <blaze/math/expressions/VecExpandExpr.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
@@ -64,18 +63,20 @@ struct IsVecExpandExprHelper
 {
  private:
    //**********************************************************************************************
-   template< typename U, size_t... Es >
-   static TrueType test( const VecExpandExpr<U,Es...>& );
+   static T* create();
 
    template< typename U, size_t... Es >
-   static TrueType test( const volatile VecExpandExpr<U,Es...>& );
+   static TrueType test( const VecExpandExpr<U,Es...>* );
+
+   template< typename U, size_t... Es >
+   static TrueType test( const volatile VecExpandExpr<U,Es...>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
 
  public:
    //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
+   using Type = decltype( test( create() ) );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -98,6 +99,19 @@ template< typename T >
 struct IsVecExpandExpr
    : public IsVecExpandExprHelper<T>::Type
 {};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsVecExpandExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsVecExpandExpr<T&>
+   : public FalseType
+{};
+/*! \endcond */
 //*************************************************************************************************
 
 
