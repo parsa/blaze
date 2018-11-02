@@ -664,8 +664,7 @@ bool isUniform_backend( const SparseMatrix<MT,false>& sm, FalseType )
    BLAZE_INTERNAL_ASSERT( (~sm).rows()    != 0UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~sm).columns() != 0UL, "Invalid number of columns detected" );
 
-   using ConstReference = ConstReference_t<MT>;
-   using ConstIterator  = ConstIterator_t<MT>;
+   using ConstIterator = ConstIterator_t<MT>;
 
    const size_t maxElements( (~sm).rows() * (~sm).columns() );
 
@@ -682,7 +681,7 @@ bool isUniform_backend( const SparseMatrix<MT,false>& sm, FalseType )
    {
       BLAZE_INTERNAL_ASSERT( (~sm).find(0UL,0UL) != (~sm).end(0UL), "Missing element detected" );
 
-      ConstReference cmp( (~sm)(0UL,0UL) );
+      const auto& cmp( (~sm)(0UL,0UL) );
 
       for( size_t i=0UL; i<(~sm).rows(); ++i ) {
          for( ConstIterator element=(~sm).begin(i); element!=(~sm).end(i); ++element ) {
@@ -716,8 +715,7 @@ bool isUniform_backend( const SparseMatrix<MT,true>& sm, FalseType )
    BLAZE_INTERNAL_ASSERT( (~sm).rows()    != 0UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~sm).columns() != 0UL, "Invalid number of columns detected" );
 
-   using ConstReference = ConstReference_t<MT>;
-   using ConstIterator  = ConstIterator_t<MT>;
+   using ConstIterator = ConstIterator_t<MT>;
 
    const size_t maxElements( (~sm).rows() * (~sm).columns() );
 
@@ -734,7 +732,7 @@ bool isUniform_backend( const SparseMatrix<MT,true>& sm, FalseType )
    {
       BLAZE_INTERNAL_ASSERT( (~sm).find(0UL,0UL) != (~sm).end(0UL), "Missing element detected" );
 
-      ConstReference cmp( (~sm)(0UL,0UL) );
+      const auto& cmp( (~sm)(0UL,0UL) );
 
       for( size_t j=0UL; j<(~sm).columns(); ++j ) {
          for( ConstIterator element=(~sm).begin(j); element!=(~sm).end(j); ++element ) {
