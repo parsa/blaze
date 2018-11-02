@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_INDEXSEQUENCE_H_
-#define _BLAZE_MATH_INDEXSEQUENCE_H_
+#ifndef _BLAZE_MATH_INTEGERSEQUENCE_H_
+#define _BLAZE_MATH_INTEGERSEQUENCE_H_
 
 
 //*************************************************************************************************
