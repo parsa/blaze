@@ -1957,6 +1957,7 @@ inline auto DiagonalMatrix<MT,SO,true>::operator*=( ST scalar )
 
    return *this;
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -2265,6 +2266,7 @@ inline void DiagonalMatrix<MT,SO,true>::extend( size_t n, bool preserve )
 
    resize( rows() + n, true );
 }
+/*! \endcond */
 //*************************************************************************************************
 
 
