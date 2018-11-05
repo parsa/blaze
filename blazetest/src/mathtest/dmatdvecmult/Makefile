@@ -51,6 +51,7 @@ BIN = $(SRC:.cpp=)
 default: M3x3aV3a M3x3aV3b M3x3bV3a M3x3bV3b \
          MHaVHa MHaVHb MHbVHa MHbVHb \
          MDaVDa MDaVDb MDbVDa MDbVDb \
+         MDaVUa MDaVUb MDbVUa MDbVUb \
          SDaVDa SDaVDb SDbVDa SDbVDb \
          HDaVDa HDaVDb HDbVDa HDbVDb \
          LDaVDa LDaVDb LDbVDa LDbVDb \
@@ -58,7 +59,7 @@ default: M3x3aV3a M3x3aV3b M3x3bV3a M3x3bV3b \
          DDaVDa DDaVDb DDbVDa DDbVDb \
          AliasingTest
 all: $(BIN)
-essential: M3x3aV3a MHaVHa MDaVDa SDaVDa HDaVDa LDaVDa UDaVDa DDaVDa AliasingTest
+essential: M3x3aV3a MHaVHa MDaVDa MDaVUa SDaVDa HDaVDa LDaVDa UDaVDa DDaVDa AliasingTest
 single: MDaVDa
 
 
@@ -102,6 +103,10 @@ M2x2aVHa: M2x2aVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M2x2aVHb: M2x2aVHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M2x2aVUa: M2x2aVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M2x2aVUb: M2x2aVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M2x2bV2a: M2x2bV2a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M2x2bV2b: M2x2bV2b.o
@@ -113,6 +118,10 @@ M2x2bVDb: M2x2bVDb.o
 M2x2bVHa: M2x2bVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M2x2bVHb: M2x2bVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M2x2bVUa: M2x2bVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M2x2bVUb: M2x2bVUb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 M3x3aV3a: M3x3aV3a.o
@@ -127,6 +136,10 @@ M3x3aVHa: M3x3aVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M3x3aVHb: M3x3aVHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M3x3aVUa: M3x3aVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M3x3aVUb: M3x3aVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M3x3bV3a: M3x3bV3a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M3x3bV3b: M3x3bV3b.o
@@ -138,6 +151,10 @@ M3x3bVDb: M3x3bVDb.o
 M3x3bVHa: M3x3bVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M3x3bVHb: M3x3bVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M3x3bVUa: M3x3bVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M3x3bVUb: M3x3bVUb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 M4x4aV4a: M4x4aV4a.o
@@ -152,6 +169,10 @@ M4x4aVHa: M4x4aVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M4x4aVHb: M4x4aVHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M4x4aVUa: M4x4aVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M4x4aVUb: M4x4aVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M4x4bV4a: M4x4bV4a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M4x4bV4b: M4x4bV4b.o
@@ -163,6 +184,10 @@ M4x4bVDb: M4x4bVDb.o
 M4x4bVHa: M4x4bVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M4x4bVHb: M4x4bVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M4x4bVUa: M4x4bVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M4x4bVUb: M4x4bVUb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 M5x5aV5a: M5x5aV5a.o
@@ -177,6 +202,10 @@ M5x5aVHa: M5x5aVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M5x5aVHb: M5x5aVHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M5x5aVUa: M5x5aVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M5x5aVUb: M5x5aVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M5x5bV5a: M5x5bV5a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M5x5bV5b: M5x5bV5b.o
@@ -188,6 +217,10 @@ M5x5bVDb: M5x5bVDb.o
 M5x5bVHa: M5x5bVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M5x5bVHb: M5x5bVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M5x5bVUa: M5x5bVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M5x5bVUb: M5x5bVUb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 M6x6aV6a: M6x6aV6a.o
@@ -202,6 +235,10 @@ M6x6aVHa: M6x6aVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M6x6aVHb: M6x6aVHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M6x6aVUa: M6x6aVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M6x6aVUb: M6x6aVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M6x6bV6a: M6x6bV6a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M6x6bV6b: M6x6bV6b.o
@@ -213,6 +250,10 @@ M6x6bVDb: M6x6bVDb.o
 M6x6bVHa: M6x6bVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M6x6bVHb: M6x6bVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M6x6bVUa: M6x6bVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M6x6bVUb: M6x6bVUb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 M7x13aV13a: M7x13aV13a.o
@@ -227,6 +268,10 @@ M7x13aVHa: M7x13aVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M7x13aVHb: M7x13aVHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M7x13aVUa: M7x13aVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M7x13aVUb: M7x13aVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M7x13bV13a: M7x13bV13a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M7x13bV13b: M7x13bV13b.o
@@ -238,6 +283,10 @@ M7x13bVDb: M7x13bVDb.o
 M7x13bVHa: M7x13bVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M7x13bVHb: M7x13bVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M7x13bVUa: M7x13bVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M7x13bVUb: M7x13bVUb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 M16x8aV8a: M16x8aV8a.o
@@ -252,6 +301,10 @@ M16x8aVHa: M16x8aVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M16x8aVHb: M16x8aVHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M16x8aVUa: M16x8aVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M16x8aVUb: M16x8aVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M16x8bV8a: M16x8bV8a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M16x8bV8b: M16x8bV8b.o
@@ -263,6 +316,10 @@ M16x8bVDb: M16x8bVDb.o
 M16x8bVHa: M16x8bVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 M16x8bVHb: M16x8bVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M16x8bVUa: M16x8bVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+M16x8bVUb: M16x8bVUb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 MDaV2a: MDaV2a.o
@@ -293,6 +350,10 @@ MDaVHa: MDaVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MDaVHb: MDaVHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MDaVUa: MDaVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MDaVUb: MDaVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MDbV2a: MDbV2a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MDbV2b: MDbV2b.o
@@ -321,6 +382,10 @@ MDbVHa: MDbVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MDbVHb: MDbVHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MDbVUa: MDbVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MDbVUb: MDbVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 MHaV6a: MHaV6a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
@@ -334,6 +399,10 @@ MHaVHa: MHaVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MHaVHb: MHaVHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MHaVUa: MHaVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MHaVUb: MHaVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MHbV6a: MHbV6a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MHbV6b: MHbV6b.o
@@ -345,6 +414,10 @@ MHbVDb: MHbVDb.o
 MHbVHa: MHbVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MHbVHb: MHbVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MHbVUa: MHbVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MHbVUb: MHbVUb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 SDaVDa: SDaVDa.o
