@@ -49,6 +49,7 @@
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/traits/ExpandTrait.h>
 #include <blaze/math/typetraits/StorageOrder.h>
+#include <blaze/math/UniformVector.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -239,6 +240,42 @@ void ClassTest::testVectorExpansion()
       }
       {
          using VT = CustomVector<int,unaligned,unpadded,rowVector>;
+         using RT = DynamicMatrix<int,rowMajor>;
+         static_assert( IsSame_v< ExpandTrait_t<VT,5UL>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( expand<5UL>( std::declval<VT>() ) ) >;
+         static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+      }
+   }
+
+   // DynamicVector
+   {
+      {
+         using VT = UniformVector<int,columnVector>;
+         using RT = DynamicMatrix<int,columnMajor>;
+         static_assert( IsSame_v< ExpandTrait_t<VT>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( expand( std::declval<VT>(), std::declval<size_t>() ) ) >;
+         static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+      }
+      {
+         using VT = UniformVector<int,rowVector>;
+         using RT = DynamicMatrix<int,rowMajor>;
+         static_assert( IsSame_v< ExpandTrait_t<VT>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( expand( std::declval<VT>(), std::declval<size_t>() ) ) >;
+         static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+      }
+      {
+         using VT = UniformVector<int,columnVector>;
+         using RT = DynamicMatrix<int,columnMajor>;
+         static_assert( IsSame_v< ExpandTrait_t<VT,5UL>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( expand<5UL>( std::declval<VT>() ) ) >;
+         static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+      }
+      {
+         using VT = UniformVector<int,rowVector>;
          using RT = DynamicMatrix<int,rowMajor>;
          static_assert( IsSame_v< ExpandTrait_t<VT,5UL>, RT >, "Non-matching type detected" );
 
