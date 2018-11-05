@@ -71,3 +71,8 @@ EXE=$PATH_SVECDVECINNER/VCaVHa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then 
 EXE=$PATH_SVECDVECINNER/VCaVHb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_SVECDVECINNER/VCbVHa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_SVECDVECINNER/VCbVHb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+
+EXE=$PATH_SVECDVECINNER/VCaVUa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SVECDVECINNER/VCaVUb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SVECDVECINNER/VCbVUa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SVECDVECINNER/VCbVUb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

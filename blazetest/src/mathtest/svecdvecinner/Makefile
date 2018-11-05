@@ -48,9 +48,10 @@ BIN = $(SRC:.cpp=)
 
 
 # General rules
-default: VCaV3a VCaV3b VCbV3a VCbV3b VCaVHa VCaVHb VCbVHa VCbVHb VCaVDa VCaVDb VCbVDa VCbVDb
+default: VCaV3a VCaV3b VCbV3a VCbV3b VCaVHa VCaVHb VCbVHa VCbVHb \
+         VCaVDa VCaVDb VCbVDa VCbVDb VCaVUa VCaVUb VCbVUa VCbVUb
 all: $(BIN)
-essential: VCaV3a VCaVHa VCaVDa
+essential: VCaV3a VCaVHa VCaVDa VCaVUa
 single: VCaVDa
 
 
@@ -116,6 +117,15 @@ VCaVHb: VCaVHb.o
 VCbVHa: VCbVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbVHb: VCbVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+VCaVUa: VCaVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaVUb: VCaVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCbVUa: VCbVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCbVUb: VCbVUb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 
