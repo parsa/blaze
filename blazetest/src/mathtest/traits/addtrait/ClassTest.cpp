@@ -61,6 +61,7 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/math/typetraits/TransposeFlag.h>
+#include <blaze/math/UniformVector.h>
 #include <blaze/math/UniLowerMatrix.h>
 #include <blaze/math/UniUpperMatrix.h>
 #include <blaze/math/UpperMatrix.h>
@@ -292,6 +293,28 @@ void ClassTest::testVectorAddition()
          }
       }
 
+      // .../UniformVector
+      {
+         {
+            using T1 = StaticVector<int,3UL,columnVector>;
+            using T2 = UniformVector<double,columnVector>;
+            using RT = StaticVector<double,3UL,columnVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = StaticVector<int,3UL,rowVector>;
+            using T2 = UniformVector<double,rowVector>;
+            using RT = StaticVector<double,3UL,rowVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
       // .../InitializerVector
       {
          {
@@ -419,6 +442,28 @@ void ClassTest::testVectorAddition()
          {
             using T1 = HybridVector<int,5UL,rowVector>;
             using T2 = CustomVector<double,unaligned,unpadded,rowVector>;
+            using RT = HybridVector<double,5UL,rowVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../UniformVector
+      {
+         {
+            using T1 = HybridVector<int,5UL,columnVector>;
+            using T2 = UniformVector<double,columnVector>;
+            using RT = HybridVector<double,5UL,columnVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = HybridVector<int,5UL,rowVector>;
+            using T2 = UniformVector<double,rowVector>;
             using RT = HybridVector<double,5UL,rowVector>;
             static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
@@ -562,6 +607,28 @@ void ClassTest::testVectorAddition()
          }
       }
 
+      // .../UniformVector
+      {
+         {
+            using T1 = DynamicVector<int,columnVector>;
+            using T2 = UniformVector<double,columnVector>;
+            using RT = DynamicVector<double,columnVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = DynamicVector<int,rowVector>;
+            using T2 = UniformVector<double,rowVector>;
+            using RT = DynamicVector<double,rowVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
       // .../InitializerVector
       {
          {
@@ -697,6 +764,28 @@ void ClassTest::testVectorAddition()
          }
       }
 
+      // .../UniformVector
+      {
+         {
+            using T1 = CustomVector<int,unaligned,unpadded,columnVector>;
+            using T2 = UniformVector<double,columnVector>;
+            using RT = DynamicVector<double,columnVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = CustomVector<int,unaligned,unpadded,rowVector>;
+            using T2 = UniformVector<double,rowVector>;
+            using RT = DynamicVector<double,rowVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
       // .../InitializerVector
       {
          {
@@ -732,6 +821,163 @@ void ClassTest::testVectorAddition()
          }
          {
             using T1 = CustomVector<int,unaligned,unpadded,rowVector>;
+            using T2 = CompressedVector<double,rowVector>;
+            using RT = DynamicVector<double,rowVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+   }
+
+   // UniformVector/...
+   {
+      // .../StaticVector
+      {
+         {
+            using T1 = UniformVector<int,columnVector>;
+            using T2 = StaticVector<double,3UL,columnVector>;
+            using RT = StaticVector<double,3UL,columnVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = UniformVector<int,rowVector>;
+            using T2 = StaticVector<double,3UL,rowVector>;
+            using RT = StaticVector<double,3UL,rowVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../HybridVector
+      {
+         {
+            using T1 = UniformVector<int,columnVector>;
+            using T2 = HybridVector<double,7UL,columnVector>;
+            using RT = HybridVector<double,7UL,columnVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = UniformVector<int,rowVector>;
+            using T2 = HybridVector<double,7UL,rowVector>;
+            using RT = HybridVector<double,7UL,rowVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../DynamicVector
+      {
+         {
+            using T1 = UniformVector<int,columnVector>;
+            using T2 = DynamicVector<double,columnVector>;
+            using RT = DynamicVector<double,columnVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = UniformVector<int,rowVector>;
+            using T2 = DynamicVector<double,rowVector>;
+            using RT = DynamicVector<double,rowVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../CustomVector
+      {
+         {
+            using T1 = UniformVector<int,columnVector>;
+            using T2 = CustomVector<double,unaligned,unpadded,columnVector>;
+            using RT = DynamicVector<double,columnVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = UniformVector<int,rowVector>;
+            using T2 = CustomVector<double,unaligned,unpadded,rowVector>;
+            using RT = DynamicVector<double,rowVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../UniformVector
+      {
+         {
+            using T1 = UniformVector<int,columnVector>;
+            using T2 = UniformVector<double,columnVector>;
+            using RT = UniformVector<double,columnVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = UniformVector<int,rowVector>;
+            using T2 = UniformVector<double,rowVector>;
+            using RT = UniformVector<double,rowVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../InitializerVector
+      {
+         {
+            using T1 = UniformVector<int,columnVector>;
+            using T2 = InitializerVector<double,columnVector>;
+            using RT = DynamicVector<double,columnVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = UniformVector<int,rowVector>;
+            using T2 = InitializerVector<double,rowVector>;
+            using RT = DynamicVector<double,rowVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../CompressedVector
+      {
+         {
+            using T1 = UniformVector<int,columnVector>;
+            using T2 = CompressedVector<double,columnVector>;
+            using RT = DynamicVector<double,columnVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = UniformVector<int,rowVector>;
             using T2 = CompressedVector<double,rowVector>;
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -824,6 +1070,28 @@ void ClassTest::testVectorAddition()
          {
             using T1 = InitializerVector<int,rowVector>;
             using T2 = CustomVector<double,unaligned,unpadded,rowVector>;
+            using RT = DynamicVector<double,rowVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../UniformVector
+      {
+         {
+            using T1 = InitializerVector<int,columnVector>;
+            using T2 = UniformVector<double,columnVector>;
+            using RT = DynamicVector<double,columnVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = InitializerVector<int,rowVector>;
+            using T2 = UniformVector<double,rowVector>;
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
@@ -959,6 +1227,28 @@ void ClassTest::testVectorAddition()
          {
             using T1 = CompressedVector<int,rowVector>;
             using T2 = CustomVector<double,unaligned,unpadded,rowVector>;
+            using RT = DynamicVector<double,rowVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../UniformVector
+      {
+         {
+            using T1 = CompressedVector<int,columnVector>;
+            using T2 = UniformVector<double,columnVector>;
+            using RT = DynamicVector<double,columnVector>;
+            static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = CompressedVector<int,rowVector>;
+            using T2 = UniformVector<double,rowVector>;
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
