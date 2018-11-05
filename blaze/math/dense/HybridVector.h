@@ -3238,7 +3238,7 @@ struct ColumnTraitEval2< MT, I
                                      Size_v<MT,0UL> == DefaultSize_v &&
                                      MaxSize_v<MT,0UL> != DefaultMaxSize_v > >
 {
-   using Type = HybridVector< ElementType_t<MT>, MaxSize_v<MT,0UL>, false >;
+   using Type = HybridVector< RemoveConst_t< ElementType_t<MT> >, MaxSize_v<MT,0UL>, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3266,7 +3266,7 @@ struct BandTraitEval2< MT, I
    static constexpr size_t N   = MaxSize_v<MT,1UL>;
    static constexpr size_t Min = min( M - ( I >= 0L ? 0UL : -I ), N - ( I >= 0L ? I : 0UL ) );
 
-   using Type = HybridVector< ElementType_t<MT>, Min, defaultTransposeFlag >;
+   using Type = HybridVector< RemoveConst_t< ElementType_t<MT> >, Min, defaultTransposeFlag >;
 };
 
 template< typename MT >
@@ -3277,7 +3277,7 @@ struct BandTraitEval2< MT, inf
 {
    static constexpr size_t Min = min( Size_v<MT,0UL>, Size_v<MT,1UL> );
 
-   using Type = HybridVector< ElementType_t<MT>, Min, defaultTransposeFlag >;
+   using Type = HybridVector< RemoveConst_t< ElementType_t<MT> >, Min, defaultTransposeFlag >;
 };
 
 template< typename MT >
@@ -3290,7 +3290,7 @@ struct BandTraitEval2< MT, inf
 {
    static constexpr size_t Min = min( MaxSize_v<MT,0UL>, MaxSize_v<MT,1UL> );
 
-   using Type = HybridVector< ElementType_t<MT>, Min, defaultTransposeFlag >;
+   using Type = HybridVector< RemoveConst_t< ElementType_t<MT> >, Min, defaultTransposeFlag >;
 };
 /*! \endcond */
 //*************************************************************************************************
