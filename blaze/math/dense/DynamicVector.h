@@ -3101,7 +3101,7 @@ struct ColumnTraitEval2< MT, I
                                      Size_v<MT,0UL> == DefaultSize_v &&
                                      MaxSize_v<MT,0UL> == DefaultMaxSize_v > >
 {
-   using Type = DynamicVector< ElementType_t<MT>, false >;
+   using Type = DynamicVector< RemoveConst_t< ElementType_t<MT> >, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3125,7 +3125,7 @@ struct BandTraitEval2< MT, I
                                    ( MaxSize_v<MT,0UL> == DefaultMaxSize_v ||
                                      MaxSize_v<MT,1UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicVector< ElementType_t<MT>, defaultTransposeFlag >;
+   using Type = DynamicVector< RemoveConst_t< ElementType_t<MT> >, defaultTransposeFlag >;
 };
 /*! \endcond */
 //*************************************************************************************************
