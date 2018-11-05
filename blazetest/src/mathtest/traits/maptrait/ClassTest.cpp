@@ -61,6 +61,7 @@
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/math/typetraits/TransposeFlag.h>
+#include <blaze/math/UniformVector.h>
 #include <blaze/math/UniLowerMatrix.h>
 #include <blaze/math/UniUpperMatrix.h>
 #include <blaze/math/UpperMatrix.h>
@@ -111,12 +112,12 @@ ClassTest::ClassTest()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the 'MapTrait' class template for scalar unary operations.
+/*!\brief Test of the 'MapTrait' class template for unary scalar operations.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a compile time test of the 'MapTrait' class template for scalar unary
+// This function performs a compile time test of the 'MapTrait' class template for unary scalar
 // operations. In case an error is detected, a compilation error is created.
 */
 void ClassTest::testUnaryScalarOperation()
@@ -157,12 +158,12 @@ void ClassTest::testUnaryScalarOperation()
 
 
 //*************************************************************************************************
-/*!\brief Test of the 'MapTrait' class template for vector unary operations.
+/*!\brief Test of the 'MapTrait' class template for unary vector operations.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a compile time test of the 'MapTrait' class template for vector unary
+// This function performs a compile time test of the 'MapTrait' class template for unary vector
 // operations. In case an error is detected, a compilation error is created.
 */
 void ClassTest::testUnaryVectorOperation()
@@ -251,6 +252,26 @@ void ClassTest::testUnaryVectorOperation()
       }
    }
 
+   // UniformVector
+   {
+      {
+         using VT = UniformVector<int,columnVector>;
+         using RT = UniformVector<int,columnVector>;
+         static_assert( IsSame_v< MapTrait_t<VT,OP>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
+         static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+      }
+      {
+         using VT = UniformVector<int,rowVector>;
+         using RT = UniformVector<int,rowVector>;
+         static_assert( IsSame_v< MapTrait_t<VT,OP>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
+         static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+      }
+   }
+
    // InitializerVector
    {
       {
@@ -295,12 +316,12 @@ void ClassTest::testUnaryVectorOperation()
 
 
 //*************************************************************************************************
-/*!\brief Test of the 'MapTrait' class template for matrix unary operations.
+/*!\brief Test of the 'MapTrait' class template for unary matrix operations.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a compile time test of the 'MapTrait' class template for matrix unary
+// This function performs a compile time test of the 'MapTrait' class template for unary matrix
 // operations. In case an error is detected, a compilation error is created.
 */
 void ClassTest::testUnaryMatrixOperation()
@@ -665,12 +686,12 @@ void ClassTest::testUnaryMatrixOperation()
 
 
 //*************************************************************************************************
-/*!\brief Test of the 'MapTrait' class template for scalar binary operations.
+/*!\brief Test of the 'MapTrait' class template for binary scalar operations.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a compile time test of the 'MapTrait' class template for scalar binary
+// This function performs a compile time test of the 'MapTrait' class template for binary scalar
 // operations. In case an error is detected, a compilation error is created.
 */
 void ClassTest::testBinaryScalarOperation()
@@ -748,12 +769,12 @@ void ClassTest::testBinaryScalarOperation()
 
 
 //*************************************************************************************************
-/*!\brief Test of the 'MapTrait' class template for vector binary operations.
+/*!\brief Test of the 'MapTrait' class template for binary vector operations.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a compile time test of the 'MapTrait' class template for vector binary
+// This function performs a compile time test of the 'MapTrait' class template for binary vector
 // operations. In case an error is detected, a compilation error is created.
 */
 void ClassTest::testBinaryVectorOperation()
@@ -844,6 +865,28 @@ void ClassTest::testBinaryVectorOperation()
          {
             using T1 = StaticVector<int,3UL,rowVector>;
             using T2 = CustomVector<double,unaligned,unpadded,rowVector>;
+            using RT = StaticVector<double,3UL,rowVector>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../UniformVector
+      {
+         {
+            using T1 = StaticVector<int,3UL,columnVector>;
+            using T2 = UniformVector<double,columnVector>;
+            using RT = StaticVector<double,3UL,columnVector>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = StaticVector<int,3UL,rowVector>;
+            using T2 = UniformVector<double,rowVector>;
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
@@ -965,6 +1008,28 @@ void ClassTest::testBinaryVectorOperation()
          }
       }
 
+      // .../UniformVector
+      {
+         {
+            using T1 = HybridVector<int,5UL,columnVector>;
+            using T2 = UniformVector<double,columnVector>;
+            using RT = HybridVector<double,5UL,columnVector>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = HybridVector<int,5UL,rowVector>;
+            using T2 = UniformVector<double,rowVector>;
+            using RT = HybridVector<double,5UL,rowVector>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
       // .../InitializerVector
       {
          {
@@ -1070,6 +1135,28 @@ void ClassTest::testBinaryVectorOperation()
          {
             using T1 = DynamicVector<int,rowVector>;
             using T2 = CustomVector<double,unaligned,unpadded,rowVector>;
+            using RT = DynamicVector<double,rowVector>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../UniformVector
+      {
+         {
+            using T1 = DynamicVector<int,columnVector>;
+            using T2 = UniformVector<double,columnVector>;
+            using RT = DynamicVector<double,columnVector>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = DynamicVector<int,rowVector>;
+            using T2 = UniformVector<double,rowVector>;
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
@@ -1191,6 +1278,28 @@ void ClassTest::testBinaryVectorOperation()
          }
       }
 
+      // .../UniformVector
+      {
+         {
+            using T1 = CustomVector<int,unaligned,unpadded,columnVector>;
+            using T2 = UniformVector<double,columnVector>;
+            using RT = DynamicVector<double,columnVector>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = CustomVector<int,unaligned,unpadded,rowVector>;
+            using T2 = UniformVector<double,rowVector>;
+            using RT = DynamicVector<double,rowVector>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
       // .../InitializerVector
       {
          {
@@ -1204,6 +1313,141 @@ void ClassTest::testBinaryVectorOperation()
          }
          {
             using T1 = CustomVector<int,unaligned,unpadded,rowVector>;
+            using T2 = InitializerVector<double,rowVector>;
+            using RT = DynamicVector<double,rowVector>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+   }
+
+   // UniformVector/...
+   {
+      // .../StaticVector
+      {
+         {
+            using T1 = UniformVector<int,columnVector>;
+            using T2 = StaticVector<double,3UL,columnVector>;
+            using RT = StaticVector<double,3UL,columnVector>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = UniformVector<int,rowVector>;
+            using T2 = StaticVector<double,3UL,rowVector>;
+            using RT = StaticVector<double,3UL,rowVector>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../HybridVector
+      {
+         {
+            using T1 = UniformVector<int,columnVector>;
+            using T2 = HybridVector<double,5UL,columnVector>;
+            using RT = HybridVector<double,5UL,columnVector>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = UniformVector<int,rowVector>;
+            using T2 = HybridVector<double,5UL,rowVector>;
+            using RT = HybridVector<double,5UL,rowVector>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../DynamicVector
+      {
+         {
+            using T1 = UniformVector<int,columnVector>;
+            using T2 = DynamicVector<double,columnVector>;
+            using RT = DynamicVector<double,columnVector>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = UniformVector<int,rowVector>;
+            using T2 = DynamicVector<double,rowVector>;
+            using RT = DynamicVector<double,rowVector>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../CustomVector
+      {
+         {
+            using T1 = UniformVector<int,columnVector>;
+            using T2 = CustomVector<double,unaligned,unpadded,columnVector>;
+            using RT = DynamicVector<double,columnVector>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = UniformVector<int,rowVector>;
+            using T2 = CustomVector<double,unaligned,unpadded,rowVector>;
+            using RT = DynamicVector<double,rowVector>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../UniformVector
+      {
+         {
+            using T1 = UniformVector<int,columnVector>;
+            using T2 = UniformVector<double,columnVector>;
+            using RT = UniformVector<double,columnVector>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = UniformVector<int,rowVector>;
+            using T2 = UniformVector<double,rowVector>;
+            using RT = UniformVector<double,rowVector>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../InitializerVector
+      {
+         {
+            using T1 = UniformVector<int,columnVector>;
+            using T2 = InitializerVector<double,columnVector>;
+            using RT = DynamicVector<double,columnVector>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = UniformVector<int,rowVector>;
             using T2 = InitializerVector<double,rowVector>;
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
@@ -1304,6 +1548,28 @@ void ClassTest::testBinaryVectorOperation()
          }
       }
 
+      // .../UniformVector
+      {
+         {
+            using T1 = InitializerVector<int,columnVector>;
+            using T2 = UniformVector<double,columnVector>;
+            using RT = DynamicVector<double,columnVector>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = InitializerVector<int,rowVector>;
+            using T2 = UniformVector<double,rowVector>;
+            using RT = DynamicVector<double,rowVector>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
       // .../InitializerVector
       {
          {
@@ -1331,12 +1597,12 @@ void ClassTest::testBinaryVectorOperation()
 
 
 //*************************************************************************************************
-/*!\brief Test of the 'MapTrait' class template for matrix binary operations.
+/*!\brief Test of the 'MapTrait' class template for binary matrix operations.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a compile time test of the 'MapTrait' class template for matrix binary
+// This function performs a compile time test of the 'MapTrait' class template for binary matrix
 // operations. In case an error is detected, a compilation error is created.
 */
 void ClassTest::testBinaryMatrixOperation()
