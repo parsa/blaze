@@ -3196,7 +3196,7 @@ struct ColumnTraitEval2< MT, I
                        , EnableIf_t< IsDenseMatrix_v<MT> &&
                                      Size_v<MT,0UL> != DefaultSize_v > >
 {
-   using Type = StaticVector< ElementType_t<MT>, Size_v<MT,0UL>, false >;
+   using Type = StaticVector< RemoveConst_t< ElementType_t<MT> >, Size_v<MT,0UL>, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3222,7 +3222,7 @@ struct BandTraitEval2< MT, I
    static constexpr size_t N   = Size_v<MT,1UL>;
    static constexpr size_t Min = min( M - ( I >= 0L ? 0UL : -I ), N - ( I >= 0L ? I : 0UL ) );
 
-   using Type = StaticVector< ElementType_t<MT>, Min, defaultTransposeFlag >;
+   using Type = StaticVector< RemoveConst_t< ElementType_t<MT> >, Min, defaultTransposeFlag >;
 };
 /*! \endcond */
 //*************************************************************************************************
