@@ -48,9 +48,10 @@ BIN = $(SRC:.cpp=)
 
 
 # General rules
-default: V3aV3a V3aV3b V3bV3a V3bV3b VHaVHa VHaVHb VHbVHa VHbVHb VDaVDa VDaVDb VDbVDa VDbVDb AliasingTest
+default: V3aV3a V3aV3b V3bV3a V3bV3b VHaVHa VHaVHb VHbVHa VHbVHb \
+         VDaVDa VDaVDb VDbVDa VDbVDb VUaVUa VUaVUb VUbVUa VUbVUb AliasingTest
 all: $(BIN)
-essential: V3aV3a VHaVHa VDaVDa AliasingTest
+essential: V3aV3a VHaVHa VDaVDa VUaVUa AliasingTest
 single: VDaVDa
 
 
@@ -279,6 +280,10 @@ V6aVHa: V6aVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 V6aVHb: V6aVHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+V6aVUa: V6aVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+V6aVUb: V6aVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 V6bV2a: V6bV2a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 V6bV2b: V6bV2b.o
@@ -306,6 +311,10 @@ V6bVDb: V6bVDb.o
 V6bVHa: V6bVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 V6bVHb: V6bVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+V6bVUa: V6bVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+V6bVUb: V6bVUb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 VDaV2a: VDaV2a.o
@@ -336,6 +345,10 @@ VDaVHa: VDaVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDaVHb: VDaVHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDaVUa: VDaVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDaVUb: VDaVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDbV2a: VDbV2a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDbV2b: VDbV2b.o
@@ -364,6 +377,10 @@ VDbVHa: VDbVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDbVHb: VDbVHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDbVUa: VDbVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDbVUb: VDbVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 VHaV6a: VHaV6a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
@@ -377,6 +394,10 @@ VHaVHa: VHaVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VHaVHb: VHaVHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHaVUa: VHaVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHaVUb: VHaVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VHbV6a: VHbV6a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VHbV6b: VHbV6b.o
@@ -388,6 +409,43 @@ VHbVDb: VHbVDb.o
 VHbVHa: VHbVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VHbVHb: VHbVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHbVUa: VHbVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHbVUb: VHbVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+VUaV6a: VUaV6a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUaV6b: VUaV6b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUaVDa: VUaVDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUaVDb: VUaVDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUaVHa: VUaVHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUaVHb: VUaVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUaVUa: VUaVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUaVUb: VUaVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUbV6a: VUbV6a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUbV6b: VUbV6b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUbVDa: VUbVDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUbVDb: VUbVDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUbVHa: VUbVHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUbVHb: VUbVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUbVUa: VUbVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUbVUb: VUbVUb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 AliasingTest: AliasingTest.o
