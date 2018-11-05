@@ -908,7 +908,7 @@ void ClassTest::testAssignment()
    }
 
    {
-      test_ = "Row-major IdentityMatrix copy assignment stress test";
+      test_ = "Column-major IdentityMatrix copy assignment stress test";
 
       blaze::IdentityMatrix<int,blaze::columnMajor> I1;
 
@@ -1058,7 +1058,7 @@ void ClassTest::testAt()
    //==========≈===========================================================================
 
    {
-      test_ = "Row-major IdentityMatrix::operator()";
+      test_ = "Row-major IdentityMatrix::at()";
 
       blaze::IdentityMatrix<int,blaze::rowMajor> I( 3UL );
 
@@ -1074,7 +1074,7 @@ void ClassTest::testAt()
           I.at(2,0) != 0 || I.at(2,1) != 0 || I.at(2,2) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
+             << " Error: Access via at() function failed\n"
              << " Details:\n"
              << "   Result:\n" << I << "\n"
              << "   Expected result:\n( 1 0 0 )\n( 0 1 0 )\n( 0 0 1 )\n";
@@ -1088,7 +1088,7 @@ void ClassTest::testAt()
    //=====================================================================================
 
    {
-      test_ = "Column-major IdentityMatrix::operator()";
+      test_ = "Column-major IdentityMatrix::at()";
 
       blaze::IdentityMatrix<int,blaze::columnMajor> I( 3UL );
 
@@ -1104,7 +1104,7 @@ void ClassTest::testAt()
           I.at(2,0) != 0 || I.at(2,1) != 0 || I.at(2,2) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Function call operator failed\n"
+             << " Error: Access via at() function failed\n"
              << " Details:\n"
              << "   Result:\n" << I << "\n"
              << "   Expected result:\n( 1 0 0 )\n( 0 1 0 )\n( 0 0 1 )\n";
