@@ -51,9 +51,11 @@ BIN = $(SRC:.cpp=)
 default: MCaV3a MCaV3b MCbV3a MCbV3b \
          MCaVHa MCaVHb MCbVHa MCbVHb \
          MCaVDa MCaVDb MCbVDa MCbVDb \
+         MCaVUa MCaVUb MCbVUa MCbVUb \
          MIaV3a MIaV3b MIbV3a MIbV3b \
          MIaVHa MIaVHb MIbVHa MIbVHb \
          MIaVDa MIaVDb MIbVDa MIbVDb \
+         MIaVUa MIaVUb MIbVUa MIbVUb \
          SCaVDa SCaVDb SCbVDa SCbVDb \
          HCaVDa HCaVDb HCbVDa HCbVDb \
          LCaVDa LCaVDb LCbVDa LCbVDb \
@@ -61,7 +63,8 @@ default: MCaV3a MCaV3b MCbV3a MCbV3b \
          DCaVDa DCaVDb DCbVDa DCbVDb \
          AliasingTest
 all: $(BIN)
-essential: MCaV3a MCaVHa MCaVDa MIaV3a MIaVHa MIaVDa SCaVDa HCaVDa LCaVDa UCaVDa DCaVDa AliasingTest
+essential: MCaV3a MCaVHa MCaVDa MCaVUa MIaV3a MIaVHa MIaVDa MIaVUa \
+           SCaVDa HCaVDa LCaVDa UCaVDa DCaVDa AliasingTest
 single: MCaVDa
 
 
@@ -121,6 +124,10 @@ MCaVHa: MCaVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaVHb: MCaVHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCaVUa: MCaVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCaVUb: MCaVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 MCbV2a: MCbV2a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
@@ -150,6 +157,10 @@ MCbVHa: MCbVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbVHb: MCbVHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCbVUa: MCbVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCbVUb: MCbVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 MIaV3a: MIaV3a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
@@ -163,6 +174,10 @@ MIaVHa: MIaVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MIaVHb: MIaVHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MIaVUa: MIaVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MIaVUb: MIaVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MIbV3a: MIbV3a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MIbV3b: MIbV3b.o
@@ -174,6 +189,10 @@ MIbVDb: MIbVDb.o
 MIbVHa: MIbVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MIbVHb: MIbVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MIbVUa: MIbVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MIbVUb: MIbVUb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 SCaVDa: SCaVDa.o
