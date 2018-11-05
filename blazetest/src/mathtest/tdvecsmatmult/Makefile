@@ -51,6 +51,7 @@ BIN = $(SRC:.cpp=)
 default: V3aMCa V3aMCb V3bMCa V3bMCb \
          VHaMCa VHaMCb VHbMCa VHbMCb \
          VDaMCa VDaMCb VDbMCa VDbMCb \
+         VUaMCa VUaMCb VUbMCa VUbMCb \
          VDaSCa VDaSCb VDbSCa VDbSCb \
          VDaHCa VDaHCb VDbHCa VDbHCb \
          VDaLCa VDaLCb VDbLCa VDbLCb \
@@ -58,7 +59,7 @@ default: V3aMCa V3aMCb V3bMCa V3bMCb \
          VDaDCa VDaDCb VDbDCa VDbDCb \
          AliasingTest
 all: $(BIN)
-essential: V3aMCa VHaMCa VDaMCa VDaSCa VDaHCa VDaLCa VDaUCa VDaDCa AliasingTest
+essential: V3aMCa VHaMCa VDaMCa VUaMCa VDaSCa VDaHCa VDaLCa VDaUCa VDaDCa AliasingTest
 single: VDaMCa
 
 
@@ -188,6 +189,23 @@ VHbMCb: VHbMCb.o
 VHbMIa: VHbMIa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VHbMIb: VHbMIb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+VUaMCa: VUaMCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUaMCb: VUaMCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUaMIa: VUaMIa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUaMIb: VUaMIb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUbMCa: VUbMCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUbMCb: VUbMCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUbMIa: VUbMIa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUbMIb: VUbMIb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 AliasingTest: AliasingTest.o
