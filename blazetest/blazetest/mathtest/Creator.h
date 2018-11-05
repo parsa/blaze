@@ -88,5 +88,6 @@
 #include <blazetest/mathtest/creator/StaticUniUpper.h>
 #include <blazetest/mathtest/creator/StaticUpper.h>
 #include <blazetest/mathtest/creator/StaticVector.h>
+#include <blazetest/mathtest/creator/UniformVector.h>
 
 #endif
