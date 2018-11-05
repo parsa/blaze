@@ -1091,7 +1091,7 @@ void ClassTest::testSchurAssign()
    }
 
    {
-      test_ = "Row-major/row-major DynamicMatrix sparse matrix Schur product assignment (lower)";
+      test_ = "Column-major/row-major DynamicMatrix sparse matrix Schur product assignment (lower)";
 
       blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
@@ -1112,7 +1112,7 @@ void ClassTest::testSchurAssign()
    }
 
    {
-      test_ = "Row-major/column-major DynamicMatrix sparse matrix Schur product assignment (lower)";
+      test_ = "Column-major/column-major DynamicMatrix sparse matrix Schur product assignment (lower)";
 
       blaze::LowerMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
@@ -1133,7 +1133,7 @@ void ClassTest::testSchurAssign()
    }
 
    {
-      test_ = "Row-major/row-major DynamicMatrix sparse matrix Schur product assignment (upper)";
+      test_ = "Column-major/row-major DynamicMatrix sparse matrix Schur product assignment (upper)";
 
       blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
@@ -1154,7 +1154,7 @@ void ClassTest::testSchurAssign()
    }
 
    {
-      test_ = "Row-major/column-major DynamicMatrix sparse matrix Schur product assignment (upper)";
+      test_ = "Column-major/column-major DynamicMatrix sparse matrix Schur product assignment (upper)";
 
       blaze::UpperMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
@@ -1175,7 +1175,7 @@ void ClassTest::testSchurAssign()
    }
 
    {
-      test_ = "Row-major/row-major DynamicMatrix sparse matrix Schur product assignment (diagonal)";
+      test_ = "Column-major/row-major DynamicMatrix sparse matrix Schur product assignment (diagonal)";
 
       blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::rowMajor> > mat1( 3UL );
       randomize( mat1 );
@@ -1196,7 +1196,7 @@ void ClassTest::testSchurAssign()
    }
 
    {
-      test_ = "Row-major/column-major DynamicMatrix sparse matrix Schur product assignment (diagonal)";
+      test_ = "Column-major/column-major DynamicMatrix sparse matrix Schur product assignment (diagonal)";
 
       blaze::DiagonalMatrix< blaze::CompressedMatrix<int,blaze::columnMajor> > mat1( 3UL );
       randomize( mat1 );
@@ -5111,7 +5111,7 @@ void ClassTest::testSwap()
              << " Error: Swapping the second matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << mat2 << "\n"
-             << "   Expected result:\n( 1 2 )\n( 0 3 )\n( 4, 0 )\n";
+             << "   Expected result:\n( 1 2 )\n( 0 3 )\n( 4 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -5167,7 +5167,7 @@ void ClassTest::testSwap()
              << " Error: Swapping the second matrix failed\n"
              << " Details:\n"
              << "   Result:\n" << mat2 << "\n"
-             << "   Expected result:\n( 1 2 )\n( 0 3 )\n( 4, 0 )\n";
+             << "   Expected result:\n( 1 2 )\n( 0 3 )\n( 4 0 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
