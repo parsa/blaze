@@ -43,3 +43,5 @@ EXE=$PATH_DVECEXPAND/VDa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1
 EXE=$PATH_DVECEXPAND/VDb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DVECEXPAND/VHa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DVECEXPAND/VHb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECEXPAND/VUa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECEXPAND/VUb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

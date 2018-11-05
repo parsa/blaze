@@ -50,8 +50,8 @@ BIN = $(SRC:.cpp=)
 # General rules
 default: $(BIN)
 all: $(BIN)
-essential: $(BIN)
-single: $(BIN)
+essential: V3a VDa VHa VUa
+single: VDa
 
 
 # Build rules
@@ -66,6 +66,10 @@ VDb: VDb.o
 VHa: VHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VHb: VHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUa: VUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUb: VUb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 
