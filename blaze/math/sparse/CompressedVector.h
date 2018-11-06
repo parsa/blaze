@@ -2755,7 +2755,7 @@ template< typename MT, size_t I >
 struct ColumnTraitEval2< MT, I
                        , EnableIf_t< IsSparseMatrix_v<MT> > >
 {
-   using Type = CompressedVector< ElementType_t<MT>, false >;
+   using Type = CompressedVector< RemoveConst_t< ElementType_t<MT> >, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2775,7 +2775,7 @@ template< typename MT, ptrdiff_t I >
 struct BandTraitEval2< MT, I
                      , EnableIf_t< IsSparseMatrix_v<MT> > >
 {
-   using Type = CompressedVector< ElementType_t<MT>, defaultTransposeFlag >;
+   using Type = CompressedVector< RemoveConst_t< ElementType_t<MT> >, defaultTransposeFlag >;
 };
 /*! \endcond */
 //*************************************************************************************************
