@@ -6847,7 +6847,7 @@ struct RowsTraitEval2< MT, M
                                    ( M == 0UL || Size_v<MT,1UL> == DefaultSize_v ) &&
                                    ( M == 0UL || MaxSize_v<MT,1UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicMatrix< ElementType_t<MT>, false >;
+   using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6869,7 +6869,7 @@ struct ColumnsTraitEval2< MT, N
                                       ( N == 0UL || Size_v<MT,0UL> == DefaultSize_v ) &&
                                       ( N == 0UL || MaxSize_v<MT,0UL> == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicMatrix< ElementType_t<MT>, true >;
+   using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >, true >;
 };
 /*! \endcond */
 //*************************************************************************************************
