@@ -7108,7 +7108,7 @@ struct RowsTraitEval2< MT, M
                                    Size_v<MT,1UL> == DefaultSize_v &&
                                    MaxSize_v<MT,1UL> != DefaultMaxSize_v > >
 {
-   using Type = HybridMatrix< ElementType_t<MT>, M, MaxSize_v<MT,1UL>, false >;
+   using Type = HybridMatrix< RemoveConst_t< ElementType_t<MT> >, M, MaxSize_v<MT,1UL>, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -7131,7 +7131,7 @@ struct ColumnsTraitEval2< MT, N
                                       Size_v<MT,0UL> == DefaultSize_v &&
                                       MaxSize_v<MT,0UL> != DefaultMaxSize_v > >
 {
-   using Type = HybridMatrix< ElementType_t<MT>, MaxSize_v<MT,0UL>, N, true >;
+   using Type = HybridMatrix< RemoveConst_t< ElementType_t<MT> >, MaxSize_v<MT,0UL>, N, true >;
 };
 /*! \endcond */
 //*************************************************************************************************
