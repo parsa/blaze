@@ -6776,7 +6776,7 @@ struct RowsTraitEval2< MT, M
                                    IsDenseMatrix_v<MT> &&
                                    Size_v<MT,1UL> != DefaultSize_v > >
 {
-   using Type = StaticMatrix< ElementType_t<MT>, M, Size_v<MT,1UL>, false >;
+   using Type = StaticMatrix< RemoveConst_t< ElementType_t<MT> >, M, Size_v<MT,1UL>, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6798,7 +6798,7 @@ struct ColumnsTraitEval2< MT, N
                                       IsDenseMatrix_v<MT> &&
                                       Size_v<MT,0UL> != DefaultSize_v > >
 {
-   using Type = StaticMatrix< ElementType_t<MT>, Size_v<MT,0UL>, N, true >;
+   using Type = StaticMatrix< RemoveConst_t< ElementType_t<MT> >, Size_v<MT,0UL>, N, true >;
 };
 /*! \endcond */
 //*************************************************************************************************
