@@ -6230,7 +6230,7 @@ template< typename MT, size_t M >
 struct RowsTraitEval2< MT, M
                      , EnableIf_t< IsSparseMatrix_v<MT> > >
 {
-   using Type = CompressedMatrix< ElementType_t<MT>, false >;
+   using Type = CompressedMatrix< RemoveConst_t< ElementType_t<MT> >, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6250,7 +6250,7 @@ template< typename MT, size_t N >
 struct ColumnsTraitEval2< MT, N
                         , EnableIf_t< IsSparseMatrix_v<MT> > >
 {
-   using Type = CompressedMatrix< ElementType_t<MT>, true >;
+   using Type = CompressedMatrix< RemoveConst_t< ElementType_t<MT> >, true >;
 };
 /*! \endcond */
 //*************************************************************************************************
