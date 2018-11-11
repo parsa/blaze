@@ -59,6 +59,7 @@ template< typename, size_t, size_t, bool > class HybridMatrix;
 template< typename, size_t, bool > class HybridVector;
 template< typename, size_t, size_t, bool > class StaticMatrix;
 template< typename, size_t, bool > class StaticVector;
+template< typename, bool > class UniformVector;
 
 } // namespace blaze
 
