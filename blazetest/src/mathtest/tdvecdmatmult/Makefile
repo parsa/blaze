@@ -51,7 +51,7 @@ BIN = $(SRC:.cpp=)
 default: V3aM3x3a V3aM3x3b V3bM3x3a V3bM3x3b \
          VHaMHa VHaMHb VHbMHa VHbMHb \
          VDaMDa VDaMDb VDbMDa VDbMDb \
-         VUaMDa VUaMDb VUbMDa VUbMDb \
+         VUaMUa VUaMUb VUbMUa VUbMUb \
          VDaSDa VDaSDb VDbSDa VDbSDb \
          VDaHDa VDaHDb VDbHDa VDbHDb \
          VDaLDa VDaLDb VDbLDa VDbLDb \
@@ -59,7 +59,7 @@ default: V3aM3x3a V3aM3x3b V3bM3x3a V3bM3x3b \
          VDaDDa VDaDDb VDbDDa VDbDDb \
          AliasingTest
 all: $(BIN)
-essential: V3aM3x3a VHaMHa VDaMDa VUaMHa VDaSDa VDaHDa VDaLDa VDaUDa VDaDDa AliasingTest
+essential: V3aM3x3a VHaMHa VDaMDa VUaMUa VDaSDa VDaHDa VDaLDa VDaUDa VDaDDa AliasingTest
 single: VDaMDa
 
 
@@ -144,6 +144,10 @@ V6aMHa: V6aMHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 V6aMHb: V6aMHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+V6aMUa: V6aMUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+V6aMUb: V6aMUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 V6bM6x6a: V6bM6x6a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 V6bM6x6b: V6bM6x6b.o
@@ -155,6 +159,10 @@ V6bMDb: V6bMDb.o
 V6bMHa: V6bMHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 V6bMHb: V6bMHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+V6bMUa: V6bMUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+V6bMUb: V6bMUb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 V7aM7x13a: V7aM7x13a.o
@@ -223,6 +231,10 @@ VDaMHa: VDaMHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDaMHb: VDaMHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDaMUa: VDaMUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDaMUb: VDaMUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDaSDa: VDaSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDaSDb: VDaSDb.o
@@ -287,6 +299,10 @@ VDbMHa: VDbMHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDbMHb: VDbMHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDbMUa: VDbMUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VDbMUb: VDbMUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDbSDa: VDbSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VDbSDb: VDbSDb.o
@@ -340,6 +356,10 @@ VHaMHa: VHaMHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VHaMHb: VHaMHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHaMUa: VHaMUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHaMUb: VHaMUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VHbM2x2a: VHbM2x2a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VHbM2x2b: VHbM2x2b.o
@@ -375,6 +395,10 @@ VHbMDb: VHbMDb.o
 VHbMHa: VHbMHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VHbMHb: VHbMHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHbMUa: VHbMUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VHbMUb: VHbMUb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 VUaM2x2a: VUaM2x2a.o
@@ -413,6 +437,10 @@ VUaMHa: VUaMHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VUaMHb: VUaMHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUaMUa: VUaMUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUaMUb: VUaMUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VUbM2x2a: VUbM2x2a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VUbM2x2b: VUbM2x2b.o
@@ -448,6 +476,10 @@ VUbMDb: VUbMDb.o
 VUbMHa: VUbMHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VUbMHb: VUbMHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUbMUa: VUbMUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VUbMUb: VUbMUb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 AliasingTest: AliasingTest.o

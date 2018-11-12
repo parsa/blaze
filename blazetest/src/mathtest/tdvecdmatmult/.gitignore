@@ -39,12 +39,16 @@ V6aMDa
 V6aMDb
 V6aMHa
 V6aMHb
+V6aMUa
+V6aMUb
 V6bM6x6a
 V6bM6x6b
 V6bMDa
 V6bMDb
 V6bMHa
 V6bMHb
+V6bMUa
+V6bMUb
 V7aM7x13a
 V7aM7x13b
 V7bM7x13a
@@ -77,6 +81,8 @@ VDaMDa
 VDaMDb
 VDaMHa
 VDaMHb
+VDaMUa
+VDaMUb
 VDaSDa
 VDaSDb
 VDaSLDa
@@ -109,6 +115,8 @@ VDbMDa
 VDbMDb
 VDbMHa
 VDbMHb
+VDbMUa
+VDbMUb
 VDbSDa
 VDbSDb
 VDbSLDa
@@ -135,6 +143,8 @@ VHaMDa
 VHaMDb
 VHaMHa
 VHaMHb
+VHaMUa
+VHaMUb
 VHbM2x2a
 VHbM2x2b
 VHbM3x3a
@@ -153,6 +163,8 @@ VHbMDa
 VHbMDb
 VHbMHa
 VHbMHb
+VHbMUa
+VHbMUb
 VUaM2x2a
 VUaM2x2b
 VUaM3x3a
@@ -171,6 +183,8 @@ VUaMDa
 VUaMDb
 VUaMHa
 VUaMHb
+VUaMUa
+VUaMUb
 VUbM2x2a
 VUbM2x2b
 VUbM3x3a
@@ -189,4 +203,6 @@ VUbMDa
 VUbMDb
 VUbMHa
 VUbMHb
+VUbMUa
+VUbMUb
 
