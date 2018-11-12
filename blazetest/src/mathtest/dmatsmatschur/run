@@ -231,6 +231,15 @@ EXE=$PATH_DMATSMATSCHUR/MHbMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then 
 EXE=$PATH_DMATSMATSCHUR/MHbMIa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DMATSMATSCHUR/MHbMIb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
+EXE=$PATH_DMATSMATSCHUR/MUaMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATSCHUR/MUaMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATSCHUR/MUaMIa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATSCHUR/MUaMIb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATSCHUR/MUbMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATSCHUR/MUbMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATSCHUR/MUbMIa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATSCHUR/MUbMIb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+
 EXE=$PATH_DMATSMATSCHUR/S3x3aSCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DMATSMATSCHUR/S3x3aSCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DMATSMATSCHUR/S3x3bSCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
