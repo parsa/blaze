@@ -61,6 +61,7 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/math/typetraits/TransposeFlag.h>
+#include <blaze/math/UniformMatrix.h>
 #include <blaze/math/UniformVector.h>
 #include <blaze/math/UniLowerMatrix.h>
 #include <blaze/math/UniUpperMatrix.h>
@@ -456,6 +457,28 @@ void ClassTest::testMatrixScalarDivision()
          using T1 = CustomMatrix<int,unaligned,unpadded,columnMajor>;
          using T2 = double;
          using RT = DynamicMatrix<double,columnMajor>;
+         static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+      }
+   }
+
+   // UniformMatrix
+   {
+      {
+         using T1 = UniformMatrix<int,rowMajor>;
+         using T2 = double;
+         using RT = UniformMatrix<double,rowMajor>;
+         static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+      }
+      {
+         using T1 = UniformMatrix<int,columnMajor>;
+         using T2 = double;
+         using RT = UniformMatrix<double,columnMajor>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
          using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
