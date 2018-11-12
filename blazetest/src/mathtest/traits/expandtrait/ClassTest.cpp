@@ -40,15 +40,19 @@
 #include <cstdlib>
 #include <iostream>
 #include <utility>
+#include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
 #include <blaze/math/CustomVector.h>
+#include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/HybridMatrix.h>
 #include <blaze/math/HybridVector.h>
 #include <blaze/math/InitializerVector.h>
+#include <blaze/math/StaticMatrix.h>
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/traits/ExpandTrait.h>
 #include <blaze/math/typetraits/StorageOrder.h>
+#include <blaze/math/UniformMatrix.h>
 #include <blaze/math/UniformVector.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/typetraits/Decay.h>
@@ -252,7 +256,7 @@ void ClassTest::testVectorExpansion()
    {
       {
          using VT = UniformVector<int,columnVector>;
-         using RT = DynamicMatrix<int,columnMajor>;
+         using RT = UniformMatrix<int,columnMajor>;
          static_assert( IsSame_v< ExpandTrait_t<VT>, RT >, "Non-matching type detected" );
 
          using Expr = Decay_t< decltype( expand( std::declval<VT>(), std::declval<size_t>() ) ) >;
@@ -260,7 +264,7 @@ void ClassTest::testVectorExpansion()
       }
       {
          using VT = UniformVector<int,rowVector>;
-         using RT = DynamicMatrix<int,rowMajor>;
+         using RT = UniformMatrix<int,rowMajor>;
          static_assert( IsSame_v< ExpandTrait_t<VT>, RT >, "Non-matching type detected" );
 
          using Expr = Decay_t< decltype( expand( std::declval<VT>(), std::declval<size_t>() ) ) >;
@@ -268,7 +272,7 @@ void ClassTest::testVectorExpansion()
       }
       {
          using VT = UniformVector<int,columnVector>;
-         using RT = DynamicMatrix<int,columnMajor>;
+         using RT = UniformMatrix<int,columnMajor>;
          static_assert( IsSame_v< ExpandTrait_t<VT,5UL>, RT >, "Non-matching type detected" );
 
          using Expr = Decay_t< decltype( expand<5UL>( std::declval<VT>() ) ) >;
@@ -276,7 +280,7 @@ void ClassTest::testVectorExpansion()
       }
       {
          using VT = UniformVector<int,rowVector>;
-         using RT = DynamicMatrix<int,rowMajor>;
+         using RT = UniformMatrix<int,rowMajor>;
          static_assert( IsSame_v< ExpandTrait_t<VT,5UL>, RT >, "Non-matching type detected" );
 
          using Expr = Decay_t< decltype( expand<5UL>( std::declval<VT>() ) ) >;
