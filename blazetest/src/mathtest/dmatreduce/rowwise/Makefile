@@ -48,9 +48,9 @@ BIN = $(SRC:.cpp=)
 
 
 # General rules
-default: M3x3a M3x3b MHa MHb MDa MDb SDa SDb HDa HDb LDa LDb UDa UDb DDa DDb
+default: M3x3a M3x3b MHa MHb MDa MDb MUa MUb SDa SDb HDa HDb LDa LDb UDa UDb DDa DDb
 all: $(BIN)
-essential: M3x3a MHa MDa SDa HDa LDa UDa DDa
+essential: M3x3a MHa MDa MUa SDa HDa LDa UDa DDa
 single: MDa
 
 
@@ -105,6 +105,10 @@ MDb: MDb.o
 MHa: MHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MHb: MHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MUa: MUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MUb: MUb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 S3x3a: S3x3a.o

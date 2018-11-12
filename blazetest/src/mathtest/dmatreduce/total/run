@@ -64,6 +64,8 @@ EXE=$PATH_DMATREDUCE_TOTAL/MDa;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; the
 EXE=$PATH_DMATREDUCE_TOTAL/MDb;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DMATREDUCE_TOTAL/MHa;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DMATREDUCE_TOTAL/MHb;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATREDUCE_TOTAL/MUa;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATREDUCE_TOTAL/MUb;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
 EXE=$PATH_DMATREDUCE_TOTAL/S3x3a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DMATREDUCE_TOTAL/S3x3b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

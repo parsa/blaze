@@ -64,6 +64,8 @@ EXE=$PATH_DMATREDUCE_COLUMNWISE/MDa;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]
 EXE=$PATH_DMATREDUCE_COLUMNWISE/MDb;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DMATREDUCE_COLUMNWISE/MHa;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DMATREDUCE_COLUMNWISE/MHb;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATREDUCE_COLUMNWISE/MUa;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATREDUCE_COLUMNWISE/MUb;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
 EXE=$PATH_DMATREDUCE_COLUMNWISE/S3x3a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DMATREDUCE_COLUMNWISE/S3x3b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

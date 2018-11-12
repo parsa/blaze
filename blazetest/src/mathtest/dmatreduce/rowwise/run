@@ -64,6 +64,8 @@ EXE=$PATH_DMATREDUCE_ROWWISE/MDa;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; t
 EXE=$PATH_DMATREDUCE_ROWWISE/MDb;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DMATREDUCE_ROWWISE/MHa;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DMATREDUCE_ROWWISE/MHb;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATREDUCE_ROWWISE/MUa;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATREDUCE_ROWWISE/MUb;   if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
 EXE=$PATH_DMATREDUCE_ROWWISE/S3x3a; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DMATREDUCE_ROWWISE/S3x3b; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
