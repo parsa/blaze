@@ -51,9 +51,11 @@ BIN = $(SRC:.cpp=)
 default: MCaM3x3a MCaM3x3b MCbM3x3a MCbM3x3b \
          MCaMHa MCaMHb MCbMHa MCbMHb \
          MCaMDa MCaMDb MCbMDa MCbMDb \
+         MCaMUa MCaMUb MCbMUa MCbMUb \
          MIaM3x3a MIaM3x3b MIbM3x3a MIbM3x3b \
          MIaMHa MIaMHb MIbMHa MIbMHb \
          MIaMDa MIaMDb MIbMDa MIbMDb \
+         MIaMUa MIaMUb MIbMUa MIbMUb \
          SCaSDa SCaSDb SCbSDa SCbSDb \
          HCaHDa HCaHDb HCbHDa HCbHDb \
          LCaLDa LCaLDb LCbLDa LCbLDb \
@@ -61,7 +63,7 @@ default: MCaM3x3a MCaM3x3b MCbM3x3a MCbM3x3b \
          DCaDDa DCaDDb DCbDDa DCbDDb \
          AliasingTest
 all: $(BIN)
-essential: MCaM3x3a MCaMHa MCaMDa MIaM3x3a MIaMHa MIaMDa \
+essential: MCaM3x3a MCaMHa MCaMDa MCaMUa MIaM3x3a MIaMHa MIaMDa MIaMUa \
            SCaSDa HCaHDa LCaLDa UCaUDa DCaDDa AliasingTest
 single: MCaMDa
 
@@ -361,6 +363,10 @@ MCaMHa: MCaMHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaMHb: MCaMHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCaMUa: MCaMUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCaMUb: MCaMUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaSDa: MCaSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaSDb: MCaSDb.o
@@ -426,6 +432,10 @@ MCbMHa: MCbMHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbMHb: MCbMHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCbMUa: MCbMUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCbMUb: MCbMUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbSDa: MCbSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbSDb: MCbSDb.o
@@ -467,6 +477,10 @@ MIaMHa: MIaMHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MIaMHb: MIaMHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MIaMUa: MIaMUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MIaMUb: MIaMUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MIaSDa: MIaSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MIaSDb: MIaSDb.o
@@ -507,6 +521,10 @@ MIbMDb: MIbMDb.o
 MIbMHa: MIbMHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MIbMHb: MIbMHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MIbMUa: MIbMUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MIbMUb: MIbMUb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MIbSDa: MIbSDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
