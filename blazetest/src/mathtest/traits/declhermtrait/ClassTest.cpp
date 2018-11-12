@@ -53,6 +53,7 @@
 #include <blaze/math/SymmetricMatrix.h>
 #include <blaze/math/traits/DeclHermTrait.h>
 #include <blaze/math/typetraits/StorageOrder.h>
+#include <blaze/math/UniformMatrix.h>
 #include <blaze/math/UniLowerMatrix.h>
 #include <blaze/math/UniUpperMatrix.h>
 #include <blaze/math/UpperMatrix.h>
@@ -183,6 +184,26 @@ void ClassTest::testMatrixDeclHerm()
       {
          using MT = CustomMatrix<int,unaligned,unpadded,columnMajor>;
          using RT = HermitianMatrix< DynamicMatrix<int,columnMajor> >;
+         static_assert( IsSame_v< DeclHermTrait_t<MT>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( declherm( std::declval<MT>() ) ) >;
+         static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+      }
+   }
+
+   // UniformMatrix
+   {
+      {
+         using MT = UniformMatrix<int,rowMajor>;
+         using RT = HermitianMatrix< UniformMatrix<int,rowMajor> >;
+         static_assert( IsSame_v< DeclHermTrait_t<MT>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( declherm( std::declval<MT>() ) ) >;
+         static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+      }
+      {
+         using MT = UniformMatrix<int,columnMajor>;
+         using RT = HermitianMatrix< UniformMatrix<int,columnMajor> >;
          static_assert( IsSame_v< DeclHermTrait_t<MT>, RT >, "Non-matching type detected" );
 
          using Expr = Decay_t< decltype( declherm( std::declval<MT>() ) ) >;
