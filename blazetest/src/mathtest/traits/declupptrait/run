@@ -35,6 +35,6 @@
 
 PATH_DECLLOWTRAIT=$( dirname "${BASH_SOURCE[0]}" )
 
-echo " Running DeclLowTrait tests..."
+echo " Running DeclUppTrait tests..."
 
 EXE=$PATH_DECLLOWTRAIT/ClassTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

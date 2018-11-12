@@ -53,6 +53,7 @@
 #include <blaze/math/SymmetricMatrix.h>
 #include <blaze/math/traits/DeclUppTrait.h>
 #include <blaze/math/typetraits/StorageOrder.h>
+#include <blaze/math/UniformMatrix.h>
 #include <blaze/math/UniLowerMatrix.h>
 #include <blaze/math/UniUpperMatrix.h>
 #include <blaze/math/UpperMatrix.h>
@@ -182,6 +183,26 @@ void ClassTest::testMatrixDeclUpp()
       }
       {
          using MT = CustomMatrix<int,unaligned,unpadded,columnMajor>;
+         using RT = UpperMatrix< DynamicMatrix<int,columnMajor> >;
+         static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+      }
+   }
+
+   // UniformMatrix
+   {
+      {
+         using MT = UniformMatrix<int,rowMajor>;
+         using RT = UpperMatrix< DynamicMatrix<int,rowMajor> >;
+         static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+      }
+      {
+         using MT = UniformMatrix<int,columnMajor>;
          using RT = UpperMatrix< DynamicMatrix<int,columnMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
