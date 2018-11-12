@@ -54,6 +54,8 @@ default: M3x3aMCa M3x3aMCb M3x3bMCa M3x3bMCb \
          MHaMIa MHaMIb MHbMIa MHbMIb \
          MDaMCa MDaMCb MDbMCa MDbMCb \
          MDaMIa MDaMIb MDbMIa MDbMIb \
+         MUaMCa MUaMCb MUbMCa MUbMCb \
+         MUaMIa MUaMIb MUbMIa MUbMIb \
          SDaSCa SDaSCb SDbSCa SDbSCb \
          HDaHCa HDaHCb HDbHCa HDbHCb \
          LDaLCa LDaLCb LDbLCa LDbLCb \
@@ -61,7 +63,7 @@ default: M3x3aMCa M3x3aMCb M3x3bMCa M3x3bMCb \
          DDaDCa DDaDCb DDbDCa DDbDCb \
          AliasingTest
 all: $(BIN)
-essential: M3x3aMCa M3x3aMIa MHaMCa MHaMIa MDaMCa MDaMIa \
+essential: M3x3aMCa M3x3aMIa MHaMCa MHaMIa MDaMCa MDaMIa MUaMCa MUaMIa \
            SDaSCa HDaHCa LDaLCa UDaUCa DDaDCa AliasingTest
 single: MDaMCa
 
@@ -435,6 +437,23 @@ MHbMCb: MHbMCb.o
 MHbMIa: MHbMIa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MHbMIb: MHbMIb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+MUaMCa: MUaMCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MUaMCb: MUaMCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MUaMIa: MUaMIa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MUaMIb: MUaMIb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MUbMCa: MUbMCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MUbMCb: MUbMCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MUbMIa: MUbMIa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MUbMIb: MUbMIb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 S3x3aSCa: S3x3aSCa.o

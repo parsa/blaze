@@ -84,9 +84,9 @@ LDaHCb
 LDaLCa
 LDaLCb
 LDaMCa
+LDaMCb
 LDaMIa
 LDaMIb
-LDaMCb
 LDaSCa
 LDaSCb
 LDaUCa
@@ -118,9 +118,9 @@ M3x3aMCb
 M3x3aMIa
 M3x3aMIb
 M3x3bMCa
+M3x3bMCb
 M3x3bMIa
 M3x3bMIb
-M3x3bMCb
 M4x4aMCa
 M4x4aMCb
 M4x4bMCa
@@ -177,6 +177,14 @@ MHbMCa
 MHbMCb
 MHbMIa
 MHbMIb
+MUaMCa
+MUaMCb
+MUaMIa
+MUaMIb
+MUbMCa
+MUbMCb
+MUbMIa
+MUbMIb
 S3x3aSCa
 S3x3aSCb
 S3x3bSCa

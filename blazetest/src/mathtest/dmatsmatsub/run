@@ -231,6 +231,15 @@ EXE=$PATH_DMATSMATSUB/MHbMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then ex
 EXE=$PATH_DMATSMATSUB/MHbMIa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DMATSMATSUB/MHbMIb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
+EXE=$PATH_DMATSMATSUB/MUaMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATSUB/MUaMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATSUB/MUaMIa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATSUB/MUaMIb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATSUB/MUbMCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATSUB/MUbMCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATSUB/MUbMIa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DMATSMATSUB/MUbMIb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+
 EXE=$PATH_DMATSMATSUB/S3x3aSCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DMATSMATSUB/S3x3aSCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DMATSMATSUB/S3x3bSCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
