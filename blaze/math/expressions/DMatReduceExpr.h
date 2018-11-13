@@ -1928,6 +1928,48 @@ inline auto dmatreduce( const DenseMatrix<MT,false>& dm, Add /*op*/ )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Optimized backend implementation of the minimum evaluation of a uniform dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix.
+// \return The smallest dense matrix element.
+//
+// This function implements the performance optimized minimum evaluation for a given uniform
+// dense matrix.
+*/
+template< typename MT >  // Type of the dense matrix
+inline auto dmatreduce( const DenseMatrix<MT,false>& dm, Min /*op*/ )
+   -> EnableIf_t< IsUniform_v<MT>, ElementType_t<MT> >
+{
+   return (~dm)(0UL,0UL);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Optimized backend implementation of the maximum evaluation of a uniform dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix.
+// \return The smallest dense matrix element.
+//
+// This function implements the performance optimized maximum evaluation for a given uniform
+// dense matrix.
+*/
+template< typename MT >  // Type of the dense matrix
+inline auto dmatreduce( const DenseMatrix<MT,false>& dm, Max /*op*/ )
+   -> EnableIf_t< IsUniform_v<MT>, ElementType_t<MT> >
+{
+   return (~dm)(0UL,0UL);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Default backend implementation of the reduction of a column-major dense matrix.
 // \ingroup dense_matrix
 //
