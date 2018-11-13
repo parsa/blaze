@@ -336,6 +336,50 @@ inline auto dvecreduce( const DenseVector<VT,TF>& dv, Add /*op*/ )
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Optimized backend implementation of the minimum evaluation of a uniform dense vector.
+// \ingroup dense_vector
+//
+// \param dv The given dense vector.
+// \return The smallest dense vector element.
+//
+// This function implements the performance optimized minimum evaluation for a given uniform
+// dense vector.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline auto dvecreduce( const DenseVector<VT,TF>& dv, Min /*op*/ )
+   -> EnableIf_t< IsUniform_v<VT>, ElementType_t<VT> >
+{
+   return (~dv)[0UL];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Optimized backend implementation of the maximum evaluation of a uniform dense vector.
+// \ingroup dense_vector
+//
+// \param dv The given dense vector.
+// \return The smallest dense vector element.
+//
+// This function implements the performance optimized maximum evaluation for a given uniform
+// dense vector.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline auto dvecreduce( const DenseVector<VT,TF>& dv, Max /*op*/ )
+   -> EnableIf_t< IsUniform_v<VT>, ElementType_t<VT> >
+{
+   return (~dv)[0UL];
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Performs a custom reduction operation on the given dense vector.
 // \ingroup dense_vector
 //
