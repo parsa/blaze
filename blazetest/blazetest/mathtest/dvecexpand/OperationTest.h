@@ -62,11 +62,15 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/traits/ExpandTrait.h>
 #include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/SameType.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/Random.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
@@ -166,8 +170,10 @@ class OperationTest
                           void testImagOperation     ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
-                          void testSubmatrixOperation();
-                          void testBandOperation     ();
+                          void testSubmatrixOperation( blaze::TrueType  );
+                          void testSubmatrixOperation( blaze::FalseType );
+                          void testBandOperation     ( blaze::TrueType  );
+                          void testBandOperation     ( blaze::FalseType );
 
    template< typename OP > void testCustomOperation( OP op, const std::string& name );
    //@}
@@ -319,6 +325,8 @@ OperationTest<VT,E>::OperationTest( const Creator<VT>& creator )
    , test_()               // Label of the currently performed test
    , error_()              // Description of the current error type
 {
+   using blaze::Not;
+
    using Scalar = blaze::UnderlyingNumeric_t<DET>;
 
    testInitialStatus();
@@ -340,8 +348,8 @@ OperationTest<VT,E>::OperationTest( const Creator<VT>& creator )
    testImagOperation();
    testEvalOperation();
    testSerialOperation();
-   testSubmatrixOperation();
-   testBandOperation();
+   testSubmatrixOperation( Not< blaze::IsUniform<DRE> >() );
+   testBandOperation( Not< blaze::IsUniform<DRE> >() );
 }
 //*************************************************************************************************
 
@@ -5100,7 +5108,7 @@ void OperationTest<VT,E>::testSerialOperation()
 */
 template< typename VT  // Type of the dense vector
         , size_t E >   // Compile time expansion
-void OperationTest<VT,E>::testSubmatrixOperation()
+void OperationTest<VT,E>::testSubmatrixOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_SUBMATRIX_OPERATION
    if( BLAZETEST_MATHTEST_TEST_SUBMATRIX_OPERATION > 1 )
@@ -5872,6 +5880,21 @@ void OperationTest<VT,E>::testSubmatrixOperation()
 
 
 //*************************************************************************************************
+/*!\brief Skipping the submatrix-wise dense vector expansion operation.
+//
+// \return void
+//
+// This function is called in case the submatrix-wise dense vector expansion operation is not
+// available for the given vector type \a VT.
+*/
+template< typename VT  // Type of the dense vector
+        , size_t E >   // Compile time expansion
+void OperationTest<VT,E>::testSubmatrixOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the band-wise dense vector expansion operation.
 //
 // \return void
@@ -5884,7 +5907,7 @@ void OperationTest<VT,E>::testSubmatrixOperation()
 */
 template< typename VT  // Type of the dense vector
         , size_t E >   // Compile time expansion
-void OperationTest<VT,E>::testBandOperation()
+void OperationTest<VT,E>::testBandOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_BAND_OPERATION
    if( BLAZETEST_MATHTEST_TEST_BAND_OPERATION > 1 )
@@ -6524,6 +6547,22 @@ void OperationTest<VT,E>::testBandOperation()
    }
 #endif
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the band-wise dense vector expansion operation.
+//
+// \return void
+// \exception std::runtime_error Expansion error detected.
+//
+// This function is called in case the band-wise dense vector expansion operation is not available
+// for the given vector type \a VT.
+*/
+template< typename VT  // Type of the dense vector
+        , size_t E >   // Compile time expansion
+void OperationTest<VT,E>::testBandOperation( blaze::FalseType )
+{}
 //*************************************************************************************************
 
 
