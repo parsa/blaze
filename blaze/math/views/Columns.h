@@ -75,6 +75,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/Size.h>
@@ -90,10 +91,8 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/SmallArray.h>
-#include <blaze/util/StaticAssert.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/AlwaysFalse.h>
 #include <blaze/util/Unused.h>
 
 
@@ -872,26 +871,89 @@ inline decltype(auto) columns( const MatTransExpr<MT>& matrix, RCAs... args )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a selection of columns on the given vector expansion operation.
+/*!\brief Creating a view on a selection of columns on the given column-major vector expansion
+//        operation.
 // \ingroup columns
 //
 // \param matrix The constant vector expansion operation.
 // \param args The runtime column arguments.
 // \return void
 //
-// This operation is currently not supported. The attempt to create a view on a selection of
-// columns on a vector expansion operation will result in a compilation error.
+// This function returns an expression representing the specified selection of columns of the
+// given column-major vector expansion operation.
 */
 template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , size_t... CEAs    // Compile time expansion arguments
         , typename... RCAs  // Runtime column arguments
-        , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
-inline void columns( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... args )
+        , EnableIf_t< ( sizeof...( CCAs ) > 0UL ) &&
+                      IsColumnMajorMatrix_v<MT> >* = nullptr >
+inline decltype(auto) columns( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... args )
 {
-   UNUSED_PARAMETER( matrix, args... );
+   BLAZE_FUNCTION_TRACE;
 
-   BLAZE_STATIC_ASSERT_MSG( AlwaysFalse_v<MT>, "Unsupported operation" );
+   UNUSED_PARAMETER( args... );
+
+   return expand< sizeof...( CCAs ) >( (~matrix).operand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of columns on the given column-major vector expansion
+//        operation.
+// \ingroup columns
+//
+// \param matrix The constant vector expansion operation.
+// \param args The runtime column arguments.
+// \return void
+//
+// This function returns an expression representing the specified selection of columns of the
+// given column-major vector expansion operation.
+*/
+template< size_t... CCAs    // Compile time column arguments
+        , typename MT       // Matrix base type of the expression
+        , size_t... CEAs    // Compile time expansion arguments
+        , typename... RCAs  // Runtime column arguments
+        , EnableIf_t< ( sizeof...( CCAs ) == 0UL ) &&
+                      IsColumnMajorMatrix_v<MT> >* = nullptr >
+inline decltype(auto) columns( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const ColumnsData<CCAs...> cd( args... );
+
+   return expand( (~matrix).operand(), cd.columns() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of columns on the given row-major vector expansion operation.
+// \ingroup columns
+//
+// \param matrix The constant vector expansion operation.
+// \param args The runtime column arguments.
+// \return void
+//
+// This function returns an expression representing the specified selection of columns of the
+// given row-major vector expansion operation.
+*/
+template< size_t... CCAs    // Compile time column arguments
+        , typename MT       // Matrix base type of the expression
+        , size_t... CEAs    // Compile time expansion arguments
+        , typename... RCAs  // Runtime column arguments
+        , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) &&
+                      !IsColumnMajorMatrix_v<MT> >* = nullptr >
+inline decltype(auto) columns( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return expand<CEAs...>( elements<CCAs...>( (~matrix).operand(), args... ), (~matrix).expansion() );
 }
 /*! \endcond */
 //*************************************************************************************************
