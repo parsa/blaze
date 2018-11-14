@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/dense/UniformVector.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DeclExpr.h>
 #include <blaze/math/expressions/MatEvalExpr.h>
@@ -68,16 +69,16 @@
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/math/views/column/BaseTemplate.h>
+#include <blaze/math/views/column/ColumnData.h>
 #include <blaze/math/views/column/Dense.h>
 #include <blaze/math/views/column/Sparse.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/AlwaysFalse.h>
 #include <blaze/util/Unused.h>
 
 
@@ -724,25 +725,59 @@ inline decltype(auto) column( const MatTransExpr<MT>& matrix, RCAs... args )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given vector expansion operation.
+/*!\brief Creating a view on a specific column of the given column-major vector expansion operation.
 // \ingroup column
 //
 // \param matrix The constant vector expansion operation.
 // \param args The runtime column arguments
 // \return void
 //
-// This operation is currently not supported. The attempt to create a view on a specific column
-// of a vector expansion operation will result in a compilation error.
+// This function returns an expression representing the specified column of the given column-major
+// vector expansion operation.
 */
 template< size_t... CCAs      // Compile time column arguments
         , typename MT         // Matrix base type of the expression
         , size_t... CEAs      // Compile time expansion arguments
-        , typename... RCAs >  // Runtime column arguments
-inline void column( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... args )
+        , typename... RCAs    // Runtime column arguments
+        , EnableIf_t< IsColumnMajorMatrix_v<MT> >* = nullptr >
+inline decltype(auto) column( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... args )
 {
-   UNUSED_PARAMETER( matrix, args... );
+   BLAZE_FUNCTION_TRACE;
 
-   BLAZE_STATIC_ASSERT_MSG( AlwaysFalse_v<MT>, "Unsupported operation" );
+   UNUSED_PARAMETER( args... );
+
+   return subvector( (~matrix).operand(), 0UL, (~matrix).rows() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given row-major vector expansion operation.
+// \ingroup column
+//
+// \param matrix The constant vector expansion operation.
+// \param args The runtime column arguments
+// \return void
+//
+// This function returns an expression representing the specified column of the given row-major
+// vector expansion operation.
+*/
+template< size_t... CCAs      // Compile time column arguments
+        , typename MT         // Matrix base type of the expression
+        , size_t... CEAs      // Compile time expansion arguments
+        , typename... RCAs    // Runtime column arguments
+        , EnableIf_t< !IsColumnMajorMatrix_v<MT> >* = nullptr >
+inline decltype(auto) column( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ET = ElementType_t< MatrixType_t<MT> >;
+
+   const ColumnData<CCAs...> cd( args... );
+
+   return UniformVector<ET,columnVector>( (~matrix).rows(), (~matrix).operand()[cd.column()] );
 }
 /*! \endcond */
 //*************************************************************************************************
