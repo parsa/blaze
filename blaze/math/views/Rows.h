@@ -76,6 +76,7 @@
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsRestricted.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/Check.h>
@@ -90,10 +91,8 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/SmallArray.h>
-#include <blaze/util/StaticAssert.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/AlwaysFalse.h>
 #include <blaze/util/Unused.h>
 
 
@@ -872,26 +871,87 @@ inline decltype(auto) rows( const MatTransExpr<MT>& matrix, RRAs... args )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a selection of rows on the given vector expansion operation.
+/*!\brief Creating a view on a selection of rows on the given row-major vector expansion operation.
 // \ingroup rows
 //
 // \param matrix The constant vector expansion operation.
 // \param args The runtime row arguments.
 // \return void
 //
-// This operation is currently not supported. The attempt to create a view on a selection of
-// rows on a vector expansion operation will result in a compilation error.
+// This function returns an expression representing the specified selection of rows of the given
+// row-major vector expansion operation.
 */
 template< size_t... CRAs    // Compile time row arguments
         , typename MT       // Matrix base type of the expression
         , size_t... CEAs    // Compile time expansion arguments
         , typename... RRAs  // Runtime row arguments
-        , EnableIf_t< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) >* = nullptr >
-inline void rows( const VecExpandExpr<MT,CEAs...>& matrix, RRAs... args )
+        , EnableIf_t< ( sizeof...( CRAs ) > 0UL ) &&
+                      IsRowMajorMatrix_v<MT> >* = nullptr >
+inline decltype(auto) rows( const VecExpandExpr<MT,CEAs...>& matrix, RRAs... args )
 {
-   UNUSED_PARAMETER( matrix, args... );
+   BLAZE_FUNCTION_TRACE;
 
-   BLAZE_STATIC_ASSERT_MSG( AlwaysFalse_v<MT>, "Unsupported operation" );
+   UNUSED_PARAMETER( args... );
+
+   return expand< sizeof...( CRAs ) >( (~matrix).operand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of rows on the given row-major vector expansion operation.
+// \ingroup rows
+//
+// \param matrix The constant vector expansion operation.
+// \param args The runtime row arguments.
+// \return void
+//
+// This function returns an expression representing the specified selection of rows of the given
+// row-major vector expansion operation.
+*/
+template< size_t... CRAs    // Compile time row arguments
+        , typename MT       // Matrix base type of the expression
+        , size_t... CEAs    // Compile time expansion arguments
+        , typename... RRAs  // Runtime row arguments
+        , EnableIf_t< ( sizeof...( CRAs ) == 0UL ) &&
+                      IsRowMajorMatrix_v<MT> >* = nullptr >
+inline decltype(auto) rows( const VecExpandExpr<MT,CEAs...>& matrix, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const RowsData<CRAs...> rd( args... );
+
+   return expand( (~matrix).operand(), rd.rows() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of rows on the given column-major vector expansion operation.
+// \ingroup rows
+//
+// \param matrix The constant vector expansion operation.
+// \param args The runtime row arguments.
+// \return void
+//
+// This function returns an expression representing the specified selection of rows of the given
+// column-major vector expansion operation.
+*/
+template< size_t... CRAs    // Compile time row arguments
+        , typename MT       // Matrix base type of the expression
+        , size_t... CEAs    // Compile time expansion arguments
+        , typename... RRAs  // Runtime row arguments
+        , EnableIf_t< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) &&
+                      !IsRowMajorMatrix_v<MT> >* = nullptr >
+inline decltype(auto) rows( const VecExpandExpr<MT,CEAs...>& matrix, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return expand<CEAs...>( elements<CRAs...>( (~matrix).operand(), args... ), (~matrix).expansion() );
 }
 /*! \endcond */
 //*************************************************************************************************
