@@ -63,12 +63,14 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSquare.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/FalseType.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
@@ -177,12 +179,18 @@ class OperationTest
                           void testDeclUppOperation  ( blaze::FalseType );
                           void testDeclDiagOperation ( blaze::TrueType  );
                           void testDeclDiagOperation ( blaze::FalseType );
-                          void testSubmatrixOperation();
-                          void testRowOperation      ();
-                          void testRowsOperation     ();
-                          void testColumnOperation   ();
-                          void testColumnsOperation  ();
-                          void testBandOperation     ();
+                          void testSubmatrixOperation( blaze::TrueType  );
+                          void testSubmatrixOperation( blaze::FalseType );
+                          void testRowOperation      ( blaze::TrueType  );
+                          void testRowOperation      ( blaze::FalseType );
+                          void testRowsOperation     ( blaze::TrueType  );
+                          void testRowsOperation     ( blaze::FalseType );
+                          void testColumnOperation   ( blaze::TrueType  );
+                          void testColumnOperation   ( blaze::FalseType );
+                          void testColumnsOperation  ( blaze::TrueType  );
+                          void testColumnsOperation  ( blaze::FalseType );
+                          void testBandOperation     ( blaze::TrueType  );
+                          void testBandOperation     ( blaze::FalseType );
 
    template< typename OP > void testCustomOperation( OP op, const std::string& name );
    //@}
@@ -322,7 +330,9 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    , test_()                      // Label of the currently performed test
    , error_()                     // Description of the current error type
 {
-   using Scalar = blaze::UnderlyingNumeric_t<DET>;
+   using namespace blaze;
+
+   using Scalar = UnderlyingNumeric_t<DET>;
 
    testInitialStatus();
    testAssignment();
@@ -343,17 +353,17 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testImagOperation();
    testEvalOperation();
    testSerialOperation();
-   testDeclSymOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
-   testDeclHermOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
-   testDeclLowOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
-   testDeclUppOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
-   testDeclDiagOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
-   testSubmatrixOperation();
-   testRowOperation();
-   testRowsOperation();
-   testColumnOperation();
-   testColumnsOperation();
-   testBandOperation();
+   testDeclSymOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
+   testDeclHermOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
+   testDeclLowOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
+   testDeclUppOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
+   testDeclDiagOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
+   testSubmatrixOperation( Not< IsUniform<DRE> >() );
+   testRowOperation( Not< IsUniform<DRE> >() );
+   testRowsOperation( Not< IsUniform<DRE> >() );
+   testColumnOperation( Not< IsUniform<DRE> >() );
+   testColumnsOperation( Not< IsUniform<DRE> >() );
+   testBandOperation( Not< IsUniform<DRE> >() );
 }
 //*************************************************************************************************
 
@@ -3311,7 +3321,7 @@ void OperationTest<VT1,VT2>::testDeclDiagOperation( blaze::FalseType )
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void OperationTest<VT1,VT2>::testSubmatrixOperation()
+void OperationTest<VT1,VT2>::testSubmatrixOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_SUBMATRIX_OPERATION
    if( BLAZETEST_MATHTEST_TEST_SUBMATRIX_OPERATION > 1 )
@@ -3553,6 +3563,22 @@ void OperationTest<VT1,VT2>::testSubmatrixOperation()
 
 
 //*************************************************************************************************
+/*!\brief Skipping the submatrix-wise dense vector/dense vector outer product.
+//
+// \return void
+// \exception std::runtime_error Outer product error detected.
+//
+// This function is called in case the submatrix-wise outer product operation is not available
+// for the given vector types \a VT1 and \a VT2.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testSubmatrixOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the row-wise dense vector/dense vector outer product.
 //
 // \return void
@@ -3565,7 +3591,7 @@ void OperationTest<VT1,VT2>::testSubmatrixOperation()
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void OperationTest<VT1,VT2>::testRowOperation()
+void OperationTest<VT1,VT2>::testRowOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_ROW_OPERATION
    if( BLAZETEST_MATHTEST_TEST_ROW_OPERATION > 1 )
@@ -3771,6 +3797,22 @@ void OperationTest<VT1,VT2>::testRowOperation()
 
 
 //*************************************************************************************************
+/*!\brief Skipping the row-wise dense vector/dense vector outer product.
+//
+// \return void
+// \exception std::runtime_error Outer product error detected.
+//
+// This function is called in case the row-wise outer product operation is not available for the
+// given vector types \a VT1 and \a VT2.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testRowOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the rows-wise dense vector/dense vector outer product.
 //
 // \return void
@@ -3783,7 +3825,7 @@ void OperationTest<VT1,VT2>::testRowOperation()
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void OperationTest<VT1,VT2>::testRowsOperation()
+void OperationTest<VT1,VT2>::testRowsOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_ROWS_OPERATION
    if( BLAZETEST_MATHTEST_TEST_ROWS_OPERATION > 1 )
@@ -4006,6 +4048,22 @@ void OperationTest<VT1,VT2>::testRowsOperation()
 
 
 //*************************************************************************************************
+/*!\brief Skipping the rows-wise dense vector/dense vector outer product.
+//
+// \return void
+// \exception std::runtime_error Outer product error detected.
+//
+// This function is called in case the rows-wise outer product operation is not available for the
+// given vector types \a VT1 and \a VT2.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testRowsOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the column-wise dense vector/dense vector outer product.
 //
 // \return void
@@ -4018,7 +4076,7 @@ void OperationTest<VT1,VT2>::testRowsOperation()
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void OperationTest<VT1,VT2>::testColumnOperation()
+void OperationTest<VT1,VT2>::testColumnOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_COLUMN_OPERATION
    if( BLAZETEST_MATHTEST_TEST_COLUMN_OPERATION > 1 )
@@ -4224,6 +4282,22 @@ void OperationTest<VT1,VT2>::testColumnOperation()
 
 
 //*************************************************************************************************
+/*!\brief Skipping the column-wise dense vector/dense vector outer product.
+//
+// \return void
+// \exception std::runtime_error Outer product error detected.
+//
+// This function is called in case the column-wise outer product operation is not available for
+// the given vector types \a VT1 and \a VT2.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testColumnOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the columns-wise dense vector/dense vector outer product.
 //
 // \return void
@@ -4236,7 +4310,7 @@ void OperationTest<VT1,VT2>::testColumnOperation()
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void OperationTest<VT1,VT2>::testColumnsOperation()
+void OperationTest<VT1,VT2>::testColumnsOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_COLUMNS_OPERATION
    if( BLAZETEST_MATHTEST_TEST_COLUMNS_OPERATION > 1 )
@@ -4459,6 +4533,22 @@ void OperationTest<VT1,VT2>::testColumnsOperation()
 
 
 //*************************************************************************************************
+/*!\brief Skipping the columns-wise dense vector/dense vector outer product.
+//
+// \return void
+// \exception std::runtime_error Outer product error detected.
+//
+// This function is called in case the columns-wise outer product operation is not available for
+// the given vector types \a VT1 and \a VT2.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testColumnsOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the band-wise dense vector/dense vector outer product.
 //
 // \return void
@@ -4471,7 +4561,7 @@ void OperationTest<VT1,VT2>::testColumnsOperation()
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void OperationTest<VT1,VT2>::testBandOperation()
+void OperationTest<VT1,VT2>::testBandOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_BAND_OPERATION
    if( BLAZETEST_MATHTEST_TEST_BAND_OPERATION > 1 )
@@ -4677,6 +4767,22 @@ void OperationTest<VT1,VT2>::testBandOperation()
    }
 #endif
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the band-wise dense vector/dense vector outer product.
+//
+// \return void
+// \exception std::runtime_error Outer product error detected.
+//
+// This function is called in case the band-wise outer product operation is not available for
+// the given vector types \a VT1 and \a VT2.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testBandOperation( blaze::FalseType )
+{}
 //*************************************************************************************************
 
 
