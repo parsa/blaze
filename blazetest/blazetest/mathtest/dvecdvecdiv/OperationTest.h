@@ -58,12 +58,16 @@
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/Random.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
@@ -162,8 +166,10 @@ class OperationTest
                           void testImagOperation     ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
-                          void testSubvectorOperation();
-                          void testElementsOperation ();
+                          void testSubvectorOperation( blaze::TrueType  );
+                          void testSubvectorOperation( blaze::FalseType );
+                          void testElementsOperation ( blaze::TrueType  );
+                          void testElementsOperation ( blaze::FalseType );
 
    template< typename OP > void testCustomOperation( OP op, const std::string& name );
    //@}
@@ -298,9 +304,11 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    , test_()                        // Label of the currently performed test
    , error_()                       // Description of the current error type
 {
-   using Scalar = blaze::UnderlyingNumeric_t<DET>;
+   using namespace blaze;
 
-   if( !blaze::isDivisor( rhs_ ) )
+   using Scalar = UnderlyingNumeric_t<DET>;
+
+   if( !isDivisor( rhs_ ) )
       throw std::invalid_argument( "Invalid divisor" );
 
    testInitialStatus();
@@ -322,8 +330,8 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testImagOperation();
    testEvalOperation();
    testSerialOperation();
-   testSubvectorOperation();
-   testElementsOperation();
+   testSubvectorOperation( Not< IsUniform<DRE> >() );
+   testElementsOperation( Not< IsUniform<DRE> >() );
 }
 //*************************************************************************************************
 
@@ -3628,7 +3636,7 @@ void OperationTest<VT1,VT2>::testSerialOperation()
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void OperationTest<VT1,VT2>::testSubvectorOperation()
+void OperationTest<VT1,VT2>::testSubvectorOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_SUBVECTOR_OPERATION
    if( BLAZETEST_MATHTEST_TEST_SUBVECTOR_OPERATION > 1 )
@@ -4031,6 +4039,22 @@ void OperationTest<VT1,VT2>::testSubvectorOperation()
 
 
 //*************************************************************************************************
+/*!\brief Skipping the subvector-wise dense vector/dense vector division.
+//
+// \return void
+// \exception std::runtime_error Division error detected.
+//
+// This function is called in case the subvector-wise vector/vector division operation is not
+// available for the given vector types \a VT1 and \a VT2.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testSubvectorOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the elements-wise dense vector/dense vector division.
 //
 // \return void
@@ -4043,7 +4067,7 @@ void OperationTest<VT1,VT2>::testSubvectorOperation()
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-void OperationTest<VT1,VT2>::testElementsOperation()
+void OperationTest<VT1,VT2>::testElementsOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_ELEMENTS_OPERATION
    if( BLAZETEST_MATHTEST_TEST_ELEMENTS_OPERATION > 1 )
@@ -4447,6 +4471,22 @@ void OperationTest<VT1,VT2>::testElementsOperation()
    }
 #endif
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the elements-wise dense vector/dense vector division.
+//
+// \return void
+// \exception std::runtime_error Division error detected.
+//
+// This function is called in case the elements-wise vector/vector division operation is not
+// available for the given vector types \a VT1 and \a VT2.
+*/
+template< typename VT1    // Type of the left-hand side dense vector
+        , typename VT2 >  // Type of the right-hand side dense vector
+void OperationTest<VT1,VT2>::testElementsOperation( blaze::FalseType )
+{}
 //*************************************************************************************************
 
 
