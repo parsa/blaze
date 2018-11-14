@@ -86,10 +86,10 @@ class Creator< blaze::StaticVector<T,N,TF> >
    //@{
    // No explicitly declared copy assignment operator.
 
-   const Type operator()() const;
+   blaze::StaticVector<T,N,TF> operator()() const;
 
    template< typename CP >
-   const Type operator()( const CP& policy ) const;
+   blaze::StaticVector<T,N,TF> operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -142,7 +142,7 @@ inline Creator< blaze::StaticVector<T,N,TF> >::Creator( const Creator<T>& elemen
 template< typename T  // Element type of the static vector
         , size_t N    // Number of elements of the static vector
         , bool TF >   // Transpose flag of the static vector
-inline const blaze::StaticVector<T,N,TF> Creator< blaze::StaticVector<T,N,TF> >::operator()() const
+inline blaze::StaticVector<T,N,TF> Creator< blaze::StaticVector<T,N,TF> >::operator()() const
 {
    return (*this)( Default() );
 }
@@ -159,7 +159,7 @@ template< typename T     // Element type of the static vector
         , size_t N       // Number of elements of the static vector
         , bool TF >      // Transpose flag of the static vector
 template< typename CP >  // Creation policy
-inline const blaze::StaticVector<T,N,TF>
+inline blaze::StaticVector<T,N,TF>
    Creator< blaze::StaticVector<T,N,TF> >::operator()( const CP& policy ) const
 {
    blaze::StaticVector<T,N,TF> vector;

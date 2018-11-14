@@ -90,10 +90,10 @@ class Creator< blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> > >
    //@{
    // No explicitly declared copy assignment operator.
 
-   const blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> > operator()() const;
+   blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> > operator()() const;
 
    template< typename CP >
-   const blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> > operator()( const CP& policy ) const;
+   blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> > operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -146,7 +146,7 @@ inline Creator< blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> > >::Creat
 template< typename T  // Element type of the static matrix
         , size_t N    // Number of rows and columns of the static matrix
         , bool SO >   // Storage order of the static matrix
-inline const blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> >
+inline blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> >
    Creator< blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> > >::operator()() const
 {
    return (*this)( Default() );
@@ -164,7 +164,7 @@ template< typename T     // Element type of the static matrix
         , size_t N       // Number of rows and columns of the static matrix
         , bool SO >      // Storage order of the static matrix
 template< typename CP >  // Creation policy
-inline const blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> >
+inline blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> >
    Creator< blaze::HermitianMatrix< blaze::StaticMatrix<T,N,N,SO> > >::operator()( const CP& policy ) const
 {
    using blaze::real;

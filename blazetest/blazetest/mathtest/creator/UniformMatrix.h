@@ -86,10 +86,10 @@ class Creator< blaze::UniformMatrix<T,SO> >
    //@{
    // No explicitly declared copy assignment operator.
 
-   const blaze::UniformMatrix<T,SO> operator()() const;
+   blaze::UniformMatrix<T,SO> operator()() const;
 
    template< typename CP >
-   const blaze::UniformMatrix<T,SO> operator()( const CP& policy ) const;
+   blaze::UniformMatrix<T,SO> operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -161,7 +161,7 @@ inline Creator< blaze::UniformMatrix<T,SO> >::Creator( size_t m, size_t n, const
 */
 template< typename T  // Element type of the uniform matrix
         , bool SO >   // Storage order of the uniform matrix
-inline const blaze::UniformMatrix<T,SO> Creator< blaze::UniformMatrix<T,SO> >::operator()() const
+inline blaze::UniformMatrix<T,SO> Creator< blaze::UniformMatrix<T,SO> >::operator()() const
 {
    return (*this)( Default() );
 }
@@ -177,7 +177,7 @@ inline const blaze::UniformMatrix<T,SO> Creator< blaze::UniformMatrix<T,SO> >::o
 template< typename T     // Element type of the uniform matrix
         , bool SO >      // Storage order of the uniform matrix
 template< typename CP >  // Creation policy
-inline const blaze::UniformMatrix<T,SO>
+inline blaze::UniformMatrix<T,SO>
    Creator< blaze::UniformMatrix<T,SO> >::operator()( const CP& policy ) const
 {
    return blaze::UniformMatrix<T,SO>( m_, n_, ec_( policy ) );

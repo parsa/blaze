@@ -88,10 +88,10 @@ class Creator< blaze::CompressedMatrix<T,SO> >
    //@{
    // No explicitly declared copy assignment operator.
 
-   const blaze::CompressedMatrix<T,SO> operator()() const;
+   blaze::CompressedMatrix<T,SO> operator()() const;
 
    template< typename CP >
-   const blaze::CompressedMatrix<T,SO> operator()( const CP& policy ) const;
+   blaze::CompressedMatrix<T,SO> operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -176,7 +176,7 @@ inline Creator< blaze::CompressedMatrix<T,SO> >::Creator( size_t m, size_t n, si
 */
 template< typename T  // Element type of the compressed matrix
         , bool SO >   // Storage order of the compressed matrix
-inline const blaze::CompressedMatrix<T,SO>
+inline blaze::CompressedMatrix<T,SO>
    Creator< blaze::CompressedMatrix<T,SO> >::operator()() const
 {
    return (*this)( Default() );
@@ -193,7 +193,7 @@ inline const blaze::CompressedMatrix<T,SO>
 template< typename T     // Element type of the compressed matrix
         , bool SO >      // Storage order of the compressed matrix
 template< typename CP >  // Creation policy
-inline const blaze::CompressedMatrix<T,SO>
+inline blaze::CompressedMatrix<T,SO>
    Creator< blaze::CompressedMatrix<T,SO> >::operator()( const CP& policy ) const
 {
    blaze::CompressedMatrix<T,SO> matrix( m_, n_, nonzeros_ );

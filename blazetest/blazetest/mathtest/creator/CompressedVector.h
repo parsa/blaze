@@ -90,10 +90,10 @@ class Creator< blaze::CompressedVector<T,TF> >
    //@{
    // No explicitly declared copy assignment operator.
 
-   const blaze::CompressedVector<T,TF> operator()() const;
+   blaze::CompressedVector<T,TF> operator()() const;
 
    template< typename CP >
-   const blaze::CompressedVector<T,TF> operator()( const CP& policy ) const;
+   blaze::CompressedVector<T,TF> operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -173,7 +173,7 @@ inline Creator< blaze::CompressedVector<T,TF> >::Creator( size_t size, size_t no
 */
 template< typename T  // Element type of the N-dimensional compressed vector
         , bool TF >   // Transpose flag of the N-dimensional compressed vector
-inline const blaze::CompressedVector<T,TF> Creator< blaze::CompressedVector<T,TF> >::operator()() const
+inline blaze::CompressedVector<T,TF> Creator< blaze::CompressedVector<T,TF> >::operator()() const
 {
    return (*this)( Default() );
 }
@@ -189,7 +189,7 @@ inline const blaze::CompressedVector<T,TF> Creator< blaze::CompressedVector<T,TF
 template< typename T     // Element type of the N-dimensional compressed vector
         , bool TF >      // Transpose flag of the N-dimensional compressed vector
 template< typename CP >  // Creation policy
-inline const blaze::CompressedVector<T,TF>
+inline blaze::CompressedVector<T,TF>
    Creator< blaze::CompressedVector<T,TF> >::operator()( const CP& policy ) const
 {
    blaze::CompressedVector<T,TF> vector( size_ );

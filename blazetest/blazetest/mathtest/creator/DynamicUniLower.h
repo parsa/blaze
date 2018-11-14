@@ -89,10 +89,10 @@ class Creator< blaze::UniLowerMatrix< blaze::DynamicMatrix<T,SO> > >
    //@{
    // No explicitly declared copy assignment operator.
 
-   const blaze::UniLowerMatrix< blaze::DynamicMatrix<T,SO> > operator()() const;
+   blaze::UniLowerMatrix< blaze::DynamicMatrix<T,SO> > operator()() const;
 
    template< typename CP >
-   const blaze::UniLowerMatrix< blaze::DynamicMatrix<T,SO> > operator()( const CP& policy ) const;
+   blaze::UniLowerMatrix< blaze::DynamicMatrix<T,SO> > operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -160,7 +160,7 @@ inline Creator< blaze::UniLowerMatrix< blaze::DynamicMatrix<T,SO> > >::Creator( 
 */
 template< typename T  // Element type of the dynamic matrix
         , bool SO >   // Storage order of the dynamic matrix
-inline const blaze::UniLowerMatrix< blaze::DynamicMatrix<T,SO> >
+inline blaze::UniLowerMatrix< blaze::DynamicMatrix<T,SO> >
    Creator< blaze::UniLowerMatrix< blaze::DynamicMatrix<T,SO> > >::operator()() const
 {
    return (*this)( Default() );
@@ -177,7 +177,7 @@ inline const blaze::UniLowerMatrix< blaze::DynamicMatrix<T,SO> >
 template< typename T     // Element type of the dynamic matrix
         , bool SO >      // Storage order of the dynamic matrix
 template< typename CP >  // Creation policy
-inline const blaze::UniLowerMatrix< blaze::DynamicMatrix<T,SO> >
+inline blaze::UniLowerMatrix< blaze::DynamicMatrix<T,SO> >
    Creator< blaze::UniLowerMatrix< blaze::DynamicMatrix<T,SO> > >::operator()( const CP& policy ) const
 {
    blaze::UniLowerMatrix< blaze::DynamicMatrix<T,SO> > matrix( n_ );

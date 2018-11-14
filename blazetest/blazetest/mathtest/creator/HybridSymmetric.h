@@ -91,10 +91,10 @@ class Creator< blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> > >
    //@{
    // No explicitly declared copy assignment operator.
 
-   const blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> > operator()() const;
+   blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> > operator()() const;
 
    template< typename CP >
-   const blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> > operator()( const CP& policy ) const;
+   blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> > operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -168,7 +168,7 @@ template< typename T  // Element type of the hybrid matrix
         , size_t M    // Number of rows of the hybrid matrix
         , size_t N    // Number of columns of the hybrid matrix
         , bool SO >   // Storage order of the hybrid matrix
-inline const blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> >
+inline blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> >
    Creator< blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> > >::operator()() const
 {
    return (*this)( Default() );
@@ -187,7 +187,7 @@ template< typename T     // Element type of the hybrid matrix
         , size_t N       // Number of columns of the hybrid matrix
         , bool SO >      // Storage order of the hybrid matrix
 template< typename CP >  // Creation policy
-inline const blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> >
+inline blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> >
    Creator< blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> > >::operator()( const CP& policy ) const
 {
    blaze::SymmetricMatrix< blaze::HybridMatrix<T,M,N,SO> > matrix( n_ );

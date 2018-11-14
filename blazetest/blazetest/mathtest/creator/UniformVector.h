@@ -86,10 +86,10 @@ class Creator< blaze::UniformVector<T,TF> >
    //@{
    // No explicitly declared copy assignment operator.
 
-   const blaze::UniformVector<T,TF> operator()() const;
+   blaze::UniformVector<T,TF> operator()() const;
 
    template< typename CP >
-   const blaze::UniformVector<T,TF> operator()( const CP& policy ) const;
+   blaze::UniformVector<T,TF> operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -157,7 +157,7 @@ inline Creator< blaze::UniformVector<T,TF> >::Creator( size_t size, const Creato
 */
 template< typename T  // Element type of the uniform vector
         , bool TF >   // Transpose flag of the uniform vector
-inline const blaze::UniformVector<T,TF> Creator< blaze::UniformVector<T,TF> >::operator()() const
+inline blaze::UniformVector<T,TF> Creator< blaze::UniformVector<T,TF> >::operator()() const
 {
    return (*this)( Default() );
 }
@@ -173,7 +173,7 @@ inline const blaze::UniformVector<T,TF> Creator< blaze::UniformVector<T,TF> >::o
 template< typename T     // Element type of the uniform vector
         , bool TF >      // Transpose flag of the uniform vector
 template< typename CP >  // Creation policy
-inline const blaze::UniformVector<T,TF>
+inline blaze::UniformVector<T,TF>
    Creator< blaze::UniformVector<T,TF> >::operator()( const CP& policy ) const
 {
    return blaze::UniformVector<T,TF>( size_, ec_( policy ) );

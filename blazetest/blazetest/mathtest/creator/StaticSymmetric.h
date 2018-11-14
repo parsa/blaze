@@ -89,10 +89,10 @@ class Creator< blaze::SymmetricMatrix< blaze::StaticMatrix<T,N,N,SO> > >
    //@{
    // No explicitly declared copy assignment operator.
 
-   const blaze::SymmetricMatrix< blaze::StaticMatrix<T,N,N,SO> > operator()() const;
+   blaze::SymmetricMatrix< blaze::StaticMatrix<T,N,N,SO> > operator()() const;
 
    template< typename CP >
-   const blaze::SymmetricMatrix< blaze::StaticMatrix<T,N,N,SO> > operator()( const CP& policy ) const;
+   blaze::SymmetricMatrix< blaze::StaticMatrix<T,N,N,SO> > operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -145,7 +145,7 @@ inline Creator< blaze::SymmetricMatrix< blaze::StaticMatrix<T,N,N,SO> > >::Creat
 template< typename T  // Element type of the static matrix
         , size_t N    // Number of rows and columns of the static matrix
         , bool SO >   // Storage order of the static matrix
-inline const blaze::SymmetricMatrix< blaze::StaticMatrix<T,N,N,SO> >
+inline blaze::SymmetricMatrix< blaze::StaticMatrix<T,N,N,SO> >
    Creator< blaze::SymmetricMatrix< blaze::StaticMatrix<T,N,N,SO> > >::operator()() const
 {
    return (*this)( Default() );
@@ -163,7 +163,7 @@ template< typename T     // Element type of the static matrix
         , size_t N       // Number of rows and columns of the static matrix
         , bool SO >      // Storage order of the static matrix
 template< typename CP >  // Creation policy
-inline const blaze::SymmetricMatrix< blaze::StaticMatrix<T,N,N,SO> >
+inline blaze::SymmetricMatrix< blaze::StaticMatrix<T,N,N,SO> >
    Creator< blaze::SymmetricMatrix< blaze::StaticMatrix<T,N,N,SO> > >::operator()( const CP& policy ) const
 {
    blaze::SymmetricMatrix< blaze::StaticMatrix<T,N,N,SO> > matrix;

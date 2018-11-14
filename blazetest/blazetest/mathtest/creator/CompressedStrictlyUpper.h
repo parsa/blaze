@@ -91,10 +91,10 @@ class Creator< blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<T,SO> > >
    //@{
    // No explicitly declared copy assignment operator.
 
-   const blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<T,SO> > operator()() const;
+   blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<T,SO> > operator()() const;
 
    template< typename CP >
-   const blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<T,SO> > operator()( const CP& policy ) const;
+   blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<T,SO> > operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -174,7 +174,7 @@ inline Creator< blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<T,SO> > >::C
 */
 template< typename T  // Element type of the compressed matrix
         , bool SO >   // Storage order of the compressed matrix
-inline const blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<T,SO> >
+inline blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<T,SO> >
    Creator< blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<T,SO> > >::operator()() const
 {
    return (*this)( Default() );
@@ -191,7 +191,7 @@ inline const blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<T,SO> >
 template< typename T     // Element type of the compressed matrix
         , bool SO >      // Storage order of the compressed matrix
 template< typename CP >  // Creation policy
-inline const blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<T,SO> >
+inline blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<T,SO> >
    Creator< blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<T,SO> > >::operator()( const CP& policy ) const
 {
    blaze::StrictlyUpperMatrix< blaze::CompressedMatrix<T,SO> > matrix( n_, nonzeros_ );
