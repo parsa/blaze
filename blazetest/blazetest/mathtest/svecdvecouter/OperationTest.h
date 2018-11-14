@@ -322,7 +322,9 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    , test_()                      // Label of the currently performed test
    , error_()                     // Description of the current error type
 {
-   using Scalar = blaze::UnderlyingNumeric_t<SET>;
+   using namespace blaze;
+
+   using Scalar = UnderlyingNumeric_t<SET>;
 
    testInitialStatus();
    testAssignment();
@@ -343,11 +345,11 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testImagOperation();
    testEvalOperation();
    testSerialOperation();
-   testDeclSymOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
-   testDeclHermOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
-   testDeclLowOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
-   testDeclUppOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
-   testDeclDiagOperation( blaze::Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
+   testDeclSymOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
+   testDeclHermOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
+   testDeclLowOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
+   testDeclUppOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
+   testDeclDiagOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
    testSubmatrixOperation();
    testRowOperation();
    testRowsOperation();

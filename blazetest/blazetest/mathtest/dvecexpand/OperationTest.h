@@ -325,9 +325,9 @@ OperationTest<VT,E>::OperationTest( const Creator<VT>& creator )
    , test_()               // Label of the currently performed test
    , error_()              // Description of the current error type
 {
-   using blaze::Not;
+   using namespace blaze;
 
-   using Scalar = blaze::UnderlyingNumeric_t<DET>;
+   using Scalar = UnderlyingNumeric_t<DET>;
 
    testInitialStatus();
    testAssignment();
@@ -348,8 +348,8 @@ OperationTest<VT,E>::OperationTest( const Creator<VT>& creator )
    testImagOperation();
    testEvalOperation();
    testSerialOperation();
-   testSubmatrixOperation( Not< blaze::IsUniform<DRE> >() );
-   testBandOperation( Not< blaze::IsUniform<DRE> >() );
+   testSubmatrixOperation( Not< IsUniform<DRE> >() );
+   testBandOperation( Not< IsUniform<DRE> >() );
 }
 //*************************************************************************************************
 
