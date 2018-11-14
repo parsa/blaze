@@ -64,12 +64,16 @@
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/Random.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
@@ -168,8 +172,10 @@ class OperationTest
                           void testImagOperation     ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
-                          void testSubvectorOperation();
-                          void testElementsOperation ();
+                          void testSubvectorOperation( blaze::TrueType  );
+                          void testSubvectorOperation( blaze::FalseType );
+                          void testElementsOperation ( blaze::TrueType  );
+                          void testElementsOperation ( blaze::FalseType );
 
    template< typename OP > void testCustomOperation( OP op, const std::string& name );
    //@}
@@ -298,7 +304,9 @@ OperationTest<VT,MT>::OperationTest( const Creator<VT>& creator1, const Creator<
    , test_()                       // Label of the currently performed test
    , error_()                      // Description of the current error type
 {
-   using Scalar = blaze::UnderlyingNumeric_t<DET>;
+   using namespace blaze;
+
+   using Scalar = UnderlyingNumeric_t<DET>;
 
    testInitialStatus();
    testAssignment();
@@ -319,8 +327,8 @@ OperationTest<VT,MT>::OperationTest( const Creator<VT>& creator1, const Creator<
    testImagOperation();
    testEvalOperation();
    testSerialOperation();
-   testSubvectorOperation();
-   testElementsOperation();
+   testSubvectorOperation( Not< IsUniform<DRE> >() );
+   testElementsOperation( Not< IsUniform<DRE> >() );
 }
 //*************************************************************************************************
 
@@ -1155,7 +1163,7 @@ void OperationTest<VT,MT>::testBasicOperation()
       // Multiplication with division assignment
       //=====================================================================================
 
-      if( blaze::isDivisor( lhs_ * rhs_ ) )
+      if( !blaze::IsUniform_v<MT> && blaze::isDivisor( lhs_ * rhs_ ) )
       {
          // Multiplication with division assignment with the given vector/matrix
          {
@@ -1505,7 +1513,7 @@ void OperationTest<VT,MT>::testNegatedOperation()
       // Negated multiplication with division assignment
       //=====================================================================================
 
-      if( blaze::isDivisor( lhs_ * rhs_ ) )
+      if( !blaze::IsUniform_v<MT> && blaze::isDivisor( lhs_ * rhs_ ) )
       {
          // Negated multiplication with division assignment with the given vector/matrix
          {
@@ -2543,7 +2551,7 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
       // Scaled multiplication with division assignment (s*OP)
       //=====================================================================================
 
-      if( blaze::isDivisor( lhs_ * rhs_ ) )
+      if( !blaze::IsUniform_v<MT> && blaze::isDivisor( lhs_ * rhs_ ) )
       {
          // Scaled multiplication with division assignment with the given vector/matrix
          {
@@ -2611,7 +2619,7 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
       // Scaled multiplication with division assignment (OP*s)
       //=====================================================================================
 
-      if( blaze::isDivisor( lhs_ * rhs_ ) )
+      if( !blaze::IsUniform_v<MT> && blaze::isDivisor( lhs_ * rhs_ ) )
       {
          // Scaled multiplication with division assignment with the given vector/matrix
          {
@@ -2679,7 +2687,7 @@ void OperationTest<VT,MT>::testScaledOperation( T scalar )
       // Scaled multiplication with division assignment (OP/s)
       //=====================================================================================
 
-      if( blaze::isDivisor( ( lhs_ * rhs_ ) / scalar ) )
+      if( !blaze::IsUniform_v<MT> && blaze::isDivisor( ( lhs_ * rhs_ ) / scalar ) )
       {
          // Scaled multiplication with division assignment with the given vector/matrix
          {
@@ -3029,7 +3037,7 @@ void OperationTest<VT,MT>::testTransOperation()
       // Transpose multiplication with division assignment
       //=====================================================================================
 
-      if( blaze::isDivisor( lhs_ * rhs_ ) )
+      if( !blaze::IsUniform_v<MT> && blaze::isDivisor( lhs_ * rhs_ ) )
       {
          // Transpose multiplication with division assignment with the given vector/matrix
          {
@@ -3379,7 +3387,7 @@ void OperationTest<VT,MT>::testCTransOperation()
       // Conjugate transpose multiplication with division assignment
       //=====================================================================================
 
-      if( blaze::isDivisor( lhs_ * rhs_ ) )
+      if( !blaze::IsUniform_v<MT> && blaze::isDivisor( lhs_ * rhs_ ) )
       {
          // Conjugate transpose multiplication with division assignment with the given vector/matrix
          {
@@ -3610,7 +3618,7 @@ void OperationTest<VT,MT>::testSerialOperation()
 */
 template< typename VT    // Type of the left-hand side sparse vector
         , typename MT >  // Type of the right-hand side dense matrix
-void OperationTest<VT,MT>::testSubvectorOperation()
+void OperationTest<VT,MT>::testSubvectorOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_SUBVECTOR_OPERATION
    if( BLAZETEST_MATHTEST_TEST_SUBVECTOR_OPERATION > 1 )
@@ -3931,84 +3939,103 @@ void OperationTest<VT,MT>::testSubvectorOperation()
       // Subvector-wise multiplication with division assignment
       //=====================================================================================
 
-      // Subvector-wise multiplication with division assignment with the given vector/matrix
+      if( !blaze::IsUniform_v<MT> )
       {
-         test_  = "Subvector-wise multiplication with division assignment with the given vector/matrix";
-         error_ = "Failed division assignment operation";
+         // Subvector-wise multiplication with division assignment with the given vector/matrix
+         {
+            test_  = "Subvector-wise multiplication with division assignment with the given vector/matrix";
+            error_ = "Failed division assignment operation";
 
-         try {
-            initResults();
-            for( size_t index=0UL, size=0UL; index<rhs_.columns(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, rhs_.columns() - index );
-               if( !blaze::isDivisor( subvector( lhs_ * rhs_, index, size ) ) ) continue;
-               subvector( dres_  , index, size ) /= subvector( lhs_ * rhs_      , index, size );
-               subvector( sres_  , index, size ) /= subvector( lhs_ * rhs_      , index, size );
-               subvector( refres_, index, size ) /= subvector( reflhs_ * refrhs_, index, size );
+            try {
+               initResults();
+               for( size_t index=0UL, size=0UL; index<rhs_.columns(); index+=size ) {
+                  size = blaze::rand<size_t>( 1UL, rhs_.columns() - index );
+                  if( !blaze::isDivisor( subvector( lhs_ * rhs_, index, size ) ) ) continue;
+                  subvector( dres_  , index, size ) /= subvector( lhs_ * rhs_      , index, size );
+                  subvector( sres_  , index, size ) /= subvector( lhs_ * rhs_      , index, size );
+                  subvector( refres_, index, size ) /= subvector( reflhs_ * refrhs_, index, size );
+               }
             }
-         }
-         catch( std::exception& ex ) {
-            convertException<MT>( ex );
-         }
-
-         checkResults<MT>();
-
-         try {
-            initResults();
-            for( size_t index=0UL, size=0UL; index<orhs_.columns(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, orhs_.columns() - index );
-               if( !blaze::isDivisor( subvector( lhs_ * orhs_, index, size ) ) ) continue;
-               subvector( dres_  , index, size ) /= subvector( lhs_ * orhs_     , index, size );
-               subvector( sres_  , index, size ) /= subvector( lhs_ * orhs_     , index, size );
-               subvector( refres_, index, size ) /= subvector( reflhs_ * refrhs_, index, size );
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
             }
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT>( ex );
-         }
 
-         checkResults<TMT>();
-      }
+            checkResults<MT>();
 
-      // Subvector-wise multiplication wit division assignment with evaluated vector/matrix
-      {
-         test_  = "Subvector-wise multiplication with division assignment with evaluated vector/matrix";
-         error_ = "Failed division assignment operation";
-
-         try {
-            initResults();
-            for( size_t index=0UL, size=0UL; index<rhs_.columns(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, rhs_.columns() - index );
-               if( !blaze::isDivisor( subvector( lhs_ * rhs_, index, size ) ) ) continue;
-               subvector( dres_  , index, size ) /= subvector( eval( lhs_ ) * eval( rhs_ )      , index, size );
-               subvector( sres_  , index, size ) /= subvector( eval( lhs_ ) * eval( rhs_ )      , index, size );
-               subvector( refres_, index, size ) /= subvector( eval( reflhs_ ) * eval( refrhs_ ), index, size );
+            try {
+               initResults();
+               for( size_t index=0UL, size=0UL; index<orhs_.columns(); index+=size ) {
+                  size = blaze::rand<size_t>( 1UL, orhs_.columns() - index );
+                  if( !blaze::isDivisor( subvector( lhs_ * orhs_, index, size ) ) ) continue;
+                  subvector( dres_  , index, size ) /= subvector( lhs_ * orhs_     , index, size );
+                  subvector( sres_  , index, size ) /= subvector( lhs_ * orhs_     , index, size );
+                  subvector( refres_, index, size ) /= subvector( reflhs_ * refrhs_, index, size );
+               }
             }
-         }
-         catch( std::exception& ex ) {
-            convertException<MT>( ex );
-         }
-
-         checkResults<MT>();
-
-         try {
-            initResults();
-            for( size_t index=0UL, size=0UL; index<orhs_.columns(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, orhs_.columns() - index );
-               if( !blaze::isDivisor( subvector( lhs_ * orhs_, index, size ) ) ) continue;
-               subvector( dres_  , index, size ) /= subvector( eval( lhs_ ) * eval( orhs_ )     , index, size );
-               subvector( sres_  , index, size ) /= subvector( eval( lhs_ ) * eval( orhs_ )     , index, size );
-               subvector( refres_, index, size ) /= subvector( eval( reflhs_ ) * eval( refrhs_ ), index, size );
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
             }
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT>( ex );
+
+            checkResults<TMT>();
          }
 
-         checkResults<TMT>();
+         // Subvector-wise multiplication wit division assignment with evaluated vector/matrix
+         {
+            test_  = "Subvector-wise multiplication with division assignment with evaluated vector/matrix";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initResults();
+               for( size_t index=0UL, size=0UL; index<rhs_.columns(); index+=size ) {
+                  size = blaze::rand<size_t>( 1UL, rhs_.columns() - index );
+                  if( !blaze::isDivisor( subvector( lhs_ * rhs_, index, size ) ) ) continue;
+                  subvector( dres_  , index, size ) /= subvector( eval( lhs_ ) * eval( rhs_ )      , index, size );
+                  subvector( sres_  , index, size ) /= subvector( eval( lhs_ ) * eval( rhs_ )      , index, size );
+                  subvector( refres_, index, size ) /= subvector( eval( reflhs_ ) * eval( refrhs_ ), index, size );
+               }
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkResults<MT>();
+
+            try {
+               initResults();
+               for( size_t index=0UL, size=0UL; index<orhs_.columns(); index+=size ) {
+                  size = blaze::rand<size_t>( 1UL, orhs_.columns() - index );
+                  if( !blaze::isDivisor( subvector( lhs_ * orhs_, index, size ) ) ) continue;
+                  subvector( dres_  , index, size ) /= subvector( eval( lhs_ ) * eval( orhs_ )     , index, size );
+                  subvector( sres_  , index, size ) /= subvector( eval( lhs_ ) * eval( orhs_ )     , index, size );
+                  subvector( refres_, index, size ) /= subvector( eval( reflhs_ ) * eval( refrhs_ ), index, size );
+               }
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
       }
    }
 #endif
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the subvector-wise sparse vector/dense matrix multiplication.
+//
+// \return void
+// \exception std::runtime_error Addition error detected.
+//
+// This function is called in case the subvector-wise vector/matrix multiplication operation is
+// not available for the given types \a VT and \a MT.
+*/
+template< typename VT    // Type of the left-hand side sparse vector
+        , typename MT >  // Type of the right-hand side dense matrix
+void OperationTest<VT,MT>::testSubvectorOperation( blaze::FalseType )
+{}
 //*************************************************************************************************
 
 
@@ -4025,7 +4052,7 @@ void OperationTest<VT,MT>::testSubvectorOperation()
 */
 template< typename VT    // Type of the left-hand side sparse vector
         , typename MT >  // Type of the right-hand side dense matrix
-void OperationTest<VT,MT>::testElementsOperation()
+void OperationTest<VT,MT>::testElementsOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_ELEMENTS_OPERATION
    if( BLAZETEST_MATHTEST_TEST_ELEMENTS_OPERATION > 1 )
@@ -4372,90 +4399,109 @@ void OperationTest<VT,MT>::testElementsOperation()
       // Elements-wise multiplication with division assignment
       //=====================================================================================
 
-      // Elements-wise multiplication with division assignment with the given vector/matrix
+      if( !blaze::IsUniform_v<MT> )
       {
-         test_  = "Elements-wise multiplication with division assignment with the given vector/matrix";
-         error_ = "Failed division assignment operation";
+         // Elements-wise multiplication with division assignment with the given vector/matrix
+         {
+            test_  = "Elements-wise multiplication with division assignment with the given vector/matrix";
+            error_ = "Failed division assignment operation";
 
-         try {
-            initResults();
-            std::vector<size_t> indices( rhs_.columns() );
-            std::iota( indices.begin(), indices.end(), 0UL );
-            std::random_shuffle( indices.begin(), indices.end() );
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               if( !blaze::isDivisor( elements( lhs_ * rhs_, &indices[index], size ) ) ) continue;
-               elements( dres_  , &indices[index], size ) /= elements( lhs_ * rhs_      , &indices[index], size );
-               elements( sres_  , &indices[index], size ) /= elements( lhs_ * rhs_      , &indices[index], size );
-               elements( refres_, &indices[index], size ) /= elements( reflhs_ * refrhs_, &indices[index], size );
+            try {
+               initResults();
+               std::vector<size_t> indices( rhs_.columns() );
+               std::iota( indices.begin(), indices.end(), 0UL );
+               std::random_shuffle( indices.begin(), indices.end() );
+               for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+                  size = blaze::rand<size_t>( 1UL, indices.size() - index );
+                  if( !blaze::isDivisor( elements( lhs_ * rhs_, &indices[index], size ) ) ) continue;
+                  elements( dres_  , &indices[index], size ) /= elements( lhs_ * rhs_      , &indices[index], size );
+                  elements( sres_  , &indices[index], size ) /= elements( lhs_ * rhs_      , &indices[index], size );
+                  elements( refres_, &indices[index], size ) /= elements( reflhs_ * refrhs_, &indices[index], size );
+               }
             }
-         }
-         catch( std::exception& ex ) {
-            convertException<MT>( ex );
-         }
-
-         checkResults<MT>();
-
-         try {
-            initResults();
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               if( !blaze::isDivisor( elements( lhs_ * orhs_, &indices[index], size ) ) ) continue;
-               elements( dres_  , &indices[index], size ) /= elements( lhs_ * orhs_     , &indices[index], size );
-               elements( sres_  , &indices[index], size ) /= elements( lhs_ * orhs_     , &indices[index], size );
-               elements( refres_, &indices[index], size ) /= elements( reflhs_ * refrhs_, &indices[index], size );
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
             }
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT>( ex );
-         }
 
-         checkResults<TMT>();
-      }
+            checkResults<MT>();
 
-      // Elements-wise multiplication wit division assignment with evaluated vector/matrix
-      {
-         test_  = "Elements-wise multiplication with division assignment with evaluated vector/matrix";
-         error_ = "Failed division assignment operation";
-
-         try {
-            initResults();
-            std::vector<size_t> indices( rhs_.columns() );
-            std::iota( indices.begin(), indices.end(), 0UL );
-            std::random_shuffle( indices.begin(), indices.end() );
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               if( !blaze::isDivisor( elements( lhs_ * rhs_, &indices[index], size ) ) ) continue;
-               elements( dres_  , &indices[index], size ) /= elements( eval( lhs_ ) * eval( rhs_ )      , &indices[index], size );
-               elements( sres_  , &indices[index], size ) /= elements( eval( lhs_ ) * eval( rhs_ )      , &indices[index], size );
-               elements( refres_, &indices[index], size ) /= elements( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], size );
+            try {
+               initResults();
+               for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+                  size = blaze::rand<size_t>( 1UL, indices.size() - index );
+                  if( !blaze::isDivisor( elements( lhs_ * orhs_, &indices[index], size ) ) ) continue;
+                  elements( dres_  , &indices[index], size ) /= elements( lhs_ * orhs_     , &indices[index], size );
+                  elements( sres_  , &indices[index], size ) /= elements( lhs_ * orhs_     , &indices[index], size );
+                  elements( refres_, &indices[index], size ) /= elements( reflhs_ * refrhs_, &indices[index], size );
+               }
             }
-         }
-         catch( std::exception& ex ) {
-            convertException<MT>( ex );
-         }
-
-         checkResults<MT>();
-
-         try {
-            initResults();
-            for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
-               size = blaze::rand<size_t>( 1UL, indices.size() - index );
-               if( !blaze::isDivisor( elements( lhs_ * orhs_, &indices[index], size ) ) ) continue;
-               elements( dres_  , &indices[index], size ) /= elements( eval( lhs_ ) * eval( orhs_ )     , &indices[index], size );
-               elements( sres_  , &indices[index], size ) /= elements( eval( lhs_ ) * eval( orhs_ )     , &indices[index], size );
-               elements( refres_, &indices[index], size ) /= elements( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], size );
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
             }
-         }
-         catch( std::exception& ex ) {
-            convertException<TMT>( ex );
+
+            checkResults<TMT>();
          }
 
-         checkResults<TMT>();
+         // Elements-wise multiplication wit division assignment with evaluated vector/matrix
+         {
+            test_  = "Elements-wise multiplication with division assignment with evaluated vector/matrix";
+            error_ = "Failed division assignment operation";
+
+            try {
+               initResults();
+               std::vector<size_t> indices( rhs_.columns() );
+               std::iota( indices.begin(), indices.end(), 0UL );
+               std::random_shuffle( indices.begin(), indices.end() );
+               for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+                  size = blaze::rand<size_t>( 1UL, indices.size() - index );
+                  if( !blaze::isDivisor( elements( lhs_ * rhs_, &indices[index], size ) ) ) continue;
+                  elements( dres_  , &indices[index], size ) /= elements( eval( lhs_ ) * eval( rhs_ )      , &indices[index], size );
+                  elements( sres_  , &indices[index], size ) /= elements( eval( lhs_ ) * eval( rhs_ )      , &indices[index], size );
+                  elements( refres_, &indices[index], size ) /= elements( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], size );
+               }
+            }
+            catch( std::exception& ex ) {
+               convertException<MT>( ex );
+            }
+
+            checkResults<MT>();
+
+            try {
+               initResults();
+               for( size_t index=0UL, size=0UL; index<indices.size(); index+=size ) {
+                  size = blaze::rand<size_t>( 1UL, indices.size() - index );
+                  if( !blaze::isDivisor( elements( lhs_ * orhs_, &indices[index], size ) ) ) continue;
+                  elements( dres_  , &indices[index], size ) /= elements( eval( lhs_ ) * eval( orhs_ )     , &indices[index], size );
+                  elements( sres_  , &indices[index], size ) /= elements( eval( lhs_ ) * eval( orhs_ )     , &indices[index], size );
+                  elements( refres_, &indices[index], size ) /= elements( eval( reflhs_ ) * eval( refrhs_ ), &indices[index], size );
+               }
+            }
+            catch( std::exception& ex ) {
+               convertException<TMT>( ex );
+            }
+
+            checkResults<TMT>();
+         }
       }
    }
 #endif
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the elements-wise sparse vector/dense matrix multiplication.
+//
+// \return void
+// \exception std::runtime_error Addition error detected.
+//
+// This function is called in case the elements-wise vector/matrix multiplication operation is
+// not available for the given types \a VT and \a MT.
+*/
+template< typename VT    // Type of the left-hand side sparse vector
+        , typename MT >  // Type of the right-hand side dense matrix
+void OperationTest<VT,MT>::testElementsOperation( blaze::FalseType )
+{}
 //*************************************************************************************************
 
 
@@ -4741,7 +4787,7 @@ void OperationTest<VT,MT>::testCustomOperation( OP op, const std::string& name )
    // Cusomized multiplication with division assignment
    //=====================================================================================
 
-   if( blaze::isDivisor( op( lhs_ * rhs_ ) ) )
+   if( !blaze::IsUniform_v<MT> && blaze::isDivisor( op( lhs_ * rhs_ ) ) )
    {
       // Cusomized multiplication with division assignment with the given vector/matrix
       {
