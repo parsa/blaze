@@ -53,22 +53,6 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Helper class for the dimensionof function.
-// \ingroup util
-//
-// The Array class is a helper class for the dimensionof function. It provides a public array
-// member of exactly N bytes.
-*/
-template< unsigned int N >
-struct Array {
-   byte_t array[N];
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Static evaluation of array dimensions.
 // \ingroup util
 //
@@ -88,11 +72,11 @@ struct Array {
    dimensionof( vi );  // Fails to compile!
    \endcode
 */
-template< typename T, unsigned int N >
-inline size_t dimensionof( T(&a)[N] )
+template< typename T, size_t N >
+inline constexpr size_t dimensionof( T(&a)[N] )
 {
    UNUSED_PARAMETER( a );
-   return sizeof( Array<N> );
+   return N;
 }
 //*************************************************************************************************
 
