@@ -172,6 +172,14 @@ class OperationTest
                           void testSerialOperation   ();
                           void testSubmatrixOperation( blaze::TrueType  );
                           void testSubmatrixOperation( blaze::FalseType );
+                          void testRowOperation      ( blaze::TrueType  );
+                          void testRowOperation      ( blaze::FalseType );
+                          void testRowsOperation     ( blaze::TrueType  );
+                          void testRowsOperation     ( blaze::FalseType );
+                          void testColumnOperation   ( blaze::TrueType  );
+                          void testColumnOperation   ( blaze::FalseType );
+                          void testColumnsOperation  ( blaze::TrueType  );
+                          void testColumnsOperation  ( blaze::FalseType );
                           void testBandOperation     ( blaze::TrueType  );
                           void testBandOperation     ( blaze::FalseType );
 
@@ -349,6 +357,10 @@ OperationTest<VT,E>::OperationTest( const Creator<VT>& creator )
    testEvalOperation();
    testSerialOperation();
    testSubmatrixOperation( Not< IsUniform<DRE> >() );
+   testRowOperation( Not< IsUniform<DRE> >() );
+   testRowsOperation( Not< IsUniform<DRE> >() );
+   testColumnOperation( Not< IsUniform<DRE> >() );
+   testColumnsOperation( Not< IsUniform<DRE> >() );
    testBandOperation( Not< IsUniform<DRE> >() );
 }
 //*************************************************************************************************
@@ -5123,7 +5135,7 @@ void OperationTest<VT,E>::testSubmatrixOperation( blaze::TrueType )
       // Submatrix-wise expansion
       //=====================================================================================
 
-      // Submatrix-wise extension with the given vector (runtime)
+      // Submatrix-wise expansion with the given vector (runtime)
       {
          test_  = "Submatrix-wise expansion with the given vector (runtime)";
          error_ = "Failed expansion operation";
@@ -5169,7 +5181,7 @@ void OperationTest<VT,E>::testSubmatrixOperation( blaze::TrueType )
          checkTransposeResults<TVT>();
       }
 
-      // Submatrix-wise extension with the given vector (compile time)
+      // Submatrix-wise expansion with the given vector (compile time)
       {
          test_  = "Submatrix-wise expansion with the given vector (compile time)";
          error_ = "Failed expansion operation";
@@ -5312,7 +5324,7 @@ void OperationTest<VT,E>::testSubmatrixOperation( blaze::TrueType )
       // Submatrix-wise expansion with addition assignment
       //=====================================================================================
 
-      // Submatrix-wise extension with addition assignment with the given vector (runtime)
+      // Submatrix-wise expansion with addition assignment with the given vector (runtime)
       {
          test_  = "Submatrix-wise expansion with addition assignment with the given vector (runtime)";
          error_ = "Failed addition assignment";
@@ -5358,7 +5370,7 @@ void OperationTest<VT,E>::testSubmatrixOperation( blaze::TrueType )
          checkTransposeResults<TVT>();
       }
 
-      // Submatrix-wise extension with addition assignment with the given vector (compile time)
+      // Submatrix-wise expansion with addition assignment with the given vector (compile time)
       {
          test_  = "Submatrix-wise expansion with addition assignment with the given vector (compile time)";
          error_ = "Failed addition assignment";
@@ -5501,7 +5513,7 @@ void OperationTest<VT,E>::testSubmatrixOperation( blaze::TrueType )
       // Submatrix-wise expansion with subtraction assignment
       //=====================================================================================
 
-      // Submatrix-wise extension with subtraction assignment with the given vector (runtime)
+      // Submatrix-wise expansion with subtraction assignment with the given vector (runtime)
       {
          test_  = "Submatrix-wise expansion with subtraction assignment with the given vector (runtime)";
          error_ = "Failed subtraction assignment";
@@ -5547,7 +5559,7 @@ void OperationTest<VT,E>::testSubmatrixOperation( blaze::TrueType )
          checkTransposeResults<TVT>();
       }
 
-      // Submatrix-wise extension with subtraction assignment with the given vector (compile time)
+      // Submatrix-wise expansion with subtraction assignment with the given vector (compile time)
       {
          test_  = "Submatrix-wise expansion with subtraction assignment with the given vector (compile time)";
          error_ = "Failed subtraction assignment";
@@ -5690,7 +5702,7 @@ void OperationTest<VT,E>::testSubmatrixOperation( blaze::TrueType )
       // Submatrix-wise expansion with Schur product assignment
       //=====================================================================================
 
-      // Submatrix-wise extension with Schur product assignment with the given vector (runtime)
+      // Submatrix-wise expansion with Schur product assignment with the given vector (runtime)
       {
          test_  = "Submatrix-wise expansion with Schur product assignment with the given vector (runtime)";
          error_ = "Failed Schur product assignment";
@@ -5736,7 +5748,7 @@ void OperationTest<VT,E>::testSubmatrixOperation( blaze::TrueType )
          checkTransposeResults<TVT>();
       }
 
-      // Submatrix-wise extension with Schur product assignment with the given vector (compile time)
+      // Submatrix-wise expansion with Schur product assignment with the given vector (compile time)
       {
          test_  = "Submatrix-wise expansion with Schur product assignment with the given vector (compile time)";
          error_ = "Failed Schur product assignment";
@@ -5890,6 +5902,2772 @@ void OperationTest<VT,E>::testSubmatrixOperation( blaze::TrueType )
 template< typename VT  // Type of the dense vector
         , size_t E >   // Compile time expansion
 void OperationTest<VT,E>::testSubmatrixOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the row-wise dense vector expansion operation.
+//
+// \return void
+// \exception std::runtime_error Expansion error detected.
+//
+// This function tests the row-wise vector expansion with plain assignment, addition assignment,
+// subtraction assignment, and Schur product assignment. In case any error resulting from the
+// addition or the subsequent assignment is detected, a \a std::runtime_error exception is
+// thrown.
+*/
+template< typename VT  // Type of the dense vector
+        , size_t E >   // Compile time expansion
+void OperationTest<VT,E>::testRowOperation( blaze::TrueType )
+{
+#if BLAZETEST_MATHTEST_TEST_ROW_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_ROW_OPERATION > 1 )
+   {
+      using blaze::expand;
+
+      if( vec_.size() == 0UL || E == 0UL )
+         return;
+
+
+      //=====================================================================================
+      // Row-wise expansion
+      //=====================================================================================
+
+      // Row-wise expansion with the given vector (runtime)
+      {
+         test_  = "Row-wise expansion with the given vector (runtime)";
+         error_ = "Failed expansion operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               row( dres_  , i ) = row( expand( vec_, E ), i );
+               row( odres_ , i ) = row( expand( vec_, E ), i );
+               row( sres_  , i ) = row( expand( vec_, E ), i );
+               row( osres_ , i ) = row( expand( vec_, E ), i );
+               row( refres_, i ) = row( expand( refvec_, E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               row( tdres_  , i ) = row( expand( tvec_, E ), i );
+               row( todres_ , i ) = row( expand( tvec_, E ), i );
+               row( tsres_  , i ) = row( expand( tvec_, E ), i );
+               row( tosres_ , i ) = row( expand( tvec_, E ), i );
+               row( trefres_, i ) = row( expand( trefvec_, E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Row-wise expansion with the given vector (compile time)
+      {
+         test_  = "Row-wise expansion with the given vector (compile time)";
+         error_ = "Failed expansion operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               row( dres_  , i ) = row( expand<E>( vec_ ), i );
+               row( odres_ , i ) = row( expand<E>( vec_ ), i );
+               row( sres_  , i ) = row( expand<E>( vec_ ), i );
+               row( osres_ , i ) = row( expand<E>( vec_ ), i );
+               row( refres_, i ) = row( expand<E>( refvec_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               row( tdres_  , i ) = row( expand<E>( tvec_ ), i );
+               row( todres_ , i ) = row( expand<E>( tvec_ ), i );
+               row( tsres_  , i ) = row( expand<E>( tvec_ ), i );
+               row( tosres_ , i ) = row( expand<E>( tvec_ ), i );
+               row( trefres_, i ) = row( expand<E>( trefvec_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Row-wise expansion with evaluated vector (runtime)
+      {
+         test_  = "Row-wise expansion with evaluated vector (runtime)";
+         error_ = "Failed expansion operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               row( dres_  , i ) = row( expand( eval( vec_ ), E ), i );
+               row( odres_ , i ) = row( expand( eval( vec_ ), E ), i );
+               row( sres_  , i ) = row( expand( eval( vec_ ), E ), i );
+               row( osres_ , i ) = row( expand( eval( vec_ ), E ), i );
+               row( refres_, i ) = row( expand( eval( refvec_ ), E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               row( tdres_  , i ) = row( expand( eval( tvec_ ), E ), i );
+               row( todres_ , i ) = row( expand( eval( tvec_ ), E ), i );
+               row( tsres_  , i ) = row( expand( eval( tvec_ ), E ), i );
+               row( tosres_ , i ) = row( expand( eval( tvec_ ), E ), i );
+               row( trefres_, i ) = row( expand( eval( trefvec_ ), E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Row-wise expansion with evaluated vector (compile time)
+      {
+         test_  = "Row-wise expansion with evaluated vector (compile time)";
+         error_ = "Failed expansion operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               row( dres_  , i ) = row( expand<E>( eval( vec_ ) ), i );
+               row( odres_ , i ) = row( expand<E>( eval( vec_ ) ), i );
+               row( sres_  , i ) = row( expand<E>( eval( vec_ ) ), i );
+               row( osres_ , i ) = row( expand<E>( eval( vec_ ) ), i );
+               row( refres_, i ) = row( expand<E>( eval( refvec_ ) ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               row( tdres_  , i ) = row( expand<E>( eval( tvec_ ) ), i );
+               row( todres_ , i ) = row( expand<E>( eval( tvec_ ) ), i );
+               row( tsres_  , i ) = row( expand<E>( eval( tvec_ ) ), i );
+               row( tosres_ , i ) = row( expand<E>( eval( tvec_ ) ), i );
+               row( trefres_, i ) = row( expand<E>( eval( trefvec_ ) ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+
+      //=====================================================================================
+      // Row-wise expansion with addition assignment
+      //=====================================================================================
+
+      // Row-wise expansion with addition assignment with the given vector (runtime)
+      {
+         test_  = "Row-wise expansion with addition assignment with the given vector (runtime)";
+         error_ = "Failed addition assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               row( dres_  , i ) += row( expand( vec_, E ), i );
+               row( odres_ , i ) += row( expand( vec_, E ), i );
+               row( sres_  , i ) += row( expand( vec_, E ), i );
+               row( osres_ , i ) += row( expand( vec_, E ), i );
+               row( refres_, i ) += row( expand( refvec_, E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               row( tdres_  , i ) += row( expand( tvec_, E ), i );
+               row( todres_ , i ) += row( expand( tvec_, E ), i );
+               row( tsres_  , i ) += row( expand( tvec_, E ), i );
+               row( tosres_ , i ) += row( expand( tvec_, E ), i );
+               row( trefres_, i ) += row( expand( trefvec_, E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Row-wise expansion with addition assignment with the given vector (compile time)
+      {
+         test_  = "Row-wise expansion with addition assignment with the given vector (compile time)";
+         error_ = "Failed addition assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               row( dres_  , i ) += row( expand<E>( vec_ ), i );
+               row( odres_ , i ) += row( expand<E>( vec_ ), i );
+               row( sres_  , i ) += row( expand<E>( vec_ ), i );
+               row( osres_ , i ) += row( expand<E>( vec_ ), i );
+               row( refres_, i ) += row( expand<E>( refvec_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               row( tdres_  , i ) += row( expand<E>( tvec_ ), i );
+               row( todres_ , i ) += row( expand<E>( tvec_ ), i );
+               row( tsres_  , i ) += row( expand<E>( tvec_ ), i );
+               row( tosres_ , i ) += row( expand<E>( tvec_ ), i );
+               row( trefres_, i ) += row( expand<E>( trefvec_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Row-wise expansion with addition assignment with evaluated vector (runtime)
+      {
+         test_  = "Row-wise expansion with addition assignment with evaluated vector (runtime)";
+         error_ = "Failed addition assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               row( dres_  , i ) += row( expand( eval( vec_ ), E ), i );
+               row( odres_ , i ) += row( expand( eval( vec_ ), E ), i );
+               row( sres_  , i ) += row( expand( eval( vec_ ), E ), i );
+               row( osres_ , i ) += row( expand( eval( vec_ ), E ), i );
+               row( refres_, i ) += row( expand( eval( refvec_ ), E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               row( tdres_  , i ) += row( expand( eval( tvec_ ), E ), i );
+               row( todres_ , i ) += row( expand( eval( tvec_ ), E ), i );
+               row( tsres_  , i ) += row( expand( eval( tvec_ ), E ), i );
+               row( tosres_ , i ) += row( expand( eval( tvec_ ), E ), i );
+               row( trefres_, i ) += row( expand( eval( trefvec_ ), E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Row-wise expansion with addition assignment with evaluated vector (compile time)
+      {
+         test_  = "Row-wise expansion with addition assignment with evaluated vector (compile time)";
+         error_ = "Failed addition assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               row( dres_  , i ) += row( expand<E>( eval( vec_ ) ), i );
+               row( odres_ , i ) += row( expand<E>( eval( vec_ ) ), i );
+               row( sres_  , i ) += row( expand<E>( eval( vec_ ) ), i );
+               row( osres_ , i ) += row( expand<E>( eval( vec_ ) ), i );
+               row( refres_, i ) += row( expand<E>( eval( refvec_ ) ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               row( tdres_  , i ) += row( expand<E>( eval( tvec_ ) ), i );
+               row( todres_ , i ) += row( expand<E>( eval( tvec_ ) ), i );
+               row( tsres_  , i ) += row( expand<E>( eval( tvec_ ) ), i );
+               row( tosres_ , i ) += row( expand<E>( eval( tvec_ ) ), i );
+               row( trefres_, i ) += row( expand<E>( eval( trefvec_ ) ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+
+      //=====================================================================================
+      // Row-wise expansion with subtraction assignment
+      //=====================================================================================
+
+      // Row-wise expansion with subtraction assignment with the given vector (runtime)
+      {
+         test_  = "Row-wise expansion with subtraction assignment with the given vector (runtime)";
+         error_ = "Failed subtraction assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               row( dres_  , i ) -= row( expand( vec_, E ), i );
+               row( odres_ , i ) -= row( expand( vec_, E ), i );
+               row( sres_  , i ) -= row( expand( vec_, E ), i );
+               row( osres_ , i ) -= row( expand( vec_, E ), i );
+               row( refres_, i ) -= row( expand( refvec_, E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               row( tdres_  , i ) -= row( expand( tvec_, E ), i );
+               row( todres_ , i ) -= row( expand( tvec_, E ), i );
+               row( tsres_  , i ) -= row( expand( tvec_, E ), i );
+               row( tosres_ , i ) -= row( expand( tvec_, E ), i );
+               row( trefres_, i ) -= row( expand( trefvec_, E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Row-wise expansion with subtraction assignment with the given vector (compile time)
+      {
+         test_  = "Row-wise expansion with subtraction assignment with the given vector (compile time)";
+         error_ = "Failed subtraction assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               row( dres_  , i ) -= row( expand<E>( vec_ ), i );
+               row( odres_ , i ) -= row( expand<E>( vec_ ), i );
+               row( sres_  , i ) -= row( expand<E>( vec_ ), i );
+               row( osres_ , i ) -= row( expand<E>( vec_ ), i );
+               row( refres_, i ) -= row( expand<E>( refvec_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               row( tdres_  , i ) -= row( expand<E>( tvec_ ), i );
+               row( todres_ , i ) -= row( expand<E>( tvec_ ), i );
+               row( tsres_  , i ) -= row( expand<E>( tvec_ ), i );
+               row( tosres_ , i ) -= row( expand<E>( tvec_ ), i );
+               row( trefres_, i ) -= row( expand<E>( trefvec_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Row-wise expansion with subtraction assignment with evaluated vector (runtime)
+      {
+         test_  = "Row-wise expansion with subtraction assignment with evaluated vector (runtime)";
+         error_ = "Failed subtraction assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               row( dres_  , i ) -= row( expand( eval( vec_ ), E ), i );
+               row( odres_ , i ) -= row( expand( eval( vec_ ), E ), i );
+               row( sres_  , i ) -= row( expand( eval( vec_ ), E ), i );
+               row( osres_ , i ) -= row( expand( eval( vec_ ), E ), i );
+               row( refres_, i ) -= row( expand( eval( refvec_ ), E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               row( tdres_  , i ) -= row( expand( eval( tvec_ ), E ), i );
+               row( todres_ , i ) -= row( expand( eval( tvec_ ), E ), i );
+               row( tsres_  , i ) -= row( expand( eval( tvec_ ), E ), i );
+               row( tosres_ , i ) -= row( expand( eval( tvec_ ), E ), i );
+               row( trefres_, i ) -= row( expand( eval( trefvec_ ), E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Row-wise expansion with subtraction assignment with evaluated vector (compile time)
+      {
+         test_  = "Row-wise expansion with subtraction assignment with evaluated vector (compile time)";
+         error_ = "Failed subtraction assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               row( dres_  , i ) -= row( expand<E>( eval( vec_ ) ), i );
+               row( odres_ , i ) -= row( expand<E>( eval( vec_ ) ), i );
+               row( sres_  , i ) -= row( expand<E>( eval( vec_ ) ), i );
+               row( osres_ , i ) -= row( expand<E>( eval( vec_ ) ), i );
+               row( refres_, i ) -= row( expand<E>( eval( refvec_ ) ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               row( tdres_  , i ) -= row( expand<E>( eval( tvec_ ) ), i );
+               row( todres_ , i ) -= row( expand<E>( eval( tvec_ ) ), i );
+               row( tsres_  , i ) -= row( expand<E>( eval( tvec_ ) ), i );
+               row( tosres_ , i ) -= row( expand<E>( eval( tvec_ ) ), i );
+               row( trefres_, i ) -= row( expand<E>( eval( trefvec_ ) ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+
+      //=====================================================================================
+      // Row-wise expansion with multiplication assignment
+      //=====================================================================================
+
+      // Row-wise expansion with multiplication assignment with the given vector (runtime)
+      {
+         test_  = "Row-wise expansion with multiplication assignment with the given vector (runtime)";
+         error_ = "Failed multiplication assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               row( dres_  , i ) *= row( expand( vec_, E ), i );
+               row( odres_ , i ) *= row( expand( vec_, E ), i );
+               row( sres_  , i ) *= row( expand( vec_, E ), i );
+               row( osres_ , i ) *= row( expand( vec_, E ), i );
+               row( refres_, i ) *= row( expand( refvec_, E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               row( tdres_  , i ) *= row( expand( tvec_, E ), i );
+               row( todres_ , i ) *= row( expand( tvec_, E ), i );
+               row( tsres_  , i ) *= row( expand( tvec_, E ), i );
+               row( tosres_ , i ) *= row( expand( tvec_, E ), i );
+               row( trefres_, i ) *= row( expand( trefvec_, E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Row-wise expansion with multiplication assignment with the given vector (compile time)
+      {
+         test_  = "Row-wise expansion with multiplication assignment with the given vector (compile time)";
+         error_ = "Failed multiplication assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               row( dres_  , i ) *= row( expand<E>( vec_ ), i );
+               row( odres_ , i ) *= row( expand<E>( vec_ ), i );
+               row( sres_  , i ) *= row( expand<E>( vec_ ), i );
+               row( osres_ , i ) *= row( expand<E>( vec_ ), i );
+               row( refres_, i ) *= row( expand<E>( refvec_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               row( tdres_  , i ) *= row( expand<E>( tvec_ ), i );
+               row( todres_ , i ) *= row( expand<E>( tvec_ ), i );
+               row( tsres_  , i ) *= row( expand<E>( tvec_ ), i );
+               row( tosres_ , i ) *= row( expand<E>( tvec_ ), i );
+               row( trefres_, i ) *= row( expand<E>( trefvec_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Row-wise expansion with multiplication assignment with evaluated vector (runtime)
+      {
+         test_  = "Row-wise expansion with multiplication assignment with evaluated vector (runtime)";
+         error_ = "Failed multiplication assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               row( dres_  , i ) *= row( expand( eval( vec_ ), E ), i );
+               row( odres_ , i ) *= row( expand( eval( vec_ ), E ), i );
+               row( sres_  , i ) *= row( expand( eval( vec_ ), E ), i );
+               row( osres_ , i ) *= row( expand( eval( vec_ ), E ), i );
+               row( refres_, i ) *= row( expand( eval( refvec_ ), E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               row( tdres_  , i ) *= row( expand( eval( tvec_ ), E ), i );
+               row( todres_ , i ) *= row( expand( eval( tvec_ ), E ), i );
+               row( tsres_  , i ) *= row( expand( eval( tvec_ ), E ), i );
+               row( tosres_ , i ) *= row( expand( eval( tvec_ ), E ), i );
+               row( trefres_, i ) *= row( expand( eval( trefvec_ ), E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Row-wise expansion with multiplication assignment with evaluated vector (compile time)
+      {
+         test_  = "Row-wise expansion with multiplication assignment with evaluated vector (compile time)";
+         error_ = "Failed multiplication assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               row( dres_  , i ) *= row( expand<E>( eval( vec_ ) ), i );
+               row( odres_ , i ) *= row( expand<E>( eval( vec_ ) ), i );
+               row( sres_  , i ) *= row( expand<E>( eval( vec_ ) ), i );
+               row( osres_ , i ) *= row( expand<E>( eval( vec_ ) ), i );
+               row( refres_, i ) *= row( expand<E>( eval( refvec_ ) ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               row( tdres_  , i ) *= row( expand<E>( eval( tvec_ ) ), i );
+               row( todres_ , i ) *= row( expand<E>( eval( tvec_ ) ), i );
+               row( tsres_  , i ) *= row( expand<E>( eval( tvec_ ) ), i );
+               row( tosres_ , i ) *= row( expand<E>( eval( tvec_ ) ), i );
+               row( trefres_, i ) *= row( expand<E>( eval( trefvec_ ) ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the row-wise dense vector expansion operation.
+//
+// \return void
+//
+// This function is called in case the row-wise dense vector expansion operation is not
+// available for the given vector type \a VT.
+*/
+template< typename VT  // Type of the dense vector
+        , size_t E >   // Compile time expansion
+void OperationTest<VT,E>::testRowOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the rows-wise dense vector expansion operation.
+//
+// \return void
+// \exception std::runtime_error Expansion error detected.
+//
+// This function tests the rows-wise vector expansion with plain assignment, addition assignment,
+// subtraction assignment, and Schur product assignment. In case any error resulting from the
+// addition or the subsequent assignment is detected, a \a std::runtime_error exception is
+// thrown.
+*/
+template< typename VT  // Type of the dense vector
+        , size_t E >   // Compile time expansion
+void OperationTest<VT,E>::testRowsOperation( blaze::TrueType )
+{
+#if BLAZETEST_MATHTEST_TEST_ROWS_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_ROWS_OPERATION > 1 )
+   {
+      using blaze::expand;
+
+      if( vec_.size() == 0UL || E == 0UL )
+         return;
+
+
+      std::vector<size_t> indices( vec_.size() );
+      std::iota( indices.begin(), indices.end(), 0UL );
+      std::random_shuffle( indices.begin(), indices.end() );
+
+      std::vector<size_t> tindices( E );
+      std::iota( tindices.begin(), tindices.end(), 0UL );
+      std::random_shuffle( tindices.begin(), tindices.end() );
+
+
+      //=====================================================================================
+      // Rows-wise expansion
+      //=====================================================================================
+
+      // Rows-wise expansion with the given vector (runtime)
+      {
+         test_  = "Rows-wise expansion with the given vector (runtime)";
+         error_ = "Failed expansion operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) = rows( expand( vec_, E ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) = rows( expand( vec_, E ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) = rows( expand( vec_, E ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) = rows( expand( vec_, E ), &indices[index], n );
+               rows( refres_, &indices[index], n ) = rows( expand( refvec_, E ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               rows( tdres_  , &tindices[index], n ) = rows( expand( tvec_, E ), &tindices[index], n );
+               rows( todres_ , &tindices[index], n ) = rows( expand( tvec_, E ), &tindices[index], n );
+               rows( tsres_  , &tindices[index], n ) = rows( expand( tvec_, E ), &tindices[index], n );
+               rows( tosres_ , &tindices[index], n ) = rows( expand( tvec_, E ), &tindices[index], n );
+               rows( trefres_, &tindices[index], n ) = rows( expand( trefvec_, E ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Rows-wise expansion with the given vector (compile time)
+      {
+         test_  = "Rows-wise expansion with the given vector (compile time)";
+         error_ = "Failed expansion operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) = rows( expand<E>( vec_ ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) = rows( expand<E>( vec_ ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) = rows( expand<E>( vec_ ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) = rows( expand<E>( vec_ ), &indices[index], n );
+               rows( refres_, &indices[index], n ) = rows( expand<E>( refvec_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               rows( tdres_  , &tindices[index], n ) = rows( expand<E>( tvec_ ), &tindices[index], n );
+               rows( todres_ , &tindices[index], n ) = rows( expand<E>( tvec_ ), &tindices[index], n );
+               rows( tsres_  , &tindices[index], n ) = rows( expand<E>( tvec_ ), &tindices[index], n );
+               rows( tosres_ , &tindices[index], n ) = rows( expand<E>( tvec_ ), &tindices[index], n );
+               rows( trefres_, &tindices[index], n ) = rows( expand<E>( trefvec_ ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Rows-wise expansion with evaluated vector (runtime)
+      {
+         test_  = "Rows-wise expansion with evaluated vector (runtime)";
+         error_ = "Failed expansion operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) = rows( expand( eval( vec_ ), E ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) = rows( expand( eval( vec_ ), E ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) = rows( expand( eval( vec_ ), E ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) = rows( expand( eval( vec_ ), E ), &indices[index], n );
+               rows( refres_, &indices[index], n ) = rows( expand( eval( refvec_ ), E ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               rows( tdres_  , &tindices[index], n ) = rows( expand( eval( tvec_ ), E ), &tindices[index], n );
+               rows( todres_ , &tindices[index], n ) = rows( expand( eval( tvec_ ), E ), &tindices[index], n );
+               rows( tsres_  , &tindices[index], n ) = rows( expand( eval( tvec_ ), E ), &tindices[index], n );
+               rows( tosres_ , &tindices[index], n ) = rows( expand( eval( tvec_ ), E ), &tindices[index], n );
+               rows( trefres_, &tindices[index], n ) = rows( expand( eval( trefvec_ ), E ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Rows-wise expansion with evaluated vector (compile time)
+      {
+         test_  = "Rows-wise expansion with evaluated vector (compile time)";
+         error_ = "Failed expansion operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) = rows( expand<E>( eval( vec_ ) ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) = rows( expand<E>( eval( vec_ ) ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) = rows( expand<E>( eval( vec_ ) ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) = rows( expand<E>( eval( vec_ ) ), &indices[index], n );
+               rows( refres_, &indices[index], n ) = rows( expand<E>( eval( refvec_ ) ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               rows( tdres_  , &tindices[index], n ) = rows( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               rows( todres_ , &tindices[index], n ) = rows( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               rows( tsres_  , &tindices[index], n ) = rows( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               rows( tosres_ , &tindices[index], n ) = rows( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               rows( trefres_, &tindices[index], n ) = rows( expand<E>( eval( trefvec_ ) ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+
+      //=====================================================================================
+      // Rows-wise expansion with addition assignment
+      //=====================================================================================
+
+      // Rows-wise expansion with addition assignment with the given vector (runtime)
+      {
+         test_  = "Rows-wise expansion with addition assignment with the given vector (runtime)";
+         error_ = "Failed addition assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) += rows( expand( vec_, E ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) += rows( expand( vec_, E ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) += rows( expand( vec_, E ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) += rows( expand( vec_, E ), &indices[index], n );
+               rows( refres_, &indices[index], n ) += rows( expand( refvec_, E ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               rows( tdres_  , &tindices[index], n ) += rows( expand( tvec_, E ), &tindices[index], n );
+               rows( todres_ , &tindices[index], n ) += rows( expand( tvec_, E ), &tindices[index], n );
+               rows( tsres_  , &tindices[index], n ) += rows( expand( tvec_, E ), &tindices[index], n );
+               rows( tosres_ , &tindices[index], n ) += rows( expand( tvec_, E ), &tindices[index], n );
+               rows( trefres_, &tindices[index], n ) += rows( expand( trefvec_, E ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Rows-wise expansion with addition assignment with the given vector (compile time)
+      {
+         test_  = "Rows-wise expansion with addition assignment with the given vector (compile time)";
+         error_ = "Failed addition assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) += rows( expand<E>( vec_ ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) += rows( expand<E>( vec_ ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) += rows( expand<E>( vec_ ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) += rows( expand<E>( vec_ ), &indices[index], n );
+               rows( refres_, &indices[index], n ) += rows( expand<E>( refvec_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               rows( tdres_  , &tindices[index], n ) += rows( expand<E>( tvec_ ), &tindices[index], n );
+               rows( todres_ , &tindices[index], n ) += rows( expand<E>( tvec_ ), &tindices[index], n );
+               rows( tsres_  , &tindices[index], n ) += rows( expand<E>( tvec_ ), &tindices[index], n );
+               rows( tosres_ , &tindices[index], n ) += rows( expand<E>( tvec_ ), &tindices[index], n );
+               rows( trefres_, &tindices[index], n ) += rows( expand<E>( trefvec_ ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Rows-wise expansion with addition assignment with evaluated vector (runtime)
+      {
+         test_  = "Rows-wise expansion with addition assignment with evaluated vector (runtime)";
+         error_ = "Failed addition assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) += rows( expand( eval( vec_ ), E ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) += rows( expand( eval( vec_ ), E ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) += rows( expand( eval( vec_ ), E ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) += rows( expand( eval( vec_ ), E ), &indices[index], n );
+               rows( refres_, &indices[index], n ) += rows( expand( eval( refvec_ ), E ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               rows( tdres_  , &tindices[index], n ) += rows( expand( eval( tvec_ ), E ), &tindices[index], n );
+               rows( todres_ , &tindices[index], n ) += rows( expand( eval( tvec_ ), E ), &tindices[index], n );
+               rows( tsres_  , &tindices[index], n ) += rows( expand( eval( tvec_ ), E ), &tindices[index], n );
+               rows( tosres_ , &tindices[index], n ) += rows( expand( eval( tvec_ ), E ), &tindices[index], n );
+               rows( trefres_, &tindices[index], n ) += rows( expand( eval( trefvec_ ), E ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Rows-wise expansion with addition assignment with evaluated vector (compile time)
+      {
+         test_  = "Rows-wise expansion with addition assignment with evaluated vector (compile time)";
+         error_ = "Failed addition assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) += rows( expand<E>( eval( vec_ ) ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) += rows( expand<E>( eval( vec_ ) ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) += rows( expand<E>( eval( vec_ ) ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) += rows( expand<E>( eval( vec_ ) ), &indices[index], n );
+               rows( refres_, &indices[index], n ) += rows( expand<E>( eval( refvec_ ) ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               rows( tdres_  , &tindices[index], n ) += rows( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               rows( todres_ , &tindices[index], n ) += rows( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               rows( tsres_  , &tindices[index], n ) += rows( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               rows( tosres_ , &tindices[index], n ) += rows( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               rows( trefres_, &tindices[index], n ) += rows( expand<E>( eval( trefvec_ ) ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+
+      //=====================================================================================
+      // Rows-wise expansion with subtraction assignment
+      //=====================================================================================
+
+      // Rows-wise expansion with subtraction assignment with the given vector (runtime)
+      {
+         test_  = "Rows-wise expansion with subtraction assignment with the given vector (runtime)";
+         error_ = "Failed subtraction assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) -= rows( expand( vec_, E ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) -= rows( expand( vec_, E ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) -= rows( expand( vec_, E ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) -= rows( expand( vec_, E ), &indices[index], n );
+               rows( refres_, &indices[index], n ) -= rows( expand( refvec_, E ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               rows( tdres_  , &tindices[index], n ) -= rows( expand( tvec_, E ), &tindices[index], n );
+               rows( todres_ , &tindices[index], n ) -= rows( expand( tvec_, E ), &tindices[index], n );
+               rows( tsres_  , &tindices[index], n ) -= rows( expand( tvec_, E ), &tindices[index], n );
+               rows( tosres_ , &tindices[index], n ) -= rows( expand( tvec_, E ), &tindices[index], n );
+               rows( trefres_, &tindices[index], n ) -= rows( expand( trefvec_, E ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Rows-wise expansion with subtraction assignment with the given vector (compile time)
+      {
+         test_  = "Rows-wise expansion with subtraction assignment with the given vector (compile time)";
+         error_ = "Failed subtraction assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) -= rows( expand<E>( vec_ ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) -= rows( expand<E>( vec_ ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) -= rows( expand<E>( vec_ ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) -= rows( expand<E>( vec_ ), &indices[index], n );
+               rows( refres_, &indices[index], n ) -= rows( expand<E>( refvec_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               rows( tdres_  , &tindices[index], n ) -= rows( expand<E>( tvec_ ), &tindices[index], n );
+               rows( todres_ , &tindices[index], n ) -= rows( expand<E>( tvec_ ), &tindices[index], n );
+               rows( tsres_  , &tindices[index], n ) -= rows( expand<E>( tvec_ ), &tindices[index], n );
+               rows( tosres_ , &tindices[index], n ) -= rows( expand<E>( tvec_ ), &tindices[index], n );
+               rows( trefres_, &tindices[index], n ) -= rows( expand<E>( trefvec_ ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Rows-wise expansion with subtraction assignment with evaluated vector (runtime)
+      {
+         test_  = "Rows-wise expansion with subtraction assignment with evaluated vector (runtime)";
+         error_ = "Failed subtraction assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) -= rows( expand( eval( vec_ ), E ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) -= rows( expand( eval( vec_ ), E ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) -= rows( expand( eval( vec_ ), E ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) -= rows( expand( eval( vec_ ), E ), &indices[index], n );
+               rows( refres_, &indices[index], n ) -= rows( expand( eval( refvec_ ), E ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               rows( tdres_  , &tindices[index], n ) -= rows( expand( eval( tvec_ ), E ), &tindices[index], n );
+               rows( todres_ , &tindices[index], n ) -= rows( expand( eval( tvec_ ), E ), &tindices[index], n );
+               rows( tsres_  , &tindices[index], n ) -= rows( expand( eval( tvec_ ), E ), &tindices[index], n );
+               rows( tosres_ , &tindices[index], n ) -= rows( expand( eval( tvec_ ), E ), &tindices[index], n );
+               rows( trefres_, &tindices[index], n ) -= rows( expand( eval( trefvec_ ), E ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Rows-wise expansion with subtraction assignment with evaluated vector (compile time)
+      {
+         test_  = "Rows-wise expansion with subtraction assignment with evaluated vector (compile time)";
+         error_ = "Failed subtraction assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) -= rows( expand<E>( eval( vec_ ) ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) -= rows( expand<E>( eval( vec_ ) ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) -= rows( expand<E>( eval( vec_ ) ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) -= rows( expand<E>( eval( vec_ ) ), &indices[index], n );
+               rows( refres_, &indices[index], n ) -= rows( expand<E>( eval( refvec_ ) ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               rows( tdres_  , &tindices[index], n ) -= rows( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               rows( todres_ , &tindices[index], n ) -= rows( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               rows( tsres_  , &tindices[index], n ) -= rows( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               rows( tosres_ , &tindices[index], n ) -= rows( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               rows( trefres_, &tindices[index], n ) -= rows( expand<E>( eval( trefvec_ ) ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+
+      //=====================================================================================
+      // Rows-wise expansion with Schur product assignment
+      //=====================================================================================
+
+      // Rows-wise expansion with Schur product assignment with the given vector (runtime)
+      {
+         test_  = "Rows-wise expansion with Schur product assignment with the given vector (runtime)";
+         error_ = "Failed Schur product assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) %= rows( expand( vec_, E ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) %= rows( expand( vec_, E ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) %= rows( expand( vec_, E ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) %= rows( expand( vec_, E ), &indices[index], n );
+               rows( refres_, &indices[index], n ) %= rows( expand( refvec_, E ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               rows( tdres_  , &tindices[index], n ) %= rows( expand( tvec_, E ), &tindices[index], n );
+               rows( todres_ , &tindices[index], n ) %= rows( expand( tvec_, E ), &tindices[index], n );
+               rows( tsres_  , &tindices[index], n ) %= rows( expand( tvec_, E ), &tindices[index], n );
+               rows( tosres_ , &tindices[index], n ) %= rows( expand( tvec_, E ), &tindices[index], n );
+               rows( trefres_, &tindices[index], n ) %= rows( expand( trefvec_, E ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Rows-wise expansion with Schur product assignment with the given vector (compile time)
+      {
+         test_  = "Rows-wise expansion with Schur product assignment with the given vector (compile time)";
+         error_ = "Failed Schur product assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) %= rows( expand<E>( vec_ ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) %= rows( expand<E>( vec_ ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) %= rows( expand<E>( vec_ ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) %= rows( expand<E>( vec_ ), &indices[index], n );
+               rows( refres_, &indices[index], n ) %= rows( expand<E>( refvec_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               rows( tdres_  , &tindices[index], n ) %= rows( expand<E>( tvec_ ), &tindices[index], n );
+               rows( todres_ , &tindices[index], n ) %= rows( expand<E>( tvec_ ), &tindices[index], n );
+               rows( tsres_  , &tindices[index], n ) %= rows( expand<E>( tvec_ ), &tindices[index], n );
+               rows( tosres_ , &tindices[index], n ) %= rows( expand<E>( tvec_ ), &tindices[index], n );
+               rows( trefres_, &tindices[index], n ) %= rows( expand<E>( trefvec_ ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Rows-wise expansion with Schur product assignment with evaluated vector (runtime)
+      {
+         test_  = "Rows-wise expansion with Schur product assignment with evaluated vector (runtime)";
+         error_ = "Failed Schur product assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) %= rows( expand( eval( vec_ ), E ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) %= rows( expand( eval( vec_ ), E ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) %= rows( expand( eval( vec_ ), E ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) %= rows( expand( eval( vec_ ), E ), &indices[index], n );
+               rows( refres_, &indices[index], n ) %= rows( expand( eval( refvec_ ), E ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               rows( tdres_  , &tindices[index], n ) %= rows( expand( eval( tvec_ ), E ), &tindices[index], n );
+               rows( todres_ , &tindices[index], n ) %= rows( expand( eval( tvec_ ), E ), &tindices[index], n );
+               rows( tsres_  , &tindices[index], n ) %= rows( expand( eval( tvec_ ), E ), &tindices[index], n );
+               rows( tosres_ , &tindices[index], n ) %= rows( expand( eval( tvec_ ), E ), &tindices[index], n );
+               rows( trefres_, &tindices[index], n ) %= rows( expand( eval( trefvec_ ), E ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Rows-wise expansion with Schur product assignment with evaluated vector (compile time)
+      {
+         test_  = "Rows-wise expansion with Schur product assignment with evaluated vector (compile time)";
+         error_ = "Failed Schur product assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               rows( dres_  , &indices[index], n ) %= rows( expand<E>( eval( vec_ ) ), &indices[index], n );
+               rows( odres_ , &indices[index], n ) %= rows( expand<E>( eval( vec_ ) ), &indices[index], n );
+               rows( sres_  , &indices[index], n ) %= rows( expand<E>( eval( vec_ ) ), &indices[index], n );
+               rows( osres_ , &indices[index], n ) %= rows( expand<E>( eval( vec_ ) ), &indices[index], n );
+               rows( refres_, &indices[index], n ) %= rows( expand<E>( eval( refvec_ ) ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               rows( tdres_  , &tindices[index], n ) %= rows( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               rows( todres_ , &tindices[index], n ) %= rows( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               rows( tsres_  , &tindices[index], n ) %= rows( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               rows( tosres_ , &tindices[index], n ) %= rows( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               rows( trefres_, &tindices[index], n ) %= rows( expand<E>( eval( trefvec_ ) ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the rows-wise dense vector expansion operation.
+//
+// \return void
+//
+// This function is called in case the rows-wise dense vector expansion operation is not
+// available for the given vector type \a VT.
+*/
+template< typename VT  // Type of the dense vector
+        , size_t E >   // Compile time expansion
+void OperationTest<VT,E>::testRowsOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the column-wise dense vector expansion operation.
+//
+// \return void
+// \exception std::runtime_error Expansion error detected.
+//
+// This function tests the column-wise vector expansion with plain assignment, addition
+// assignment, subtraction assignment, and Schur product assignment. In case any error resulting
+// from the addition or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
+*/
+template< typename VT  // Type of the dense vector
+        , size_t E >   // Compile time expansion
+void OperationTest<VT,E>::testColumnOperation( blaze::TrueType )
+{
+#if BLAZETEST_MATHTEST_TEST_COLUMN_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_COLUMN_OPERATION > 1 )
+   {
+      using blaze::expand;
+
+      if( vec_.size() == 0UL || E == 0UL )
+         return;
+
+
+      //=====================================================================================
+      // Column-wise expansion
+      //=====================================================================================
+
+      // Column-wise expansion with the given vector (runtime)
+      {
+         test_  = "Column-wise expansion with the given vector (runtime)";
+         error_ = "Failed expansion operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               column( dres_  , i ) = column( expand( vec_, E ), i );
+               column( odres_ , i ) = column( expand( vec_, E ), i );
+               column( sres_  , i ) = column( expand( vec_, E ), i );
+               column( osres_ , i ) = column( expand( vec_, E ), i );
+               column( refres_, i ) = column( expand( refvec_, E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               column( tdres_  , i ) = column( expand( tvec_, E ), i );
+               column( todres_ , i ) = column( expand( tvec_, E ), i );
+               column( tsres_  , i ) = column( expand( tvec_, E ), i );
+               column( tosres_ , i ) = column( expand( tvec_, E ), i );
+               column( trefres_, i ) = column( expand( trefvec_, E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Column-wise expansion with the given vector (compile time)
+      {
+         test_  = "Column-wise expansion with the given vector (compile time)";
+         error_ = "Failed expansion operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               column( dres_  , i ) = column( expand<E>( vec_ ), i );
+               column( odres_ , i ) = column( expand<E>( vec_ ), i );
+               column( sres_  , i ) = column( expand<E>( vec_ ), i );
+               column( osres_ , i ) = column( expand<E>( vec_ ), i );
+               column( refres_, i ) = column( expand<E>( refvec_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               column( tdres_  , i ) = column( expand<E>( tvec_ ), i );
+               column( todres_ , i ) = column( expand<E>( tvec_ ), i );
+               column( tsres_  , i ) = column( expand<E>( tvec_ ), i );
+               column( tosres_ , i ) = column( expand<E>( tvec_ ), i );
+               column( trefres_, i ) = column( expand<E>( trefvec_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Column-wise expansion with evaluated vector (runtime)
+      {
+         test_  = "Column-wise expansion with evaluated vector (runtime)";
+         error_ = "Failed expansion operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               column( dres_  , i ) = column( expand( eval( vec_ ), E ), i );
+               column( odres_ , i ) = column( expand( eval( vec_ ), E ), i );
+               column( sres_  , i ) = column( expand( eval( vec_ ), E ), i );
+               column( osres_ , i ) = column( expand( eval( vec_ ), E ), i );
+               column( refres_, i ) = column( expand( eval( refvec_ ), E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               column( tdres_  , i ) = column( expand( eval( tvec_ ), E ), i );
+               column( todres_ , i ) = column( expand( eval( tvec_ ), E ), i );
+               column( tsres_  , i ) = column( expand( eval( tvec_ ), E ), i );
+               column( tosres_ , i ) = column( expand( eval( tvec_ ), E ), i );
+               column( trefres_, i ) = column( expand( eval( trefvec_ ), E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Column-wise expansion with evaluated vector (compile time)
+      {
+         test_  = "Column-wise expansion with evaluated vector (compile time)";
+         error_ = "Failed expansion operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               column( dres_  , i ) = column( expand<E>( eval( vec_ ) ), i );
+               column( odres_ , i ) = column( expand<E>( eval( vec_ ) ), i );
+               column( sres_  , i ) = column( expand<E>( eval( vec_ ) ), i );
+               column( osres_ , i ) = column( expand<E>( eval( vec_ ) ), i );
+               column( refres_, i ) = column( expand<E>( eval( refvec_ ) ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               column( tdres_  , i ) = column( expand<E>( eval( tvec_ ) ), i );
+               column( todres_ , i ) = column( expand<E>( eval( tvec_ ) ), i );
+               column( tsres_  , i ) = column( expand<E>( eval( tvec_ ) ), i );
+               column( tosres_ , i ) = column( expand<E>( eval( tvec_ ) ), i );
+               column( trefres_, i ) = column( expand<E>( eval( trefvec_ ) ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+
+      //=====================================================================================
+      // Column-wise expansion with addition assignment
+      //=====================================================================================
+
+      // Column-wise expansion with addition assignment with the given vector (runtime)
+      {
+         test_  = "Column-wise expansion with addition assignment with the given vector (runtime)";
+         error_ = "Failed addition assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               column( dres_  , i ) += column( expand( vec_, E ), i );
+               column( odres_ , i ) += column( expand( vec_, E ), i );
+               column( sres_  , i ) += column( expand( vec_, E ), i );
+               column( osres_ , i ) += column( expand( vec_, E ), i );
+               column( refres_, i ) += column( expand( refvec_, E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               column( tdres_  , i ) += column( expand( tvec_, E ), i );
+               column( todres_ , i ) += column( expand( tvec_, E ), i );
+               column( tsres_  , i ) += column( expand( tvec_, E ), i );
+               column( tosres_ , i ) += column( expand( tvec_, E ), i );
+               column( trefres_, i ) += column( expand( trefvec_, E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Column-wise expansion with addition assignment with the given vector (compile time)
+      {
+         test_  = "Column-wise expansion with addition assignment with the given vector (compile time)";
+         error_ = "Failed addition assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               column( dres_  , i ) += column( expand<E>( vec_ ), i );
+               column( odres_ , i ) += column( expand<E>( vec_ ), i );
+               column( sres_  , i ) += column( expand<E>( vec_ ), i );
+               column( osres_ , i ) += column( expand<E>( vec_ ), i );
+               column( refres_, i ) += column( expand<E>( refvec_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               column( tdres_  , i ) += column( expand<E>( tvec_ ), i );
+               column( todres_ , i ) += column( expand<E>( tvec_ ), i );
+               column( tsres_  , i ) += column( expand<E>( tvec_ ), i );
+               column( tosres_ , i ) += column( expand<E>( tvec_ ), i );
+               column( trefres_, i ) += column( expand<E>( trefvec_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Column-wise expansion with addition assignment with evaluated vector (runtime)
+      {
+         test_  = "Column-wise expansion with addition assignment with evaluated vector (runtime)";
+         error_ = "Failed addition assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               column( dres_  , i ) += column( expand( eval( vec_ ), E ), i );
+               column( odres_ , i ) += column( expand( eval( vec_ ), E ), i );
+               column( sres_  , i ) += column( expand( eval( vec_ ), E ), i );
+               column( osres_ , i ) += column( expand( eval( vec_ ), E ), i );
+               column( refres_, i ) += column( expand( eval( refvec_ ), E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               column( tdres_  , i ) += column( expand( eval( tvec_ ), E ), i );
+               column( todres_ , i ) += column( expand( eval( tvec_ ), E ), i );
+               column( tsres_  , i ) += column( expand( eval( tvec_ ), E ), i );
+               column( tosres_ , i ) += column( expand( eval( tvec_ ), E ), i );
+               column( trefres_, i ) += column( expand( eval( trefvec_ ), E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Column-wise expansion with addition assignment with evaluated vector (compile time)
+      {
+         test_  = "Column-wise expansion with addition assignment with evaluated vector (compile time)";
+         error_ = "Failed addition assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               column( dres_  , i ) += column( expand<E>( eval( vec_ ) ), i );
+               column( odres_ , i ) += column( expand<E>( eval( vec_ ) ), i );
+               column( sres_  , i ) += column( expand<E>( eval( vec_ ) ), i );
+               column( osres_ , i ) += column( expand<E>( eval( vec_ ) ), i );
+               column( refres_, i ) += column( expand<E>( eval( refvec_ ) ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               column( tdres_  , i ) += column( expand<E>( eval( tvec_ ) ), i );
+               column( todres_ , i ) += column( expand<E>( eval( tvec_ ) ), i );
+               column( tsres_  , i ) += column( expand<E>( eval( tvec_ ) ), i );
+               column( tosres_ , i ) += column( expand<E>( eval( tvec_ ) ), i );
+               column( trefres_, i ) += column( expand<E>( eval( trefvec_ ) ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+
+      //=====================================================================================
+      // Column-wise expansion with subtraction assignment
+      //=====================================================================================
+
+      // Column-wise expansion with subtraction assignment with the given vector (runtime)
+      {
+         test_  = "Column-wise expansion with subtraction assignment with the given vector (runtime)";
+         error_ = "Failed subtraction assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               column( dres_  , i ) -= column( expand( vec_, E ), i );
+               column( odres_ , i ) -= column( expand( vec_, E ), i );
+               column( sres_  , i ) -= column( expand( vec_, E ), i );
+               column( osres_ , i ) -= column( expand( vec_, E ), i );
+               column( refres_, i ) -= column( expand( refvec_, E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               column( tdres_  , i ) -= column( expand( tvec_, E ), i );
+               column( todres_ , i ) -= column( expand( tvec_, E ), i );
+               column( tsres_  , i ) -= column( expand( tvec_, E ), i );
+               column( tosres_ , i ) -= column( expand( tvec_, E ), i );
+               column( trefres_, i ) -= column( expand( trefvec_, E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Column-wise expansion with subtraction assignment with the given vector (compile time)
+      {
+         test_  = "Column-wise expansion with subtraction assignment with the given vector (compile time)";
+         error_ = "Failed subtraction assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               column( dres_  , i ) -= column( expand<E>( vec_ ), i );
+               column( odres_ , i ) -= column( expand<E>( vec_ ), i );
+               column( sres_  , i ) -= column( expand<E>( vec_ ), i );
+               column( osres_ , i ) -= column( expand<E>( vec_ ), i );
+               column( refres_, i ) -= column( expand<E>( refvec_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               column( tdres_  , i ) -= column( expand<E>( tvec_ ), i );
+               column( todres_ , i ) -= column( expand<E>( tvec_ ), i );
+               column( tsres_  , i ) -= column( expand<E>( tvec_ ), i );
+               column( tosres_ , i ) -= column( expand<E>( tvec_ ), i );
+               column( trefres_, i ) -= column( expand<E>( trefvec_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Column-wise expansion with subtraction assignment with evaluated vector (runtime)
+      {
+         test_  = "Column-wise expansion with subtraction assignment with evaluated vector (runtime)";
+         error_ = "Failed subtraction assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               column( dres_  , i ) -= column( expand( eval( vec_ ), E ), i );
+               column( odres_ , i ) -= column( expand( eval( vec_ ), E ), i );
+               column( sres_  , i ) -= column( expand( eval( vec_ ), E ), i );
+               column( osres_ , i ) -= column( expand( eval( vec_ ), E ), i );
+               column( refres_, i ) -= column( expand( eval( refvec_ ), E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               column( tdres_  , i ) -= column( expand( eval( tvec_ ), E ), i );
+               column( todres_ , i ) -= column( expand( eval( tvec_ ), E ), i );
+               column( tsres_  , i ) -= column( expand( eval( tvec_ ), E ), i );
+               column( tosres_ , i ) -= column( expand( eval( tvec_ ), E ), i );
+               column( trefres_, i ) -= column( expand( eval( trefvec_ ), E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Column-wise expansion with subtraction assignment with evaluated vector (compile time)
+      {
+         test_  = "Column-wise expansion with subtraction assignment with evaluated vector (compile time)";
+         error_ = "Failed subtraction assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               column( dres_  , i ) -= column( expand<E>( eval( vec_ ) ), i );
+               column( odres_ , i ) -= column( expand<E>( eval( vec_ ) ), i );
+               column( sres_  , i ) -= column( expand<E>( eval( vec_ ) ), i );
+               column( osres_ , i ) -= column( expand<E>( eval( vec_ ) ), i );
+               column( refres_, i ) -= column( expand<E>( eval( refvec_ ) ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               column( tdres_  , i ) -= column( expand<E>( eval( tvec_ ) ), i );
+               column( todres_ , i ) -= column( expand<E>( eval( tvec_ ) ), i );
+               column( tsres_  , i ) -= column( expand<E>( eval( tvec_ ) ), i );
+               column( tosres_ , i ) -= column( expand<E>( eval( tvec_ ) ), i );
+               column( trefres_, i ) -= column( expand<E>( eval( trefvec_ ) ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+
+      //=====================================================================================
+      // Column-wise expansion with multiplication assignment
+      //=====================================================================================
+
+      // Column-wise expansion with multiplication assignment with the given vector (runtime)
+      {
+         test_  = "Column-wise expansion with multiplication assignment with the given vector (runtime)";
+         error_ = "Failed multiplication assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               column( dres_  , i ) *= column( expand( vec_, E ), i );
+               column( odres_ , i ) *= column( expand( vec_, E ), i );
+               column( sres_  , i ) *= column( expand( vec_, E ), i );
+               column( osres_ , i ) *= column( expand( vec_, E ), i );
+               column( refres_, i ) *= column( expand( refvec_, E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               column( tdres_  , i ) *= column( expand( tvec_, E ), i );
+               column( todres_ , i ) *= column( expand( tvec_, E ), i );
+               column( tsres_  , i ) *= column( expand( tvec_, E ), i );
+               column( tosres_ , i ) *= column( expand( tvec_, E ), i );
+               column( trefres_, i ) *= column( expand( trefvec_, E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Column-wise expansion with multiplication assignment with the given vector (compile time)
+      {
+         test_  = "Column-wise expansion with multiplication assignment with the given vector (compile time)";
+         error_ = "Failed multiplication assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               column( dres_  , i ) *= column( expand<E>( vec_ ), i );
+               column( odres_ , i ) *= column( expand<E>( vec_ ), i );
+               column( sres_  , i ) *= column( expand<E>( vec_ ), i );
+               column( osres_ , i ) *= column( expand<E>( vec_ ), i );
+               column( refres_, i ) *= column( expand<E>( refvec_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               column( tdres_  , i ) *= column( expand<E>( tvec_ ), i );
+               column( todres_ , i ) *= column( expand<E>( tvec_ ), i );
+               column( tsres_  , i ) *= column( expand<E>( tvec_ ), i );
+               column( tosres_ , i ) *= column( expand<E>( tvec_ ), i );
+               column( trefres_, i ) *= column( expand<E>( trefvec_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Column-wise expansion with multiplication assignment with evaluated vector (runtime)
+      {
+         test_  = "Column-wise expansion with multiplication assignment with evaluated vector (runtime)";
+         error_ = "Failed multiplication assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               column( dres_  , i ) *= column( expand( eval( vec_ ), E ), i );
+               column( odres_ , i ) *= column( expand( eval( vec_ ), E ), i );
+               column( sres_  , i ) *= column( expand( eval( vec_ ), E ), i );
+               column( osres_ , i ) *= column( expand( eval( vec_ ), E ), i );
+               column( refres_, i ) *= column( expand( eval( refvec_ ), E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               column( tdres_  , i ) *= column( expand( eval( tvec_ ), E ), i );
+               column( todres_ , i ) *= column( expand( eval( tvec_ ), E ), i );
+               column( tsres_  , i ) *= column( expand( eval( tvec_ ), E ), i );
+               column( tosres_ , i ) *= column( expand( eval( tvec_ ), E ), i );
+               column( trefres_, i ) *= column( expand( eval( trefvec_ ), E ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Column-wise expansion with multiplication assignment with evaluated vector (compile time)
+      {
+         test_  = "Column-wise expansion with multiplication assignment with evaluated vector (compile time)";
+         error_ = "Failed multiplication assignment";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<E; ++i ) {
+               column( dres_  , i ) *= column( expand<E>( eval( vec_ ) ), i );
+               column( odres_ , i ) *= column( expand<E>( eval( vec_ ) ), i );
+               column( sres_  , i ) *= column( expand<E>( eval( vec_ ) ), i );
+               column( osres_ , i ) *= column( expand<E>( eval( vec_ ) ), i );
+               column( refres_, i ) *= column( expand<E>( eval( refvec_ ) ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t i=0UL; i<vec_.size(); ++i ) {
+               column( tdres_  , i ) *= column( expand<E>( eval( tvec_ ) ), i );
+               column( todres_ , i ) *= column( expand<E>( eval( tvec_ ) ), i );
+               column( tsres_  , i ) *= column( expand<E>( eval( tvec_ ) ), i );
+               column( tosres_ , i ) *= column( expand<E>( eval( tvec_ ) ), i );
+               column( trefres_, i ) *= column( expand<E>( eval( trefvec_ ) ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the column-wise dense vector expansion operation.
+//
+// \return void
+//
+// This function is called in case the column-wise dense vector expansion operation is not
+// available for the given vector type \a VT.
+*/
+template< typename VT  // Type of the dense vector
+        , size_t E >   // Compile time expansion
+void OperationTest<VT,E>::testColumnOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the columns-wise dense vector expansion operation.
+//
+// \return void
+// \exception std::runtime_error Expansion error detected.
+//
+// This function tests the columns-wise vector expansion with plain assignment, addition assignment,
+// subtraction assignment, and Schur product assignment. In case any error resulting from the
+// addition or the subsequent assignment is detected, a \a std::runtime_error exception is
+// thrown.
+*/
+template< typename VT  // Type of the dense vector
+        , size_t E >   // Compile time expansion
+void OperationTest<VT,E>::testColumnsOperation( blaze::TrueType )
+{
+#if BLAZETEST_MATHTEST_TEST_COLUMNS_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_COLUMNS_OPERATION > 1 )
+   {
+      using blaze::expand;
+
+      if( vec_.size() == 0UL || E == 0UL )
+         return;
+
+
+      std::vector<size_t> indices( E );
+      std::iota( indices.begin(), indices.end(), 0UL );
+      std::random_shuffle( indices.begin(), indices.end() );
+
+      std::vector<size_t> tindices( vec_.size() );
+      std::iota( tindices.begin(), tindices.end(), 0UL );
+      std::random_shuffle( tindices.begin(), tindices.end() );
+
+
+      //=====================================================================================
+      // Columns-wise expansion
+      //=====================================================================================
+
+      // Columns-wise expansion with the given vector (runtime)
+      {
+         test_  = "Columns-wise expansion with the given vector (runtime)";
+         error_ = "Failed expansion operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) = columns( expand( vec_, E ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) = columns( expand( vec_, E ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) = columns( expand( vec_, E ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) = columns( expand( vec_, E ), &indices[index], n );
+               columns( refres_, &indices[index], n ) = columns( expand( refvec_, E ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               columns( tdres_  , &tindices[index], n ) = columns( expand( tvec_, E ), &tindices[index], n );
+               columns( todres_ , &tindices[index], n ) = columns( expand( tvec_, E ), &tindices[index], n );
+               columns( tsres_  , &tindices[index], n ) = columns( expand( tvec_, E ), &tindices[index], n );
+               columns( tosres_ , &tindices[index], n ) = columns( expand( tvec_, E ), &tindices[index], n );
+               columns( trefres_, &tindices[index], n ) = columns( expand( trefvec_, E ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Columns-wise expansion with the given vector (compile time)
+      {
+         test_  = "Columns-wise expansion with the given vector (compile time)";
+         error_ = "Failed expansion operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) = columns( expand<E>( vec_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) = columns( expand<E>( vec_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) = columns( expand<E>( vec_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) = columns( expand<E>( vec_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) = columns( expand<E>( refvec_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               columns( tdres_  , &tindices[index], n ) = columns( expand<E>( tvec_ ), &tindices[index], n );
+               columns( todres_ , &tindices[index], n ) = columns( expand<E>( tvec_ ), &tindices[index], n );
+               columns( tsres_  , &tindices[index], n ) = columns( expand<E>( tvec_ ), &tindices[index], n );
+               columns( tosres_ , &tindices[index], n ) = columns( expand<E>( tvec_ ), &tindices[index], n );
+               columns( trefres_, &tindices[index], n ) = columns( expand<E>( trefvec_ ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Columns-wise expansion with evaluated vector (runtime)
+      {
+         test_  = "Columns-wise expansion with evaluated vector (runtime)";
+         error_ = "Failed expansion operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) = columns( expand( eval( vec_ ), E ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) = columns( expand( eval( vec_ ), E ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) = columns( expand( eval( vec_ ), E ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) = columns( expand( eval( vec_ ), E ), &indices[index], n );
+               columns( refres_, &indices[index], n ) = columns( expand( eval( refvec_ ), E ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               columns( tdres_  , &tindices[index], n ) = columns( expand( eval( tvec_ ), E ), &tindices[index], n );
+               columns( todres_ , &tindices[index], n ) = columns( expand( eval( tvec_ ), E ), &tindices[index], n );
+               columns( tsres_  , &tindices[index], n ) = columns( expand( eval( tvec_ ), E ), &tindices[index], n );
+               columns( tosres_ , &tindices[index], n ) = columns( expand( eval( tvec_ ), E ), &tindices[index], n );
+               columns( trefres_, &tindices[index], n ) = columns( expand( eval( trefvec_ ), E ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Columns-wise expansion with evaluated vector (compile time)
+      {
+         test_  = "Columns-wise expansion with evaluated vector (compile time)";
+         error_ = "Failed expansion operation";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) = columns( expand<E>( eval( vec_ ) ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) = columns( expand<E>( eval( vec_ ) ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) = columns( expand<E>( eval( vec_ ) ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) = columns( expand<E>( eval( vec_ ) ), &indices[index], n );
+               columns( refres_, &indices[index], n ) = columns( expand<E>( eval( refvec_ ) ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               columns( tdres_  , &tindices[index], n ) = columns( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               columns( todres_ , &tindices[index], n ) = columns( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               columns( tsres_  , &tindices[index], n ) = columns( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               columns( tosres_ , &tindices[index], n ) = columns( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               columns( trefres_, &tindices[index], n ) = columns( expand<E>( eval( trefvec_ ) ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+
+      //=====================================================================================
+      // Columns-wise expansion with addition assignment
+      //=====================================================================================
+
+      // Columns-wise expansion with addition assignment with the given vector (runtime)
+      {
+         test_  = "Columns-wise expansion with addition assignment with the given vector (runtime)";
+         error_ = "Failed addition assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) += columns( expand( vec_, E ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) += columns( expand( vec_, E ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) += columns( expand( vec_, E ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) += columns( expand( vec_, E ), &indices[index], n );
+               columns( refres_, &indices[index], n ) += columns( expand( refvec_, E ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               columns( tdres_  , &tindices[index], n ) += columns( expand( tvec_, E ), &tindices[index], n );
+               columns( todres_ , &tindices[index], n ) += columns( expand( tvec_, E ), &tindices[index], n );
+               columns( tsres_  , &tindices[index], n ) += columns( expand( tvec_, E ), &tindices[index], n );
+               columns( tosres_ , &tindices[index], n ) += columns( expand( tvec_, E ), &tindices[index], n );
+               columns( trefres_, &tindices[index], n ) += columns( expand( trefvec_, E ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Columns-wise expansion with addition assignment with the given vector (compile time)
+      {
+         test_  = "Columns-wise expansion with addition assignment with the given vector (compile time)";
+         error_ = "Failed addition assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) += columns( expand<E>( vec_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) += columns( expand<E>( vec_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) += columns( expand<E>( vec_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) += columns( expand<E>( vec_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) += columns( expand<E>( refvec_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               columns( tdres_  , &tindices[index], n ) += columns( expand<E>( tvec_ ), &tindices[index], n );
+               columns( todres_ , &tindices[index], n ) += columns( expand<E>( tvec_ ), &tindices[index], n );
+               columns( tsres_  , &tindices[index], n ) += columns( expand<E>( tvec_ ), &tindices[index], n );
+               columns( tosres_ , &tindices[index], n ) += columns( expand<E>( tvec_ ), &tindices[index], n );
+               columns( trefres_, &tindices[index], n ) += columns( expand<E>( trefvec_ ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Columns-wise expansion with addition assignment with evaluated vector (runtime)
+      {
+         test_  = "Columns-wise expansion with addition assignment with evaluated vector (runtime)";
+         error_ = "Failed addition assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) += columns( expand( eval( vec_ ), E ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) += columns( expand( eval( vec_ ), E ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) += columns( expand( eval( vec_ ), E ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) += columns( expand( eval( vec_ ), E ), &indices[index], n );
+               columns( refres_, &indices[index], n ) += columns( expand( eval( refvec_ ), E ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               columns( tdres_  , &tindices[index], n ) += columns( expand( eval( tvec_ ), E ), &tindices[index], n );
+               columns( todres_ , &tindices[index], n ) += columns( expand( eval( tvec_ ), E ), &tindices[index], n );
+               columns( tsres_  , &tindices[index], n ) += columns( expand( eval( tvec_ ), E ), &tindices[index], n );
+               columns( tosres_ , &tindices[index], n ) += columns( expand( eval( tvec_ ), E ), &tindices[index], n );
+               columns( trefres_, &tindices[index], n ) += columns( expand( eval( trefvec_ ), E ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Columns-wise expansion with addition assignment with evaluated vector (compile time)
+      {
+         test_  = "Columns-wise expansion with addition assignment with evaluated vector (compile time)";
+         error_ = "Failed addition assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) += columns( expand<E>( eval( vec_ ) ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) += columns( expand<E>( eval( vec_ ) ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) += columns( expand<E>( eval( vec_ ) ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) += columns( expand<E>( eval( vec_ ) ), &indices[index], n );
+               columns( refres_, &indices[index], n ) += columns( expand<E>( eval( refvec_ ) ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               columns( tdres_  , &tindices[index], n ) += columns( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               columns( todres_ , &tindices[index], n ) += columns( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               columns( tsres_  , &tindices[index], n ) += columns( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               columns( tosres_ , &tindices[index], n ) += columns( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               columns( trefres_, &tindices[index], n ) += columns( expand<E>( eval( trefvec_ ) ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+
+      //=====================================================================================
+      // Columns-wise expansion with subtraction assignment
+      //=====================================================================================
+
+      // Columns-wise expansion with subtraction assignment with the given vector (runtime)
+      {
+         test_  = "Columns-wise expansion with subtraction assignment with the given vector (runtime)";
+         error_ = "Failed subtraction assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) -= columns( expand( vec_, E ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) -= columns( expand( vec_, E ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) -= columns( expand( vec_, E ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) -= columns( expand( vec_, E ), &indices[index], n );
+               columns( refres_, &indices[index], n ) -= columns( expand( refvec_, E ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               columns( tdres_  , &tindices[index], n ) -= columns( expand( tvec_, E ), &tindices[index], n );
+               columns( todres_ , &tindices[index], n ) -= columns( expand( tvec_, E ), &tindices[index], n );
+               columns( tsres_  , &tindices[index], n ) -= columns( expand( tvec_, E ), &tindices[index], n );
+               columns( tosres_ , &tindices[index], n ) -= columns( expand( tvec_, E ), &tindices[index], n );
+               columns( trefres_, &tindices[index], n ) -= columns( expand( trefvec_, E ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Columns-wise expansion with subtraction assignment with the given vector (compile time)
+      {
+         test_  = "Columns-wise expansion with subtraction assignment with the given vector (compile time)";
+         error_ = "Failed subtraction assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) -= columns( expand<E>( vec_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) -= columns( expand<E>( vec_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) -= columns( expand<E>( vec_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) -= columns( expand<E>( vec_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) -= columns( expand<E>( refvec_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               columns( tdres_  , &tindices[index], n ) -= columns( expand<E>( tvec_ ), &tindices[index], n );
+               columns( todres_ , &tindices[index], n ) -= columns( expand<E>( tvec_ ), &tindices[index], n );
+               columns( tsres_  , &tindices[index], n ) -= columns( expand<E>( tvec_ ), &tindices[index], n );
+               columns( tosres_ , &tindices[index], n ) -= columns( expand<E>( tvec_ ), &tindices[index], n );
+               columns( trefres_, &tindices[index], n ) -= columns( expand<E>( trefvec_ ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Columns-wise expansion with subtraction assignment with evaluated vector (runtime)
+      {
+         test_  = "Columns-wise expansion with subtraction assignment with evaluated vector (runtime)";
+         error_ = "Failed subtraction assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) -= columns( expand( eval( vec_ ), E ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) -= columns( expand( eval( vec_ ), E ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) -= columns( expand( eval( vec_ ), E ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) -= columns( expand( eval( vec_ ), E ), &indices[index], n );
+               columns( refres_, &indices[index], n ) -= columns( expand( eval( refvec_ ), E ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               columns( tdres_  , &tindices[index], n ) -= columns( expand( eval( tvec_ ), E ), &tindices[index], n );
+               columns( todres_ , &tindices[index], n ) -= columns( expand( eval( tvec_ ), E ), &tindices[index], n );
+               columns( tsres_  , &tindices[index], n ) -= columns( expand( eval( tvec_ ), E ), &tindices[index], n );
+               columns( tosres_ , &tindices[index], n ) -= columns( expand( eval( tvec_ ), E ), &tindices[index], n );
+               columns( trefres_, &tindices[index], n ) -= columns( expand( eval( trefvec_ ), E ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Columns-wise expansion with subtraction assignment with evaluated vector (compile time)
+      {
+         test_  = "Columns-wise expansion with subtraction assignment with evaluated vector (compile time)";
+         error_ = "Failed subtraction assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) -= columns( expand<E>( eval( vec_ ) ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) -= columns( expand<E>( eval( vec_ ) ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) -= columns( expand<E>( eval( vec_ ) ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) -= columns( expand<E>( eval( vec_ ) ), &indices[index], n );
+               columns( refres_, &indices[index], n ) -= columns( expand<E>( eval( refvec_ ) ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               columns( tdres_  , &tindices[index], n ) -= columns( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               columns( todres_ , &tindices[index], n ) -= columns( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               columns( tsres_  , &tindices[index], n ) -= columns( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               columns( tosres_ , &tindices[index], n ) -= columns( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               columns( trefres_, &tindices[index], n ) -= columns( expand<E>( eval( trefvec_ ) ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+
+      //=====================================================================================
+      // Columns-wise expansion with Schur product assignment
+      //=====================================================================================
+
+      // Columns-wise expansion with Schur product assignment with the given vector (runtime)
+      {
+         test_  = "Columns-wise expansion with Schur product assignment with the given vector (runtime)";
+         error_ = "Failed Schur product assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) %= columns( expand( vec_, E ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) %= columns( expand( vec_, E ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) %= columns( expand( vec_, E ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) %= columns( expand( vec_, E ), &indices[index], n );
+               columns( refres_, &indices[index], n ) %= columns( expand( refvec_, E ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               columns( tdres_  , &tindices[index], n ) %= columns( expand( tvec_, E ), &tindices[index], n );
+               columns( todres_ , &tindices[index], n ) %= columns( expand( tvec_, E ), &tindices[index], n );
+               columns( tsres_  , &tindices[index], n ) %= columns( expand( tvec_, E ), &tindices[index], n );
+               columns( tosres_ , &tindices[index], n ) %= columns( expand( tvec_, E ), &tindices[index], n );
+               columns( trefres_, &tindices[index], n ) %= columns( expand( trefvec_, E ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Columns-wise expansion with Schur product assignment with the given vector (compile time)
+      {
+         test_  = "Columns-wise expansion with Schur product assignment with the given vector (compile time)";
+         error_ = "Failed Schur product assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) %= columns( expand<E>( vec_ ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) %= columns( expand<E>( vec_ ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) %= columns( expand<E>( vec_ ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) %= columns( expand<E>( vec_ ), &indices[index], n );
+               columns( refres_, &indices[index], n ) %= columns( expand<E>( refvec_ ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               columns( tdres_  , &tindices[index], n ) %= columns( expand<E>( tvec_ ), &tindices[index], n );
+               columns( todres_ , &tindices[index], n ) %= columns( expand<E>( tvec_ ), &tindices[index], n );
+               columns( tsres_  , &tindices[index], n ) %= columns( expand<E>( tvec_ ), &tindices[index], n );
+               columns( tosres_ , &tindices[index], n ) %= columns( expand<E>( tvec_ ), &tindices[index], n );
+               columns( trefres_, &tindices[index], n ) %= columns( expand<E>( trefvec_ ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Columns-wise expansion with Schur product assignment with evaluated vector (runtime)
+      {
+         test_  = "Columns-wise expansion with Schur product assignment with evaluated vector (runtime)";
+         error_ = "Failed Schur product assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) %= columns( expand( eval( vec_ ), E ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) %= columns( expand( eval( vec_ ), E ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) %= columns( expand( eval( vec_ ), E ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) %= columns( expand( eval( vec_ ), E ), &indices[index], n );
+               columns( refres_, &indices[index], n ) %= columns( expand( eval( refvec_ ), E ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               columns( tdres_  , &tindices[index], n ) %= columns( expand( eval( tvec_ ), E ), &tindices[index], n );
+               columns( todres_ , &tindices[index], n ) %= columns( expand( eval( tvec_ ), E ), &tindices[index], n );
+               columns( tsres_  , &tindices[index], n ) %= columns( expand( eval( tvec_ ), E ), &tindices[index], n );
+               columns( tosres_ , &tindices[index], n ) %= columns( expand( eval( tvec_ ), E ), &tindices[index], n );
+               columns( trefres_, &tindices[index], n ) %= columns( expand( eval( trefvec_ ), E ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+
+      // Columns-wise expansion with Schur product assignment with evaluated vector (compile time)
+      {
+         test_  = "Columns-wise expansion with Schur product assignment with evaluated vector (compile time)";
+         error_ = "Failed Schur product assignment";
+
+         try {
+            initResults();
+            for( size_t index=0UL, n=0UL; index<indices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, indices.size() - index );
+               columns( dres_  , &indices[index], n ) %= columns( expand<E>( eval( vec_ ) ), &indices[index], n );
+               columns( odres_ , &indices[index], n ) %= columns( expand<E>( eval( vec_ ) ), &indices[index], n );
+               columns( sres_  , &indices[index], n ) %= columns( expand<E>( eval( vec_ ) ), &indices[index], n );
+               columns( osres_ , &indices[index], n ) %= columns( expand<E>( eval( vec_ ) ), &indices[index], n );
+               columns( refres_, &indices[index], n ) %= columns( expand<E>( eval( refvec_ ) ), &indices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<VT>( ex );
+         }
+
+         checkResults<VT>();
+
+         try {
+            initTransposeResults();
+            for( size_t index=0UL, n=0UL; index<tindices.size(); index+=n ) {
+               n = blaze::rand<size_t>( 1UL, tindices.size() - index );
+               columns( tdres_  , &tindices[index], n ) %= columns( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               columns( todres_ , &tindices[index], n ) %= columns( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               columns( tsres_  , &tindices[index], n ) %= columns( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               columns( tosres_ , &tindices[index], n ) %= columns( expand<E>( eval( tvec_ ) ), &tindices[index], n );
+               columns( trefres_, &tindices[index], n ) %= columns( expand<E>( eval( trefvec_ ) ), &tindices[index], n );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<TVT>( ex );
+         }
+
+         checkTransposeResults<TVT>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the columns-wise dense vector expansion operation.
+//
+// \return void
+//
+// This function is called in case the columns-wise dense vector expansion operation is not
+// available for the given vector type \a VT.
+*/
+template< typename VT  // Type of the dense vector
+        , size_t E >   // Compile time expansion
+void OperationTest<VT,E>::testColumnsOperation( blaze::FalseType )
 {}
 //*************************************************************************************************
 
