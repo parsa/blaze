@@ -44,6 +44,10 @@
 #include <blaze/math/StaticMatrix.h>
 #include <blazetest/mathtest/lowermatrix/SparseTest.h>
 
+#ifdef BLAZE_USE_HPX_THREADS
+#  include <hpx/hpx_main.hpp>
+#endif
+
 
 namespace blazetest {
 

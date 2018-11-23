@@ -41,6 +41,10 @@
 #include <iostream>
 #include <blazetest/mathtest/unilowermatrix/SubmatrixTest.h>
 
+#ifdef BLAZE_USE_HPX_THREADS
+#  include <hpx/hpx_main.hpp>
+#endif
+
 
 namespace blazetest {
 

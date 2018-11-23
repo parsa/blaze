@@ -51,6 +51,10 @@
 #include <blazetest/mathtest/eigen/DenseTest.h>
 #include <blazetest/system/LAPACK.h>
 
+#ifdef BLAZE_USE_HPX_THREADS
+#  include <hpx/hpx_main.hpp>
+#endif
+
 
 namespace blazetest {
 

@@ -48,6 +48,10 @@
 #include <blaze/util/policies/Deallocate.h>
 #include <blazetest/mathtest/columns/DenseGeneralTest.h>
 
+#ifdef BLAZE_USE_HPX_THREADS
+#  include <hpx/hpx_main.hpp>
+#endif
+
 
 namespace blazetest {
 

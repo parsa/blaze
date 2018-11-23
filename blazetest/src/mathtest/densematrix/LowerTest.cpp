@@ -44,6 +44,10 @@
 #include <blaze/math/LowerMatrix.h>
 #include <blazetest/mathtest/densematrix/LowerTest.h>
 
+#ifdef BLAZE_USE_HPX_THREADS
+#  include <hpx/hpx_main.hpp>
+#endif
+
 
 namespace blazetest {
 

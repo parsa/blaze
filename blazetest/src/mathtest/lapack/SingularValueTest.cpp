@@ -42,6 +42,10 @@
 #include <blaze/util/Complex.h>
 #include <blazetest/mathtest/lapack/SingularValueTest.h>
 
+#ifdef BLAZE_USE_HPX_THREADS
+#  include <hpx/hpx_main.hpp>
+#endif
+
 
 namespace blazetest {
 

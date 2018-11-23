@@ -44,6 +44,10 @@
 #include <blaze/math/DynamicMatrix.h>
 #include <blazetest/mathtest/densematrix/DiagonalTest.h>
 
+#ifdef BLAZE_USE_HPX_THREADS
+#  include <hpx/hpx_main.hpp>
+#endif
+
 
 namespace blazetest {
 

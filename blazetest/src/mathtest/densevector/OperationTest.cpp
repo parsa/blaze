@@ -44,6 +44,10 @@
 #include <blazetest/mathtest/densevector/OperationTest.h>
 #include <blazetest/mathtest/IsEqual.h>
 
+#ifdef BLAZE_USE_HPX_THREADS
+#  include <hpx/hpx_main.hpp>
+#endif
+
 
 namespace blazetest {
 
