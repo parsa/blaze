@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/InitializerList.h>
@@ -66,7 +67,7 @@ inline size_t nonZeros( initializer_list<Type> list ) noexcept
    size_t nonzeros( 0UL );
 
    for( const Type& element : list ) {
-      if( !isDefault( element ) )
+      if( !isDefault<strict>( element ) )
          ++nonzeros;
    }
 
