@@ -264,7 +264,7 @@ inline auto operator/=( SparseVector<VT,TF>&& vec, ST scalar )
 template< typename VT, bool TF >
 bool isnan( const SparseVector<VT,TF>& sv );
 
-template< typename VT, bool TF >
+template< bool RF, typename VT, bool TF >
 bool isUniform( const SparseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
@@ -331,6 +331,13 @@ inline bool isnan( const SparseVector<VT,TF>& sv )
    if( isUniform( a ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isUniform<relaxed>( a ) ) { ... }
+   \endcode
+
 // It is also possible to check if a vector expression results in a uniform vector:
 
    \code
@@ -340,7 +347,8 @@ inline bool isnan( const SparseVector<VT,TF>& sv )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary vector.
 */
-template< typename VT  // Type of the sparse vector
+template< bool RF      // Relaxation flag
+        , typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 bool isUniform( const SparseVector<VT,TF>& sv )
 {
@@ -355,7 +363,7 @@ bool isUniform( const SparseVector<VT,TF>& sv )
    if( a.nonZeros() != a.size() )
    {
       for( ConstIterator element=a.begin(); element!=a.end(); ++element ) {
-         if( !isDefault( element->value() ) )
+         if( !isDefault<RF>( element->value() ) )
             return false;
       }
    }
@@ -367,7 +375,7 @@ bool isUniform( const SparseVector<VT,TF>& sv )
       ++element;
 
       for( ; element!=a.end(); ++element ) {
-         if( element->value() != cmp )
+         if( !equal<RF>( element->value(), cmp ) )
             return false;
       }
    }

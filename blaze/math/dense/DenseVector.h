@@ -350,14 +350,14 @@ bool isnan( const DenseVector<VT,TF>& dv );
 template< typename VT, bool TF >
 bool isDivisor( const DenseVector<VT,TF>& dv );
 
-template< typename VT, bool TF >
+template< bool RF, typename VT, bool TF >
 bool isUniform( const DenseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
 const ElementType_t<VT> sqrLength( const DenseVector<VT,TF>& dv );
 
 template< typename VT, bool TF >
-inline auto length( const DenseVector<VT,TF>& dv ) -> decltype( sqrt( sqrLength( ~dv ) ) );
+auto length( const DenseVector<VT,TF>& dv ) -> decltype( sqrt( sqrLength( ~dv ) ) );
 
 template< typename VT, bool TF >
 auto softmax( const DenseVector<VT,TF>& dv );
@@ -446,6 +446,13 @@ bool isDivisor( const DenseVector<VT,TF>& dv )
    if( isUniform( a ) ) { ... }
    \endcode
 
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isUniform<relaxed>( a ) ) { ... }
+   \endcode
+
 // It is also possible to check if a vector expression results in a uniform vector:
 
    \code
@@ -455,7 +462,8 @@ bool isDivisor( const DenseVector<VT,TF>& dv )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary vector.
 */
-template< typename VT  // Type of the dense vector
+template< bool RF      // Relaxation flag
+        , typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 bool isUniform( const DenseVector<VT,TF>& dv )
 {
@@ -467,7 +475,7 @@ bool isUniform( const DenseVector<VT,TF>& dv )
    const auto& cmp( a[0UL] );
 
    for( size_t i=1UL; i<a.size(); ++i ) {
-      if( a[i] != cmp )
+      if( !equal<RF>( a[i], cmp ) )
          return false;
    }
 

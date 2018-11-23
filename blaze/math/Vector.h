@@ -44,6 +44,7 @@
 #include <iosfwd>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/Vector.h>
+#include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/TransposeFlag.h>
 
 
@@ -58,36 +59,81 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name Vector functions */
 //@{
-template< typename T1, typename T2 >
-inline decltype(auto) inner( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs );
+template< typename VT, bool TF >
+bool isUniform( const Vector<VT,TF>& v );
 
 template< typename T1, typename T2 >
-inline decltype(auto) inner( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs );
+decltype(auto) inner( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs );
 
 template< typename T1, typename T2 >
-inline decltype(auto) inner( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs );
+decltype(auto) inner( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs );
 
 template< typename T1, typename T2 >
-inline decltype(auto) inner( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs );
+decltype(auto) inner( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs );
+
+template< typename T1, typename T2 >
+decltype(auto) inner( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs );
 
 template< typename T1, bool TF1, typename T2, bool TF2 >
-inline decltype(auto) dot( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs );
+decltype(auto) dot( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs );
 
 template< typename T1, bool TF1, typename T2, bool TF2 >
-inline decltype(auto) operator,( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs );
+decltype(auto) operator,( const Vector<T1,TF1>& lhs, const Vector<T2,TF2>& rhs );
 
 template< typename T1, typename T2 >
-inline decltype(auto) outer( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs );
+decltype(auto) outer( const Vector<T1,false>& lhs, const Vector<T2,false>& rhs );
 
 template< typename T1, typename T2 >
-inline decltype(auto) outer( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs );
+decltype(auto) outer( const Vector<T1,false>& lhs, const Vector<T2,true>& rhs );
 
 template< typename T1, typename T2 >
-inline decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs );
+decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs );
 
 template< typename T1, typename T2 >
-inline decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs );
+decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs );
 //@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given vector is a uniform vector.
+// \ingroup vector
+//
+// \param m The vector to be checked.
+// \return \a true if the vector is a uniform vector, \a false if not.
+//
+// This function checks if the given dense or sparse vector is a uniform vector. The vector
+// is considered to be uniform if all its elements are identical. The following code example
+// demonstrates the use of the function:
+
+   \code
+   blaze::DynamicVector<int,blaze::columnVector> a, b;
+   // ... Initialization
+   if( isUniform( a ) ) { ... }
+   \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isUniform<relaxed>( a ) ) { ... }
+   \endcode
+
+// It is also possible to check if a vector expression results in a uniform vector:
+
+   \code
+   if( isUniform( a + b ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary vector.
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag
+inline bool isUniform( const Vector<VT,TF>& v )
+{
+   return isUniform<relaxed>( ~v );
+}
 //*************************************************************************************************
 
 
