@@ -153,5 +153,6 @@
 #include <blaze/math/constraints/VecVecMultExpr.h>
 #include <blaze/math/constraints/VecVecSubExpr.h>
 #include <blaze/math/constraints/View.h>
+#include <blaze/math/constraints/Zero.h>
 
 #endif
