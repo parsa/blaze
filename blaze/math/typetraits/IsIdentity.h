@@ -64,15 +64,14 @@ namespace blaze {
 // \a value is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
-   using UniLowerMatrixType = blaze::UniLowerMatrix< DynamicMatrix<int> >;
    using DiagonalMatrixType = blaze::DiagonalMatrix< StaticMatrix<float,3UL,3UL> >;
 
-   blaze::IsIdentity< IdentityMatrix<int> >::value          // Evaluates to 1
-   blaze::IsIdentity< const IdentityMatrix<float> >::Type   // Results in TrueType
-   blaze::IsIdentity< volatile IdentityMatrix<double> >     // Is derived from TrueType
-   blaze::IsIdentity< DynamicMatrix<int> >::value           // Evaluates to 0
-   blaze::IsIdentity< const UpperDynamicMatrixType >::Type  // Results in FalseType
-   blaze::IsIdentity< volatile CompressedMatrixType >       // Is derived from FalseType
+   blaze::IsIdentity< IdentityMatrix<int> >::value         // Evaluates to 1
+   blaze::IsIdentity< const IdentityMatrix<float> >::Type  // Results in TrueType
+   blaze::IsIdentity< volatile IdentityMatrix<double> >    // Is derived from TrueType
+   blaze::IsIdentity< DynamicMatrix<int> >::value          // Evaluates to 0
+   blaze::IsIdentity< const DiagonalMatrixType >::Type     // Results in FalseType
+   blaze::IsIdentity< volatile CompressedMatrix<double> >  // Is derived from FalseType
    \endcode
 */
 template< typename T >
