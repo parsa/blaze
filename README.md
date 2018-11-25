@@ -29,6 +29,8 @@ Older releases of **Blaze** can be found in the [downloads](https://bitbucket.or
 
 ## Blaze Projects ##
 
+[blaze_tensor](https://github.com/STEllAR-GROUP/blaze_tensor): An implementation of 3D tensors for the **Blaze** library (Stellar Group)
+
 [BlazeIterative](https://github.com/tjolsen/BlazeIterative): A collection of iterative solvers (CG, BiCGSTAB, ...) for the **Blaze** library (Tyler Olsen)
 
 [RcppBlaze](https://github.com/ChingChuan-Chen/RcppBlaze): A **Blaze** port for the R language (ChingChuan Chen)
@@ -36,6 +38,9 @@ Older releases of **Blaze** can be found in the [downloads](https://bitbucket.or
 ----
 
 ## News ##
+
+**25.11.2018**: We are proud to announce a new **Blaze** project: [blaze_tensor](https://github.com/STEllAR-GROUP/blaze_tensor)
+provides an implementation of **Blaze**-style 3D tensors. A big thank you to the Stellar Group!
 
 **21.8.2018**: On time for [CppCon 2018](https://cppcon.org) and [SC18](https://sc18.supercomputing.org), we finally release **Blaze** 3.4! In **Blaze** 3.4 we have focused on internal improvements and refactorings, which will prove invaluable on our way forward. However, also this release comes with several useful new features. Most remarkable is the implementation of vector and matrix reduction operations. The ```sum()```, ```prod()```, ```min()``` and ```max()``` functions provide shortcuts to the most common reduction operations:
 
