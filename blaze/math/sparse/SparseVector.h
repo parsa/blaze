@@ -54,6 +54,7 @@
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsUniform.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/util/constraints/Numeric.h>
@@ -265,13 +266,16 @@ template< typename VT, bool TF >
 bool isnan( const SparseVector<VT,TF>& sv );
 
 template< bool RF, typename VT, bool TF >
-bool isUniform( const SparseVector<VT,TF>& dv );
+bool isUniform( const SparseVector<VT,TF>& sv );
+
+template< bool RF, typename VT, bool TF >
+bool isZero( const SparseVector<VT,TF>& sv );
 
 template< typename VT, bool TF >
 const ElementType_t<VT> sqrLength( const SparseVector<VT,TF>& sv );
 
 template< typename VT, bool TF >
-inline auto length( const SparseVector<VT,TF>& sv ) -> decltype( sqrt( sqrLength( ~sv ) ) );
+auto length( const SparseVector<VT,TF>& sv ) -> decltype( sqrt( sqrLength( ~sv ) ) );
 //@}
 //*************************************************************************************************
 
@@ -294,19 +298,18 @@ inline auto length( const SparseVector<VT,TF>& sv ) -> decltype( sqrt( sqrLength
    \endcode
 
 // Note that this function only works for vectors with floating point elements. The attempt to
-// use it for a vector with a non-floating point element type results in a compile time error.
+// use it for a vector with a non-floating point element type results is a compile time error.
 */
 template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline bool isnan( const SparseVector<VT,TF>& sv )
 {
    using CT = CompositeType_t<VT>;
-   using ConstIterator = ConstIterator_t< RemoveReference_t<CT> >;
 
    CT a( ~sv );  // Evaluation of the sparse vector operand
 
-   const ConstIterator end( a.end() );
-   for( ConstIterator element=a.begin(); element!=end; ++element ) {
+   const auto end( a.end() );
+   for( auto element=a.begin(); element!=end; ++element ) {
       if( isnan( element->value() ) ) return true;
    }
    return false;
@@ -338,7 +341,7 @@ inline bool isnan( const SparseVector<VT,TF>& sv )
    if( isUniform<relaxed>( a ) ) { ... }
    \endcode
 
-// It is also possible to check if a vector expression results in a uniform vector:
+// It is also possible to check if a vector expression results is a uniform vector:
 
    \code
    if( isUniform( a + b ) ) { ... }
@@ -353,7 +356,6 @@ template< bool RF      // Relaxation flag
 bool isUniform( const SparseVector<VT,TF>& sv )
 {
    using CT = CompositeType_t<VT>;
-   using ConstIterator = ConstIterator_t< RemoveReference_t<CT> >;
 
    if( IsUniform_v<VT> || (~sv).size() < 2UL )
       return true;
@@ -362,7 +364,8 @@ bool isUniform( const SparseVector<VT,TF>& sv )
 
    if( a.nonZeros() != a.size() )
    {
-      for( ConstIterator element=a.begin(); element!=a.end(); ++element ) {
+      const auto end( a.end() );
+      for( auto element=a.begin(); element!=end; ++element ) {
          if( !isDefault<RF>( element->value() ) )
             return false;
       }
@@ -370,14 +373,69 @@ bool isUniform( const SparseVector<VT,TF>& sv )
    else
    {
       const auto& cmp( a[0] );
-      ConstIterator element( a.begin() );
+      auto element( a.begin() );
+      const auto end( a.end() );
 
       ++element;
 
-      for( ; element!=a.end(); ++element ) {
+      for( ; element!=end; ++element ) {
          if( !equal<RF>( element->value(), cmp ) )
             return false;
       }
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given sparse vector is a zero vector.
+// \ingroup sparse_vector
+//
+// \param sv The sparse vector to be checked.
+// \return \a true if the vector is a zero vector, \a false if not.
+//
+// This function checks if the given sparse vector is a zero vector. The vector is considered
+// to be zero if all its elements are zero. The following code example demonstrates the use
+// of the function:
+
+   \code
+   blaze::CompressedVector<int,blaze::columnVector> a, b;
+   // ... Initialization
+   if( isZero( a ) ) { ... }
+   \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isZero<relaxed>( a ) ) { ... }
+   \endcode
+
+// It is also possible to check if a vector expression results is a zero vector:
+
+   \code
+   if( isZero( a + b ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary vector.
+*/
+template< bool RF      // Relaxation flag
+        , typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+bool isZero( const SparseVector<VT,TF>& sv )
+{
+   if( IsZero_v<VT> || (~sv).nonZeros() == 0UL )
+      return true;
+
+   CompositeType_t<VT> a( ~sv );  // Evaluation of the sparse vector operand
+
+   const auto end( a.end() );
+   for( auto element=a.begin(); element!=end; ++element ) {
+      if( !isZero<RF>( element->value() ) )
+         return false;
    }
 
    return true;
@@ -402,13 +460,12 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 const ElementType_t<VT> sqrLength( const SparseVector<VT,TF>& sv )
 {
-   using ElementType   = ElementType_t<VT>;
-   using ConstIterator = ConstIterator_t<VT>;
+   using ElementType = ElementType_t<VT>;
 
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ElementType );
 
    ElementType sum( 0 );
-   for( ConstIterator element=(~sv).begin(); element!=(~sv).end(); ++element )
+   for( auto element=(~sv).begin(); element!=(~sv).end(); ++element )
       sum += pow2( element->value() );
    return sum;
 }
