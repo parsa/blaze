@@ -2497,10 +2497,11 @@
 // \n \section matrices_general General Concepts
 // <hr>
 //
-// The \b Blaze library currently offers four dense matrix types (\ref matrix_types_static_matrix,
-// \ref matrix_types_dynamic_matrix, \ref matrix_types_hybrid_matrix, and \ref matrix_types_custom_matrix)
-// and one sparse matrix type (\ref matrix_types_compressed_matrix). All matrices can either be
-// stored as row-major matrices or column-major matrices:
+// The \b Blaze library currently offers five dense matrix types (\ref matrix_types_static_matrix,
+// \ref matrix_types_dynamic_matrix, \ref matrix_types_hybrid_matrix, \ref matrix_types_custom_matrix,
+// and \ref matrix_types_uniform_matrix) and two sparse matrix types (\ref matrix_types_compressed_matrix
+// and \ref matrix_types_identity_matrix). All matrices can either be stored as row-major matrices
+// or column-major matrices:
 
    \code
    using blaze::DynamicMatrix;
@@ -2931,6 +2932,43 @@
 // \c std::invalid_argument exception is thrown.
 //
 //
+// \n \section matrix_types_uniform_matrix UniformMatrix
+// <hr>
+//
+// The blaze::UniformMatrix class template is the representation of an arbitrary sized uniform
+// matrix with elements of arbitrary type. It can be included via the header file
+
+   \code
+   #include <blaze/math/UniformMatrix.h>
+   \endcode
+
+// The type of the elements and the storage order of the matrix can be specified via the two
+// template parameters:
+
+   \code
+   template< typename Type, bool SO >
+   class UniformMatrix;
+   \endcode
+
+//  - \c Type: specifies the type of the matrix elements. UniformMatrix can be used with any
+//             non-cv-qualified, non-reference element type.
+//  - \c SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
+//             The default value is blaze::rowMajor.
+//
+// The blaze::UniformVector is the best choice for uniform matrices of any size. The number of
+// rows and columns can be modified at runtime:
+
+   \code
+   // Definition of a 3x4 integral row-major matrix
+   blaze::UniformMatrix<int> A( 3UL, 4UL );
+
+   // Definition of a 4x6 single precision row-major matrix
+   blaze::UniformMatrix<float,blaze::rowMajor> B( 4UL, 6UL );
+
+   // Definition of a double precision column-major matrix with 0 rows and columns
+   blaze::UniformMatrix<double,blaze::columnMajor> C;
+   \endcode
+
 // \n \section matrix_types_compressed_matrix CompressedMatrix
 // <hr>
 //
