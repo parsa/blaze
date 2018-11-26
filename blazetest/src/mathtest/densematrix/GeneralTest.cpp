@@ -72,8 +72,9 @@ GeneralTest::GeneralTest()
    testIsSquare();
    testIsSymmetric();
    testIsHermitian();
-   testIsLower();
    testIsUniform();
+   testIsZero();
+   testIsLower();
    testIsUniLower();
    testIsStrictlyLower();
    testIsUpper();
@@ -1368,6 +1369,337 @@ void GeneralTest::testIsUniform()
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c isZero() function for dense matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isZero() function for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testIsZero()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isZero()";
+
+      // Zero matrix (0x3)
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 0UL, 3UL, 5 );
+
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Zero matrix (3x0)
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 0UL, 5 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 0UL );
+         checkCapacity( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Zero matrix (1x3)
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 1UL, 3UL, 0 );
+
+         checkRows    ( mat, 1UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Zero matrix (3x1)
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 1UL, 0 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 1UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Zero matrix (3x5)
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 5UL, 0 );
+
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkCapacity( mat, 15UL );
+         checkNonZeros( mat,  0UL );
+         checkNonZeros( mat,  0UL, 0UL );
+         checkNonZeros( mat,  1UL, 0UL );
+         checkNonZeros( mat,  2UL, 0UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Zero matrix (5x3)
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 5UL, 3UL, 0 );
+
+         checkRows    ( mat,  5UL );
+         checkColumns ( mat,  3UL );
+         checkCapacity( mat, 15UL );
+         checkNonZeros( mat,  0UL );
+         checkNonZeros( mat,  0UL, 0UL );
+         checkNonZeros( mat,  1UL, 0UL );
+         checkNonZeros( mat,  2UL, 0UL );
+         checkNonZeros( mat,  3UL, 0UL );
+         checkNonZeros( mat,  4UL, 0UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-Zero matrix (3x3)
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 0, 0, 0 },
+                                                        { 0, 0, 0 },
+                                                        { 0, 0, 3 } };
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 1UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isZero( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isZero()";
+
+      // Zero matrix (0x3)
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 0UL, 3UL, 5 );
+
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Zero matrix (3x0)
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 0UL, 5 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 0UL );
+         checkCapacity( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Zero matrix (1x3)
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 1UL, 3UL, 0 );
+
+         checkRows    ( mat, 1UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 0UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Zero matrix (3x1)
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 1UL, 0 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 1UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Zero matrix (3x5)
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 5UL, 0 );
+
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkCapacity( mat, 15UL );
+         checkNonZeros( mat,  0UL );
+         checkNonZeros( mat,  0UL, 0UL );
+         checkNonZeros( mat,  1UL, 0UL );
+         checkNonZeros( mat,  2UL, 0UL );
+         checkNonZeros( mat,  3UL, 0UL );
+         checkNonZeros( mat,  4UL, 0UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Zero matrix (5x3)
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 5UL, 3UL, 0 );
+
+         checkRows    ( mat,  5UL );
+         checkColumns ( mat,  3UL );
+         checkCapacity( mat, 15UL );
+         checkNonZeros( mat,  0UL );
+         checkNonZeros( mat,  0UL, 0UL );
+         checkNonZeros( mat,  1UL, 0UL );
+         checkNonZeros( mat,  2UL, 0UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-Zero matrix (3x3)
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { 0, 0, 0 },
+                                                           { 0, 0, 0 },
+                                                           { 0, 0, 3 } };
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 1UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isZero( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
                 << " Details:\n"
                 << "   Matrix:\n" << mat << "\n";
             throw std::runtime_error( oss.str() );
