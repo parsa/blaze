@@ -73,6 +73,7 @@ GeneralTest::GeneralTest()
    testIsSymmetric();
    testIsHermitian();
    testIsUniform();
+   testIsZero();
    testIsLower();
    testIsUniLower();
    testIsStrictlyLower();
@@ -1441,6 +1442,419 @@ void GeneralTest::testIsUniform()
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c isZero() function for sparse matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isZero() function for sparse matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testIsZero()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isZero()";
+
+      // Zero matrix (0x3)
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 0UL, 3UL );
+
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Zero matrix (3x0)
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 0UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 0UL );
+         checkCapacity( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Zero matrix (1x3)
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 1UL, 3UL, 1UL );
+         mat.insert( 0UL, 0UL, 0 );
+         mat.insert( 0UL, 1UL, 0 );
+         mat.insert( 0UL, 2UL, 0 );
+
+         checkRows    ( mat, 1UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 3UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Zero matrix (3x1)
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 1UL, 1UL );
+         mat.insert( 0UL, 0UL, 0 );
+         mat.insert( 1UL, 0UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 1UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Zero matrix (3x5)
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 5UL, 3UL );
+         mat.insert( 0UL, 1UL, 0 );
+         mat.insert( 1UL, 2UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Zero matrix (5x3)
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 5UL, 3UL, 5UL );
+         mat.insert( 0UL, 1UL, 0 );
+         mat.insert( 1UL, 2UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
+         mat.insert( 3UL, 1UL, 0 );
+         mat.insert( 4UL, 2UL, 0 );
+
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 3UL, 1UL );
+         checkNonZeros( mat, 4UL, 1UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-zero matrix (3x3, 3 non-zero elements)
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 3UL );
+         mat.insert( 0UL, 1UL, 0 );
+         mat.insert( 1UL, 0UL, 0 );
+         mat.insert( 2UL, 2UL, 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isZero( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-zero matrix (3x3, 9 non-zero elements)
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 9UL );
+         for( size_t i=0UL; i<3UL; ++i )
+            for( size_t j=0UL; j<3UL; ++j )
+               mat.insert( i, j, 0UL );
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 9UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 3UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( isZero( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isZero()";
+
+      // Zero matrix (0x3)
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 0UL, 3UL );
+
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Zero matrix (3x0)
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 0UL );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 0UL );
+         checkCapacity( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Zero matrix (1x3)
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 1UL, 3UL, 3UL );
+         mat.insert( 0UL, 0UL, 0 );
+         mat.insert( 0UL, 1UL, 0 );
+         mat.insert( 0UL, 2UL, 0 );
+
+         checkRows    ( mat, 1UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Zero matrix (3x1)
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 1UL, 3UL );
+         mat.insert( 0UL, 0UL, 0 );
+         mat.insert( 1UL, 0UL, 0 );
+         mat.insert( 2UL, 0UL, 0 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 1UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 3UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Zero matrix (3x5)
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 5UL, 5UL );
+         mat.insert( 0UL, 0UL, 0 );
+         mat.insert( 2UL, 1UL, 0 );
+         mat.insert( 1UL, 2UL, 0 );
+         mat.insert( 2UL, 3UL, 0 );
+         mat.insert( 0UL, 4UL, 0 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 5UL );
+         checkCapacity( mat, 5UL );
+         checkNonZeros( mat, 5UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+         checkNonZeros( mat, 3UL, 1UL );
+         checkNonZeros( mat, 4UL, 1UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Zero matrix (5x3)
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 5UL, 3UL, 3UL );
+         mat.insert( 1UL, 0UL, 0 );
+         mat.insert( 2UL, 1UL, 0 );
+         mat.insert( 0UL, 2UL, 0 );
+
+         checkRows    ( mat, 5UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isZero( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-zero matrix (3x3, 3 non-zero elements)
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 3UL );
+         mat.insert( 1UL, 0UL, 0 );
+         mat.insert( 0UL, 1UL, 0 );
+         mat.insert( 2UL, 2UL, 3 );
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 3UL );
+         checkNonZeros( mat, 3UL );
+         checkNonZeros( mat, 0UL, 1UL );
+         checkNonZeros( mat, 1UL, 1UL );
+         checkNonZeros( mat, 2UL, 1UL );
+
+         if( isZero( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-zero matrix (3x3, 9 non-zero elements)
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 9UL );
+         for( size_t i=0UL; i<3UL; ++i )
+            for( size_t j=0UL; j<3UL; ++j )
+               mat.insert( i, j, 0UL );
+         mat(2,2) = 3;
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 9UL );
+         checkNonZeros( mat, 0UL, 3UL );
+         checkNonZeros( mat, 1UL, 3UL );
+         checkNonZeros( mat, 2UL, 3UL );
+
+         if( isZero( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isZero evaluation\n"
                 << " Details:\n"
                 << "   Matrix:\n" << mat << "\n";
             throw std::runtime_error( oss.str() );

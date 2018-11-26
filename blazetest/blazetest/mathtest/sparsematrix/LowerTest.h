@@ -91,6 +91,7 @@ class LowerTest
    void testIsSymmetric();
    void testIsHermitian();
    void testIsUniform();
+   void testIsZero();
    void testIsLower();
    void testIsUniLower();
    void testIsStrictlyLower();
