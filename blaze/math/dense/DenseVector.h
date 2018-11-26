@@ -51,6 +51,7 @@
 #include <blaze/math/shims/Sqrt.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsUniform.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/DecltypeAuto.h>
@@ -453,7 +454,7 @@ bool isDivisor( const DenseVector<VT,TF>& dv )
    if( isUniform<relaxed>( a ) ) { ... }
    \endcode
 
-// It is also possible to check if a vector expression results in a uniform vector:
+// It is also possible to check if a vector expression results is a uniform vector:
 
    \code
    if( isUniform( a + b ) ) { ... }
@@ -476,6 +477,59 @@ bool isUniform( const DenseVector<VT,TF>& dv )
 
    for( size_t i=1UL; i<a.size(); ++i ) {
       if( !equal<RF>( a[i], cmp ) )
+         return false;
+   }
+
+   return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given dense vector is a zero vector.
+// \ingroup dense_vector
+//
+// \param dv The dense vector to be checked.
+// \return \a true if the vector is a zero vector, \a false if not.
+//
+// This function checks if the given dense vector is a zero vector. The vector is considered to
+// be zero if all its elements are zero. The following code example demonstrates the use of the
+// function:
+
+   \code
+   blaze::DynamicVector<int,blaze::columnVector> a, b;
+   // ... Initialization
+   if( isZero( a ) ) { ... }
+   \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isZero<relaxed>( a ) ) { ... }
+   \endcode
+
+// It is also possible to check if a vector expression results is a zero vector:
+
+   \code
+   if( isZero( a + b ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary vector.
+*/
+template< bool RF      // Relaxation flag
+        , typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+bool isZero( const DenseVector<VT,TF>& dv )
+{
+   if( IsZero_v<VT> || (~dv).size() == 0UL )
+      return true;
+
+   CompositeType_t<VT> a( ~dv );  // Evaluation of the dense vector operand
+
+   for( size_t i=0UL; i<a.size(); ++i ) {
+      if( !isZero<RF>( a[i] ) )
          return false;
    }
 
