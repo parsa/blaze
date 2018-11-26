@@ -70,6 +70,7 @@ OperationTest::OperationTest()
 {
    testIsNan();
    testIsUniform();
+   testIsZero();
    testLength();
    testNormalize();
    testMinimum();
@@ -167,7 +168,7 @@ void OperationTest::testIsUniform()
 {
    test_ = "isUniform() function";
 
-   // Uniform 0-dimensional vector
+   // Uniform vector (0-dimensional)
    {
       blaze::DynamicVector<int,blaze::rowVector> vec;
 
@@ -181,9 +182,9 @@ void OperationTest::testIsUniform()
       }
    }
 
-   // Uniform 1-dimensional vector
+   // Uniform vector (1-dimensional)
    {
-      blaze::DynamicVector<int,blaze::rowVector> vec( 1UL, 5 );
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 5 };
 
       if( blaze::isUniform( vec ) != true ) {
          std::ostringstream oss;
@@ -195,9 +196,9 @@ void OperationTest::testIsUniform()
       }
    }
 
-   // Uniform 5-dimensional vector
+   // Uniform vector (5-dimensional)
    {
-      blaze::DynamicVector<int,blaze::rowVector> vec( 5UL, 5 );
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 5, 5, 5, 5, 5 };
 
       if( blaze::isUniform( vec ) != true ) {
          std::ostringstream oss;
@@ -209,15 +210,86 @@ void OperationTest::testIsUniform()
       }
    }
 
-   // Non-uniform 5-dimensional vector
+   // Non-uniform vector (5-dimensional)
    {
-      blaze::DynamicVector<int,blaze::rowVector> vec( 5UL, 5 );
-      vec[4] = 3;
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 5, 5, 5, 5, 3 };
 
       if( blaze::isUniform( vec ) != false ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isUniform evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c isZero() function for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isZero() function for dense vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testIsZero()
+{
+   test_ = "isZero() function";
+
+   // Zero vector (0-dimensional)
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec;
+
+      if( blaze::isZero( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isZero evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Zero vector (1-dimensional)
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 0 };
+
+      if( blaze::isZero( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isZero evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Zero vector (5-dimensional)
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 0, 0, 0, 0, 0 };
+
+      if( blaze::isZero( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isZero evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Non-zero vector (5-dimensional)
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 0, 0, 0, 0, 3 };
+
+      if( blaze::isZero( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isZero evaluation\n"
              << " Details:\n"
              << "   Vector:\n" << vec << "\n";
          throw std::runtime_error( oss.str() );

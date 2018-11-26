@@ -84,6 +84,7 @@ class OperationTest
    //@{
    void testIsNan();
    void testIsUniform();
+   void testIsZero();
    void testLength();
    void testNormalize();
    void testMinimum();
