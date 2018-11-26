@@ -178,7 +178,7 @@ inline constexpr UniformIterator<Type,AF>::UniformIterator() noexcept
 /*!\brief Constructor for the UniformIterator class.
 //
 // \param ptr Pointer to the element.
-// \param n The number of elements.
+// \param index The index of the initial element.
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag

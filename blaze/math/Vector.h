@@ -99,7 +99,7 @@ decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs );
 /*!\brief Checks if the given vector is a uniform vector.
 // \ingroup vector
 //
-// \param m The vector to be checked.
+// \param v The vector to be checked.
 // \return \a true if the vector is a uniform vector, \a false if not.
 //
 // This function checks if the given dense or sparse vector is a uniform vector. The vector

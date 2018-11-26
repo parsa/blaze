@@ -768,7 +768,6 @@ inline decltype(auto) expand( const SparseVector<VT,TF>& sv, size_t expansion )
 // \ingroup sparse_vector
 //
 // \param sv The sparse vector to be expanded.
-// \param expansion The expansion.
 // \return The expansion of the vector.
 //
 // This function returns an expression representing the expansion of the given sparse vector:
