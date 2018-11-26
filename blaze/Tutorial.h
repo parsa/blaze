@@ -2415,6 +2415,37 @@
    const double max = maxNorm( a );
    \endcode
 
+// \n \section vector_operations_vector_expansion Vector Expansion
+// <hr>
+//
+// Via the \c expand() function it is possible to convert a dense or sparse vector into a matrix.
+// A column vector is expanded into a column-major matrix, a row vector is expanded into a
+// row-major matrix. As demonstrated by the following examples, \c expand() can be used with both
+// runtime and compile time parameters:
+
+   \code
+   blaze::DynamicVector<int,columnVector> a{ 1, 2, 3 };
+   blaze::CompressedVector<int,rowVector> b{ 1, 0, 3, 0, 5 };
+
+   // Expand the dense column vector ( 1 2 3 ) into a dense 3x5 column-major matrix
+   //
+   //   ( 1 1 1 1 1 )
+   //   ( 2 2 2 2 2 )
+   //   ( 3 3 3 3 3 )
+   //
+   expand( a, 5 );  // Runtime parameter
+   expand<5>( a );  // Compile time parameter
+
+   // Expand the sparse row vector ( 1 0 3 0 5 ) into a sparse 3x5 row-major matrix
+   //
+   //   ( 1 0 3 0 5 )
+   //   ( 1 0 3 0 5 )
+   //   ( 1 0 3 0 5 )
+   //
+   expand( b, 3 );  // Runtime parameter
+   expand<3>( b );  // Compile time parameter
+   \endcode
+
 // \n Previous: \ref vector_types &nbsp; &nbsp; Next: \ref matrices
 */
 //*************************************************************************************************
@@ -3667,9 +3698,9 @@
    \code
    blaze::DynamicMatrix<int> A;  // Create an empty matrix
    isEmpty( A );                 // Returns true
-   a.resize( 5, 0 );             // Resize to a 5x0 matrix
+   A.resize( 5, 0 );             // Resize to a 5x0 matrix
    isEmpty( A );                 // Returns true
-   a.resize( 5, 3 );             // Resize to a 5x3 matrix
+   A.resize( 5, 3 );             // Resize to a 5x3 matrix
    isEmpty( A );                 // Returns false
    \endcode
 
