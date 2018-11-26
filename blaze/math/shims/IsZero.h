@@ -43,10 +43,8 @@
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/system/Inline.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -105,26 +103,6 @@ BLAZE_ALWAYS_INLINE EnableIf_t< IsNumeric_v<Type>, bool > isZero( const Type& v 
 {
    return isDefault<RF>( v );
 }
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Overload of the \a isZero function for non-numeric data types.
-// \ingroup math_shims
-//
-// \param v The value/object to be tested.
-// \return \a false.
-*/
-template< bool RF          // Relaxation flag
-        , typename Type >  // Type of the given value/object
-BLAZE_ALWAYS_INLINE DisableIf_t< IsNumeric_v<Type>, bool > isZero( const Type& v ) noexcept
-{
-   UNUSED_PARAMETER( v );
-
-   return false;
-}
-/*! \endcond */
 //*************************************************************************************************
 
 
