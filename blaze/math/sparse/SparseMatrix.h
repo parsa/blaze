@@ -72,6 +72,7 @@
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/util/Assert.h>
@@ -308,6 +309,9 @@ bool isHermitian( const SparseMatrix<MT,SO>& sm );
 
 template< bool RF, typename MT, bool SO >
 bool isUniform( const SparseMatrix<MT,SO>& sm );
+
+template< bool RF, typename MT, bool SO >
+bool isZero( const SparseMatrix<MT,SO>& sm );
 
 template< bool RF, typename MT, bool SO >
 bool isLower( const SparseMatrix<MT,SO>& sm );
@@ -786,17 +790,81 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isUniform( const SparseMatrix<MT,SO>& sm )
 {
-   if( IsUniTriangular_v<MT> )
-      return false;
-
    if( IsUniform_v<MT> ||
        (~sm).rows() == 0UL || (~sm).columns() == 0UL ||
        ( (~sm).rows() == 1UL && (~sm).columns() == 1UL ) )
       return true;
 
+   if( IsUniTriangular_v<MT> )
+      return false;
+
    CompositeType_t<MT> A( ~sm );  // Evaluation of the sparse matrix operand
 
    return isUniform_backend<RF>( A, typename IsTriangular<MT>::Type() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given sparse matrix is a zero matrix.
+// \ingroup sparse_matrix
+//
+// \param sm The sparse matrix to be checked.
+// \return \a true if the matrix is a zero matrix, \a false if not.
+//
+// This function checks if the given sparse matrix is a zero matrix. The matrix is considered to
+// be zero if all its elements are zero. The following code example demonstrates the use of the
+// function:
+
+   \code
+   blaze::CompressedMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isZero( A ) ) { ... }
+   \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isZero<relaxed>( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results is a zero matrix:
+
+   \code
+   if( isZero( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
+*/
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+bool isZero( const SparseMatrix<MT,SO>& sm )
+{
+   const size_t M( (~sm).rows()    );
+   const size_t N( (~sm).columns() );
+
+   if( IsZero_v<MT> || M == 0UL || N == 0UL )
+      return true;
+
+   if( IsUniTriangular_v<MT> )
+      return false;
+
+   CompositeType_t<MT> A( ~sm );  // Evaluation of the sparse matrix operand
+
+   const size_t iend( SO == rowMajor ? A.rows() : A.columns() );
+
+   for( size_t i=0UL; i<iend; ++i ) {
+      for( auto element=A.begin(i); element!=A.end(i); ++element ) {
+         if( !isZero<RF>( element->value() ) ) {
+            return false;
+         }
+      }
+   }
+
+   return true;
 }
 //*************************************************************************************************
 
