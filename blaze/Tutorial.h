@@ -500,10 +500,10 @@
 // \n \section vectors_general General Concepts
 // <hr>
 //
-// The \b Blaze library currently offers four dense vector types (\ref vector_types_static_vector,
-// \ref vector_types_dynamic_vector, \ref vector_types_hybrid_vector, and \ref vector_types_custom_vector)
-// and one sparse vector type (\ref vector_types_compressed_vector). All vectors can be specified
-// as either column vectors or row vectors:
+// The \b Blaze library currently offers five dense vector types (\ref vector_types_static_vector,
+// \ref vector_types_dynamic_vector, \ref vector_types_hybrid_vector, \ref vector_types_custom_vector,
+// and \ref vector_types_uniform_vector) and one sparse vector type (\ref vector_types_compressed_vector).
+// All vectors can be specified as either column vectors or row vectors:
 
    \code
    using blaze::DynamicVector;
@@ -920,6 +920,43 @@
 // maximum performance!
 //
 //
+// \n \section vector_types_uniform_vector UniformVector
+// <hr>
+//
+// The blaze::UniformVector class template is the representation of an arbitrary sized uniform
+// vector with elements of arbitrary type. It can be included via the header file
+
+   \code
+   #include <blaze/math/UniformVector.h>
+   \endcode
+
+// The type of the elements and the transpose flag of the vector can be specified via the two
+// template parameters:
+
+   \code
+   template< typename Type, bool TF >
+   class UniformVector;
+   \endcode
+
+//  - \c Type: specifies the type of the vector elements. UniformVector can be used with any
+//             non-cv-qualified, non-reference, non-pointer element type.
+//  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
+//             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
+//
+// The blaze::UniformVector is the best choice for uniform vectors of any size. Its size can be
+// modified at runtime:
+
+   \code
+   // Definition of a 3-dimensional integral column vector
+   blaze::UniformVector<int> a( 3UL );
+
+   // Definition of a 4-dimensional single precision column vector
+   blaze::UniformVector<float,blaze::columnVector> b( 4UL );
+
+   // Definition of a double precision row vector with size 0
+   blaze::UniformVector<double,blaze::rowVector> c;
+   \endcode
+
 // \n \section vector_types_compressed_vector CompressedVector
 // <hr>
 //
