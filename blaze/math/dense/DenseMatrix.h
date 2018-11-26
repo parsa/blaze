@@ -68,6 +68,7 @@
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DecltypeAuto.h>
 #include <blaze/util/EnableIf.h>
@@ -422,6 +423,9 @@ template< bool RF, typename MT, bool SO >
 bool isUniform( const DenseMatrix<MT,SO>& dm );
 
 template< bool RF, typename MT, bool SO >
+bool isZero( const DenseMatrix<MT,SO>& dm );
+
+template< bool RF, typename MT, bool SO >
 bool isLower( const DenseMatrix<MT,SO>& dm );
 
 template< bool RF, typename MT, bool SO >
@@ -521,7 +525,7 @@ bool isnan( const DenseMatrix<MT,SO>& dm )
    if( isSymmetric<relaxed>( A ) ) { ... }
    \endcode
 
-// It is also possible to check if a matrix expression results in a symmetric matrix:
+// It is also possible to check if a matrix expression results is a symmetric matrix:
 
    \code
    if( isSymmetric( A * B ) ) { ... }
@@ -831,7 +835,7 @@ bool isUniform_backend( const DenseMatrix<MT,true>& dm, FalseType )
    if( isUniform<relaxed>( A ) ) { ... }
    \endcode
 
-// It is also possible to check if a matrix expression results in a uniform matrix:
+// It is also possible to check if a matrix expression results is a uniform matrix:
 
    \code
    if( isUniform( A * B ) ) { ... }
@@ -845,17 +849,106 @@ template< bool RF      // Relaxation flag
         , bool SO >    // Storage order
 bool isUniform( const DenseMatrix<MT,SO>& dm )
 {
-   if( IsUniTriangular_v<MT> )
-      return false;
-
    if( IsUniform_v<MT> ||
        (~dm).rows() == 0UL || (~dm).columns() == 0UL ||
        ( (~dm).rows() == 1UL && (~dm).columns() == 1UL ) )
       return true;
 
+   if( IsUniTriangular_v<MT> )
+      return false;
+
    CompositeType_t<MT> A( ~dm );  // Evaluation of the dense matrix operand
 
    return isUniform_backend<RF>( A, typename IsTriangular<MT>::Type() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given dense matrix is a zero matrix.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be checked.
+// \return \a true if the matrix is a zero matrix, \a false if not.
+//
+// This function checks if the given dense matrix is a zero matrix. The matrix is considered to
+// be zero if all its elements are zero. The following code example demonstrates the use of the
+// function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isZero( A ) ) { ... }
+   \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isZero<relaxed>( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results is a zero matrix:
+
+   \code
+   if( isZero( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
+*/
+template< bool RF      // Relaxation flag
+        , typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+bool isZero( const DenseMatrix<MT,SO>& dm )
+{
+   const size_t M( (~dm).rows()    );
+   const size_t N( (~dm).columns() );
+
+   if( IsZero_v<MT> || M == 0UL || N == 0UL )
+      return true;
+
+   if( IsUniTriangular_v<MT> )
+      return false;
+
+   CompositeType_t<MT> A( ~dm );  // Evaluation of the dense matrix operand
+
+   if( SO == rowMajor )
+   {
+      for( size_t i=0UL; i<M; ++i )
+      {
+         const size_t jbegin( IsUpper_v<MT>
+                              ? ( IsStrictlyUpper_v<MT> ? i+1UL : i )
+                              : 0UL );
+         const size_t jend  ( IsLower_v<MT> || IsSymmetric_v<MT> || IsHermitian_v<MT>
+                              ? ( IsStrictlyLower_v<MT> ? i : i+1UL )
+                              : N );
+
+         for( size_t j=jbegin; j<jend; ++j ) {
+            if( !isZero<RF>( A(i,j) ) )
+               return false;
+         }
+      }
+   }
+   else
+   {
+      for( size_t j=0UL; j<N; ++j )
+      {
+         const size_t ibegin( IsLower_v<MT>
+                              ? ( IsStrictlyLower_v<MT> ? j+1UL : j )
+                              : 0UL );
+         const size_t iend  ( IsUpper_v<MT> || IsSymmetric_v<MT> || IsHermitian_v<MT>
+                              ? ( IsStrictlyUpper_v<MT> ? j : j+1UL )
+                              : M );
+
+         for( size_t i=ibegin; i<iend; ++i ) {
+            if( !isZero<RF>( A(i,j) ) )
+               return false;
+         }
+      }
+   }
+
+   return true;
 }
 //*************************************************************************************************
 
@@ -894,7 +987,7 @@ bool isUniform( const DenseMatrix<MT,SO>& dm )
    if( isLower<relaxed>( A ) ) { ... }
    \endcode
 
-// It is also possible to check if a matrix expression results in a lower triangular matrix:
+// It is also possible to check if a matrix expression results is a lower triangular matrix:
 
    \code
    if( isLower( A * B ) ) { ... }
@@ -979,7 +1072,7 @@ bool isLower( const DenseMatrix<MT,SO>& dm )
    if( isUniLower<relaxed>( A ) ) { ... }
    \endcode
 
-// It is also possible to check if a matrix expression results in a lower unitriangular matrix:
+// It is also possible to check if a matrix expression results is a lower unitriangular matrix:
 
    \code
    if( isUniLower( A * B ) ) { ... }
@@ -1065,7 +1158,7 @@ bool isUniLower( const DenseMatrix<MT,SO>& dm )
    if( isStrictlyLower<relaxed>( A ) ) { ... }
    \endcode
 
-// It is also possible to check if a matrix expression results in a strictly lower triangular
+// It is also possible to check if a matrix expression results is a strictly lower triangular
 // matrix:
 
    \code
@@ -1320,7 +1413,7 @@ bool isUniUpper( const DenseMatrix<MT,SO>& dm )
    if( isStrictlyUpper<relaxed>( A ) ) { ... }
    \endcode
 
-// It is also possible to check if a matrix expression results in a strictly upper triangular
+// It is also possible to check if a matrix expression results is a strictly upper triangular
 // matrix:
 
    \code
@@ -1405,7 +1498,7 @@ bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm )
    if( isDiagonal<relaxed>( A ) ) { ... }
    \endcode
 
-// It is also possible to check if a matrix expression results in a diagonal matrix:
+// It is also possible to check if a matrix expression results is a diagonal matrix:
 
    \code
    if( isDiagonal( A * B ) ) { ... }
