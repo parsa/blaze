@@ -763,7 +763,7 @@ bool isUniform_backend( const DenseMatrix<MT,false>& dm, FalseType )
 
    for( size_t i=0UL; i<(~dm).rows(); ++i ) {
       for( size_t j=0UL; j<(~dm).columns(); ++j ) {
-         if( (~dm)(i,j) != cmp )
+         if( !equal<RF>( (~dm)(i,j), cmp ) )
             return false;
       }
    }
@@ -796,7 +796,7 @@ bool isUniform_backend( const DenseMatrix<MT,true>& dm, FalseType )
 
    for( size_t j=0UL; j<(~dm).columns(); ++j ) {
       for( size_t i=0UL; i<(~dm).rows(); ++i ) {
-         if( (~dm)(i,j) != cmp )
+         if( !equal<RF>( (~dm)(i,j), cmp ) )
             return false;
       }
    }

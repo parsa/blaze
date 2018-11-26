@@ -685,7 +685,7 @@ bool isUniform_backend( const SparseMatrix<MT,false>& sm, FalseType )
 
       for( size_t i=0UL; i<(~sm).rows(); ++i ) {
          for( ConstIterator element=(~sm).begin(i); element!=(~sm).end(i); ++element ) {
-            if( element->value() != cmp )
+            if( !equal<RF>( element->value(), cmp ) )
                return false;
          }
       }
@@ -736,7 +736,7 @@ bool isUniform_backend( const SparseMatrix<MT,true>& sm, FalseType )
 
       for( size_t j=0UL; j<(~sm).columns(); ++j ) {
          for( ConstIterator element=(~sm).begin(j); element!=(~sm).end(j); ++element ) {
-            if( element->value() != cmp )
+            if( !equal<RF>( element->value(), cmp ) )
                return false;
          }
       }
