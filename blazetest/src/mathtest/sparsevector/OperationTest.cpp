@@ -70,6 +70,7 @@ OperationTest::OperationTest()
 {
    testIsNan();
    testIsUniform();
+   testIsZero();
    testLength();
    testNormalize();
    testMinimum();
@@ -166,7 +167,7 @@ void OperationTest::testIsUniform()
 {
    test_ = "isUniform() function";
 
-   // Uniform 0-dimensional vector
+   // Uniform vector (0-dimensional)
    {
       blaze::CompressedVector<int,blaze::rowVector> vec;
 
@@ -180,7 +181,7 @@ void OperationTest::testIsUniform()
       }
    }
 
-   // Uniform 1-dimensional vector
+   // Uniform vector (1-dimensional)
    {
       blaze::CompressedVector<int,blaze::rowVector> vec( 1UL, 1UL );
       vec.insert( 0UL, 5 );
@@ -211,7 +212,7 @@ void OperationTest::testIsUniform()
       }
    }
 
-   // Uniform 5-dimensional vector (5 non-zeros)
+   // Uniform vector (5-dimensional, 5 non-zeros)
    {
       blaze::CompressedVector<int,blaze::rowVector> vec( 5UL, 5UL );
       vec.insert( 0UL, 5 );
@@ -230,7 +231,7 @@ void OperationTest::testIsUniform()
       }
    }
 
-   // Non-uniform 5-dimensional vector (2 non-zeros)
+   // Non-uniform vector (5-dimensional, 2 non-zeros)
    {
       blaze::CompressedVector<int,blaze::rowVector> vec( 5UL, 2UL );
       vec.insert( 1UL, 0 );
@@ -246,7 +247,7 @@ void OperationTest::testIsUniform()
       }
    }
 
-   // Uniform 5-dimensional vector (5 non-zeros)
+   // Non-uniform vector (5-dimensional, 5 non-zeros)
    {
       blaze::CompressedVector<int,blaze::rowVector> vec( 5UL, 5UL );
       vec.insert( 0UL, 5 );
@@ -259,6 +260,135 @@ void OperationTest::testIsUniform()
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Invalid isUniform evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c isZero() function for sparse vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isZero() function for sparse vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testIsZero()
+{
+   test_ = "isZero() function";
+
+   // Zero vector (0-dimensional)
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec;
+
+      if( blaze::isZero( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isZero evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Zero vector (1-dimensional)
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 1UL );
+      vec.insert( 0UL, 0 );
+
+      if( blaze::isZero( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isZero evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Zero vector (5-dimensional, 0 non-zeros)
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 5UL );
+
+      if( blaze::isZero( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isZero evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Zero 5-dimensional vector (2 non-zeros)
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 5UL, 2UL );
+      vec.insert( 1UL, 0 );
+      vec.insert( 4UL, 0 );
+
+      if( blaze::isZero( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isZero evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Zero vector (5-dimensional, 5 non-zeros)
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 5UL, 5UL );
+      vec.insert( 0UL, 0 );
+      vec.insert( 1UL, 0 );
+      vec.insert( 2UL, 0 );
+      vec.insert( 3UL, 0 );
+      vec.insert( 4UL, 0 );
+
+      if( blaze::isZero( vec ) != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isZero evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Non-zero vector (5-dimensional, 2 non-zeros)
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 5UL, 2UL );
+      vec.insert( 1UL, 0 );
+      vec.insert( 4UL, 3 );
+
+      if( blaze::isZero( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isZero evaluation\n"
+             << " Details:\n"
+             << "   Vector:\n" << vec << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Non-zero vector (5-dimensional, 5 non-zeros)
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 5UL, 5UL );
+      vec.insert( 0UL, 0 );
+      vec.insert( 1UL, 0 );
+      vec.insert( 2UL, 0 );
+      vec.insert( 3UL, 0 );
+      vec.insert( 4UL, 3 );
+
+      if( blaze::isZero( vec ) != false ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Invalid isZero evaluation\n"
              << " Details:\n"
              << "   Vector:\n" << vec << "\n";
          throw std::runtime_error( oss.str() );
