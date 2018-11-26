@@ -1622,9 +1622,19 @@
    if( isUniform( a ) ) { ... }
    \endcode
 
-// Note that in case of sparse vectors also the zero elements are also taken into account!
+// Note that in case of sparse vectors the zero elements are also taken into account!
 //
 //
+// \n \subsection vector_operations_isZero isZero()
+//
+// In order to check if all vector elements are zero, the \c isZero function can be used:
+
+   \code
+   blaze::DynamicVector<int> a;
+   // ... Resizing and initialization
+   if( isZero( a ) ) { ... }
+   \endcode
+
 // \n \subsection vector_operations_length length() / sqrLength()
 //
 // In order to calculate the length (magnitude) of a dense or sparse vector, both the \c length()
@@ -3859,6 +3869,16 @@
 // Note that in case of a sparse matrix also the zero elements are also taken into account!
 //
 //
+// \n \subsection matrix_operations_isZero isZero()
+//
+// In order to check if all matrix elements are zero, the \c isZero function can be used:
+
+   \code
+   blaze::DynamicMatrix<int> A;
+   // ... Resizing and initialization
+   if( isZero( A ) ) { ... }
+   \endcode
+
 // \n \subsection matrix_operations_islower isLower()
 //
 // Via the \c isLower() function it is possible to check whether a dense or sparse matrix is
