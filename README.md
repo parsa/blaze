@@ -222,7 +222,7 @@ Marcin Copik -- CMake fixes
 
 Hartmut Kaiser -- HPX backend
 
-Patrick Diehl -- Integration of HPX to the Blazemark
+[Patrick Diehl](http://www.diehlpk.de/) -- Integration of HPX to the Blazemark and maintainer of the **Blaze** Fedora package
 
 Mario Emmenlauer -- Blazemark extensions
 
