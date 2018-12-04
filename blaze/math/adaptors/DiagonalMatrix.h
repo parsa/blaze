@@ -78,14 +78,19 @@
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsShrinkable.h>
 #include <blaze/math/typetraits/IsSquare.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
@@ -93,8 +98,10 @@
 #include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/math/typetraits/YieldsDiagonal.h>
 #include <blaze/math/typetraits/YieldsIdentity.h>
+#include <blaze/math/typetraits/YieldsZero.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/mpl/If.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -1227,6 +1234,24 @@ struct IsSquare< DiagonalMatrix<MT,SO,DF> >
 
 //=================================================================================================
 //
+//  ISUNIFORM SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct IsUniform< DiagonalMatrix<MT,SO,DF> >
+   : public IsUniform<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  ISSYMMETRIC SPECIALIZATIONS
 //
 //=================================================================================================
@@ -1281,6 +1306,24 @@ struct IsLower< DiagonalMatrix<MT,SO,DF> >
 
 //=================================================================================================
 //
+//  ISSTRICTLYLOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct IsStrictlyLower< DiagonalMatrix<MT,SO,DF> >
+   : public IsUniform<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  ISUPPER SPECIALIZATIONS
 //
 //=================================================================================================
@@ -1290,6 +1333,24 @@ struct IsLower< DiagonalMatrix<MT,SO,DF> >
 template< typename MT, bool SO, bool DF >
 struct IsUpper< DiagonalMatrix<MT,SO,DF> >
    : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSTRICTLYUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct IsStrictlyUpper< DiagonalMatrix<MT,SO,DF> >
+   : public IsUniform<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1470,7 +1531,10 @@ struct RemoveAdaptor< DiagonalMatrix<MT,SO,DF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct AddTraitEval1< T1, T2
-                    , EnableIf_t< IsDiagonal_v<T1> && IsDiagonal_v<T2> > >
+                    , EnableIf_t< IsMatrix_v<T1> &&
+                                  IsMatrix_v<T2> &&
+                                  IsDiagonal_v<T1> && IsDiagonal_v<T2> &&
+                                  !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using Type = DiagonalMatrix< typename AddTraitEval2<T1,T2>::Type >;
 };
@@ -1490,9 +1554,22 @@ struct AddTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct SubTraitEval1< T1, T2
-                    , EnableIf_t< IsDiagonal_v<T1> && IsDiagonal_v<T2> > >
+                    , EnableIf_t< IsMatrix_v<T1> &&
+                                  IsMatrix_v<T2> &&
+                                  IsDiagonal_v<T1> && IsDiagonal_v<T2> &&
+                                  !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using Type = DiagonalMatrix< typename SubTraitEval2<T1,T2>::Type >;
+};
+
+template< typename T1, typename T2 >
+struct SubTraitEval1< T1, T2
+                    , EnableIf_t< IsMatrix_v<T1> &&
+                                  IsMatrix_v<T2> &&
+                                  IsZero_v<T1> && IsIdentity_v<T2> > >
+{
+   using Tmp = If_t< StorageOrder_v<T1> != StorageOrder_v<T2>, OppositeType_t<T1>, T1 >;
+   using Type = DiagonalMatrix< typename SubTraitEval2<Tmp,T2>::Type >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1510,11 +1587,14 @@ struct SubTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct SchurTraitEval1< T1, T2
-                      , EnableIf_t< ( IsDiagonal_v<T1> ||
+                      , EnableIf_t< IsMatrix_v<T1> &&
+                                    IsMatrix_v<T2> &&
+                                    ( IsDiagonal_v<T1> ||
                                       IsDiagonal_v<T2> ||
                                       ( IsLower_v<T1> && IsUpper_v<T2> ) ||
                                       ( IsUpper_v<T1> && IsLower_v<T2> ) ) &&
-                                    !( IsUniTriangular_v<T1> && IsUniTriangular_v<T2> ) > >
+                                    !( IsUniTriangular_v<T1> && IsUniTriangular_v<T2> ) &&
+                                    !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using Type = DiagonalMatrix< typename SchurTraitEval2<T1,T2>::Type >;
 };
@@ -1534,10 +1614,29 @@ struct SchurTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
-                     , EnableIf_t< ( IsDiagonal_v<T1> && IsNumeric_v<T2> ) ||
-                                   ( IsNumeric_v<T1> && IsDiagonal_v<T2> ) ||
-                                   ( ( IsDiagonal_v<T1> && IsDiagonal_v<T2> ) &&
-                                     !( IsIdentity_v<T1> && IsIdentity_v<T2> ) ) > >
+                     , EnableIf_t< IsMatrix_v<T1> &&
+                                   IsNumeric_v<T2> &&
+                                   ( IsDiagonal_v<T1> && !IsUniform_v<T1> ) > >
+{
+   using Type = DiagonalMatrix< typename MultTraitEval2<T1,T2>::Type >;
+};
+
+template< typename T1, typename T2 >
+struct MultTraitEval1< T1, T2
+                     , EnableIf_t< IsNumeric_v<T1> &&
+                                   IsMatrix_v<T2> &&
+                                   ( IsDiagonal_v<T2> && !IsUniform_v<T2> ) > >
+{
+   using Type = DiagonalMatrix< typename MultTraitEval2<T1,T2>::Type >;
+};
+
+template< typename T1, typename T2 >
+struct MultTraitEval1< T1, T2
+                     , EnableIf_t< IsMatrix_v<T1> &&
+                                   IsMatrix_v<T2> &&
+                                   ( IsDiagonal_v<T1> && IsDiagonal_v<T2> ) &&
+                                   !( IsIdentity_v<T1> || IsIdentity_v<T2> ) &&
+                                   !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using Type = DiagonalMatrix< typename MultTraitEval2<T1,T2>::Type >;
 };
@@ -1578,7 +1677,8 @@ struct DivTraitEval1< T1, T2
 template< typename T, typename OP >
 struct UnaryMapTraitEval1< T, OP
                          , EnableIf_t< YieldsDiagonal_v<OP,T> &&
-                                       !YieldsIdentity_v<OP,T> > >
+                                       !YieldsIdentity_v<OP,T> &&
+                                       !YieldsZero_v<OP,T> > >
 {
    using Type = DiagonalMatrix< typename UnaryMapTraitEval2<T,OP>::Type, StorageOrder_v<T> >;
 };
@@ -1591,7 +1691,8 @@ struct UnaryMapTraitEval1< T, OP
 template< typename T1, typename T2, typename OP >
 struct BinaryMapTraitEval1< T1, T2, OP
                           , EnableIf_t< YieldsDiagonal_v<OP,T1,T2> &&
-                                        !YieldsIdentity_v<OP,T1,T2> > >
+                                        !YieldsIdentity_v<OP,T1,T2> &&
+                                        !YieldsZero_v<OP,T1,T2> > >
 {
    using Type = DiagonalMatrix< typename BinaryMapTraitEval2<T1,T2,OP>::Type >;
 };
