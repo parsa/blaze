@@ -65,6 +65,7 @@
 #include <blaze/math/functors/DeclLow.h>
 #include <blaze/math/functors/DeclSym.h>
 #include <blaze/math/functors/DeclUpp.h>
+#include <blaze/math/functors/DeclZero.h>
 #include <blaze/math/functors/Div.h>
 #include <blaze/math/functors/DivAssign.h>
 #include <blaze/math/functors/Erf.h>
