@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/Math.h
-//  \brief Header file for the inclusion of the math module of the Blaze library
+//  \file blaze/math/ZeroMatrix.h
+//  \brief Header file for the complete ZeroMatrix implementation
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
@@ -32,60 +32,70 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_MODULE_H_
-#define _BLAZE_MATH_MODULE_H_
+#ifndef _BLAZE_MATH_ZEROMATRIX_H_
+#define _BLAZE_MATH_ZEROMATRIX_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/Accuracy.h>
-#include <blaze/math/Aliases.h>
-#include <blaze/math/AlignmentFlag.h>
-#include <blaze/math/Band.h>
-#include <blaze/math/BLAS.h>
+#include <blaze/math/sparse/ZeroMatrix.h>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
-#include <blaze/math/Constraints.h>
-#include <blaze/math/CustomMatrix.h>
-#include <blaze/math/CustomVector.h>
-#include <blaze/math/DiagonalMatrix.h>
-#include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/DynamicVector.h>
-#include <blaze/math/Epsilon.h>
-#include <blaze/math/Functors.h>
-#include <blaze/math/IdentityMatrix.h>
-#include <blaze/math/Infinity.h>
-#include <blaze/math/InitializerMatrix.h>
-#include <blaze/math/InitializerVector.h>
-#include <blaze/math/InversionFlag.h>
-#include <blaze/math/HermitianMatrix.h>
-#include <blaze/math/HybridMatrix.h>
-#include <blaze/math/HybridVector.h>
-#include <blaze/math/LAPACK.h>
-#include <blaze/math/LowerMatrix.h>
-#include <blaze/math/PaddingFlag.h>
-#include <blaze/math/ReductionFlag.h>
-#include <blaze/math/RelaxationFlag.h>
-#include <blaze/math/Serialization.h>
-#include <blaze/math/Shims.h>
-#include <blaze/math/SMP.h>
-#include <blaze/math/StaticMatrix.h>
-#include <blaze/math/StaticVector.h>
-#include <blaze/math/StorageOrder.h>
-#include <blaze/math/StrictlyLowerMatrix.h>
-#include <blaze/math/StrictlyUpperMatrix.h>
-#include <blaze/math/SymmetricMatrix.h>
-#include <blaze/math/Traits.h>
-#include <blaze/math/TransposeFlag.h>
-#include <blaze/math/TypeTraits.h>
-#include <blaze/math/UniformMatrix.h>
-#include <blaze/math/UniformVector.h>
-#include <blaze/math/UniLowerMatrix.h>
-#include <blaze/math/UniUpperMatrix.h>
-#include <blaze/math/UpperMatrix.h>
-#include <blaze/math/Views.h>
-#include <blaze/math/ZeroMatrix.h>
+#include <blaze/util/Random.h>
+#include <blaze/util/Types.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  RAND SPECIALIZATION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the Rand class template for ZeroMatrix.
+// \ingroup random
+//
+// This specialization of the Rand class creates random instances of ZeroMatrix.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+class Rand< ZeroMatrix<Type,SO> >
+{
+ public:
+   //**Generate functions**************************************************************************
+   /*!\name Generate functions */
+   //@{
+   inline const ZeroMatrix<Type,SO> generate( size_t m, size_t n ) const;
+   //@}
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Generation of a random ZeroMatrix.
+//
+// \param n The number of rows of the random matrix.
+// \param n The number of columns of the random matrix.
+// \return The generated random matrix.
+*/
+template< typename Type  // Data type of the matrix
+        , bool SO >      // Storage order
+inline const ZeroMatrix<Type,SO>
+   Rand< ZeroMatrix<Type,SO> >::generate( size_t m, size_t n ) const
+{
+   return ZeroMatrix<Type,SO>( m, n );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
