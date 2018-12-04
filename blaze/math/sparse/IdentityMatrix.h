@@ -59,8 +59,10 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/typetraits/HighType.h>
+#include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsIdentity.h>
+#include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
@@ -69,6 +71,7 @@
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniTriangular.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/math/typetraits/YieldsIdentity.h>
@@ -85,6 +88,7 @@
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/Unused.h>
 
 
@@ -128,7 +132,7 @@ namespace blaze {
 
    // The function call operator provides access to all possible elements of the identity matrix,
    // including the zero elements.
-   A(1,2) = 2.0;       // Compilation error: It is not possible to write to an indentity matrix
+   A(1,2) = 2.0;       // Compilation error: It is not possible to write to an identity matrix
    double d = A(2,1);  // Access to the element (2,1)
 
    // In order to traverse all non-zero elements currently stored in the matrix, the begin()
@@ -1292,13 +1296,13 @@ inline constexpr void swap( IdentityMatrix<Type,SO>& a, IdentityMatrix<Type,SO>&
 template< typename T   // Data type of the left-hand side identity matrix
         , bool SO      // Storage order of the left-hand side identity matrix
         , typename VT  // Type of the right-hand side dense vector
-        , typename = EnableIf_t< IsSame_v< T, ElementType_t<VT> > > >
+        , EnableIf_t< IsSame_v< T, ElementType_t<VT> > >* = nullptr >
 inline decltype(auto)
    operator*( const IdentityMatrix<T,SO>& mat, const DenseVector<VT,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~mat).columns() != (~vec).size() ) {
+   if( mat.columns() != (~vec).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix and vector sizes do not match" );
    }
 
@@ -1339,13 +1343,13 @@ inline decltype(auto)
 template< typename VT  // Type of the left-hand side dense vector
         , typename T   // Data type of the right-hand side identity matrix
         , bool SO      // Storage order of the right-hand side identity matrix
-        , typename = EnableIf_t< IsSame_v< ElementType_t<VT>, T > > >
+        , EnableIf_t< IsSame_v< ElementType_t<VT>, T > >* = nullptr >
 inline decltype(auto)
    operator*( const DenseVector<VT,true>& vec, const IdentityMatrix<T,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~vec).size() != (~mat).rows() ) {
+   if( (~vec).size() != mat.rows() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector and matrix sizes do not match" );
    }
 
@@ -1386,13 +1390,13 @@ inline decltype(auto)
 template< typename T   // Data type of the left-hand side identity matrix
         , bool SO      // Storage order of the left-hand side identity matrix
         , typename VT  // Type of the right-hand side sparse vector
-        , typename = EnableIf_t< IsSame_v< T, ElementType_t<VT> > > >
+        , EnableIf_t< IsSame_v< T, ElementType_t<VT> > >* = nullptr >
 inline decltype(auto)
    operator*( const IdentityMatrix<T,SO>& mat, const SparseVector<VT,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~mat).columns() != (~vec).size() ) {
+   if( mat.columns() != (~vec).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix and vector sizes do not match" );
    }
 
@@ -1433,13 +1437,13 @@ inline decltype(auto)
 template< typename VT  // Type of the left-hand side sparse vector
         , typename T   // Data type of the right-hand side identity matrix
         , bool SO      // Storage order of the right-hand side identity matrix
-        , typename = EnableIf_t< IsSame_v< ElementType_t<VT>, T > > >
+        , EnableIf_t< IsSame_v< ElementType_t<VT>, T > >* = nullptr >
 inline decltype(auto)
    operator*( const SparseVector<VT,true>& vec, const IdentityMatrix<T,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~vec).size() != (~mat).rows() ) {
+   if( (~vec).size() != mat.rows() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector and matrix sizes do not match" );
    }
 
@@ -1478,13 +1482,13 @@ template< typename T   // Data type of the left-hand side identity matrix
         , bool SO1     // Storage order of the left-hand side identity matrix
         , typename MT  // Type of the right-hand side dense matrix
         , bool SO2     // Storage order of the right-hand side dense matrix
-        , typename = EnableIf_t< IsSame_v< T, ElementType_t<MT> > > >
+        , EnableIf_t< IsSame_v< T, ElementType_t<MT> > >* = nullptr >
 inline decltype(auto)
    operator*( const IdentityMatrix<T,SO1>& lhs, const DenseMatrix<MT,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).columns() != (~rhs).rows() ) {
+   if( lhs.columns() != (~rhs).rows() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
@@ -1523,13 +1527,13 @@ template< typename MT  // Type of the left-hand side dense matrix
         , bool SO1     // Storage order of the left-hand side dense matrix
         , typename T   // Data type of the right-hand side identity matrix
         , bool SO2     // Storage order of the right-hand side identity matrix
-        , typename = EnableIf_t< IsSame_v< ElementType_t<MT>, T > > >
+        , EnableIf_t< IsSame_v< ElementType_t<MT>, T > >* = nullptr >
 inline decltype(auto)
    operator*( const DenseMatrix<MT,SO1>& lhs, const IdentityMatrix<T,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).columns() != (~rhs).rows() ) {
+   if( (~lhs).columns() != rhs.rows() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
@@ -1568,13 +1572,13 @@ template< typename T   // Data type of the left-hand side identity matrix
         , bool SO1     // Storage order of the left-hand side identity matrix
         , typename MT  // Type of the right-hand side sparse matrix
         , bool SO2     // Storage order of the right-hand side sparse matrix
-        , typename = EnableIf_t< IsSame_v< T, ElementType_t<MT> > > >
+        , EnableIf_t< !IsZero_v<MT> && IsSame_v< T, ElementType_t<MT> > >* = nullptr >
 inline decltype(auto)
    operator*( const IdentityMatrix<T,SO1>& lhs, const SparseMatrix<MT,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).columns() != (~rhs).rows() ) {
+   if( lhs.columns() != (~rhs).rows() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
@@ -1613,13 +1617,13 @@ template< typename MT  // Type of the left-hand side sparse matrix
         , bool SO1     // Storage order of the left-hand side sparse matrix
         , typename T   // Data type of the right-hand side identity matrix
         , bool SO2     // Storage order of the right-hand side identity matrix
-        , typename = EnableIf_t< IsSame_v< ElementType_t<MT>, T > > >
+        , EnableIf_t< !IsZero_v<MT> && IsSame_v< ElementType_t<MT>, T > >* = nullptr >
 inline decltype(auto)
    operator*( const SparseMatrix<MT,SO1>& lhs, const IdentityMatrix<T,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).columns() != (~rhs).rows() ) {
+   if( (~lhs).columns() != rhs.rows() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
@@ -1654,18 +1658,18 @@ inline decltype(auto)
 */
 template< typename T1  // Data type of the left-hand side identity matrix
         , bool SO1     // Storage order of the left-hand side identity matrix
-        , typename T2  // Data type of the right-hand side dense matrix
-        , bool SO2 >   // Storage order of the right-hand side dense matrix
+        , typename T2  // Data type of the right-hand side identity matrix
+        , bool SO2 >   // Storage order of the right-hand side identity matrix
 inline decltype(auto)
    operator*( const IdentityMatrix<T1,SO1>& lhs, const IdentityMatrix<T2,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).columns() != (~rhs).rows() ) {
+   if( lhs.columns() != rhs.rows() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   return IdentityMatrix< MultTrait_t<T1,T2>, SO1 >( (~lhs).rows() );
+   return IdentityMatrix< MultTrait_t<T1,T2>, SO1 >( lhs.rows() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1834,11 +1838,14 @@ struct IsResizable< IdentityMatrix<T,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct SchurTraitEval1< T1, T2
-                      , EnableIf_t< ( IsIdentity_v<T1> && IsIdentity_v<T2> ) ||
-                                    ( IsIdentity_v<T1> && IsUniTriangular_v<T2> ) ||
-                                    ( IsUniTriangular_v<T1> && IsIdentity_v<T2> ) ||
-                                    ( IsUniLower_v<T1> && IsUniUpper_v<T2> ) ||
-                                    ( IsUniUpper_v<T1> && IsUniLower_v<T2> ) > >
+                      , EnableIf_t< IsMatrix_v<T1> &&
+                                    IsMatrix_v<T2> &&
+                                    ( ( IsIdentity_v<T1> && IsIdentity_v<T2> ) ||
+                                      ( IsIdentity_v<T1> && IsUniTriangular_v<T2> ) ||
+                                      ( IsUniTriangular_v<T1> && IsIdentity_v<T2> ) ||
+                                      ( IsUniLower_v<T1> && IsUniUpper_v<T2> ) ||
+                                      ( IsUniUpper_v<T1> && IsUniLower_v<T2> ) ) &&
+                                    !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
@@ -1870,9 +1877,28 @@ struct SchurTraitEval1< T1, T2
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
-struct MultTraitEval2< T1, T2
-                     , EnableIf_t< IsIdentity_v<T1> &&
-                                   IsIdentity_v<T2> > >
+struct MultTraitEval1< T1, T2
+                     , EnableIf_t< IsMatrix_v<T1> &&
+                                   IsMatrix_v<T2> &&
+                                   !IsIdentity_v<T1> && !IsZero_v<T1> && IsIdentity_v<T2> > >
+{
+   using Type = Rebind_t< ResultType_t<T1>, MultTrait_t< ElementType_t<T1>, ElementType_t<T2> > >;
+};
+
+template< typename T1, typename T2 >
+struct MultTraitEval1< T1, T2
+                     , EnableIf_t< IsMatrix_v<T1> &&
+                                   IsMatrix_v<T2> &&
+                                   IsIdentity_v<T1> && !IsIdentity_v<T2> && !IsZero_v<T2> > >
+{
+   using Type = Rebind_t< ResultType_t<T2>, MultTrait_t< ElementType_t<T1>, ElementType_t<T2> > >;
+};
+
+template< typename T1, typename T2 >
+struct MultTraitEval1< T1, T2
+                     , EnableIf_t< IsMatrix_v<T1> &&
+                                   IsMatrix_v<T2> &&
+                                   IsIdentity_v<T1> && IsIdentity_v<T2> > >
 {
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
