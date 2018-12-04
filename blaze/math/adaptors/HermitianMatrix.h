@@ -72,13 +72,17 @@
 #include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsHermitian.h>
-#include <blaze/math/typetraits/IsIdentity.h>
+#include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsShrinkable.h>
 #include <blaze/math/typetraits/IsSquare.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniform.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
@@ -1117,6 +1121,24 @@ struct IsSquare< HermitianMatrix<MT,SO,DF> >
 
 //=================================================================================================
 //
+//  ISUNIFORM SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct IsUniform< HermitianMatrix<MT,SO,DF> >
+   : public IsUniform<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  ISSYMMETRIC SPECIALIZATIONS
 //
 //=================================================================================================
@@ -1144,6 +1166,42 @@ struct IsSymmetric< HermitianMatrix<MT,SO,DF> >
 template< typename MT, bool SO, bool DF >
 struct IsHermitian< HermitianMatrix<MT,SO,DF> >
    : public TrueType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSTRICTLYLOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct IsStrictlyLower< HermitianMatrix<MT,SO,DF> >
+   : public IsZero<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSTRICTLYUPPER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct IsStrictlyUpper< HermitianMatrix<MT,SO,DF> >
+   : public IsZero<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1324,12 +1382,16 @@ struct RemoveAdaptor< HermitianMatrix<MT,SO,DF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct AddTraitEval1< T1, T2
-                    , EnableIf_t< ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
-                                    IsHermitian_v<T2> && !IsSymmetric_v<T2> ) ||
-                                  ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
-                                    IsSymmetric_v<T2> && !IsComplex_v< UnderlyingNumeric_t<T2> > ) ||
-                                  ( IsSymmetric_v<T1> && !IsComplex_v< UnderlyingNumeric_t<T1> > &&
-                                    IsHermitian_v<T2> && !IsSymmetric_v<T2> ) > >
+                    , EnableIf_t< IsMatrix_v<T1> &&
+                                  IsMatrix_v<T2> &&
+                                  ( ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
+                                      IsHermitian_v<T2> && !IsSymmetric_v<T2> ) ||
+                                    ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
+                                      IsSymmetric_v<T2> && !IsComplex_v< UnderlyingNumeric_t<T2> > ) ||
+                                    ( IsSymmetric_v<T1> && !IsComplex_v< UnderlyingNumeric_t<T1> > &&
+                                      IsHermitian_v<T2> && !IsSymmetric_v<T2> ) ) &&
+                                  !( IsUniform_v<T1> && IsUniform_v<T2> ) &&
+                                  !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using Type = HermitianMatrix< typename AddTraitEval2<T1,T2>::Type >;
 };
@@ -1349,12 +1411,15 @@ struct AddTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct SubTraitEval1< T1, T2
-                    , EnableIf_t< ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
-                                    IsHermitian_v<T2> && !IsSymmetric_v<T2> ) ||
-                                  ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
-                                    IsSymmetric_v<T2> && !IsComplex_v< UnderlyingNumeric_t<T2> > ) ||
-                                  ( IsSymmetric_v<T1> && !IsComplex_v< UnderlyingNumeric_t<T1> > &&
-                                    IsHermitian_v<T2> && !IsSymmetric_v<T2> ) > >
+                    , EnableIf_t< IsMatrix_v<T1> &&
+                                  IsMatrix_v<T2> &&
+                                  ( ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
+                                      IsHermitian_v<T2> && !IsSymmetric_v<T2> ) ||
+                                    ( IsHermitian_v<T1> && !IsSymmetric_v<T1> &&
+                                      IsSymmetric_v<T2> && !IsComplex_v< UnderlyingNumeric_t<T2> > ) ||
+                                    ( IsSymmetric_v<T1> && !IsComplex_v< UnderlyingNumeric_t<T1> > &&
+                                      IsHermitian_v<T2> && !IsSymmetric_v<T2> ) ) &&
+                                  !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using Type = HermitianMatrix< typename SubTraitEval2<T1,T2>::Type >;
 };
@@ -1374,10 +1439,12 @@ struct SubTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct SchurTraitEval1< T1, T2
-                      , EnableIf_t< ( IsHermitian_v<T1> && IsHermitian_v<T2> ) &&
+                      , EnableIf_t< IsMatrix_v<T1> &&
+                                    IsMatrix_v<T2> &&
+                                    ( IsHermitian_v<T1> && IsHermitian_v<T2> ) &&
                                     !( IsSymmetric_v<T1> && IsSymmetric_v<T2> ) &&
-                                    !IsDiagonal_v<T1> &&
-                                    !IsDiagonal_v<T2> > >
+                                    !( IsDiagonal_v<T1> || IsZero_v<T1> ) &&
+                                    !( IsDiagonal_v<T2> || IsZero_v<T2> ) > >
 {
    using Type = HermitianMatrix< typename SchurTraitEval2<T1,T2>::Type >;
 };
@@ -1397,10 +1464,18 @@ struct SchurTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
-                     , EnableIf_t< ( IsHermitian_v<T1> && !IsSymmetric_v<T1> && IsNumeric_v<T2> ) ||
-                                   ( IsNumeric_v<T1> && IsHermitian_v<T2> && !IsSymmetric_v<T2> ) ||
-                                   ( IsHermitian_v<T1> && !IsSymmetric_v<T1> && IsIdentity_v<T2> ) ||
-                                   ( IsIdentity_v<T1> && IsHermitian_v<T2> && !IsSymmetric_v<T2> ) > >
+                     , EnableIf_t< IsMatrix_v<T1> &&
+                                   IsNumeric_v<T2> &&
+                                   ( IsHermitian_v<T1> && !IsSymmetric_v<T1> && !IsUniform_v<T1> ) > >
+{
+   using Type = HermitianMatrix< typename MultTraitEval2<T1,T2>::Type >;
+};
+
+template< typename T1, typename T2 >
+struct MultTraitEval1< T1, T2
+                     , EnableIf_t< IsNumeric_v<T1> &&
+                                   IsMatrix_v<T2> &&
+                                   ( IsHermitian_v<T2> && !IsSymmetric_v<T2> && !IsUniform_v<T2> ) > >
 {
    using Type = HermitianMatrix< typename MultTraitEval2<T1,T2>::Type >;
 };
