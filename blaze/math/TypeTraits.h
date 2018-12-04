@@ -261,5 +261,6 @@
 #include <blaze/math/typetraits/YieldsUniTriangular.h>
 #include <blaze/math/typetraits/YieldsUniUpper.h>
 #include <blaze/math/typetraits/YieldsUpper.h>
+#include <blaze/math/typetraits/YieldsZero.h>
 
 #endif
