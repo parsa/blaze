@@ -63,20 +63,27 @@
 #include <blaze/math/typetraits/IsAdaptor.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsContiguous.h>
+#include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsShrinkable.h>
 #include <blaze/math/typetraits/IsSquare.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/StorageOrder.h>
+#include <blaze/math/typetraits/YieldsDiagonal.h>
 #include <blaze/math/typetraits/YieldsDiagonal.h>
 #include <blaze/math/typetraits/YieldsStrictlyUpper.h>
 #include <blaze/util/algorithms/Min.h>
@@ -1221,6 +1228,78 @@ struct IsSquare< StrictlyUpperMatrix<MT,SO,DF> >
 
 //=================================================================================================
 //
+//  ISUNIFORM SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct IsUniform< StrictlyUpperMatrix<MT,SO,DF> >
+   : public IsUniform<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSYMMETRIC SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct IsSymmetric< StrictlyUpperMatrix<MT,SO,DF> >
+   : public IsUniform<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISHERMITIAN SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct IsHermitian< StrictlyUpperMatrix<MT,SO,DF> >
+   : public IsUniform<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISSTRICTLYLOWER SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct IsStrictlyLower< StrictlyUpperMatrix<MT,SO,DF> >
+   : public IsUniform<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  ISSTRICTLYUPPER SPECIALIZATIONS
 //
 //=================================================================================================
@@ -1410,7 +1489,10 @@ struct RemoveAdaptor< StrictlyUpperMatrix<MT,SO,DF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct AddTraitEval1< T1, T2
-                    , EnableIf_t< IsStrictlyUpper_v<T1> && IsStrictlyUpper_v<T2> > >
+                    , EnableIf_t< IsMatrix_v<T1> &&
+                                  IsMatrix_v<T2> &&
+                                  ( IsStrictlyUpper_v<T1> && IsStrictlyUpper_v<T2> ) &&
+                                  !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using Type = StrictlyUpperMatrix< typename AddTraitEval2<T1,T2>::Type >;
 };
@@ -1430,9 +1512,12 @@ struct AddTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct SubTraitEval1< T1, T2
-                    , EnableIf_t< ( ( IsUniUpper_v<T1> && IsUniUpper_v<T2> ) ||
+                    , EnableIf_t< IsMatrix_v<T1> &&
+                                  IsMatrix_v<T2> &&
+                                  ( ( IsUniUpper_v<T1> && IsUniUpper_v<T2> ) ||
                                     ( IsStrictlyUpper_v<T1> && IsStrictlyUpper_v<T2> ) ) &&
-                                  !( IsIdentity_v<T1> && IsIdentity_v<T2> ) > >
+                                  !( IsIdentity_v<T1> && IsIdentity_v<T2> ) &&
+                                  !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using Type = StrictlyUpperMatrix< typename SubTraitEval2<T1,T2>::Type >;
 };
@@ -1452,8 +1537,11 @@ struct SubTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct SchurTraitEval1< T1, T2
-                      , EnableIf_t< ( IsStrictlyUpper_v<T1> && !IsLower_v<T2> ) ||
-                                    ( !IsLower_v<T1> && IsStrictlyUpper_v<T2> ) > >
+                      , EnableIf_t< IsMatrix_v<T1> &&
+                                    IsMatrix_v<T2> &&
+                                    ( ( IsStrictlyUpper_v<T1> && !IsLower_v<T2> ) ||
+                                      ( !IsLower_v<T1> && IsStrictlyUpper_v<T2> ) ) &&
+                                    !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using Type = StrictlyUpperMatrix< typename SchurTraitEval2<T1,T2>::Type >;
 };
@@ -1473,12 +1561,30 @@ struct SchurTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
-                     , EnableIf_t< ( IsStrictlyUpper_v<T1> && IsNumeric_v<T2> ) ||
-                                   ( IsNumeric_v<T1> && IsStrictlyUpper_v<T2> ) ||
-                                   ( IsStrictlyUpper_v<T1> && IsUpper_v<T2> ) ||
-                                   ( IsUpper_v<T1> && IsStrictlyUpper_v<T2> ) ||
-                                   ( IsStrictlyUpper_v<T1> && IsIdentity_v<T2> ) ||
-                                   ( IsIdentity_v<T1> && IsStrictlyUpper_v<T2> ) > >
+                     , EnableIf_t< IsMatrix_v<T1> &&
+                                   IsNumeric_v<T2> &&
+                                   ( IsStrictlyUpper_v<T1> && !IsUniform_v<T1> ) > >
+{
+   using Type = StrictlyUpperMatrix< typename MultTraitEval2<T1,T2>::Type >;
+};
+
+template< typename T1, typename T2 >
+struct MultTraitEval1< T1, T2
+                     , EnableIf_t< IsNumeric_v<T1> &&
+                                   IsMatrix_v<T2> &&
+                                   ( IsStrictlyUpper_v<T2> && !IsUniform_v<T2> ) > >
+{
+   using Type = StrictlyUpperMatrix< typename MultTraitEval2<T1,T2>::Type >;
+};
+
+template< typename T1, typename T2 >
+struct MultTraitEval1< T1, T2
+                     , EnableIf_t< IsMatrix_v<T1> &&
+                                   IsMatrix_v<T2> &&
+                                   ( ( IsStrictlyUpper_v<T1> && IsUpper_v<T2> ) ||
+                                     ( IsUpper_v<T1> && IsStrictlyUpper_v<T2> ) ) &&
+                                   !( IsIdentity_v<T1> || IsIdentity_v<T2> ) &&
+                                   !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using Type = StrictlyUpperMatrix< typename MultTraitEval2<T1,T2>::Type >;
 };
@@ -1518,7 +1624,8 @@ struct DivTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T, typename OP >
 struct UnaryMapTraitEval1< T, OP
-                         , EnableIf_t< YieldsStrictlyUpper_v<OP,T> > >
+                         , EnableIf_t< YieldsStrictlyUpper_v<OP,T> &&
+                                       !YieldsDiagonal_v<OP,T> > >
 {
    using Type = StrictlyUpperMatrix< typename UnaryMapTraitEval2<T,OP>::Type, StorageOrder_v<T> >;
 };
