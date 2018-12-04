@@ -73,13 +73,17 @@
 #include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsIdentity.h>
+#include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsShrinkable.h>
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniUpper.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
@@ -2428,8 +2432,13 @@ struct RemoveAdaptor< UniLowerMatrix<MT,SO,DF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct AddTraitEval1< T1, T2
-                    , EnableIf_t< ( IsUniLower_v<T1> && IsStrictlyLower_v<T2> ) ||
-                                  ( IsStrictlyLower_v<T1> && IsUniLower_v<T2> ) > >
+                    , EnableIf_t< IsMatrix_v<T1> &&
+                                  IsMatrix_v<T2> &&
+                                  ( ( IsUniLower_v<T1> && IsStrictlyLower_v<T2> &&
+                                      !( IsUniUpper_v<T1> && IsStrictlyUpper_v<T2> ) ) ||
+                                    ( IsStrictlyLower_v<T1> && IsUniLower_v<T2> &&
+                                      !( IsStrictlyUpper_v<T1> && IsUniUpper_v<T2> ) ) ) &&
+                                  !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using Type = UniLowerMatrix< typename AddTraitEval2<T1,T2>::Type >;
 };
@@ -2449,7 +2458,11 @@ struct AddTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct SubTraitEval1< T1, T2
-                    , EnableIf_t< IsUniLower_v<T1> && IsStrictlyLower_v<T2> > >
+                    , EnableIf_t< IsMatrix_v<T1> &&
+                                  IsMatrix_v<T2> &&
+                                  ( IsUniLower_v<T1> && IsStrictlyLower_v<T2> &&
+                                    !( IsUniUpper_v<T1> && IsStrictlyUpper_v<T2> ) ) &&
+                                  !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using Type = UniLowerMatrix< typename SubTraitEval2<T1,T2>::Type >;
 };
@@ -2469,8 +2482,11 @@ struct SubTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct SchurTraitEval1< T1, T2
-                      , EnableIf_t< IsUniLower_v<T1> && IsUniLower_v<T2> &&
-                                    !( IsDiagonal_v<T1> || IsDiagonal_v<T2> ) > >
+                      , EnableIf_t< IsMatrix_v<T1> &&
+                                    IsMatrix_v<T2> &&
+                                    ( IsUniLower_v<T1> && IsUniLower_v<T2> ) &&
+                                    !( IsDiagonal_v<T1> || IsDiagonal_v<T2> ) &&
+                                    !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using Type = UniLowerMatrix< typename SchurTraitEval2<T1,T2>::Type >;
 };
@@ -2490,8 +2506,10 @@ struct SchurTraitEval1< T1, T2
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
-                     , EnableIf_t< ( IsUniLower_v<T1> && IsUniLower_v<T2> ) &&
-                                   !( IsIdentity_v<T1> && IsIdentity_v<T2> ) > >
+                     , EnableIf_t< IsMatrix_v<T1> &&
+                                   IsMatrix_v<T2> &&
+                                   ( IsUniLower_v<T1> && IsUniLower_v<T2> ) &&
+                                   !( IsIdentity_v<T1> || IsIdentity_v<T2> ) > >
 {
    using Type = UniLowerMatrix< typename MultTraitEval2<T1,T2>::Type >;
 };
