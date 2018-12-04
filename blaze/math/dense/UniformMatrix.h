@@ -54,9 +54,6 @@
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
-#include <blaze/math/traits/DeclDiagTrait.h>
-#include <blaze/math/traits/DeclLowTrait.h>
-#include <blaze/math/traits/DeclUppTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ExpandTrait.h>
 #include <blaze/math/traits/MapTrait.h>
@@ -69,16 +66,18 @@
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
-#include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniform.h>
+#include <blaze/math/typetraits/IsVector.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/math/typetraits/YieldsUniform.h>
+#include <blaze/math/typetraits/YieldsZero.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/StorageOrder.h>
 #include <blaze/system/Thresholds.h>
@@ -569,6 +568,7 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename UniformMatrix<Type,SO>::ConstIterator
    UniformMatrix<Type,SO>::begin( size_t i ) const noexcept
 {
+   UNUSED_PARAMETER( i );
    BLAZE_USER_ASSERT( SO  || i < m_, "Invalid dense matrix row access index" );
    BLAZE_USER_ASSERT( !SO || i < n_, "Invalid dense matrix row access index" );
    return ConstIterator( &value_, 0UL );
@@ -592,6 +592,7 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename UniformMatrix<Type,SO>::ConstIterator
    UniformMatrix<Type,SO>::cbegin( size_t i ) const noexcept
 {
+   UNUSED_PARAMETER( i );
    BLAZE_USER_ASSERT( SO  || i < m_, "Invalid dense matrix row access index" );
    BLAZE_USER_ASSERT( !SO || i < n_, "Invalid dense matrix row access index" );
    return ConstIterator( &value_, 0UL );
@@ -615,6 +616,7 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename UniformMatrix<Type,SO>::ConstIterator
    UniformMatrix<Type,SO>::end( size_t i ) const noexcept
 {
+   UNUSED_PARAMETER( i );
    BLAZE_USER_ASSERT( SO  || i < m_, "Invalid dense matrix row access index" );
    BLAZE_USER_ASSERT( !SO || i < n_, "Invalid dense matrix row access index" );
    return ConstIterator( &value_, SO ? m_ : n_ );
@@ -638,6 +640,7 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename UniformMatrix<Type,SO>::ConstIterator
    UniformMatrix<Type,SO>::cend( size_t i ) const noexcept
 {
+   UNUSED_PARAMETER( i );
    BLAZE_USER_ASSERT( SO  || i < m_, "Invalid dense matrix row access index" );
    BLAZE_USER_ASSERT( !SO || i < n_, "Invalid dense matrix row access index" );
    return ConstIterator( &value_, SO ? m_ : n_ );
@@ -1589,7 +1592,8 @@ template< typename T1, typename T2 >
 struct AddTraitEval1< T1, T2
                     , EnableIf_t< IsMatrix_v<T1> &&
                                   IsMatrix_v<T2> &&
-                                  ( IsUniform_v<T1> && IsUniform_v<T2> ) > >
+                                  ( IsUniform_v<T1> && IsUniform_v<T2> ) &&
+                                  !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
@@ -1627,7 +1631,8 @@ template< typename T1, typename T2 >
 struct SubTraitEval1< T1, T2
                     , EnableIf_t< IsMatrix_v<T1> &&
                                   IsMatrix_v<T2> &&
-                                  ( IsUniform_v<T1> && IsUniform_v<T2> ) > >
+                                  ( IsUniform_v<T1> && IsUniform_v<T2> ) &&
+                                  !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
@@ -1665,7 +1670,8 @@ template< typename T1, typename T2 >
 struct SchurTraitEval1< T1, T2
                       , EnableIf_t< IsMatrix_v<T1> &&
                                     IsMatrix_v<T2> &&
-                                    ( IsUniform_v<T1> && IsUniform_v<T2> ) > >
+                                    ( IsUniform_v<T1> && IsUniform_v<T2> ) &&
+                                    !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
@@ -1698,8 +1704,9 @@ struct SchurTraitEval1< T1, T2
 template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
                      , EnableIf_t< IsMatrix_v<T1> &&
-                                   IsNumeric_v<T2> &&
-                                   IsUniform_v<T1> > >
+                                   IsUniform_v<T1> &&
+                                   !IsZero_v<T1> &&
+                                   IsNumeric_v<T2> > >
 {
    using ET1 = ElementType_t<T1>;
 
@@ -1710,7 +1717,8 @@ template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
                      , EnableIf_t< IsNumeric_v<T1> &&
                                    IsMatrix_v<T2> &&
-                                   IsUniform_v<T2> > >
+                                   IsUniform_v<T2> &&
+                                   !IsZero_v<T2> > >
 {
    using ET2 = ElementType_t<T2>;
 
@@ -1736,8 +1744,8 @@ template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
                      , EnableIf_t< IsMatrix_v<T1> &&
                                    IsMatrix_v<T2> &&
-                                   IsUniform_v<T1> &&
-                                   IsUniform_v<T2> > >
+                                   ( IsUniform_v<T1> && IsUniform_v<T2> ) &&
+                                   !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
@@ -1762,7 +1770,7 @@ template< typename T1, typename T2 >
 struct DivTraitEval1< T1, T2
                     , EnableIf_t< IsMatrix_v<T1> &&
                                   IsNumeric_v<T2> &&
-                                  IsUniform_v<T1> > >
+                                  IsUniform_v<T1> && !IsZero_v<T1> > >
 {
    using ET1 = ElementType_t<T1>;
 
@@ -1785,7 +1793,8 @@ struct DivTraitEval1< T1, T2
 template< typename T, typename OP >
 struct UnaryMapTraitEval1< T, OP
                          , EnableIf_t< IsMatrix_v<T> &&
-                                       YieldsUniform_v<OP,T> > >
+                                       YieldsUniform_v<OP,T> &&
+                                       !YieldsZero_v<OP,T> > >
 {
    using ET = ElementType_t<T>;
 
@@ -1801,7 +1810,8 @@ template< typename T1, typename T2, typename OP >
 struct BinaryMapTraitEval1< T1, T2, OP
                           , EnableIf_t< IsMatrix_v<T1> &&
                                         IsMatrix_v<T2> &&
-                                        YieldsUniform_v<OP,T1,T2> > >
+                                        YieldsUniform_v<OP,T1,T2> &&
+                                        !YieldsZero_v<OP,T1,T2> > >
 {
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
@@ -1847,64 +1857,6 @@ struct ExpandTraitEval1< T, E
 };
 /*! \endcond */
 //*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DECLLOWTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct DeclLowTrait< UniformMatrix<T,SO> >
-{
-   using Type = LowerMatrix< DynamicMatrix<T,SO> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DECLUPPTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct DeclUppTrait< UniformMatrix<T,SO> >
-{
-   using Type = UpperMatrix< DynamicMatrix<T,SO> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DECLDIAGTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct DeclDiagTrait< UniformMatrix<T,SO> >
-{
-   using Type = DiagonalMatrix< DynamicMatrix<T,SO> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
 
 
 
