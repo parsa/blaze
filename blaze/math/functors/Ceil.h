@@ -52,6 +52,7 @@
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/YieldsLower.h>
 #include <blaze/math/typetraits/YieldsStrictlyLower.h>
 #include <blaze/math/typetraits/YieldsStrictlyUpper.h>
@@ -60,6 +61,7 @@
 #include <blaze/math/typetraits/YieldsUniLower.h>
 #include <blaze/math/typetraits/YieldsUniUpper.h>
 #include <blaze/math/typetraits/YieldsUpper.h>
+#include <blaze/math/typetraits/YieldsZero.h>
 #include <blaze/system/Inline.h>
 
 
@@ -262,6 +264,24 @@ struct YieldsUniUpper<Ceil,MT>
 template< typename MT >
 struct YieldsStrictlyUpper<Ceil,MT>
    : public IsStrictlyUpper<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSZERO SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T >
+struct YieldsZero<Ceil,T>
+   : public IsZero<T>
 {};
 /*! \endcond */
 //*************************************************************************************************
