@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseVector.h>
@@ -515,6 +516,32 @@ inline auto length( const SparseVector<VT,TF>& sv ) -> decltype( sqrt( sqrLength
 {
    return sqrt( sqrLength( ~sv ) );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing a single element, a range or selection of elements from the given sparse vector.
+// \ingroup sparse_vector
+//
+// \param sv The given sparse vector.
+// \param args The runtime arguments for the erase call.
+// \return The result of the according erase member function.
+//
+// This function represents an abstract interface for erasing a single element, a range of
+// elements or a selection of elements from the given sparse vector. It forwards the given
+// arguments to the according \a erase() member function of the sparse vector and returns
+// the result of the function call.
+*/
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... Args >  // Type of the erase arguments
+auto erase( SparseVector<VT,TF>& sv, Args&&... args )
+   -> decltype( (~sv).erase( std::forward<Args>( args )... ) )
+{
+   return (~sv).erase( std::forward<Args>( args )... );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
