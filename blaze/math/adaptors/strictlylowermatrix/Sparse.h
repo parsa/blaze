@@ -385,12 +385,12 @@ inline StrictlyLowerMatrix<MT,SO,false>::StrictlyLowerMatrix()
 //
 // \param n The number of rows and columns of the matrix.
 //
-// The matrix is initialized as identity matrix and has no additional free capacity.
+// The matrix is initialized as empty \f$ n \times n \f$ matrix without free capacity.
 */
 template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline StrictlyLowerMatrix<MT,SO,false>::StrictlyLowerMatrix( size_t n )
-   : matrix_( n, n, n )  // The adapted sparse matrix
+   : matrix_( n, n )  // The adapted sparse matrix
 {
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE( MT );
 
@@ -1363,14 +1363,16 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline void StrictlyLowerMatrix<MT,SO,false>::reset()
 {
+   using blaze::erase;
+
    if( SO ) {
       for( size_t j=0UL; j<columns(); ++j ) {
-         matrix_.erase( j, matrix_.lowerBound(j+1UL,j), matrix_.end(j) );
+         erase( matrix_, j, matrix_.lowerBound(j+1UL,j), matrix_.end(j) );
       }
    }
    else {
       for( size_t i=1UL; i<rows(); ++i ) {
-         matrix_.erase( i, matrix_.begin(i), matrix_.lowerBound(i,i) );
+         erase( matrix_, i, matrix_.begin(i), matrix_.lowerBound(i,i) );
       }
    }
 }
@@ -1395,11 +1397,13 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline void StrictlyLowerMatrix<MT,SO,false>::reset( size_t i )
 {
+   using blaze::erase;
+
    if( SO ) {
-      matrix_.erase( i, matrix_.lowerBound(i+1UL,i), matrix_.end(i) );
+      erase( matrix_, i, matrix_.lowerBound(i+1UL,i), matrix_.end(i) );
    }
    else {
-      matrix_.erase( i, matrix_.begin(i), matrix_.lowerBound(i,i) );
+      erase( matrix_, i, matrix_.begin(i), matrix_.lowerBound(i,i) );
    }
 }
 /*! \endcond */
@@ -1642,13 +1646,15 @@ template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
 inline void StrictlyLowerMatrix<MT,SO,false>::resetUpper()
 {
+   using blaze::erase;
+
    if( SO ) {
       for( size_t j=1UL; j<columns(); ++j )
-         matrix_.erase( j, matrix_.begin( j ), matrix_.lowerBound( j, j ) );
+         erase( matrix_, j, matrix_.begin( j ), matrix_.lowerBound( j, j ) );
    }
    else {
       for( size_t i=0UL; i<rows(); ++i )
-         matrix_.erase( i, matrix_.upperBound( i, i ), matrix_.end( i ) );
+         erase( matrix_, i, matrix_.upperBound( i, i ), matrix_.end( i ) );
    }
 }
 /*! \endcond */
@@ -1836,7 +1842,9 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline void StrictlyLowerMatrix<MT,SO,false>::erase( size_t i, size_t j )
 {
-   matrix_.erase( i, j );
+   using blaze::erase;
+
+   erase( matrix_, i, j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1859,7 +1867,9 @@ template< typename MT  // Type of the adapted sparse matrix
 inline typename StrictlyLowerMatrix<MT,SO,false>::Iterator
    StrictlyLowerMatrix<MT,SO,false>::erase( size_t i, Iterator pos )
 {
-   return matrix_.erase( i, pos );
+   using blaze::erase;
+
+   return erase( matrix_, i, pos );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1884,7 +1894,9 @@ template< typename MT  // Type of the adapted sparse matrix
 inline typename StrictlyLowerMatrix<MT,SO,false>::Iterator
    StrictlyLowerMatrix<MT,SO,false>::erase( size_t i, Iterator first, Iterator last )
 {
-   return matrix_.erase( i, first, last );
+   using blaze::erase;
+
+   return erase( matrix_, i, first, last );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1917,7 +1929,9 @@ template< typename MT      // Type of the adapted sparse matrix
 template< typename Pred >  // Type of the unary predicate
 inline void StrictlyLowerMatrix<MT,SO,false>::erase( Pred predicate )
 {
-   matrix_.erase( predicate );
+   using blaze::erase;
+
+   erase( matrix_, predicate );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
@@ -1958,7 +1972,9 @@ template< typename MT      // Type of the adapted sparse matrix
 template< typename Pred >  // Type of the unary predicate
 inline void StrictlyLowerMatrix<MT,SO,false>::erase( size_t i, Iterator first, Iterator last, Pred predicate )
 {
-   matrix_.erase( i, first, last, predicate );
+   using blaze::erase;
+
+   erase( matrix_, i, first, last, predicate );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
