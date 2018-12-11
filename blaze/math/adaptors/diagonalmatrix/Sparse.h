@@ -1554,17 +1554,19 @@ inline void DiagonalMatrix<MT,SO,false>::swap( DiagonalMatrix& m ) noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Reset the complete upper part of the matrix to the default initial values.
+/*!\brief Reset the complete lower and upper parts of the matrix to the default initial values.
 //
 // \return void
 */
-template< typename MT  // Type of the adapted dense matrix
-        , bool SO >    // Storage order of the adapted dense matrix
+template< typename MT  // Type of the adapted sparse matrix
+        , bool SO >    // Storage order of the adapted sparse matrix
 inline void DiagonalMatrix<MT,SO,false>::resetNonDiagonal()
 {
+   using blaze::erase;
+
    for( size_t i=0UL; i<rows(); ++i ) {
-      matrix_.erase( i, matrix_.begin( i ), matrix_.lowerBound( i, i ) );
-      matrix_.erase( i, matrix_.upperBound( i, i ), matrix_.end( i ) );
+      erase( matrix_, i, matrix_.begin( i ), matrix_.lowerBound( i, i ) );
+      erase( matrix_, i, matrix_.upperBound( i, i ), matrix_.end( i ) );
    }
 }
 /*! \endcond */
@@ -1752,7 +1754,9 @@ template< typename MT  // Type of the adapted sparse matrix
         , bool SO >    // Storage order of the adapted sparse matrix
 inline void DiagonalMatrix<MT,SO,false>::erase( size_t i, size_t j )
 {
-   matrix_.erase( i, j );
+   using blaze::erase;
+
+   erase( matrix_, i, j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1775,7 +1779,9 @@ template< typename MT  // Type of the adapted sparse matrix
 inline typename DiagonalMatrix<MT,SO,false>::Iterator
    DiagonalMatrix<MT,SO,false>::erase( size_t i, Iterator pos )
 {
-   return matrix_.erase( i, pos );
+   using blaze::erase;
+
+   return erase( matrix_, i, pos );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1800,7 +1806,9 @@ template< typename MT  // Type of the adapted sparse matrix
 inline typename DiagonalMatrix<MT,SO,false>::Iterator
    DiagonalMatrix<MT,SO,false>::erase( size_t i, Iterator first, Iterator last )
 {
-   return matrix_.erase( i, first, last );
+   using blaze::erase;
+
+   return erase( matrix_, i, first, last );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1833,7 +1841,9 @@ template< typename MT      // Type of the adapted sparse matrix
 template< typename Pred >  // Type of the unary predicate
 inline void DiagonalMatrix<MT,SO,false>::erase( Pred predicate )
 {
-   matrix_.erase( predicate );
+   using blaze::erase;
+
+   erase( matrix_, predicate );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
@@ -1874,7 +1884,9 @@ template< typename MT      // Type of the adapted sparse matrix
 template< typename Pred >  // Type of the unary predicate
 inline void DiagonalMatrix<MT,SO,false>::erase( size_t i, Iterator first, Iterator last, Pred predicate )
 {
-   matrix_.erase( i, first, last, predicate );
+   using blaze::erase;
+
+   erase( matrix_, i, first, last, predicate );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Broken invariant detected" );
 }
