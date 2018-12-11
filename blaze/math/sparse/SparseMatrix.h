@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/Triangular.h>
@@ -1637,6 +1638,32 @@ bool isIdentity( const SparseMatrix<MT,SO>& sm )
 
    return true;
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Erasing a single element, a range or selection of elements from the given sparse matrix.
+// \ingroup sparse_matrix
+//
+// \param sm The given sparse matrix.
+// \param args The runtime arguments for the erase call.
+// \return The result of the according erase member function.
+//
+// This function represents an abstract interface for erasing a single element, a range of
+// elements or a selection of elements from the given sparse matrix. It forwards the given
+// arguments to the according \a erase() member function of the sparse matrix and returns
+// the result of the function call.
+*/
+template< typename MT         // Type of the sparse matrix
+        , bool SO             // Storage order
+        , typename... Args >  // Type of the erase arguments
+auto erase( SparseMatrix<MT,SO>& sm, Args&&... args )
+   -> decltype( (~sm).erase( std::forward<Args>( args )... ) )
+{
+   return (~sm).erase( std::forward<Args>( args )... );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
