@@ -6895,7 +6895,9 @@ struct MultTraitEval2< T1, T2
    static constexpr size_t M = ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ? MaxSize_v<T1,0UL> : MaxSize_v<T2,0UL> );
    static constexpr size_t N = ( MaxSize_v<T2,1UL> != DefaultMaxSize_v ? MaxSize_v<T2,1UL> : MaxSize_v<T1,1UL> );
 
-   using Type = HybridMatrix< MultTrait_t<ET1,ET2>, M, N, StorageOrder_v<T1> >;
+   static constexpr bool SO = ( IsSparseMatrix_v<T1> ? StorageOrder_v<T2> : StorageOrder_v<T1> );
+
+   using Type = HybridMatrix< MultTrait_t<ET1,ET2>, M, N, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
