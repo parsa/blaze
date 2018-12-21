@@ -6579,7 +6579,9 @@ struct MultTraitEval2< T1, T2
    static constexpr size_t M = ( Size_v<T1,0UL> != DefaultSize_v ? Size_v<T1,0UL> : Size_v<T2,0UL> );
    static constexpr size_t N = ( Size_v<T2,1UL> != DefaultSize_v ? Size_v<T2,1UL> : Size_v<T1,1UL> );
 
-   using Type = StaticMatrix< MultTrait_t<ET1,ET2>, M, N, StorageOrder_v<T1> >;
+   static constexpr bool SO = ( IsSparseMatrix_v<T1> ? StorageOrder_v<T2> : StorageOrder_v<T1> );
+
+   using Type = StaticMatrix< MultTrait_t<ET1,ET2>, M, N, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -6790,7 +6792,7 @@ struct RowsTraitEval2< MT, M
 //
 //=================================================================================================
 
-//*************************************************************************************************
+//***********************z**************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t N >
 struct ColumnsTraitEval2< MT, N
