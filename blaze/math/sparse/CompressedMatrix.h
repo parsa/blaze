@@ -79,6 +79,7 @@
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/system/StorageOrder.h>
@@ -5968,7 +5969,16 @@ struct AddTraitEval2< T1, T2
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
 
-   static constexpr bool SO = ( StorageOrder_v<T1> && StorageOrder_v<T2> );
+   static constexpr bool SO1 = StorageOrder_v<T1>;
+   static constexpr bool SO2 = StorageOrder_v<T2>;
+
+   static constexpr bool SO = ( IsZero_v<T1>
+                                ? SO2
+                                : ( IsZero_v<T2>
+                                    ? SO1
+                                    : SO1 && SO2 ) );
+
+   //static constexpr bool SO = ( StorageOrder_v<T1> && StorageOrder_v<T2> );
 
    using Type = CompressedMatrix< AddTrait_t<ET1,ET2>, SO >;
 };
