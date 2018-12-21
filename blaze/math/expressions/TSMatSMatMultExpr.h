@@ -59,6 +59,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
@@ -100,7 +101,7 @@ namespace blaze {
 template< typename MT1    // Type of the left-hand side sparse matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
 class TSMatSMatMultExpr
-   : public MatMatMultExpr< SparseMatrix< TSMatSMatMultExpr<MT1,MT2>, true > >
+   : public MatMatMultExpr< SparseMatrix< TSMatSMatMultExpr<MT1,MT2>, !IsIdentity_v<MT1> > >
    , private Computation
 {
  private:
@@ -849,7 +850,6 @@ class TSMatSMatMultExpr
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
@@ -1204,7 +1204,6 @@ class TSMatSMatMultExpr
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
