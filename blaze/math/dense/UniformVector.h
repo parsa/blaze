@@ -67,11 +67,14 @@
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
+#include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/IsVector.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/TransposeFlag.h>
 #include <blaze/math/typetraits/YieldsUniform.h>
+#include <blaze/math/typetraits/YieldsZero.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/Assert.h>
@@ -1440,7 +1443,8 @@ template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
                      , EnableIf_t< IsMatrix_v<T1> &&
                                    IsColumnVector_v<T2> &&
-                                   IsUniform_v<T1> > >
+                                   IsUniform_v<T1> &&
+                                   !( IsZero_v<T1> && IsSparseVector_v<T2> ) > >
 {
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
@@ -1452,7 +1456,8 @@ template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
                      , EnableIf_t< IsRowVector_v<T1> &&
                                    IsMatrix_v<T2> &&
-                                   IsUniform_v<T2> > >
+                                   IsUniform_v<T2> &&
+                                   !( IsSparseVector_v<T1> && IsZero_v<T2> ) > >
 {
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
@@ -1512,7 +1517,8 @@ struct DivTraitEval1< T1, T2
 template< typename T, typename OP >
 struct UnaryMapTraitEval1< T, OP
                          , EnableIf_t< IsVector_v<T> &&
-                                       YieldsUniform_v<OP,T> > >
+                                       YieldsUniform_v<OP,T> &&
+                                       !YieldsZero_v<OP,T> > >
 {
    using ET = ElementType_t<T>;
 
@@ -1528,7 +1534,8 @@ template< typename T1, typename T2, typename OP >
 struct BinaryMapTraitEval1< T1, T2, OP
                           , EnableIf_t< IsVector_v<T1> &&
                                         IsVector_v<T2> &&
-                                        YieldsUniform_v<OP,T1,T2> > >
+                                        YieldsUniform_v<OP,T1,T2> &&
+                                        !YieldsZero_v<OP,T1,T2> > >
 {
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
