@@ -65,6 +65,7 @@
 #include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTriangular.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/Views.h>
@@ -74,6 +75,7 @@
 #include <blaze/util/FalseType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Nor.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
@@ -202,14 +204,18 @@ class OperationTest
                           void testDeclUppOperation  ( blaze::FalseType );
                           void testDeclDiagOperation ( blaze::TrueType  );
                           void testDeclDiagOperation ( blaze::FalseType );
-                          void testSubmatrixOperation();
-                          void testRowOperation      ();
+                          void testSubmatrixOperation( blaze::TrueType  );
+                          void testSubmatrixOperation( blaze::FalseType );
+                          void testRowOperation      ( blaze::TrueType  );
+                          void testRowOperation      ( blaze::FalseType );
                           void testRowsOperation     ( blaze::TrueType  );
                           void testRowsOperation     ( blaze::FalseType );
-                          void testColumnOperation   ();
+                          void testColumnOperation   ( blaze::TrueType  );
+                          void testColumnOperation   ( blaze::FalseType );
                           void testColumnsOperation  ( blaze::TrueType  );
                           void testColumnsOperation  ( blaze::FalseType );
-                          void testBandOperation     ();
+                          void testBandOperation     ( blaze::TrueType  );
+                          void testBandOperation     ( blaze::FalseType  );
 
    template< typename OP > void testCustomOperation( OP op, const std::string& name );
    //@}
@@ -408,12 +414,12 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testDeclLowOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
    testDeclUppOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
    testDeclDiagOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
-   testSubmatrixOperation();
-   testRowOperation();
-   testRowsOperation( Nor< IsSymmetric<DRE>, IsHermitian<DRE> >() );
-   testColumnOperation();
-   testColumnsOperation( Nor< IsSymmetric<DRE>, IsHermitian<DRE> >() );
-   testBandOperation();
+   testSubmatrixOperation( Not< IsUniform<DRE> >() );
+   testRowOperation( Not< IsUniform<DRE> >() );
+   testRowsOperation( Nor< IsUniform<DRE>, IsSymmetric<DRE>, IsHermitian<DRE> >() );
+   testColumnOperation( Not< IsUniform<DRE> >() );
+   testColumnsOperation( Nor< IsUniform<DRE>, IsSymmetric<DRE>, IsHermitian<DRE> >() );
+   testBandOperation( Not< IsUniform<DRE> >() );
 }
 //*************************************************************************************************
 
@@ -7605,7 +7611,7 @@ void OperationTest<MT1,MT2>::testDeclDiagOperation( blaze::FalseType )
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-void OperationTest<MT1,MT2>::testSubmatrixOperation()
+void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_SUBMATRIX_OPERATION
    if( BLAZETEST_MATHTEST_TEST_SUBMATRIX_OPERATION > 1 )
@@ -8327,6 +8333,22 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation()
 
 
 //*************************************************************************************************
+/*!\brief Skipping the submatrix-wise dense matrix/sparse matrix subtraction.
+//
+// \return void
+// \exception std::runtime_error Subtraction error detected.
+//
+// This function is called in case the submatrix-wise matrix/matrix subtraction operation is not
+// available for the given matrix types \a MT1 and \a MT2.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the row-wise dense matrix/sparse matrix subtraction.
 //
 // \return void
@@ -8339,7 +8361,7 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation()
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-void OperationTest<MT1,MT2>::testRowOperation()
+void OperationTest<MT1,MT2>::testRowOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_ROW_OPERATION
    if( BLAZETEST_MATHTEST_TEST_ROW_OPERATION > 1 )
@@ -8929,6 +8951,22 @@ void OperationTest<MT1,MT2>::testRowOperation()
    }
 #endif
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the row-wise dense matrix/sparse matrix subtraction.
+//
+// \return void
+// \exception std::runtime_error Subtraction error detected.
+//
+// This function is called in case the row-wise matrix/matrix subtraction operation is not
+// available for the given matrix types \a MT1 and \a MT2.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void OperationTest<MT1,MT2>::testRowOperation( blaze::FalseType )
+{}
 //*************************************************************************************************
 
 
@@ -9603,7 +9641,7 @@ void OperationTest<MT1,MT2>::testRowsOperation( blaze::FalseType )
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-void OperationTest<MT1,MT2>::testColumnOperation()
+void OperationTest<MT1,MT2>::testColumnOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_COLUMN_OPERATION
    if( BLAZETEST_MATHTEST_TEST_COLUMN_OPERATION > 1 )
@@ -10193,6 +10231,22 @@ void OperationTest<MT1,MT2>::testColumnOperation()
    }
 #endif
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the column-wise dense matrix/sparse matrix subtraction.
+//
+// \return void
+// \exception std::runtime_error Subtraction error detected.
+//
+// This function is called in case the column-wise matrix/matrix subtraction operation is not
+// available for the given matrix types \a MT1 and \a MT2.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void OperationTest<MT1,MT2>::testColumnOperation( blaze::FalseType )
+{}
 //*************************************************************************************************
 
 
@@ -10867,7 +10921,7 @@ void OperationTest<MT1,MT2>::testColumnsOperation( blaze::FalseType )
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side sparse matrix
-void OperationTest<MT1,MT2>::testBandOperation()
+void OperationTest<MT1,MT2>::testBandOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_BAND_OPERATION
    if( BLAZETEST_MATHTEST_TEST_BAND_OPERATION > 1 )
@@ -11461,6 +11515,22 @@ void OperationTest<MT1,MT2>::testBandOperation()
    }
 #endif
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the band-wise dense matrix/sparse matrix subtraction.
+//
+// \return void
+// \exception std::runtime_error Subtraction error detected.
+//
+// This function is called in case the band-wise matrix/matrix subtraction operation is not
+// available for the given matrix types \a MT1 and \a MT2.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void OperationTest<MT1,MT2>::testBandOperation( blaze::FalseType )
+{}
 //*************************************************************************************************
 
 
