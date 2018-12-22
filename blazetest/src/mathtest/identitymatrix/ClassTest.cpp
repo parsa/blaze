@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/identitymatrix/ClassTest1.cpp
+//  \file src/mathtest/identitymatrix/ClassTest.cpp
 //  \brief Source file for the IdentityMatrix class test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
@@ -583,7 +583,7 @@ void ClassTest::testConstructors()
 
 
    //=====================================================================================
-   // Column-major matrix constructor
+   // Column-major dense matrix constructor
    //=====================================================================================
 
    {
@@ -1363,6 +1363,7 @@ void ClassTest::testNonZeros()
       checkNonZeros( I, 2UL, 1UL );
       checkNonZeros( I, 3UL, 1UL );
       checkNonZeros( I, 4UL, 1UL );
+      checkNonZeros( I, 5UL, 1UL );
    }
 }
 //*************************************************************************************************
@@ -1457,6 +1458,19 @@ void ClassTest::testReset()
          checkNonZeros( I, 1UL, 1UL );
          checkNonZeros( I, 2UL, 1UL );
          checkNonZeros( I, 3UL, 1UL );
+
+         if( I(0,0) != 1 || I(0,1) != 0 || I(0,2) != 0 || I(0,3) != 0 ||
+             I(1,0) != 0 || I(1,1) != 1 || I(1,2) != 0 || I(1,3) != 0 ||
+             I(2,0) != 0 || I(2,1) != 0 || I(2,2) != 1 || I(2,3) != 0 ||
+             I(3,0) != 0 || I(3,1) != 0 || I(3,2) != 0 || I(3,3) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Reset operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << I << "\n"
+                << "   Expected result:\n( 1 0 0 0 )\n( 0 1 0 0 )\n( 0 0 1 0 )\n( 0 0 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 
@@ -1539,6 +1553,19 @@ void ClassTest::testReset()
          checkNonZeros( I, 1UL, 1UL );
          checkNonZeros( I, 2UL, 1UL );
          checkNonZeros( I, 3UL, 1UL );
+
+         if( I(0,0) != 1 || I(0,1) != 0 || I(0,2) != 0 || I(0,3) != 0 ||
+             I(1,0) != 0 || I(1,1) != 1 || I(1,2) != 0 || I(1,3) != 0 ||
+             I(2,0) != 0 || I(2,1) != 0 || I(2,2) != 1 || I(2,3) != 0 ||
+             I(3,0) != 0 || I(3,1) != 0 || I(3,2) != 0 || I(3,3) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Reset operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << I << "\n"
+                << "   Expected result:\n( 1 0 0 0 )\n( 0 1 0 0 )\n( 0 0 1 0 )\n( 0 0 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 }
@@ -2828,7 +2855,7 @@ void ClassTest::testIsDefault()
    {
       test_ = "Row-major isDefault() function";
 
-      // isDefault with default matrix
+      // isDefault with 0x0 matrix (default)
       {
          blaze::IdentityMatrix<int,blaze::rowMajor> I;
 
@@ -2842,7 +2869,7 @@ void ClassTest::testIsDefault()
          }
       }
 
-      // isDefault with non-default matrix
+      // isDefault with 3x3 matrix (non-default)
       {
          blaze::IdentityMatrix<int,blaze::rowMajor> I( 3UL );
 
@@ -2883,7 +2910,7 @@ void ClassTest::testIsDefault()
    {
       test_ = "Column-major isDefault() function";
 
-      // isDefault with 0x0 matrix
+      // isDefault with 0x0 matrix (default)
       {
          blaze::IdentityMatrix<int,blaze::columnMajor> I;
 
@@ -2897,7 +2924,7 @@ void ClassTest::testIsDefault()
          }
       }
 
-      // isDefault with non-default matrix
+      // isDefault with 3x3 matrix (non-default)
       {
          blaze::IdentityMatrix<int,blaze::columnMajor> I( 3UL );
 
