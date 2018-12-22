@@ -75,6 +75,16 @@ MCa: MCa.o
 MCb: MCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
+MIa: MIa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MIb: MIb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+MZa: MZa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZb: MZb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
 SCa: SCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SCb: SCb.o

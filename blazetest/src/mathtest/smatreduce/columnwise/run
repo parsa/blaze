@@ -49,6 +49,12 @@ EXE=$PATH_SMATREDUCE_COLUMNWISE/LCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; 
 EXE=$PATH_SMATREDUCE_COLUMNWISE/MCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_SMATREDUCE_COLUMNWISE/MCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
+EXE=$PATH_SMATREDUCE_COLUMNWISE/MIa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATREDUCE_COLUMNWISE/MIb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+
+EXE=$PATH_SMATREDUCE_COLUMNWISE/MZa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SMATREDUCE_COLUMNWISE/MZb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+
 EXE=$PATH_SMATREDUCE_COLUMNWISE/SCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_SMATREDUCE_COLUMNWISE/SCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 
