@@ -40,6 +40,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <utility>
+#include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CustomMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
@@ -59,6 +60,7 @@
 #include <blaze/math/UniLowerMatrix.h>
 #include <blaze/math/UniUpperMatrix.h>
 #include <blaze/math/UpperMatrix.h>
+#include <blaze/math/ZeroMatrix.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -124,6 +126,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -133,6 +136,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -142,6 +146,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -151,6 +156,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -164,6 +170,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -173,6 +180,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -182,6 +190,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -191,6 +200,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -204,6 +214,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -213,6 +224,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -222,6 +234,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -231,6 +244,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -244,6 +258,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -253,6 +268,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -262,6 +278,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -271,6 +288,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -284,6 +302,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -293,6 +312,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -302,6 +322,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -311,6 +332,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -324,6 +346,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -333,6 +356,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -346,6 +370,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -355,6 +380,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -364,6 +390,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -373,6 +400,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -386,6 +414,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -395,6 +424,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -404,6 +434,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -413,11 +444,56 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (real)
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = StaticMatrix<int,3UL,3UL,rowMajor>;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StaticMatrix<int,3UL,3UL,rowMajor>;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StaticMatrix<int,3UL,3UL,columnMajor>;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StaticMatrix<int,3UL,3UL,columnMajor>;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
       {
          {
             using T1 = StaticMatrix<int,3UL,3UL,rowMajor>;
@@ -426,6 +502,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -435,6 +512,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -444,6 +522,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -453,11 +532,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (complex)
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
             using T1 = StaticMatrix<int,3UL,3UL,rowMajor>;
@@ -466,6 +546,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -475,6 +556,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -484,6 +566,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -493,11 +576,100 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (symmetric)
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = StaticMatrix<int,3UL,3UL,rowMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = StaticMatrix<double,3UL,3UL,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StaticMatrix<int,3UL,3UL,rowMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = StaticMatrix<double,3UL,3UL,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StaticMatrix<int,3UL,3UL,columnMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = StaticMatrix<double,3UL,3UL,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StaticMatrix<int,3UL,3UL,columnMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = StaticMatrix<double,3UL,3UL,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = StaticMatrix<int,3UL,3UL,rowMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StaticMatrix<int,3UL,3UL,rowMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StaticMatrix<int,3UL,3UL,columnMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StaticMatrix<int,3UL,3UL,columnMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
       {
          {
             using T1 = StaticMatrix<int,3UL,3UL,rowMajor>;
@@ -506,6 +678,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -515,6 +688,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -524,6 +698,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -533,11 +708,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (Hermitian)
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
             using T1 = StaticMatrix<int,3UL,3UL,rowMajor>;
@@ -546,6 +722,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -555,6 +732,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -564,6 +742,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -573,11 +752,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../LowerMatrix
+      // .../LowerMatrix<DynamicMatrix>
       {
          {
             using T1 = StaticMatrix<int,3UL,3UL,rowMajor>;
@@ -586,6 +766,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -595,6 +776,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -604,6 +786,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -613,11 +796,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // ... UniLowerMatrix
+      // .../UniLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = StaticMatrix<int,3UL,3UL,rowMajor>;
@@ -626,6 +810,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -635,6 +820,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -644,6 +830,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -653,11 +840,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyLowerMatrix
+      // .../StrictlyLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = StaticMatrix<int,3UL,3UL,rowMajor>;
@@ -666,6 +854,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -675,6 +864,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -684,6 +874,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -693,11 +884,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UpperMatrix
+      // .../UpperMatrix<DynamicMatrix>
       {
          {
             using T1 = StaticMatrix<int,3UL,3UL,rowMajor>;
@@ -706,6 +898,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -715,6 +908,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -724,6 +918,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -733,11 +928,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UniUpperMatrix
+      // .../UniUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = StaticMatrix<int,3UL,3UL,rowMajor>;
@@ -746,6 +942,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -755,6 +952,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -764,6 +962,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -773,11 +972,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyUpperMatrix
+      // .../StrictlyUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = StaticMatrix<int,3UL,3UL,rowMajor>;
@@ -786,6 +986,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -795,6 +996,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -804,6 +1006,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -813,11 +1016,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../DiagonalMatrix
+      // .../DiagonalMatrix<DynamicMatrix>
       {
          {
             using T1 = StaticMatrix<int,3UL,3UL,rowMajor>;
@@ -826,6 +1030,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -835,6 +1040,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -844,6 +1050,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -853,6 +1060,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -869,6 +1077,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -878,6 +1087,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -887,6 +1097,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -896,6 +1107,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -909,6 +1121,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -918,6 +1131,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -927,6 +1141,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -936,6 +1151,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -949,6 +1165,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -958,6 +1175,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -967,6 +1185,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -976,6 +1195,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -989,6 +1209,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -998,6 +1219,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1007,6 +1229,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1016,6 +1239,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -1029,6 +1253,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1038,6 +1263,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1047,6 +1273,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1056,6 +1283,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -1069,6 +1297,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1078,6 +1307,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -1091,6 +1321,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1100,6 +1331,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1109,6 +1341,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1118,6 +1351,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -1131,6 +1365,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1140,6 +1375,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1149,6 +1385,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1158,11 +1395,56 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (real)
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = HybridMatrix<int,5UL,7UL,rowMajor>;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HybridMatrix<int,5UL,7UL,rowMajor>;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HybridMatrix<int,5UL,7UL,columnMajor>;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HybridMatrix<int,5UL,7UL,columnMajor>;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
       {
          {
             using T1 = HybridMatrix<int,5UL,7UL,rowMajor>;
@@ -1171,6 +1453,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1180,6 +1463,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1189,6 +1473,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1198,11 +1483,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (complex)
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
             using T1 = HybridMatrix<int,5UL,7UL,rowMajor>;
@@ -1211,6 +1497,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1220,6 +1507,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1229,6 +1517,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1238,11 +1527,100 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (symmetric)
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = HybridMatrix<int,5UL,7UL,rowMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = HybridMatrix<double,5UL,7UL,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HybridMatrix<int,5UL,7UL,rowMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = HybridMatrix<double,5UL,7UL,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HybridMatrix<int,5UL,7UL,columnMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = HybridMatrix<double,5UL,7UL,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HybridMatrix<int,5UL,7UL,columnMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = HybridMatrix<double,5UL,7UL,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = HybridMatrix<int,5UL,7UL,rowMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HybridMatrix<int,5UL,7UL,rowMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HybridMatrix<int,5UL,7UL,columnMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HybridMatrix<int,5UL,7UL,columnMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
       {
          {
             using T1 = HybridMatrix<int,5UL,7UL,rowMajor>;
@@ -1251,6 +1629,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1260,6 +1639,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1269,6 +1649,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1278,11 +1659,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (Hermitian)
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
             using T1 = HybridMatrix<int,5UL,7UL,rowMajor>;
@@ -1291,6 +1673,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1300,6 +1683,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1309,6 +1693,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1318,11 +1703,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../LowerMatrix
+      // .../LowerMatrix<DynamicMatrix>
       {
          {
             using T1 = HybridMatrix<int,5UL,7UL,rowMajor>;
@@ -1331,6 +1717,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1340,6 +1727,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1349,6 +1737,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1358,11 +1747,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // ... UniLowerMatrix
+      // .../UniLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = HybridMatrix<int,5UL,7UL,rowMajor>;
@@ -1371,6 +1761,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1380,6 +1771,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1389,6 +1781,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1398,11 +1791,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyLowerMatrix
+      // .../StrictlyLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = HybridMatrix<int,5UL,7UL,rowMajor>;
@@ -1411,6 +1805,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1420,6 +1815,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1429,6 +1825,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1438,11 +1835,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UpperMatrix
+      // .../UpperMatrix<DynamicMatrix>
       {
          {
             using T1 = HybridMatrix<int,5UL,7UL,rowMajor>;
@@ -1451,6 +1849,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1460,6 +1859,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1469,6 +1869,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1478,11 +1879,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UniUpperMatrix
+      // .../UniUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = HybridMatrix<int,5UL,7UL,rowMajor>;
@@ -1491,6 +1893,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1500,6 +1903,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1509,6 +1913,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1518,11 +1923,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyUpperMatrix
+      // .../StrictlyUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = HybridMatrix<int,5UL,7UL,rowMajor>;
@@ -1531,6 +1937,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1540,6 +1947,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1549,6 +1957,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1558,11 +1967,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../DiagonalMatrix
+      // .../DiagonalMatrix<DynamicMatrix>
       {
          {
             using T1 = HybridMatrix<int,5UL,7UL,rowMajor>;
@@ -1571,6 +1981,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1580,6 +1991,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1589,6 +2001,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1598,6 +2011,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -1614,6 +2028,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1623,6 +2038,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1632,6 +2048,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1641,6 +2058,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -1654,6 +2072,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1663,6 +2082,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1672,6 +2092,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1681,6 +2102,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -1694,6 +2116,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1703,6 +2126,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1712,6 +2136,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1721,6 +2146,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -1734,6 +2160,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1743,6 +2170,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1752,6 +2180,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1761,6 +2190,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -1774,6 +2204,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1783,6 +2214,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1792,6 +2224,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1801,6 +2234,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -1814,6 +2248,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1823,6 +2258,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -1836,6 +2272,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1845,6 +2282,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1854,6 +2292,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1863,6 +2302,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -1876,6 +2316,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1885,6 +2326,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1894,6 +2336,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1903,11 +2346,56 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (real)
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = DynamicMatrix<int,rowMajor>;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = DynamicMatrix<int,rowMajor>;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = DynamicMatrix<int,columnMajor>;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = DynamicMatrix<int,columnMajor>;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
       {
          {
             using T1 = DynamicMatrix<int,rowMajor>;
@@ -1916,6 +2404,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1925,6 +2414,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1934,6 +2424,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1943,11 +2434,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (complex)
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
             using T1 = DynamicMatrix<int,rowMajor>;
@@ -1956,6 +2448,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1965,6 +2458,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1974,6 +2468,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -1983,11 +2478,100 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (symmetric)
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = DynamicMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = DynamicMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = DynamicMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = DynamicMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = DynamicMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = DynamicMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = DynamicMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = DynamicMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = DynamicMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = DynamicMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
       {
          {
             using T1 = DynamicMatrix<int,rowMajor>;
@@ -1996,6 +2580,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2005,6 +2590,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2014,6 +2600,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2023,11 +2610,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (Hermitian)
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
             using T1 = DynamicMatrix<int,rowMajor>;
@@ -2036,6 +2624,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2045,6 +2634,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2054,6 +2644,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2063,11 +2654,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../LowerMatrix
+      // .../LowerMatrix<DynamicMatrix>
       {
          {
             using T1 = DynamicMatrix<int,rowMajor>;
@@ -2076,6 +2668,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2085,6 +2678,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2094,6 +2688,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2103,11 +2698,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // ... UniLowerMatrix
+      // .../UniLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = DynamicMatrix<int,rowMajor>;
@@ -2116,6 +2712,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2125,6 +2722,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2134,6 +2732,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2143,11 +2742,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyLowerMatrix
+      // .../StrictlyLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = DynamicMatrix<int,rowMajor>;
@@ -2156,6 +2756,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2165,6 +2766,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2174,6 +2776,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2183,11 +2786,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UpperMatrix
+      // .../UpperMatrix<DynamicMatrix>
       {
          {
             using T1 = DynamicMatrix<int,rowMajor>;
@@ -2196,6 +2800,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2205,6 +2810,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2214,6 +2820,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2223,11 +2830,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UniUpperMatrix
+      // .../UniUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = DynamicMatrix<int,rowMajor>;
@@ -2236,6 +2844,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2245,6 +2854,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2254,6 +2864,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2263,11 +2874,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyUpperMatrix
+      // .../StrictlyUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = DynamicMatrix<int,rowMajor>;
@@ -2276,6 +2888,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2285,6 +2898,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2294,6 +2908,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2303,11 +2918,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../DiagonalMatrix
+      // .../DiagonalMatrix<DynamicMatrix>
       {
          {
             using T1 = DynamicMatrix<int,rowMajor>;
@@ -2316,6 +2932,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2325,6 +2942,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2334,6 +2952,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2343,6 +2962,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -2359,6 +2979,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2368,6 +2989,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2377,6 +2999,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2386,6 +3009,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -2399,6 +3023,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2408,6 +3033,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2417,6 +3043,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2426,6 +3053,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -2439,6 +3067,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2448,6 +3077,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2457,6 +3087,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2466,6 +3097,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -2479,6 +3111,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2488,6 +3121,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2497,6 +3131,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2506,6 +3141,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -2519,6 +3155,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2528,6 +3165,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2537,6 +3175,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2546,6 +3185,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -2559,6 +3199,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2568,6 +3209,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -2581,6 +3223,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2590,6 +3233,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2599,6 +3243,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2608,6 +3253,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -2621,6 +3267,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2630,6 +3277,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2639,6 +3287,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2648,11 +3297,56 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (real)
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = CustomMatrix<int,unaligned,unpadded,rowMajor>;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = CustomMatrix<int,unaligned,unpadded,rowMajor>;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = CustomMatrix<int,unaligned,unpadded,columnMajor>;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = CustomMatrix<int,unaligned,unpadded,columnMajor>;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
       {
          {
             using T1 = CustomMatrix<int,unaligned,unpadded,rowMajor>;
@@ -2661,6 +3355,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2670,6 +3365,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2679,6 +3375,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2688,11 +3385,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (complex)
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
             using T1 = CustomMatrix<int,unaligned,unpadded,rowMajor>;
@@ -2701,6 +3399,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2710,6 +3409,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2719,6 +3419,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2728,11 +3429,100 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (symmetric)
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = CustomMatrix<int,unaligned,unpadded,rowMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = CustomMatrix<int,unaligned,unpadded,rowMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = CustomMatrix<int,unaligned,unpadded,columnMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = DynamicMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = CustomMatrix<int,unaligned,unpadded,columnMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = DynamicMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = CustomMatrix<int,unaligned,unpadded,rowMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = CustomMatrix<int,unaligned,unpadded,rowMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = CustomMatrix<int,unaligned,unpadded,columnMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = CustomMatrix<int,unaligned,unpadded,columnMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
       {
          {
             using T1 = CustomMatrix<int,unaligned,unpadded,rowMajor>;
@@ -2741,6 +3531,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2750,6 +3541,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2759,6 +3551,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2768,11 +3561,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (Hermitian)
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
             using T1 = CustomMatrix<int,unaligned,unpadded,rowMajor>;
@@ -2781,6 +3575,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2790,6 +3585,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2799,6 +3595,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2808,11 +3605,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../LowerMatrix
+      // .../LowerMatrix<DynamicMatrix>
       {
          {
             using T1 = CustomMatrix<int,unaligned,unpadded,rowMajor>;
@@ -2821,6 +3619,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2830,6 +3629,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2839,6 +3639,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2848,11 +3649,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // ... UniLowerMatrix
+      // .../UniLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = CustomMatrix<int,unaligned,unpadded,rowMajor>;
@@ -2861,6 +3663,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2870,6 +3673,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2879,6 +3683,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2888,11 +3693,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyLowerMatrix
+      // .../StrictlyLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = CustomMatrix<int,unaligned,unpadded,rowMajor>;
@@ -2901,6 +3707,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2910,6 +3717,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2919,6 +3727,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2928,11 +3737,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UpperMatrix
+      // .../UpperMatrix<DynamicMatrix>
       {
          {
             using T1 = CustomMatrix<int,unaligned,unpadded,rowMajor>;
@@ -2941,6 +3751,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2950,6 +3761,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2959,6 +3771,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2968,11 +3781,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UniUpperMatrix
+      // .../UniUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = CustomMatrix<int,unaligned,unpadded,rowMajor>;
@@ -2981,6 +3795,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2990,6 +3805,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -2999,6 +3815,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3008,11 +3825,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyUpperMatrix
+      // .../StrictlyUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = CustomMatrix<int,unaligned,unpadded,rowMajor>;
@@ -3021,6 +3839,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3030,6 +3849,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3039,6 +3859,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3048,11 +3869,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../DiagonalMatrix
+      // .../DiagonalMatrix<DynamicMatrix>
       {
          {
             using T1 = CustomMatrix<int,unaligned,unpadded,rowMajor>;
@@ -3061,6 +3883,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3070,6 +3893,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3079,6 +3903,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3088,6 +3913,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -3104,6 +3930,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3113,6 +3940,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3122,6 +3950,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3131,6 +3960,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -3144,6 +3974,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3153,6 +3984,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3162,6 +3994,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3171,6 +4004,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -3184,6 +4018,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3193,6 +4028,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3202,6 +4038,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3211,6 +4048,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -3224,6 +4062,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3233,6 +4072,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3242,6 +4082,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3251,6 +4092,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -3264,6 +4106,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3273,6 +4116,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3282,6 +4126,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3291,6 +4136,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -3304,6 +4150,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3313,6 +4160,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -3326,6 +4174,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3335,6 +4184,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3344,6 +4194,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3353,6 +4204,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -3366,6 +4218,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3375,6 +4228,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3384,6 +4238,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3393,11 +4248,56 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (real)
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = UniformMatrix<int,rowMajor>;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniformMatrix<int,rowMajor>;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniformMatrix<int,columnMajor>;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniformMatrix<int,columnMajor>;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
       {
          {
             using T1 = UniformMatrix<int,rowMajor>;
@@ -3406,6 +4306,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3415,6 +4316,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3424,6 +4326,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3433,11 +4336,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (complex)
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
             using T1 = UniformMatrix<int,rowMajor>;
@@ -3446,6 +4350,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3455,6 +4360,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3464,6 +4370,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3473,11 +4380,100 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (symmetric)
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = UniformMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = UniformMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniformMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = UniformMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniformMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = UniformMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniformMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = UniformMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = UniformMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniformMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniformMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniformMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
       {
          {
             using T1 = UniformMatrix<int,rowMajor>;
@@ -3486,6 +4482,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3495,6 +4492,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3504,6 +4502,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3513,11 +4512,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (Hermitian)
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
             using T1 = UniformMatrix<int,rowMajor>;
@@ -3526,6 +4526,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3535,6 +4536,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3544,6 +4546,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3553,11 +4556,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../LowerMatrix
+      // .../LowerMatrix<DynamicMatrix>
       {
          {
             using T1 = UniformMatrix<int,rowMajor>;
@@ -3566,6 +4570,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3575,6 +4580,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3584,6 +4590,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3593,11 +4600,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // ... UniLowerMatrix
+      // .../UniLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = UniformMatrix<int,rowMajor>;
@@ -3606,6 +4614,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3615,6 +4624,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3624,6 +4634,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3633,11 +4644,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyLowerMatrix
+      // .../StrictlyLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = UniformMatrix<int,rowMajor>;
@@ -3646,6 +4658,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3655,6 +4668,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3664,6 +4678,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3673,11 +4688,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UpperMatrix
+      // .../UpperMatrix<DynamicMatrix>
       {
          {
             using T1 = UniformMatrix<int,rowMajor>;
@@ -3686,6 +4702,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3695,6 +4712,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3704,6 +4722,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3713,11 +4732,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UniUpperMatrix
+      // .../UniUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = UniformMatrix<int,rowMajor>;
@@ -3726,6 +4746,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3735,6 +4756,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3744,6 +4766,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3753,11 +4776,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyUpperMatrix
+      // .../StrictlyUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = UniformMatrix<int,rowMajor>;
@@ -3766,6 +4790,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3775,6 +4800,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3784,6 +4810,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3793,11 +4820,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../DiagonalMatrix
+      // .../DiagonalMatrix<DynamicMatrix>
       {
          {
             using T1 = UniformMatrix<int,rowMajor>;
@@ -3806,6 +4834,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3815,6 +4844,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3824,6 +4854,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3833,6 +4864,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -3849,6 +4881,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3858,6 +4891,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -3871,6 +4905,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3880,6 +4915,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -3893,6 +4929,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3902,6 +4939,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -3915,6 +4953,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3924,6 +4963,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -3937,6 +4977,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3946,6 +4987,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -3959,6 +5001,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -3972,6 +5015,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -3981,6 +5025,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -3994,6 +5039,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4003,11 +5049,36 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (real)
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = InitializerMatrix<int>;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = InitializerMatrix<int>;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
       {
          {
             using T1 = InitializerMatrix<int>;
@@ -4016,6 +5087,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4025,11 +5097,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (complex)
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
             using T1 = InitializerMatrix<int>;
@@ -4038,6 +5111,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4047,11 +5121,60 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (symmetric)
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = InitializerMatrix<int>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = InitializerMatrix<int>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = InitializerMatrix<int>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = InitializerMatrix<int>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
       {
          {
             using T1 = InitializerMatrix<int>;
@@ -4060,6 +5183,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4069,11 +5193,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (Hermitian)
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
             using T1 = InitializerMatrix<int>;
@@ -4082,6 +5207,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4091,11 +5217,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../LowerMatrix
+      // .../LowerMatrix<DynamicMatrix>
       {
          {
             using T1 = InitializerMatrix<int>;
@@ -4104,6 +5231,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4113,11 +5241,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // ... UniLowerMatrix
+      // .../UniLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = InitializerMatrix<int>;
@@ -4126,6 +5255,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4135,11 +5265,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyLowerMatrix
+      // .../StrictlyLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = InitializerMatrix<int>;
@@ -4148,6 +5279,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4157,11 +5289,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UpperMatrix
+      // .../UpperMatrix<DynamicMatrix>
       {
          {
             using T1 = InitializerMatrix<int>;
@@ -4170,6 +5303,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4179,11 +5313,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UniUpperMatrix
+      // .../UniUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = InitializerMatrix<int>;
@@ -4192,6 +5327,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4201,11 +5337,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyUpperMatrix
+      // .../StrictlyUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = InitializerMatrix<int>;
@@ -4214,6 +5351,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4223,11 +5361,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../DiagonalMatrix
+      // .../DiagonalMatrix<DynamicMatrix>
       {
          {
             using T1 = InitializerMatrix<int>;
@@ -4236,6 +5375,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4245,6 +5385,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -4261,6 +5402,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4270,6 +5412,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4279,6 +5422,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4288,6 +5432,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -4301,6 +5446,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4310,6 +5456,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4319,6 +5466,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4328,6 +5476,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -4341,6 +5490,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4350,6 +5500,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4359,6 +5510,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4368,6 +5520,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -4381,6 +5534,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4390,6 +5544,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4399,6 +5554,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4408,6 +5564,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -4421,6 +5578,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4430,6 +5588,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4439,6 +5598,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4448,6 +5608,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -4461,6 +5622,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4470,6 +5632,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -4483,6 +5646,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4492,6 +5656,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4501,6 +5666,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4510,6 +5676,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -4523,6 +5690,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4532,6 +5700,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4541,6 +5710,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4550,11 +5720,56 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (real)
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = CompressedMatrix<int,rowMajor>;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = CompressedMatrix<int,rowMajor>;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = CompressedMatrix<int,columnMajor>;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = CompressedMatrix<int,columnMajor>;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
       {
          {
             using T1 = CompressedMatrix<int,rowMajor>;
@@ -4563,6 +5778,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4572,6 +5788,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4581,6 +5798,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4590,11 +5808,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (complex)
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
             using T1 = CompressedMatrix<int,rowMajor>;
@@ -4603,6 +5822,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4612,6 +5832,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4621,6 +5842,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4630,11 +5852,100 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (symmetric)
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = CompressedMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = CompressedMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = CompressedMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = CompressedMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = CompressedMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = CompressedMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = CompressedMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = CompressedMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = CompressedMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = CompressedMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = CompressedMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = CompressedMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
       {
          {
             using T1 = CompressedMatrix<int,rowMajor>;
@@ -4643,6 +5954,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4652,6 +5964,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4661,6 +5974,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4670,11 +5984,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (Hermitian)
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
             using T1 = CompressedMatrix<int,rowMajor>;
@@ -4683,6 +5998,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4692,6 +6008,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4701,6 +6018,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4710,11 +6028,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../LowerMatrix
+      // .../LowerMatrix<DynamicMatrix>
       {
          {
             using T1 = CompressedMatrix<int,rowMajor>;
@@ -4723,6 +6042,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4732,6 +6052,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4741,6 +6062,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4750,11 +6072,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // ... UniLowerMatrix
+      // .../UniLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = CompressedMatrix<int,rowMajor>;
@@ -4763,6 +6086,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4772,6 +6096,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4781,6 +6106,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4790,11 +6116,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyLowerMatrix
+      // .../StrictlyLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = CompressedMatrix<int,rowMajor>;
@@ -4803,6 +6130,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4812,6 +6140,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4821,6 +6150,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4830,11 +6160,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UpperMatrix
+      // .../UpperMatrix<DynamicMatrix>
       {
          {
             using T1 = CompressedMatrix<int,rowMajor>;
@@ -4843,6 +6174,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4852,6 +6184,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4861,6 +6194,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4870,11 +6204,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UniUpperMatrix
+      // .../UniUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = CompressedMatrix<int,rowMajor>;
@@ -4883,6 +6218,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4892,6 +6228,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4901,6 +6238,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4910,11 +6248,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyUpperMatrix
+      // .../StrictlyUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = CompressedMatrix<int,rowMajor>;
@@ -4923,6 +6262,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4932,6 +6272,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4941,6 +6282,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4950,11 +6292,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../DiagonalMatrix
+      // .../DiagonalMatrix<DynamicMatrix>
       {
          {
             using T1 = CompressedMatrix<int,rowMajor>;
@@ -4963,6 +6306,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4972,6 +6316,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4981,6 +6326,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -4990,6 +6336,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -5006,6 +6353,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5015,6 +6363,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5024,6 +6373,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5033,6 +6383,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -5046,6 +6397,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5055,6 +6407,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5064,6 +6417,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5073,6 +6427,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -5086,6 +6441,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5095,6 +6451,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5104,6 +6461,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5113,6 +6471,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -5126,6 +6485,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5135,6 +6495,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5144,6 +6505,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5153,6 +6515,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -5166,6 +6529,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5175,6 +6539,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5184,6 +6549,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5193,6 +6559,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -5206,6 +6573,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5215,6 +6583,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -5228,6 +6597,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5237,6 +6607,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5246,6 +6617,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5255,6 +6627,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -5268,6 +6641,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5277,6 +6651,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5286,6 +6661,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5295,11 +6671,56 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (real)
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = IdentityMatrix<int,rowMajor>;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = IdentityMatrix<int,rowMajor>;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = IdentityMatrix<int,columnMajor>;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = IdentityMatrix<int,columnMajor>;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
       {
          {
             using T1 = IdentityMatrix<int,rowMajor>;
@@ -5308,6 +6729,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5317,6 +6739,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5326,6 +6749,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5335,11 +6759,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (complex)
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
             using T1 = IdentityMatrix<int,rowMajor>;
@@ -5348,6 +6773,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5357,6 +6783,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5366,6 +6793,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5375,11 +6803,100 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (symmetric)
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = IdentityMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = DiagonalMatrix< CompressedMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = IdentityMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = DiagonalMatrix< CompressedMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = IdentityMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = DiagonalMatrix< CompressedMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = IdentityMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = DiagonalMatrix< CompressedMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = IdentityMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = IdentityMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = IdentityMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = IdentityMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
       {
          {
             using T1 = IdentityMatrix<int,rowMajor>;
@@ -5388,6 +6905,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5397,6 +6915,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5406,6 +6925,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5415,11 +6935,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (Hermitian)
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
             using T1 = IdentityMatrix<int,rowMajor>;
@@ -5428,6 +6949,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5437,6 +6959,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5446,6 +6969,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5455,11 +6979,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../LowerMatrix
+      // .../LowerMatrix<DynamicMatrix>
       {
          {
             using T1 = IdentityMatrix<int,rowMajor>;
@@ -5468,6 +6993,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5477,6 +7003,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5486,6 +7013,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5495,11 +7023,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // ... UniLowerMatrix
+      // .../UniLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = IdentityMatrix<int,rowMajor>;
@@ -5508,6 +7037,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5517,6 +7047,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5526,6 +7057,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5535,11 +7067,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyLowerMatrix
+      // .../StrictlyLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = IdentityMatrix<int,rowMajor>;
@@ -5548,6 +7081,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5557,6 +7091,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5566,6 +7101,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5575,11 +7111,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UpperMatrix
+      // .../UpperMatrix<DynamicMatrix>
       {
          {
             using T1 = IdentityMatrix<int,rowMajor>;
@@ -5588,6 +7125,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5597,6 +7135,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5606,6 +7145,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5615,11 +7155,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UniUpperMatrix
+      // .../UniUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = IdentityMatrix<int,rowMajor>;
@@ -5628,6 +7169,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5637,6 +7179,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5646,6 +7189,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5655,11 +7199,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyUpperMatrix
+      // .../StrictlyUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = IdentityMatrix<int,rowMajor>;
@@ -5668,6 +7213,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5677,6 +7223,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5686,6 +7233,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5695,11 +7243,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../DiagonalMatrix
+      // .../DiagonalMatrix<DynamicMatrix>
       {
          {
             using T1 = IdentityMatrix<int,rowMajor>;
@@ -5708,6 +7257,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5717,6 +7267,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5726,6 +7277,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5735,12 +7287,964 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
    }
 
-   // SymmetricMatrix/... (real)
+   // ZeroMatrix/...
+   {
+      // .../StaticMatrix
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = StaticMatrix<double,3UL,3UL,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = StaticMatrix<double,3UL,3UL,columnMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = StaticMatrix<double,3UL,3UL,rowMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = StaticMatrix<double,3UL,3UL,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HybridMatrix
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = HybridMatrix<double,8UL,6UL,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = HybridMatrix<double,8UL,6UL,columnMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = HybridMatrix<double,8UL,6UL,rowMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = HybridMatrix<double,8UL,6UL,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../DynamicMatrix
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = DynamicMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = DynamicMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = DynamicMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = DynamicMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../CustomMatrix
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = CustomMatrix<double,unaligned,unpadded,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = CustomMatrix<double,unaligned,unpadded,columnMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = CustomMatrix<double,unaligned,unpadded,rowMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = CustomMatrix<double,unaligned,unpadded,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../UniformMatrix
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = UniformMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = UniformMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = UniformMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = UniformMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../InitializerMatrix
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = InitializerMatrix<double>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = InitializerMatrix<double>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../CompressedMatrix
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = CompressedMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = CompressedMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = CompressedMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = CompressedMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../IdentityMatrix
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = IdentityMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = IdentityMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = IdentityMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = IdentityMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using RT = ZeroMatrix<complex<int>,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using RT = ZeroMatrix<complex<int>,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using RT = ZeroMatrix<complex<int>,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using RT = ZeroMatrix<complex<int>,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using RT = ZeroMatrix<complex<int>,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using RT = ZeroMatrix<complex<int>,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using RT = ZeroMatrix<complex<int>,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using RT = ZeroMatrix<complex<int>,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../LowerMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = LowerMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = LowerMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = LowerMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = LowerMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../UniLowerMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = UniLowerMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = UniLowerMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = UniLowerMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = UniLowerMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../StrictlyLowerMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../UpperMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = UpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = UpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = UpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = UpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../UniUpperMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = UniUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = UniUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = UniUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = UniUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../StrictlyUpperMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../DiagonalMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+   }
+
+   // SymmetricMatrix<DynamicMatrix>/... (real)
    {
       // .../StaticMatrix
       {
@@ -5751,6 +8255,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5760,6 +8265,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5769,6 +8275,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5778,6 +8285,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -5791,6 +8299,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5800,6 +8309,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5809,6 +8319,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5818,6 +8329,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -5831,6 +8343,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5840,6 +8353,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5849,6 +8363,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5858,6 +8373,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -5871,6 +8387,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5880,6 +8397,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5889,6 +8407,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5898,6 +8417,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -5911,6 +8431,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5920,6 +8441,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5929,6 +8451,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5938,6 +8461,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -5951,6 +8475,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5960,6 +8485,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -5973,6 +8499,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5982,6 +8509,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -5991,6 +8519,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6000,6 +8529,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -6013,6 +8543,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6022,6 +8553,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6031,6 +8563,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6040,11 +8573,56 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (real)
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
@@ -6053,6 +8631,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6062,6 +8641,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6071,6 +8651,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6080,11 +8661,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (complex)
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
@@ -6093,6 +8675,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6102,6 +8685,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6111,6 +8695,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6120,11 +8705,100 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (symmetric)
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
@@ -6133,6 +8807,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6142,6 +8817,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6151,6 +8827,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6160,11 +8837,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (Hermitian)
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
@@ -6173,6 +8851,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6182,6 +8861,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6191,6 +8871,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6200,11 +8881,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../LowerMatrix
+      // .../LowerMatrix<DynamicMatrix>
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
@@ -6213,6 +8895,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6222,6 +8905,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6231,6 +8915,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6240,11 +8925,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // ... UniLowerMatrix
+      // .../UniLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
@@ -6253,6 +8939,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6262,6 +8949,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6271,6 +8959,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6280,11 +8969,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyLowerMatrix
+      // .../StrictlyLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
@@ -6293,6 +8983,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6302,6 +8993,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6311,6 +9003,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6320,11 +9013,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UpperMatrix
+      // .../UpperMatrix<DynamicMatrix>
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
@@ -6333,6 +9027,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6342,6 +9037,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6351,6 +9047,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6360,11 +9057,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UniUpperMatrix
+      // .../UniUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
@@ -6373,6 +9071,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6382,6 +9081,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6391,6 +9091,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6400,11 +9101,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyUpperMatrix
+      // .../StrictlyUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
@@ -6413,6 +9115,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6422,6 +9125,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6431,6 +9135,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6440,11 +9145,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../DiagonalMatrix
+      // .../DiagonalMatrix<DynamicMatrix>
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
@@ -6453,6 +9159,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6462,6 +9169,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6471,6 +9179,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6480,12 +9189,13 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
    }
 
-   // SymmetricMatrix/... (complex)
+   // SymmetricMatrix<DynamicMatrix>/... (complex)
    {
       // .../StaticMatrix
       {
@@ -6496,6 +9206,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6505,6 +9216,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6514,6 +9226,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6523,6 +9236,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -6536,6 +9250,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6545,6 +9260,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6554,6 +9270,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6563,6 +9280,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -6576,6 +9294,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6585,6 +9304,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6594,6 +9314,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6603,6 +9324,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -6616,6 +9338,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6625,6 +9348,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6634,6 +9358,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6643,6 +9368,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -6656,6 +9382,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6665,6 +9392,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6674,6 +9402,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6683,6 +9412,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -6696,6 +9426,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6705,6 +9436,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -6718,6 +9450,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6727,6 +9460,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6736,6 +9470,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6745,6 +9480,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -6758,6 +9494,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6767,6 +9504,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6776,6 +9514,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6785,11 +9524,56 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (real)
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using T2 = ZeroMatrix<int,rowMajor>;
+            using RT = ZeroMatrix<complex<int>,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using T2 = ZeroMatrix<int,columnMajor>;
+            using RT = ZeroMatrix<complex<int>,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using T2 = ZeroMatrix<int,rowMajor>;
+            using RT = ZeroMatrix<complex<int>,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using T2 = ZeroMatrix<int,columnMajor>;
+            using RT = ZeroMatrix<complex<int>,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
@@ -6798,6 +9582,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6807,6 +9592,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6816,6 +9602,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6825,11 +9612,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (complex)
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
@@ -6838,6 +9626,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6847,6 +9636,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6856,6 +9646,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6865,11 +9656,100 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (symmetric)
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using RT = ZeroMatrix<complex<int>,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using RT = ZeroMatrix<complex<int>,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using RT = ZeroMatrix<complex<int>,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using RT = ZeroMatrix<complex<int>,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
@@ -6878,6 +9758,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6887,6 +9768,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6896,6 +9778,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6905,11 +9788,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (Hermitian)
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
@@ -6918,6 +9802,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6927,6 +9812,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6936,6 +9822,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6945,11 +9832,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../LowerMatrix
+      // .../LowerMatrix<DynamicMatrix>
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
@@ -6958,6 +9846,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6967,6 +9856,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6976,6 +9866,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -6985,11 +9876,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // ... UniLowerMatrix
+      // .../UniLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
@@ -6998,6 +9890,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7007,6 +9900,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7016,6 +9910,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7025,11 +9920,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyLowerMatrix
+      // .../StrictlyLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
@@ -7038,6 +9934,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7047,6 +9944,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7056,6 +9954,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7065,11 +9964,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UpperMatrix
+      // .../UpperMatrix<DynamicMatrix>
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
@@ -7078,6 +9978,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7087,6 +9988,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7096,6 +9998,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7105,11 +10008,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UniUpperMatrix
+      // .../UniUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
@@ -7118,6 +10022,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7127,6 +10032,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7136,6 +10042,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7145,11 +10052,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyUpperMatrix
+      // .../StrictlyUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
@@ -7158,6 +10066,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7167,6 +10076,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7176,6 +10086,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7185,11 +10096,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../DiagonalMatrix
+      // .../DiagonalMatrix<DynamicMatrix>
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
@@ -7198,6 +10110,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7207,6 +10120,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7216,6 +10130,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7225,12 +10140,1915 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
    }
 
-   // HermitianMatrix/... (symmetric)
+   // SymmetricMatrix<UniformMatrix>/...
+   {
+      // .../StaticMatrix
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = StaticMatrix<double,3UL,3UL,rowMajor>;
+            using RT = StaticMatrix<double,3UL,3UL,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = StaticMatrix<double,3UL,3UL,columnMajor>;
+            using RT = StaticMatrix<double,3UL,3UL,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = StaticMatrix<double,3UL,3UL,rowMajor>;
+            using RT = StaticMatrix<double,3UL,3UL,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = StaticMatrix<double,3UL,3UL,columnMajor>;
+            using RT = StaticMatrix<double,3UL,3UL,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HybridMatrix
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = HybridMatrix<double,8UL,6UL,rowMajor>;
+            using RT = HybridMatrix<double,8UL,6UL,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = HybridMatrix<double,8UL,6UL,columnMajor>;
+            using RT = HybridMatrix<double,8UL,6UL,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = HybridMatrix<double,8UL,6UL,rowMajor>;
+            using RT = HybridMatrix<double,8UL,6UL,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = HybridMatrix<double,8UL,6UL,columnMajor>;
+            using RT = HybridMatrix<double,8UL,6UL,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../DynamicMatrix
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = DynamicMatrix<double,rowMajor>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = DynamicMatrix<double,columnMajor>;
+            using RT = DynamicMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = DynamicMatrix<double,rowMajor>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = DynamicMatrix<double,columnMajor>;
+            using RT = DynamicMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../CustomMatrix
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = CustomMatrix<double,unaligned,unpadded,rowMajor>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = CustomMatrix<double,unaligned,unpadded,columnMajor>;
+            using RT = DynamicMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = CustomMatrix<double,unaligned,unpadded,rowMajor>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = CustomMatrix<double,unaligned,unpadded,columnMajor>;
+            using RT = DynamicMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../UniformMatrix
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = UniformMatrix<double,rowMajor>;
+            using RT = UniformMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = UniformMatrix<double,columnMajor>;
+            using RT = UniformMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = UniformMatrix<double,rowMajor>;
+            using RT = UniformMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = UniformMatrix<double,columnMajor>;
+            using RT = UniformMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../InitializerMatrix
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = InitializerMatrix<double>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = InitializerMatrix<double>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../CompressedMatrix
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = CompressedMatrix<double,rowMajor>;
+            using RT = CompressedMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = CompressedMatrix<double,columnMajor>;
+            using RT = CompressedMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = CompressedMatrix<double,rowMajor>;
+            using RT = CompressedMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = CompressedMatrix<double,columnMajor>;
+            using RT = CompressedMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../IdentityMatrix
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = IdentityMatrix<double,rowMajor>;
+            using RT = DiagonalMatrix< CompressedMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = IdentityMatrix<double,columnMajor>;
+            using RT = DiagonalMatrix< CompressedMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = IdentityMatrix<double,rowMajor>;
+            using RT = DiagonalMatrix< CompressedMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = IdentityMatrix<double,columnMajor>;
+            using RT = DiagonalMatrix< CompressedMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = UniformMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = UniformMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = UniformMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = UniformMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using RT = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using RT = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using RT = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using RT = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../LowerMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = LowerMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = LowerMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = LowerMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = LowerMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../UniLowerMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = UniLowerMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = UniLowerMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = UniLowerMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = UniLowerMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../StrictlyLowerMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../UpperMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = UpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = UpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = UpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = UpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../UniUpperMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = UniUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = UniUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = UniUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = UniUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../StrictlyUpperMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../DiagonalMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+   }
+
+   // SymmetricMatrix<ZeroMatrix>/...
+   {
+      // .../StaticMatrix
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = StaticMatrix<double,3UL,3UL,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = StaticMatrix<double,3UL,3UL,columnMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = StaticMatrix<double,3UL,3UL,rowMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = StaticMatrix<double,3UL,3UL,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HybridMatrix
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = HybridMatrix<double,8UL,6UL,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = HybridMatrix<double,8UL,6UL,columnMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = HybridMatrix<double,8UL,6UL,rowMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = HybridMatrix<double,8UL,6UL,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../DynamicMatrix
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = DynamicMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = DynamicMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = DynamicMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = DynamicMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../CustomMatrix
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = CustomMatrix<double,unaligned,unpadded,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = CustomMatrix<double,unaligned,unpadded,columnMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = CustomMatrix<double,unaligned,unpadded,rowMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = CustomMatrix<double,unaligned,unpadded,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../UniformMatrix
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = UniformMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = UniformMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = UniformMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = UniformMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../InitializerMatrix
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = InitializerMatrix<double>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = InitializerMatrix<double>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../CompressedMatrix
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = CompressedMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = CompressedMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = CompressedMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = CompressedMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../IdentityMatrix
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = IdentityMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = IdentityMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = IdentityMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = IdentityMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using RT = ZeroMatrix<complex<int>,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using RT = ZeroMatrix<complex<int>,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using RT = ZeroMatrix<complex<int>,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using RT = ZeroMatrix<complex<int>,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using RT = ZeroMatrix<complex<int>,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using RT = ZeroMatrix<complex<int>,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using RT = ZeroMatrix<complex<int>,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using RT = ZeroMatrix<complex<int>,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../LowerMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = LowerMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = LowerMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = LowerMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = LowerMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../UniLowerMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = UniLowerMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = UniLowerMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = UniLowerMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = UniLowerMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../StrictlyLowerMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../UpperMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = UpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = UpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = UpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = UpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../UniUpperMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = UniUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = UniUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = UniUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = UniUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../StrictlyUpperMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../DiagonalMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+   }
+
+   // HermitianMatrix<DynamicMatrix>/... (symmetric)
    {
       // .../StaticMatrix
       {
@@ -7241,6 +12059,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7250,6 +12069,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7259,6 +12079,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7268,6 +12089,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -7281,6 +12103,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7290,6 +12113,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7299,6 +12123,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7308,6 +12133,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -7321,6 +12147,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7330,6 +12157,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7339,6 +12167,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7348,6 +12177,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -7361,6 +12191,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7370,6 +12201,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7379,6 +12211,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7388,6 +12221,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -7401,6 +12235,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7410,6 +12245,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7419,6 +12255,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7428,6 +12265,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -7441,6 +12279,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7450,6 +12289,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -7463,6 +12303,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7472,6 +12313,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7481,6 +12323,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7490,6 +12333,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -7503,6 +12347,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7512,6 +12357,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7521,6 +12367,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7530,11 +12377,56 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (real)
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
       {
          {
             using T1 = HermitianMatrix< DynamicMatrix<int,rowMajor> >;
@@ -7543,6 +12435,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7552,6 +12445,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7561,6 +12455,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7570,11 +12465,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (complex)
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
             using T1 = HermitianMatrix< DynamicMatrix<int,rowMajor> >;
@@ -7583,6 +12479,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7592,6 +12489,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7601,6 +12499,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7610,11 +12509,100 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (symmetric)
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = SymmetricMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
       {
          {
             using T1 = HermitianMatrix< DynamicMatrix<int,rowMajor> >;
@@ -7623,6 +12611,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7632,6 +12621,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7641,6 +12631,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7650,11 +12641,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (Hermitian)
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
             using T1 = HermitianMatrix< DynamicMatrix<int,rowMajor> >;
@@ -7663,6 +12655,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7672,6 +12665,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7681,6 +12675,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7690,11 +12685,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../LowerMatrix
+      // .../LowerMatrix<DynamicMatrix>
       {
          {
             using T1 = HermitianMatrix< DynamicMatrix<int,rowMajor> >;
@@ -7703,6 +12699,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7712,6 +12709,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7721,6 +12719,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7730,11 +12729,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // ... UniLowerMatrix
+      // .../UniLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = HermitianMatrix< DynamicMatrix<int,rowMajor> >;
@@ -7743,6 +12743,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7752,6 +12753,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7761,6 +12763,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7770,11 +12773,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyLowerMatrix
+      // .../StrictlyLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = HermitianMatrix< DynamicMatrix<int,rowMajor> >;
@@ -7783,6 +12787,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7792,6 +12797,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7801,6 +12807,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7810,11 +12817,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UpperMatrix
+      // .../UpperMatrix<DynamicMatrix>
       {
          {
             using T1 = HermitianMatrix< DynamicMatrix<int,rowMajor> >;
@@ -7823,6 +12831,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7832,6 +12841,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7841,6 +12851,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7850,11 +12861,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UniUpperMatrix
+      // .../UniUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = HermitianMatrix< DynamicMatrix<int,rowMajor> >;
@@ -7863,6 +12875,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7872,6 +12885,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7881,6 +12895,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7890,11 +12905,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyUpperMatrix
+      // .../StrictlyUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = HermitianMatrix< DynamicMatrix<int,rowMajor> >;
@@ -7903,6 +12919,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7912,6 +12929,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7921,6 +12939,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7930,11 +12949,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../DiagonalMatrix
+      // .../DiagonalMatrix<DynamicMatrix>
       {
          {
             using T1 = HermitianMatrix< DynamicMatrix<int,rowMajor> >;
@@ -7943,6 +12963,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7952,6 +12973,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7961,6 +12983,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7970,12 +12993,13 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
    }
 
-   // HermitianMatrix/... (Hermitian)
+   // HermitianMatrix<DynamicMatrix>/... (Hermitian)
    {
       // .../StaticMatrix
       {
@@ -7986,6 +13010,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -7995,6 +13020,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8004,6 +13030,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8013,6 +13040,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -8026,6 +13054,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8035,6 +13064,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8044,6 +13074,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8053,6 +13084,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -8066,6 +13098,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8075,6 +13108,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8084,6 +13118,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8093,6 +13128,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -8106,6 +13142,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8115,6 +13152,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8124,6 +13162,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8133,6 +13172,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -8146,6 +13186,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8155,6 +13196,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8164,6 +13206,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8173,6 +13216,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -8186,6 +13230,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8195,6 +13240,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -8208,6 +13254,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8217,6 +13264,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8226,6 +13274,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8235,6 +13284,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -8248,6 +13298,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8257,6 +13308,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8266,6 +13318,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8275,11 +13328,56 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (real)
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using T2 = ZeroMatrix<int,rowMajor>;
+            using RT = ZeroMatrix<complex<int>,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using T2 = ZeroMatrix<int,columnMajor>;
+            using RT = ZeroMatrix<complex<int>,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using T2 = ZeroMatrix<int,rowMajor>;
+            using RT = ZeroMatrix<complex<int>,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using T2 = ZeroMatrix<int,columnMajor>;
+            using RT = ZeroMatrix<complex<int>,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
       {
          {
             using T1 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
@@ -8288,6 +13386,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8297,6 +13396,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8306,6 +13406,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8315,11 +13416,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (complex)
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
             using T1 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
@@ -8328,6 +13430,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8337,6 +13440,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8346,6 +13450,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8355,11 +13460,100 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (symmetric)
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using RT = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using RT = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using RT = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using RT = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using RT = ZeroMatrix<complex<int>,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using RT = ZeroMatrix<complex<int>,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using RT = ZeroMatrix<complex<int>,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using RT = ZeroMatrix<complex<int>,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
       {
          {
             using T1 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
@@ -8368,6 +13562,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8377,6 +13572,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8386,6 +13582,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8395,11 +13592,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (Hermitian)
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
             using T1 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
@@ -8408,6 +13606,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8417,6 +13616,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8426,6 +13626,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8435,11 +13636,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../LowerMatrix
+      // .../LowerMatrix<DynamicMatrix>
       {
          {
             using T1 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
@@ -8448,6 +13650,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8457,6 +13660,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8466,6 +13670,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8475,11 +13680,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // ... UniLowerMatrix
+      // .../UniLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
@@ -8488,6 +13694,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8497,6 +13704,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8506,6 +13714,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8515,11 +13724,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyLowerMatrix
+      // .../StrictlyLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
@@ -8528,6 +13738,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8537,6 +13748,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8546,6 +13758,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8555,11 +13768,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UpperMatrix
+      // .../UpperMatrix<DynamicMatrix>
       {
          {
             using T1 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
@@ -8568,6 +13782,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8577,6 +13792,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8586,6 +13802,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8595,11 +13812,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UniUpperMatrix
+      // .../UniUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
@@ -8608,6 +13826,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8617,6 +13836,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8626,6 +13846,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8635,11 +13856,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyUpperMatrix
+      // .../StrictlyUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
@@ -8648,6 +13870,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8657,6 +13880,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8666,6 +13890,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8675,11 +13900,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../DiagonalMatrix
+      // .../DiagonalMatrix<DynamicMatrix>
       {
          {
             using T1 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
@@ -8688,6 +13914,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8697,6 +13924,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8706,6 +13934,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8715,12 +13944,13 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
    }
 
-   // LowerMatrix/...
+   // LowerMatrix<DynamicMatrix>/...
    {
       // .../StaticMatrix
       {
@@ -8731,6 +13961,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8740,6 +13971,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8749,6 +13981,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8758,6 +13991,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -8771,6 +14005,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8780,6 +14015,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8789,6 +14025,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8798,6 +14035,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -8811,6 +14049,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8820,6 +14059,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8829,6 +14069,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8838,6 +14079,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -8851,6 +14093,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8860,6 +14103,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8869,6 +14113,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8878,6 +14123,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -8891,6 +14137,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8900,6 +14147,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8909,6 +14157,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8918,6 +14167,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -8931,6 +14181,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8940,6 +14191,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -8953,6 +14205,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8962,6 +14215,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8971,6 +14225,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -8980,6 +14235,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -8993,6 +14249,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9002,6 +14259,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9011,6 +14269,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9020,11 +14279,56 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (real)
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = LowerMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = LowerMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = LowerMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = LowerMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
       {
          {
             using T1 = LowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -9033,6 +14337,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9042,6 +14347,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9051,6 +14357,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9060,11 +14367,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (complex)
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
             using T1 = LowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -9073,6 +14381,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9082,6 +14391,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9091,6 +14401,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9100,11 +14411,100 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (symmetric)
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = LowerMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = LowerMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = LowerMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = LowerMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = LowerMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = LowerMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = LowerMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = LowerMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
       {
          {
             using T1 = LowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -9113,6 +14513,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9122,6 +14523,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9131,6 +14533,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9140,11 +14543,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (Hermitian)
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
             using T1 = LowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -9153,6 +14557,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9162,6 +14567,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9171,6 +14577,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9180,11 +14587,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../LowerMatrix
+      // .../LowerMatrix<DynamicMatrix>
       {
          {
             using T1 = LowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -9193,6 +14601,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9202,6 +14611,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9211,6 +14621,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9220,11 +14631,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // ... UniLowerMatrix
+      // .../UniLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = LowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -9233,6 +14645,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9242,6 +14655,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9251,6 +14665,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9260,11 +14675,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyLowerMatrix
+      // .../StrictlyLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = LowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -9273,6 +14689,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9282,6 +14699,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9291,6 +14709,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9300,11 +14719,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UpperMatrix
+      // .../UpperMatrix<DynamicMatrix>
       {
          {
             using T1 = LowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -9313,6 +14733,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9322,6 +14743,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9331,6 +14753,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9340,11 +14763,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UniUpperMatrix
+      // .../UniUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = LowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -9353,6 +14777,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9362,6 +14787,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9371,6 +14797,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9380,11 +14807,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyUpperMatrix
+      // .../StrictlyUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = LowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -9393,6 +14821,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9402,6 +14831,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9411,6 +14841,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9420,11 +14851,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../DiagonalMatrix
+      // .../DiagonalMatrix<DynamicMatrix>
       {
          {
             using T1 = LowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -9433,6 +14865,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9442,6 +14875,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9451,6 +14885,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9460,12 +14895,13 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
    }
 
-   // UniLowerMatrix/...
+   // UniLowerMatrix<DynamicMatrix>/...
    {
       // .../StaticMatrix
       {
@@ -9476,6 +14912,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9485,6 +14922,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9494,6 +14932,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9503,6 +14942,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -9516,6 +14956,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9525,6 +14966,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9534,6 +14976,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9543,6 +14986,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -9556,6 +15000,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9565,6 +15010,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9574,6 +15020,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9583,6 +15030,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -9596,6 +15044,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9605,6 +15054,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9614,6 +15064,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9623,6 +15074,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -9636,6 +15088,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9645,6 +15098,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9654,6 +15108,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9663,6 +15118,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -9676,6 +15132,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9685,6 +15142,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -9698,6 +15156,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9707,6 +15166,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9716,6 +15176,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9725,6 +15186,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -9738,6 +15200,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9747,6 +15210,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9756,6 +15220,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9765,11 +15230,56 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (real)
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = UniLowerMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniLowerMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniLowerMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniLowerMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
       {
          {
             using T1 = UniLowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -9778,6 +15288,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9787,6 +15298,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9796,6 +15308,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9805,11 +15318,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (complex)
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
             using T1 = UniLowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -9818,6 +15332,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9827,6 +15342,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9836,6 +15352,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9845,11 +15362,100 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (symmetric)
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = UniLowerMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniLowerMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniLowerMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniLowerMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = UniLowerMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniLowerMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniLowerMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniLowerMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
       {
          {
             using T1 = UniLowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -9858,6 +15464,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9867,6 +15474,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9876,6 +15484,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9885,11 +15494,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (Hermitian)
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
             using T1 = UniLowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -9898,6 +15508,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9907,6 +15518,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9916,6 +15528,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9925,11 +15538,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../LowerMatrix
+      // .../LowerMatrix<DynamicMatrix>
       {
          {
             using T1 = UniLowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -9938,6 +15552,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9947,6 +15562,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9956,6 +15572,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9965,11 +15582,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // ... UniLowerMatrix
+      // .../UniLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = UniLowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -9978,6 +15596,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9987,6 +15606,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -9996,6 +15616,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10005,11 +15626,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyLowerMatrix
+      // .../StrictlyLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = UniLowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -10018,6 +15640,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10027,6 +15650,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10036,6 +15660,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10045,11 +15670,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UpperMatrix
+      // .../UpperMatrix<DynamicMatrix>
       {
          {
             using T1 = UniLowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -10058,6 +15684,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10067,6 +15694,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10076,6 +15704,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10085,11 +15714,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UniUpperMatrix
+      // .../UniUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = UniLowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -10098,6 +15728,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10107,6 +15738,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10116,6 +15748,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10125,11 +15758,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyUpperMatrix
+      // .../StrictlyUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = UniLowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -10138,6 +15772,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10147,6 +15782,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10156,6 +15792,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10165,11 +15802,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../DiagonalMatrix
+      // .../DiagonalMatrix<DynamicMatrix>
       {
          {
             using T1 = UniLowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -10178,6 +15816,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10187,6 +15826,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10196,6 +15836,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10205,12 +15846,13 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
    }
 
-   // StrictlyLowerMatrix/...
+   // StrictlyLowerMatrix<DynamicMatrix>/...
    {
       // .../StaticMatrix
       {
@@ -10221,6 +15863,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10230,6 +15873,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10239,6 +15883,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10248,6 +15893,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -10261,6 +15907,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10270,6 +15917,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10279,6 +15927,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10288,6 +15937,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -10301,6 +15951,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10310,6 +15961,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10319,6 +15971,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10328,6 +15981,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -10341,6 +15995,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10350,6 +16005,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10359,6 +16015,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10368,6 +16025,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -10381,6 +16039,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10390,6 +16049,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10399,6 +16059,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10408,6 +16069,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -10421,6 +16083,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10430,6 +16093,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -10443,6 +16107,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10452,6 +16117,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10461,6 +16127,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10470,6 +16137,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -10483,6 +16151,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10492,6 +16161,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10501,6 +16171,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10510,11 +16181,56 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (real)
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StrictlyLowerMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StrictlyLowerMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
       {
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -10523,6 +16239,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10532,6 +16249,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10541,6 +16259,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10550,11 +16269,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (complex)
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -10563,6 +16283,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10572,6 +16293,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10581,6 +16303,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10590,11 +16313,100 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (symmetric)
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StrictlyLowerMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StrictlyLowerMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StrictlyLowerMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StrictlyLowerMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
       {
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -10603,6 +16415,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10612,6 +16425,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10621,6 +16435,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10630,11 +16445,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (Hermitian)
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -10643,6 +16459,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10652,6 +16469,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10661,6 +16479,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10670,11 +16489,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../LowerMatrix
+      // .../LowerMatrix<DynamicMatrix>
       {
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -10683,6 +16503,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10692,6 +16513,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10701,6 +16523,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10710,11 +16533,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // ... UniLowerMatrix
+      // .../UniLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -10723,6 +16547,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10732,6 +16557,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10741,6 +16567,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10750,11 +16577,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyLowerMatrix
+      // .../StrictlyLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -10763,6 +16591,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10772,6 +16601,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10781,6 +16611,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10790,11 +16621,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UpperMatrix
+      // .../UpperMatrix<DynamicMatrix>
       {
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -10803,6 +16635,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10812,6 +16645,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10821,6 +16655,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10830,11 +16665,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UniUpperMatrix
+      // .../UniUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -10843,6 +16679,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10852,6 +16689,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10861,6 +16699,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10870,11 +16709,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyUpperMatrix
+      // .../StrictlyUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -10883,6 +16723,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10892,6 +16733,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10901,6 +16743,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10910,11 +16753,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../DiagonalMatrix
+      // .../DiagonalMatrix<DynamicMatrix>
       {
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
@@ -10923,6 +16767,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10932,6 +16777,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10941,6 +16787,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10950,12 +16797,13 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
    }
 
-   // UpperMatrix/...
+   // UpperMatrix<DynamicMatrix>/...
    {
       // .../StaticMatrix
       {
@@ -10966,6 +16814,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10975,6 +16824,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10984,6 +16834,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -10993,6 +16844,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -11006,6 +16858,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11015,6 +16868,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11024,6 +16878,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11033,6 +16888,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -11046,6 +16902,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11055,6 +16912,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11064,6 +16922,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11073,6 +16932,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -11086,6 +16946,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11095,6 +16956,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11104,6 +16966,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11113,6 +16976,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -11126,6 +16990,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11135,6 +17000,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11144,6 +17010,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11153,6 +17020,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -11166,6 +17034,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11175,6 +17044,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -11188,6 +17058,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11197,6 +17068,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11206,6 +17078,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11215,6 +17088,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -11228,6 +17102,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11237,6 +17112,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11246,6 +17122,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11255,11 +17132,56 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (real)
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
       {
          {
             using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -11268,6 +17190,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11277,6 +17200,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11286,6 +17210,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11295,11 +17220,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (complex)
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
             using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -11308,6 +17234,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11317,6 +17244,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11326,6 +17254,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11335,11 +17264,100 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (symmetric)
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
       {
          {
             using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -11348,6 +17366,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11357,6 +17376,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11366,6 +17386,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11375,11 +17396,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (Hermitian)
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
             using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -11388,6 +17410,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11397,6 +17420,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11406,6 +17430,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11415,11 +17440,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../LowerMatrix
+      // .../LowerMatrix<DynamicMatrix>
       {
          {
             using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -11428,6 +17454,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11437,6 +17464,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11446,6 +17474,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11455,11 +17484,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // ... UniLowerMatrix
+      // .../UniLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -11468,6 +17498,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11477,6 +17508,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11486,6 +17518,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11495,11 +17528,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyLowerMatrix
+      // .../StrictlyLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -11508,6 +17542,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11517,6 +17552,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11526,6 +17562,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11535,11 +17572,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UpperMatrix
+      // .../UpperMatrix<DynamicMatrix>
       {
          {
             using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -11548,6 +17586,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11557,6 +17596,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11566,6 +17606,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11575,11 +17616,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UniUpperMatrix
+      // .../UniUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -11588,6 +17630,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11597,6 +17640,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11606,6 +17650,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11615,11 +17660,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyUpperMatrix
+      // .../StrictlyUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -11628,6 +17674,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11637,6 +17684,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11646,6 +17694,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11655,11 +17704,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../DiagonalMatrix
+      // .../DiagonalMatrix<DynamicMatrix>
       {
          {
             using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -11668,6 +17718,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11677,6 +17728,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11686,6 +17738,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11695,12 +17748,13 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
    }
 
-   // UniUpperMatrix/...
+   // UniUpperMatrix<DynamicMatrix>/...
    {
       // .../StaticMatrix
       {
@@ -11711,6 +17765,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11720,6 +17775,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11729,6 +17785,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11738,6 +17795,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -11751,6 +17809,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11760,6 +17819,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11769,6 +17829,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11778,6 +17839,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -11791,6 +17853,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11800,6 +17863,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11809,6 +17873,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11818,6 +17883,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -11831,6 +17897,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11840,6 +17907,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11849,6 +17917,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11858,6 +17927,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -11871,6 +17941,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11880,6 +17951,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11889,6 +17961,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11898,6 +17971,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -11911,6 +17985,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11920,6 +17995,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -11933,6 +18009,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11942,6 +18019,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11951,6 +18029,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11960,6 +18039,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -11973,6 +18053,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11982,6 +18063,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -11991,6 +18073,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12000,11 +18083,56 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (real)
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = UniUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
       {
          {
             using T1 = UniUpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -12013,6 +18141,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12022,6 +18151,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12031,6 +18161,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12040,11 +18171,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (complex)
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
             using T1 = UniUpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -12053,6 +18185,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12062,6 +18195,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12071,6 +18205,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12080,11 +18215,100 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (symmetric)
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = UniUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = UniUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
       {
          {
             using T1 = UniUpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -12093,6 +18317,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12102,6 +18327,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12111,6 +18337,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12120,11 +18347,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (Hermitian)
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
             using T1 = UniUpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -12133,6 +18361,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12142,6 +18371,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12151,6 +18381,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12160,11 +18391,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../LowerMatrix
+      // .../LowerMatrix<DynamicMatrix>
       {
          {
             using T1 = UniUpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -12173,6 +18405,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12182,6 +18415,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12191,6 +18425,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12200,11 +18435,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // ... UniLowerMatrix
+      // .../UniLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = UniUpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -12213,6 +18449,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12222,6 +18459,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12231,6 +18469,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12240,11 +18479,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyLowerMatrix
+      // .../StrictlyLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = UniUpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -12253,6 +18493,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12262,6 +18503,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12271,6 +18513,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12280,11 +18523,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UpperMatrix
+      // .../UpperMatrix<DynamicMatrix>
       {
          {
             using T1 = UniUpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -12293,6 +18537,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12302,6 +18547,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12311,6 +18557,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12320,11 +18567,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UniUpperMatrix
+      // .../UniUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = UniUpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -12333,6 +18581,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12342,6 +18591,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12351,6 +18601,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12360,11 +18611,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyUpperMatrix
+      // .../StrictlyUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = UniUpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -12373,6 +18625,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12382,6 +18635,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12391,6 +18645,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12400,11 +18655,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../DiagonalMatrix
+      // .../DiagonalMatrix<DynamicMatrix>
       {
          {
             using T1 = UniUpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -12413,6 +18669,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12422,6 +18679,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12431,6 +18689,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12440,12 +18699,13 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
    }
 
-   // StrictlyUpperMatrix/...
+   // StrictlyUpperMatrix<DynamicMatrix>/...
    {
       // .../StaticMatrix
       {
@@ -12456,6 +18716,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12465,6 +18726,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12474,6 +18736,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12483,6 +18746,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -12496,6 +18760,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12505,6 +18770,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12514,6 +18780,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12523,6 +18790,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -12536,6 +18804,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12545,6 +18814,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12554,6 +18824,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12563,6 +18834,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -12576,6 +18848,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12585,6 +18858,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12594,6 +18868,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12603,6 +18878,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -12616,6 +18892,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12625,6 +18902,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12634,6 +18912,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12643,6 +18922,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -12656,6 +18936,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12665,6 +18946,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -12678,6 +18960,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12687,6 +18970,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12696,6 +18980,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12705,6 +18990,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -12718,6 +19004,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12727,6 +19014,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12736,6 +19024,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12745,11 +19034,56 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (real)
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
       {
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -12758,6 +19092,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12767,6 +19102,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12776,6 +19112,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12785,11 +19122,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (complex)
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -12798,6 +19136,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12807,6 +19146,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12816,6 +19156,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12825,11 +19166,100 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (symmetric)
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
       {
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -12838,6 +19268,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12847,6 +19278,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12856,6 +19288,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12865,11 +19298,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (Hermitian)
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -12878,6 +19312,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12887,6 +19322,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12896,6 +19332,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12905,11 +19342,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../LowerMatrix
+      // .../LowerMatrix<DynamicMatrix>
       {
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -12918,6 +19356,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12927,6 +19366,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12936,6 +19376,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12945,11 +19386,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // ... UniLowerMatrix
+      // .../UniLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -12958,6 +19400,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12967,6 +19410,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12976,6 +19420,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -12985,11 +19430,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyLowerMatrix
+      // .../StrictlyLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -12998,6 +19444,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13007,6 +19454,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13016,6 +19464,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13025,11 +19474,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UpperMatrix
+      // .../UpperMatrix<DynamicMatrix>
       {
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -13038,6 +19488,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13047,6 +19498,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13056,6 +19508,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13065,11 +19518,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UniUpperMatrix
+      // .../UniUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -13078,6 +19532,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13087,6 +19542,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13096,6 +19552,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13105,11 +19562,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyUpperMatrix
+      // .../StrictlyUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -13118,6 +19576,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13127,6 +19586,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13136,6 +19596,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13145,11 +19606,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../DiagonalMatrix
+      // .../DiagonalMatrix<DynamicMatrix>
       {
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
@@ -13158,6 +19620,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13167,6 +19630,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13176,6 +19640,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13185,12 +19650,13 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
    }
 
-   // DiagonalMatrix/...
+   // DiagonalMatrix<DynamicMatrix>/...
    {
       // .../StaticMatrix
       {
@@ -13201,6 +19667,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13210,6 +19677,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13219,6 +19687,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13228,6 +19697,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -13241,6 +19711,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13250,6 +19721,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13259,6 +19731,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13268,6 +19741,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -13281,6 +19755,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13290,6 +19765,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13299,6 +19775,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13308,6 +19785,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -13321,6 +19799,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13330,6 +19809,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13339,6 +19819,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13348,6 +19829,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -13361,6 +19843,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13370,6 +19853,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13379,6 +19863,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13388,6 +19873,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -13401,6 +19887,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13410,6 +19897,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -13423,6 +19911,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13432,6 +19921,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13441,6 +19931,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13450,6 +19941,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
@@ -13463,6 +19955,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13472,6 +19965,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13481,6 +19975,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13490,11 +19985,56 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (real)
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = DiagonalMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = DiagonalMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
       {
          {
             using T1 = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
@@ -13503,6 +20043,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13512,6 +20053,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13521,6 +20063,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13530,11 +20073,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../SymmetricMatrix (complex)
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
             using T1 = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
@@ -13543,6 +20087,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13552,6 +20097,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13561,6 +20107,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13570,11 +20117,100 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (symmetric)
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = DiagonalMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = DiagonalMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = DiagonalMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = DiagonalMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
       {
          {
             using T1 = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
@@ -13583,6 +20219,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13592,6 +20229,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13601,6 +20239,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13610,11 +20249,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../HermitianMatrix (Hermitian)
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
             using T1 = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
@@ -13623,6 +20263,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13632,6 +20273,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13641,6 +20283,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13650,11 +20293,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../LowerMatrix
+      // .../LowerMatrix<DynamicMatrix>
       {
          {
             using T1 = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
@@ -13663,6 +20307,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13672,6 +20317,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13681,6 +20327,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13690,11 +20337,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // ... UniLowerMatrix
+      // .../UniLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
@@ -13703,6 +20351,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13712,6 +20361,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13721,6 +20371,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13730,11 +20381,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyLowerMatrix
+      // .../StrictlyLowerMatrix<DynamicMatrix>
       {
          {
             using T1 = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
@@ -13743,6 +20395,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13752,6 +20405,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13761,6 +20415,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13770,11 +20425,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UpperMatrix
+      // .../UpperMatrix<DynamicMatrix>
       {
          {
             using T1 = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
@@ -13783,6 +20439,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13792,6 +20449,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13801,6 +20459,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13810,11 +20469,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../UniUpperMatrix
+      // .../UniUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
@@ -13823,6 +20483,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13832,6 +20493,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13841,6 +20503,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13850,11 +20513,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../StrictlyUpperMatrix
+      // .../StrictlyUpperMatrix<DynamicMatrix>
       {
          {
             using T1 = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
@@ -13863,6 +20527,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13872,6 +20537,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13881,6 +20547,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13890,11 +20557,12 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
-      // .../DiagonalMatrix
+      // .../DiagonalMatrix<DynamicMatrix>
       {
          {
             using T1 = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
@@ -13903,6 +20571,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13912,6 +20581,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13921,6 +20591,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
@@ -13930,6 +20601,7 @@ void ClassTest::testSchurProduct()
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
