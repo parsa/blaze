@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/smatsmatsub/MIbMCa.cpp
-//  \brief Source file for the MIbMCa sparse matrix/sparse matrix subtraction math test
+//  \file src/mathtest/smatsmatsub/SCbMZb.cpp
+//  \brief Source file for the SCbMZb sparse matrix/sparse matrix subtraction math test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
@@ -40,7 +40,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/CompressedMatrix.h>
-#include <blaze/math/IdentityMatrix.h>
+#include <blaze/math/SymmetricMatrix.h>
+#include <blaze/math/ZeroMatrix.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/smatsmatsub/OperationTest.h>
 #include <blazetest/system/MathTest.h>
@@ -59,31 +60,30 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running 'MIbMCa'..." << std::endl;
+   std::cout << "   Running 'SCbMZb'..." << std::endl;
 
-   using blazetest::mathtest::TypeA;
    using blazetest::mathtest::TypeB;
 
    try
    {
       // Matrix type definitions
-      using MIb = blaze::IdentityMatrix<TypeB>;
-      using MCa = blaze::CompressedMatrix<TypeA>;
+      using SCb = blaze::SymmetricMatrix< blaze::CompressedMatrix<TypeB> >;
+      using MZb = blaze::ZeroMatrix<TypeB>;
 
       // Creator type definitions
-      using CMIb = blazetest::Creator<MIb>;
-      using CMCa = blazetest::Creator<MCa>;
+      using CSCb = blazetest::Creator<SCb>;
+      using CMZb = blazetest::Creator<MZb>;
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=6UL; ++i ) {
          for( size_t j=0UL; j<=i*i; ++j ) {
-            RUN_SMATSMATSUB_OPERATION_TEST( CMIb( i ), CMCa( i, i, j ) );
+            RUN_SMATSMATSUB_OPERATION_TEST( CSCb( i, j ), CMZb( i, i ) );
          }
       }
 
       // Running tests with large matrices
-      RUN_SMATSMATSUB_OPERATION_TEST( CMIb(  67UL ), CMCa(  67UL,  67UL,  7UL ) );
-      RUN_SMATSMATSUB_OPERATION_TEST( CMIb( 128UL ), CMCa( 128UL, 128UL, 16UL ) );
+      RUN_SMATSMATSUB_OPERATION_TEST( CSCb(  67UL,  7UL ), CMZb(  67UL,  67UL ) );
+      RUN_SMATSMATSUB_OPERATION_TEST( CSCb( 128UL, 16UL ), CMZb( 128UL, 128UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during sparse matrix/sparse matrix subtraction:\n"

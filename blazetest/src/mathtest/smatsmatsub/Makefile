@@ -82,6 +82,10 @@ DCaMIa: DCaMIa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DCaMIb: DCaMIb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DCaMZa: DCaMZa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DCaMZb: DCaMZb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DCaSCa: DCaSCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DCaSCb: DCaSCb.o
@@ -109,6 +113,10 @@ DCbMCb: DCbMCb.o
 DCbMIa: DCbMIa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DCbMIb: DCbMIb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DCbMZa: DCbMZa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+DCbMZb: DCbMZb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 DCbSCa: DCbSCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
@@ -139,6 +147,10 @@ HCaMIa: HCaMIa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 HCaMIb: HCaMIb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+HCaMZa: HCaMZa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+HCaMZb: HCaMZb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 HCaSCa: HCaSCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 HCaSCb: HCaSCb.o
@@ -166,6 +178,10 @@ HCbMCb: HCbMCb.o
 HCbMIa: HCbMIa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 HCbMIb: HCbMIb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+HCbMZa: HCbMZa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+HCbMZb: HCbMZb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 HCbSCa: HCbSCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
@@ -196,6 +212,10 @@ LCaMIa: LCaMIa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 LCaMIb: LCaMIb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCaMZa: LCaMZa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCaMZb: LCaMZb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 LCaSCa: LCaSCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 LCaSCb: LCaSCb.o
@@ -223,6 +243,10 @@ LCbMCb: LCbMCb.o
 LCbMIa: LCbMIa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 LCbMIb: LCbMIb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCbMZa: LCbMZa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+LCbMZb: LCbMZb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 LCbSCa: LCbSCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
@@ -253,6 +277,10 @@ MCaMIa: MCaMIa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaMIb: MCaMIb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCaMZa: MCaMZa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCaMZb: MCaMZb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaSCa: MCaSCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCaSCb: MCaSCb.o
@@ -280,6 +308,10 @@ MCbMCb: MCbMCb.o
 MCbMIa: MCbMIa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbMIb: MCbMIb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCbMZa: MCbMZa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MCbMZb: MCbMZb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MCbSCa: MCbSCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
@@ -347,6 +379,63 @@ MIbUCa: MIbUCa.o
 MIbUCb: MIbUCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
+MZaDCa: MZaDCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaDCb: MZaDCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaHCa: MZaHCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaHCb: MZaHCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaLCa: MZaLCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaLCb: MZaLCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaMCa: MZaMCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaMCb: MZaMCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaMIa: MZaMIa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaMIb: MZaMIb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaSCa: MZaSCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaSCb: MZaSCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaUCa: MZaUCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaUCb: MZaUCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbDCa: MZbDCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbDCb: MZbDCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbHCa: MZbHCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbHCb: MZbHCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbLCa: MZbLCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbLCb: MZbLCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbMCa: MZbMCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbMCb: MZbMCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbMIa: MZbMIa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbMIb: MZbMIb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbSCa: MZbSCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbSCb: MZbSCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbUCa: MZbUCa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbUCb: MZbUCb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
 SCaDCa: SCaDCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SCaDCb: SCaDCb.o
@@ -366,6 +455,10 @@ SCaMCb: SCaMCb.o
 SCaMIa: SCaMIa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SCaMIb: SCaMIb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SCaMZa: SCaMZa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SCaMZb: SCaMZb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SCaSCa: SCaSCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
@@ -394,6 +487,10 @@ SCbMCb: SCbMCb.o
 SCbMIa: SCbMIa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SCbMIb: SCbMIb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SCbMZa: SCbMZa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+SCbMZb: SCbMZb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SCbSCa: SCbSCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
@@ -424,6 +521,10 @@ UCaMIa: UCaMIa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 UCaMIb: UCaMIb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCaMZa: UCaMZa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCaMZb: UCaMZb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 UCaSCa: UCaSCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 UCaSCb: UCaSCb.o
@@ -451,6 +552,10 @@ UCbMCb: UCbMCb.o
 UCbMIa: UCbMIa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 UCbMIb: UCbMIb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCbMZa: UCbMZa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UCbMZb: UCbMZb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 UCbSCa: UCbSCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
