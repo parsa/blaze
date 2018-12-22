@@ -55,11 +55,15 @@
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/functors/Add.h>
 #include <blaze/math/traits/ReduceTrait.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/SameType.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/Random.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
@@ -148,8 +152,10 @@ class OperationTest
    template< typename OP, typename T > void testScaledOperation   ( OP op, T scalar );
    template< typename OP >             void testTransOperation    ( OP op );
    template< typename OP >             void testCTransOperation   ( OP op );
-   template< typename OP >             void testSubvectorOperation( OP op );
-   template< typename OP >             void testElementsOperation ( OP op );
+   template< typename OP >             void testSubvectorOperation( OP op, blaze::TrueType  );
+   template< typename OP >             void testSubvectorOperation( OP op, blaze::FalseType );
+   template< typename OP >             void testElementsOperation ( OP op, blaze::TrueType  );
+   template< typename OP >             void testElementsOperation ( OP op, blaze::FalseType );
    //@}
    //**********************************************************************************************
 
@@ -262,7 +268,9 @@ OperationTest<MT>::OperationTest( const Creator<MT>& creator, OP op )
    , test_()            // Label of the currently performed test
    , error_()           // Description of the current error type
 {
-   using Scalar = blaze::UnderlyingNumeric_t<DET>;
+   using namespace blaze;
+
+   using Scalar = UnderlyingNumeric_t<DET>;
 
    testInitialStatus();
    testAssignment();
@@ -275,8 +283,8 @@ OperationTest<MT>::OperationTest( const Creator<MT>& creator, OP op )
    testScaledOperation( op, Scalar( 2 ) );
    testTransOperation( op );
    testCTransOperation( op );
-   testSubvectorOperation( op );
-   testElementsOperation( op );
+   testSubvectorOperation( op, Not< IsUniform<DRE> >() );
+   testElementsOperation( op, Not< IsUniform<DRE> >() );
 }
 //*************************************************************************************************
 
@@ -3081,7 +3089,7 @@ void OperationTest<MT>::testCTransOperation( OP op )
 */
 template< typename MT >  // Type of the sparse matrix
 template< typename OP >  // Type of the reduction operation
-void OperationTest<MT>::testSubvectorOperation( OP op )
+void OperationTest<MT>::testSubvectorOperation( OP op, blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_SUBVECTOR_OPERATION
    if( BLAZETEST_MATHTEST_TEST_SUBVECTOR_OPERATION > 1 )
@@ -3487,6 +3495,23 @@ void OperationTest<MT>::testSubvectorOperation( OP op )
 
 
 //*************************************************************************************************
+/*!\brief Skipping the subvector-wise sparse matrix reduction operation.
+//
+// \param op The reduction operation.
+// \return void
+// \exception std::runtime_error Reduction error detected.
+//
+// This function is called in case the subvector-wise matrix reduction operation is not
+// available for the given matrix type \a MT.
+*/
+template< typename MT >  // Type of the sparse matrix
+template< typename OP >  // Type of the reduction operation
+void OperationTest<MT>::testSubvectorOperation( OP op, blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Testing the elements-wise sparse matrix reduction operation.
 //
 // \return void
@@ -3499,7 +3524,7 @@ void OperationTest<MT>::testSubvectorOperation( OP op )
 */
 template< typename MT >  // Type of the sparse matrix
 template< typename OP >  // Type of the reduction operation
-void OperationTest<MT>::testElementsOperation( OP op )
+void OperationTest<MT>::testElementsOperation( OP op, blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_ELEMENTS_OPERATION
    if( BLAZETEST_MATHTEST_TEST_ELEMENTS_OPERATION > 1 )
@@ -3906,6 +3931,23 @@ void OperationTest<MT>::testElementsOperation( OP op )
    }
 #endif
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the elements-wise sparse matrix reduction operation.
+//
+// \param op The reduction operation.
+// \return void
+// \exception std::runtime_error Reduction error detected.
+//
+// This function is called in case the elements-wise matrix reduction operation is not
+// available for the given matrix type \a MT.
+*/
+template< typename MT >  // Type of the sparse matrix
+template< typename OP >  // Type of the reduction operation
+void OperationTest<MT>::testElementsOperation( OP op, blaze::FalseType )
+{}
 //*************************************************************************************************
 
 
