@@ -79,8 +79,8 @@ class DenseIterator
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit constexpr inline DenseIterator() noexcept;
-   explicit constexpr inline DenseIterator( Type* ptr ) noexcept;
+   explicit inline constexpr DenseIterator() noexcept;
+   explicit inline constexpr DenseIterator( Type* ptr ) noexcept;
 
    template< typename Other, bool AF2 >
    inline constexpr DenseIterator( const DenseIterator<Other,AF2>& it ) noexcept;
