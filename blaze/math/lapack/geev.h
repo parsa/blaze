@@ -52,7 +52,6 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/lapack/clapack/geev.h>
 #include <blaze/math/shims/Equal.h>
-#include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>

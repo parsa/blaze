@@ -47,6 +47,8 @@
 #include <blaze/math/functors/Min.h>
 #include <blaze/math/functors/Mult.h>
 #include <blaze/math/SIMD.h>
+#include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/system/Compiler.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
