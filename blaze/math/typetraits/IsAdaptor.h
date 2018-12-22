@@ -76,12 +76,12 @@ namespace blaze {
    using UpperDynamicType        = blaze::UpperMatrix<DynamicMatrixType>;
    using SymmetricCompressedType = blaze::SymmetricMatrix<CompressedMatrixType>;
 
-   blaze::IsLower< LowerStaticType >::value            // Evaluates to 1
-   blaze::IsLower< const UpperDynamicType >::Type      // Results in TrueType
-   blaze::IsLower< volatile SymmetricCompressedType >  // Is derived from TrueType
-   blaze::IsLower< StaticMatrixType >::value           // Evaluates to 0
-   blaze::IsLower< const DynamicMatrixType >::Type     // Results in FalseType
-   blaze::IsLower< volatile CompressedMatrixType >     // Is derived from FalseType
+   blaze::IsAdaptor< LowerStaticType >::value            // Evaluates to 1
+   blaze::IsAdaptor< const UpperDynamicType >::Type      // Results in TrueType
+   blaze::IsAdaptor< volatile SymmetricCompressedType >  // Is derived from TrueType
+   blaze::IsAdaptor< StaticMatrixType >::value           // Evaluates to 0
+   blaze::IsAdaptor< const DynamicMatrixType >::Type     // Results in FalseType
+   blaze::IsAdaptor< volatile CompressedMatrixType >     // Is derived from FalseType
    \endcode
 */
 template< typename T >
