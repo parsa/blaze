@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FalseType.h>
 
@@ -68,7 +69,7 @@ template< typename T > struct IsUniform;
 template< typename T
         , typename = void >
 struct IsUniformHelper
-   : public FalseType
+   : public IsZero<T>
 {};
 
 template< typename T >  // Type of the operand
