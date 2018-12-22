@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/smatsmatadd/MIbMCa.cpp
-//  \brief Source file for the MIbMCa sparse matrix/sparse matrix addition math test
+//  \file src/mathtest/smatsmatadd/MZaMCb.cpp
+//  \brief Source file for the MZaMCb sparse matrix/sparse matrix addition math test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
@@ -40,7 +40,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/CompressedMatrix.h>
-#include <blaze/math/IdentityMatrix.h>
+#include <blaze/math/ZeroMatrix.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/smatsmatadd/OperationTest.h>
 #include <blazetest/system/MathTest.h>
@@ -59,7 +59,7 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running 'MIbMCa'..." << std::endl;
+   std::cout << "   Running 'MZaMCb'..." << std::endl;
 
    using blazetest::mathtest::TypeA;
    using blazetest::mathtest::TypeB;
@@ -67,23 +67,27 @@ int main()
    try
    {
       // Matrix type definitions
-      using MIb = blaze::IdentityMatrix<TypeB>;
-      using MCa = blaze::CompressedMatrix<TypeA>;
+      using MZa = blaze::ZeroMatrix<TypeA>;
+      using MCb = blaze::CompressedMatrix<TypeB>;
 
       // Creator type definitions
-      using CMIb = blazetest::Creator<MIb>;
-      using CMCa = blazetest::Creator<MCa>;
+      using CMZa = blazetest::Creator<MZa>;
+      using CMCb = blazetest::Creator<MCb>;
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=6UL; ++i ) {
-         for( size_t j=0UL; j<=i*i; ++j ) {
-            RUN_SMATSMATADD_OPERATION_TEST( CMIb( i ), CMCa( i, i, j ) );
+         for( size_t j=0UL; j<=6UL; ++j ) {
+            for( size_t k=0UL; k<=i*j; ++k ) {
+               RUN_SMATSMATADD_OPERATION_TEST( CMZa( i, j ), CMCb( i, j, k ) );
+            }
          }
       }
 
       // Running tests with large matrices
-      RUN_SMATSMATADD_OPERATION_TEST( CMIb(  67UL ), CMCa(  67UL,  67UL,  7UL ) );
-      RUN_SMATSMATADD_OPERATION_TEST( CMIb( 128UL ), CMCa( 128UL, 128UL, 16UL ) );
+      RUN_SMATSMATADD_OPERATION_TEST( CMZa(  67UL,  67UL ), CMCb(  67UL,  67UL,  7UL ) );
+      RUN_SMATSMATADD_OPERATION_TEST( CMZa(  67UL, 127UL ), CMCb(  67UL, 127UL, 13UL ) );
+      RUN_SMATSMATADD_OPERATION_TEST( CMZa( 128UL,  64UL ), CMCb( 128UL,  64UL,  8UL ) );
+      RUN_SMATSMATADD_OPERATION_TEST( CMZa( 128UL, 128UL ), CMCb( 128UL, 128UL, 16UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during sparse matrix/sparse matrix addition:\n"

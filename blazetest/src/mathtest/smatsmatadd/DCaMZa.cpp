@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/smatsmatadd/MIbMCa.cpp
-//  \brief Source file for the MIbMCa sparse matrix/sparse matrix addition math test
+//  \file src/mathtest/smatsmatadd/DCaMZa.cpp
+//  \brief Source file for the DCaMZa sparse matrix/sparse matrix addition math test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
@@ -40,7 +40,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/CompressedMatrix.h>
-#include <blaze/math/IdentityMatrix.h>
+#include <blaze/math/DiagonalMatrix.h>
+#include <blaze/math/ZeroMatrix.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/smatsmatadd/OperationTest.h>
 #include <blazetest/system/MathTest.h>
@@ -59,31 +60,30 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running 'MIbMCa'..." << std::endl;
+   std::cout << "   Running 'DCaMZa'..." << std::endl;
 
    using blazetest::mathtest::TypeA;
-   using blazetest::mathtest::TypeB;
 
    try
    {
       // Matrix type definitions
-      using MIb = blaze::IdentityMatrix<TypeB>;
-      using MCa = blaze::CompressedMatrix<TypeA>;
+      using DCa = blaze::DiagonalMatrix< blaze::CompressedMatrix<TypeA> >;
+      using MZa = blaze::ZeroMatrix<TypeA>;
 
       // Creator type definitions
-      using CMIb = blazetest::Creator<MIb>;
-      using CMCa = blazetest::Creator<MCa>;
+      using CDCa = blazetest::Creator<DCa>;
+      using CMZa = blazetest::Creator<MZa>;
 
       // Running tests with small matrices
       for( size_t i=0UL; i<=6UL; ++i ) {
-         for( size_t j=0UL; j<=i*i; ++j ) {
-            RUN_SMATSMATADD_OPERATION_TEST( CMIb( i ), CMCa( i, i, j ) );
+         for( size_t j=0UL; j<=i; ++j ) {
+            RUN_SMATSMATADD_OPERATION_TEST( CDCa( i, j ), CMZa( i, i ) );
          }
       }
 
       // Running tests with large matrices
-      RUN_SMATSMATADD_OPERATION_TEST( CMIb(  67UL ), CMCa(  67UL,  67UL,  7UL ) );
-      RUN_SMATSMATADD_OPERATION_TEST( CMIb( 128UL ), CMCa( 128UL, 128UL, 16UL ) );
+      RUN_SMATSMATADD_OPERATION_TEST( CDCa(  67UL,  7UL ), CMZa(  67UL,  67UL ) );
+      RUN_SMATSMATADD_OPERATION_TEST( CDCa( 128UL, 16UL ), CMZa( 128UL, 128UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during sparse matrix/sparse matrix addition:\n"
