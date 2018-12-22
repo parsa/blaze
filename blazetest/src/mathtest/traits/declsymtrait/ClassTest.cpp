@@ -57,6 +57,7 @@
 #include <blaze/math/UniLowerMatrix.h>
 #include <blaze/math/UniUpperMatrix.h>
 #include <blaze/math/UpperMatrix.h>
+#include <blaze/math/ZeroMatrix.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -256,6 +257,26 @@ void ClassTest::testMatrixDeclSym()
       {
          using MT = IdentityMatrix<int,columnMajor>;
          using RT = IdentityMatrix<int,columnMajor>;
+         static_assert( IsSame_v< DeclSymTrait_t<MT>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( declsym( std::declval<MT>() ) ) >;
+         static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+      }
+   }
+
+   // ZeroMatrix
+   {
+      {
+         using MT = ZeroMatrix<int,rowMajor>;
+         using RT = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+         static_assert( IsSame_v< DeclSymTrait_t<MT>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( declsym( std::declval<MT>() ) ) >;
+         static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+      }
+      {
+         using MT = ZeroMatrix<int,columnMajor>;
+         using RT = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
          static_assert( IsSame_v< DeclSymTrait_t<MT>, RT >, "Non-matching type detected" );
 
          using Expr = Decay_t< decltype( declsym( std::declval<MT>() ) ) >;
