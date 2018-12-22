@@ -56,6 +56,10 @@ default: MCaM3x3a MCaM3x3b MCbM3x3a MCbM3x3b \
          MIaMHa MIaMHb MIbMHa MIbMHb \
          MIaMDa MIaMDb MIbMDa MIbMDb \
          MIaMUa MIaMUb MIbMUa MIbMUb \
+         MZaM3x3a MZaM3x3b MZbM3x3a MZbM3x3b \
+         MZaMHa MZaMHb MZbMHa MZbMHb \
+         MZaMDa MZaMDb MZbMDa MZbMDb \
+         MZaMUa MZaMUb MZbMUa MZbMUb \
          SCaSDa SCaSDb SCbSDa SCbSDb \
          HCaHDa HCaHDb HCbHDa HCbHDb \
          LCaLDa LCaLDb LCbLDa LCbLDb \
@@ -64,7 +68,7 @@ default: MCaM3x3a MCaM3x3b MCbM3x3a MCbM3x3b \
          AliasingTest
 all: $(BIN)
 essential: MCaM3x3a MCaMHa MCaMDa MCaMUa MIaM3x3a MIaMHa MIaMDa MIaMUa \
-           SCaSDa HCaHDa LCaLDa UCaUDa DCaDDa AliasingTest
+           MZaM3x3a MZaMHa MZaMDa MZaMUa SCaSDa HCaHDa LCaLDa UCaUDa DCaDDa AliasingTest
 single: MCaMDa
 
 
@@ -461,6 +465,80 @@ MIbSDb: MIbSDb.o
 MIbUDa: MIbUDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MIbUDb: MIbUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+MZaDDa: MZaDDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaDDb: MZaDDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaHDa: MZaHDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaHDb: MZaHDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaLDa: MZaLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaLDb: MZaLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaM3x3a: MZaM3x3a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaM3x3b: MZaM3x3b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaMDa: MZaMDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaMDb: MZaMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaMHa: MZaMHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaMHb: MZaMHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaMUa: MZaMUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaMUb: MZaMUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaSDa: MZaSDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaSDb: MZaSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaUDa: MZaUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZaUDb: MZaUDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+MZbDDa: MZbDDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbDDb: MZbDDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbHDa: MZbHDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbHDb: MZbHDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbLDa: MZbLDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbLDb: MZbLDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbM3x3a: MZbM3x3a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbM3x3b: MZbM3x3b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbMDa: MZbMDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbMDb: MZbMDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbMHa: MZbMHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbMHb: MZbMHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbMUa: MZbMUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbMUb: MZbMUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbSDa: MZbSDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbSDb: MZbSDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbUDa: MZbUDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+MZbUDb: MZbUDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 SCaDDa: SCaDDa.o
