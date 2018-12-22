@@ -66,6 +66,7 @@
 #include <blaze/math/UniLowerMatrix.h>
 #include <blaze/math/UniUpperMatrix.h>
 #include <blaze/math/UpperMatrix.h>
+#include <blaze/math/ZeroMatrix.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -536,6 +537,28 @@ void ClassTest::testMatrixScalarDivision()
          using T1 = IdentityMatrix<int,columnMajor>;
          using T2 = double;
          using RT = DiagonalMatrix< CompressedMatrix<double,columnMajor> >;
+         static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+      }
+   }
+
+   // ZeroMatrix
+   {
+      {
+         using T1 = ZeroMatrix<int,rowMajor>;
+         using T2 = double;
+         using RT = ZeroMatrix<double,rowMajor>;
+         static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+      }
+      {
+         using T1 = ZeroMatrix<int,columnMajor>;
+         using T2 = double;
+         using RT = ZeroMatrix<double,columnMajor>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
          using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
