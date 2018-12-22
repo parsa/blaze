@@ -82,7 +82,6 @@
 #include <blazetest/mathtest/MatchSymmetry.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
-#include <blazetest/mathtest/RemoveIdentity.h>
 
 
 namespace blazetest {
@@ -121,7 +120,7 @@ class OperationTest
    using TOMT2 = blaze::TransposeType_t<OMT2>;  //!< Transpose matrix type 2 with opposite storage order
 
    //! Sparse result type
-   using SRE = RemoveIdentity_t< blaze::MultTrait_t<MT1,MT2> >;
+   using SRE = blaze::MultTrait_t<MT1,MT2>;
 
    using SET   = blaze::ElementType_t<SRE>;     //!< Element type of the sparse result
    using OSRE  = blaze::OppositeType_t<SRE>;    //!< Sparse result type with opposite storage order
