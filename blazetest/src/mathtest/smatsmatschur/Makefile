@@ -49,7 +49,6 @@ BIN = $(SRC:.cpp=)
 
 # General rules
 default: MCaMCa MCaMCb MCbMCa MCbMCb \
-         MIaMIa MIaMIb MIbMIa MIbMIb \
          SCaSCa SCaSCb SCbSCa SCbSCb \
          HCaHCa HCaHCb HCbHCa HCbHCb \
          LCaLCa LCaLCb LCbLCa LCbLCb \
@@ -57,7 +56,7 @@ default: MCaMCa MCaMCb MCbMCa MCbMCb \
          DCaDCa DCaDCb DCbDCa DCbDCb \
          AliasingTest
 all: $(BIN)
-essential: MCaMCa MIaMIa SCaSCa HCaHCa LCaLCa UCaUCa DCaDCa AliasingTest
+essential: MCaMCa SCaSCa HCaHCa LCaLCa UCaUCa DCaDCa AliasingTest
 single: MCaMCa
 
 
@@ -306,10 +305,6 @@ MIaMCa: MIaMCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MIaMCb: MIaMCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-MIaMIa: MIaMIa.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-MIaMIb: MIaMIb.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MIaSCa: MIaSCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MIaSCb: MIaSCb.o
@@ -333,10 +328,6 @@ MIbLCb: MIbLCb.o
 MIbMCa: MIbMCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MIbMCb: MIbMCb.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-MIbMIa: MIbMIa.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-MIbMIb: MIbMIb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 MIbSCa: MIbSCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
