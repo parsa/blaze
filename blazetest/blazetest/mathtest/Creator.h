@@ -90,5 +90,6 @@
 #include <blazetest/mathtest/creator/StaticVector.h>
 #include <blazetest/mathtest/creator/UniformMatrix.h>
 #include <blazetest/mathtest/creator/UniformVector.h>
+#include <blazetest/mathtest/creator/ZeroMatrix.h>
 
 #endif
