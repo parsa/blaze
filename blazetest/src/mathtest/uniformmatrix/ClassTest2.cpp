@@ -4309,7 +4309,7 @@ void ClassTest::testIsDefault()
    {
       test_ = "Row-major isDefault() function";
 
-      // isDefault with 0x0 matrix
+      // isDefault with 0x0 matrix (default)
       {
          blaze::UniformMatrix<int,blaze::rowMajor> mat;
 
@@ -4323,7 +4323,35 @@ void ClassTest::testIsDefault()
          }
       }
 
-      // isDefault with default matrix
+      // isDefault with 0x3 matrix (non-default)
+      {
+         blaze::UniformMatrix<int,blaze::rowMajor> mat( 0UL, 3UL );
+
+         if( isDefault( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isDefault with 2x0 matrix (non-default)
+      {
+         blaze::UniformMatrix<int,blaze::rowMajor> mat( 2UL, 0UL );
+
+         if( isDefault( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isDefault with 2x3 matrix (non-default)
       {
          blaze::UniformMatrix<int,blaze::rowMajor> mat( 2UL, 3UL, 0 );
 
@@ -4346,7 +4374,7 @@ void ClassTest::testIsDefault()
          }
       }
 
-      // isDefault with non-default matrix
+      // isDefault with 3x2 matrix (non-default)
       {
          blaze::UniformMatrix<int,blaze::rowMajor> mat( 3UL, 2UL, 1 );
 
@@ -4378,7 +4406,7 @@ void ClassTest::testIsDefault()
    {
       test_ = "Column-major isDefault() function";
 
-      // isDefault with 0x0 matrix
+      // isDefault with 0x0 matrix (default)
       {
          blaze::UniformMatrix<int,blaze::columnMajor> mat;
 
@@ -4392,7 +4420,35 @@ void ClassTest::testIsDefault()
          }
       }
 
-      // isDefault with default matrix
+      // isDefault with 0x3 matrix (non-default)
+      {
+         blaze::UniformMatrix<int,blaze::columnMajor> mat( 0UL, 3UL );
+
+         if( isDefault( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isDefault with 2x0 matrix (non-default)
+      {
+         blaze::UniformMatrix<int,blaze::columnMajor> mat( 2UL, 0UL );
+
+         if( isDefault( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isDefault evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isDefault with 2x3 matrix (non-default)
       {
          blaze::UniformMatrix<int,blaze::columnMajor> mat( 2UL, 3UL, 0 );
 
@@ -4415,7 +4471,7 @@ void ClassTest::testIsDefault()
          }
       }
 
-      // isDefault with non-default matrix
+      // isDefault with 3x2 matrix (non-default)
       {
          blaze::UniformMatrix<int,blaze::columnMajor> mat( 3UL, 2UL, 1 );
 
