@@ -246,10 +246,10 @@ inline typename SharedValue<Type>::Pointer SharedValue<Type>::base() const noexc
 /*!\name SharedValue operators */
 //@{
 template< typename T1, typename T2 >
-inline bool operator==( const SharedValue<T1>& lhs, const SharedValue<T2>& rhs );
+bool operator==( const SharedValue<T1>& lhs, const SharedValue<T2>& rhs );
 
 template< typename T1, typename T2 >
-inline bool operator!=( const SharedValue<T1>& lhs, const SharedValue<T2>& rhs );
+bool operator!=( const SharedValue<T1>& lhs, const SharedValue<T2>& rhs );
 //@}
 //*************************************************************************************************
 
@@ -298,10 +298,10 @@ inline bool operator!=( const SharedValue<T1>& lhs, const SharedValue<T2>& rhs )
 /*!\name SharedValue global functions */
 //@{
 template< bool RF, typename Type >
-inline bool isDefault( const SharedValue<Type>& value );
+bool isDefault( const SharedValue<Type>& value );
 
 template< bool RF, typename T1, typename T2 >
-inline bool equal( const SharedValue<T1>& lhs, const SharedValue<T2>& rhs );
+bool equal( const SharedValue<T1>& lhs, const SharedValue<T2>& rhs );
 //@}
 //*************************************************************************************************
 

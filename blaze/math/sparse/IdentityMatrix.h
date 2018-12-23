@@ -1102,22 +1102,22 @@ inline bool IdentityMatrix<Type,SO>::canSMPAssign() const noexcept
 /*!\name IdentityMatrix operators */
 //@{
 template< typename Type, bool SO >
-inline constexpr void reset( IdentityMatrix<Type,SO>& m ) noexcept;
+constexpr void reset( IdentityMatrix<Type,SO>& m ) noexcept;
 
 template< typename Type, bool SO >
-inline constexpr void reset( IdentityMatrix<Type,SO>& m, size_t i ) noexcept;
+constexpr void reset( IdentityMatrix<Type,SO>& m, size_t i ) noexcept;
 
 template< typename Type, bool SO >
-inline constexpr void clear( IdentityMatrix<Type,SO>& m ) noexcept;
+constexpr void clear( IdentityMatrix<Type,SO>& m ) noexcept;
 
 template< bool RF, typename Type, bool SO >
-inline constexpr bool isDefault( const IdentityMatrix<Type,SO>& m ) noexcept;
+constexpr bool isDefault( const IdentityMatrix<Type,SO>& m ) noexcept;
 
 template< typename Type, bool SO >
-inline constexpr bool isIntact( const IdentityMatrix<Type,SO>& m ) noexcept;
+constexpr bool isIntact( const IdentityMatrix<Type,SO>& m ) noexcept;
 
 template< typename Type, bool SO >
-inline constexpr void swap( IdentityMatrix<Type,SO>& a, IdentityMatrix<Type,SO>& b ) noexcept;
+constexpr void swap( IdentityMatrix<Type,SO>& a, IdentityMatrix<Type,SO>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

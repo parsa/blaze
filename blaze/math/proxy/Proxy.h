@@ -175,97 +175,97 @@ class Proxy
 /*!\name Proxy operators */
 //@{
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
-inline decltype(auto) operator+( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+decltype(auto) operator+( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T, typename = DisableIf_t< IsProxy_v<T> > >
-inline decltype(auto) operator+( const Proxy<PT,RT>& lhs, const T& rhs );
+decltype(auto) operator+( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
-inline decltype(auto) operator+( const T& lhs, const Proxy<PT,RT>& rhs );
+decltype(auto) operator+( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
-inline decltype(auto) operator-( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+decltype(auto) operator-( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T, typename = DisableIf_t< IsProxy_v<T> > >
-inline decltype(auto) operator-( const Proxy<PT,RT>& lhs, const T& rhs );
+decltype(auto) operator-( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
-inline decltype(auto) operator-( const T& lhs, const Proxy<PT,RT>& rhs );
+decltype(auto) operator-( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
-inline decltype(auto) operator*( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+decltype(auto) operator*( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T, typename = DisableIf_t< IsProxy_v<T> > >
-inline decltype(auto) operator*( const Proxy<PT,RT>& lhs, const T& rhs );
+decltype(auto) operator*( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
-inline decltype(auto) operator*( const T& lhs, const Proxy<PT,RT>& rhs );
+decltype(auto) operator*( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
-inline decltype(auto) operator/( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+decltype(auto) operator/( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T, typename = DisableIf_t< IsProxy_v<T> > >
-inline decltype(auto) operator/( const Proxy<PT,RT>& lhs, const T& rhs );
+decltype(auto) operator/( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
-inline decltype(auto) operator/( const T& lhs, const Proxy<PT,RT>& rhs );
+decltype(auto) operator/( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
-inline bool operator==( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+bool operator==( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T, typename = DisableIf_t< IsProxy_v<T> > >
-inline bool operator==( const Proxy<PT,RT>& lhs, const T& rhs );
+bool operator==( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
-inline bool operator==( const T& lhs, const Proxy<PT,RT>& rhs );
+bool operator==( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
-inline bool operator!=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+bool operator!=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T, typename = DisableIf_t< IsProxy_v<T> > >
-inline bool operator!=( const Proxy<PT,RT>& lhs, const T& rhs );
+bool operator!=( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
-inline bool operator!=( const T& lhs, const Proxy<PT,RT>& rhs );
+bool operator!=( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
-inline bool operator<( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+bool operator<( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T, typename = DisableIf_t< IsProxy_v<T> > >
-inline bool operator<( const Proxy<PT,RT>& lhs, const T& rhs );
+bool operator<( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
-inline bool operator<( const T& lhs, const Proxy<PT,RT>& rhs );
+bool operator<( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
-inline bool operator>( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+bool operator>( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T, typename = DisableIf_t< IsProxy_v<T> > >
-inline bool operator>( const Proxy<PT,RT>& lhs, const T& rhs );
+bool operator>( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
-inline bool operator>( const T& lhs, const Proxy<PT,RT>& rhs );
+bool operator>( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
-inline bool operator<=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+bool operator<=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T, typename = DisableIf_t< IsProxy_v<T> > >
-inline bool operator<=( const Proxy<PT,RT>& lhs, const T& rhs );
+bool operator<=( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
-inline bool operator<=( const T& lhs, const Proxy<PT,RT>& rhs );
+bool operator<=( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
-inline bool operator>=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+bool operator>=( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T, typename = DisableIf_t< IsProxy_v<T> > >
-inline bool operator>=( const Proxy<PT,RT>& lhs, const T& rhs );
+bool operator>=( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
-inline bool operator>=( const T& lhs, const Proxy<PT,RT>& rhs );
+bool operator>=( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT, typename RT >
-inline std::ostream& operator<<( std::ostream& os, const Proxy<PT,RT>& proxy );
+std::ostream& operator<<( std::ostream& os, const Proxy<PT,RT>& proxy );
 //@}
 //*************************************************************************************************
 
@@ -778,190 +778,190 @@ inline std::ostream& operator<<( std::ostream& os, const Proxy<PT,RT>& proxy )
 /*!\name Proxy global functions */
 //@{
 template< typename PT, typename RT >
-inline decltype(auto) abs( const Proxy<PT,RT>& proxy );
+decltype(auto) abs( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) sign( const Proxy<PT,RT>& proxy );
+decltype(auto) sign( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) floor( const Proxy<PT,RT>& proxy );
+decltype(auto) floor( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) ceil( const Proxy<PT,RT>& proxy );
+decltype(auto) ceil( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) trunc( const Proxy<PT,RT>& proxy );
+decltype(auto) trunc( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) round( const Proxy<PT,RT>& proxy );
+decltype(auto) round( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) conj( const Proxy<PT,RT>& proxy );
+decltype(auto) conj( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) trans( const Proxy<PT,RT>& proxy );
+decltype(auto) trans( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) ctrans( const Proxy<PT,RT>& proxy );
+decltype(auto) ctrans( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) real( const Proxy<PT,RT>& proxy );
+decltype(auto) real( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) imag( const Proxy<PT,RT>& proxy );
+decltype(auto) imag( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) sqrt( const Proxy<PT,RT>& proxy );
+decltype(auto) sqrt( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) invsqrt( const Proxy<PT,RT>& proxy );
+decltype(auto) invsqrt( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) cbrt( const Proxy<PT,RT>& proxy );
+decltype(auto) cbrt( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) invcbrt( const Proxy<PT,RT>& proxy );
+decltype(auto) invcbrt( const Proxy<PT,RT>& proxy );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
-inline decltype(auto) hypot( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+decltype(auto) hypot( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T, typename = DisableIf_t< IsProxy_v<T> > >
-inline decltype(auto) hypot( const Proxy<PT,RT>& lhs, const T& rhs );
+decltype(auto) hypot( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
-inline decltype(auto) hypot( const T& lhs, const Proxy<PT,RT>& rhs );
+decltype(auto) hypot( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT, typename RT, typename ET >
-inline decltype(auto) pow( const Proxy<PT,RT>& proxy, const ET& exp );
+decltype(auto) pow( const Proxy<PT,RT>& proxy, const ET& exp );
 
 template< typename PT, typename RT >
-inline decltype(auto) pow2( const Proxy<PT,RT>& proxy );
+decltype(auto) pow2( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) pow3( const Proxy<PT,RT>& proxy );
+decltype(auto) pow3( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) pow4( const Proxy<PT,RT>& proxy );
+decltype(auto) pow4( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) exp( const Proxy<PT,RT>& proxy );
+decltype(auto) exp( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) exp2( const Proxy<PT,RT>& proxy );
+decltype(auto) exp2( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) exp10( const Proxy<PT,RT>& proxy );
+decltype(auto) exp10( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) log( const Proxy<PT,RT>& proxy );
+decltype(auto) log( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) log2( const Proxy<PT,RT>& proxy );
+decltype(auto) log2( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) log10( const Proxy<PT,RT>& proxy );
+decltype(auto) log10( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) sin( const Proxy<PT,RT>& proxy );
+decltype(auto) sin( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) asin( const Proxy<PT,RT>& proxy );
+decltype(auto) asin( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) sinh( const Proxy<PT,RT>& proxy );
+decltype(auto) sinh( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) asinh( const Proxy<PT,RT>& proxy );
+decltype(auto) asinh( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) cos( const Proxy<PT,RT>& proxy );
+decltype(auto) cos( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) acos( const Proxy<PT,RT>& proxy );
+decltype(auto) acos( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) cosh( const Proxy<PT,RT>& proxy );
+decltype(auto) cosh( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) acosh( const Proxy<PT,RT>& proxy );
+decltype(auto) acosh( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) tan( const Proxy<PT,RT>& proxy );
+decltype(auto) tan( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) atan( const Proxy<PT,RT>& proxy );
+decltype(auto) atan( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) tanh( const Proxy<PT,RT>& proxy );
+decltype(auto) tanh( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) atanh( const Proxy<PT,RT>& proxy );
+decltype(auto) atanh( const Proxy<PT,RT>& proxy );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
-inline decltype(auto) atan2( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+decltype(auto) atan2( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T, typename = DisableIf_t< IsProxy_v<T> > >
-inline decltype(auto) atan2( const Proxy<PT,RT>& lhs, const T& rhs );
+decltype(auto) atan2( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
-inline decltype(auto) atan2( const T& lhs, const Proxy<PT,RT>& rhs );
+decltype(auto) atan2( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT, typename RT >
-inline decltype(auto) erf( const Proxy<PT,RT>& proxy );
+decltype(auto) erf( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline decltype(auto) erfc( const Proxy<PT,RT>& proxy );
+decltype(auto) erfc( const Proxy<PT,RT>& proxy );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
-inline decltype(auto) min( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+decltype(auto) min( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T, typename = DisableIf_t< IsProxy_v<T> > >
-inline decltype(auto) min( const Proxy<PT,RT>& lhs, const T& rhs );
+decltype(auto) min( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
-inline decltype(auto) min( const T& lhs, const Proxy<PT,RT>& rhs );
+decltype(auto) min( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT1, typename RT1, typename PT2, typename RT2 >
-inline decltype(auto) max( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+decltype(auto) max( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< typename PT, typename RT, typename T, typename = DisableIf_t< IsProxy_v<T> > >
-inline decltype(auto) max( const Proxy<PT,RT>& lhs, const T& rhs );
+decltype(auto) max( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
-inline decltype(auto) max( const T& lhs, const Proxy<PT,RT>& rhs );
+decltype(auto) max( const T& lhs, const Proxy<PT,RT>& rhs );
 
 template< typename PT, typename RT >
-inline void transpose( const Proxy<PT,RT>& proxy );
+void transpose( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline void ctranspose( const Proxy<PT,RT>& proxy );
+void ctranspose( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline void invert( const Proxy<PT,RT>& proxy );
+void invert( const Proxy<PT,RT>& proxy );
 
 template< InversionFlag IF, typename PT, typename RT >
-inline void invert( const Proxy<PT,RT>& proxy );
+void invert( const Proxy<PT,RT>& proxy );
 
 template< bool RF, typename PT, typename RT >
-inline bool isReal( const Proxy<PT,RT>& proxy );
+bool isReal( const Proxy<PT,RT>& proxy );
 
 template< bool RF, typename PT, typename RT >
-inline bool isZero( const Proxy<PT,RT>& proxy );
+bool isZero( const Proxy<PT,RT>& proxy );
 
 template< bool RF, typename PT, typename RT >
-inline bool isOne( const Proxy<PT,RT>& proxy );
+bool isOne( const Proxy<PT,RT>& proxy );
 
 template< typename PT, typename RT >
-inline bool isnan( const Proxy<PT,RT>& proxy );
+bool isnan( const Proxy<PT,RT>& proxy );
 
 template< bool RF, typename PT1, typename RT1, typename PT2, typename RT2 >
-inline bool equal( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
+bool equal( const Proxy<PT1,RT1>& lhs, const Proxy<PT2,RT2>& rhs );
 
 template< bool RF, typename PT, typename RT, typename T, typename = DisableIf_t< IsProxy_v<T> > >
-inline bool equal( const Proxy<PT,RT>& lhs, const T& rhs );
+bool equal( const Proxy<PT,RT>& lhs, const T& rhs );
 
 template< bool RF, typename T, typename PT, typename RT, typename = DisableIf_t< IsProxy_v<T> > >
-inline bool equal( const T& lhs, const Proxy<PT,RT>& rhs );
+bool equal( const T& lhs, const Proxy<PT,RT>& rhs );
 //@}
 //*************************************************************************************************
 

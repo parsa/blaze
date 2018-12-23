@@ -766,38 +766,38 @@ inline typename SparseVectorProxy<PT,VT>::Iterator
 /*!\name SparseVectorProxy global functions */
 //@{
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE typename SparseVectorProxy<PT,VT>::Iterator
+typename SparseVectorProxy<PT,VT>::Iterator
    begin( const SparseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE typename SparseVectorProxy<PT,VT>::ConstIterator
+typename SparseVectorProxy<PT,VT>::ConstIterator
    cbegin( const SparseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE typename SparseVectorProxy<PT,VT>::Iterator
+typename SparseVectorProxy<PT,VT>::Iterator
    end( const SparseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE typename SparseVectorProxy<PT,VT>::ConstIterator
+typename SparseVectorProxy<PT,VT>::ConstIterator
    cend( const SparseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE size_t size( const SparseVectorProxy<PT,VT>& proxy );
+size_t size( const SparseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE size_t capacity( const SparseVectorProxy<PT,VT>& proxy );
+size_t capacity( const SparseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE size_t nonZeros( const SparseVectorProxy<PT,VT>& proxy );
+size_t nonZeros( const SparseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE void resize( const SparseVectorProxy<PT,VT>& proxy, size_t n, bool preserve=true );
+void resize( const SparseVectorProxy<PT,VT>& proxy, size_t n, bool preserve=true );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE void reset( const SparseVectorProxy<PT,VT>& proxy );
+void reset( const SparseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE void clear( const SparseVectorProxy<PT,VT>& proxy );
+void clear( const SparseVectorProxy<PT,VT>& proxy );
 //@}
 //*************************************************************************************************
 

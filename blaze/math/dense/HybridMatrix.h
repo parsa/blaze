@@ -6379,22 +6379,22 @@ inline void HybridMatrix<Type,M,N,true>::schurAssign( const SparseMatrix<MT,fals
 /*!\name HybridMatrix operators */
 //@{
 template< typename Type, size_t M, size_t N, bool SO >
-inline void reset( HybridMatrix<Type,M,N,SO>& m );
+void reset( HybridMatrix<Type,M,N,SO>& m );
 
 template< typename Type, size_t M, size_t N, bool SO >
-inline void reset( HybridMatrix<Type,M,N,SO>& m, size_t i );
+void reset( HybridMatrix<Type,M,N,SO>& m, size_t i );
 
 template< typename Type, size_t M, size_t N, bool SO >
-inline void clear( HybridMatrix<Type,M,N,SO>& m );
+void clear( HybridMatrix<Type,M,N,SO>& m );
 
 template< bool RF, typename Type, size_t M, size_t N, bool SO >
-inline bool isDefault( const HybridMatrix<Type,M,N,SO>& m );
+bool isDefault( const HybridMatrix<Type,M,N,SO>& m );
 
 template< typename Type, size_t M, size_t N, bool SO >
-inline bool isIntact( const HybridMatrix<Type,M,N,SO>& m ) noexcept;
+bool isIntact( const HybridMatrix<Type,M,N,SO>& m ) noexcept;
 
 template< typename Type, size_t M, size_t N, bool SO >
-inline void swap( HybridMatrix<Type,M,N,SO>& a, HybridMatrix<Type,M,N,SO>& b ) noexcept;
+void swap( HybridMatrix<Type,M,N,SO>& a, HybridMatrix<Type,M,N,SO>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

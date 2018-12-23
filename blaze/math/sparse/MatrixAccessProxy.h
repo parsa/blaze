@@ -482,34 +482,34 @@ inline MatrixAccessProxy<MT>::operator RawReference() const noexcept
 /*!\name MatrixAccessProxy global functions */
 //@{
 template< typename MT >
-inline void reset( const MatrixAccessProxy<MT>& proxy );
+void reset( const MatrixAccessProxy<MT>& proxy );
 
 template< typename MT >
-inline void clear( const MatrixAccessProxy<MT>& proxy );
+void clear( const MatrixAccessProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isDefault( const MatrixAccessProxy<MT>& proxy );
+bool isDefault( const MatrixAccessProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isReal( const MatrixAccessProxy<MT>& proxy );
+bool isReal( const MatrixAccessProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isZero( const MatrixAccessProxy<MT>& proxy );
+bool isZero( const MatrixAccessProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isOne( const MatrixAccessProxy<MT>& proxy );
+bool isOne( const MatrixAccessProxy<MT>& proxy );
 
 template< typename MT >
-inline bool isnan( const MatrixAccessProxy<MT>& proxy );
+bool isnan( const MatrixAccessProxy<MT>& proxy );
 
 template< typename MT >
-inline void swap( const MatrixAccessProxy<MT>& a, const MatrixAccessProxy<MT>& b ) noexcept;
+void swap( const MatrixAccessProxy<MT>& a, const MatrixAccessProxy<MT>& b ) noexcept;
 
 template< typename MT, typename T >
-inline void swap( const MatrixAccessProxy<MT>& a, T& b ) noexcept;
+void swap( const MatrixAccessProxy<MT>& a, T& b ) noexcept;
 
 template< typename T, typename MT >
-inline void swap( T& a, const MatrixAccessProxy<MT>& v ) noexcept;
+void swap( T& a, const MatrixAccessProxy<MT>& v ) noexcept;
 //@}
 //*************************************************************************************************
 

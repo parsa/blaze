@@ -106,22 +106,22 @@ namespace blaze {
 /*!\name StrictlyUpperMatrix operators */
 //@{
 template< typename MT, bool SO, bool DF >
-inline void reset( StrictlyUpperMatrix<MT,SO,DF>& m );
+void reset( StrictlyUpperMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
-inline void reset( StrictlyUpperMatrix<MT,SO,DF>& m, size_t i );
+void reset( StrictlyUpperMatrix<MT,SO,DF>& m, size_t i );
 
 template< typename MT, bool SO, bool DF >
-inline void clear( StrictlyUpperMatrix<MT,SO,DF>& m );
+void clear( StrictlyUpperMatrix<MT,SO,DF>& m );
 
 template< bool RF, typename MT, bool SO, bool DF >
-inline bool isDefault( const StrictlyUpperMatrix<MT,SO,DF>& m );
+bool isDefault( const StrictlyUpperMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
-inline bool isIntact( const StrictlyUpperMatrix<MT,SO,DF>& m );
+bool isIntact( const StrictlyUpperMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
-inline void swap( StrictlyUpperMatrix<MT,SO,DF>& a, StrictlyUpperMatrix<MT,SO,DF>& b ) noexcept;
+void swap( StrictlyUpperMatrix<MT,SO,DF>& a, StrictlyUpperMatrix<MT,SO,DF>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

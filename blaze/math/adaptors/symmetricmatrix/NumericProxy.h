@@ -621,28 +621,28 @@ inline void NumericProxy<MT>::imag( ValueType value ) const
 /*!\name NumericProxy global functions */
 //@{
 template< typename MT >
-inline void reset( const NumericProxy<MT>& proxy );
+void reset( const NumericProxy<MT>& proxy );
 
 template< typename MT >
-inline void clear( const NumericProxy<MT>& proxy );
+void clear( const NumericProxy<MT>& proxy );
 
 template< typename MT >
-inline void invert( const NumericProxy<MT>& proxy );
+void invert( const NumericProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isDefault( const NumericProxy<MT>& proxy );
+bool isDefault( const NumericProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isReal( const NumericProxy<MT>& proxy );
+bool isReal( const NumericProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isZero( const NumericProxy<MT>& proxy );
+bool isZero( const NumericProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isOne( const NumericProxy<MT>& proxy );
+bool isOne( const NumericProxy<MT>& proxy );
 
 template< typename MT >
-inline bool isnan( const NumericProxy<MT>& proxy );
+bool isnan( const NumericProxy<MT>& proxy );
 //@}
 //*************************************************************************************************
 

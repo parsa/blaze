@@ -6196,22 +6196,22 @@ inline void CustomMatrix<Type,AF,PF,true,RT>::schurAssign( const SparseMatrix<MT
 /*!\name CustomMatrix operators */
 //@{
 template< typename Type, bool AF, bool PF, bool SO, typename RT >
-inline void reset( CustomMatrix<Type,AF,PF,SO,RT>& m );
+void reset( CustomMatrix<Type,AF,PF,SO,RT>& m );
 
 template< typename Type, bool AF, bool PF, bool SO, typename RT >
-inline void reset( CustomMatrix<Type,AF,PF,SO,RT>& m, size_t i );
+void reset( CustomMatrix<Type,AF,PF,SO,RT>& m, size_t i );
 
 template< typename Type, bool AF, bool PF, bool SO, typename RT >
-inline void clear( CustomMatrix<Type,AF,PF,SO,RT>& m );
+void clear( CustomMatrix<Type,AF,PF,SO,RT>& m );
 
 template< bool RF, typename Type, bool AF, bool PF, bool SO, typename RT >
-inline bool isDefault( const CustomMatrix<Type,AF,PF,SO,RT>& m );
+bool isDefault( const CustomMatrix<Type,AF,PF,SO,RT>& m );
 
 template< typename Type, bool AF, bool PF, bool SO, typename RT >
-inline bool isIntact( const CustomMatrix<Type,AF,PF,SO,RT>& m );
+bool isIntact( const CustomMatrix<Type,AF,PF,SO,RT>& m );
 
 template< typename Type, bool AF, bool PF, bool SO, typename RT >
-inline void swap( CustomMatrix<Type,AF,PF,SO,RT>& a, CustomMatrix<Type,AF,PF,SO,RT>& b ) noexcept;
+void swap( CustomMatrix<Type,AF,PF,SO,RT>& a, CustomMatrix<Type,AF,PF,SO,RT>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

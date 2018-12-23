@@ -92,39 +92,39 @@ namespace blaze {
 /*!\name DenseMatrix operators */
 //@{
 template< typename T1, typename T2 >
-inline auto operator==( const DenseMatrix<T1,false>& mat, T2 scalar )
+auto operator==( const DenseMatrix<T1,false>& mat, T2 scalar )
    -> EnableIf_t< IsNumeric_v<T2>, bool >;
 
 template< typename T1, typename T2 >
-inline auto operator==( const DenseMatrix<T1,true>& mat, T2 scalar )
+auto operator==( const DenseMatrix<T1,true>& mat, T2 scalar )
    -> EnableIf_t< IsNumeric_v<T2>, bool >;
 
 template< typename T1, typename T2, bool SO >
-inline auto operator==( T1 scalar, const DenseMatrix<T2,SO>& mat )
+auto operator==( T1 scalar, const DenseMatrix<T2,SO>& mat )
    -> EnableIf_t< IsNumeric_v<T2>, bool >;
 
 template< typename T1, typename T2, bool SO >
-inline auto operator!=( const DenseMatrix<T1,SO>& mat, T2 scalar )
+auto operator!=( const DenseMatrix<T1,SO>& mat, T2 scalar )
    -> EnableIf_t< IsNumeric_v<T2>, bool >;
 
 template< typename T1, typename T2, bool SO >
-inline auto operator!=( T1 scalar, const DenseMatrix<T2,SO>& mat )
+auto operator!=( T1 scalar, const DenseMatrix<T2,SO>& mat )
    -> EnableIf_t< IsNumeric_v<T2>, bool >;
 
 template< typename MT, bool SO, typename ST >
-inline auto operator*=( DenseMatrix<MT,SO>& mat, ST scalar )
+auto operator*=( DenseMatrix<MT,SO>& mat, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, MT& >;
 
 template< typename MT, bool SO, typename ST >
-inline auto operator*=( DenseMatrix<MT,SO>&& mat, ST scalar )
+auto operator*=( DenseMatrix<MT,SO>&& mat, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, MT& >;
 
 template< typename MT, bool SO, typename ST >
-inline auto operator/=( DenseMatrix<MT,SO>& mat, ST scalar )
+auto operator/=( DenseMatrix<MT,SO>& mat, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, MT& >;
 
 template< typename MT, bool SO, typename ST >
-inline auto operator/=( DenseMatrix<MT,SO>&& mat, ST scalar )
+auto operator/=( DenseMatrix<MT,SO>&& mat, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, MT& >;
 //@}
 //*************************************************************************************************

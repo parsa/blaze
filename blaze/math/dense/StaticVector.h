@@ -2481,25 +2481,25 @@ inline auto StaticVector<Type,N,TF>::divAssign( const DenseVector<VT,TF>& rhs )
 /*!\name StaticVector operators */
 //@{
 template< typename Type, size_t N, bool TF >
-inline constexpr void reset( StaticVector<Type,N,TF>& v );
+constexpr void reset( StaticVector<Type,N,TF>& v );
 
 template< typename Type, size_t N, bool TF >
-inline constexpr void clear( StaticVector<Type,N,TF>& v );
+constexpr void clear( StaticVector<Type,N,TF>& v );
 
 template< bool RF, typename Type, size_t N, bool TF >
-inline bool isDefault( const StaticVector<Type,N,TF>& v );
+bool isDefault( const StaticVector<Type,N,TF>& v );
 
 template< typename Type, size_t N, bool TF >
-inline constexpr bool isIntact( const StaticVector<Type,N,TF>& v ) noexcept;
+constexpr bool isIntact( const StaticVector<Type,N,TF>& v ) noexcept;
 
 template< typename Type, bool TF >
-inline const StaticVector<Type,2UL,TF> perp( const StaticVector<Type,2UL,TF>& v );
+const StaticVector<Type,2UL,TF> perp( const StaticVector<Type,2UL,TF>& v );
 
 template< typename Type, bool TF >
-inline const StaticVector<Type,3UL,TF> perp( const StaticVector<Type,3UL,TF>& v );
+const StaticVector<Type,3UL,TF> perp( const StaticVector<Type,3UL,TF>& v );
 
 template< typename Type, size_t N, bool TF >
-inline void swap( StaticVector<Type,N,TF>& a, StaticVector<Type,N,TF>& b ) noexcept;
+void swap( StaticVector<Type,N,TF>& a, StaticVector<Type,N,TF>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

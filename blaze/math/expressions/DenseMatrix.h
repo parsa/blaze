@@ -95,13 +95,13 @@ struct DenseMatrix
 /*!\name DenseMatrix global functions */
 //@{
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE typename MT::ElementType* data( DenseMatrix<MT,SO>& dm ) noexcept;
+typename MT::ElementType* data( DenseMatrix<MT,SO>& dm ) noexcept;
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE typename MT::ElementType* data( const DenseMatrix<MT,SO>& dm ) noexcept;
+typename MT::ElementType* data( const DenseMatrix<MT,SO>& dm ) noexcept;
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE size_t spacing( const DenseMatrix<MT,SO>& dm ) noexcept;
+size_t spacing( const DenseMatrix<MT,SO>& dm ) noexcept;
 //@}
 //*************************************************************************************************
 

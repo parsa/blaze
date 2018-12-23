@@ -1162,19 +1162,19 @@ BLAZE_ALWAYS_INLINE typename UniformVector<Type,TF>::SIMDType
 /*!\name UniformVector operators */
 //@{
 template< typename Type, bool TF >
-inline constexpr void reset( UniformVector<Type,TF>& v );
+constexpr void reset( UniformVector<Type,TF>& v );
 
 template< typename Type, bool TF >
-inline constexpr void clear( UniformVector<Type,TF>& v );
+constexpr void clear( UniformVector<Type,TF>& v );
 
 template< bool RF, typename Type, bool TF >
-inline constexpr bool isDefault( const UniformVector<Type,TF>& v );
+constexpr bool isDefault( const UniformVector<Type,TF>& v );
 
 template< typename Type, bool TF >
-inline constexpr bool isIntact( const UniformVector<Type,TF>& v ) noexcept;
+constexpr bool isIntact( const UniformVector<Type,TF>& v ) noexcept;
 
 template< typename Type, bool TF >
-inline constexpr void swap( UniformVector<Type,TF>& a, UniformVector<Type,TF>& b ) noexcept;
+constexpr void swap( UniformVector<Type,TF>& a, UniformVector<Type,TF>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

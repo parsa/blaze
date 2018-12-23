@@ -702,28 +702,28 @@ inline void HermitianProxy<MT>::imag( ValueType value ) const
 /*!\name HermitianProxy global functions */
 //@{
 template< typename MT >
-inline void reset( const HermitianProxy<MT>& proxy );
+void reset( const HermitianProxy<MT>& proxy );
 
 template< typename MT >
-inline void clear( const HermitianProxy<MT>& proxy );
+void clear( const HermitianProxy<MT>& proxy );
 
 template< typename MT >
-inline void invert( const HermitianProxy<MT>& proxy );
+void invert( const HermitianProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isDefault( const HermitianProxy<MT>& proxy );
+bool isDefault( const HermitianProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isReal( const HermitianProxy<MT>& proxy );
+bool isReal( const HermitianProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isZero( const HermitianProxy<MT>& proxy );
+bool isZero( const HermitianProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isOne( const HermitianProxy<MT>& proxy );
+bool isOne( const HermitianProxy<MT>& proxy );
 
 template< typename MT >
-inline bool isnan( const HermitianProxy<MT>& proxy );
+bool isnan( const HermitianProxy<MT>& proxy );
 //@}
 //*************************************************************************************************
 

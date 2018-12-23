@@ -91,10 +91,10 @@ struct DenseVector
 /*!\name DenseVector global functions */
 //@{
 template< typename VT, bool TF >
-BLAZE_ALWAYS_INLINE typename VT::ElementType* data( DenseVector<VT,TF>& dv ) noexcept;
+typename VT::ElementType* data( DenseVector<VT,TF>& dv ) noexcept;
 
 template< typename VT, bool TF >
-BLAZE_ALWAYS_INLINE const typename VT::ElementType* data( const DenseVector<VT,TF>& dv ) noexcept;
+const typename VT::ElementType* data( const DenseVector<VT,TF>& dv ) noexcept;
 //@}
 //*************************************************************************************************
 

@@ -751,10 +751,10 @@ inline bool InitializerMatrix<Type>::isAliased( const Other* alias ) const noexc
 /*!\name InitializerMatrix operators */
 //@{
 template< typename Type >
-inline bool isIntact( const InitializerMatrix<Type>& m ) noexcept;
+bool isIntact( const InitializerMatrix<Type>& m ) noexcept;
 
 template< typename Type >
-inline void swap( InitializerMatrix<Type>& a, InitializerMatrix<Type>& b ) noexcept;
+void swap( InitializerMatrix<Type>& a, InitializerMatrix<Type>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

@@ -684,28 +684,28 @@ inline void UniLowerProxy<MT>::imag( ValueType value ) const
 /*!\name UniLowerProxy global functions */
 //@{
 template< typename MT >
-inline void reset( const UniLowerProxy<MT>& proxy );
+void reset( const UniLowerProxy<MT>& proxy );
 
 template< typename MT >
-inline void clear( const UniLowerProxy<MT>& proxy );
+void clear( const UniLowerProxy<MT>& proxy );
 
 template< typename MT >
-inline void invert( const UniLowerProxy<MT>& proxy );
+void invert( const UniLowerProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isDefault( const UniLowerProxy<MT>& proxy );
+bool isDefault( const UniLowerProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isReal( const UniLowerProxy<MT>& proxy );
+bool isReal( const UniLowerProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isZero( const UniLowerProxy<MT>& proxy );
+bool isZero( const UniLowerProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isOne( const UniLowerProxy<MT>& proxy );
+bool isOne( const UniLowerProxy<MT>& proxy );
 
 template< typename MT >
-inline bool isnan( const UniLowerProxy<MT>& proxy );
+bool isnan( const UniLowerProxy<MT>& proxy );
 //@}
 //*************************************************************************************************
 

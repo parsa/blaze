@@ -1394,19 +1394,19 @@ BLAZE_ALWAYS_INLINE typename UniformMatrix<Type,SO>::SIMDType
 /*!\name UniformMatrix operators */
 //@{
 template< typename Type, bool SO >
-inline constexpr void reset( UniformMatrix<Type,SO>& m );
+constexpr void reset( UniformMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
-inline constexpr void clear( UniformMatrix<Type,SO>& m );
+constexpr void clear( UniformMatrix<Type,SO>& m );
 
 template< bool RF, typename Type, bool SO >
-inline constexpr bool isDefault( const UniformMatrix<Type,SO>& m );
+constexpr bool isDefault( const UniformMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
-inline constexpr bool isIntact( const UniformMatrix<Type,SO>& m ) noexcept;
+constexpr bool isIntact( const UniformMatrix<Type,SO>& m ) noexcept;
 
 template< typename Type, bool SO >
-inline constexpr void swap( UniformMatrix<Type,SO>& a, UniformMatrix<Type,SO>& b ) noexcept;
+constexpr void swap( UniformMatrix<Type,SO>& a, UniformMatrix<Type,SO>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

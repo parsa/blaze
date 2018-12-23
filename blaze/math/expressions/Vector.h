@@ -116,46 +116,46 @@ struct Vector
 /*!\name Vector global functions */
 //@{
 template< typename VT, bool TF >
-BLAZE_ALWAYS_INLINE typename VT::Iterator begin( Vector<VT,TF>& vector );
+typename VT::Iterator begin( Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-BLAZE_ALWAYS_INLINE typename VT::ConstIterator begin( const Vector<VT,TF>& vector );
+typename VT::ConstIterator begin( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-BLAZE_ALWAYS_INLINE typename VT::ConstIterator cbegin( const Vector<VT,TF>& vector );
+typename VT::ConstIterator cbegin( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-BLAZE_ALWAYS_INLINE typename VT::Iterator end( Vector<VT,TF>& vector );
+typename VT::Iterator end( Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-BLAZE_ALWAYS_INLINE typename VT::ConstIterator end( const Vector<VT,TF>& vector );
+typename VT::ConstIterator end( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-BLAZE_ALWAYS_INLINE typename VT::ConstIterator cend( const Vector<VT,TF>& vector );
+typename VT::ConstIterator cend( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-BLAZE_ALWAYS_INLINE constexpr size_t size( const Vector<VT,TF>& vector ) noexcept;
+constexpr size_t size( const Vector<VT,TF>& vector ) noexcept;
 
 template< typename VT, bool TF >
-BLAZE_ALWAYS_INLINE size_t capacity( const Vector<VT,TF>& vector ) noexcept;
+size_t capacity( const Vector<VT,TF>& vector ) noexcept;
 
 template< typename VT, bool TF >
-BLAZE_ALWAYS_INLINE size_t nonZeros( const Vector<VT,TF>& vector );
+size_t nonZeros( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-BLAZE_ALWAYS_INLINE void resize( Vector<VT,TF>& vector, size_t n, bool preserve=true );
+void resize( Vector<VT,TF>& vector, size_t n, bool preserve=true );
 
 template< typename VT, bool TF >
-BLAZE_ALWAYS_INLINE void shrinkToFit( Vector<VT,TF>& vector );
+void shrinkToFit( Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-inline const typename VT::ResultType evaluate( const Vector<VT,TF>& vector );
+const typename VT::ResultType evaluate( const Vector<VT,TF>& vector );
 
 template< typename VT, bool TF >
-BLAZE_ALWAYS_INLINE constexpr bool isEmpty( const Vector<VT,TF>& vector ) noexcept;
+constexpr bool isEmpty( const Vector<VT,TF>& vector ) noexcept;
 
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
-BLAZE_ALWAYS_INLINE bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>& b ) noexcept;
+bool isSame( const Vector<VT1,TF1>& a, const Vector<VT2,TF2>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

@@ -554,25 +554,25 @@ inline DiagonalProxy<MT>::operator ConstReference() const noexcept
 /*!\name DiagonalProxy global functions */
 //@{
 template< typename MT >
-inline void reset( const DiagonalProxy<MT>& proxy );
+void reset( const DiagonalProxy<MT>& proxy );
 
 template< typename MT >
-inline void clear( const DiagonalProxy<MT>& proxy );
+void clear( const DiagonalProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isDefault( const DiagonalProxy<MT>& proxy );
+bool isDefault( const DiagonalProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isReal( const DiagonalProxy<MT>& proxy );
+bool isReal( const DiagonalProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isZero( const DiagonalProxy<MT>& proxy );
+bool isZero( const DiagonalProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isOne( const DiagonalProxy<MT>& proxy );
+bool isOne( const DiagonalProxy<MT>& proxy );
 
 template< typename MT >
-inline bool isnan( const DiagonalProxy<MT>& proxy );
+bool isnan( const DiagonalProxy<MT>& proxy );
 //@}
 //*************************************************************************************************
 

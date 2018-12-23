@@ -556,43 +556,43 @@ inline void DenseIterator<Type,AF>::stream( const SIMDType& value ) const noexce
 /*!\name DenseIterator operators */
 //@{
 template< typename T1, bool AF1, typename T2, bool AF2 >
-inline constexpr bool
+constexpr bool
    operator==( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs ) noexcept;
 
 template< typename T1, bool AF1, typename T2, bool AF2 >
-inline constexpr bool
+constexpr bool
    operator!=( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs ) noexcept;
 
 template< typename T1, bool AF1, typename T2, bool AF2 >
-inline constexpr bool
+constexpr bool
    operator<( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs ) noexcept;
 
 template< typename T1, bool AF1, typename T2, bool AF2 >
-inline constexpr bool
+constexpr bool
    operator>( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs ) noexcept;
 
 template< typename T1, bool AF1, typename T2, bool AF2 >
-inline constexpr bool
+constexpr bool
    operator<=( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs ) noexcept;
 
 template< typename T1, bool AF1, typename T2, bool AF2 >
-inline constexpr bool
+constexpr bool
    operator>=( const DenseIterator<T1,AF1>& lhs, const DenseIterator<T2,AF2>& rhs ) noexcept;
 
 template< typename Type, bool AF >
-inline constexpr const DenseIterator<Type,AF>
+constexpr const DenseIterator<Type,AF>
    operator+( const DenseIterator<Type,AF>& it, ptrdiff_t inc ) noexcept;
 
 template< typename Type, bool AF >
-inline constexpr const DenseIterator<Type,AF>
+constexpr const DenseIterator<Type,AF>
    operator+( ptrdiff_t inc, const DenseIterator<Type,AF>& it ) noexcept;
 
 template< typename Type, bool AF >
-inline constexpr const DenseIterator<Type,AF>
+constexpr const DenseIterator<Type,AF>
    operator-( const DenseIterator<Type,AF>& it, ptrdiff_t inc ) noexcept;
 
 template< typename Type, bool AF >
-inline constexpr ptrdiff_t
+constexpr ptrdiff_t
    operator-( const DenseIterator<Type,AF>& lhs, const DenseIterator<Type,AF>& rhs ) noexcept;
 //@}
 //*************************************************************************************************

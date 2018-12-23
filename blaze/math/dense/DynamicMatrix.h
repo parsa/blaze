@@ -6163,22 +6163,22 @@ inline void DynamicMatrix<Type,true>::schurAssign( const SparseMatrix<MT,false>&
 /*!\name DynamicMatrix operators */
 //@{
 template< typename Type, bool SO >
-inline void reset( DynamicMatrix<Type,SO>& m );
+void reset( DynamicMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
-inline void reset( DynamicMatrix<Type,SO>& m, size_t i );
+void reset( DynamicMatrix<Type,SO>& m, size_t i );
 
 template< typename Type, bool SO >
-inline void clear( DynamicMatrix<Type,SO>& m );
+void clear( DynamicMatrix<Type,SO>& m );
 
 template< bool RF, typename Type, bool SO >
-inline bool isDefault( const DynamicMatrix<Type,SO>& m );
+bool isDefault( const DynamicMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
-inline bool isIntact( const DynamicMatrix<Type,SO>& m ) noexcept;
+bool isIntact( const DynamicMatrix<Type,SO>& m ) noexcept;
 
 template< typename Type, bool SO >
-inline void swap( DynamicMatrix<Type,SO>& a, DynamicMatrix<Type,SO>& b ) noexcept;
+void swap( DynamicMatrix<Type,SO>& a, DynamicMatrix<Type,SO>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

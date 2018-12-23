@@ -212,28 +212,28 @@ inline constexpr NegativeAccuracy<A>::operator const T() const
 /*!\name NegativeAccuracy operators */
 //@{
 template< typename A, typename T >
-inline constexpr bool operator==( const NegativeAccuracy<A>& lhs, const T& rhs );
+constexpr bool operator==( const NegativeAccuracy<A>& lhs, const T& rhs );
 
 template< typename A, typename T >
-inline constexpr bool operator==( const T& lhs, const NegativeAccuracy<A>& rhs );
+constexpr bool operator==( const T& lhs, const NegativeAccuracy<A>& rhs );
 
 template< typename A, typename T >
-inline constexpr bool operator!=( const NegativeAccuracy<A>& lhs, const T& rhs );
+constexpr bool operator!=( const NegativeAccuracy<A>& lhs, const T& rhs );
 
 template< typename A, typename T >
-inline constexpr bool operator!=( const T& lhs, const NegativeAccuracy<A>& rhs );
+constexpr bool operator!=( const T& lhs, const NegativeAccuracy<A>& rhs );
 
 template< typename A, typename T >
-inline constexpr bool operator<( const NegativeAccuracy<A>& lhs, const T& rhs );
+constexpr bool operator<( const NegativeAccuracy<A>& lhs, const T& rhs );
 
 template< typename A, typename T >
-inline constexpr bool operator<( const T& lhs, const NegativeAccuracy<A>& rhs );
+constexpr bool operator<( const T& lhs, const NegativeAccuracy<A>& rhs );
 
 template< typename A, typename T >
-inline constexpr bool operator>( const NegativeAccuracy<A>& lhs, const T& rhs );
+constexpr bool operator>( const NegativeAccuracy<A>& lhs, const T& rhs );
 
 template< typename A, typename T >
-inline constexpr bool operator>( const T& lhs, const NegativeAccuracy<A>& rhs );
+constexpr bool operator>( const T& lhs, const NegativeAccuracy<A>& rhs );
 //@}
 //*************************************************************************************************
 
@@ -630,40 +630,40 @@ inline constexpr Accuracy::operator const T() const
 /*!\name Accuracy operators */
 //@{
 template< typename T >
-inline constexpr bool operator==( const Accuracy& lhs, const T& rhs );
+constexpr bool operator==( const Accuracy& lhs, const T& rhs );
 
 template< typename T >
-inline constexpr bool operator==( const T& lhs, const Accuracy& rhs );
+constexpr bool operator==( const T& lhs, const Accuracy& rhs );
 
 template< typename T >
-inline constexpr bool operator!=( const Accuracy& lhs, const T& rhs );
+constexpr bool operator!=( const Accuracy& lhs, const T& rhs );
 
 template< typename T >
-inline constexpr bool operator!=( const T& lhs, const Accuracy& rhs );
+constexpr bool operator!=( const T& lhs, const Accuracy& rhs );
 
 template< typename T >
-inline constexpr bool operator<( const Accuracy& lhs, const T& rhs );
+constexpr bool operator<( const Accuracy& lhs, const T& rhs );
 
 template< typename T >
-inline constexpr bool operator<( const T& lhs, const Accuracy& rhs );
+constexpr bool operator<( const T& lhs, const Accuracy& rhs );
 
 template< typename T >
-inline constexpr bool operator>( const Accuracy& lhs, const T& rhs );
+constexpr bool operator>( const Accuracy& lhs, const T& rhs );
 
 template< typename T >
-inline constexpr bool operator>( const T& lhs, const Accuracy& rhs );
+constexpr bool operator>( const T& lhs, const Accuracy& rhs );
 
 template< typename T >
-inline constexpr bool operator<=( const Accuracy& lhs, const T& rhs );
+constexpr bool operator<=( const Accuracy& lhs, const T& rhs );
 
 template< typename T >
-inline constexpr bool operator<=( const T& lhs, const Accuracy& rhs );
+constexpr bool operator<=( const T& lhs, const Accuracy& rhs );
 
 template< typename T >
-inline constexpr bool operator>=( const Accuracy& lhs, const T& rhs );
+constexpr bool operator>=( const Accuracy& lhs, const T& rhs );
 
 template< typename T >
-inline constexpr bool operator>=( const T& lhs, const Accuracy& rhs );
+constexpr bool operator>=( const T& lhs, const Accuracy& rhs );
 //@}
 //*************************************************************************************************
 

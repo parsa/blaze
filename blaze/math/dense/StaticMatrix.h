@@ -6032,22 +6032,22 @@ inline void StaticMatrix<Type,M,N,true>::schurAssign( const SparseMatrix<MT,fals
 /*!\name StaticMatrix operators */
 //@{
 template< typename Type, size_t M, size_t N, bool SO >
-inline void reset( StaticMatrix<Type,M,N,SO>& m );
+void reset( StaticMatrix<Type,M,N,SO>& m );
 
 template< typename Type, size_t M, size_t N, bool SO >
-inline void reset( StaticMatrix<Type,M,N,SO>& m, size_t i );
+void reset( StaticMatrix<Type,M,N,SO>& m, size_t i );
 
 template< typename Type, size_t M, size_t N, bool SO >
-inline void clear( StaticMatrix<Type,M,N,SO>& m );
+void clear( StaticMatrix<Type,M,N,SO>& m );
 
 template< bool RF, typename Type, size_t M, size_t N, bool SO >
-inline bool isDefault( const StaticMatrix<Type,M,N,SO>& m );
+bool isDefault( const StaticMatrix<Type,M,N,SO>& m );
 
 template< typename Type, size_t M, size_t N, bool SO >
-inline bool isIntact( const StaticMatrix<Type,M,N,SO>& m ) noexcept;
+bool isIntact( const StaticMatrix<Type,M,N,SO>& m ) noexcept;
 
 template< typename Type, size_t M, size_t N, bool SO >
-inline void swap( StaticMatrix<Type,M,N,SO>& a, StaticMatrix<Type,M,N,SO>& b ) noexcept;
+void swap( StaticMatrix<Type,M,N,SO>& a, StaticMatrix<Type,M,N,SO>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

@@ -2314,19 +2314,19 @@ inline void CompressedVector<Type,TF>::divAssign( const DenseVector<VT,TF>& rhs 
 /*!\name CompressedVector operators */
 //@{
 template< typename Type, bool TF >
-inline void reset( CompressedVector<Type,TF>& v );
+void reset( CompressedVector<Type,TF>& v );
 
 template< typename Type, bool TF >
-inline void clear( CompressedVector<Type,TF>& v );
+void clear( CompressedVector<Type,TF>& v );
 
 template< bool RF, typename Type, bool TF >
-inline bool isDefault( const CompressedVector<Type,TF>& v );
+bool isDefault( const CompressedVector<Type,TF>& v );
 
 template< typename Type, bool TF >
-inline bool isIntact( const CompressedVector<Type,TF>& v ) noexcept;
+bool isIntact( const CompressedVector<Type,TF>& v ) noexcept;
 
 template< typename Type, bool TF >
-inline void swap( CompressedVector<Type,TF>& a, CompressedVector<Type,TF>& b ) noexcept;
+void swap( CompressedVector<Type,TF>& a, CompressedVector<Type,TF>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

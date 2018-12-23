@@ -285,67 +285,67 @@ inline MT1& operator*=( Matrix<MT1,SO1>&& lhs, const Matrix<MT2,SO2>& rhs )
 /*!\name Matrix global functions */
 //@{
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE typename MT::Iterator begin( Matrix<MT,SO>& matrix, size_t i );
+typename MT::Iterator begin( Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE typename MT::ConstIterator begin( const Matrix<MT,SO>& matrix, size_t i );
+typename MT::ConstIterator begin( const Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE typename MT::ConstIterator cbegin( const Matrix<MT,SO>& matrix, size_t i );
+typename MT::ConstIterator cbegin( const Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE typename MT::Iterator end( Matrix<MT,SO>& matrix, size_t i );
+typename MT::Iterator end( Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE typename MT::ConstIterator end( const Matrix<MT,SO>& matrix, size_t i );
+typename MT::ConstIterator end( const Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE typename MT::ConstIterator cend( const Matrix<MT,SO>& matrix, size_t i );
+typename MT::ConstIterator cend( const Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE constexpr size_t rows( const Matrix<MT,SO>& matrix ) noexcept;
+constexpr size_t rows( const Matrix<MT,SO>& matrix ) noexcept;
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE constexpr size_t columns( const Matrix<MT,SO>& matrix ) noexcept;
+constexpr size_t columns( const Matrix<MT,SO>& matrix ) noexcept;
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE constexpr size_t size( const Matrix<MT,SO>& matrix ) noexcept;
+constexpr size_t size( const Matrix<MT,SO>& matrix ) noexcept;
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE size_t capacity( const Matrix<MT,SO>& matrix ) noexcept;
+size_t capacity( const Matrix<MT,SO>& matrix ) noexcept;
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE size_t capacity( const Matrix<MT,SO>& matrix, size_t i ) noexcept;
+size_t capacity( const Matrix<MT,SO>& matrix, size_t i ) noexcept;
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE size_t nonZeros( const Matrix<MT,SO>& matrix );
+size_t nonZeros( const Matrix<MT,SO>& matrix );
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE size_t nonZeros( const Matrix<MT,SO>& matrix, size_t i );
+size_t nonZeros( const Matrix<MT,SO>& matrix, size_t i );
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE void resize( Matrix<MT,SO>& matrix, size_t rows, size_t columns, bool preserve=true );
+void resize( Matrix<MT,SO>& matrix, size_t rows, size_t columns, bool preserve=true );
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE void shrinkToFit( Matrix<MT,SO>& matrix );
+void shrinkToFit( Matrix<MT,SO>& matrix );
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE void transpose( Matrix<MT,SO>& matrix );
+void transpose( Matrix<MT,SO>& matrix );
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE void ctranspose( Matrix<MT,SO>& matrix );
+void ctranspose( Matrix<MT,SO>& matrix );
 
 template< typename MT, bool SO >
-inline const typename MT::ResultType evaluate( const Matrix<MT,SO>& matrix );
+const typename MT::ResultType evaluate( const Matrix<MT,SO>& matrix );
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE constexpr bool isEmpty( const Matrix<MT,SO>& matrix ) noexcept;
+constexpr bool isEmpty( const Matrix<MT,SO>& matrix ) noexcept;
 
 template< typename MT, bool SO >
-BLAZE_ALWAYS_INLINE bool isSquare( const Matrix<MT,SO>& matrix ) noexcept;
+bool isSquare( const Matrix<MT,SO>& matrix ) noexcept;
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-BLAZE_ALWAYS_INLINE bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>& b ) noexcept;
+bool isSame( const Matrix<MT1,SO1>& a, const Matrix<MT2,SO2>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

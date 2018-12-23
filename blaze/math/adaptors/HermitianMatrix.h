@@ -114,22 +114,22 @@ namespace blaze {
 /*!\name HermitianMatrix operators */
 //@{
 template< typename MT, bool SO, bool DF >
-inline void reset( HermitianMatrix<MT,SO,DF>& m );
+void reset( HermitianMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
-inline void reset( HermitianMatrix<MT,SO,DF>& m, size_t i );
+void reset( HermitianMatrix<MT,SO,DF>& m, size_t i );
 
 template< typename MT, bool SO, bool DF >
-inline void clear( HermitianMatrix<MT,SO,DF>& m );
+void clear( HermitianMatrix<MT,SO,DF>& m );
 
 template< bool RF, typename MT, bool SO, bool DF >
-inline bool isDefault( const HermitianMatrix<MT,SO,DF>& m );
+bool isDefault( const HermitianMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
-inline bool isIntact( const HermitianMatrix<MT,SO,DF>& m );
+bool isIntact( const HermitianMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
-inline void swap( HermitianMatrix<MT,SO,DF>& a, HermitianMatrix<MT,SO,DF>& b ) noexcept;
+void swap( HermitianMatrix<MT,SO,DF>& a, HermitianMatrix<MT,SO,DF>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

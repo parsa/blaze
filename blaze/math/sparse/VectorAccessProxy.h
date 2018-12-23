@@ -470,34 +470,34 @@ inline VectorAccessProxy<VT>::operator RawReference() const noexcept
 /*!\name VectorAccessProxy global functions */
 //@{
 template< typename VT >
-inline void reset( const VectorAccessProxy<VT>& proxy );
+void reset( const VectorAccessProxy<VT>& proxy );
 
 template< typename VT >
-inline void clear( const VectorAccessProxy<VT>& proxy );
+void clear( const VectorAccessProxy<VT>& proxy );
 
 template< bool RF, typename VT >
-inline bool isDefault( const VectorAccessProxy<VT>& proxy );
+bool isDefault( const VectorAccessProxy<VT>& proxy );
 
 template< bool RF, typename VT >
-inline bool isReal( const VectorAccessProxy<VT>& proxy );
+bool isReal( const VectorAccessProxy<VT>& proxy );
 
 template< bool RF, typename VT >
-inline bool isZero( const VectorAccessProxy<VT>& proxy );
+bool isZero( const VectorAccessProxy<VT>& proxy );
 
 template< bool RF, typename VT >
-inline bool isOne( const VectorAccessProxy<VT>& proxy );
+bool isOne( const VectorAccessProxy<VT>& proxy );
 
 template< typename VT >
-inline bool isnan( const VectorAccessProxy<VT>& proxy );
+bool isnan( const VectorAccessProxy<VT>& proxy );
 
 template< typename VT >
-inline void swap( const VectorAccessProxy<VT>& a, const VectorAccessProxy<VT>& b ) noexcept;
+void swap( const VectorAccessProxy<VT>& a, const VectorAccessProxy<VT>& b ) noexcept;
 
 template< typename VT, typename T >
-inline void swap( const VectorAccessProxy<VT>& a, T& b ) noexcept;
+void swap( const VectorAccessProxy<VT>& a, T& b ) noexcept;
 
 template< typename T, typename VT >
-inline void swap( T& a, const VectorAccessProxy<VT>& v ) noexcept;
+void swap( T& a, const VectorAccessProxy<VT>& v ) noexcept;
 //@}
 //*************************************************************************************************
 

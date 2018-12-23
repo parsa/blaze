@@ -111,22 +111,22 @@ namespace blaze {
 /*!\name UniLowerMatrix operators */
 //@{
 template< typename MT, bool SO, bool DF >
-inline void reset( UniLowerMatrix<MT,SO,DF>& m );
+void reset( UniLowerMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
-inline void reset( UniLowerMatrix<MT,SO,DF>& m, size_t i );
+void reset( UniLowerMatrix<MT,SO,DF>& m, size_t i );
 
 template< typename MT, bool SO, bool DF >
-inline void clear( UniLowerMatrix<MT,SO,DF>& m );
+void clear( UniLowerMatrix<MT,SO,DF>& m );
 
 template< bool RF, typename MT, bool SO, bool DF >
-inline bool isDefault( const UniLowerMatrix<MT,SO,DF>& m );
+bool isDefault( const UniLowerMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
-inline bool isIntact( const UniLowerMatrix<MT,SO,DF>& m );
+bool isIntact( const UniLowerMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
-inline void swap( UniLowerMatrix<MT,SO,DF>& a, UniLowerMatrix<MT,SO,DF>& b ) noexcept;
+void swap( UniLowerMatrix<MT,SO,DF>& a, UniLowerMatrix<MT,SO,DF>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

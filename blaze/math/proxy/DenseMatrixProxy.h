@@ -689,50 +689,50 @@ inline void DenseMatrixProxy<PT,MT>::scale( const Other& scalar ) const
 /*!\name DenseMatrixProxy global functions */
 //@{
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE typename DenseMatrixProxy<PT,MT>::Iterator
+typename DenseMatrixProxy<PT,MT>::Iterator
    begin( const DenseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE typename DenseMatrixProxy<PT,MT>::ConstIterator
+typename DenseMatrixProxy<PT,MT>::ConstIterator
    cbegin( const DenseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE typename DenseMatrixProxy<PT,MT>::Iterator
+typename DenseMatrixProxy<PT,MT>::Iterator
    end( const DenseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE typename DenseMatrixProxy<PT,MT>::ConstIterator
+typename DenseMatrixProxy<PT,MT>::ConstIterator
    cend( const DenseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE size_t rows( const DenseMatrixProxy<PT,MT>& proxy );
+size_t rows( const DenseMatrixProxy<PT,MT>& proxy );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE size_t columns( const DenseMatrixProxy<PT,MT>& proxy );
+size_t columns( const DenseMatrixProxy<PT,MT>& proxy );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE size_t capacity( const DenseMatrixProxy<PT,MT>& proxy );
+size_t capacity( const DenseMatrixProxy<PT,MT>& proxy );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE size_t capacity( const DenseMatrixProxy<PT,MT>& proxy, size_t i );
+size_t capacity( const DenseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE size_t nonZeros( const DenseMatrixProxy<PT,MT>& proxy );
+size_t nonZeros( const DenseMatrixProxy<PT,MT>& proxy );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE size_t nonZeros( const DenseMatrixProxy<PT,MT>& proxy, size_t i );
+size_t nonZeros( const DenseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE void resize( const DenseMatrixProxy<PT,MT>& proxy, size_t m, size_t n, bool preserve=true );
+void resize( const DenseMatrixProxy<PT,MT>& proxy, size_t m, size_t n, bool preserve=true );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE void reset( const DenseMatrixProxy<PT,MT>& proxy );
+void reset( const DenseMatrixProxy<PT,MT>& proxy );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE void reset( const DenseMatrixProxy<PT,MT>& proxy, size_t i );
+void reset( const DenseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE void clear( const DenseMatrixProxy<PT,MT>& proxy );
+void clear( const DenseMatrixProxy<PT,MT>& proxy );
 //@}
 //*************************************************************************************************
 

@@ -119,22 +119,22 @@ namespace blaze {
 /*!\name LowerMatrix operators */
 //@{
 template< typename MT, bool SO, bool DF >
-inline void reset( LowerMatrix<MT,SO,DF>& m );
+void reset( LowerMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
-inline void reset( LowerMatrix<MT,SO,DF>& m, size_t i );
+void reset( LowerMatrix<MT,SO,DF>& m, size_t i );
 
 template< typename MT, bool SO, bool DF >
-inline void clear( LowerMatrix<MT,SO,DF>& m );
+void clear( LowerMatrix<MT,SO,DF>& m );
 
 template< bool RF, typename MT, bool SO, bool DF >
-inline bool isDefault( const LowerMatrix<MT,SO,DF>& m );
+bool isDefault( const LowerMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
-inline bool isIntact( const LowerMatrix<MT,SO,DF>& m );
+bool isIntact( const LowerMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
-inline void swap( LowerMatrix<MT,SO,DF>& a, LowerMatrix<MT,SO,DF>& b ) noexcept;
+void swap( LowerMatrix<MT,SO,DF>& a, LowerMatrix<MT,SO,DF>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

@@ -73,35 +73,35 @@ namespace blaze {
 /*!\name DenseVector operators */
 //@{
 template< typename T1, typename T2, bool TF >
-inline auto operator==( const DenseVector<T1,TF>& vec, T2 scalar )
+auto operator==( const DenseVector<T1,TF>& vec, T2 scalar )
    -> EnableIf_t< IsNumeric_v<T2>, bool >;
 
 template< typename T1, typename T2, bool TF >
-inline auto operator==( T1 scalar, const DenseVector<T2,TF>& vec )
+auto operator==( T1 scalar, const DenseVector<T2,TF>& vec )
    -> EnableIf_t< IsNumeric_v<T1>, bool >;
 
 template< typename T1, typename T2, bool TF >
-inline auto operator!=( const DenseVector<T1,TF>& vec, T2 scalar )
+auto operator!=( const DenseVector<T1,TF>& vec, T2 scalar )
    -> EnableIf_t< IsNumeric_v<T2>, bool >;
 
 template< typename T1, typename T2, bool TF >
-inline auto operator!=( T1 scalar, const DenseVector<T2,TF>& vec )
+auto operator!=( T1 scalar, const DenseVector<T2,TF>& vec )
    -> EnableIf_t< IsNumeric_v<T1>, bool >;
 
 template< typename VT, bool TF, typename ST >
-inline auto operator*=( DenseVector<VT,TF>& vec, ST scalar )
+auto operator*=( DenseVector<VT,TF>& vec, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, VT& >;
 
 template< typename VT, bool TF, typename ST >
-inline auto operator*=( DenseVector<VT,TF>&& vec, ST scalar )
+auto operator*=( DenseVector<VT,TF>&& vec, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, VT& >;
 
 template< typename VT, bool TF, typename ST >
-inline auto operator/=( DenseVector<VT,TF>& vec, ST scalar )
+auto operator/=( DenseVector<VT,TF>& vec, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, VT& >;
 
 template< typename VT, bool TF, typename ST >
-inline auto operator/=( DenseVector<VT,TF>&& vec, ST scalar )
+auto operator/=( DenseVector<VT,TF>&& vec, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, VT& >;
 //@}
 //*************************************************************************************************

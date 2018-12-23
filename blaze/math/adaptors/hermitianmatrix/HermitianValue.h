@@ -631,28 +631,28 @@ inline void HermitianValue<MT>::imag( ValueType value ) const
 /*!\name HermitianValue global functions */
 //@{
 template< typename MT >
-inline void reset( const HermitianValue<MT>& value );
+void reset( const HermitianValue<MT>& value );
 
 template< typename MT >
-inline void clear( const HermitianValue<MT>& value );
+void clear( const HermitianValue<MT>& value );
 
 template< typename MT >
-inline void invert( const HermitianValue<MT>& value );
+void invert( const HermitianValue<MT>& value );
 
 template< bool RF, typename MT >
-inline bool isDefault( const HermitianValue<MT>& value );
+bool isDefault( const HermitianValue<MT>& value );
 
 template< bool RF, typename MT >
-inline bool isReal( const HermitianValue<MT>& value );
+bool isReal( const HermitianValue<MT>& value );
 
 template< bool RF, typename MT >
-inline bool isZero( const HermitianValue<MT>& value );
+bool isZero( const HermitianValue<MT>& value );
 
 template< bool RF, typename MT >
-inline bool isOne( const HermitianValue<MT>& value );
+bool isOne( const HermitianValue<MT>& value );
 
 template< typename MT >
-inline bool isnan( const HermitianValue<MT>& value );
+bool isnan( const HermitianValue<MT>& value );
 //@}
 //*************************************************************************************************
 

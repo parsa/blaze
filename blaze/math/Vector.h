@@ -333,7 +333,7 @@ inline decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,true>& 
 /*!\name Vector operators */
 //@{
 template< typename VT, bool TF >
-inline std::ostream& operator<<( std::ostream& os, const Vector<VT,TF>& v );
+std::ostream& operator<<( std::ostream& os, const Vector<VT,TF>& v );
 //@}
 //*************************************************************************************************
 

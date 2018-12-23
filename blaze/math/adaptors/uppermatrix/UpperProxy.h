@@ -554,25 +554,25 @@ inline UpperProxy<MT>::operator ConstReference() const noexcept
 /*!\name UpperProxy global functions */
 //@{
 template< typename MT >
-inline void reset( const UpperProxy<MT>& proxy );
+void reset( const UpperProxy<MT>& proxy );
 
 template< typename MT >
-inline void clear( const UpperProxy<MT>& proxy );
+void clear( const UpperProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isDefault( const UpperProxy<MT>& proxy );
+bool isDefault( const UpperProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isReal( const UpperProxy<MT>& proxy );
+bool isReal( const UpperProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isZero( const UpperProxy<MT>& proxy );
+bool isZero( const UpperProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isOne( const UpperProxy<MT>& proxy );
+bool isOne( const UpperProxy<MT>& proxy );
 
 template< typename MT >
-inline bool isnan( const UpperProxy<MT>& proxy );
+bool isnan( const UpperProxy<MT>& proxy );
 //@}
 //*************************************************************************************************
 

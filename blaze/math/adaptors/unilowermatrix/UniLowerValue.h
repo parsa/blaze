@@ -573,28 +573,28 @@ inline void UniLowerValue<MT>::imag( ValueType value ) const
 /*!\name UniLowerValue global functions */
 //@{
 template< typename MT >
-inline void reset( const UniLowerValue<MT>& value );
+void reset( const UniLowerValue<MT>& value );
 
 template< typename MT >
-inline void clear( const UniLowerValue<MT>& value );
+void clear( const UniLowerValue<MT>& value );
 
 template< typename MT >
-inline void invert( const UniLowerValue<MT>& value );
+void invert( const UniLowerValue<MT>& value );
 
 template< bool RF, typename MT >
-inline bool isDefault( const UniLowerValue<MT>& value );
+bool isDefault( const UniLowerValue<MT>& value );
 
 template< bool RF, typename MT >
-inline bool isReal( const UniLowerValue<MT>& value );
+bool isReal( const UniLowerValue<MT>& value );
 
 template< bool RF, typename MT >
-inline bool isZero( const UniLowerValue<MT>& value );
+bool isZero( const UniLowerValue<MT>& value );
 
 template< bool RF, typename MT >
-inline bool isOne( const UniLowerValue<MT>& value );
+bool isOne( const UniLowerValue<MT>& value );
 
 template< typename MT >
-inline bool isnan( const UniLowerValue<MT>& value );
+bool isnan( const UniLowerValue<MT>& value );
 //@}
 //*************************************************************************************************
 

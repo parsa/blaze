@@ -4972,19 +4972,19 @@ inline auto CustomVector<Type,AF,padded,TF,RT>::divAssign( const DenseVector<VT,
 /*!\name CustomVector operators */
 //@{
 template< typename Type, bool AF, bool PF, bool TF, typename RT >
-inline void reset( CustomVector<Type,AF,PF,TF,RT>& v );
+void reset( CustomVector<Type,AF,PF,TF,RT>& v );
 
 template< typename Type, bool AF, bool PF, bool TF, typename RT >
-inline void clear( CustomVector<Type,AF,PF,TF,RT>& v );
+void clear( CustomVector<Type,AF,PF,TF,RT>& v );
 
 template< bool RF, typename Type, bool AF, bool PF, bool TF, typename RT >
-inline bool isDefault( const CustomVector<Type,AF,PF,TF,RT>& v );
+bool isDefault( const CustomVector<Type,AF,PF,TF,RT>& v );
 
 template< typename Type, bool AF, bool PF, bool TF, typename RT >
-inline bool isIntact( const CustomVector<Type,AF,PF,TF,RT>& v ) noexcept;
+bool isIntact( const CustomVector<Type,AF,PF,TF,RT>& v ) noexcept;
 
 template< typename Type, bool AF, bool PF, bool TF, typename RT >
-inline void swap( CustomVector<Type,AF,PF,TF,RT>& a, CustomVector<Type,AF,PF,TF,RT>& b ) noexcept;
+void swap( CustomVector<Type,AF,PF,TF,RT>& a, CustomVector<Type,AF,PF,TF,RT>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

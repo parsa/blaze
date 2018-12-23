@@ -490,38 +490,38 @@ inline void DenseVectorProxy<PT,VT>::scale( const Other& scalar ) const
 /*!\name DenseVectorProxy global functions */
 //@{
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE typename DenseVectorProxy<PT,VT>::Iterator
+typename DenseVectorProxy<PT,VT>::Iterator
    begin( const DenseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE typename DenseVectorProxy<PT,VT>::ConstIterator
+typename DenseVectorProxy<PT,VT>::ConstIterator
    cbegin( const DenseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE typename DenseVectorProxy<PT,VT>::Iterator
+typename DenseVectorProxy<PT,VT>::Iterator
    end( const DenseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE typename DenseVectorProxy<PT,VT>::ConstIterator
+typename DenseVectorProxy<PT,VT>::ConstIterator
    cend( const DenseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE size_t size( const DenseVectorProxy<PT,VT>& proxy );
+size_t size( const DenseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE size_t capacity( const DenseVectorProxy<PT,VT>& proxy );
+size_t capacity( const DenseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE size_t nonZeros( const DenseVectorProxy<PT,VT>& proxy );
+size_t nonZeros( const DenseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE void resize( const DenseVectorProxy<PT,VT>& proxy, size_t n, bool preserve=true );
+void resize( const DenseVectorProxy<PT,VT>& proxy, size_t n, bool preserve=true );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE void reset( const DenseVectorProxy<PT,VT>& proxy );
+void reset( const DenseVectorProxy<PT,VT>& proxy );
 
 template< typename PT, typename VT >
-BLAZE_ALWAYS_INLINE void clear( const DenseVectorProxy<PT,VT>& proxy );
+void clear( const DenseVectorProxy<PT,VT>& proxy );
 //@}
 //*************************************************************************************************
 

@@ -655,10 +655,10 @@ inline bool InitializerVector<Type,TF>::isAliased( const Other* alias ) const no
 /*!\name InitializerVector operators */
 //@{
 template< typename Type, bool TF >
-inline bool isIntact( const InitializerVector<Type,TF>& v ) noexcept;
+bool isIntact( const InitializerVector<Type,TF>& v ) noexcept;
 
 template< typename Type, bool TF >
-inline void swap( InitializerVector<Type,TF>& a, InitializerVector<Type,TF>& b ) noexcept;
+void swap( InitializerVector<Type,TF>& a, InitializerVector<Type,TF>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

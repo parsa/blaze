@@ -107,22 +107,22 @@ namespace blaze {
 /*!\name StrictlyLowerMatrix operators */
 //@{
 template< typename MT, bool SO, bool DF >
-inline void reset( StrictlyLowerMatrix<MT,SO,DF>& m );
+void reset( StrictlyLowerMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
-inline void reset( StrictlyLowerMatrix<MT,SO,DF>& m, size_t i );
+void reset( StrictlyLowerMatrix<MT,SO,DF>& m, size_t i );
 
 template< typename MT, bool SO, bool DF >
-inline void clear( StrictlyLowerMatrix<MT,SO,DF>& m );
+void clear( StrictlyLowerMatrix<MT,SO,DF>& m );
 
 template< bool RF, typename MT, bool SO, bool DF >
-inline bool isDefault( const StrictlyLowerMatrix<MT,SO,DF>& m );
+bool isDefault( const StrictlyLowerMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
-inline bool isIntact( const StrictlyLowerMatrix<MT,SO,DF>& m );
+bool isIntact( const StrictlyLowerMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
-inline void swap( StrictlyLowerMatrix<MT,SO,DF>& a, StrictlyLowerMatrix<MT,SO,DF>& b ) noexcept;
+void swap( StrictlyLowerMatrix<MT,SO,DF>& a, StrictlyLowerMatrix<MT,SO,DF>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

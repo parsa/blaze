@@ -5763,22 +5763,22 @@ inline void CompressedMatrix<Type,true>::schurAssign( const DenseMatrix<MT,SO>& 
 /*!\name CompressedMatrix operators */
 //@{
 template< typename Type, bool SO >
-inline void reset( CompressedMatrix<Type,SO>& m );
+void reset( CompressedMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
-inline void reset( CompressedMatrix<Type,SO>& m, size_t i );
+void reset( CompressedMatrix<Type,SO>& m, size_t i );
 
 template< typename Type, bool SO >
-inline void clear( CompressedMatrix<Type,SO>& m );
+void clear( CompressedMatrix<Type,SO>& m );
 
 template< bool RF, typename Type, bool SO >
-inline bool isDefault( const CompressedMatrix<Type,SO>& m );
+bool isDefault( const CompressedMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
-inline bool isIntact( const CompressedMatrix<Type,SO>& m );
+bool isIntact( const CompressedMatrix<Type,SO>& m );
 
 template< typename Type, bool SO >
-inline void swap( CompressedMatrix<Type,SO>& a, CompressedMatrix<Type,SO>& b ) noexcept;
+void swap( CompressedMatrix<Type,SO>& a, CompressedMatrix<Type,SO>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

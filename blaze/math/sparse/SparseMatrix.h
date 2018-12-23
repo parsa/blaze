@@ -102,19 +102,19 @@ namespace blaze {
 /*!\name SparseMatrix operators */
 //@{
 template< typename MT, bool SO, typename ST >
-inline auto operator*=( SparseMatrix<MT,SO>& mat, ST scalar )
+auto operator*=( SparseMatrix<MT,SO>& mat, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, MT& >;
 
 template< typename MT, bool SO, typename ST >
-inline auto operator*=( SparseMatrix<MT,SO>&& mat, ST scalar )
+auto operator*=( SparseMatrix<MT,SO>&& mat, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, MT& >;
 
 template< typename MT, bool SO, typename ST >
-inline auto operator/=( SparseMatrix<MT,SO>& mat, ST scalar )
+auto operator/=( SparseMatrix<MT,SO>& mat, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, MT& >;
 
 template< typename MT, bool SO, typename ST >
-inline auto operator/=( SparseMatrix<MT,SO>&& mat, ST scalar )
+auto operator/=( SparseMatrix<MT,SO>&& mat, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, MT& >;
 //@}
 //*************************************************************************************************

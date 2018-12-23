@@ -81,19 +81,19 @@ namespace blaze {
 /*!\name SparseVector operators */
 //@{
 template< typename VT, bool TF, typename ST >
-inline auto operator*=( SparseVector<VT,TF>& vec, ST scalar )
+auto operator*=( SparseVector<VT,TF>& vec, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, VT& >;
 
 template< typename VT, bool TF, typename ST >
-inline auto operator*=( SparseVector<VT,TF>&& vec, ST scalar )
+auto operator*=( SparseVector<VT,TF>&& vec, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, VT& >;
 
 template< typename VT, bool TF, typename ST >
-inline auto operator/=( SparseVector<VT,TF>& vec, ST scalar )
+auto operator/=( SparseVector<VT,TF>& vec, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, VT& >;
 
 template< typename VT, bool TF, typename ST >
-inline auto operator/=( SparseVector<VT,TF>&& vec, ST scalar )
+auto operator/=( SparseVector<VT,TF>&& vec, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, VT& >;
 //@}
 //*************************************************************************************************

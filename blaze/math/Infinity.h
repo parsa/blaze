@@ -347,22 +347,22 @@ inline constexpr bool NegativeInfinity<I>::equal( const T& rhs ) const
 /*!\name NegativeInfinity operators */
 //@{
 template< typename I1, typename I2 >
-inline constexpr bool operator==( const NegativeInfinity<I1>& lhs, const NegativeInfinity<I2>& rhs );
+constexpr bool operator==( const NegativeInfinity<I1>& lhs, const NegativeInfinity<I2>& rhs );
 
 template< typename I, typename T >
-inline constexpr bool operator==( const NegativeInfinity<I>& lhs, const T& rhs );
+constexpr bool operator==( const NegativeInfinity<I>& lhs, const T& rhs );
 
 template< typename I, typename T >
-inline constexpr bool operator==( const T& lhs, const NegativeInfinity<I>& rhs );
+constexpr bool operator==( const T& lhs, const NegativeInfinity<I>& rhs );
 
 template< typename I1, typename I2 >
-inline constexpr bool operator!=( const NegativeInfinity<I1>& lhs, const NegativeInfinity<I2>& rhs );
+constexpr bool operator!=( const NegativeInfinity<I1>& lhs, const NegativeInfinity<I2>& rhs );
 
 template< typename I, typename T >
-inline constexpr bool operator!=( const NegativeInfinity<I>& lhs, const T& rhs );
+constexpr bool operator!=( const NegativeInfinity<I>& lhs, const T& rhs );
 
 template< typename I, typename T >
-inline constexpr bool operator!=( const T& lhs, const NegativeInfinity<I>& rhs );
+constexpr bool operator!=( const T& lhs, const NegativeInfinity<I>& rhs );
 //@}
 //*************************************************************************************************
 
@@ -872,33 +872,33 @@ inline constexpr bool Infinity::equal( const T& rhs ) const
 //*************************************************************************************************
 /*!\name Infinity operators */
 //@{
-inline constexpr bool operator==( const Infinity& lhs, const Infinity& rhs );
+constexpr bool operator==( const Infinity& lhs, const Infinity& rhs );
 
 template< typename I >
-inline constexpr bool operator==( const Infinity& lhs, const NegativeInfinity<I>& rhs );
+constexpr bool operator==( const Infinity& lhs, const NegativeInfinity<I>& rhs );
 
 template< typename I >
-inline constexpr bool operator==( const NegativeInfinity<I>& lhs, const Infinity& rhs );
+constexpr bool operator==( const NegativeInfinity<I>& lhs, const Infinity& rhs );
 
 template< typename T >
-inline constexpr bool operator==( const Infinity& lhs, const T& rhs );
+constexpr bool operator==( const Infinity& lhs, const T& rhs );
 
 template< typename T >
-inline constexpr bool operator==( const T& lhs, const Infinity& rhs );
+constexpr bool operator==( const T& lhs, const Infinity& rhs );
 
-inline constexpr bool operator!=( const Infinity& lhs, const Infinity& rhs );
+constexpr bool operator!=( const Infinity& lhs, const Infinity& rhs );
 
 template< typename I >
-inline constexpr bool operator!=( const Infinity& lhs, const NegativeInfinity<I>& rhs );
+constexpr bool operator!=( const Infinity& lhs, const NegativeInfinity<I>& rhs );
 
 template< typename I >
-inline constexpr bool operator!=( const NegativeInfinity<I>& lhs, const Infinity& rhs );
+constexpr bool operator!=( const NegativeInfinity<I>& lhs, const Infinity& rhs );
 
 template< typename T >
-inline constexpr bool operator!=( const Infinity& lhs, const T& rhs );
+constexpr bool operator!=( const Infinity& lhs, const T& rhs );
 
 template< typename T >
-inline constexpr bool operator!=( const T& lhs, const Infinity& rhs );
+constexpr bool operator!=( const T& lhs, const Infinity& rhs );
 //@}
 //*************************************************************************************************
 

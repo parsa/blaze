@@ -573,28 +573,28 @@ inline void UniUpperValue<MT>::imag( ValueType value ) const
 /*!\name UniUpperValue global functions */
 //@{
 template< typename MT >
-inline void reset( const UniUpperValue<MT>& value );
+void reset( const UniUpperValue<MT>& value );
 
 template< typename MT >
-inline void clear( const UniUpperValue<MT>& value );
+void clear( const UniUpperValue<MT>& value );
 
 template< typename MT >
-inline void invert( const UniUpperValue<MT>& value );
+void invert( const UniUpperValue<MT>& value );
 
 template< bool RF, typename MT >
-inline bool isDefault( const UniUpperValue<MT>& value );
+bool isDefault( const UniUpperValue<MT>& value );
 
 template< bool RF, typename MT >
-inline bool isReal( const UniUpperValue<MT>& value );
+bool isReal( const UniUpperValue<MT>& value );
 
 template< bool RF, typename MT >
-inline bool isZero( const UniUpperValue<MT>& value );
+bool isZero( const UniUpperValue<MT>& value );
 
 template< bool RF, typename MT >
-inline bool isOne( const UniUpperValue<MT>& value );
+bool isOne( const UniUpperValue<MT>& value );
 
 template< typename MT >
-inline bool isnan( const UniUpperValue<MT>& value );
+bool isnan( const UniUpperValue<MT>& value );
 //@}
 //*************************************************************************************************
 

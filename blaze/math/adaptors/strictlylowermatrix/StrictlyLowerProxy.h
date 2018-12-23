@@ -559,25 +559,25 @@ inline StrictlyLowerProxy<MT>::operator ConstReference() const noexcept
 /*!\name StrictlyLowerProxy global functions */
 //@{
 template< typename MT >
-inline void reset( const StrictlyLowerProxy<MT>& proxy );
+void reset( const StrictlyLowerProxy<MT>& proxy );
 
 template< typename MT >
-inline void clear( const StrictlyLowerProxy<MT>& proxy );
+void clear( const StrictlyLowerProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isDefault( const StrictlyLowerProxy<MT>& proxy );
+bool isDefault( const StrictlyLowerProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isReal( const StrictlyLowerProxy<MT>& proxy );
+bool isReal( const StrictlyLowerProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isZero( const StrictlyLowerProxy<MT>& proxy );
+bool isZero( const StrictlyLowerProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isOne( const StrictlyLowerProxy<MT>& proxy );
+bool isOne( const StrictlyLowerProxy<MT>& proxy );
 
 template< typename MT >
-inline bool isnan( const StrictlyLowerProxy<MT>& proxy );
+bool isnan( const StrictlyLowerProxy<MT>& proxy );
 //@}
 //*************************************************************************************************
 

@@ -495,43 +495,43 @@ inline const typename UniformIterator<Type,AF>::SIMDType
 /*!\name UniformIterator operators */
 //@{
 template< typename T1, bool AF1, typename T2, bool AF2 >
-inline constexpr bool
+constexpr bool
    operator==( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept;
 
 template< typename T1, bool AF1, typename T2, bool AF2 >
-inline constexpr bool
+constexpr bool
    operator!=( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept;
 
 template< typename T1, bool AF1, typename T2, bool AF2 >
-inline constexpr bool
+constexpr bool
    operator<( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept;
 
 template< typename T1, bool AF1, typename T2, bool AF2 >
-inline constexpr bool
+constexpr bool
    operator>( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept;
 
 template< typename T1, bool AF1, typename T2, bool AF2 >
-inline constexpr bool
+constexpr bool
    operator<=( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept;
 
 template< typename T1, bool AF1, typename T2, bool AF2 >
-inline constexpr bool
+constexpr bool
    operator>=( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept;
 
 template< typename Type, bool AF >
-inline constexpr const
+constexpr const
    UniformIterator<Type,AF> operator+( const UniformIterator<Type,AF>& it, ptrdiff_t inc ) noexcept;
 
 template< typename Type, bool AF >
-inline constexpr const
+constexpr const
    UniformIterator<Type,AF> operator+( ptrdiff_t inc, const UniformIterator<Type,AF>& it ) noexcept;
 
 template< typename Type, bool AF >
-inline constexpr const
+constexpr const
    UniformIterator<Type,AF> operator-( const UniformIterator<Type,AF>& it, ptrdiff_t inc ) noexcept;
 
 template< typename Type, bool AF >
-inline constexpr ptrdiff_t
+constexpr ptrdiff_t
    operator-( const UniformIterator<Type,AF>& lhs, const UniformIterator<Type,AF>& rhs ) noexcept;
 //@}
 //*************************************************************************************************

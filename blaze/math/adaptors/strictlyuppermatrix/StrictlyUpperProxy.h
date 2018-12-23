@@ -558,25 +558,25 @@ inline StrictlyUpperProxy<MT>::operator ConstReference() const noexcept
 /*!\name StrictlyUpperProxy global functions */
 //@{
 template< typename MT >
-inline void reset( const StrictlyUpperProxy<MT>& proxy );
+void reset( const StrictlyUpperProxy<MT>& proxy );
 
 template< typename MT >
-inline void clear( const StrictlyUpperProxy<MT>& proxy );
+void clear( const StrictlyUpperProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isDefault( const StrictlyUpperProxy<MT>& proxy );
+bool isDefault( const StrictlyUpperProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isReal( const StrictlyUpperProxy<MT>& proxy );
+bool isReal( const StrictlyUpperProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isZero( const StrictlyUpperProxy<MT>& proxy );
+bool isZero( const StrictlyUpperProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isOne( const StrictlyUpperProxy<MT>& proxy );
+bool isOne( const StrictlyUpperProxy<MT>& proxy );
 
 template< typename MT >
-inline bool isnan( const StrictlyUpperProxy<MT>& proxy );
+bool isnan( const StrictlyUpperProxy<MT>& proxy );
 //@}
 //*************************************************************************************************
 

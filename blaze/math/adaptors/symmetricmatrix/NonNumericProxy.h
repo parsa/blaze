@@ -496,25 +496,25 @@ inline NonNumericProxy<MT>::operator RawReference() const noexcept
 /*!\name NonNumericProxy global functions */
 //@{
 template< typename MT >
-inline void reset( const NonNumericProxy<MT>& proxy );
+void reset( const NonNumericProxy<MT>& proxy );
 
 template< typename MT >
-inline void clear( const NonNumericProxy<MT>& proxy );
+void clear( const NonNumericProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isDefault( const NonNumericProxy<MT>& proxy );
+bool isDefault( const NonNumericProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isReal( const NonNumericProxy<MT>& proxy );
+bool isReal( const NonNumericProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isZero( const NonNumericProxy<MT>& proxy );
+bool isZero( const NonNumericProxy<MT>& proxy );
 
 template< bool RF, typename MT >
-inline bool isOne( const NonNumericProxy<MT>& proxy );
+bool isOne( const NonNumericProxy<MT>& proxy );
 
 template< typename MT >
-inline bool isnan( const NonNumericProxy<MT>& proxy );
+bool isnan( const NonNumericProxy<MT>& proxy );
 //@}
 //*************************************************************************************************
 

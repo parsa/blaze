@@ -60,40 +60,40 @@ namespace blaze {
 /*!\name Matrix functions */
 //@{
 template< typename MT, bool SO >
-inline bool isSymmetric( const Matrix<MT,SO>& m );
+bool isSymmetric( const Matrix<MT,SO>& m );
 
 template< typename MT, bool SO >
-inline bool isHermitian( const Matrix<MT,SO>& m );
+bool isHermitian( const Matrix<MT,SO>& m );
 
 template< typename MT, bool SO >
-inline bool isUniform( const Matrix<MT,SO>& m );
+bool isUniform( const Matrix<MT,SO>& m );
 
 template< typename MT, bool SO >
-inline bool isLower( const Matrix<MT,SO>& m );
+bool isLower( const Matrix<MT,SO>& m );
 
 template< typename MT, bool SO >
-inline bool isUniLower( const Matrix<MT,SO>& m );
+bool isUniLower( const Matrix<MT,SO>& m );
 
 template< typename MT, bool SO >
-inline bool isStrictlyLower( const Matrix<MT,SO>& m );
+bool isStrictlyLower( const Matrix<MT,SO>& m );
 
 template< typename MT, bool SO >
-inline bool isUpper( const Matrix<MT,SO>& m );
+bool isUpper( const Matrix<MT,SO>& m );
 
 template< typename MT, bool SO >
-inline bool isUniUpper( const Matrix<MT,SO>& m );
+bool isUniUpper( const Matrix<MT,SO>& m );
 
 template< typename MT, bool SO >
-inline bool isStrictlyUpper( const Matrix<MT,SO>& m );
+bool isStrictlyUpper( const Matrix<MT,SO>& m );
 
 template< typename MT, bool SO >
-inline bool isDiagonal( const Matrix<MT,SO>& m );
+bool isDiagonal( const Matrix<MT,SO>& m );
 
 template< typename MT, bool SO >
-inline bool isIdentity( const Matrix<MT,SO>& m );
+bool isIdentity( const Matrix<MT,SO>& m );
 
 template< typename MT, bool SO >
-inline auto trace( const Matrix<MT,SO>& m );
+auto trace( const Matrix<MT,SO>& m );
 //@}
 //*************************************************************************************************
 
@@ -682,7 +682,7 @@ inline auto trace( const Matrix<MT,SO>& m )
 /*!\name Matrix operators */
 //@{
 template< typename MT, bool SO >
-inline std::ostream& operator<<( std::ostream& os, const Matrix<MT,SO>& m );
+std::ostream& operator<<( std::ostream& os, const Matrix<MT,SO>& m );
 //@}
 //*************************************************************************************************
 

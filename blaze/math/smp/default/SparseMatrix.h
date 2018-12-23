@@ -59,19 +59,19 @@ namespace blaze {
 /*!\name Sparse matrix SMP functions */
 //@{
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline EnableIf_t< IsSparseMatrix_v<MT1> >
+EnableIf_t< IsSparseMatrix_v<MT1> >
    smpAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline EnableIf_t< IsSparseMatrix_v<MT1> >
+EnableIf_t< IsSparseMatrix_v<MT1> >
    smpAddAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline EnableIf_t< IsSparseMatrix_v<MT1> >
+EnableIf_t< IsSparseMatrix_v<MT1> >
    smpSubAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline EnableIf_t< IsSparseMatrix_v<MT1> >
+EnableIf_t< IsSparseMatrix_v<MT1> >
    smpSchurAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs );
 //@}
 //*************************************************************************************************

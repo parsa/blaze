@@ -2474,19 +2474,19 @@ inline auto DynamicVector<Type,TF>::divAssign( const DenseVector<VT,TF>& rhs )
 /*!\name DynamicVector operators */
 //@{
 template< typename Type, bool TF >
-inline void reset( DynamicVector<Type,TF>& v );
+void reset( DynamicVector<Type,TF>& v );
 
 template< typename Type, bool TF >
-inline void clear( DynamicVector<Type,TF>& v );
+void clear( DynamicVector<Type,TF>& v );
 
 template< bool RF, typename Type, bool TF >
-inline bool isDefault( const DynamicVector<Type,TF>& v );
+bool isDefault( const DynamicVector<Type,TF>& v );
 
 template< typename Type, bool TF >
-inline bool isIntact( const DynamicVector<Type,TF>& v ) noexcept;
+bool isIntact( const DynamicVector<Type,TF>& v ) noexcept;
 
 template< typename Type, bool TF >
-inline void swap( DynamicVector<Type,TF>& a, DynamicVector<Type,TF>& b ) noexcept;
+void swap( DynamicVector<Type,TF>& a, DynamicVector<Type,TF>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

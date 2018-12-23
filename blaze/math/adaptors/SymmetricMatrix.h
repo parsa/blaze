@@ -113,22 +113,22 @@ namespace blaze {
 /*!\name SymmetricMatrix operators */
 //@{
 template< typename MT, bool SO, bool DF, bool NF >
-inline void reset( SymmetricMatrix<MT,SO,DF,NF>& m );
+void reset( SymmetricMatrix<MT,SO,DF,NF>& m );
 
 template< typename MT, bool SO, bool DF, bool NF >
-inline void reset( SymmetricMatrix<MT,SO,DF,NF>& m, size_t i );
+void reset( SymmetricMatrix<MT,SO,DF,NF>& m, size_t i );
 
 template< typename MT, bool SO, bool DF, bool NF >
-inline void clear( SymmetricMatrix<MT,SO,DF,NF>& m );
+void clear( SymmetricMatrix<MT,SO,DF,NF>& m );
 
 template< bool RF, typename MT, bool SO, bool DF, bool NF >
-inline bool isDefault( const SymmetricMatrix<MT,SO,DF,NF>& m );
+bool isDefault( const SymmetricMatrix<MT,SO,DF,NF>& m );
 
 template< typename MT, bool SO, bool DF, bool NF >
-inline bool isIntact( const SymmetricMatrix<MT,SO,DF,NF>& m );
+bool isIntact( const SymmetricMatrix<MT,SO,DF,NF>& m );
 
 template< typename MT, bool SO, bool DF, bool NF >
-inline void swap( SymmetricMatrix<MT,SO,DF,NF>& a, SymmetricMatrix<MT,SO,DF,NF>& b ) noexcept;
+void swap( SymmetricMatrix<MT,SO,DF,NF>& a, SymmetricMatrix<MT,SO,DF,NF>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

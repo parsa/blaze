@@ -211,28 +211,28 @@ inline constexpr NegativeEpsilon<E>::operator const T() const
 /*!\name NegativeEpsilon operators */
 //@{
 template< typename E, typename T >
-inline constexpr bool operator==( const NegativeEpsilon<E>& lhs, const T& rhs );
+constexpr bool operator==( const NegativeEpsilon<E>& lhs, const T& rhs );
 
 template< typename E, typename T >
-inline constexpr bool operator==( const T& lhs, const NegativeEpsilon<E>& rhs );
+constexpr bool operator==( const T& lhs, const NegativeEpsilon<E>& rhs );
 
 template< typename E, typename T >
-inline constexpr bool operator!=( const NegativeEpsilon<E>& lhs, const T& rhs );
+constexpr bool operator!=( const NegativeEpsilon<E>& lhs, const T& rhs );
 
 template< typename E, typename T >
-inline constexpr bool operator!=( const T& lhs, const NegativeEpsilon<E>& rhs );
+constexpr bool operator!=( const T& lhs, const NegativeEpsilon<E>& rhs );
 
 template< typename E, typename T >
-inline constexpr bool operator<( const NegativeEpsilon<E>& lhs, const T& rhs );
+constexpr bool operator<( const NegativeEpsilon<E>& lhs, const T& rhs );
 
 template< typename E, typename T >
-inline constexpr bool operator<( const T& lhs, const NegativeEpsilon<E>& rhs );
+constexpr bool operator<( const T& lhs, const NegativeEpsilon<E>& rhs );
 
 template< typename E, typename T >
-inline constexpr bool operator>( const NegativeEpsilon<E>& lhs, const T& rhs );
+constexpr bool operator>( const NegativeEpsilon<E>& lhs, const T& rhs );
 
 template< typename E, typename T >
-inline constexpr bool operator>( const T& lhs, const NegativeEpsilon<E>& rhs );
+constexpr bool operator>( const T& lhs, const NegativeEpsilon<E>& rhs );
 //@}
 //*************************************************************************************************
 
@@ -629,40 +629,40 @@ inline constexpr Epsilon::operator const T() const
 /*!\name Epsilon operators */
 //@{
 template< typename T >
-inline constexpr bool operator==( const Epsilon& lhs, const T& rhs );
+constexpr bool operator==( const Epsilon& lhs, const T& rhs );
 
 template< typename T >
-inline constexpr bool operator==( const T& lhs, const Epsilon& rhs );
+constexpr bool operator==( const T& lhs, const Epsilon& rhs );
 
 template< typename T >
-inline constexpr bool operator!=( const Epsilon& lhs, const T& rhs );
+constexpr bool operator!=( const Epsilon& lhs, const T& rhs );
 
 template< typename T >
-inline constexpr bool operator!=( const T& lhs, const Epsilon& rhs );
+constexpr bool operator!=( const T& lhs, const Epsilon& rhs );
 
 template< typename T >
-inline constexpr bool operator<( const Epsilon& lhs, const T& rhs );
+constexpr bool operator<( const Epsilon& lhs, const T& rhs );
 
 template< typename T >
-inline constexpr bool operator<( const T& lhs, const Epsilon& rhs );
+constexpr bool operator<( const T& lhs, const Epsilon& rhs );
 
 template< typename T >
-inline constexpr bool operator>( const Epsilon& lhs, const T& rhs );
+constexpr bool operator>( const Epsilon& lhs, const T& rhs );
 
 template< typename T >
-inline constexpr bool operator>( const T& lhs, const Epsilon& rhs );
+constexpr bool operator>( const T& lhs, const Epsilon& rhs );
 
 template< typename T >
-inline constexpr bool operator<=( const Epsilon& lhs, const T& rhs );
+constexpr bool operator<=( const Epsilon& lhs, const T& rhs );
 
 template< typename T >
-inline constexpr bool operator<=( const T& lhs, const Epsilon& rhs );
+constexpr bool operator<=( const T& lhs, const Epsilon& rhs );
 
 template< typename T >
-inline constexpr bool operator>=( const Epsilon& lhs, const T& rhs );
+constexpr bool operator>=( const Epsilon& lhs, const T& rhs );
 
 template< typename T >
-inline constexpr bool operator>=( const T& lhs, const Epsilon& rhs );
+constexpr bool operator>=( const T& lhs, const Epsilon& rhs );
 //@}
 //*************************************************************************************************
 

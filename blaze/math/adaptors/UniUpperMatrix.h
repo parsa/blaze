@@ -110,22 +110,22 @@ namespace blaze {
 /*!\name UniUpperMatrix operators */
 //@{
 template< typename MT, bool SO, bool DF >
-inline void reset( UniUpperMatrix<MT,SO,DF>& m );
+void reset( UniUpperMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
-inline void reset( UniUpperMatrix<MT,SO,DF>& m, size_t i );
+void reset( UniUpperMatrix<MT,SO,DF>& m, size_t i );
 
 template< typename MT, bool SO, bool DF >
-inline void clear( UniUpperMatrix<MT,SO,DF>& m );
+void clear( UniUpperMatrix<MT,SO,DF>& m );
 
 template< bool RF, typename MT, bool SO, bool DF >
-inline bool isDefault( const UniUpperMatrix<MT,SO,DF>& m );
+bool isDefault( const UniUpperMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
-inline bool isIntact( const UniUpperMatrix<MT,SO,DF>& m );
+bool isIntact( const UniUpperMatrix<MT,SO,DF>& m );
 
 template< typename MT, bool SO, bool DF >
-inline void swap( UniUpperMatrix<MT,SO,DF>& a, UniUpperMatrix<MT,SO,DF>& b ) noexcept;
+void swap( UniUpperMatrix<MT,SO,DF>& a, UniUpperMatrix<MT,SO,DF>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

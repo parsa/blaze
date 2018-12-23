@@ -2585,19 +2585,19 @@ inline auto HybridVector<Type,N,TF>::divAssign( const DenseVector<VT,TF>& rhs )
 /*!\name HybridVector operators */
 //@{
 template< typename Type, size_t N, bool TF >
-inline void reset( HybridVector<Type,N,TF>& v );
+void reset( HybridVector<Type,N,TF>& v );
 
 template< typename Type, size_t N, bool TF >
-inline void clear( HybridVector<Type,N,TF>& v );
+void clear( HybridVector<Type,N,TF>& v );
 
 template< bool RF, typename Type, size_t N, bool TF >
-inline bool isDefault( const HybridVector<Type,N,TF>& v );
+bool isDefault( const HybridVector<Type,N,TF>& v );
 
 template< typename Type, size_t N, bool TF >
-inline bool isIntact( const HybridVector<Type,N,TF>& v );
+bool isIntact( const HybridVector<Type,N,TF>& v );
 
 template< typename Type, size_t N, bool TF >
-inline void swap( HybridVector<Type,N,TF>& a, HybridVector<Type,N,TF>& b ) noexcept;
+void swap( HybridVector<Type,N,TF>& a, HybridVector<Type,N,TF>& b ) noexcept;
 //@}
 //*************************************************************************************************
 

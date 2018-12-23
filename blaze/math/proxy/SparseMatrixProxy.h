@@ -1045,50 +1045,50 @@ inline typename SparseMatrixProxy<PT,MT>::Iterator
 /*!\name SparseMatrixProxy global functions */
 //@{
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE typename SparseMatrixProxy<PT,MT>::Iterator
+typename SparseMatrixProxy<PT,MT>::Iterator
    begin( const SparseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE typename SparseMatrixProxy<PT,MT>::ConstIterator
+typename SparseMatrixProxy<PT,MT>::ConstIterator
    cbegin( const SparseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE typename SparseMatrixProxy<PT,MT>::Iterator
+typename SparseMatrixProxy<PT,MT>::Iterator
    end( const SparseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE typename SparseMatrixProxy<PT,MT>::ConstIterator
+typename SparseMatrixProxy<PT,MT>::ConstIterator
    cend( const SparseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE size_t rows( const SparseMatrixProxy<PT,MT>& proxy );
+size_t rows( const SparseMatrixProxy<PT,MT>& proxy );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE size_t columns( const SparseMatrixProxy<PT,MT>& proxy );
+size_t columns( const SparseMatrixProxy<PT,MT>& proxy );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE size_t capacity( const SparseMatrixProxy<PT,MT>& proxy );
+size_t capacity( const SparseMatrixProxy<PT,MT>& proxy );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE size_t capacity( const SparseMatrixProxy<PT,MT>& proxy, size_t i );
+size_t capacity( const SparseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE size_t nonZeros( const SparseMatrixProxy<PT,MT>& proxy );
+size_t nonZeros( const SparseMatrixProxy<PT,MT>& proxy );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE size_t nonZeros( const SparseMatrixProxy<PT,MT>& proxy, size_t i );
+size_t nonZeros( const SparseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE void resize( const SparseMatrixProxy<PT,MT>& proxy, size_t m, size_t n, bool preserve=true );
+void resize( const SparseMatrixProxy<PT,MT>& proxy, size_t m, size_t n, bool preserve=true );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE void reset( const SparseMatrixProxy<PT,MT>& proxy );
+void reset( const SparseMatrixProxy<PT,MT>& proxy );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE void reset( const SparseMatrixProxy<PT,MT>& proxy, size_t i );
+void reset( const SparseMatrixProxy<PT,MT>& proxy, size_t i );
 
 template< typename PT, typename MT >
-BLAZE_ALWAYS_INLINE void clear( const SparseMatrixProxy<PT,MT>& proxy );
+void clear( const SparseMatrixProxy<PT,MT>& proxy );
 //@}
 //*************************************************************************************************
 

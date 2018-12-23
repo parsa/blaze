@@ -587,28 +587,28 @@ inline void SymmetricValue<MT>::imag( ValueType value ) const
 /*!\name SymmetricValue global functions */
 //@{
 template< typename MT >
-inline void reset( const SymmetricValue<MT>& value );
+void reset( const SymmetricValue<MT>& value );
 
 template< typename MT >
-inline void clear( const SymmetricValue<MT>& value );
+void clear( const SymmetricValue<MT>& value );
 
 template< typename MT >
-inline void invert( const SymmetricValue<MT>& value );
+void invert( const SymmetricValue<MT>& value );
 
 template< bool RF, typename MT >
-inline bool isDefault( const SymmetricValue<MT>& value );
+bool isDefault( const SymmetricValue<MT>& value );
 
 template< bool RF, typename MT >
-inline bool isReal( const SymmetricValue<MT>& value );
+bool isReal( const SymmetricValue<MT>& value );
 
 template< bool RF, typename MT >
-inline bool isZero( const SymmetricValue<MT>& value );
+bool isZero( const SymmetricValue<MT>& value );
 
 template< bool RF, typename MT >
-inline bool isOne( const SymmetricValue<MT>& value );
+bool isOne( const SymmetricValue<MT>& value );
 
 template< typename MT >
-inline bool isnan( const SymmetricValue<MT>& value );
+bool isnan( const SymmetricValue<MT>& value );
 //@}
 //*************************************************************************************************
 
