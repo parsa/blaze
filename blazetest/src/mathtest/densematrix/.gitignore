@@ -7,6 +7,7 @@ LowerTest
 StrictlyLowerTest
 StrictlyUpperTest
 SymmetricTest
+UniformTest
 UniLowerTest
 UniUpperTest
 UpperTest

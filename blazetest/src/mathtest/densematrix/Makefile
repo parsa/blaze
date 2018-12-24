@@ -70,6 +70,8 @@ StrictlyUpperTest: StrictlyUpperTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 SymmetricTest: SymmetricTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+UniformTest: UniformTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 UniLowerTest: UniLowerTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 UniUpperTest: UniUpperTest.o
