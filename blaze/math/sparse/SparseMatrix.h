@@ -87,7 +87,6 @@
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -365,20 +364,17 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 bool isnan( const SparseMatrix<MT,SO>& sm )
 {
-   using CT = CompositeType_t<MT>;
-   using ConstIterator = ConstIterator_t< RemoveReference_t<CT> >;
-
-   CT A( ~sm );  // Evaluation of the sparse matrix operand
+   CompositeType_t<MT> A( ~sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
-         for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
+         for( auto element=A.begin(i); element!=A.end(i); ++element )
             if( isnan( element->value() ) ) return true;
       }
    }
    else {
       for( size_t j=0UL; j<A.columns(); ++j ) {
-         for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
+         for( auto element=A.begin(j); element!=A.end(j); ++element )
             if( isnan( element->value() ) ) return true;
       }
    }
@@ -430,7 +426,6 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
    using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
-   using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
    if( IsSymmetric_v<MT> )
       return true;
@@ -445,14 +440,14 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
-         for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
+         for( auto element=A.begin(i); element!=A.end(i); ++element )
          {
             const size_t j( element->index() );
 
             if( i == j || isDefault<RF>( element->value() ) )
                continue;
 
-            const ConstIterator pos( A.find( j, i ) );
+            const auto pos( A.find( j, i ) );
             if( pos == A.end(j) || !equal<RF>( pos->value(), element->value() ) )
                return false;
          }
@@ -460,14 +455,14 @@ bool isSymmetric( const SparseMatrix<MT,SO>& sm )
    }
    else {
       for( size_t j=0UL; j<A.columns(); ++j ) {
-         for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
+         for( auto element=A.begin(j); element!=A.end(j); ++element )
          {
             const size_t i( element->index() );
 
             if( j == i || isDefault<RF>( element->value() ) )
                continue;
 
-            const ConstIterator pos( A.find( j, i ) );
+            const auto pos( A.find( j, i ) );
             if( pos == A.end(i) || !equal<RF>( pos->value(), element->value() ) )
                return false;
          }
@@ -524,7 +519,6 @@ bool isHermitian( const SparseMatrix<MT,SO>& sm )
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
    using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
-   using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
    if( IsHermitian_v<MT> )
       return true;
@@ -539,7 +533,7 @@ bool isHermitian( const SparseMatrix<MT,SO>& sm )
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
-         for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
+         for( auto element=A.begin(i); element!=A.end(i); ++element )
          {
             const size_t j( element->index() );
 
@@ -549,7 +543,7 @@ bool isHermitian( const SparseMatrix<MT,SO>& sm )
             if( i == j && !isReal<RF>( element->value() ) )
                return false;
 
-            const ConstIterator pos( A.find( j, i ) );
+            const auto pos( A.find( j, i ) );
             if( pos == A.end(j) || !equal<RF>( pos->value(), conj( element->value() ) ) )
                return false;
          }
@@ -557,7 +551,7 @@ bool isHermitian( const SparseMatrix<MT,SO>& sm )
    }
    else {
       for( size_t j=0UL; j<A.columns(); ++j ) {
-         for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
+         for( auto element=A.begin(j); element!=A.end(j); ++element )
          {
             const size_t i( element->index() );
 
@@ -567,7 +561,7 @@ bool isHermitian( const SparseMatrix<MT,SO>& sm )
             if( j == i && !isReal<RF>( element->value() ) )
                return false;
 
-            const ConstIterator pos( A.find( j, i ) );
+            const auto pos( A.find( j, i ) );
             if( pos == A.end(i) || !equal<RF>( pos->value(), conj( element->value() ) ) )
                return false;
          }
@@ -597,13 +591,11 @@ bool isUniform_backend( const SparseMatrix<MT,false>& sm, TrueType )
    BLAZE_INTERNAL_ASSERT( (~sm).rows()    != 0UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~sm).columns() != 0UL, "Invalid number of columns detected" );
 
-   using ConstIterator = ConstIterator_t<MT>;
-
    const size_t ibegin( ( IsStrictlyLower_v<MT> )?( 1UL ):( 0UL ) );
    const size_t iend  ( ( IsStrictlyUpper_v<MT> )?( (~sm).rows()-1UL ):( (~sm).rows() ) );
 
    for( size_t i=ibegin; i<iend; ++i ) {
-      for( ConstIterator element=(~sm).begin(i); element!=(~sm).end(i); ++element ) {
+      for( auto element=(~sm).begin(i); element!=(~sm).end(i); ++element ) {
          if( !isDefault<RF>( element->value() ) )
             return false;
       }
@@ -633,13 +625,11 @@ bool isUniform_backend( const SparseMatrix<MT,true>& sm, TrueType )
    BLAZE_INTERNAL_ASSERT( (~sm).rows()    != 0UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~sm).columns() != 0UL, "Invalid number of columns detected" );
 
-   using ConstIterator = ConstIterator_t<MT>;
-
    const size_t jbegin( ( IsStrictlyUpper_v<MT> )?( 1UL ):( 0UL ) );
    const size_t jend  ( ( IsStrictlyLower_v<MT> )?( (~sm).columns()-1UL ):( (~sm).columns() ) );
 
    for( size_t j=jbegin; j<jend; ++j ) {
-      for( ConstIterator element=(~sm).begin(j); element!=(~sm).end(j); ++element ) {
+      for( auto element=(~sm).begin(j); element!=(~sm).end(j); ++element ) {
          if( !isDefault<RF>( element->value() ) )
             return false;
       }
@@ -669,14 +659,12 @@ bool isUniform_backend( const SparseMatrix<MT,false>& sm, FalseType )
    BLAZE_INTERNAL_ASSERT( (~sm).rows()    != 0UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~sm).columns() != 0UL, "Invalid number of columns detected" );
 
-   using ConstIterator = ConstIterator_t<MT>;
-
    const size_t maxElements( (~sm).rows() * (~sm).columns() );
 
    if( (~sm).nonZeros() != maxElements )
    {
       for( size_t i=0UL; i<(~sm).rows(); ++i ) {
-         for( ConstIterator element=(~sm).begin(i); element!=(~sm).end(i); ++element ) {
+         for( auto element=(~sm).begin(i); element!=(~sm).end(i); ++element ) {
             if( !isDefault<RF>( element->value() ) )
                return false;
          }
@@ -689,7 +677,7 @@ bool isUniform_backend( const SparseMatrix<MT,false>& sm, FalseType )
       const auto& cmp( (~sm)(0UL,0UL) );
 
       for( size_t i=0UL; i<(~sm).rows(); ++i ) {
-         for( ConstIterator element=(~sm).begin(i); element!=(~sm).end(i); ++element ) {
+         for( auto element=(~sm).begin(i); element!=(~sm).end(i); ++element ) {
             if( !equal<RF>( element->value(), cmp ) )
                return false;
          }
@@ -720,14 +708,12 @@ bool isUniform_backend( const SparseMatrix<MT,true>& sm, FalseType )
    BLAZE_INTERNAL_ASSERT( (~sm).rows()    != 0UL, "Invalid number of rows detected"    );
    BLAZE_INTERNAL_ASSERT( (~sm).columns() != 0UL, "Invalid number of columns detected" );
 
-   using ConstIterator = ConstIterator_t<MT>;
-
    const size_t maxElements( (~sm).rows() * (~sm).columns() );
 
    if( (~sm).nonZeros() != maxElements )
    {
       for( size_t j=0UL; j<(~sm).columns(); ++j ) {
-         for( ConstIterator element=(~sm).begin(j); element!=(~sm).end(j); ++element ) {
+         for( auto element=(~sm).begin(j); element!=(~sm).end(j); ++element ) {
             if( !isDefault<RF>( element->value() ) )
                return false;
          }
@@ -740,7 +726,7 @@ bool isUniform_backend( const SparseMatrix<MT,true>& sm, FalseType )
       const auto& cmp( (~sm)(0UL,0UL) );
 
       for( size_t j=0UL; j<(~sm).columns(); ++j ) {
-         for( ConstIterator element=(~sm).begin(j); element!=(~sm).end(j); ++element ) {
+         for( auto element=(~sm).begin(j); element!=(~sm).end(j); ++element ) {
             if( !equal<RF>( element->value(), cmp ) )
                return false;
          }
@@ -922,7 +908,6 @@ bool isLower( const SparseMatrix<MT,SO>& sm )
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
    using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
-   using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
    if( IsLower_v<MT> )
       return true;
@@ -930,14 +915,14 @@ bool isLower( const SparseMatrix<MT,SO>& sm )
    if( !isSquare( ~sm ) )
       return false;
 
-   if( (~sm).rows() < 2UL )
+   if( IsZero_v<MT> || (~sm).rows() < 2UL )
       return true;
 
    Tmp A( ~sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows()-1UL; ++i ) {
-         for( ConstIterator element=A.lowerBound(i,i+1UL); element!=A.end(i); ++element )
+         for( auto element=A.lowerBound(i,i+1UL); element!=A.end(i); ++element )
          {
             if( !isDefault<RF>( element->value() ) )
                return false;
@@ -946,7 +931,7 @@ bool isLower( const SparseMatrix<MT,SO>& sm )
    }
    else {
       for( size_t j=1UL; j<A.columns(); ++j ) {
-         for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
+         for( auto element=A.begin(j); element!=A.end(j); ++element )
          {
             if( element->index() >= j )
                break;
@@ -1013,7 +998,6 @@ bool isUniLower( const SparseMatrix<MT,SO>& sm )
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
    using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
-   using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
    if( IsUniLower_v<MT> )
       return true;
@@ -1026,7 +1010,7 @@ bool isUniLower( const SparseMatrix<MT,SO>& sm )
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i )
       {
-         ConstIterator element( A.lowerBound(i,i) );
+         auto element( A.lowerBound(i,i) );
 
          if( element == A.end(i) || element->index() != i || !isOne<RF>( element->value() ) )
             return false;
@@ -1044,7 +1028,7 @@ bool isUniLower( const SparseMatrix<MT,SO>& sm )
       {
          bool hasDiagonalElement( false );
 
-         for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
+         for( auto element=A.begin(j); element!=A.end(j); ++element )
          {
             if( element->index() >= j ) {
                if( element->index() != j || !isOne<RF>( element->value() ) )
@@ -1120,19 +1104,24 @@ bool isStrictlyLower( const SparseMatrix<MT,SO>& sm )
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
    using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
-   using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
    if( IsStrictlyLower_v<MT> )
       return true;
 
-   if( IsUniLower_v<MT> || IsUniUpper_v<MT> || !isSquare( ~sm ) )
+   if( !isSquare( ~sm ) )
+      return false;
+
+   if( IsZero_v<MT> || (~sm).rows() < 2UL )
+      return true;
+
+   if( IsUniLower_v<MT> || IsUniUpper_v<MT> )
       return false;
 
    Tmp A( ~sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
-         for( ConstIterator element=A.lowerBound(i,i); element!=A.end(i); ++element )
+         for( auto element=A.lowerBound(i,i); element!=A.end(i); ++element )
          {
             if( !isDefault<RF>( element->value() ) )
                return false;
@@ -1141,7 +1130,7 @@ bool isStrictlyLower( const SparseMatrix<MT,SO>& sm )
    }
    else {
       for( size_t j=0UL; j<A.columns(); ++j ) {
-         for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
+         for( auto element=A.begin(j); element!=A.end(j); ++element )
          {
             if( element->index() > j )
                break;
@@ -1209,7 +1198,6 @@ bool isUpper( const SparseMatrix<MT,SO>& sm )
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
    using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
-   using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
    if( IsUpper_v<MT> )
       return true;
@@ -1217,14 +1205,14 @@ bool isUpper( const SparseMatrix<MT,SO>& sm )
    if( !isSquare( ~sm ) )
       return false;
 
-   if( (~sm).rows() < 2UL )
+   if( IsZero_v<MT> || (~sm).rows() < 2UL )
       return true;
 
    Tmp A( ~sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=1UL; i<A.rows(); ++i ) {
-         for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
+         for( auto element=A.begin(i); element!=A.end(i); ++element )
          {
             if( element->index() >= i )
                break;
@@ -1236,7 +1224,7 @@ bool isUpper( const SparseMatrix<MT,SO>& sm )
    }
    else {
       for( size_t j=0UL; j<A.columns()-1UL; ++j ) {
-         for( ConstIterator element=A.lowerBound(j+1UL,j); element!=A.end(j); ++element )
+         for( auto element=A.lowerBound(j+1UL,j); element!=A.end(j); ++element )
          {
             if( !isDefault<RF>( element->value() ) )
                return false;
@@ -1300,7 +1288,6 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
    using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
-   using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
    if( IsUniUpper_v<MT> )
       return true;
@@ -1315,7 +1302,7 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
       {
          bool hasDiagonalElement( false );
 
-         for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
+         for( auto element=A.begin(i); element!=A.end(i); ++element )
          {
             if( element->index() >= i ) {
                if( element->index() != i || !isOne<RF>( element->value() ) )
@@ -1336,7 +1323,7 @@ bool isUniUpper( const SparseMatrix<MT,SO>& sm )
    else {
       for( size_t j=0UL; j<A.columns(); ++j )
       {
-         ConstIterator element( A.lowerBound(j,j) );
+         auto element( A.lowerBound(j,j) );
 
          if( element == A.end(j) || element->index() != j || !isOne<RF>( element->value() ) )
             return false;
@@ -1407,19 +1394,24 @@ bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm )
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
    using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
-   using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
    if( IsStrictlyUpper_v<MT> )
       return true;
 
-   if( IsUniLower_v<MT> || IsUniUpper_v<MT> || !isSquare( ~sm ) )
+   if( !isSquare( ~sm ) )
+      return false;
+
+   if( IsZero_v<MT> || (~sm).rows() < 2UL )
+      return true;
+
+   if( IsUniLower_v<MT> || IsUniUpper_v<MT> )
       return false;
 
    Tmp A( ~sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
-         for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
+         for( auto element=A.begin(i); element!=A.end(i); ++element )
          {
             if( element->index() > i )
                break;
@@ -1431,7 +1423,7 @@ bool isStrictlyUpper( const SparseMatrix<MT,SO>& sm )
    }
    else {
       for( size_t j=0UL; j<A.columns(); ++j ) {
-         for( ConstIterator element=A.lowerBound(j,j); element!=A.end(j); ++element )
+         for( auto element=A.lowerBound(j,j); element!=A.end(j); ++element )
          {
             if( !isDefault<RF>( element->value() ) )
                return false;
@@ -1496,7 +1488,6 @@ bool isDiagonal( const SparseMatrix<MT,SO>& sm )
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
    using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
-   using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
    if( IsDiagonal_v<MT> )
       return true;
@@ -1504,21 +1495,21 @@ bool isDiagonal( const SparseMatrix<MT,SO>& sm )
    if( !isSquare( ~sm ) )
       return false;
 
-   if( (~sm).rows() < 2UL )
+   if( IsZero_v<MT> || (~sm).rows() < 2UL )
       return true;
 
    Tmp A( ~sm );  // Evaluation of the sparse matrix operand
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
-         for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
+         for( auto element=A.begin(i); element!=A.end(i); ++element )
             if( element->index() != i && !isDefault<RF>( element->value() ) )
                return false;
       }
    }
    else {
       for( size_t j=0UL; j<A.columns(); ++j ) {
-         for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
+         for( auto element=A.begin(j); element!=A.end(j); ++element )
             if( element->index() != j && !isDefault<RF>( element->value() ) )
                return false;
       }
@@ -1581,7 +1572,6 @@ bool isIdentity( const SparseMatrix<MT,SO>& sm )
    using RN  = ReturnType_t<MT>;
    using CT  = CompositeType_t<MT>;
    using Tmp = If_t< IsExpression_v<RN>, const RT, CT >;
-   using ConstIterator = ConstIterator_t< RemoveReference_t<Tmp> >;
 
    if( IsIdentity_v<MT> )
       return true;
@@ -1596,7 +1586,7 @@ bool isIdentity( const SparseMatrix<MT,SO>& sm )
       {
          bool hasDiagonalElement( false );
 
-         for( ConstIterator element=A.begin(i); element!=A.end(i); ++element )
+         for( auto element=A.begin(i); element!=A.end(i); ++element )
          {
             if( element->index() == i ) {
                if( !isOne<RF>( element->value() ) )
@@ -1618,7 +1608,7 @@ bool isIdentity( const SparseMatrix<MT,SO>& sm )
       {
          bool hasDiagonalElement( false );
 
-         for( ConstIterator element=A.begin(j); element!=A.end(j); ++element )
+         for( auto element=A.begin(j); element!=A.end(j); ++element )
          {
             if( element->index() == j ) {
                if( !isOne<RF>( element->value() ) )
