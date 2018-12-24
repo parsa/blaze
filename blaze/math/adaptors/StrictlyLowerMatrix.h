@@ -1659,7 +1659,7 @@ struct BinaryMapTraitEval1< T1, T2, OP
 template< typename MT, bool SO, bool DF >
 struct DeclSymTrait< StrictlyLowerMatrix<MT,SO,DF> >
 {
-   using Type = DiagonalMatrix<MT>;
+   using Type = ZeroMatrix< typename MT::ElementType, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1678,7 +1678,7 @@ struct DeclSymTrait< StrictlyLowerMatrix<MT,SO,DF> >
 template< typename MT, bool SO, bool DF >
 struct DeclHermTrait< StrictlyLowerMatrix<MT,SO,DF> >
 {
-   using Type = HermitianMatrix<MT>;
+   using Type = ZeroMatrix< typename MT::ElementType, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1716,7 +1716,7 @@ struct DeclLowTrait< StrictlyLowerMatrix<MT,SO,DF> >
 template< typename MT, bool SO, bool DF >
 struct DeclUppTrait< StrictlyLowerMatrix<MT,SO,DF> >
 {
-   using Type = DiagonalMatrix<MT>;
+   using Type = ZeroMatrix< typename MT::ElementType, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1735,7 +1735,7 @@ struct DeclUppTrait< StrictlyLowerMatrix<MT,SO,DF> >
 template< typename MT, bool SO, bool DF >
 struct DeclDiagTrait< StrictlyLowerMatrix<MT,SO,DF> >
 {
-   using Type = DiagonalMatrix<MT>;
+   using Type = ZeroMatrix< typename MT::ElementType, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
