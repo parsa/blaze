@@ -911,6 +911,9 @@ bool isZero( const DenseMatrix<MT,SO>& dm )
    if( IsUniTriangular_v<MT> )
       return false;
 
+   if( IsUniform_v<MT> )
+      return isZero<RF>( (~dm)(0UL,0UL) );
+
    CompositeType_t<MT> A( ~dm );  // Evaluation of the dense matrix operand
 
    if( SO == rowMajor )
@@ -1012,10 +1015,13 @@ bool isLower( const DenseMatrix<MT,SO>& dm )
    if( !isSquare( ~dm ) )
       return false;
 
-   if( (~dm).rows() < 2UL )
+   if( IsZero_v<MT> || (~dm).rows() < 2UL )
       return true;
 
    Tmp A( ~dm );  // Evaluation of the dense matrix operand
+
+   if( IsUniform_v<MT> )
+      return isDefault<RF>( A(0UL,0UL) );
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows()-1UL; ++i ) {
@@ -1181,10 +1187,19 @@ bool isStrictlyLower( const DenseMatrix<MT,SO>& dm )
    if( IsStrictlyLower_v<MT> )
       return true;
 
-   if( IsUniLower_v<MT> || IsUniUpper_v<MT> || !isSquare( ~dm ) )
+   if( !isSquare( ~dm ) )
+      return false;
+
+   if( IsZero_v<MT> || (~dm).rows() < 2UL )
+      return true;
+
+   if( IsUniLower_v<MT> || IsUniUpper_v<MT> )
       return false;
 
    Tmp A( ~dm );  // Evaluation of the dense matrix operand
+
+   if( IsUniform_v<MT> )
+      return isDefault<RF>( A(0UL,0UL) );
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
@@ -1267,10 +1282,13 @@ bool isUpper( const DenseMatrix<MT,SO>& dm )
    if( !isSquare( ~dm ) )
       return false;
 
-   if( (~dm).rows() < 2UL )
+   if( IsZero_v<MT> || (~dm).rows() < 2UL )
       return true;
 
    Tmp A( ~dm );  // Evaluation of the dense matrix operand
+
+   if( IsUniform_v<MT> )
+      return isDefault<RF>( A(0UL,0UL) );
 
    if( SO == rowMajor ) {
       for( size_t i=1UL; i<A.rows(); ++i ) {
@@ -1436,10 +1454,19 @@ bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm )
    if( IsStrictlyUpper_v<MT> )
       return true;
 
-   if( IsUniLower_v<MT> || IsUniUpper_v<MT> || !isSquare( ~dm ) )
+   if( !isSquare( ~dm ) )
+      return false;
+
+   if( IsZero_v<MT> || (~dm).rows() < 2UL )
+      return true;
+
+   if( IsUniLower_v<MT> || IsUniUpper_v<MT> )
       return false;
 
    Tmp A( ~dm );  // Evaluation of the dense matrix operand
+
+   if( IsUniform_v<MT> )
+      return isDefault<RF>( A(0UL,0UL) );
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
@@ -1523,10 +1550,13 @@ bool isDiagonal( const DenseMatrix<MT,SO>& dm )
    if( !isSquare( ~dm ) )
       return false;
 
-   if( (~dm).rows() < 2UL )
+   if( IsZero_v<MT> || (~dm).rows() < 2UL )
       return true;
 
    Tmp A( ~dm );  // Evaluation of the dense matrix operand
+
+   if( IsUniform_v<MT> )
+      return isDefault<RF>( A(0UL,0UL) );
 
    if( SO == rowMajor ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
