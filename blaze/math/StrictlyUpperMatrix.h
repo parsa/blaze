@@ -52,8 +52,9 @@
 #include <blaze/math/DenseMatrix.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/SparseMatrix.h>
-#include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/StrictlyLowerMatrix.h>
+#include <blaze/math/typetraits/IsDenseMatrix.h>
+#include <blaze/math/ZeroMatrix.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/Indices.h>
 #include <blaze/util/Random.h>
