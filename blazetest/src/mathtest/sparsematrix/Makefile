@@ -62,6 +62,8 @@ GeneralTest: GeneralTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 HermitianTest: HermitianTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+IdentityTest: IdentityTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 LowerTest: LowerTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 StrictlyLowerTest: StrictlyLowerTest.o

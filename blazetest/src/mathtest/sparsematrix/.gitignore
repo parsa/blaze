@@ -3,6 +3,7 @@
 DiagonalTest
 GeneralTest
 HermitianTest
+IdentityTest
 LowerTest
 StrictlyLowerTest
 StrictlyUpperTest

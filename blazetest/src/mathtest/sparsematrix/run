@@ -47,3 +47,4 @@ EXE=$PATH_SPARSEMATRIX/UpperTest;         if [ -x $EXE ]; then $EXE; if [ $? != 
 EXE=$PATH_SPARSEMATRIX/UniUpperTest;      if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_SPARSEMATRIX/StrictlyUpperTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_SPARSEMATRIX/DiagonalTest;      if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SPARSEMATRIX/IdentityTest;      if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
