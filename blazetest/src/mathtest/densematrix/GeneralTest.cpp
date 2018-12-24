@@ -435,7 +435,7 @@ void GeneralTest::testIsSymmetric()
          }
       }
 
-      // Non-symmetric matrix (addition element in the lower part)
+      // Non-symmetric matrix (additional element in the lower part)
       {
          blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
          mat(0,0) = 1;
@@ -461,7 +461,7 @@ void GeneralTest::testIsSymmetric()
          }
       }
 
-      // Non-symmetric matrix (addition element in the upper part)
+      // Non-symmetric matrix (additional element in the upper part)
       {
          blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
          mat(0,0) = 1;
