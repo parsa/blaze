@@ -408,7 +408,7 @@ void ClassTest::testMatrixDeclHerm()
    {
       {
          using MT = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
-         using RT = HermitianMatrix< DynamicMatrix<int,rowMajor> >;
+         using RT = ZeroMatrix<int,rowMajor>;
          static_assert( IsSame_v< DeclHermTrait_t<MT>, RT >, "Non-matching type detected" );
 
          using Expr = Decay_t< decltype( declherm( std::declval<MT>() ) ) >;
@@ -416,7 +416,7 @@ void ClassTest::testMatrixDeclHerm()
       }
       {
          using MT = StrictlyLowerMatrix< DynamicMatrix<int,columnMajor> >;
-         using RT = HermitianMatrix< DynamicMatrix<int,columnMajor> >;
+         using RT = ZeroMatrix<int,columnMajor>;
          static_assert( IsSame_v< DeclHermTrait_t<MT>, RT >, "Non-matching type detected" );
 
          using Expr = Decay_t< decltype( declherm( std::declval<MT>() ) ) >;
@@ -468,7 +468,7 @@ void ClassTest::testMatrixDeclHerm()
    {
       {
          using MT = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
-         using RT = HermitianMatrix< DynamicMatrix<int,rowMajor> >;
+         using RT = ZeroMatrix<int,rowMajor>;
          static_assert( IsSame_v< DeclHermTrait_t<MT>, RT >, "Non-matching type detected" );
 
          using Expr = Decay_t< decltype( declherm( std::declval<MT>() ) ) >;
@@ -476,7 +476,7 @@ void ClassTest::testMatrixDeclHerm()
       }
       {
          using MT = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
-         using RT = HermitianMatrix< DynamicMatrix<int,columnMajor> >;
+         using RT = ZeroMatrix<int,columnMajor>;
          static_assert( IsSame_v< DeclHermTrait_t<MT>, RT >, "Non-matching type detected" );
 
          using Expr = Decay_t< decltype( declherm( std::declval<MT>() ) ) >;
