@@ -468,7 +468,7 @@ void ClassTest::testMatrixDeclLow()
    {
       {
          using MT = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
-         using RT = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
+         using RT = ZeroMatrix<int,rowMajor>;
          static_assert( IsSame_v< DeclLowTrait_t<MT>, RT >, "Non-matching type detected" );
 
          using Expr = Decay_t< decltype( decllow( std::declval<MT>() ) ) >;
@@ -476,7 +476,7 @@ void ClassTest::testMatrixDeclLow()
       }
       {
          using MT = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
-         using RT = DiagonalMatrix< DynamicMatrix<int,columnMajor> >;
+         using RT = ZeroMatrix<int,columnMajor>;
          static_assert( IsSame_v< DeclLowTrait_t<MT>, RT >, "Non-matching type detected" );
 
          using Expr = Decay_t< decltype( decllow( std::declval<MT>() ) ) >;
