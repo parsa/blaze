@@ -91,6 +91,7 @@ class OperationTest
    void testIsUniUpper();
    void testIsUpper();
    void testIsVector();
+   void testIsZero();
    void testRemoveAdaptor();
    void testUnderlyingBuiltin();
    void testUnderlyingNumeric();

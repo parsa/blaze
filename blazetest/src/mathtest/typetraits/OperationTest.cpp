@@ -59,6 +59,7 @@
 #include <blaze/math/constraints/UniUpper.h>
 #include <blaze/math/constraints/Upper.h>
 #include <blaze/math/constraints/Vector.h>
+#include <blaze/math/constraints/Zero.h>
 #include <blaze/math/DiagonalMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/DynamicVector.h>
@@ -87,12 +88,14 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/IsVector.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/UniLowerMatrix.h>
 #include <blaze/math/UniUpperMatrix.h>
 #include <blaze/math/UpperMatrix.h>
+#include <blaze/math/ZeroMatrix.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blazetest/mathtest/typetraits/OperationTest.h>
@@ -134,6 +137,7 @@ OperationTest::OperationTest()
    testIsUniUpper();
    testIsUpper();
    testIsVector();
+   testIsZero();
    testRemoveAdaptor();
    testUnderlyingBuiltin();
    testUnderlyingNumeric();
@@ -973,6 +977,34 @@ void OperationTest::testIsVector()
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type4 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type5 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VECTOR_TYPE( Type6 );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the mathematical 'IsZero' type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the mathematical 'IsZero' type trait. In case
+// an error is detected, a compilation error is created.
+*/
+void OperationTest::testIsZero()
+{
+   using Type1 = blaze::ZeroMatrix<int>;
+   using Type2 = const blaze::ZeroMatrix<float>;
+   using Type3 = volatile blaze::ZeroMatrix<double>;
+   using Type4 = blaze::DynamicMatrix<int>;
+   using Type5 = const blaze::DiagonalMatrix< blaze::StaticMatrix<float,3UL,3UL> >;
+   using Type6 = volatile blaze::CompressedMatrix<int>;
+
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE    ( Type1 );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE    ( Type2 );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE    ( Type3 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type4 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type5 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type6 );
 }
 //*************************************************************************************************
 
