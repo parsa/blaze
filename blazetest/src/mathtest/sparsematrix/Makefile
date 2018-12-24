@@ -78,6 +78,8 @@ UniUpperTest: UniUpperTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 UpperTest: UpperTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+ZeroTest: ZeroTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 
 # Cleanup
