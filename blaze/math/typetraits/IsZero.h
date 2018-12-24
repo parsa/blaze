@@ -99,7 +99,7 @@ struct IsZeroHelper< T, EnableIf_t< IsExpression_v<T> > >
    blaze::IsZero< volatile ZeroMatrix<double> >     // Is derived from TrueType
    blaze::IsZero< DynamicMatrix<int> >::value       // Evaluates to 0
    blaze::IsZero< const DiagonalMatrixType >::Type  // Results in FalseType
-   blaze::IsZero< volatile CompressedMatrixType >   // Is derived from FalseType
+   blaze::IsZero< volatile CompressedMatrix<int> >  // Is derived from FalseType
    \endcode
 */
 template< typename T >
