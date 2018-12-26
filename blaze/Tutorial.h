@@ -5293,6 +5293,41 @@
 // behavior (which can be violated invariants or wrong computation results)!
 //
 //
+// \n \subsection matrix_operations_declzero declzero()
+//
+// The \c declzero() operation can be used to explicitly declare any matrix or matrix expression
+// as zero matrix:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+
+   B = declzero( A );
+   \endcode
+
+// Any matrix or matrix expression that has been declared as zero matrix via \c declzero() will
+// gain all the benefits of a zero matrix, which range from reduced runtime checking to a
+// considerable speed-up in computations:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::DiagonalMatrix;
+
+   DynamicMatrix<double> A, B, C;
+   // ... Resizing and initialization
+
+   isZero( declzero( A ) );  // Will always return true without runtime effort
+
+   C = declzero( A ) + B;  // Declare the left operand of the matrix addition as an
+                           // zero matrix, i.e. no addition needs to be performed
+   \endcode
+
+// \warning The \c declzero() operation has the semantics of a cast: The caller is completely
+// responsible and the system trusts the given information. Declaring a non-zero matrix or
+// matrix expression as zero matrix via the \c declzero() operation leads to undefined behavior
+// (which can be violated invariants or wrong computation results)!
+//
+//
 // \n \section matrix_operations_matrix_inversion Matrix Inversion
 // <hr>
 //
