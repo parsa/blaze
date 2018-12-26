@@ -1215,7 +1215,11 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , bool SO       // Storage order
         , DisableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
-                       ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
+                       ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) ||
+                       ( IsStrictlyLower_v<MT1> && IsUpper_v<MT2> ) ||
+                       ( IsStrictlyUpper_v<MT1> && IsLower_v<MT2> ) ||
+                       ( IsLower_v<MT1> && IsStrictlyUpper_v<MT2> ) ||
+                       ( IsUpper_v<MT1> && IsStrictlyLower_v<MT2> ) >* = nullptr >
 inline const DMatDMatSchurExpr<MT1,MT2,SO>
    dmatdmatschur( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
 {
@@ -1258,7 +1262,45 @@ inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2>
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   return IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, SO >( (~lhs).rows() );
+   using ET = MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >;
+   return IdentityMatrix<ET,SO>( (~lhs).rows() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the Schur product between two (strictly) triangular dense
+//        matrices with identical storage order (\f$ A=B \circ C \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix for the Schur product.
+// \param rhs The right-hand side dense matrix for the Schur product.
+// \return The Schur product of the two matrices.
+//
+// This function implements a performance optimized treatment of the Schur product between two
+// (strictly) triangular dense matrices with identical storage order.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , bool SO       // Storage order
+        , EnableIf_t< ( IsStrictlyLower_v<MT1> && IsUpper_v<MT2> ) ||
+                      ( IsStrictlyUpper_v<MT1> && IsLower_v<MT2> ) ||
+                      ( IsLower_v<MT1> && IsStrictlyUpper_v<MT2> ) ||
+                      ( IsUpper_v<MT1> && IsStrictlyLower_v<MT2> ) >* = nullptr >
+inline const ZeroMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, SO >
+   dmatdmatschur( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( rhs );
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   using ET = MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >;
+   return ZeroMatrix<ET,SO>( (~lhs).rows(), (~lhs).columns() );
 }
 /*! \endcond */
 //*************************************************************************************************

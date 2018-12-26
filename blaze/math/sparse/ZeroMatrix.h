@@ -2372,7 +2372,12 @@ template< typename T1, typename T2 >
 struct SchurTraitEval1< T1, T2
                       , EnableIf_t< IsMatrix_v<T1> &&
                                     IsMatrix_v<T2> &&
-                                    ( IsZero_v<T1> || IsZero_v<T2> ) > >
+                                    ( IsZero_v<T1> ||
+                                      IsZero_v<T2> ||
+                                      ( IsStrictlyLower_v<T1> && IsUpper_v<T2> ) ||
+                                      ( IsStrictlyUpper_v<T1> && IsLower_v<T2> ) ||
+                                      ( IsLower_v<T1> && IsStrictlyUpper_v<T2> ) ||
+                                      ( IsUpper_v<T1> && IsStrictlyLower_v<T2> ) ) > >
 {
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
@@ -2380,11 +2385,11 @@ struct SchurTraitEval1< T1, T2
    static constexpr bool SO1 = StorageOrder_v<T1>;
    static constexpr bool SO2 = StorageOrder_v<T2>;
 
-   static constexpr bool SO = ( IsSparseMatrix_v<T1> && IsSparseMatrix_v<T2>
-                                ? ( SO1 && SO2 )
-                                : ( IsSparseMatrix_v<T1>
+   static constexpr bool SO = ( IsSparseMatrix_v<T1> ^ IsSparseMatrix_v<T2>
+                                ? ( IsSparseMatrix_v<T1>
                                     ? SO1
-                                    : SO2 ) );
+                                    : SO2 )
+                                : SO1 && SO2 );
 
    using Type = ZeroMatrix< MultTrait_t<ET1,ET2>, SO >;
 };

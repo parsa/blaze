@@ -1593,6 +1593,10 @@ struct SchurTraitEval1< T1, T2
                                       IsDiagonal_v<T2> ||
                                       ( IsLower_v<T1> && IsUpper_v<T2> ) ||
                                       ( IsUpper_v<T1> && IsLower_v<T2> ) ) &&
+                                    !( IsStrictlyLower_v<T1> && IsUpper_v<T2> ) &&
+                                    !( IsStrictlyUpper_v<T1> && IsLower_v<T2> ) &&
+                                    !( IsLower_v<T1> && IsStrictlyUpper_v<T2> ) &&
+                                    !( IsUpper_v<T1> && IsStrictlyLower_v<T2> ) &&
                                     !( IsUniTriangular_v<T1> && IsUniTriangular_v<T2> ) &&
                                     !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
