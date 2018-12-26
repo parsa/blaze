@@ -2509,9 +2509,9 @@
 //
 // The \b Blaze library currently offers five dense matrix types (\ref matrix_types_static_matrix,
 // \ref matrix_types_dynamic_matrix, \ref matrix_types_hybrid_matrix, \ref matrix_types_custom_matrix,
-// and \ref matrix_types_uniform_matrix) and two sparse matrix types (\ref matrix_types_compressed_matrix
-// and \ref matrix_types_identity_matrix). All matrices can either be stored as row-major matrices
-// or column-major matrices:
+// and \ref matrix_types_uniform_matrix) and three sparse matrix types (\ref matrix_types_compressed_matrix,
+// \ref matrix_types_identity_matrix, and \ref matrix_types_zero_matrix). All matrices can either
+// be stored as row-major matrices or column-major matrices:
 
    \code
    using blaze::DynamicMatrix;
@@ -3051,6 +3051,43 @@
 
    // Definition of a double precision column-major identity matrix with 0 rows and columns
    blaze::IdentityMatrix<double,blaze::columnMajor> C;
+   \endcode
+
+// \n \section matrix_types_zero_matrix ZeroMatrix
+// <hr>
+//
+// The blaze::ZeroMatrix class template is the representation of an immutable, arbitrary sized
+// zero matrix with \f$ M \cdot N \f$ elements of arbitrary type. It can be included via the
+// header file
+
+   \code
+   #include <blaze/math/ZeroMatrix.h>
+   \endcode
+
+// The type of the elements and the storage order of the matrix can be specified via the two
+// template parameters:
+
+   \code
+   template< typename Type, bool SO >
+   class ZeroMatrix;
+   \endcode
+
+//  - Type: specifies the type of the matrix elements. ZeroMatrix can be used with any
+//          non-cv-qualified, non-reference, non-pointer element type.
+//  - SO  : specifies the storage order (blaze::rowMajor, blaze::columnMajor) of the matrix.
+//          The default value is blaze::rowMajor.
+//
+// The blaze::ZeroMatrix is the perfect choice to represent a zero matrix:
+
+   \code
+   // Definition of a 3x5 integral row-major zero matrix
+   blaze::ZeroMatrix<int> A( 3UL, 5UL );
+
+   // Definition of a 6x4 single precision row-major zero matrix
+   blaze::ZeroMatrix<float,blaze::rowMajor> B( 6UL, 4UL );
+
+   // Definition of a double precision column-major zero matrix with 0 rows and columns
+   blaze::ZeroMatrix<double,blaze::columnMajor> C;
    \endcode
 
 // \n Previous: \ref matrices &nbsp; &nbsp; Next: \ref matrix_operations
