@@ -7077,7 +7077,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = IdentityMatrix<int,rowMajor>;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< CompressedMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -7087,7 +7087,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = IdentityMatrix<int,rowMajor>;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< CompressedMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -7097,7 +7097,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = IdentityMatrix<int,columnMajor>;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< CompressedMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -7107,7 +7107,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = IdentityMatrix<int,columnMajor>;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< CompressedMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -7209,7 +7209,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = IdentityMatrix<int,rowMajor>;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< CompressedMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -7219,7 +7219,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = IdentityMatrix<int,rowMajor>;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< CompressedMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -7229,7 +7229,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = IdentityMatrix<int,columnMajor>;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< CompressedMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -7239,7 +7239,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = IdentityMatrix<int,columnMajor>;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< CompressedMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -14817,7 +14817,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = LowerMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -14827,7 +14827,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = LowerMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -14837,7 +14837,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = LowerMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -14847,7 +14847,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = LowerMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -15768,7 +15768,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = UniLowerMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -15778,7 +15778,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = UniLowerMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -15788,7 +15788,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = UniLowerMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -15798,7 +15798,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = UniLowerMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -16147,7 +16147,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = IdentityMatrix<double,rowMajor>;
-            using RT = DiagonalMatrix< CompressedMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -16157,7 +16157,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = IdentityMatrix<double,columnMajor>;
-            using RT = DiagonalMatrix< CompressedMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -16167,7 +16167,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = IdentityMatrix<double,rowMajor>;
-            using RT = DiagonalMatrix< CompressedMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -16177,7 +16177,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = IdentityMatrix<double,columnMajor>;
-            using RT = DiagonalMatrix< CompressedMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -16631,7 +16631,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = UpperMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -16641,7 +16641,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = UpperMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -16651,7 +16651,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = UpperMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -16661,7 +16661,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = UpperMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -16675,7 +16675,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = UniUpperMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -16685,7 +16685,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = UniUpperMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -16695,7 +16695,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = UniUpperMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -16705,7 +16705,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = UniUpperMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -16719,7 +16719,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -16729,7 +16729,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -16739,7 +16739,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -16749,7 +16749,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -16763,7 +16763,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -16773,7 +16773,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -16783,7 +16783,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -16793,7 +16793,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyLowerMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -17538,7 +17538,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -17548,7 +17548,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -17558,7 +17558,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -17568,7 +17568,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -18489,7 +18489,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = UniUpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -18499,7 +18499,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = UniUpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -18509,7 +18509,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = UniUpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -18519,7 +18519,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = UniUpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -19000,7 +19000,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = IdentityMatrix<double,rowMajor>;
-            using RT = DiagonalMatrix< CompressedMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -19010,7 +19010,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = IdentityMatrix<double,columnMajor>;
-            using RT = DiagonalMatrix< CompressedMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -19020,7 +19020,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = IdentityMatrix<double,rowMajor>;
-            using RT = DiagonalMatrix< CompressedMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -19030,7 +19030,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = IdentityMatrix<double,columnMajor>;
-            using RT = DiagonalMatrix< CompressedMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -19352,7 +19352,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = LowerMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -19362,7 +19362,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = LowerMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -19372,7 +19372,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = LowerMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -19382,7 +19382,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = LowerMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -19396,7 +19396,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = UniLowerMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -19406,7 +19406,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = UniLowerMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -19416,7 +19416,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = UniLowerMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -19426,7 +19426,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = UniLowerMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -19440,7 +19440,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -19450,7 +19450,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -19460,7 +19460,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -19470,7 +19470,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -19616,7 +19616,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -19626,7 +19626,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -19636,7 +19636,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -19646,7 +19646,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -20391,7 +20391,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -20401,7 +20401,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -20411,7 +20411,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = DiagonalMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -20421,7 +20421,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = DiagonalMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -20523,7 +20523,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -20533,7 +20533,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -20543,7 +20543,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = DiagonalMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
@@ -20553,7 +20553,7 @@ void ClassTest::testSchurProduct()
          {
             using T1 = DiagonalMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< SchurTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
