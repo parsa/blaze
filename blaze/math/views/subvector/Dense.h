@@ -67,6 +67,7 @@
 #include <blaze/math/typetraits/HasSIMDDiv.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
+#include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
@@ -827,7 +828,8 @@ template< typename... RSAs >  // Runtime subvector arguments
 inline Subvector<VT,unaligned,TF,true,CSAs...>::Subvector( VT& vector, RSAs... args )
    : DataType  ( args... )  // Base class initialization
    , vector_   ( vector  )  // The vector containing the subvector
-   , isAligned_( simdEnabled && vector.data() != nullptr && checkAlignment( data() ) )
+   , isAligned_( simdEnabled && IsContiguous_v<VT> &&
+                 vector.data() != nullptr && checkAlignment( data() ) )
 {
    if( !Contains_v< TypeList<RSAs...>, Unchecked > ) {
       if( offset() + size() > vector.size() ) {
@@ -2962,13 +2964,14 @@ inline Subvector<VT,aligned,TF,true,CSAs...>::Subvector( VT& vector, RSAs... arg
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
       }
 
-      if( simdEnabled && vector_.data() != nullptr && !checkAlignment( data() ) ) {
+      if( simdEnabled && IsContiguous_v<VT> &&
+          vector_.data() != nullptr && !checkAlignment( data() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector alignment" );
       }
    }
    else {
       BLAZE_USER_ASSERT( offset() + size() <= vector.size(), "Invalid subvector specification" );
-      BLAZE_USER_ASSERT( !simdEnabled || vector_.data() == nullptr || checkAlignment( data() ), "Invalid subvector alignment" );
+      BLAZE_USER_ASSERT( !simdEnabled || !IsContiguous_v<VT> || vector_.data() == nullptr || checkAlignment( data() ), "Invalid subvector alignment" );
    }
 }
 /*! \endcond */
