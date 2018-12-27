@@ -639,7 +639,7 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Type& init )
    \endcode
 
 // The vector is sized according to the size of the initializer list and all its elements are
-// initialized by the values of the given initializer list. In case the size of the given list
+// (copy) assigned the values of the given initializer list. In case the size of the given list
 // exceeds the maximum size of the hybrid vector (i.e. is larger than \a N), a
 // \a std::invalid_argument exception is thrown.
 */
@@ -1090,10 +1090,10 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const Type& 
    v = { 4.2, 6.3, -1.2 };
    \endcode
 
-// The vector is resized according to the size of the initializer list and all its elements are
-// assigned the values from the given initializer list. In case the size of the given list exceeds
-// the maximum size of the hybrid vector (i.e. is larger than \a N), a \a std::invalid_argument
-// exception is thrown.
+// The vector is resized according to the size of the initializer list and all its elements
+// are (copy) assigned the values from the given initializer list. In case the size of the
+// given list exceeds the maximum size of the hybrid vector (i.e. is larger than \a N), a
+// \a std::invalid_argument exception is thrown.
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
