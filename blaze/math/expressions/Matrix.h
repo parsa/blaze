@@ -85,6 +85,10 @@ struct Matrix
    using MatrixType = MT;  //!< Type of the matrix.
    //**********************************************************************************************
 
+   //**Compilation flags***************************************************************************
+   static constexpr bool storageOrder = SO;  //!< Storage order of the matrix.
+   //**********************************************************************************************
+
    //**Non-const conversion operator***************************************************************
    /*!\brief Conversion operator for non-constant matrices.
    //
