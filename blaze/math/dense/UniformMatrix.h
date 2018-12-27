@@ -531,7 +531,7 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename UniformMatrix<Type,SO>::ConstPointer
    UniformMatrix<Type,SO>::data() const noexcept
 {
-   return nullptr;
+   return &value_;
 }
 //*************************************************************************************************
 
@@ -554,7 +554,7 @@ inline constexpr typename UniformMatrix<Type,SO>::ConstPointer
    BLAZE_USER_ASSERT( SO  || i < m_, "Invalid dense matrix row access index" );
    BLAZE_USER_ASSERT( !SO || i < n_, "Invalid dense matrix row access index" );
 
-   return nullptr;
+   return &value_;
 }
 //*************************************************************************************************
 
