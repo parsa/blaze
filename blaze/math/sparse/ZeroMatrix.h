@@ -414,6 +414,8 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename ZeroMatrix<Type,SO>::ConstReference
    ZeroMatrix<Type,SO>::operator()( size_t i, size_t j ) const noexcept
 {
+   UNUSED_PARAMETER( i, j );
+
    BLAZE_USER_ASSERT( i < rows()   , "Invalid zero matrix row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid zero matrix column access index" );
 
@@ -466,6 +468,8 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename ZeroMatrix<Type,SO>::ConstIterator
    ZeroMatrix<Type,SO>::begin( size_t i ) const noexcept
 {
+   UNUSED_PARAMETER( i );
+
    BLAZE_USER_ASSERT( i < ( SO ? n_ : m_ ), "Invalid zero matrix row/column access index" );
 
    return nullptr;
@@ -489,6 +493,8 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename ZeroMatrix<Type,SO>::ConstIterator
    ZeroMatrix<Type,SO>::cbegin( size_t i ) const noexcept
 {
+   UNUSED_PARAMETER( i );
+
    BLAZE_USER_ASSERT( i < ( SO ? n_ : m_ ), "Invalid zero matrix row/column access index" );
 
    return nullptr;
@@ -512,6 +518,8 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename ZeroMatrix<Type,SO>::ConstIterator
    ZeroMatrix<Type,SO>::end( size_t i ) const noexcept
 {
+   UNUSED_PARAMETER( i );
+
    BLAZE_USER_ASSERT( i < ( SO ? n_ : m_ ), "Invalid zero matrix row/column access index" );
 
    return nullptr;
@@ -535,6 +543,8 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename ZeroMatrix<Type,SO>::ConstIterator
    ZeroMatrix<Type,SO>::cend( size_t i ) const noexcept
 {
+   UNUSED_PARAMETER( i );
+
    BLAZE_USER_ASSERT( i < ( SO ? n_ : m_ ), "Invalid zero matrix row/column access index" );
 
    return nullptr;
@@ -779,6 +789,8 @@ template< typename Type  // Data type of the matrix
 inline typename ZeroMatrix<Type,SO>::ConstIterator
    ZeroMatrix<Type,SO>::find( size_t i, size_t j ) const
 {
+   UNUSED_PARAMETER( i, j );
+
    BLAZE_USER_ASSERT( SO  || i < rows()   , "Invalid zero matrix row access index"    );
    BLAZE_USER_ASSERT( !SO || j < columns(), "Invalid zero matrix column access index" );
 
@@ -805,6 +817,8 @@ template< typename Type  // Data type of the matrix
 inline typename ZeroMatrix<Type,SO>::ConstIterator
    ZeroMatrix<Type,SO>::lowerBound( size_t i, size_t j ) const
 {
+   UNUSED_PARAMETER( i, j );
+
    BLAZE_USER_ASSERT( SO  || i < rows()   , "Invalid zero matrix row access index"    );
    BLAZE_USER_ASSERT( !SO || j < columns(), "Invalid zero matrix column access index" );
 
@@ -831,6 +845,8 @@ template< typename Type  // Data type of the matrix
 inline typename ZeroMatrix<Type,SO>::ConstIterator
    ZeroMatrix<Type,SO>::upperBound( size_t i, size_t j ) const
 {
+   UNUSED_PARAMETER( i, j );
+
    BLAZE_USER_ASSERT( SO  || i < rows()   , "Invalid zero matrix row access index"    );
    BLAZE_USER_ASSERT( !SO || j < columns(), "Invalid zero matrix column access index" );
 

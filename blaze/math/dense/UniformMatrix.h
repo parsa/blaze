@@ -476,8 +476,11 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename UniformMatrix<Type,SO>::ConstReference
    UniformMatrix<Type,SO>::operator()( size_t i, size_t j ) const noexcept
 {
+   UNUSED_PARAMETER( i, j );
+
    BLAZE_USER_ASSERT( i < m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < n_, "Invalid column access index" );
+
    return value_;
 }
 //*************************************************************************************************
@@ -505,6 +508,7 @@ inline typename UniformMatrix<Type,SO>::ConstReference
    if( j >= n_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
    }
+
    return (*this)(i,j);
 }
 //*************************************************************************************************
@@ -545,8 +549,11 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename UniformMatrix<Type,SO>::ConstPointer
    UniformMatrix<Type,SO>::data( size_t i ) const noexcept
 {
+   UNUSED_PARAMETER( i );
+
    BLAZE_USER_ASSERT( SO  || i < m_, "Invalid dense matrix row access index" );
    BLAZE_USER_ASSERT( !SO || i < n_, "Invalid dense matrix row access index" );
+
    return nullptr;
 }
 //*************************************************************************************************
@@ -569,8 +576,10 @@ inline constexpr typename UniformMatrix<Type,SO>::ConstIterator
    UniformMatrix<Type,SO>::begin( size_t i ) const noexcept
 {
    UNUSED_PARAMETER( i );
+
    BLAZE_USER_ASSERT( SO  || i < m_, "Invalid dense matrix row access index" );
    BLAZE_USER_ASSERT( !SO || i < n_, "Invalid dense matrix row access index" );
+
    return ConstIterator( &value_, 0UL );
 }
 //*************************************************************************************************
@@ -593,8 +602,10 @@ inline constexpr typename UniformMatrix<Type,SO>::ConstIterator
    UniformMatrix<Type,SO>::cbegin( size_t i ) const noexcept
 {
    UNUSED_PARAMETER( i );
+
    BLAZE_USER_ASSERT( SO  || i < m_, "Invalid dense matrix row access index" );
    BLAZE_USER_ASSERT( !SO || i < n_, "Invalid dense matrix row access index" );
+
    return ConstIterator( &value_, 0UL );
 }
 //*************************************************************************************************
@@ -617,8 +628,10 @@ inline constexpr typename UniformMatrix<Type,SO>::ConstIterator
    UniformMatrix<Type,SO>::end( size_t i ) const noexcept
 {
    UNUSED_PARAMETER( i );
+
    BLAZE_USER_ASSERT( SO  || i < m_, "Invalid dense matrix row access index" );
    BLAZE_USER_ASSERT( !SO || i < n_, "Invalid dense matrix row access index" );
+
    return ConstIterator( &value_, SO ? m_ : n_ );
 }
 //*************************************************************************************************
@@ -641,8 +654,10 @@ inline constexpr typename UniformMatrix<Type,SO>::ConstIterator
    UniformMatrix<Type,SO>::cend( size_t i ) const noexcept
 {
    UNUSED_PARAMETER( i );
+
    BLAZE_USER_ASSERT( SO  || i < m_, "Invalid dense matrix row access index" );
    BLAZE_USER_ASSERT( !SO || i < n_, "Invalid dense matrix row access index" );
+
    return ConstIterator( &value_, SO ? m_ : n_ );
 }
 //*************************************************************************************************
@@ -1017,6 +1032,8 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline size_t UniformMatrix<Type,SO>::nonZeros( size_t i ) const
 {
+   UNUSED_PARAMETER( i );
+
    BLAZE_USER_ASSERT( SO  || i < m_, "Invalid dense matrix row access index" );
    BLAZE_USER_ASSERT( !SO || i < n_, "Invalid dense matrix row access index" );
 
@@ -1334,6 +1351,8 @@ template< typename Type  // Data type of the matrix
 BLAZE_ALWAYS_INLINE typename UniformMatrix<Type,SO>::SIMDType
    UniformMatrix<Type,SO>::loada( size_t i, size_t j ) const noexcept
 {
+   UNUSED_PARAMETER( i, j );
+
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );
@@ -1366,6 +1385,8 @@ template< typename Type  // Data type of the matrix
 BLAZE_ALWAYS_INLINE typename UniformMatrix<Type,SO>::SIMDType
    UniformMatrix<Type,SO>::loadu( size_t i, size_t j ) const noexcept
 {
+   UNUSED_PARAMETER( i, j );
+
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( i < m_, "Invalid row access index" );

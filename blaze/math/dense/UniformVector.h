@@ -442,6 +442,8 @@ template< typename Type  // Data type of the vector
 inline constexpr typename UniformVector<Type,TF>::ConstReference
    UniformVector<Type,TF>::operator[]( size_t index ) const noexcept
 {
+   UNUSED_PARAMETER( index );
+
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
 
    return value_;
@@ -1111,6 +1113,8 @@ template< typename Type  // Data type of the vector
 BLAZE_ALWAYS_INLINE typename UniformVector<Type,TF>::SIMDType
    UniformVector<Type,TF>::loada( size_t index ) const noexcept
 {
+   UNUSED_PARAMETER( index );
+
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
@@ -1140,6 +1144,8 @@ template< typename Type  // Data type of the vector
 BLAZE_ALWAYS_INLINE typename UniformVector<Type,TF>::SIMDType
    UniformVector<Type,TF>::loadu( size_t index ) const noexcept
 {
+   UNUSED_PARAMETER( index );
+
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
    BLAZE_INTERNAL_ASSERT( index < size_, "Invalid vector access index" );
