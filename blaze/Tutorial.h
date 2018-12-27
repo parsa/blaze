@@ -1103,7 +1103,13 @@
    blaze::CompressedVector<int> v16{ 0, 2, 0, 0, 5, 0, 7, 0 };
    \endcode
 
-// In case of sparse vectors, only the non-zero elements are used to initialize the vector.
+// Dynamically sized vectors (such as e.g. \ref vector_types_hybrid_vector,
+// \ref vector_types_dynamic_vector or \ref vector_types_compressed_vector) are sized according
+// to the size of the initializer list and all their elements are (copy) assigned the values of
+// the list. For fixed size vectors (such as e.g. \ref vector_types_static_vector) missing values
+// are initialized as default and in case the size of the initializer list exceeds the size
+// of the vector a \c std::invalid_argument exception is thrown. In case of sparse vectors, only
+// the non-zero elements are used to initialize the vector.
 //
 // \n \subsection vector_operations_copy_construction Copy Construction
 //
@@ -3291,8 +3297,14 @@
    M2 = { { 1, 0 }, {}, { 0, 1 }, { 2 } };
    \endcode
 
-// In case of sparse matrices, only the non-zero elements are considered. Missing values are
-// considered to be default values.
+// Dynamically sized matrices (such as e.g. \ref matrix_types_hybrid_matrix,
+// \ref matrix_types_dynamic_matrix or \ref matrix_types_compressed_matrix) are sized according
+// to the size of the initializer list and all their elements are (copy) assigned the values of
+// the list. For fixed size matrices (such as e.g. \ref matrix_types_static_matrix) missing values
+// are initialized as default and in case the size of the top-level initializer list does not
+// match the number of rows of the matrix or the size of any nested list exceeds the number of
+// columns, a \a std::invalid_argument exception is thrown. In case of sparse matrices, only
+// the non-zero elements are considered.
 //
 // \n \subsection matrix_operations_copy_assignment Copy Assignment
 //
