@@ -585,7 +585,7 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Type& init )
    \endcode
 
 // The vector is sized according to the size of the initializer list and all its elements are
-// initialized by the non-zero elements of the given initializer list.
+// (copy) assigned the elements of the given initializer list.
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
@@ -999,7 +999,7 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const Type& rh
    \endcode
 
 // The vector is resized according to the size of the initializer list and all its elements are
-// assigned the values from the given initializer list.
+// (copy) assigned the values from the given initializer list.
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
