@@ -480,14 +480,15 @@ inline typename UniformVector<Type,TF>::ConstReference
 //
 // \return Pointer to the internal element storage.
 //
-// This function returns a pointer to the internal storage of the uniform vector.
+// This function returns a pointer to the internal storage of the uniform vector. Note that you
+// can NOT assume that elements of the uniform vector lie adjacent to each other!
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline constexpr typename UniformVector<Type,TF>::ConstPointer
    UniformVector<Type,TF>::data() const noexcept
 {
-   return nullptr;
+   return &value_;
 }
 //*************************************************************************************************
 
