@@ -40,10 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
-#include <blaze/math/expressions/Matrix.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -53,29 +50,6 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the StorageOrder type trait.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct StorageOrderHelper
-{
- private:
-   //**********************************************************************************************
-   template< typename MT, bool SO >
-   static BoolConstant<SO> test( const Matrix<MT,SO>& );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( std::declval< RemoveCV_t<T> >() ) );
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*!\brief Evaluation of the storage order of a given matrix type.
@@ -97,7 +71,7 @@ struct StorageOrderHelper
 */
 template< typename T >
 struct StorageOrder
-   : public StorageOrderHelper<T>::Type
+   : public BoolConstant< T::storageOrder >
 {};
 //*************************************************************************************************
 
@@ -116,7 +90,7 @@ struct StorageOrder
    \endcode
 */
 template< typename T >
-constexpr bool StorageOrder_v = StorageOrder<T>::value;
+constexpr bool StorageOrder_v = T::storageOrder;
 //*************************************************************************************************
 
 } // namespace blaze
