@@ -71,6 +71,7 @@
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDSub.h>
+#include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsHermitian.h>
@@ -886,7 +887,8 @@ template< typename... RSAs >  // Runtime submatrix arguments
 inline Submatrix<MT,unaligned,false,true,CSAs...>::Submatrix( MT& matrix, RSAs... args )
    : DataType  ( args... )  // Base class initialization
    , matrix_   ( matrix  )  // The matrix containing the submatrix
-   , isAligned_( simdEnabled && matrix.data() != nullptr && checkAlignment( data() ) &&
+   , isAligned_( simdEnabled && IsContiguous_v<MT> &&
+                 matrix.data() != nullptr && checkAlignment( data() ) &&
                  ( rows() < 2UL || ( matrix.spacing() & size_t(-SIMDSIZE) ) == 0UL ) )
 {
    if( !Contains_v< TypeList<RSAs...>, Unchecked > ) {
@@ -4167,7 +4169,8 @@ template< typename... RSAs >  // Runtime submatrix arguments
 inline Submatrix<MT,unaligned,true,true,CSAs...>::Submatrix( MT& matrix, RSAs... args )
    : DataType  ( args... )  // Base class initialization
    , matrix_   ( matrix  )  // The matrix containing the submatrix
-   , isAligned_( simdEnabled && matrix.data() != nullptr && checkAlignment( data() ) &&
+   , isAligned_( simdEnabled && IsContiguous_v<MT> &&
+                 matrix.data() != nullptr && checkAlignment( data() ) &&
                  ( columns() < 2UL || ( matrix.spacing() & size_t(-SIMDSIZE) ) == 0UL ) )
 {
    if( !Contains_v< TypeList<RSAs...>, Unchecked > ) {
@@ -6991,7 +6994,8 @@ inline Submatrix<MT,aligned,false,true,CSAs...>::Submatrix( MT& matrix, RSAs... 
       if( ( row() + rows() > matrix_.rows() ) || ( column() + columns() > matrix_.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
-      if( ( simdEnabled && matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
+      if( ( simdEnabled && IsContiguous_v<MT> &&
+            matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
           ( rows() > 1UL && matrix_.spacing() % SIMDSIZE != 0UL ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
       }
@@ -7000,7 +7004,7 @@ inline Submatrix<MT,aligned,false,true,CSAs...>::Submatrix( MT& matrix, RSAs... 
       BLAZE_USER_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
       BLAZE_USER_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
 
-      BLAZE_USER_ASSERT( !simdEnabled || matrix_.data() == nullptr || checkAlignment( data() ), "Invalid submatrix alignment" );
+      BLAZE_USER_ASSERT( !simdEnabled || !IsContiguous_v<MT> || matrix_.data() == nullptr || checkAlignment( data() ), "Invalid submatrix alignment" );
       BLAZE_USER_ASSERT( rows() <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
    }
 }
@@ -9852,17 +9856,18 @@ inline Submatrix<MT,aligned,true,true,CSAs...>::Submatrix( MT& matrix, RSAs... a
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
       }
 
-      if( ( simdEnabled && matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
+      if( ( simdEnabled && IsContiguous_v<MT> &&
+            matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
           ( columns() > 1UL && matrix_.spacing() % SIMDSIZE != 0UL ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
       }
    }
    else {
-      BLAZE_INTERNAL_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
-      BLAZE_INTERNAL_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
+      BLAZE_USER_ASSERT( row()    + rows()    <= matrix_.rows()   , "Invalid submatrix specification" );
+      BLAZE_USER_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
 
-      BLAZE_INTERNAL_ASSERT( !simdEnabled || matrix_.data() == nullptr || checkAlignment( data() ), "Invalid submatrix alignment" );
-      BLAZE_INTERNAL_ASSERT( columns() <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
+      BLAZE_USER_ASSERT( !simdEnabled || !IsContiguous_v<MT> || matrix_.data() == nullptr || checkAlignment( data() ), "Invalid submatrix alignment" );
+      BLAZE_USER_ASSERT( columns() <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
    }
 }
 /*! \endcond */
