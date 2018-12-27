@@ -172,6 +172,7 @@ class SVecDVecOuterExpr
  public:
    //**Type definitions****************************************************************************
    using This          = SVecDVecOuterExpr<VT1,VT2>;   //!< Type of this SVecDVecOuterExpr instance.
+   using BaseType      = SparseMatrix<This,true>;      //!< Base type of this SVecDVecOuterExpr instance.
    using ResultType    = MultTrait_t<RT1,RT2>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.

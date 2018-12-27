@@ -146,6 +146,7 @@ struct SMatReduceExpr<MT,OP,0UL>
  public:
    //**Type definitions****************************************************************************
    using This          = SMatReduceExpr<MT,OP,0UL>;    //!< Type of this SMatReduceExpr instance.
+   using BaseType      = DenseVector<This,true>;       //!< Base type of this SMatReduceExpr instance.
    using ResultType    = ReduceTrait_t<RT,OP,0UL>;     //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
@@ -799,6 +800,7 @@ struct SMatReduceExpr<MT,OP,rowwise>
  public:
    //**Type definitions****************************************************************************
    using This          = SMatReduceExpr<MT,OP,rowwise>;  //!< Type of this SMatReduceExpr instance.
+   using BaseType      = DenseVector<This,false>;        //!< Base type of this SMatReduceExpr instance.
    using ResultType    = ReduceTrait_t<RT,OP,rowwise>;   //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;    //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;      //!< Resulting element type.

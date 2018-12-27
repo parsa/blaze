@@ -138,6 +138,7 @@ class TSMatDMatSchurExpr
  public:
    //**Type definitions****************************************************************************
    using This          = TSMatDMatSchurExpr<MT1,MT2>;  //!< Type of this TSMatDMatSchurExpr instance.
+   using BaseType      = SparseMatrix<This,true>;      //!< Base type of this TSMatDMatSchurExpr instance.
    using ResultType    = SchurTrait_t<RT1,RT2>;        //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.

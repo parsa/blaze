@@ -73,6 +73,7 @@ class SMatTransposer
  public:
    //**Type definitions****************************************************************************
    using This           = SMatTransposer<MT,SO>;  //!< Type of this SMatTransposer instance.
+   using BaseType       = SparseMatrix<This,SO>;  //!< Base type of this SMatTransposer instance.
    using ResultType     = TransposeType_t<MT>;    //!< Result type for expression template evaluations.
    using OppositeType   = MT;                     //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType  = ResultType_t<MT>;       //!< Transpose type for expression template evaluations.

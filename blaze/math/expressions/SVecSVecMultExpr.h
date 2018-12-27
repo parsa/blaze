@@ -112,6 +112,7 @@ class SVecSVecMultExpr
  public:
    //**Type definitions****************************************************************************
    using This          = SVecSVecMultExpr<VT1,VT2,TF>;  //!< Type of this SVecSVecMultExpr instance.
+   using BaseType      = SparseVector<This,TF>;         //!< Base type of this SVecSVecMultExpr instance.
    using ResultType    = MultTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;     //!< Resulting element type.

@@ -80,6 +80,7 @@ class DVecTransposer
  public:
    //**Type definitions****************************************************************************
    using This           = DVecTransposer<VT,TF>;     //!< Type of this DVecTransposer instance.
+   using BaseType       = DenseVector<This,TF>;      //!< Base type of this DVecTransposer instance.
    using ResultType     = TransposeType_t<VT>;       //!< Result type for expression template evaluations.
    using TransposeType  = ResultType_t<VT>;          //!< Transpose type for expression template evaluations.
    using ElementType    = ElementType_t<VT>;         //!< Type of the vector elements.

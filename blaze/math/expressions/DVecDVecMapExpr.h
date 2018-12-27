@@ -161,6 +161,7 @@ class DVecDVecMapExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DVecDVecMapExpr<VT1,VT2,OP,TF>;  //!< Type of this DVecDVecMapExpr instance.
+   using BaseType      = DenseVector<This,TF>;            //!< Base type of this DVecDVecMapExpr instance.
    using ResultType    = MapTrait_t<RT1,RT2,OP>;          //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;     //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;       //!< Resulting element type.

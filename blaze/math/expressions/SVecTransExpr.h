@@ -128,11 +128,12 @@ class SVecTransExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = SVecTransExpr<VT,TF>;  //!< Type of this SVecTransExpr instance.
-   using ResultType    = TransposeType_t<VT>;   //!< Result type for expression template evaluations.
-   using TransposeType = ResultType_t<VT>;      //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<VT>;     //!< Resulting element type.
-   using ReturnType    = ReturnType_t<VT>;      //!< Return type for expression template evaluations.
+   using This          = SVecTransExpr<VT,TF>;   //!< Type of this SVecTransExpr instance.
+   using BaseType      = SparseVector<This,TF>;  //!< Base type of this SVecTransExpr instance.
+   using ResultType    = TransposeType_t<VT>;    //!< Result type for expression template evaluations.
+   using TransposeType = ResultType_t<VT>;       //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<VT>;      //!< Resulting element type.
+   using ReturnType    = ReturnType_t<VT>;       //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = If_t< useAssign, const ResultType, const SVecTransExpr& >;

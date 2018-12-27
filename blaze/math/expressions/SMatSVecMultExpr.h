@@ -126,6 +126,7 @@ class SMatSVecMultExpr
  public:
    //**Type definitions****************************************************************************
    using This          = SMatSVecMultExpr<MT,VT>;      //!< Type of this SMatSVecMultExpr instance.
+   using BaseType      = SparseVector<This,false>;     //!< Base type of this SMatSVecMultExpr instance.
    using ResultType    = MultTrait_t<MRT,VRT>;         //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.

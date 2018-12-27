@@ -80,6 +80,7 @@ class SVecSerialExpr
  public:
    //**Type definitions****************************************************************************
    using This          = SVecSerialExpr<VT,TF>;  //!< Type of this SVecSerialExpr instance.
+   using BaseType      = SparseVector<This,TF>;  //!< Base type of this SVecSerialExpr instance.
    using ResultType    = ResultType_t<VT>;       //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<VT>;    //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<VT>;      //!< Resulting element type.

@@ -155,6 +155,7 @@ class SMatScalarDivExpr
  public:
    //**Type definitions****************************************************************************
    using This          = SMatScalarDivExpr<MT,ST,SO>;  //!< Type of this SMatScalarDivExpr instance.
+   using BaseType      = SparseMatrix<This,SO>;        //!< Base type of this SMatScalarDivExpr instance.
    using ResultType    = MultTrait_t<RT,ST>;           //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.

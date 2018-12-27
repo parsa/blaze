@@ -132,12 +132,13 @@ class DVecExpandExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DVecExpandExpr<VT,TF>;        //!< Type of this DVecExpandExpr instance.
-   using ResultType    = ExpandTrait_t<VT,CEAs...>;    //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<VT>;            //!< Resulting element type.
-   using ReturnType    = ReturnType_t<VT>;             //!< Return type for expression template evaluations.
+   using This          = DVecExpandExpr<VT,TF,CEAs...>;  //!< Type of this DVecExpandExpr instance.
+   using BaseType      = DenseMatrix<This,!TF>;          //!< Base type of this DVecExpandExpr instance.
+   using ResultType    = ExpandTrait_t<VT,CEAs...>;      //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;    //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<VT>;              //!< Resulting element type.
+   using ReturnType    = ReturnType_t<VT>;               //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
    using CompositeType = If_t< useAssign, const ResultType, const DVecExpandExpr& >;

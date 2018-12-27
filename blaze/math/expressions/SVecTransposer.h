@@ -77,6 +77,7 @@ class SVecTransposer
  public:
    //**Type definitions****************************************************************************
    using This           = SVecTransposer<VT,TF>;  //!< Type of this SVecTransposer instance.
+   using BaseType       = SparseVector<This,TF>;  //!< Base type of this SVecTransposer instance.
    using ResultType     = TransposeType_t<VT>;    //!< Result type for expression template evaluations.
    using TransposeType  = ResultType_t<VT>;       //!< Transpose type for expression template evaluations.
    using ElementType    = ElementType_t<VT>;      //!< Resulting element type.

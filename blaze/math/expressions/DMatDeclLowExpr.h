@@ -136,6 +136,7 @@ class DMatDeclLowExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DMatDeclLowExpr<MT,SO>;       //!< Type of this DMatDeclLowExpr instance.
+   using BaseType      = DenseMatrix<This,SO>;         //!< Base type of this DMatDeclLowExpr instance.
    using ResultType    = DeclLowTrait_t<RT>;           //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.

@@ -123,6 +123,7 @@ class SMatTDMatSubExpr
  public:
    //**Type definitions****************************************************************************
    using This          = SMatTDMatSubExpr<MT1,MT2>;    //!< Type of this SMatTDMatSubExpr instance.
+   using BaseType      = DenseMatrix<This,true>;       //!< Base type of this SMatTDMatSubExpr instance.
    using ResultType    = SubTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.

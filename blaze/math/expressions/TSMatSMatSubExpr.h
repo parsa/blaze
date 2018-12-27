@@ -145,7 +145,12 @@ class TSMatSMatSubExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = TSMatSMatSubExpr<MT1,MT2>;    //!< Type of this TSMatSMatSubExpr instance.
+   //! Type of this TSMatSMatSubExpr instance.
+   using This = TSMatSMatSubExpr<MT1,MT2>;
+
+   //! Base type of this TSMatSMatSubExpr instance.
+   using BaseType = SparseMatrix< This, IsZero_v<MT2> >;
+
    using ResultType    = SubTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.

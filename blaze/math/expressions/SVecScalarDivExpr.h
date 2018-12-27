@@ -154,6 +154,7 @@ class SVecScalarDivExpr
  public:
    //**Type definitions****************************************************************************
    using This          = SVecScalarDivExpr<VT,ST,TF>;  //!< Type of this SVecScalarDivExpr instance.
+   using BaseType      = SparseVector<This,TF>;        //!< Base type of this SVecScalarDivExpr instance.
    using ResultType    = DivTrait_t<RT,ST>;            //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.

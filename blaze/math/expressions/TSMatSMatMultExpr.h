@@ -151,7 +151,12 @@ class TSMatSMatMultExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = TSMatSMatMultExpr<MT1,MT2>;   //!< Type of this TSMatSMatMultExpr instance.
+   //! Type of this TSMatSMatMultExpr instance.
+   using This = TSMatSMatMultExpr<MT1,MT2>;
+
+   //! Base type of this TSMatSMatMultExpr instance.
+   using BaseType = SparseMatrix< This, !IsIdentity_v<MT1> >;
+
    using ResultType    = MultTrait_t<RT1,RT2>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.

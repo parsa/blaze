@@ -152,6 +152,7 @@ class SMatSMatMultExpr
  public:
    //**Type definitions****************************************************************************
    using This          = SMatSMatMultExpr<MT1,MT2>;    //!< Type of this SMatSMatMultExpr instance.
+   using BaseType      = SparseMatrix<This,false>;     //!< Base type of this SMatSMatMultExpr instance.
    using ResultType    = MultTrait_t<RT1,RT2>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.

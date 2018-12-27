@@ -235,6 +235,9 @@ class SMatDMatMultExpr
    //! Type of this SMatDMatMultExpr instance.
    using This = SMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>;
 
+   //! Base type of this SMatDMatMultExpr instance.
+   using BaseType = DenseMatrix<This,false>;
+
    //! Result type for expression template evaluations.
    using ResultType = typename If_t< HERM
                                    , DeclHermTrait< MultTrait_t<RT1,RT2> >

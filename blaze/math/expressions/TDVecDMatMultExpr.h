@@ -200,6 +200,7 @@ class TDVecDMatMultExpr
  public:
    //**Type definitions****************************************************************************
    using This          = TDVecDMatMultExpr<VT,MT>;     //!< Type of this TDVecDMatMultExpr instance.
+   using BaseType      = DenseVector<This,true>;       //!< Base type of this TDVecDMatMultExpr instance.
    using ResultType    = MultTrait_t<VRT,MRT>;         //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
@@ -2548,6 +2549,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
  public:
    //**Type definitions****************************************************************************
    using This          = DVecScalarMultExpr<VMM,ST,true>;  //!< Type of this DVecScalarMultExpr instance.
+   using BaseType      = DenseVector<This,true>;           //!< Base type of this DVecScalarMultExpr instance.
    using ResultType    = MultTrait_t<RES,ST>;              //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;      //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;        //!< Resulting element type.

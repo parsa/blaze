@@ -134,6 +134,7 @@ class DVecTransExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DVecTransExpr<VT,TF>;  //!< Type of this DVecTransExpr instance.
+   using BaseType      = DenseVector<This,TF>;  //!< Base type of this DVecTransExpr instance.
    using ResultType    = TransposeType_t<VT>;   //!< Result type for expression template evaluations.
    using TransposeType = ResultType_t<VT>;      //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<VT>;     //!< Resulting element type.

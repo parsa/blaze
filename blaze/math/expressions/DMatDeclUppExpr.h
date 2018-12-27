@@ -136,6 +136,7 @@ class DMatDeclUppExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DMatDeclUppExpr<MT,SO>;       //!< Type of this DMatDeclUppExpr instance.
+   using BaseType      = DenseMatrix<This,SO>;         //!< Base type of this DMatDeclUppExpr instance.
    using ResultType    = DeclUppTrait_t<RT>;           //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.

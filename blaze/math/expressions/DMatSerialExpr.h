@@ -80,6 +80,7 @@ class DMatSerialExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DMatSerialExpr<MT,SO>;  //!< Type of this DMatSerialExpr instance.
+   using BaseType      = DenseMatrix<This,SO>;   //!< Base type of this DMatSerialExpr instance.
    using ResultType    = ResultType_t<MT>;       //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<MT>;     //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<MT>;    //!< Transpose type for expression template evaluations.

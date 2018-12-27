@@ -132,6 +132,7 @@ class SVecExpandExpr
  public:
    //**Type definitions****************************************************************************
    using This          = SVecExpandExpr<VT,TF,CEAs...>;  //!< Type of this SVecExpandExpr instance.
+   using BaseType      = SparseMatrix<This,!TF>;         //!< Base type of this SVecExpandExpr instance.
    using ResultType    = ExpandTrait_t<VT,CEAs...>;      //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;    //!< Transpose type for expression template evaluations.

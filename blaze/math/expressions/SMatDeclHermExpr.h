@@ -131,6 +131,7 @@ class SMatDeclHermExpr
  public:
    //**Type definitions****************************************************************************
    using This          = SMatDeclHermExpr<MT,SO>;      //!< Type of this SMatDeclHermExpr instance.
+   using BaseType      = SparseMatrix<This,SO>;        //!< Base type of this SMatDeclHermExpr instance.
    using ResultType    = DeclHermTrait_t<RT>;          //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.

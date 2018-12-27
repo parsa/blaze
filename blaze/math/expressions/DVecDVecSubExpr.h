@@ -154,6 +154,7 @@ class DVecDVecSubExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DVecDVecSubExpr<VT1,VT2,TF>;  //!< Type of this DVecDVecSubExpr instance.
+   using BaseType      = DenseVector<This,TF>;         //!< Base type of this DVecDVecSubExpr instance.
    using ResultType    = SubTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.

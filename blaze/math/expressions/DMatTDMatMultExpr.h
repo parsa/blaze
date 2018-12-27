@@ -245,6 +245,9 @@ class DMatTDMatMultExpr
    //! Type of this DMatTDMatMultExpr instance.
    using This = DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>;
 
+   //! Base type of this DMatTDMatMultExpr instance.
+   using BaseType = DenseMatrix<This,false>;
+
    //! Result type for expression template evaluations.
    using ResultType = typename If_t< HERM
                                    , DeclHermTrait< MultTrait_t<RT1,RT2> >
@@ -4435,6 +4438,9 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    //**Type definitions****************************************************************************
    //! Type of this DMatScalarMultExpr instance.
    using This = DMatScalarMultExpr<MMM,ST,false>;
+
+   //! Base type of this DMatScalarMultExpr instance.
+   using BaseType = DenseMatrix<This,false>;
 
    //! Result type for expression template evaluations.
    using ResultType = typename If_t< HERM

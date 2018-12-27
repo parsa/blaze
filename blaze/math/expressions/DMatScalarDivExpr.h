@@ -160,6 +160,7 @@ class DMatScalarDivExpr
  public:
    //**Type definitions****************************************************************************
    using This          = DMatScalarDivExpr<MT,ST,SO>;  //!< Type of this DMatScalarDivExpr instance.
+   using BaseType      = DenseMatrix<This,SO>;         //!< Base type of this DMatScalarDivExpr instance.
    using ResultType    = DivTrait_t<RT,ST>;            //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.

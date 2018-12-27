@@ -148,6 +148,7 @@ class DMatReduceExpr<MT,OP,columnwise>
  public:
    //**Type definitions****************************************************************************
    using This          = DMatReduceExpr<MT,OP,columnwise>;  //!< Type of this DMatReduceExpr instance.
+   using BaseType      = DenseVector<This,true>;            //!< Base type of this DMatReduceExpr instance.
    using ResultType    = ReduceTrait_t<RT,OP,columnwise>;   //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;       //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;         //!< Resulting element type.
@@ -801,6 +802,7 @@ class DMatReduceExpr<MT,OP,rowwise>
  public:
    //**Type definitions****************************************************************************
    using This          = DMatReduceExpr<MT,OP,rowwise>;  //!< Type of this DMatReduceExpr instance.
+   using BaseType      = DenseVector<This,false>;        //!< Base type of this DMatReduceExpr instance.
    using ResultType    = ReduceTrait_t<RT,OP,rowwise>;   //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;    //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;      //!< Resulting element type.

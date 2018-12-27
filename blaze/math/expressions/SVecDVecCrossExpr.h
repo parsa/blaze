@@ -115,6 +115,7 @@ class SVecDVecCrossExpr
  public:
    //**Type definitions****************************************************************************
    using This          = SVecDVecCrossExpr<VT1,VT2,TF>;  //!< Type of this SVecDVecCrossExpr instance.
+   using BaseType      = DenseVector<This,TF>;           //!< Base type of this SVecDVecCrossExpr instance.
    using ResultType    = CrossTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;    //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;      //!< Resulting element type.

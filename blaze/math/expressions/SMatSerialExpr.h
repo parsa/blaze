@@ -79,6 +79,7 @@ class SMatSerialExpr
  public:
    //**Type definitions****************************************************************************
    using This          = SMatSerialExpr<MT,SO>;  //!< Type of this SMatSerialExpr instance.
+   using BaseType      = SparseMatrix<This,SO>;  //!< Base type of this SMatSerialExpr instance.
    using ResultType    = ResultType_t<MT>;       //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<MT>;     //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<MT>;    //!< Transpose type for expression template evaluations.
