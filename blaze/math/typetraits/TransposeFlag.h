@@ -40,10 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <utility>
-#include <blaze/math/expressions/Vector.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -53,29 +50,6 @@ namespace blaze {
 //  CLASS DEFINITION
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the TransposeFlag type trait.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct TransposeFlagHelper
-{
- private:
-   //**********************************************************************************************
-   template< typename VT, bool TF >
-   static BoolConstant<TF> test( const Vector<VT,TF>& );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( std::declval< RemoveCV_t<T> >() ) );
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*!\brief Evaluation of the transpose flag of a given matrix type.
@@ -97,7 +71,7 @@ struct TransposeFlagHelper
 */
 template< typename T >
 struct TransposeFlag
-   : public TransposeFlagHelper<T>::Type
+   : public BoolConstant< T::transposeFlag >
 {};
 //*************************************************************************************************
 
@@ -116,7 +90,7 @@ struct TransposeFlag
    \endcode
 */
 template< typename T >
-constexpr bool TransposeFlag_v = TransposeFlag<T>::value;
+constexpr bool TransposeFlag_v = T::transposeFlag;
 //*************************************************************************************************
 
 } // namespace blaze
