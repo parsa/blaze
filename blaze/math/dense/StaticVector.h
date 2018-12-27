@@ -593,7 +593,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& init )
    blaze::StaticVector<double,3UL> v1{ 4.2, 6.3, -1.2 };
    \endcode
 
-// The vector elements are initialized by the values of the given initializer list. Missing values
+// The vector elements are (copy) assigned the values of the given initializer list. Missing values
 // are initialized as default. Note that in case the size of the initializer list exceeds the size
 // of the vector, a \a std::invalid_argument exception is thrown.
 */
@@ -1062,9 +1062,9 @@ inline constexpr StaticVector<Type,N,TF>&
    v = { 4.2, 6.3, -1.2 };
    \endcode
 
-// The vector elements are assigned the values from the given initializer list. Missing values
-// are reset to their default state. Note that in case the size of the initializer list exceeds
-// the size of the vector, a \a std::invalid_argument exception is thrown.
+// The vector elements are (copy) assigned the values from the given initializer list. Missing
+// values are reset to their default state. Note that in case the size of the initializer list
+// exceeds the size of the vector, a \a std::invalid_argument exception is thrown.
 */
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
