@@ -631,7 +631,7 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( size_t m, size_t n, const Type& in
    \endcode
 
 // The matrix is sized according to the size of the initializer list and all its elements are
-// initialized by the values of the given initializer list. Missing values are initialized as
+// (copy) assigned the values of the given initializer list. Missing values are initialized as
 // default (as e.g. the value 6 in the example).
 */
 template< typename Type  // Data type of the matrix
@@ -789,11 +789,7 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( const Matrix<MT,SO2>& m )
    : DynamicMatrix( (~m).rows(), (~m).columns() )
 {
    if( IsSparseMatrix_v<MT> ) {
-      for( size_t i=0UL; i<m_; ++i ) {
-         for( size_t j=0UL; j<n_; ++j ) {
-            v_[i*nn_+j] = Type();
-         }
-      }
+      reset();
    }
 
    smpAssign( *this, ~m );
@@ -1188,8 +1184,8 @@ inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const Type& rh
    \endcode
 
 // The matrix is resized according to the given initializer list and all its elements are
-// assigned the values from the given initializer list. Missing values are initialized as
-// default (as e.g. the value 6 in the example).
+// (copy) assigned the values from the given initializer list. Missing values are initialized
+// as default (as e.g. the value 6 in the example).
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
@@ -3579,7 +3575,7 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( size_t m, size_t n, const Type& 
    \endcode
 
 // The matrix is sized according to the size of the initializer list and all its elements are
-// initialized by the values of the given initializer list. Missing values are initialized as
+// (copy) assigned the values of the given initializer list. Missing values are initialized as
 // default (as e.g. the value 6 in the example).
 */
 template< typename Type >  // Data type of the matrix
@@ -3749,11 +3745,7 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( const Matrix<MT,SO>& m )
    : DynamicMatrix( (~m).rows(), (~m).columns() )
 {
    if( IsSparseMatrix_v<MT> ) {
-      for( size_t j=0UL; j<n_; ++j ) {
-         for( size_t i=0UL; i<m_; ++i ) {
-            v_[i+j*mm_] = Type();
-         }
-      }
+      reset();
    }
 
    smpAssign( *this, ~m );
@@ -4134,8 +4126,8 @@ inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const Type
    \endcode
 
 // The matrix is resized according to the given initializer list and all its elements are
-// assigned the values from the given initializer list. Missing values are initialized as
-// default (as e.g. the value 6 in the example).
+// (copy) assigned the values from the given initializer list. Missing values are initialized
+// as default (as e.g. the value 6 in the example).
 */
 template< typename Type >  // Data type of the matrix
 inline DynamicMatrix<Type,true>&
