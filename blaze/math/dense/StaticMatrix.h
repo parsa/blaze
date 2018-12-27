@@ -639,10 +639,11 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& init )
                                             { 7, 8, 9 } };
    \endcode
 
-// The matrix elements are initialized by the values of the given initializer list. Missing values
-// are initialized as default (as e.g. the value 6 in the example). Note that in case the size of
-// the top-level initializer list does not match the number of rows of the matrix or the size of
-// any nested list exceeds the number of columns, a \a std::invalid_argument exception is thrown.
+// The matrix elements are (copy) assigned the values of the given initializer list. Missing
+// values are initialized as default (as e.g. the value 6 in the example). Note that in case the
+// size of the top-level initializer list does not match the number of rows of the matrix or the
+// size of any nested list exceeds the number of columns, a \a std::invalid_argument exception
+// is thrown.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -1271,11 +1272,11 @@ inline constexpr StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator=
          { 7, 8, 9 } };
    \endcode
 
-// The matrix elements are assigned the values from the given initializer list. Missing values
-// are initialized as default (as e.g. the value 6 in the example). Note that in case the size
-// of the top-level initializer list does not match the number of rows of the matrix or the size
-// of any nested list exceeds the number of columns, a \a std::invalid_argument exception is
-// thrown.
+// The matrix elements are (copy) assigned the values from the given initializer list. Missing
+// values are initialized as default (as e.g. the value 6 in the example). Note that in case the
+// size of the top-level initializer list does not match the number of rows of the matrix or the
+// size of any nested list exceeds the number of columns, a \a std::invalid_argument exception
+// is thrown.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -3528,10 +3529,10 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& init )
                                                { 7, 8, 9 } };
    \endcode
 
-// The matrix elements are initialized by the values of the given initializer list. Missing values
-// are initialized as default (as e.g. the value 6 in the example). Note that in case the size of
-// the top-level initializer list exceeds the number of rows or the size of any nested list exceeds
-// the number of columns, a \a std::invalid_argument exception is thrown.
+// The matrix elements are (copy) assigned the values of the given initializer list. Missing
+// values are initialized as default (as e.g. the value 6 in the example). Note that in case the
+// size of the top-level initializer list exceeds the number of rows or the size of any nested
+// list exceeds the number of columns, a \a std::invalid_argument exception is thrown.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -4150,10 +4151,10 @@ inline constexpr StaticMatrix<Type,M,N,true>&
          { 7, 8, 9 } };
    \endcode
 
-// The matrix elements are assigned the values from the given initializer list. Missing values
-// are initialized as default (as e.g. the value 6 in the example). Note that in case the size
-// of the top-level initializer list exceeds the number of rows or the size of any nested list
-// exceeds the number of columns, a \a std::invalid_argument exception is thrown.
+// The matrix elements are (copy) assigned the values from the given initializer list. Missing
+// values are initialized as default (as e.g. the value 6 in the example). Note that in case the
+// size of the top-level initializer list exceeds the number of rows or the size of any nested
+// list exceeds the number of columns, a \a std::invalid_argument exception is thrown.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
