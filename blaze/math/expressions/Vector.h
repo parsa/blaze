@@ -81,6 +81,10 @@ struct Vector
    using VectorType = VT;  //!< Type of the vector.
    //**********************************************************************************************
 
+   //**Compilation flags***************************************************************************
+   static constexpr bool transposeFlag = TF;  //!< Transpose flag of the vector.
+   //**********************************************************************************************
+
    //**Non-const conversion operator***************************************************************
    /*!\brief Conversion operator for non-constant vectors.
    //
