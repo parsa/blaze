@@ -781,10 +781,8 @@ inline typename CompressedVector<Type,TF>::Reference
 // \return Reference to the accessed value.
 // \exception std::out_of_range Invalid compressed vector access index.
 //
-// This function returns a reference to the accessed value at position \a index. In case the
-// compressed vector does not yet store an element for index \a index, a new element is inserted
-// into the compressed vector. In contrast to the subscript operator this function always
-// performs a check of the given access index.
+// In contrast to the subscript operator this function always performs a check of the given
+// access indices.
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
