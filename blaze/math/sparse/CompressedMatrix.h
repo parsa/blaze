@@ -897,7 +897,7 @@ inline typename CompressedMatrix<Type,SO>::ConstReference
 //
 // This function returns a reference to the accessed value at position (\a i,\a j). In case the
 // compressed matrix does not yet store an element at position (\a i,\a j) , a new element is
-// inserted into the compressed matrix. In contrast to the subscript operator this function
+// inserted into the compressed matrix. In contrast to the function call operator this function
 // always performs a check of the given access indices.
 */
 template< typename Type  // Data type of the matrix
@@ -924,7 +924,7 @@ inline typename CompressedMatrix<Type,SO>::Reference
 // \return Reference to the accessed value.
 // \exception std::out_of_range Invalid matrix access index.
 //
-// In contrast to the subscript operator this function always performs a check of the given
+// In contrast to the function call operator this function always performs a check of the given
 // access indices.
 */
 template< typename Type  // Data type of the matrix
