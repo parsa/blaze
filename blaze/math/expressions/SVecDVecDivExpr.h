@@ -682,8 +682,8 @@ class SVecDVecDivExpr
 //        vector (\f$ \vec{a}=\vec{b}/\vec{c} \f$).
 // \ingroup sparse_vector
 //
-// \param lhs The left-hand side sparse vector for the component product.
-// \param rhs The right-hand side dense vector for the component product.
+// \param lhs The left-hand side sparse vector for the component quotient.
+// \param rhs The right-hand side dense vector for the component quotient.
 // \return The quotient of the two vectors.
 // \exception std::invalid_argument Vector sizes do not match.
 //

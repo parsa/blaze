@@ -1052,12 +1052,12 @@ class DVecDVecDivExpr
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Division operator for the componentwise product of two dense vectors
+/*!\brief Division operator for the componentwise quotient of two dense vectors
 //        (\f$ \vec{a}=\vec{b}/\vec{c} \f$).
 // \ingroup dense_vector
 //
-// \param lhs The left-hand side dense vector for the component product.
-// \param rhs The right-hand side dense vector for the component product.
+// \param lhs The left-hand side dense vector for the component quotient.
+// \param rhs The right-hand side dense vector for the component quotient.
 // \return The quotient of the two vectors.
 // \exception std::invalid_argument Vector sizes do not match.
 //
