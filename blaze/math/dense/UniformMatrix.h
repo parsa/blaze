@@ -1930,7 +1930,7 @@ struct LowType< UniformMatrix<T1,SO>, UniformMatrix<T2,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t I, size_t J, size_t M, size_t N >
 struct SubmatrixTraitEval1< MT, I, J, M, N
-                          , EnableIf_t< IsUniform_v<MT> > >
+                          , EnableIf_t< IsUniform_v<MT> && !IsZero_v<MT> > >
 {
    using Type = UniformMatrix< RemoveConst_t< ElementType_t<MT> >, StorageOrder_v<MT> >;
 };
@@ -1950,7 +1950,7 @@ struct SubmatrixTraitEval1< MT, I, J, M, N
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t M >
 struct RowsTraitEval1< MT, M
-                     , EnableIf_t< IsUniform_v<MT> > >
+                     , EnableIf_t< IsUniform_v<MT> && !IsZero_v<MT> > >
 {
    using Type = UniformMatrix< RemoveConst_t< ElementType_t<MT> >, false >;
 };
@@ -1970,7 +1970,7 @@ struct RowsTraitEval1< MT, M
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t N >
 struct ColumnsTraitEval1< MT, N
-                        , EnableIf_t< IsUniform_v<MT> > >
+                        , EnableIf_t< IsUniform_v<MT> && !IsZero_v<MT> > >
 {
    using Type = UniformMatrix< RemoveConst_t< ElementType_t<MT> >, true >;
 };

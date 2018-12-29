@@ -44,12 +44,16 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/shims/IsZero.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
+#include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsIdentity.h>
@@ -70,9 +74,10 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/mpl/If.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsSame.h>
+#include <blaze/util/typetraits/RemoveConst.h>
 #include <blaze/util/Unused.h>
 
 
@@ -109,20 +114,21 @@ namespace blaze {
 // possible to read from the elements:
 
    \code
+   using blaze::ZeroMatrix;
    using blaze::rowMajor;
 
    // Creating a row-major 4x6 zero matrix with 4 rows and 6 columns
-   ZeroMatrix<double,rowMajor> A( 4, 6 );
+   ZeroMatrix<double,rowMajor> Z( 4, 6 );
 
    // The function call operator provides access to all possible elements of the zero matrix,
    // including the zero elements.
-   A(1,2) = 2.0;       // Compilation error: It is not possible to write to a zero matrix
-   double d = A(2,1);  // Access to the element (2,1)
+   Z(1,2) = 2.0;       // Compilation error: It is not possible to write to a zero matrix
+   double d = Z(2,1);  // Access to the element (2,1)
 
    // In order to traverse all non-zero elements currently stored in the matrix, the begin()
    // and end() functions can be used. In the example, all non-zero elements of the 2nd row
-   // of A are traversed.
-   for( ZeroMatrix<double,rowMajor>::Iterator i=A.begin(1); i!=A.end(1); ++i ) {
+   // of Z are traversed.
+   for( ZeroMatrix<double,rowMajor>::Iterator i=Z.begin(1); i!=Z.end(1); ++i ) {
       ... = i->value();  // Access to the value of the non-zero element
       ... = i->index();  // Access to the index of the non-zero element
    }
@@ -140,22 +146,22 @@ namespace blaze {
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-   ZeroMatrix<double,rowMajor> A( 3, 3 );  // Row-major 3x3 zero matrix
+   ZeroMatrix<double,rowMajor> Z( 3, 3 );  // Row-major 3x3 zero matrix
 
-   DynamicMatrix<double,columnMajor> B( 3, 3 );  // Column-major 3x3 dynamic dense matrix
-   CompressedMatrix<double,rowMajor> C( 3, 3 );  // Row-major 3x3 compressed sparse matrix
-   CompressedMatrix<double,rowMajor> D( 3, 5 );  // Row-major 3x5 compressed sparse matrix
-   // ... Initialization of B, C, and D
+   DynamicMatrix<double,columnMajor> A( 3, 3 );  // Column-major 3x3 dynamic dense matrix
+   CompressedMatrix<double,rowMajor> B( 3, 3 );  // Row-major 3x3 compressed sparse matrix
+   CompressedMatrix<float,rowMajor>  C( 3, 5 );  // Row-major 3x5 compressed sparse matrix
+   // ... Initialization of A, B, and C
 
-   DynamicMatrix<double,rowMajor>       E( A );  // Creation of a new row-major matrix as a copy of A
-   CompressedMatrix<double,columnMajor> F;       // Creation of a default column-major matrix
+   DynamicMatrix<double,rowMajor>       D( Z );  // Creation of a new row-major matrix as a copy of Z
+   CompressedMatrix<double,columnMajor> E;       // Creation of a default column-major matrix
 
-   E = A + B;    // Addition of a zero matrix and a dense matrix
-   E = C - A;    // Subtraction of a sparse matrix and a zero matrix
-   F = A * D;    // Matrix multiplication between two matrices of different element types
+   D = Z + A;    // Addition of a zero matrix and a dense matrix
+   D = B - Z;    // Subtraction of a sparse matrix and a zero matrix
+   E = Z * C;    // Matrix multiplication between two matrices of different element types
 
-   E = 2.0 * A;  // Scaling of a zero matrix
-   F = A * 2.0;  // Scaling of a zero matrix
+   D = 2.0 * Z;  // Scaling of a zero matrix
+   E = Z * 2.0;  // Scaling of a zero matrix
    \endcode
 */
 template< typename Type                    // Data type of the matrix
@@ -965,7 +971,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline bool ZeroMatrix<Type,SO>::canSMPAssign() const noexcept
 {
-   return false;
+   return true;
 }
 //*************************************************************************************************
 
@@ -1010,7 +1016,7 @@ constexpr void swap( ZeroMatrix<Type,SO>& a, ZeroMatrix<Type,SO>& b ) noexcept;
 /*!\brief Resetting the given zero matrix.
 // \ingroup zero_matrix
 //
-// \param m The matrix to be resetted.
+// \param m The zero matrix to be resetted.
 // \return void
 */
 template< typename Type  // Data type of the matrix
@@ -1047,7 +1053,7 @@ inline constexpr void reset( ZeroMatrix<Type,SO>& m, size_t i ) noexcept
 /*!\brief Clearing the given zero matrix.
 // \ingroup zero_matrix
 //
-// \param m The matrix to be cleared.
+// \param m The zero matrix to be cleared.
 // \return void
 */
 template< typename Type  // Data type of the matrix
@@ -1402,7 +1408,7 @@ inline decltype(auto)
    using blaze::rowMajor;
 
    blaze::ZeroMatrix<double,rowMajor> A;
-   blaze::DynamicMatrix<double,rowMajor> B, C;
+   blaze::CompressedMatrix<double,rowMajor> B, C;
    // ... Resizing and initialization
    C = A + B;
    \endcode
@@ -1445,7 +1451,7 @@ inline decltype(auto)
    \code
    using blaze::rowMajor;
 
-   blaze::DynamicMatrix<double,rowMajor> A, C;
+   blaze::CompressedMatrix<double,rowMajor> A, C;
    blaze::ZeroMatrix<double,rowMajor> B;
    // ... Resizing and initialization
    C = A + B;
@@ -1981,8 +1987,8 @@ inline decltype(auto)
    \code
    using blaze::rowMajor;
 
-   blaze::ZeroMatrix<double,rowMajor> A;
-   blaze::DynamicMatrix<double,rowMajor> B, C;
+   blaze::ZeroMatrix<double,rowMajor> A, C;
+   blaze::DynamicMatrix<double,rowMajor> B;
    // ... Resizing and initialization
    C = A * B;
    \endcode
@@ -2028,8 +2034,8 @@ inline decltype(auto)
    \code
    using blaze::rowMajor;
 
-   blaze::DynamicMatrix<double,rowMajor> A, C;
-   blaze::ZeroMatrix<double,rowMajor> B;
+   blaze::DynamicMatrix<double,rowMajor> A;
+   blaze::ZeroMatrix<double,rowMajor> B, C;
    // ... Resizing and initialization
    C = A * B;
    \endcode
@@ -2075,8 +2081,8 @@ inline decltype(auto)
    \code
    using blaze::rowMajor;
 
-   blaze::ZeroMatrix<double,rowMajor> A;
-   blaze::DynamicMatrix<double,rowMajor> B, C;
+   blaze::ZeroMatrix<double,rowMajor> A, C;
+   blaze::DynamicMatrix<double,rowMajor> B;
    // ... Resizing and initialization
    C = A * B;
    \endcode
@@ -2122,8 +2128,8 @@ inline decltype(auto)
    \code
    using blaze::rowMajor;
 
-   blaze::DynamicMatrix<double,rowMajor> A, C;
-   blaze::ZeroMatrix<double,rowMajor> B;
+   blaze::DynamicMatrix<double,rowMajor> A;
+   blaze::ZeroMatrix<double,rowMajor> B, C;
    // ... Resizing and initialization
    C = A * B;
    \endcode
@@ -2198,6 +2204,47 @@ inline decltype(auto)
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Division operator for the division of a zero matrix by a scalar value
+//        (\f$ A=B/s \f$).
+// \ingroup zero_matrix
+//
+// \param mat The left-hand side zero matrix for the division.
+// \param scalar The right-hand side scalar value for the division.
+// \return The scaled result matrix.
+//
+// This operator represents the division between a zero matrix by a scalar value:
+
+   \code
+   blaze::ZeroMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = A / 0.24;
+   \endcode
+
+// The operator returns a zero matrix of the higher-order element type of the involved data types
+// \a MT::ElementType and \a ST. Note that this operator only works for scalar values of built-in
+// data type.
+*/
+template< typename MT  // Type of the left-hand side zero matrix
+        , typename ST  // Type of the right-hand side scalar
+        , EnableIf_t< IsMatrix_v<MT> && IsZero_v<MT> && IsNumeric_v<ST> >* = nullptr >
+inline decltype(auto)
+   operator/( const MT& mat, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( scalar );
+
+   using ET = DivTrait_t< ElementType_t<MT>, ST >;
+   constexpr bool SO = StorageOrder_v<MT>;
+
+   return ZeroMatrix<ET,SO>( mat.rows(), mat.columns() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -2222,7 +2269,7 @@ inline decltype(auto)
    B = declzero( A );
    \endcode
 */
-template< typename MT  // Type of the sparse matrix
+template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
 inline ZeroMatrix<ElementType_t<MT>,SO>
    declzero( const Matrix<MT,SO>& m )
@@ -2262,8 +2309,8 @@ struct IsUniform< ZeroMatrix<Type,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO >
-struct IsZero< ZeroMatrix<MT,SO> >
+template< typename Type, bool SO >
+struct IsZero< ZeroMatrix<Type,SO> >
    : public TrueType
 {};
 /*! \endcond */
@@ -2280,8 +2327,8 @@ struct IsZero< ZeroMatrix<MT,SO> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool SO >
-struct IsResizable< ZeroMatrix<T,SO> >
+template< typename Type, bool SO >
+struct IsResizable< ZeroMatrix<Type,SO> >
    : public TrueType
 {};
 /*! \endcond */
@@ -2553,6 +2600,66 @@ template< typename T1, bool SO, typename T2 >
 struct LowType< ZeroMatrix<T1,SO>, ZeroMatrix<T2,SO> >
 {
    using Type = ZeroMatrix< typename LowType<T1,T2>::Type, SO >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBMATRIXTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, size_t I, size_t J, size_t M, size_t N >
+struct SubmatrixTraitEval1< MT, I, J, M, N
+                          , EnableIf_t< IsZero_v<MT> > >
+{
+   using Type = ZeroMatrix< RemoveConst_t< ElementType_t<MT> >, StorageOrder_v<MT> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ROWSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, size_t M >
+struct RowsTraitEval1< MT, M
+                     , EnableIf_t< IsZero_v<MT> > >
+{
+   using Type = ZeroMatrix< RemoveConst_t< ElementType_t<MT> >, false >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  COLUMNSTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, size_t N >
+struct ColumnsTraitEval1< MT, N
+                        , EnableIf_t< IsZero_v<MT> > >
+{
+   using Type = ZeroMatrix< RemoveConst_t< ElementType_t<MT> >, true >;
 };
 /*! \endcond */
 //*************************************************************************************************
