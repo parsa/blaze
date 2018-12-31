@@ -46,6 +46,7 @@
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/constraints/Zero.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Forward.h>
@@ -60,6 +61,7 @@
 #include <blaze/math/typetraits/IsInvertible.h>
 #include <blaze/math/typetraits/IsMultExpr.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
@@ -68,6 +70,7 @@
 #include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
+#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
@@ -77,6 +80,7 @@
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/RemoveReference.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -814,6 +818,7 @@ class SMatScalarDivExpr
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( MT, SO );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ST );
    BLAZE_CONSTRAINT_MUST_NOT_BE_FLOATING_POINT_TYPE( ST );
    BLAZE_CONSTRAINT_MUST_NOT_BE_FLOATING_POINT_TYPE( ElementType );
@@ -864,6 +869,73 @@ struct SMatScalarDivExprHelper
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the division between a sparse matrix and a scalar value
+//        (\f$ A=B/s \f$).
+// \ingroup sparse_matrix
+//
+// \param mat The left-hand side sparse matrix for the division.
+// \param scalar The right-hand side scalar value for the division.
+// \return The scaled result matrix.
+//
+// This function implements a performance optimized treatment of the division between a sparse
+// matrix and a scalar value.
+*/
+template< typename MT  // Type of the left-hand side sparse matrix
+        , bool SO      // Storage order of the left-hand side sparse matrix
+        , typename ST  // Type of the right-hand side scalar
+        , DisableIf_t< IsZero_v<MT> >* = nullptr >
+inline const typename SMatScalarDivExprHelper<MT,ST,SO>::Type
+   smatscalardiv( const SparseMatrix<MT,SO>& mat, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ReturnType = typename SMatScalarDivExprHelper<MT,ST,SO>::Type;
+   using ScalarType = RightOperand_t<ReturnType>;
+
+   if( IsMultExpr_v<ReturnType> ) {
+      return ReturnType( ~mat, ScalarType(1)/ScalarType(scalar) );
+   }
+   else {
+      return ReturnType( ~mat, scalar );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the division between a zero matrix and a scalar value
+//        (\f$ A=B/s \f$).
+// \ingroup sparse_matrix
+//
+// \param mat The left-hand side zero matrix for the division.
+// \param scalar The right-hand side scalar value for the division.
+// \return The scaled result matrix.
+//
+// This function implements a performance optimized treatment of the division between a zero
+// matrix and a scalar value.
+*/
+template< typename MT  // Type of the left-hand side sparse matrix
+        , bool SO      // Storage order of the left-hand side zero matrix
+        , typename ST  // Type of the right-hand side scalar
+        , EnableIf_t< IsZero_v<MT> >* = nullptr >
+inline const ZeroMatrix< DivTrait_t< ElementType_t<MT>, ST >, SO >
+   smatscalardiv( const SparseMatrix<MT,SO>& mat, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( scalar );
+
+   using ET = DivTrait_t< ElementType_t<MT>, ST >;
+   return ZeroMatrix<ET,SO>( (~mat).rows(), (~mat).columns() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Division operator for the division of a sparse matrix by a scalar value (\f$ A=B/s \f$).
 // \ingroup sparse_matrix
 //
@@ -895,15 +967,7 @@ inline decltype(auto) operator/( const SparseMatrix<MT,SO>& mat, ST scalar )
 
    BLAZE_USER_ASSERT( scalar != ST(0), "Division by zero detected" );
 
-   using ReturnType = typename SMatScalarDivExprHelper<MT,ST,SO>::Type;
-   using ScalarType = RightOperand_t<ReturnType>;
-
-   if( IsMultExpr_v<ReturnType> ) {
-      return ReturnType( ~mat, ScalarType(1)/ScalarType(scalar) );
-   }
-   else {
-      return ReturnType( ~mat, scalar );
-   }
+   return smatscalardiv( ~mat, scalar );
 }
 //*************************************************************************************************
 

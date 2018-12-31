@@ -1300,55 +1300,6 @@ inline void erase( ZeroMatrix<Type,SO>& m, size_t i, Iterator first, Iterator la
 
 //=================================================================================================
 //
-//  GLOBAL BINARY ARITHMETIC OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Division operator for the division of a zero matrix by a scalar value
-//        (\f$ A=B/s \f$).
-// \ingroup zero_matrix
-//
-// \param mat The left-hand side zero matrix for the division.
-// \param scalar The right-hand side scalar value for the division.
-// \return The scaled result matrix.
-//
-// This operator represents the division between a zero matrix by a scalar value:
-
-   \code
-   blaze::ZeroMatrix<double> A, B;
-   // ... Resizing and initialization
-   B = A / 0.24;
-   \endcode
-
-// The operator returns a zero matrix of the higher-order element type of the involved data types
-// \a MT::ElementType and \a ST. Note that this operator only works for scalar values of built-in
-// data type.
-*/
-template< typename MT  // Type of the left-hand side zero matrix
-        , typename ST  // Type of the right-hand side scalar
-        , EnableIf_t< IsMatrix_v<MT> && IsZero_v<MT> && IsNumeric_v<ST> >* = nullptr >
-inline decltype(auto)
-   operator/( const MT& mat, ST scalar )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   UNUSED_PARAMETER( scalar );
-
-   using ET = DivTrait_t< ElementType_t<MT>, ST >;
-   constexpr bool SO = StorageOrder_v<MT>;
-
-   return ZeroMatrix<ET,SO>( mat.rows(), mat.columns() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  GLOBAL FUNCTIONS
 //
 //=================================================================================================
