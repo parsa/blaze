@@ -49,6 +49,7 @@
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/constraints/Zero.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseMatrix.h>
@@ -80,6 +81,7 @@
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/Check.h>
@@ -1882,6 +1884,7 @@ class DMatTSMatMultExpr
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_FORM_VALID_MATMATMULTEXPR( MT1, MT2 );
    /*! \endcond */
    //**********************************************************************************************
@@ -1896,6 +1899,65 @@ class DMatTSMatMultExpr
 //  GLOBAL BINARY ARITHMETIC OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the multiplication between a row-major dense matrix and a
+//        column-major sparse matrix (\f$ A=B*C \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix for the multiplication.
+// \param rhs The right-hand side sparse matrix for the multiplication.
+// \return The sum of the two matrices.
+//
+// This function implements a performance optimized treatment of the multiplication between a
+// row-major dense matrix and a column-major sparse matrix.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , DisableIf_t< IsZero_v<MT2> >* = nullptr >
+inline const DMatTSMatMultExpr<MT1,MT2,false,false,false,false>
+   dmattsmatmult( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).rows(), "Invalid matrix sizes" );
+
+   return DMatTSMatMultExpr<MT1,MT2,false,false,false,false>( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the multiplication between a row-major dense matrix and a
+//        column-major zero matrix (\f$ A=B*C \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix for the multiplication.
+// \param rhs The right-hand side zero matrix for the multiplication.
+// \return The sum of the two matrices.
+//
+// This function implements a performance optimized treatment of the multiplication between a
+// row-major dense matrix and a column-major zero matrix.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , EnableIf_t< IsZero_v<MT2> >* = nullptr >
+inline const ZeroMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, true >
+   dmattsmatmult( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).rows(), "Invalid matrix sizes" );
+
+   using ET = MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >;
+   return ZeroMatrix<ET,true>( (~lhs).rows(), (~rhs).columns() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Multiplication operator for the multiplication of a row-major dense matrix and a
@@ -1938,8 +2000,7 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using ReturnType = const DMatTSMatMultExpr<MT1,MT2,false,false,false,false>;
-   return ReturnType( ~lhs, ~rhs );
+   return dmattsmatmult( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
