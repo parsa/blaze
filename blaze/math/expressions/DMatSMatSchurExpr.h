@@ -48,6 +48,7 @@
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/SchurExpr.h>
 #include <blaze/math/constraints/SparseMatrix.h>
+#include <blaze/math/constraints/Zero.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Forward.h>
@@ -62,6 +63,7 @@
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
@@ -858,9 +860,10 @@ class DMatSMatSchurExpr
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE ( MT1 );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_FORM_VALID_SCHUREXPR( MT1, MT2 );
    /*! \endcond */
    //**********************************************************************************************
@@ -896,7 +899,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
                        ( IsStrictlyLower_v<MT1> && IsUpper_v<MT2> ) ||
                        ( IsStrictlyUpper_v<MT1> && IsLower_v<MT2> ) ||
                        ( IsLower_v<MT1> && IsStrictlyUpper_v<MT2> ) ||
-                       ( IsUpper_v<MT1> && IsStrictlyLower_v<MT2> ) >* = nullptr >
+                       ( IsUpper_v<MT1> && IsStrictlyLower_v<MT2> ) ||
+                       IsZero_v<MT2> >* = nullptr >
 inline const DMatSMatSchurExpr<MT1,MT2>
    dmatsmatschur( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
@@ -964,7 +968,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , EnableIf_t< ( IsStrictlyLower_v<MT1> && IsUpper_v<MT2> ) ||
                       ( IsStrictlyUpper_v<MT1> && IsLower_v<MT2> ) ||
                       ( IsLower_v<MT1> && IsStrictlyUpper_v<MT2> ) ||
-                      ( IsUpper_v<MT1> && IsStrictlyLower_v<MT2> ) >* = nullptr >
+                      ( IsUpper_v<MT1> && IsStrictlyLower_v<MT2> ) ||
+                      IsZero_v<MT2> >* = nullptr >
 inline const ZeroMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, false >
    dmatsmatschur( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
@@ -1047,7 +1052,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
                        ( IsStrictlyLower_v<MT1> && IsUpper_v<MT2> ) ||
                        ( IsStrictlyUpper_v<MT1> && IsLower_v<MT2> ) ||
                        ( IsLower_v<MT1> && IsStrictlyUpper_v<MT2> ) ||
-                       ( IsUpper_v<MT1> && IsStrictlyLower_v<MT2> ) >* = nullptr >
+                       ( IsUpper_v<MT1> && IsStrictlyLower_v<MT2> ) ||
+                       IsZero_v<MT2> >* = nullptr >
 inline const DMatSMatSchurExpr<MT1,MT2>
    tdmatsmatschur( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
@@ -1114,7 +1120,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , EnableIf_t< ( IsStrictlyLower_v<MT1> && IsUpper_v<MT2> ) ||
                       ( IsStrictlyUpper_v<MT1> && IsLower_v<MT2> ) ||
                       ( IsLower_v<MT1> && IsStrictlyUpper_v<MT2> ) ||
-                      ( IsUpper_v<MT1> && IsStrictlyLower_v<MT2> ) >* = nullptr >
+                      ( IsUpper_v<MT1> && IsStrictlyLower_v<MT2> ) ||
+                      IsZero_v<MT2> >* = nullptr >
 inline const ZeroMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, false >
    tdmatsmatschur( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
