@@ -1306,141 +1306,6 @@ inline void erase( ZeroMatrix<Type,SO>& m, size_t i, Iterator first, Iterator la
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Subtraction operator for the subtraction of a dense matrix and a zero matrix
-//        (\f$ A=B-C \f$).
-// \ingroup zero_matrix
-//
-// \param lhs The left-hand side dense matrix for the subtraction.
-// \param rhs The right-hand side zero matrix for the subtraction.
-// \return The resulting matrix.
-// \exception std::invalid_argument Matrix sizes do not match.
-//
-// This operator represents the subtraction of a dense matrix and a zero matrix:
-
-   \code
-   using blaze::rowMajor;
-
-   blaze::DynamicMatrix<double,rowMajor> A, C;
-   blaze::ZeroMatrix<double,rowMajor> B;
-   // ... Resizing and initialization
-   C = A - B;
-   \endcode
-
-// The operator returns a reference to the given dense matrix. In case the current sizes of the
-// two given matrices don't match, a \a std::invalid_argument is thrown.
-*/
-template< typename MT1  // Type of the left-hand side dense matrix
-        , bool SO1      // Storage order of the left-hand side dense matrix
-        , typename MT2  // Type of the right-hand side zero matrix
-        , EnableIf_t< IsMatrix_v<MT2> && IsZero_v<MT2> &&
-                      IsSame_v< ElementType_t<MT1>, ElementType_t<MT2> > >* = nullptr >
-inline decltype(auto)
-   operator-( const DenseMatrix<MT1,SO1>& lhs, const MT2& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   if( (~lhs).rows() != rhs.rows() || (~lhs).columns() != rhs.columns() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
-   }
-
-   return (~lhs);
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Subtraction operator for the subtraction of a sparse matrix and a zero matrix
-//        (\f$ A=B-C \f$).
-// \ingroup zero_matrix
-//
-// \param lhs The left-hand side sparse matrix for the subtraction.
-// \param rhs The right-hand side zero matrix for the subtraction.
-// \return The resulting matrix.
-// \exception std::invalid_argument Matrix sizes do not match.
-//
-// This operator represents the subtraction of a sparse matrix and a zero matrix:
-
-   \code
-   using blaze::rowMajor;
-
-   blaze::DynamicMatrix<double,rowMajor> A, C;
-   blaze::ZeroMatrix<double,rowMajor> B;
-   // ... Resizing and initialization
-   C = A - B;
-   \endcode
-
-// The operator returns a reference to the given sparse matrix. In case the current sizes of the
-// two given matrices don't match, a \a std::invalid_argument is thrown.
-*/
-template< typename MT1  // Type of the left-hand side sparse matrix
-        , bool SO1      // Storage order of the left-hand side sparse matrix
-        , typename MT2  // Type of the right-hand side zero matrix
-        , EnableIf_t< IsMatrix_v<MT2> && IsZero_v<MT2> &&
-                      IsSame_v< ElementType_t<MT1>, ElementType_t<MT2> > >* = nullptr >
-inline decltype(auto)
-   operator-( const SparseMatrix<MT1,SO1>& lhs, const MT2& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   if( (~lhs).rows() != rhs.rows() || (~lhs).columns() != rhs.columns() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
-   }
-
-   return (~lhs);
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Subtraction operator for the subtraction of two zero matrices (\f$ A=B-C \f$).
-// \ingroup zero_matrix
-//
-// \param lhs The left-hand side zero matrix for the subtraction.
-// \param rhs The right-hand side zero matrix for the subtraction.
-// \return The resulting matrix.
-// \exception std::invalid_argument Matrix sizes do not match.
-//
-// This operator represents the subtraction of two zero matrices:
-
-   \code
-   using blaze::rowMajor;
-
-   blaze::ZeroMatrix<double,rowMajor> A, B, C;
-   // ... Resizing and initialization
-   C = A - B;
-   \endcode
-
-// The operator returns a zero matrix. In case the current sizes of the two given matrices
-// don't match, a \a std::invalid_argument is thrown.
-*/
-template< typename MT1  // Type of the left-hand side zero matrix
-        , typename MT2  // Type of the right-hand side zero matrix
-        , EnableIf_t< IsMatrix_v<MT1> && IsZero_v<MT1> &&
-                      IsMatrix_v<MT2> && IsZero_v<MT2> >* = nullptr >
-inline decltype(auto)
-   operator-( const MT1& lhs, const MT2& rhs )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   if( lhs.rows() != rhs.rows() || lhs.columns() != rhs.columns() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
-   }
-
-   using ET = SubTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >;
-   constexpr bool SO = StorageOrder_v<MT1>;
-
-   return ZeroMatrix<ET,SO>( lhs.rows(), lhs.columns() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Operator for the Schur product of a zero matrix and a dense matrix (\f$ A=B%C \f$).
 // \ingroup zero_matrix
 //
@@ -2196,7 +2061,9 @@ struct SubTraitEval1< T1, T2
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
 
-   using Type = ZeroMatrix< SubTrait_t<ET1,ET2>, StorageOrder_v<T1> >;
+   static constexpr bool SO = ( StorageOrder_v<T1> && StorageOrder_v<T2> );
+
+   using Type = ZeroMatrix< SubTrait_t<ET1,ET2>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************

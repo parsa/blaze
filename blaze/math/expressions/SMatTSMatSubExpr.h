@@ -70,8 +70,10 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVoid.h>
 #include <blaze/util/typetraits/RemoveReference.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -841,6 +843,137 @@ class SMatTSMatSubExpr
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the subtraction of a row-major sparse matrix and a column-major
+//        sparse matrix (\f$ A=B-C \f$).
+// \ingroup sparse_matrix
+//
+// \param lhs The left-hand side sparse matrix for the subtraction.
+// \param rhs The right-hand side sparse matrix for the subtraction.
+// \return The difference of the two matrices.
+//
+// This function implements a performance optimized treatment of the subtraction between a
+// row-major sparse matrix and a column-major sparse matrix.
+*/
+template< typename MT1  // Type of the left-hand side sparse matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , DisableIf_t< ( ( IsZero_v<MT1> || IsZero_v<MT2> ) &&
+                         IsSame_v< ElementType_t<MT1>, ElementType_t<MT2> > ) ||
+                       ( IsZero_v<MT1> && IsZero_v<MT2> ) >* = nullptr >
+inline const SMatTSMatSubExpr<MT1,MT2>
+   smattsmatsub( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   return SMatTSMatSubExpr<MT1,MT2>( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the subtraction of a row-major sparse matrix and a column-major
+//        zero matrix (\f$ A=B-C \f$).
+// \ingroup sparse_matrix
+//
+// \param lhs The left-hand side sparse matrix for the subtraction.
+// \param rhs The right-hand side zero matrix for the subtraction.
+// \return The difference of the two matrices.
+//
+// This function implements a performance optimized treatment of the subtraction between a
+// row-major sparse matrix and a column-major zero matrix.
+*/
+template< typename MT1  // Type of the left-hand side sparse matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , EnableIf_t< !IsZero_v<MT1> && IsZero_v<MT2> &&
+                      IsSame_v< ElementType_t<MT1>, ElementType_t<MT2> > >* = nullptr >
+inline const MT1&
+   smattsmatsub( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( rhs );
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   return (~lhs);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the subtraction of a row-major zero matrix and a column-major
+//        sparse matrix (\f$ A=B-C \f$).
+// \ingroup sparse_matrix
+//
+// \param lhs The left-hand side zero matrix for the subtraction.
+// \param rhs The right-hand side sparse matrix for the subtraction.
+// \return The difference of the two matrices.
+//
+// This function implements a performance optimized treatment of the subtraction between a
+// row-major zero matrix and a column-major sparse matrix.
+*/
+template< typename MT1  // Type of the left-hand side sparse matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , EnableIf_t< IsZero_v<MT1> && !IsZero_v<MT2> &&
+                      IsSame_v< ElementType_t<MT1>, ElementType_t<MT2> > >* = nullptr >
+inline decltype(auto)
+   smattsmatsub( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( lhs );
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   return -(~rhs);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the subtraction of a row-major zero matrix and a column-major
+//        zero matrix (\f$ A=B-C \f$).
+// \ingroup sparse_matrix
+//
+// \param lhs The left-hand side zero matrix for the subtraction.
+// \param rhs The right-hand side zero matrix for the subtraction.
+// \return The difference of the two matrices.
+//
+// This function implements a performance optimized treatment of the subtraction between a
+// row-major zero matrix and a column-major zero matrix.
+*/
+template< typename MT1  // Type of the left-hand side sparse matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , EnableIf_t< IsZero_v<MT1> && IsZero_v<MT2> >* = nullptr >
+inline const ZeroMatrix< SubTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, false >
+   smattsmatsub( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,true>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( rhs );
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   using ET = SubTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >;
+   return ZeroMatrix<ET,false>( (~lhs).rows(), (~lhs).columns() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Subtraction operator for the subtraction of a row-major and a column-major sparse
 //        matrix (\f$ A=B-C \f$).
 // \ingroup sparse_matrix
@@ -880,8 +1013,7 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using ReturnType = const SMatTSMatSubExpr<MT1,MT2>;
-   return ReturnType( ~lhs, ~rhs );
+   return smattsmatsub( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 

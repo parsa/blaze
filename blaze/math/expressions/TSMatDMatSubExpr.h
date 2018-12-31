@@ -58,12 +58,16 @@
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsSame.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -648,8 +652,72 @@ class TSMatDMatSubExpr
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the subtraction between a column-major sparse matrix and a
+//        row-major dense matrix (\f$ A=B-C \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side sparse matrix for the subtraction.
+// \param rhs The right-hand side dense matrix for the subtraction.
+// \return The difference of the two matrices.
+//
+// This function implements a performance optimized treatment of the subtraction between a
+// column-major sparse matrix and a row-major dense matrix.
+*/
+template< typename MT1  // Type of the left-hand side sparse matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , DisableIf_t< IsZero_v<MT1> &&
+                       IsSame_v< ElementType_t<MT1>, ElementType_t<MT2> > >* = nullptr >
+inline const TSMatDMatSubExpr<MT1,MT2>
+   tsmatdmatsub( const SparseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   return TSMatDMatSubExpr<MT1,MT2>( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the subtraction between a zero matrix and a dense matrix
+//        with identical storage order (\f$ A=B-C \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side zero matrix for the subtraction.
+// \param rhs The right-hand side dense matrix for the subtraction.
+// \return The difference of the two matrices.
+//
+// This function implements a performance optimized treatment of the subtraction between a zero
+// matrix and a dense matrix.
+*/
+template< typename MT1  // Type of the left-hand side sparse matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , EnableIf_t< IsZero_v<MT1> &&
+                      IsSame_v< ElementType_t<MT1>, ElementType_t<MT2> > >* = nullptr >
+inline decltype(auto)
+   tsmatdmatsub( const SparseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,false>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( lhs );
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   return -(~rhs);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Subtraction operator for the subtraction of a column-major sparse matrix and a row-major
-//        dense matrix (\f$ A=B+C \f$).
+//        dense matrix (\f$ A=B-C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side sparse matrix for the matrix subtraction.
@@ -688,8 +756,7 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using ReturnType = const TSMatDMatSubExpr<MT1,MT2>;
-   return ReturnType( ~lhs, ~rhs );
+   return tsmatdmatsub( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
