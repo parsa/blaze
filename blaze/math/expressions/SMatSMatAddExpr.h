@@ -61,6 +61,7 @@
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
@@ -68,8 +69,10 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVoid.h>
 #include <blaze/util/typetraits/RemoveReference.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -837,6 +840,135 @@ class SMatSMatAddExpr
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the addition of two row-major sparse matrices (\f$ A=B+C \f$).
+// \ingroup sparse_matrix
+//
+// \param lhs The left-hand side sparse matrix for the addition.
+// \param rhs The right-hand side sparse matrix for the addition.
+// \return The sum of the two matrices.
+//
+// This function implements a performance optimized treatment of the addition between two
+// row-major sparse matrices.
+*/
+template< typename MT1  // Type of the left-hand side sparse matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , DisableIf_t< ( ( IsZero_v<MT1> || IsZero_v<MT2> ) &&
+                         IsSame_v< ElementType_t<MT1>, ElementType_t<MT2> > ) ||
+                       ( IsZero_v<MT1> && IsZero_v<MT2> ) >* = nullptr >
+inline const SMatSMatAddExpr<MT1,MT2>
+   smatsmatadd( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   return SMatSMatAddExpr<MT1,MT2>( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the addition between a row-major sparse matrix and a row-major
+//        zero matrix (\f$ A=B+C \f$).
+// \ingroup sparse_matrix
+//
+// \param lhs The left-hand side sparse matrix for the addition.
+// \param rhs The right-hand side zero matrix for the addition.
+// \return The sum of the two matrices.
+//
+// This function implements a performance optimized treatment of the addition between a row-major
+// sparse matrix and a row-major zero matrix.
+*/
+template< typename MT1  // Type of the left-hand side sparse matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , EnableIf_t< !IsZero_v<MT1> && IsZero_v<MT2> &&
+                      IsSame_v< ElementType_t<MT1>, ElementType_t<MT2> > >* = nullptr >
+inline const MT1&
+   smatsmatadd( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( rhs );
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   return (~lhs);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the addition between a row-major zero matrix and a row-major
+//        sparse matrix (\f$ A=B+C \f$).
+// \ingroup sparse_matrix
+//
+// \param lhs The left-hand side zero matrix for the addition.
+// \param rhs The right-hand side sparse matrix for the addition.
+// \return The sum of the two matrices.
+//
+// This function implements a performance optimized treatment of the addition between a row-major
+// zero matrix and a row-major sparse matrix.
+*/
+template< typename MT1  // Type of the left-hand side sparse matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , EnableIf_t< IsZero_v<MT1> && !IsZero_v<MT2> &&
+                      IsSame_v< ElementType_t<MT1>, ElementType_t<MT2> > >* = nullptr >
+inline const MT2&
+   smatsmatadd( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( lhs );
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   return (~rhs);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the addition of two row-major zero matrices (\f$ A=B+C \f$).
+// \ingroup sparse_matrix
+//
+// \param lhs The left-hand side zero matrix for the addition.
+// \param rhs The right-hand side zero matrix for the addition.
+// \return The sum of the two matrices.
+//
+// This function implements a performance optimized treatment of the addition between two
+// row-major zero matrices.
+*/
+template< typename MT1  // Type of the left-hand side sparse matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , EnableIf_t< IsZero_v<MT1> && IsZero_v<MT2> >* = nullptr >
+inline const ZeroMatrix< AddTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, false >
+   smatsmatadd( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( rhs );
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   using ET = AddTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >;
+   return ZeroMatrix<ET,false>( (~lhs).rows(), (~lhs).columns() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Addition operator for the addition of two row-major sparse matrices (\f$ A=B+C \f$).
 // \ingroup sparse_matrix
 //
@@ -873,8 +1005,7 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using ReturnType = const SMatSMatAddExpr<MT1,MT2>;
-   return ReturnType( ~lhs, ~rhs );
+   return smatsmatadd( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 

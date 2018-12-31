@@ -220,10 +220,10 @@ template< typename MT1, typename MT2, bool SO >
 decltype(auto) operator+( const SparseMatrix<MT1,SO>&, const DenseMatrix<MT2,SO>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator+( const SparseMatrix<MT2,false>&, const DenseMatrix<MT1,true>& );
+decltype(auto) operator+( const SparseMatrix<MT1,false>&, const DenseMatrix<MT2,true>& );
 
 template< typename MT1, typename MT2 >
-decltype(auto) operator+( const SparseMatrix<MT2,true>&, const DenseMatrix<MT1,false>& );
+decltype(auto) operator+( const SparseMatrix<MT1,true>&, const DenseMatrix<MT2,false>& );
 
 template< typename MT1, typename MT2 >
 decltype(auto) operator+( const SparseMatrix<MT1,false>&, const SparseMatrix<MT2,false>& );

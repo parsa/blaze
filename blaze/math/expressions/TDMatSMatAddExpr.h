@@ -59,12 +59,16 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsOperation.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsSame.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -659,6 +663,70 @@ class TDMatSMatAddExpr
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the addition between a column-major dense matrix and a
+//        row-major sparse matrix (\f$ A=B+C \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix for the addition.
+// \param rhs The right-hand side sparse matrix for the addition.
+// \return The sum of the two matrices.
+//
+// This function implements a performance optimized treatment of the addition between a
+// column-major dense matrix and a row-major sparse matrix.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , DisableIf_t< IsZero_v<MT2> &&
+                       IsSame_v< ElementType_t<MT1>, ElementType_t<MT2> > >* = nullptr >
+inline const TDMatSMatAddExpr<MT1,MT2>
+   tdmatsmatadd( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   return TDMatSMatAddExpr<MT1,MT2>( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the addition between a column-major dense matrix and a
+//        row-major zero matrix (\f$ A=B+C \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix for the addition.
+// \param rhs The right-hand side zero matrix for the addition.
+// \return The sum of the two matrices.
+//
+// This function implements a performance optimized treatment of the addition between a
+// column-major dense matrix and a row-major zero matrix.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , EnableIf_t< IsZero_v<MT2> &&
+                      IsSame_v< ElementType_t<MT1>, ElementType_t<MT2> > >* = nullptr >
+inline const MT1&
+   tdmatsmatadd( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( rhs );
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   return (~lhs);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Addition operator for the addition of a column-major dense matrix and a row-major
 //        sparse matrix (\f$ A=B+C \f$).
 // \ingroup dense_matrix
@@ -700,8 +768,7 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using ReturnType = const TDMatSMatAddExpr<MT1,MT2>;
-   return ReturnType( ~lhs, ~rhs );
+   return tdmatsmatadd( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
@@ -737,10 +804,10 @@ inline decltype(auto)
 // In case the current sizes of the two given matrices don't match, a \a std::invalid_argument
 // is thrown.
 */
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side sparse matrix
+template< typename MT1    // Type of the left-hand side sparse matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
 inline decltype(auto)
-   operator+( const SparseMatrix<MT2,false>& lhs, const DenseMatrix<MT1,true>& rhs )
+   operator+( const SparseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -748,8 +815,7 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using ReturnType = const TDMatSMatAddExpr<MT1,MT2>;
-   return ReturnType( ~rhs, ~lhs );
+   return tdmatsmatadd( ~rhs, ~lhs );
 }
 //*************************************************************************************************
 

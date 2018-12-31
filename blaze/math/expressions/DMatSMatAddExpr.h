@@ -57,12 +57,16 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsOperation.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsSame.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -651,8 +655,74 @@ class DMatSMatAddExpr
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the addition between a dense matrix and a sparse matrix
+//        with identical storage order (\f$ A=B+C \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix for the addition.
+// \param rhs The right-hand side sparse matrix for the addition.
+// \return The sum of the two matrices.
+//
+// This function implements a performance optimized treatment of the addition between a dense
+// matrix and a sparse matrix.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , bool SO       // Storage order
+        , DisableIf_t< IsZero_v<MT2> &&
+                       IsSame_v< ElementType_t<MT1>, ElementType_t<MT2> > >* = nullptr >
+inline const DMatSMatAddExpr<MT1,MT2,SO>
+   dmatsmatadd( const DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,SO>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   return DMatSMatAddExpr<MT1,MT2,SO>( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the addition between a dense matrix and a zero matrix
+//        with identical storage order (\f$ A=B+C \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix for the addition.
+// \param rhs The right-hand side zero matrix for the addition.
+// \return The sum of the two matrices.
+//
+// This function implements a performance optimized treatment of the addition between a dense
+// matrix and a zero matrix.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , bool SO       // Storage order
+        , EnableIf_t< IsZero_v<MT2> &&
+                      IsSame_v< ElementType_t<MT1>, ElementType_t<MT2> > >* = nullptr >
+inline const MT1&
+   dmatsmatadd( const DenseMatrix<MT1,SO>& lhs, const SparseMatrix<MT2,SO>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( rhs );
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+
+   return (~lhs);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Addition operator for the addition of a dense matrix and a sparse matrix
-//        (\f$ A=B+C \f$).
+//        with identical storage order (\f$ A=B+C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the matrix addition.
@@ -688,8 +758,7 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using ReturnType = const DMatSMatAddExpr<MT1,MT2,SO>;
-   return ReturnType( ~lhs, ~rhs );
+   return dmatsmatadd( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
@@ -732,8 +801,7 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   using ReturnType = const DMatSMatAddExpr<MT2,MT1,SO>;
-   return ReturnType( ~rhs, ~lhs );
+   return dmatsmatadd( ~rhs, ~lhs );
 }
 //*************************************************************************************************
 
