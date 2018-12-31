@@ -8958,7 +8958,7 @@ void ClassTest::testMatrixAddition()
          {
             using T1 = ZeroMatrix<int,columnMajor>;
             using T2 = ZeroMatrix<double,rowMajor>;
-            using RT = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
@@ -9134,7 +9134,7 @@ void ClassTest::testMatrixAddition()
          {
             using T1 = ZeroMatrix<int,columnMajor>;
             using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
-            using RT = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
@@ -12762,7 +12762,7 @@ void ClassTest::testMatrixAddition()
          {
             using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
             using T2 = ZeroMatrix<double,rowMajor>;
-            using RT = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
@@ -12938,7 +12938,7 @@ void ClassTest::testMatrixAddition()
          {
             using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
             using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
-            using RT = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< AddTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() + std::declval<T2>() ) >;
