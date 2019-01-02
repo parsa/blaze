@@ -1366,7 +1366,8 @@ template< typename T1, typename T2 >
 struct AddTraitEval1< T1, T2
                     , EnableIf_t< IsVector_v<T1> &&
                                   IsVector_v<T2> &&
-                                  ( IsUniform_v<T1> && IsUniform_v<T2> ) > >
+                                  ( IsUniform_v<T1> && IsUniform_v<T2> ) &&
+                                  !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
@@ -1391,7 +1392,8 @@ template< typename T1, typename T2 >
 struct SubTraitEval1< T1, T2
                     , EnableIf_t< IsVector_v<T1> &&
                                   IsVector_v<T2> &&
-                                  ( IsUniform_v<T1> && IsUniform_v<T2> ) > >
+                                  ( IsUniform_v<T1> && IsUniform_v<T2> ) &&
+                                  !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
@@ -1416,7 +1418,7 @@ template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
                      , EnableIf_t< IsVector_v<T1> &&
                                    IsNumeric_v<T2> &&
-                                   IsUniform_v<T1> > >
+                                   IsUniform_v<T1> && !IsZero_v<T1> > >
 {
    using ET1 = ElementType_t<T1>;
 
@@ -1427,7 +1429,7 @@ template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
                      , EnableIf_t< IsNumeric_v<T1> &&
                                    IsVector_v<T2> &&
-                                   IsUniform_v<T2> > >
+                                   IsUniform_v<T2> && !IsZero_v<T2> > >
 {
    using ET2 = ElementType_t<T2>;
 
@@ -1438,7 +1440,8 @@ template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
                      , EnableIf_t< ( ( IsRowVector_v<T1> && IsRowVector_v<T2> ) ||
                                      ( IsColumnVector_v<T1> && IsColumnVector_v<T2> ) ) &&
-                                   ( IsUniform_v<T1> && IsUniform_v<T2> ) > >
+                                   ( IsUniform_v<T1> && IsUniform_v<T2> ) &&
+                                   !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
@@ -1451,7 +1454,7 @@ struct MultTraitEval1< T1, T2
                      , EnableIf_t< IsMatrix_v<T1> &&
                                    IsColumnVector_v<T2> &&
                                    IsUniform_v<T1> &&
-                                   !( IsZero_v<T1> && IsSparseVector_v<T2> ) > >
+                                   !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
@@ -1464,7 +1467,7 @@ struct MultTraitEval1< T1, T2
                      , EnableIf_t< IsRowVector_v<T1> &&
                                    IsMatrix_v<T2> &&
                                    IsUniform_v<T2> &&
-                                   !( IsSparseVector_v<T1> && IsZero_v<T2> ) > >
+                                   !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
@@ -1489,7 +1492,7 @@ template< typename T1, typename T2 >
 struct DivTraitEval1< T1, T2
                     , EnableIf_t< IsVector_v<T1> &&
                                   IsNumeric_v<T2> &&
-                                  IsUniform_v<T1> > >
+                                  IsUniform_v<T1> && !IsZero_v<T1> > >
 {
    using ET1 = ElementType_t<T1>;
 
@@ -1500,7 +1503,8 @@ template< typename T1, typename T2 >
 struct DivTraitEval1< T1, T2
                     , EnableIf_t< ( ( IsRowVector_v<T1> && IsRowVector_v<T2> ) ||
                                     ( IsColumnVector_v<T1> && IsColumnVector_v<T2> ) ) &&
-                                  ( IsUniform_v<T1> && IsUniform_v<T2> ) > >
+                                  ( IsUniform_v<T1> && IsUniform_v<T2> ) &&
+                                  !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
@@ -1625,7 +1629,7 @@ struct LowType< UniformVector<T1,TF>, UniformVector<T2,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, size_t I, size_t N >
 struct SubvectorTraitEval1< VT, I, N
-                          , EnableIf_t< IsUniform_v<VT> > >
+                          , EnableIf_t< IsUniform_v<VT> && !IsZero_v<VT> > >
 {
    using Type = UniformVector< RemoveConst_t< ElementType_t<VT> >, TransposeFlag_v<VT> >;
 };
@@ -1645,7 +1649,7 @@ struct SubvectorTraitEval1< VT, I, N
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, size_t N >
 struct ElementsTraitEval1< VT, N
-                         , EnableIf_t< IsUniform_v<VT> > >
+                         , EnableIf_t< IsUniform_v<VT> && !IsZero_v<VT> > >
 {
    using Type = UniformVector< RemoveConst_t< ElementType_t<VT> >, TransposeFlag_v<VT> >;
 };
@@ -1665,7 +1669,7 @@ struct ElementsTraitEval1< VT, N
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t I >
 struct RowTraitEval1< MT, I
-                    , EnableIf_t< IsUniform_v<MT> > >
+                    , EnableIf_t< IsUniform_v<MT> && !IsZero_v<MT> > >
 {
    using Type = UniformVector< RemoveConst_t< ElementType_t<MT> >, true >;
 };
@@ -1685,7 +1689,7 @@ struct RowTraitEval1< MT, I
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t I >
 struct ColumnTraitEval1< MT, I
-                       , EnableIf_t< IsUniform_v<MT> > >
+                       , EnableIf_t< IsUniform_v<MT> && !IsZero_v<MT> > >
 {
    using Type = UniformVector< RemoveConst_t< ElementType_t<MT> >, false >;
 };
@@ -1705,7 +1709,7 @@ struct ColumnTraitEval1< MT, I
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, ptrdiff_t I >
 struct BandTraitEval1< MT, I
-                     , EnableIf_t< IsUniform_v<MT> > >
+                     , EnableIf_t< IsUniform_v<MT> && !IsZero_v<MT> > >
 {
    using Type = UniformVector< RemoveConst_t< ElementType_t<MT> >, defaultTransposeFlag >;
 };
