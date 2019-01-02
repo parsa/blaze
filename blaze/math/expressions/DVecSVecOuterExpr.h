@@ -51,6 +51,7 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/VecTVecMultExpr.h>
+#include <blaze/math/constraints/Zero.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Forward.h>
@@ -67,6 +68,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/util/Assert.h>
@@ -1371,6 +1373,7 @@ class DVecSVecOuterExpr
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( VT1 );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT2 );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( VT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE     ( VT2 );
    BLAZE_CONSTRAINT_MUST_FORM_VALID_VECTVECMULTEXPR( VT1, VT2 );
    /*! \endcond */
    //**********************************************************************************************
@@ -1385,6 +1388,61 @@ class DVecSVecOuterExpr
 //  GLOBAL BINARY ARITHMETIC OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the dense vector-sparse vector outer product
+//        (\f$ A=\vec{b}*\vec{c}^T \f$).
+// \ingroup sparse_matrix
+//
+// \param lhs The left-hand side dense vector for the outer product.
+// \param rhs The right-hand side transpose sparse vector for the outer product.
+// \return The resulting sparse matrix.
+//
+// This function implements a performance optimized treatment of the dense vector-sparse vector
+// outer product.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , DisableIf_t< IsZero_v<VT2> >* = nullptr >
+inline const DVecSVecOuterExpr<VT1,VT2>
+   dvecsvecouter( const DenseVector<VT1,false>& lhs, const SparseVector<VT2,true>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return DVecSVecOuterExpr<VT1,VT2>( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the dense vector-zero vector outer product
+//        (\f$ A=\vec{b}*\vec{c}^T \f$).
+// \ingroup sparse_matrix
+//
+// \param lhs The left-hand side dense vector for the outer product.
+// \param rhs The right-hand side transpose zero vector for the outer product.
+// \return The resulting sparse matrix.
+//
+// This function implements a performance optimized treatment of the dense vector-zero vector
+// outer product.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , EnableIf_t< IsZero_v<VT2> >* = nullptr >
+inline const ZeroMatrix< MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >, false >
+   dvecsvecouter( const DenseVector<VT1,false>& lhs, const SparseVector<VT2,true>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ET = MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >;
+   return ZeroMatrix<ET,false>( (~lhs).size(), (~rhs).size() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Multiplication operator for the dense vector-sparse vector outer product
@@ -1422,8 +1480,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecSVecOuterExpr<VT1,VT2>;
-   return ReturnType( ~lhs, ~rhs );
+   return dvecsvecouter( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 

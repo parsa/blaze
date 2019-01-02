@@ -48,6 +48,7 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/VecTVecMultExpr.h>
+#include <blaze/math/constraints/Zero.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Forward.h>
@@ -59,6 +60,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
@@ -131,10 +133,10 @@ class SVecSVecOuterExpr
    //! Composite type of the right-hand side sparse vector expression.
    using RightOperand = If_t< IsExpression_v<VT2>, const VT2, const VT2& >;
 
-   //! Type for the assignment of the left-hand side dense vector operand.
+   //! Type for the assignment of the left-hand side sparse vector operand.
    using LT = If_t< IsComputation_v<VT1>, const RT1, CT1 >;
 
-   //! Type for the assignment of the right-hand side dense vector operand.
+   //! Type for the assignment of the right-hand side sparse vector operand.
    using RT = If_t< IsComputation_v<VT2>, const RT2, CT2 >;
    //**********************************************************************************************
 
@@ -844,6 +846,8 @@ class SVecSVecOuterExpr
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( VT1 );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT2 );
    BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( VT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE     ( VT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE     ( VT2 );
    BLAZE_CONSTRAINT_MUST_FORM_VALID_VECTVECMULTEXPR( VT1, VT2 );
    /*! \endcond */
    //**********************************************************************************************
@@ -858,6 +862,61 @@ class SVecSVecOuterExpr
 //  GLOBAL BINARY ARITHMETIC OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the sparse vector-sparse vector outer product
+//        (\f$ A=\vec{b}*\vec{c}^T \f$).
+// \ingroup sparse_matrix
+//
+// \param lhs The left-hand side sparse vector for the outer product.
+// \param rhs The right-hand side transpose sparse vector for the outer product.
+// \return The resulting sparse matrix.
+//
+// This function implements a performance optimized treatment of the sparse vector-sparse vector
+// outer product.
+*/
+template< typename VT1  // Type of the left-hand side sparse vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , DisableIf_t< IsZero_v<VT1> || IsZero_v<VT2> >* = nullptr >
+inline const SVecSVecOuterExpr<VT1,VT2>
+   svecsvecouter( const SparseVector<VT1,false>& lhs, const SparseVector<VT2,true>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return SVecSVecOuterExpr<VT1,VT2>( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the (zero) sparse vector-(zero) sparse vector outer product
+//        (\f$ A=\vec{b}*\vec{c}^T \f$).
+// \ingroup sparse_matrix
+//
+// \param lhs The left-hand side sparse vector for the outer product.
+// \param rhs The right-hand side transpose sparse vector for the outer product.
+// \return The resulting sparse matrix.
+//
+// This function implements a performance optimized treatment of the (zero) sparse vector-(zero)
+// sparse vector outer product.
+*/
+template< typename VT1  // Type of the left-hand side sparse vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , EnableIf_t< IsZero_v<VT1> || IsZero_v<VT2> >* = nullptr >
+inline const ZeroMatrix< MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >, false >
+   svecsvecouter( const SparseVector<VT1,false>& lhs, const SparseVector<VT2,true>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ET = MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >;
+   return ZeroMatrix<ET,false>( (~lhs).size(), (~rhs).size() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Multiplication operator for the sparse vector-sparse vector outer product
@@ -893,8 +952,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SVecSVecOuterExpr<VT1,VT2>;
-   return ReturnType( ~lhs, ~rhs );
+   return svecsvecouter( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
