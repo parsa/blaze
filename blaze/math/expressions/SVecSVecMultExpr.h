@@ -45,6 +45,7 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/VecVecMultExpr.h>
+#include <blaze/math/constraints/Zero.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Forward.h>
@@ -56,12 +57,16 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/DisableIf.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -561,6 +566,8 @@ class SVecSVecMultExpr
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT2 );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT1, TF );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( VT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( VT2 );
    BLAZE_CONSTRAINT_MUST_FORM_VALID_VECVECMULTEXPR( VT1, VT2 );
    /*! \endcond */
    //**********************************************************************************************
@@ -575,6 +582,69 @@ class SVecSVecMultExpr
 //  GLOBAL BINARY ARITHMETIC OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the componentwise multiplication of two sparse vectors
+//        (\f$ \vec{a}=\vec{b}*\vec{c} \f$).
+// \ingroup sparse_vector
+//
+// \param lhs The left-hand side sparse vector for the component product.
+// \param rhs The right-hand side sparse vector for the component product.
+// \return The product of the two sparse vectors.
+//
+// This function implements a performance optimized treatment of the componentwise multiplication
+// of two sparse vectors.
+*/
+template< typename VT1  // Type of the left-hand side sparse vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , bool TF       // Transpose flag
+        , DisableIf_t< IsZero_v<VT1> || IsZero_v<VT2> >* = nullptr >
+inline const SVecSVecMultExpr<VT1,VT2,TF>
+   svecsvecmult( const SparseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+
+   return SVecSVecMultExpr<VT1,VT2,TF>( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the componentwise multiplication of two (zero) sparse vectors
+//        (\f$ \vec{a}=\vec{b}*\vec{c} \f$).
+// \ingroup sparse_vector
+//
+// \param lhs The left-hand side sparse vector for the component product.
+// \param rhs The right-hand side sparse vector for the component product.
+// \return The product of the two sparse vectors.
+//
+// This function implements a performance optimized treatment of the componentwise multiplication
+// of two (zero) sparse vectors.
+*/
+template< typename VT1  // Type of the left-hand side sparse vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , bool TF       // Transpose flag
+        , EnableIf_t< IsZero_v<VT1> || IsZero_v<VT2> >* = nullptr >
+inline const ZeroVector< MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >, TF >
+   svecsvecmult( const SparseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( rhs );
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+
+   using ET = MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >;
+   return ZeroVector<ET,TF>( (~lhs).size() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Multiplication operator for the componentwise multiplication of two sparse vectors
@@ -613,8 +683,7 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using ReturnType = const SVecSVecMultExpr<VT1,VT2,TF>;
-   return ReturnType( ~lhs, ~rhs );
+   return svecsvecmult( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
