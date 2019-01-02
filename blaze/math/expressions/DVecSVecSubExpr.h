@@ -57,11 +57,15 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsSame.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -662,6 +666,70 @@ class DVecSVecSubExpr
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the subtraction between a dense vector and a sparse vector
+//        (\f$ \vec{a}=\vec{b}-\vec{c} \f$).
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector for the vector subtraction.
+// \param rhs The right-hand side sparse vector for the vector subtraction.
+// \return The difference of the two vectors.
+//
+// This function implements a performance optimized treatment of the subtraction between a dense
+// vector and a sparse vector.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , bool TF       // Transpose flag
+        , DisableIf_t< IsZero_v<VT2> &&
+                       IsSame_v< ElementType_t<VT1>, ElementType_t<VT2> > >* = nullptr >
+inline const DVecSVecSubExpr<VT1,VT2,TF>
+   dvecsvecsub( const DenseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+
+   return DVecSVecSubExpr<VT1,VT2,TF>( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the subtraction between a dense vector and a zero vector
+//        (\f$ \vec{a}=\vec{b}+\vec{c} \f$).
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector for the vector subtraction.
+// \param rhs The right-hand side zero vector for the vector subtraction.
+// \return The difference of the two vectors.
+//
+// This function implements a performance optimized treatment of the subtraction between a
+// dense vector and a zero vector.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , bool TF       // Transpose flag
+        , EnableIf_t< IsZero_v<VT2> &&
+                      IsSame_v< ElementType_t<VT1>, ElementType_t<VT2> > >* = nullptr >
+inline const VT1&
+   dvecsvecsub( const DenseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( rhs );
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+
+   return (~lhs);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Subtraction operator for the subtraction of a dense vector and a sparse vector
 //        (\f$ \vec{a}=\vec{b}-\vec{c} \f$).
 // \ingroup dense_vector
@@ -699,8 +767,7 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using ReturnType = const DVecSVecSubExpr<VT1,VT2,TF>;
-   return ReturnType( ~lhs, ~rhs );
+   return dvecsvecsub( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
