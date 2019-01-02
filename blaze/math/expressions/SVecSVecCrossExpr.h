@@ -47,6 +47,7 @@
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/constraints/Zero.h>
 #include <blaze/math/dense/Forward.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
@@ -58,10 +59,14 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/DisableIf.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -457,6 +462,8 @@ class SVecSVecCrossExpr
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT2 );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT1, TF );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( VT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( VT2 );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -470,6 +477,71 @@ class SVecSVecCrossExpr
 //  GLOBAL BINARY ARITHMETIC OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the cross product of a sparse vector and a sparse vector
+//        (\f$ \vec{a}=\vec{b} \times \vec{c} \f$).
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side sparse vector for the cross product.
+// \param rhs The right-hand side sparse vector for the cross product.
+// \return The cross product of the two vectors.
+//
+// This function implements a performance optimized treatment of the cross product of a sparse
+// vector and a sparse vector.
+*/
+template< typename VT1  // Type of the left-hand side sparse vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , bool TF       // Transpose flag
+        , DisableIf_t< IsZero_v<VT1> || IsZero_v<VT2> >* = nullptr >
+inline const SVecSVecCrossExpr<VT1,VT2,TF>
+   svecsveccross( const SparseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+
+   return SVecSVecCrossExpr<VT1,VT2,TF>( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the cross product of a (zero) sparse vector and a (zero)
+//        sparse vector (\f$ \vec{a}=\vec{b} \times \vec{c} \f$).
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side sparse vector for the cross product.
+// \param rhs The right-hand side sparse vector for the cross product.
+// \return The cross product of the two vectors.
+//
+// This function implements a performance optimized treatment of the cross product of a (zero)
+// sparse vector and a (zero) sparse vector.
+*/
+template< typename VT1  // Type of the left-hand side sparse vector
+        , typename VT2  // Type of the right-hand side sparse vector
+        , bool TF       // Transpose flag
+        , EnableIf_t< IsZero_v<VT1> || IsZero_v<VT2> >* = nullptr >
+inline const ZeroVector< SubTrait_t< MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >
+                                   , MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> > >, TF >
+   svecsveccross( const SparseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( lhs, rhs );
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+
+   using ET = SubTrait_t< MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >
+                        , MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> > >;
+   return ZeroVector<ET,TF>( 3UL );
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Operator for the cross product of two sparse vectors (\f$ \vec{a}=\vec{b} \times \vec{c} \f$).
@@ -508,8 +580,7 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
    }
 
-   using ReturnType = const SVecSVecCrossExpr<VT1,VT2,TF>;
-   return ReturnType( ~lhs, ~rhs );
+   return svecsveccross( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
