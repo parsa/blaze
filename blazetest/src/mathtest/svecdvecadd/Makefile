@@ -60,72 +60,100 @@ VCaV2a: VCaV2a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCaV2b: VCaV2b.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-VCbV2a: VCbV2a.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-VCbV2b: VCbV2b.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-
 VCaV3a: VCaV3a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCaV3b: VCaV3b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaV4a: VCaV4a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaV4b: VCaV4b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaV5a: VCaV5a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaV5b: VCaV5b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaV6a: VCaV6a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaV6b: VCaV6b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaVDa: VCaVDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaVDb: VCaVDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaVHa: VCaVHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaVHb: VCaVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaVUa: VCaVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCaVUb: VCaVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+VCbV2a: VCbV2a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VCbV2b: VCbV2b.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbV3a: VCbV3a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbV3b: VCbV3b.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-
-VCaV4a: VCaV4a.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-VCaV4b: VCaV4b.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbV4a: VCbV4a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbV4b: VCbV4b.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-
-VCaV5a: VCaV5a.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-VCaV5b: VCaV5b.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbV5a: VCbV5a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbV5b: VCbV5b.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-
-VCaV6a: VCaV6a.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-VCaV6b: VCaV6b.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbV6a: VCbV6a.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbV6b: VCbV6b.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-
-VCaVDa: VCaVDa.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-VCaVDb: VCaVDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbVDa: VCbVDa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbVDb: VCbVDb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-
-VCaVHa: VCaVHa.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-VCaVHb: VCaVHb.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbVHa: VCbVHa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbVHb: VCbVHb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-
-VCaVUa: VCaVUa.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
-VCaVUb: VCaVUb.o
-	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbVUa: VCbVUa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCbVUb: VCbVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+VZaV3a: VZaV3a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VZaV3b: VZaV3b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VZaVDa: VZaVDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VZaVDb: VZaVDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VZaVHa: VZaVHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VZaVHb: VZaVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VZaVUa: VZaVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VZaVUb: VZaVUb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+
+VZbV3a: VZbV3a.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VZbV3b: VZbV3b.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VZbVDa: VZbVDa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VZbVDb: VZbVDb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VZbVHa: VZbVHa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VZbVHb: VZbVHb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VZbVUa: VZbVUa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VZbVUb: VZbVUb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 AliasingTest: AliasingTest.o
