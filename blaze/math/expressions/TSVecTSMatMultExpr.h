@@ -49,6 +49,7 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/TVecMatMultExpr.h>
+#include <blaze/math/constraints/Zero.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Forward.h>
@@ -61,6 +62,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/system/Thresholds.h>
@@ -71,6 +73,7 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -897,10 +900,12 @@ class TSVecTSMatMultExpr
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE   ( VT );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE( VT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_FORM_VALID_TVECMATMULTEXPR( VT, MT );
    /*! \endcond */
    //**********************************************************************************************
@@ -927,12 +932,11 @@ class TSVecTSMatMultExpr
 // \return The resulting transpose vector.
 //
 // This function implements the performance optimized treatment of the multiplication of a
-// transpose sparse vector and a column-major sparse matrix. It restructures the expression
-// \f$ \vec{y}^T=\vec{x}^T*A^T \f$ to the expression \f$ \vec{y}^T=\vec{x}^T*A \f$.
+// transpose sparse vector and a column-major sparse matrix.
 */
 template< typename VT  // Type of the left-hand side sparse vector
         , typename MT  // Type of the right-hand side sparse matrix
-        , DisableIf_t< IsSymmetric_v<MT> >* = nullptr >
+        , DisableIf_t< IsSymmetric_v<MT> || IsZero_v<MT> || IsZero_v<VT> >* = nullptr >
 inline const TSVecTSMatMultExpr<VT,MT>
    tsvectsmatmult( const SparseVector<VT,true>& vec, const SparseMatrix<MT,true>& mat )
 {
@@ -962,7 +966,7 @@ inline const TSVecTSMatMultExpr<VT,MT>
 */
 template< typename VT  // Type of the left-hand side sparse vector
         , typename MT  // Type of the right-hand side sparse matrix
-        , EnableIf_t< IsSymmetric_v<MT> >* = nullptr >
+        , EnableIf_t< IsSymmetric_v<MT> && !IsZero_v<MT> && !IsZero_v<VT> >* = nullptr >
 inline decltype(auto)
    tsvectsmatmult( const SparseVector<VT,true>& vec, const SparseMatrix<MT,true>& mat )
 {
@@ -971,6 +975,38 @@ inline decltype(auto)
    BLAZE_INTERNAL_ASSERT( (~vec).size() == (~mat).rows(), "Invalid vector and matrix sizes" );
 
    return (~vec) * trans( ~mat );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the multiplication of a transpose (zero) sparse vector and
+//        a column-major (zero) sparse matrix (\f$ \vec{a}=B*\vec{c} \f$).
+// \ingroup sparse_vector
+//
+// \param vec The left-hand side transpose sparse vector for the multiplication.
+// \param mat The right-hand side column-major sparse matrix for the multiplication.
+// \return The resulting transpose vector.
+//
+// This function implements the performance optimized treatment of the multiplication of a
+// transpose (zero) sparse vector and a column-major (zero) sparse matrix.
+*/
+template< typename VT  // Type of the left-hand side sparse vector
+        , typename MT  // Type of the right-hand side sparse matrix
+        , EnableIf_t< IsZero_v<MT> || IsZero_v<VT> >* = nullptr >
+inline const ZeroVector< MultTrait_t< ElementType_t<VT>, ElementType_t<MT> >, true >
+   tsvectsmatmult( const SparseVector<VT,true>& vec, const SparseMatrix<MT,true>& mat )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( vec );
+
+   BLAZE_INTERNAL_ASSERT( (~vec).size() == (~mat).rows(), "Invalid vector and matrix sizes" );
+
+   using ET = MultTrait_t< ElementType_t<VT>, ElementType_t<MT> >;
+   return ZeroVector<ET,true>( (~mat).columns() );
 }
 /*! \endcond */
 //*************************************************************************************************
