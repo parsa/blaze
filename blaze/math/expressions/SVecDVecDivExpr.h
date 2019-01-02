@@ -48,6 +48,7 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/VecVecDivExpr.h>
+#include <blaze/math/constraints/Zero.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Forward.h>
@@ -59,6 +60,7 @@
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>
@@ -68,6 +70,7 @@
 #include <blaze/util/mpl/Maximum.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -662,6 +665,7 @@ class SVecDVecDivExpr
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( VT2 );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT1, TF );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT2, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( VT1 );
    BLAZE_CONSTRAINT_MUST_FORM_VALID_VECVECDIVEXPR( VT1, VT2 );
    /*! \endcond */
    //**********************************************************************************************
@@ -676,6 +680,69 @@ class SVecDVecDivExpr
 //  GLOBAL BINARY ARITHMETIC OPERATORS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the componentwise division of a sparse vector and a dense
+//        vector (\f$ \vec{a}=\vec{b}/\vec{c} \f$).
+// \ingroup sparse_vector
+//
+// \param lhs The left-hand side sparse vector for the component quotient.
+// \param rhs The right-hand side dense vector for the component quotient.
+// \return The quotient of the two vectors.
+//
+// This function implements a performance optimized treatment of the componentwise division
+// of a sparse vector and a dense vector.
+*/
+template< typename VT1  // Type of the left-hand side sparse vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF       // Transpose flag
+        , DisableIf_t< IsZero_v<VT1> >* = nullptr >
+inline const SVecDVecDivExpr<VT1,VT2,TF>
+   svecdvecdiv( const SparseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+
+   return SVecDVecDivExpr<VT1,VT2,TF>( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the componentwise division of a zero vector and a dense
+//        vector (\f$ \vec{a}=\vec{b}/\vec{c} \f$).
+// \ingroup sparse_vector
+//
+// \param lhs The left-hand side zero vector for the component quotient.
+// \param rhs The right-hand side dense vector for the component quotient.
+// \return The quotient of the two vectors.
+//
+// This function implements a performance optimized treatment of the componentwise division
+// of a zero vector and a dense vector.
+*/
+template< typename VT1  // Type of the left-hand side sparse vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF       // Transpose flag
+        , EnableIf_t< IsZero_v<VT1> >* = nullptr >
+inline const ZeroVector< DivTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >, TF >
+   svecdvecdiv( const SparseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( rhs );
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
+
+   using ET = DivTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >;
+   return ZeroVector<ET,TF>( (~lhs).size() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Division operator for the componentwise division of a sparse vector and a dense
@@ -715,8 +782,7 @@ inline decltype(auto)
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   using ReturnType = const SVecDVecDivExpr<VT1,VT2,TF>;
-   return ReturnType( ~lhs, ~rhs );
+   return svecdvecdiv( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
