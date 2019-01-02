@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/ZeroMatrix.h>
+#include <blazetest/mathtest/creator/Default.h>
 #include <blazetest/system/Types.h>
 
 
