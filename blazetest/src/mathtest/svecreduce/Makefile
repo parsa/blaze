@@ -59,6 +59,10 @@ VCa: VCa.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 VCb: VCb.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VZa: VZa.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+VZb: VZb.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 
 # Cleanup

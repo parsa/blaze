@@ -39,3 +39,5 @@ echo " Running sparse vector reduction operation tests..."
 
 EXE=$PATH_DVECREDUCE/VCa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
 EXE=$PATH_DVECREDUCE/VCb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECREDUCE/VZa; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DVECREDUCE/VZb; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
