@@ -50,6 +50,7 @@
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/constraints/Zero.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseVector.h>
@@ -68,6 +69,7 @@
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/system/Thresholds.h>
@@ -78,6 +80,7 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
+#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -826,6 +829,7 @@ class DMatSVecMultExpr
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( VT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_FORM_VALID_MATVECMULTEXPR( MT, VT );
    /*! \endcond */
    //**********************************************************************************************
@@ -851,13 +855,12 @@ class DMatSVecMultExpr
 // \param vec The right-hand side sparse vector for the multiplication.
 // \return The resulting vector.
 //
-// This function implements the performance optimized treatment of the multiplication
-// of a row-major dense matrix and a sparse vector. It restructures the expression
-// \f$ \vec{y}=A*\vec{x} \f$ to the expression \f$ \vec{y}=A^T*\vec{x} \f$.
+// This function implements the performance optimized treatment of the multiplication of a
+// row-major dense matrix and a sparse vector.
 */
 template< typename MT  // Type of the left-hand side dense matrix
         , typename VT  // Type of the right-hand side sparse vector
-        , DisableIf_t< IsSymmetric_v<MT> >* = nullptr >
+        , DisableIf_t< IsSymmetric_v<MT> || IsZero_v<VT> >* = nullptr >
 inline const DMatSVecMultExpr<MT,VT>
    dmatsvecmult( const DenseMatrix<MT,false>& mat, const SparseVector<VT,false>& vec )
 {
@@ -887,7 +890,7 @@ inline const DMatSVecMultExpr<MT,VT>
 */
 template< typename MT  // Type of the left-hand side dense matrix
         , typename VT  // Type of the right-hand side sparse vector
-        , EnableIf_t< IsSymmetric_v<MT> >* = nullptr >
+        , EnableIf_t< IsSymmetric_v<MT> && !IsZero_v<VT> >* = nullptr >
 inline decltype(auto)
    dmatsvecmult( const DenseMatrix<MT,false>& mat, const SparseVector<VT,false>& vec )
 {
@@ -896,6 +899,38 @@ inline decltype(auto)
    BLAZE_INTERNAL_ASSERT( (~mat).columns() == (~vec).size(), "Invalid matrix and vector sizes" );
 
    return trans( ~mat ) * (~vec);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the multiplication of a row-major dense matrix and a zero
+//        vector (\f$ \vec{y}=A*\vec{x} \f$).
+// \ingroup dense_vector
+//
+// \param mat The left-hand side row-major dense matrix for the multiplication.
+// \param vec The right-hand side zero vector for the multiplication.
+// \return The resulting vector.
+//
+// This function implements the performance optimized treatment of the multiplication of a
+// row-major dense matrix and a zero vector.
+*/
+template< typename MT  // Type of the left-hand side dense matrix
+        , typename VT  // Type of the right-hand side sparse vector
+        , EnableIf_t< IsZero_v<VT> >* = nullptr >
+inline const ZeroVector< MultTrait_t< ElementType_t<MT>, ElementType_t<VT> >, false >
+   dmatsvecmult( const DenseMatrix<MT,false>& mat, const SparseVector<VT,false>& vec )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( vec );
+
+   BLAZE_INTERNAL_ASSERT( (~mat).columns() == (~vec).size(), "Invalid matrix and vector sizes" );
+
+   using ET = MultTrait_t< ElementType_t<MT>, ElementType_t<VT> >;
+   return ZeroVector<ET,false>( (~mat).rows() );
 }
 /*! \endcond */
 //*************************************************************************************************
