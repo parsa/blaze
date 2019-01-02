@@ -68,6 +68,7 @@
 #include <blaze/math/UniUpperMatrix.h>
 #include <blaze/math/UpperMatrix.h>
 #include <blaze/math/ZeroMatrix.h>
+#include <blaze/math/ZeroVector.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -381,6 +382,30 @@ void ClassTest::testVectorScalarMultiplication()
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
    }
+
+   // ZeroVector
+   {
+      {
+         using T1 = ZeroVector<int,columnVector>;
+         using T2 = double;
+         using RT = ZeroVector<double,columnVector>;
+         static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+         static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+         static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+      }
+      {
+         using T1 = ZeroVector<int,rowVector>;
+         using T2 = double;
+         using RT = ZeroVector<double,rowVector>;
+         static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+         static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+         static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+      }
+   }
 }
 //*************************************************************************************************
 
@@ -559,6 +584,30 @@ void ClassTest::testScalarVectorMultiplication()
          using T1 = double;
          using T2 = CompressedVector<int,rowVector>;
          using RT = CompressedVector<double,rowVector>;
+         static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+         static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+         static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+      }
+   }
+
+   // ZeroVector
+   {
+      {
+         using T1 = double;
+         using T2 = ZeroVector<int,columnVector>;
+         using RT = ZeroVector<double,columnVector>;
+         static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+         static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+         static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+      }
+      {
+         using T1 = double;
+         using T2 = ZeroVector<int,rowVector>;
+         using RT = ZeroVector<double,rowVector>;
          static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
          using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -1823,6 +1872,30 @@ void ClassTest::testVectorVectorMultiplication()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = StaticVector<int,3UL,columnVector>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = StaticVector<int,3UL,rowVector>;
+            using T2 = ZeroVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
    }
 
    // HybridVector/...
@@ -1987,6 +2060,30 @@ void ClassTest::testVectorVectorMultiplication()
             using T1 = HybridVector<int,5UL,rowVector>;
             using T2 = CompressedVector<double,rowVector>;
             using RT = CompressedVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = HybridVector<int,5UL,columnVector>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = HybridVector<int,5UL,rowVector>;
+            using T2 = ZeroVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -2165,6 +2262,30 @@ void ClassTest::testVectorVectorMultiplication()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = DynamicVector<int,columnVector>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = DynamicVector<int,rowVector>;
+            using T2 = ZeroVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
    }
 
    // CustomVector/...
@@ -2329,6 +2450,30 @@ void ClassTest::testVectorVectorMultiplication()
             using T1 = CustomVector<int,unaligned,unpadded,rowVector>;
             using T2 = CompressedVector<double,rowVector>;
             using RT = CompressedVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = CustomVector<int,unaligned,unpadded,columnVector>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = CustomVector<int,unaligned,unpadded,rowVector>;
+            using T2 = ZeroVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -2507,6 +2652,30 @@ void ClassTest::testVectorVectorMultiplication()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = UniformVector<int,columnVector>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = UniformVector<int,rowVector>;
+            using T2 = ZeroVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
    }
 
    // InitializerVector/...
@@ -2678,6 +2847,30 @@ void ClassTest::testVectorVectorMultiplication()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = InitializerVector<int,columnVector>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = InitializerVector<int,rowVector>;
+            using T2 = ZeroVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
    }
 
    // CompressedVector/...
@@ -2849,6 +3042,225 @@ void ClassTest::testVectorVectorMultiplication()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = CompressedVector<int,columnVector>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = CompressedVector<int,rowVector>;
+            using T2 = ZeroVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+   }
+
+   // ZeroVector/...
+   {
+      // .../StaticVector
+      {
+         {
+            using T1 = ZeroVector<int,columnVector>;
+            using T2 = StaticVector<double,3UL,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = StaticVector<double,3UL,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../HybridVector
+      {
+         {
+            using T1 = ZeroVector<int,columnVector>;
+            using T2 = HybridVector<double,7UL,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = HybridVector<double,7UL,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../DynamicVector
+      {
+         {
+            using T1 = ZeroVector<int,columnVector>;
+            using T2 = DynamicVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = DynamicVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../CustomVector
+      {
+         {
+            using T1 = ZeroVector<int,columnVector>;
+            using T2 = CustomVector<double,unaligned,unpadded,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = CustomVector<double,unaligned,unpadded,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../UniformVector
+      {
+         {
+            using T1 = ZeroVector<int,columnVector>;
+            using T2 = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../InitializerVector
+      {
+         {
+            using T1 = ZeroVector<int,columnVector>;
+            using T2 = InitializerVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = InitializerVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../CompressedVector
+      {
+         {
+            using T1 = ZeroVector<int,columnVector>;
+            using T2 = CompressedVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = CompressedVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = ZeroVector<int,columnVector>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = ZeroVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
    }
 }
 //*************************************************************************************************
@@ -2981,6 +3393,22 @@ void ClassTest::testInnerProduct()
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = StaticVector<int,3UL,rowVector>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = double;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+         {
+            using T1 = StaticVector<StaticVector<int,2UL>,3UL,rowVector>;
+            using T2 = ZeroVector<StaticVector<double,2UL>,columnVector>;
+            using RT = StaticVector<double,2UL>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+      }
    }
 
    // HybridVector/...
@@ -3092,6 +3520,22 @@ void ClassTest::testInnerProduct()
          {
             using T1 = HybridVector<StaticVector<int,2UL>,5UL,rowVector>;
             using T2 = CompressedVector<StaticVector<double,2UL>,columnVector>;
+            using RT = StaticVector<double,2UL>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+      }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = HybridVector<int,5UL,rowVector>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = double;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+         {
+            using T1 = HybridVector<StaticVector<int,2UL>,5UL,rowVector>;
+            using T2 = ZeroVector<StaticVector<double,2UL>,columnVector>;
             using RT = StaticVector<double,2UL>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
          }
@@ -3211,6 +3655,22 @@ void ClassTest::testInnerProduct()
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = DynamicVector<int,rowVector>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = double;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+         {
+            using T1 = DynamicVector<StaticVector<int,2UL>,rowVector>;
+            using T2 = ZeroVector<StaticVector<double,2UL>,columnVector>;
+            using RT = StaticVector<double,2UL>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+      }
    }
 
    // CustomVector/...
@@ -3322,6 +3782,22 @@ void ClassTest::testInnerProduct()
          {
             using T1 = CustomVector<StaticVector<int,2UL>,unaligned,unpadded,rowVector>;
             using T2 = CompressedVector<StaticVector<double,2UL>,columnVector>;
+            using RT = StaticVector<double,2UL>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+      }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = CustomVector<int,unaligned,unpadded,rowVector>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = double;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+         {
+            using T1 = CustomVector<StaticVector<int,2UL>,unaligned,unpadded,rowVector>;
+            using T2 = ZeroVector<StaticVector<double,2UL>,columnVector>;
             using RT = StaticVector<double,2UL>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
          }
@@ -3441,6 +3917,22 @@ void ClassTest::testInnerProduct()
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = UniformVector<int,rowVector>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = double;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+         {
+            using T1 = UniformVector<StaticVector<int,2UL>,rowVector>;
+            using T2 = ZeroVector<StaticVector<double,2UL>,columnVector>;
+            using RT = StaticVector<double,2UL>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+      }
    }
 
    // InitializerVector/...
@@ -3556,6 +4048,22 @@ void ClassTest::testInnerProduct()
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = InitializerVector<int,rowVector>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = double;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+         {
+            using T1 = InitializerVector<StaticVector<int,2UL>,rowVector>;
+            using T2 = ZeroVector<StaticVector<double,2UL>,columnVector>;
+            using RT = StaticVector<double,2UL>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+      }
    }
 
    // CompressedVector/...
@@ -3667,6 +4175,153 @@ void ClassTest::testInnerProduct()
          {
             using T1 = CompressedVector<StaticVector<int,2UL>,rowVector>;
             using T2 = CompressedVector<StaticVector<double,2UL>,columnVector>;
+            using RT = StaticVector<double,2UL>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+      }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = CompressedVector<int,rowVector>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = double;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+         {
+            using T1 = CompressedVector<StaticVector<int,2UL>,rowVector>;
+            using T2 = ZeroVector<StaticVector<double,2UL>,columnVector>;
+            using RT = StaticVector<double,2UL>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+      }
+   }
+
+   // ZeroVector/...
+   {
+      // .../StaticVector
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = StaticVector<double,3UL,columnVector>;
+            using RT = double;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+         {
+            using T1 = ZeroVector<StaticVector<int,2UL>,rowVector>;
+            using T2 = StaticVector<StaticVector<double,2UL>,3UL,columnVector>;
+            using RT = StaticVector<double,2UL>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+      }
+
+      // .../HybridVector
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = HybridVector<double,5UL,columnVector>;
+            using RT = double;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+         {
+            using T1 = ZeroVector<StaticVector<int,2UL>,rowVector>;
+            using T2 = HybridVector<StaticVector<double,2UL>,5UL,columnVector>;
+            using RT = StaticVector<double,2UL>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+      }
+
+      // .../DynamicVector
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = DynamicVector<double,columnVector>;
+            using RT = double;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+         {
+            using T1 = ZeroVector<StaticVector<int,2UL>,rowVector>;
+            using T2 = DynamicVector<StaticVector<double,2UL>,columnVector>;
+            using RT = StaticVector<double,2UL>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+      }
+
+      // .../CustomVector
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = CustomVector<double,unaligned,unpadded,columnVector>;
+            using RT = double;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+         {
+            using T1 = ZeroVector<StaticVector<int,2UL>,rowVector>;
+            using T2 = CustomVector<StaticVector<double,2UL>,unaligned,unpadded,columnVector>;
+            using RT = StaticVector<double,2UL>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+      }
+
+      // .../UniformVector
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = UniformVector<double,columnVector>;
+            using RT = double;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+         {
+            using T1 = ZeroVector<StaticVector<int,2UL>,rowVector>;
+            using T2 = UniformVector<StaticVector<double,2UL>,columnVector>;
+            using RT = StaticVector<double,2UL>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+      }
+
+      // .../InitializerVector
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = InitializerVector<double,columnVector>;
+            using RT = double;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+         {
+            using T1 = ZeroVector<StaticVector<int,2UL>,rowVector>;
+            using T2 = InitializerVector<StaticVector<double,2UL>,columnVector>;
+            using RT = StaticVector<double,2UL>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+      }
+
+      // .../CompressedVector
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = CompressedVector<double,columnVector>;
+            using RT = double;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+         {
+            using T1 = ZeroVector<StaticVector<int,2UL>,rowVector>;
+            using T2 = CompressedVector<StaticVector<double,2UL>,columnVector>;
+            using RT = StaticVector<double,2UL>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+      }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = double;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+         }
+         {
+            using T1 = ZeroVector<StaticVector<int,2UL>,rowVector>;
+            using T2 = ZeroVector<StaticVector<double,2UL>,columnVector>;
             using RT = StaticVector<double,2UL>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
          }
@@ -3859,6 +4514,30 @@ void ClassTest::testOuterProduct()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = StaticVector<int,3UL,columnVector>;
+            using T2 = ZeroVector<double,rowVector>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = StaticVector<StaticVector<int,2UL>,3UL,columnVector>;
+            using T2 = ZeroVector<StaticVector<double,2UL>,rowVector>;
+            using RT = ZeroMatrix<StaticVector<double,2UL>,rowMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
    }
 
    // HybridVector/...
@@ -4023,6 +4702,30 @@ void ClassTest::testOuterProduct()
             using T1 = HybridVector<StaticVector<int,2UL>,5UL,columnVector>;
             using T2 = CompressedVector<StaticVector<double,2UL>,rowVector>;
             using RT = CompressedMatrix<StaticVector<double,2UL>,rowMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = HybridVector<int,5UL,columnVector>;
+            using T2 = ZeroVector<double,rowVector>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = HybridVector<StaticVector<int,2UL>,5UL,columnVector>;
+            using T2 = ZeroVector<StaticVector<double,2UL>,rowVector>;
+            using RT = ZeroMatrix<StaticVector<double,2UL>,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -4201,6 +4904,30 @@ void ClassTest::testOuterProduct()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = DynamicVector<int,columnVector>;
+            using T2 = ZeroVector<double,rowVector>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = DynamicVector<StaticVector<int,2UL>,columnVector>;
+            using T2 = ZeroVector<StaticVector<double,2UL>,rowVector>;
+            using RT = ZeroMatrix<StaticVector<double,2UL>,rowMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
    }
 
    // CustomVector/...
@@ -4365,6 +5092,30 @@ void ClassTest::testOuterProduct()
             using T1 = CustomVector<StaticVector<int,2UL>,unaligned,unpadded,columnVector>;
             using T2 = CompressedVector<StaticVector<double,2UL>,rowVector>;
             using RT = CompressedMatrix<StaticVector<double,2UL>,rowMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = CustomVector<int,unaligned,unpadded,columnVector>;
+            using T2 = ZeroVector<double,rowVector>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = CustomVector<StaticVector<int,2UL>,unaligned,unpadded,columnVector>;
+            using T2 = ZeroVector<StaticVector<double,2UL>,rowVector>;
+            using RT = ZeroMatrix<StaticVector<double,2UL>,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -4543,6 +5294,30 @@ void ClassTest::testOuterProduct()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = UniformVector<int,columnVector>;
+            using T2 = ZeroVector<double,rowVector>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = UniformVector<StaticVector<int,2UL>,columnVector>;
+            using T2 = ZeroVector<StaticVector<double,2UL>,rowVector>;
+            using RT = ZeroMatrix<StaticVector<double,2UL>,rowMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
    }
 
    // InitializerVector/...
@@ -4714,6 +5489,30 @@ void ClassTest::testOuterProduct()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = InitializerVector<int,columnVector>;
+            using T2 = ZeroVector<double,rowVector>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = InitializerVector<StaticVector<int,2UL>,columnVector>;
+            using T2 = ZeroVector<StaticVector<double,2UL>,rowVector>;
+            using RT = ZeroMatrix<StaticVector<double,2UL>,rowMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
    }
 
    // CompressedVector/...
@@ -4878,6 +5677,225 @@ void ClassTest::testOuterProduct()
             using T1 = CompressedVector<StaticVector<int,2UL>,columnVector>;
             using T2 = CompressedVector<StaticVector<double,2UL>,rowVector>;
             using RT = CompressedMatrix<StaticVector<double,2UL>,rowMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = CompressedVector<int,columnVector>;
+            using T2 = ZeroVector<double,rowVector>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = CompressedVector<StaticVector<int,2UL>,columnVector>;
+            using T2 = ZeroVector<StaticVector<double,2UL>,rowVector>;
+            using RT = ZeroMatrix<StaticVector<double,2UL>,rowMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+   }
+
+   // ZeroVector/...
+   {
+      // .../StaticVector
+      {
+         {
+            using T1 = ZeroVector<int,columnVector>;
+            using T2 = StaticVector<double,4UL,rowVector>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroVector<StaticVector<int,2UL>,columnVector>;
+            using T2 = StaticVector<StaticVector<double,2UL>,4UL,rowVector>;
+            using RT = ZeroMatrix<StaticVector<double,2UL>,columnMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../HybridVector
+      {
+         {
+            using T1 = ZeroVector<int,columnVector>;
+            using T2 = HybridVector<double,6UL,rowVector>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroVector<StaticVector<int,2UL>,columnVector>;
+            using T2 = HybridVector<StaticVector<double,2UL>,6UL,rowVector>;
+            using RT = ZeroMatrix<StaticVector<double,2UL>,columnMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../DynamicVector
+      {
+         {
+            using T1 = ZeroVector<int,columnVector>;
+            using T2 = DynamicVector<double,rowVector>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroVector<StaticVector<int,2UL>,columnVector>;
+            using T2 = DynamicVector<StaticVector<double,2UL>,rowVector>;
+            using RT = ZeroMatrix<StaticVector<double,2UL>,columnMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../CustomVector
+      {
+         {
+            using T1 = ZeroVector<int,columnVector>;
+            using T2 = CustomVector<double,unaligned,unpadded,rowVector>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroVector<StaticVector<int,2UL>,columnVector>;
+            using T2 = CustomVector<StaticVector<double,2UL>,unaligned,unpadded,rowVector>;
+            using RT = ZeroMatrix<StaticVector<double,2UL>,columnMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../UniformVector
+      {
+         {
+            using T1 = ZeroVector<int,columnVector>;
+            using T2 = UniformVector<double,rowVector>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroVector<StaticVector<int,2UL>,columnVector>;
+            using T2 = UniformVector<StaticVector<double,2UL>,rowVector>;
+            using RT = ZeroMatrix<StaticVector<double,2UL>,columnMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../InitializerVector
+      {
+         {
+            using T1 = ZeroVector<int,columnVector>;
+            using T2 = InitializerVector<double,rowVector>;
+            using RT = ZeroMatrix<double,columnMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroVector<StaticVector<int,2UL>,columnVector>;
+            using T2 = InitializerVector<StaticVector<double,2UL>,rowVector>;
+            using RT = ZeroMatrix<StaticVector<double,2UL>,columnMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../CompressedVector
+      {
+         {
+            using T1 = ZeroVector<int,columnVector>;
+            using T2 = CompressedVector<double,rowVector>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroVector<StaticVector<int,2UL>,columnVector>;
+            using T2 = CompressedVector<StaticVector<double,2UL>,rowVector>;
+            using RT = ZeroMatrix<StaticVector<double,2UL>,rowMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+      }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = ZeroVector<int,columnVector>;
+            using T2 = ZeroVector<double,rowVector>;
+            using RT = ZeroMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
+         {
+            using T1 = ZeroVector<StaticVector<int,2UL>,columnVector>;
+            using T2 = ZeroVector<StaticVector<double,2UL>,rowVector>;
+            using RT = ZeroMatrix<StaticVector<double,2UL>,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -5073,6 +6091,30 @@ void ClassTest::testMatrixVectorMultiplication()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = StaticMatrix<int,3UL,5UL,rowMajor>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = StaticMatrix<int,3UL,5UL,columnMajor>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
    }
 
    // HybridMatrix/...
@@ -5237,6 +6279,30 @@ void ClassTest::testMatrixVectorMultiplication()
             using T1 = HybridMatrix<int,5UL,7UL,columnMajor>;
             using T2 = CompressedVector<double,columnVector>;
             using RT = HybridVector<double,5UL,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = HybridMatrix<int,5UL,7UL,rowMajor>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = HybridMatrix<int,5UL,7UL,columnMajor>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -5415,6 +6481,30 @@ void ClassTest::testMatrixVectorMultiplication()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = DynamicMatrix<int,rowMajor>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = DynamicMatrix<int,columnMajor>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
    }
 
    // CustomMatrix/...
@@ -5579,6 +6669,30 @@ void ClassTest::testMatrixVectorMultiplication()
             using T1 = CustomMatrix<int,unaligned,unpadded,columnMajor>;
             using T2 = CompressedVector<double,columnVector>;
             using RT = DynamicVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = CustomMatrix<int,unaligned,unpadded,rowMajor>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = CustomMatrix<int,unaligned,unpadded,columnMajor>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -5757,6 +6871,30 @@ void ClassTest::testMatrixVectorMultiplication()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = UniformMatrix<int,rowMajor>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = UniformMatrix<int,columnMajor>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
    }
 
    // InitializerMatrix/...
@@ -5851,6 +6989,20 @@ void ClassTest::testMatrixVectorMultiplication()
             using T1 = InitializerMatrix<int>;
             using T2 = CompressedVector<double,columnVector>;
             using RT = DynamicVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = InitializerMatrix<int>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6029,6 +7181,30 @@ void ClassTest::testMatrixVectorMultiplication()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = CompressedMatrix<int,rowMajor>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = CompressedMatrix<int,columnMajor>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
    }
 
    // IdentityMatrix/...
@@ -6200,6 +7376,30 @@ void ClassTest::testMatrixVectorMultiplication()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = IdentityMatrix<int,rowMajor>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = IdentityMatrix<int,columnMajor>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
    }
 
    // ZeroMatrix/...
@@ -6209,7 +7409,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = ZeroMatrix<int,rowMajor>;
             using T2 = StaticVector<double,5UL,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6219,7 +7419,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = ZeroMatrix<int,columnMajor>;
             using T2 = StaticVector<double,5UL,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6233,7 +7433,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = ZeroMatrix<int,rowMajor>;
             using T2 = HybridVector<double,6UL,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6243,7 +7443,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = ZeroMatrix<int,columnMajor>;
             using T2 = HybridVector<double,6UL,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6257,7 +7457,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = ZeroMatrix<int,rowMajor>;
             using T2 = DynamicVector<double,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6267,7 +7467,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = ZeroMatrix<int,columnMajor>;
             using T2 = DynamicVector<double,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6281,7 +7481,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = ZeroMatrix<int,rowMajor>;
             using T2 = CustomVector<double,unaligned,unpadded,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6291,7 +7491,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = ZeroMatrix<int,columnMajor>;
             using T2 = CustomVector<double,unaligned,unpadded,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6305,7 +7505,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = ZeroMatrix<int,rowMajor>;
             using T2 = UniformVector<double,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6315,7 +7515,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = ZeroMatrix<int,columnMajor>;
             using T2 = UniformVector<double,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6329,7 +7529,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = ZeroMatrix<int,rowMajor>;
             using T2 = InitializerVector<double,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6339,7 +7539,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = ZeroMatrix<int,columnMajor>;
             using T2 = InitializerVector<double,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6353,7 +7553,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = ZeroMatrix<int,rowMajor>;
             using T2 = CompressedVector<double,columnVector>;
-            using RT = CompressedVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6363,7 +7563,31 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = ZeroMatrix<int,columnMajor>;
             using T2 = CompressedVector<double,columnVector>;
-            using RT = CompressedVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = ZeroMatrix<int,rowMajor>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroMatrix<int,columnMajor>;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6542,6 +7766,30 @@ void ClassTest::testMatrixVectorMultiplication()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
    }
 
    // SymmetricMatrix<DynamicMatrix>/... (complex)
@@ -6706,6 +7954,30 @@ void ClassTest::testMatrixVectorMultiplication()
             using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             using T2 = CompressedVector<int,columnVector>;
             using RT = DynamicVector<complex<int>,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using T2 = ZeroVector<int,columnVector>;
+            using RT = ZeroVector<complex<int>,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using T2 = ZeroVector<int,columnVector>;
+            using RT = ZeroVector<complex<int>,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6884,6 +8156,30 @@ void ClassTest::testMatrixVectorMultiplication()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
    }
 
    // SymmetricMatrix<ZeroMatrix>/...
@@ -6893,7 +8189,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
             using T2 = StaticVector<double,4UL,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6903,7 +8199,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
             using T2 = StaticVector<double,4UL,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6917,7 +8213,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
             using T2 = HybridVector<double,6UL,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6927,7 +8223,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
             using T2 = HybridVector<double,6UL,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6941,7 +8237,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
             using T2 = DynamicVector<double,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6951,7 +8247,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
             using T2 = DynamicVector<double,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6965,7 +8261,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
             using T2 = CustomVector<double,unaligned,unpadded,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6975,7 +8271,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
             using T2 = CustomVector<double,unaligned,unpadded,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6989,7 +8285,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
             using T2 = UniformVector<double,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -6999,7 +8295,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
             using T2 = UniformVector<double,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -7013,7 +8309,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
             using T2 = InitializerVector<double,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -7023,7 +8319,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
             using T2 = InitializerVector<double,columnVector>;
-            using RT = UniformVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -7037,7 +8333,7 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
             using T2 = CompressedVector<double,columnVector>;
-            using RT = CompressedVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -7047,7 +8343,31 @@ void ClassTest::testMatrixVectorMultiplication()
          {
             using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
             using T2 = CompressedVector<double,columnVector>;
-            using RT = CompressedVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -7226,6 +8546,30 @@ void ClassTest::testMatrixVectorMultiplication()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
    }
 
    // HermitianMatrix<DynamicMatrix>/... (Hermitian)
@@ -7390,6 +8734,30 @@ void ClassTest::testMatrixVectorMultiplication()
             using T1 = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             using T2 = CompressedVector<int,columnVector>;
             using RT = DynamicVector<complex<int>,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using T2 = ZeroVector<int,columnVector>;
+            using RT = ZeroVector<complex<int>,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using T2 = ZeroVector<int,columnVector>;
+            using RT = ZeroVector<complex<int>,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -7568,6 +8936,30 @@ void ClassTest::testMatrixVectorMultiplication()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = LowerMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = LowerMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
    }
 
    // UniLowerMatrix<DynamicMatrix>/...
@@ -7732,6 +9124,30 @@ void ClassTest::testMatrixVectorMultiplication()
             using T1 = UniLowerMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = CompressedVector<double,columnVector>;
             using RT = DynamicVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = UniLowerMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = UniLowerMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -7910,6 +9326,30 @@ void ClassTest::testMatrixVectorMultiplication()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = StrictlyLowerMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
    }
 
    // UpperMatrix<DynamicMatrix>/...
@@ -8074,6 +9514,30 @@ void ClassTest::testMatrixVectorMultiplication()
             using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = CompressedVector<double,columnVector>;
             using RT = DynamicVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -8252,6 +9716,30 @@ void ClassTest::testMatrixVectorMultiplication()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = UniUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = UniUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
    }
 
    // StrictlyUpperMatrix<DynamicMatrix>/...
@@ -8423,6 +9911,30 @@ void ClassTest::testMatrixVectorMultiplication()
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
    }
 
    // DiagonalMatrix<DynamicMatrix>/...
@@ -8587,6 +10099,30 @@ void ClassTest::testMatrixVectorMultiplication()
             using T1 = DiagonalMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = CompressedVector<double,columnVector>;
             using RT = DynamicVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../ZeroVector
+      {
+         {
+            using T1 = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = DiagonalMatrix< DynamicMatrix<int,columnMajor> >;
+            using T2 = ZeroVector<double,columnVector>;
+            using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -8802,7 +10338,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = StaticVector<int,5UL,rowVector>;
             using T2 = ZeroMatrix<double,rowMajor>;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -8812,7 +10348,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = StaticVector<int,5UL,rowVector>;
             using T2 = ZeroMatrix<double,columnMajor>;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -8898,7 +10434,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = StaticVector<int,5UL,rowVector>;
             using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -8908,7 +10444,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = StaticVector<int,5UL,rowVector>;
             using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -9323,7 +10859,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = HybridVector<int,7UL,rowVector>;
             using T2 = ZeroMatrix<double,rowMajor>;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -9333,7 +10869,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = HybridVector<int,7UL,rowVector>;
             using T2 = ZeroMatrix<double,columnMajor>;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -9419,7 +10955,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = HybridVector<int,7UL,rowVector>;
             using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -9429,7 +10965,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = HybridVector<int,7UL,rowVector>;
             using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -9844,7 +11380,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = DynamicVector<int,rowVector>;
             using T2 = ZeroMatrix<double,rowMajor>;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -9854,7 +11390,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = DynamicVector<int,rowVector>;
             using T2 = ZeroMatrix<double,columnMajor>;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -9940,7 +11476,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = DynamicVector<int,rowVector>;
             using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -9950,7 +11486,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = DynamicVector<int,rowVector>;
             using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -10365,7 +11901,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = CustomVector<int,unaligned,unpadded,rowVector>;
             using T2 = ZeroMatrix<double,rowMajor>;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -10375,7 +11911,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = CustomVector<int,unaligned,unpadded,rowVector>;
             using T2 = ZeroMatrix<double,columnMajor>;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -10461,7 +11997,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = CustomVector<int,unaligned,unpadded,rowVector>;
             using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -10471,7 +12007,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = CustomVector<int,unaligned,unpadded,rowVector>;
             using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -10886,7 +12422,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = UniformVector<int,rowVector>;
             using T2 = ZeroMatrix<double,rowMajor>;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -10896,7 +12432,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = UniformVector<int,rowVector>;
             using T2 = ZeroMatrix<double,columnMajor>;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -10982,7 +12518,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = UniformVector<int,rowVector>;
             using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -10992,7 +12528,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = UniformVector<int,rowVector>;
             using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -11407,7 +12943,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = InitializerVector<int,rowVector>;
             using T2 = ZeroMatrix<double,rowMajor>;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -11417,7 +12953,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = InitializerVector<int,rowVector>;
             using T2 = ZeroMatrix<double,columnMajor>;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -11503,7 +13039,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = InitializerVector<int,rowVector>;
             using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -11513,7 +13049,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = InitializerVector<int,rowVector>;
             using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
-            using RT = UniformVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -11928,7 +13464,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = CompressedVector<int,rowVector>;
             using T2 = ZeroMatrix<double,rowMajor>;
-            using RT = CompressedVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -11938,7 +13474,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = CompressedVector<int,rowVector>;
             using T2 = ZeroMatrix<double,columnMajor>;
-            using RT = CompressedVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -12019,12 +13555,12 @@ void ClassTest::testVectorMatrixMultiplication()
          }
       }
 
-      // .../SymmetricMatrix<UniformMatrix>
+      // .../SymmetricMatrix<ZeroMatrix>
       {
          {
             using T1 = CompressedVector<int,rowVector>;
             using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
-            using RT = CompressedVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -12034,7 +13570,7 @@ void ClassTest::testVectorMatrixMultiplication()
          {
             using T1 = CompressedVector<int,rowVector>;
             using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
-            using RT = CompressedVector<double,rowVector>;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -12251,6 +13787,527 @@ void ClassTest::testVectorMatrixMultiplication()
             using T1 = CompressedVector<int,rowVector>;
             using T2 = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             using RT = DynamicVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+   }
+
+   // ZeroVector/...
+   {
+      // .../StaticMatrix
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = StaticMatrix<double,5UL,3UL,rowMajor>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = StaticMatrix<double,5UL,3UL,columnMajor>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../HybridMatrix
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = HybridMatrix<double,6UL,4UL,rowMajor>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = HybridMatrix<double,6UL,4UL,columnMajor>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../DynamicMatrix
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = DynamicMatrix<double,rowMajor>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = DynamicMatrix<double,columnMajor>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../CustomMatrix
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = CustomMatrix<double,unaligned,unpadded,rowMajor>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = CustomMatrix<double,unaligned,unpadded,columnMajor>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../UniformMatrix
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = UniformMatrix<double,rowMajor>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = UniformMatrix<double,columnMajor>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../InitializerMatrix
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = InitializerMatrix<double>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../CompressedMatrix
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = CompressedMatrix<double,rowMajor>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = CompressedMatrix<double,columnMajor>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../IdentityMatrix
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = IdentityMatrix<double,rowMajor>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = IdentityMatrix<double,columnMajor>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../ZeroMatrix
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = ZeroMatrix<double,rowMajor>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = ZeroMatrix<double,columnMajor>;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (real)
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = SymmetricMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<DynamicMatrix> (complex)
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using RT = ZeroVector<complex<int>,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using RT = ZeroVector<complex<int>,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<UniformMatrix>
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../SymmetricMatrix<ZeroMatrix>
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (symmetric)
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = HermitianMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = HermitianMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../HermitianMatrix<DynamicMatrix> (Hermitian)
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using RT = ZeroVector<complex<int>,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using RT = ZeroVector<complex<int>,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../LowerMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = LowerMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = LowerMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../UniLowerMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = UniLowerMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = UniLowerMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../StrictlyLowerMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../UpperMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = UpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = UpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../UniUpperMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = UniUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = UniUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../StrictlyUpperMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+      }
+
+      // .../DiagonalMatrix<DynamicMatrix>
+      {
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = ZeroVector<double,rowVector>;
+            static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
+
+            using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = ZeroVector<int,rowVector>;
+            using T2 = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = Decay_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
