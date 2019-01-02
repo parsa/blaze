@@ -39,7 +39,7 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <blaze/math/DynamicVector.h>
+#include <blaze/math/CompressedVector.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/svecexpand/OperationTest.h>
 #include <blazetest/system/MathTest.h>
