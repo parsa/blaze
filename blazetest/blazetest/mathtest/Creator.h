@@ -91,5 +91,6 @@
 #include <blazetest/mathtest/creator/UniformMatrix.h>
 #include <blazetest/mathtest/creator/UniformVector.h>
 #include <blazetest/mathtest/creator/ZeroMatrix.h>
+#include <blazetest/mathtest/creator/ZeroVector.h>
 
 #endif
