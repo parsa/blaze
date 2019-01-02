@@ -54,6 +54,7 @@
 #include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/math/UniformMatrix.h>
 #include <blaze/math/UniformVector.h>
+#include <blaze/math/ZeroVector.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -252,7 +253,7 @@ void ClassTest::testVectorExpansion()
       }
    }
 
-   // DynamicVector
+   // UniformVector
    {
       {
          using VT = UniformVector<int,columnVector>;
@@ -353,6 +354,42 @@ void ClassTest::testVectorExpansion()
       {
          using VT = CompressedVector<int,rowVector>;
          using RT = CompressedMatrix<int,rowMajor>;
+         static_assert( IsSame_v< ExpandTrait_t<VT,5UL>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( expand<5UL>( std::declval<VT>() ) ) >;
+         static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+      }
+   }
+
+   // ZeroVector
+   {
+      {
+         using VT = ZeroVector<int,columnVector>;
+         using RT = ZeroMatrix<int,columnMajor>;
+         static_assert( IsSame_v< ExpandTrait_t<VT>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( expand( std::declval<VT>(), std::declval<size_t>() ) ) >;
+         static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+      }
+      {
+         using VT = ZeroVector<int,rowVector>;
+         using RT = ZeroMatrix<int,rowMajor>;
+         static_assert( IsSame_v< ExpandTrait_t<VT>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( expand( std::declval<VT>(), std::declval<size_t>() ) ) >;
+         static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+      }
+      {
+         using VT = ZeroVector<int,columnVector>;
+         using RT = ZeroMatrix<int,columnMajor>;
+         static_assert( IsSame_v< ExpandTrait_t<VT,5UL>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( expand<5UL>( std::declval<VT>() ) ) >;
+         static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+      }
+      {
+         using VT = ZeroVector<int,rowVector>;
+         using RT = ZeroMatrix<int,rowMajor>;
          static_assert( IsSame_v< ExpandTrait_t<VT,5UL>, RT >, "Non-matching type detected" );
 
          using Expr = Decay_t< decltype( expand<5UL>( std::declval<VT>() ) ) >;
