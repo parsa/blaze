@@ -49,6 +49,7 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/ExpandTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
@@ -56,9 +57,11 @@
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/HighType.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsUniform.h>
@@ -1541,6 +1544,20 @@ struct MultTraitEval1< T1, T2
 
 template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
+                     , EnableIf_t< IsColumnVector_v<T1> &&
+                                   IsRowVector_v<T2> &&
+                                   ( IsZero_v<T1> || IsZero_v<T2> ) > >
+{
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   static constexpr bool SO = IsSparseVector_v<T1> && IsDenseVector_v<T2>;
+
+   using Type = ZeroMatrix< MultTrait_t<ET1,ET2>, SO >;
+};
+
+template< typename T1, typename T2 >
+struct MultTraitEval1< T1, T2
                      , EnableIf_t< IsMatrix_v<T1> &&
                                    IsMatrix_v<T2> &&
                                    ( IsZero_v<T1> || IsZero_v<T2> ) > >
@@ -1617,6 +1634,30 @@ struct BinaryMapTraitEval1< T1, T2, OP
    static constexpr bool SO = StorageOrder_v<T1> && StorageOrder_v<T2>;
 
    using Type = ZeroMatrix< MapTrait_t<ET1,ET2,OP>, SO >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  EXPANDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T  // Type to be expanded
+        , size_t E >  // Compile time expansion
+struct ExpandTraitEval1< T, E
+                       , EnableIf_t< IsVector_v<T> &&
+                                     IsZero_v<T> > >
+{
+   static constexpr bool TF = ( IsColumnVector_v<T> ? columnMajor : rowMajor );
+
+   using Type = ZeroMatrix< ElementType_t<T>, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
