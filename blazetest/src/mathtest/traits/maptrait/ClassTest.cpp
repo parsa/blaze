@@ -67,6 +67,7 @@
 #include <blaze/math/UniUpperMatrix.h>
 #include <blaze/math/UpperMatrix.h>
 #include <blaze/math/ZeroMatrix.h>
+#include <blaze/math/ZeroVector.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -320,6 +321,28 @@ void ClassTest::testUnaryVectorOperation()
       {
          using VT = CompressedVector<int,rowVector>;
          using RT = CompressedVector<int,rowVector>;
+         static_assert( IsSame_v< MapTrait_t<VT,OP>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
+         static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+         static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+      }
+   }
+
+   // ZeroVector
+   {
+      {
+         using VT = ZeroVector<int,columnVector>;
+         using RT = ZeroVector<int,columnVector>;
+         static_assert( IsSame_v< MapTrait_t<VT,OP>, RT >, "Non-matching type detected" );
+
+         using Expr = Decay_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
+         static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+         static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+      }
+      {
+         using VT = ZeroVector<int,rowVector>;
+         using RT = ZeroVector<int,rowVector>;
          static_assert( IsSame_v< MapTrait_t<VT,OP>, RT >, "Non-matching type detected" );
 
          using Expr = Decay_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
