@@ -1748,12 +1748,10 @@ struct MultTraitEval1< T1, T2
 
 template< typename T1, typename T2 >
 struct MultTraitEval1< T1, T2
-                     , EnableIf_t< IsVector_v<T1> &&
-                                   IsVector_v<T2> &&
-                                   IsColumnVector_v<T1> &&
+                     , EnableIf_t< IsColumnVector_v<T1> &&
                                    IsRowVector_v<T2> &&
-                                   IsUniform_v<T1> &&
-                                   IsUniform_v<T2> > >
+                                   ( IsUniform_v<T1> && IsUniform_v<T2> ) &&
+                                   !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
@@ -1870,7 +1868,7 @@ template< typename T  // Type to be expanded
         , size_t E >  // Compile time expansion
 struct ExpandTraitEval1< T, E
                        , EnableIf_t< IsVector_v<T> &&
-                                     IsUniform_v<T> > >
+                                     IsUniform_v<T> && !IsZero_v<T> > >
 {
    static constexpr bool TF = ( IsColumnVector_v<T> ? columnMajor : rowMajor );
 
