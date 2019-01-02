@@ -46,6 +46,7 @@
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
+#include <blaze/math/constraints/Zero.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Forward.h>
@@ -60,6 +61,7 @@
 #include <blaze/math/typetraits/IsInvertible.h>
 #include <blaze/math/typetraits/IsMultExpr.h>
 #include <blaze/math/typetraits/IsTemporary.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
@@ -67,6 +69,7 @@
 #include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
+#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
@@ -754,6 +757,7 @@ class SVecScalarDivExpr
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ST );
    BLAZE_CONSTRAINT_MUST_NOT_BE_FLOATING_POINT_TYPE( ST );
    BLAZE_CONSTRAINT_MUST_NOT_BE_FLOATING_POINT_TYPE( ElementType );
@@ -804,6 +808,73 @@ struct SVecScalarDivExprHelper
 
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the division between a sparse vector and a scalar value
+//        (\f$ \vec{a}=\vec{b}/s \f$).
+// \ingroup sparse_vector
+//
+// \param vec The left-hand side sparse vector for the division.
+// \param scalar The right-hand side scalar value for the division.
+// \return The scaled result vector.
+//
+// This function implements a performance optimized treatment of the division between a sparse
+// vector and a scalar value.
+*/
+template< typename VT  // Type of the left-hand side sparse vector
+        , bool TF      // Transpose flag of the left-hand side sparse vector
+        , typename ST  // Type of the right-hand side scalar
+        , DisableIf_t< IsZero_v<VT> >* = nullptr >
+inline const typename SVecScalarDivExprHelper<VT,ST,TF>::Type
+   svecscalardiv( const SparseVector<VT,TF>& vec, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ReturnType = typename SVecScalarDivExprHelper<VT,ST,TF>::Type;
+   using ScalarType = RightOperand_t<ReturnType>;
+
+   if( IsMultExpr_v<ReturnType> ) {
+      return ReturnType( ~vec, ScalarType(1)/ScalarType(scalar) );
+   }
+   else {
+      return ReturnType( ~vec, scalar );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the division between a zero vector and a scalar value
+//        (\f$ \vec{a}=\vec{b}/s \f$).
+// \ingroup sparse_vector
+//
+// \param vec The left-hand side zero vector for the division.
+// \param scalar The right-hand side scalar value for the division.
+// \return The scaled result vector.
+//
+// This function implements a performance optimized treatment of the division between a zero
+// vector and a scalar value.
+*/
+template< typename VT  // Type of the left-hand side sparse vector
+        , bool TF      // Transpose flag of the left-hand side sparse vector
+        , typename ST  // Type of the right-hand side scalar
+        , EnableIf_t< IsZero_v<VT> >* = nullptr >
+inline const ZeroVector< DivTrait_t< ElementType_t<VT>, ST >, TF >
+   svecscalardiv( const SparseVector<VT,TF>& vec, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( scalar );
+
+   using ET = DivTrait_t< ElementType_t<VT>, ST >;
+   return ZeroVector<ET,TF>( (~vec).size() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Division operator for the divison of a sparse vector by a scalar value
 //        (\f$ \vec{a}=\vec{b}/s \f$).
 // \ingroup sparse_vector
@@ -836,15 +907,7 @@ inline decltype(auto) operator/( const SparseVector<VT,TF>& vec, ST scalar )
 
    BLAZE_USER_ASSERT( scalar != ST(0), "Division by zero detected" );
 
-   using ReturnType = typename SVecScalarDivExprHelper<VT,ST,TF>::Type;
-   using ScalarType = RightOperand_t<ReturnType>;
-
-   if( IsMultExpr_v<ReturnType> ) {
-      return ReturnType( ~vec, ScalarType(1)/ScalarType(scalar) );
-   }
-   else {
-      return ReturnType( ~vec, scalar );
-   }
+   return svecscalardiv( ~vec, scalar );
 }
 //*************************************************************************************************
 
