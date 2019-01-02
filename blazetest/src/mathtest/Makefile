@@ -42,7 +42,9 @@ all: shims simd blas lapack typetraits traits constraints functors \
      symmetricmatrix hermitianmatrix \
      lowermatrix unilowermatrix strictlylowermatrix \
      uppermatrix uniuppermatrix strictlyuppermatrix \
-     diagonalmatrix identitymatrix zeromatrix \
+     diagonalmatrix identitymatrix \
+     uniformvector uniformmatrix \
+     zerovector zeromatrix \
      subvector elements submatrix row rows column columns band \
      dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
      dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
@@ -76,7 +78,9 @@ noop: shims simd blas lapack typetraits traits constraints functors \
       symmetricmatrix hermitianmatrix \
       lowermatrix unilowermatrix strictlylowermatrix \
       uppermatrix uniuppermatrix strictlyuppermatrix \
-      diagonalmatrix identitymatrix zeromatrix \
+      diagonalmatrix identitymatrix \
+      uniformvector uniformmatrix \
+      zerovector zeromatrix \
       subvector elements submatrix row rows column columns band \
       determinant lu llh qr rq ql lq inversion eigen svd \
       vectorserializer matrixserializer
@@ -250,6 +254,21 @@ identitymatrix:
 	@echo
 	@echo "Building the IdentityMatrix tests..."
 	@$(MAKE) --no-print-directory -C ./identitymatrix $(MAKECMDGOALS)
+
+uniformvector:
+	@echo
+	@echo "Building the UniformVector tests..."
+	@$(MAKE) --no-print-directory -C ./uniformvector $(MAKECMDGOALS)
+
+uniformmatrix:
+	@echo
+	@echo "Building the UniformMatrix tests..."
+	@$(MAKE) --no-print-directory -C ./uniformmatrix $(MAKECMDGOALS)
+
+zerovector:
+	@echo
+	@echo "Building the ZeroVector tests..."
+	@$(MAKE) --no-print-directory -C ./zerovector $(MAKECMDGOALS)
 
 zeromatrix:
 	@echo
@@ -689,6 +708,9 @@ reset:
 	@$(MAKE) --no-print-directory -C ./strictlyuppermatrix reset
 	@$(MAKE) --no-print-directory -C ./diagonalmatrix reset
 	@$(MAKE) --no-print-directory -C ./identitymatrix reset
+	@$(MAKE) --no-print-directory -C ./uniformvector reset
+	@$(MAKE) --no-print-directory -C ./uniformmatrix reset
+	@$(MAKE) --no-print-directory -C ./zerovector reset
 	@$(MAKE) --no-print-directory -C ./zeromatrix reset
 	@$(MAKE) --no-print-directory -C ./subvector reset
 	@$(MAKE) --no-print-directory -C ./elements reset
@@ -806,6 +828,9 @@ clean:
 	@$(MAKE) --no-print-directory -C ./strictlyuppermatrix clean
 	@$(MAKE) --no-print-directory -C ./diagonalmatrix clean
 	@$(MAKE) --no-print-directory -C ./identitymatrix clean
+	@$(MAKE) --no-print-directory -C ./uniformvector clean
+	@$(MAKE) --no-print-directory -C ./uniformmatrix clean
+	@$(MAKE) --no-print-directory -C ./zerovector clean
 	@$(MAKE) --no-print-directory -C ./zeromatrix clean
 	@$(MAKE) --no-print-directory -C ./subvector clean
 	@$(MAKE) --no-print-directory -C ./elements clean
@@ -898,7 +923,9 @@ clean:
         symmetricmatrix hermitianmatrix \
         lowermatrix unilowermatrix strictlylowermatrix \
         uppermatrix uniuppermatrix strictlyuppermatrix \
-        diagonalmatrix identitymatrix zeromatrix \
+        diagonalmatrix identitymatrix \
+        uniformvector uniformmatrix \
+        zerovector zeromatrix \
         subvector elements submatrix row rows column columns band \
         dvecdvecadd dvecsvecadd svecdvecadd svecsvecadd \
         dvecdvecsub dvecsvecsub svecdvecsub svecsvecsub \
