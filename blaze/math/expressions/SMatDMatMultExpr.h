@@ -101,7 +101,6 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -520,8 +519,6 @@ class SMatDMatMultExpr
    static inline EnableIf_t< UseDefaultKernel_v<MT3,MT4,MT5> >
       selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT4>;
-
       const size_t block( IsRowMajorMatrix_v<MT3> || IsDiagonal_v<MT5> ? B.columns() : 64UL );
 
       reset( C );
@@ -532,8 +529,8 @@ class SMatDMatMultExpr
 
          for( size_t i=0UL; i<A.rows(); ++i )
          {
-            ConstIterator element( A.begin(i) );
-            const ConstIterator end( A.end(i) );
+            auto element( A.begin(i) );
+            const auto end( A.end(i) );
 
             for( ; element!=end; ++element )
             {
@@ -603,8 +600,6 @@ class SMatDMatMultExpr
    static inline EnableIf_t< UseOptimizedKernel_v<MT3,MT4,MT5> >
       selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT4>;
-
       const size_t block( IsRowMajorMatrix_v<MT3> ? B.columns() : 64UL );
 
       reset( C );
@@ -615,8 +610,8 @@ class SMatDMatMultExpr
 
          for( size_t i=0UL; i<A.rows(); ++i )
          {
-            const ConstIterator end( A.end(i) );
-            ConstIterator element( A.begin(i) );
+            const auto end( A.end(i) );
+            auto element( A.begin(i) );
 
             const size_t nonzeros( A.nonZeros(i) );
             const size_t kpos( nonzeros & size_t(-4) );
@@ -739,16 +734,14 @@ class SMatDMatMultExpr
    static inline EnableIf_t< UseVectorizedKernel_v<MT3,MT4,MT5> >
       selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT4>;
-
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT5> );
 
       reset( C );
 
       for( size_t i=0UL; i<A.rows(); ++i )
       {
-         const ConstIterator end( A.end(i) );
-         ConstIterator element( A.begin(i) );
+         const auto end( A.end(i) );
+         auto element( A.begin(i) );
 
          const size_t nonzeros( A.nonZeros(i) );
          const size_t kpos( nonzeros & size_t(-4) );
@@ -941,8 +934,6 @@ class SMatDMatMultExpr
    static inline EnableIf_t< UseDefaultKernel_v<MT3,MT4,MT5> >
       selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT4>;
-
       const size_t block( IsRowMajorMatrix_v<MT3> || IsDiagonal_v<MT5> ? B.columns() : 64UL );
 
       for( size_t jj=0UL; jj<B.columns(); jj+=block )
@@ -951,8 +942,8 @@ class SMatDMatMultExpr
 
          for( size_t i=0UL; i<A.rows(); ++i )
          {
-            const ConstIterator end( A.end(i) );
-            ConstIterator element( A.begin(i) );
+            const auto end( A.end(i) );
+            auto element( A.begin(i) );
 
             for( ; element!=end; ++element )
             {
@@ -1021,8 +1012,6 @@ class SMatDMatMultExpr
    static inline EnableIf_t< UseOptimizedKernel_v<MT3,MT4,MT5> >
       selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT4>;
-
       const size_t block( IsRowMajorMatrix_v<MT3> ? B.columns() : 64UL );
 
       for( size_t jj=0UL; jj<B.columns(); jj+=block )
@@ -1031,8 +1020,8 @@ class SMatDMatMultExpr
 
          for( size_t i=0UL; i<A.rows(); ++i )
          {
-            const ConstIterator end( A.end(i) );
-            ConstIterator element( A.begin(i) );
+            const auto end( A.end(i) );
+            auto element( A.begin(i) );
 
             const size_t nonzeros( A.nonZeros(i) );
             const size_t kpos( nonzeros & size_t(-4) );
@@ -1147,14 +1136,12 @@ class SMatDMatMultExpr
    static inline EnableIf_t< UseVectorizedKernel_v<MT3,MT4,MT5> >
       selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT4>;
-
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT5> );
 
       for( size_t i=0UL; i<A.rows(); ++i )
       {
-         const ConstIterator end( A.end(i) );
-         ConstIterator element( A.begin(i) );
+         const auto end( A.end(i) );
+         auto element( A.begin(i) );
 
          const size_t nonzeros( A.nonZeros(i) );
          const size_t kpos( nonzeros & size_t(-4) );
@@ -1304,8 +1291,6 @@ class SMatDMatMultExpr
    static inline EnableIf_t< UseDefaultKernel_v<MT3,MT4,MT5> >
       selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT4>;
-
       const size_t block( IsRowMajorMatrix_v<MT3> || IsDiagonal_v<MT5> ? B.columns() : 64UL );
 
       for( size_t jj=0UL; jj<B.columns(); jj+=block )
@@ -1314,8 +1299,8 @@ class SMatDMatMultExpr
 
          for( size_t i=0UL; i<A.rows(); ++i )
          {
-            const ConstIterator end( A.end(i) );
-            ConstIterator element( A.begin(i) );
+            const auto end( A.end(i) );
+            auto element( A.begin(i) );
 
             for( ; element!=end; ++element )
             {
@@ -1384,8 +1369,6 @@ class SMatDMatMultExpr
    static inline EnableIf_t< UseOptimizedKernel_v<MT3,MT4,MT5> >
       selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT4>;
-
       const size_t block( IsRowMajorMatrix_v<MT3> ? B.columns() : 64UL );
 
       for( size_t jj=0UL; jj<B.columns(); jj+=block )
@@ -1394,8 +1377,8 @@ class SMatDMatMultExpr
 
          for( size_t i=0UL; i<A.rows(); ++i )
          {
-            const ConstIterator end( A.end(i) );
-            ConstIterator element( A.begin(i) );
+            const auto end( A.end(i) );
+            auto element( A.begin(i) );
 
             const size_t nonzeros( A.nonZeros(i) );
             const size_t kpos( nonzeros & size_t(-4) );
@@ -1510,14 +1493,12 @@ class SMatDMatMultExpr
    static inline EnableIf_t< UseVectorizedKernel_v<MT3,MT4,MT5> >
       selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT4>;
-
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT5> );
 
       for( size_t i=0UL; i<A.rows(); ++i )
       {
-         const ConstIterator end( A.end(i) );
-         ConstIterator element( A.begin(i) );
+         const auto end( A.end(i) );
+         auto element( A.begin(i) );
 
          const size_t nonzeros( A.nonZeros(i) );
          const size_t kpos( nonzeros & size_t(-4) );

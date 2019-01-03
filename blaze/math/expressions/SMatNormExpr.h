@@ -70,7 +70,6 @@
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -107,8 +106,6 @@ inline decltype(auto) norm_backend( const SparseMatrix<MT,SO>& sm, Abs abs, Powe
    using ET = ElementType_t<MT>;
    using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
 
-   using ConstIterator = ConstIterator_t< RemoveReference_t<CT> >;
-
    if( (~sm).rows() == 0UL || (~sm).columns() == 0UL ) return RT();
 
    CT tmp( ~sm );
@@ -119,8 +116,8 @@ inline decltype(auto) norm_backend( const SparseMatrix<MT,SO>& sm, Abs abs, Powe
 
    for( size_t i=0UL; i<N; ++i )
    {
-      const ConstIterator end( tmp.end(i) );
-      for( ConstIterator element=tmp.begin(i); element!=end; ++element ) {
+      const auto end( tmp.end(i) );
+      for( auto element=tmp.begin(i); element!=end; ++element ) {
          if( IsResizable_v<ET> && isDefault( norm ) )
             norm = power( abs( element->value() ) );
          else

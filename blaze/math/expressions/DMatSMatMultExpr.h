@@ -517,16 +517,14 @@ class DMatSMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT5>;
-
       reset( C );
 
       for( size_t k=0UL; k<B.rows(); ++k )
       {
          if( IsDiagonal_v<MT4> )
          {
-            ConstIterator element( B.begin(k) );
-            const ConstIterator end( B.end(k) );
+            auto element( B.begin(k) );
+            const auto end( B.end(k) );
 
             for( ; element!=end; ++element ) {
                C(k,element->index()) = A(k,k) * element->value();
@@ -544,8 +542,8 @@ class DMatSMatMultExpr
 
             for( size_t ii=iibegin; ii<iiend; ii+=8UL )
             {
-               ConstIterator element( B.begin(k) );
-               const ConstIterator end( B.end(k) );
+               auto element( B.begin(k) );
+               const auto end( B.end(k) );
                const size_t itmp( ( ii+8UL > iiend )?( iiend ):( ii+8UL ) );
 
                for( ; element!=end; ++element )
@@ -621,8 +619,6 @@ class DMatSMatMultExpr
    static inline EnableIf_t< UseOptimizedKernel_v<MT3,MT4,MT5> >
       selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT5>;
-
       reset( C );
 
       for( size_t j=0UL; j<B.rows(); ++j )
@@ -637,8 +633,8 @@ class DMatSMatMultExpr
 
          for( size_t ii=iibegin; ii<iiend; ii+=8UL )
          {
-            ConstIterator element( B.begin(j) );
-            const ConstIterator end( B.end(j) );
+            auto element( B.begin(j) );
+            const auto end( B.end(j) );
             const size_t itmp( ( ii+8UL > iiend )?( iiend ):( ii+8UL ) );
 
             for( ; element!=end; ++element )
@@ -880,14 +876,12 @@ class DMatSMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT5>;
-
       for( size_t j=0UL; j<B.rows(); ++j )
       {
          if( IsDiagonal_v<MT4> )
          {
-            ConstIterator element( B.begin(j) );
-            const ConstIterator end( B.end(j) );
+            auto element( B.begin(j) );
+            const auto end( B.end(j) );
 
             for( ; element!=end; ++element ) {
                C(j,element->index()) += A(j,j) * element->value();
@@ -905,8 +899,8 @@ class DMatSMatMultExpr
 
             for( size_t ii=iibegin; ii<iiend; ii+=8UL )
             {
-               ConstIterator element( B.begin(j) );
-               const ConstIterator end( B.end(j) );
+               auto element( B.begin(j) );
+               const auto end( B.end(j) );
                const size_t itmp( ( ii+8UL > iiend )?( iiend ):( ii+8UL ) );
 
                for( ; element!=end; ++element )
@@ -1079,14 +1073,12 @@ class DMatSMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT5>;
-
       for( size_t j=0UL; j<B.rows(); ++j )
       {
          if( IsDiagonal_v<MT4> )
          {
-            ConstIterator element( B.begin(j) );
-            const ConstIterator end( B.end(j) );
+            auto element( B.begin(j) );
+            const auto end( B.end(j) );
 
             for( ; element!=end; ++element ) {
                C(j,element->index()) -= A(j,j) * element->value();
@@ -1104,8 +1096,8 @@ class DMatSMatMultExpr
 
             for( size_t ii=iibegin; ii<iiend; ii+=8UL )
             {
-               ConstIterator element( B.begin(j) );
-               const ConstIterator end( B.end(j) );
+               auto element( B.begin(j) );
+               const auto end( B.end(j) );
                const size_t itmp( ( ii+8UL > iiend )?( iiend ):( ii+8UL ) );
 
                for( ; element!=end; ++element )

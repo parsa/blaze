@@ -79,7 +79,6 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
 
 
@@ -358,12 +357,10 @@ class TDVecSMatMultExpr
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline void selectAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<MT1> >;
-
       for( size_t i=0UL; i<x.size(); ++i )
       {
-         const ConstIterator end( A.end(i) );
-         ConstIterator element( A.begin(i) );
+         const auto end( A.end(i) );
+         auto element( A.begin(i) );
 
          for( ; element!=end; ++element ) {
             if( IsResizable_v< ElementType_t<VT1> > &&
@@ -459,12 +456,10 @@ class TDVecSMatMultExpr
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline void selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<MT1> >;
-
       for( size_t i=0UL; i<x.size(); ++i )
       {
-         const ConstIterator end( A.end(i) );
-         ConstIterator element( A.begin(i) );
+         const auto end( A.end(i) );
+         auto element( A.begin(i) );
 
          for( ; element!=end; ++element ) {
             y[element->index()] += x[i] * element->value();
@@ -532,12 +527,10 @@ class TDVecSMatMultExpr
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline void selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<MT1> >;
-
       for( size_t i=0UL; i<x.size(); ++i )
       {
-         const ConstIterator end( A.end(i) );
-         ConstIterator element( A.begin(i) );
+         const auto end( A.end(i) );
+         auto element( A.begin(i) );
 
          for( ; element!=end; ++element ) {
             y[element->index()] -= x[i] * element->value();

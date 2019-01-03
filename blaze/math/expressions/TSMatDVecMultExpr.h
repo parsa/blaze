@@ -80,7 +80,6 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
 
 
@@ -364,12 +363,10 @@ class TSMatDVecMultExpr
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<MT1> >;
-
       for( size_t j=0UL; j<A.columns(); ++j )
       {
-         ConstIterator element( A.begin(j) );
-         const ConstIterator end( A.end(j) );
+         auto element( A.begin(j) );
+         const auto end( A.end(j) );
 
          for( ; element!=end; ++element ) {
             if( IsResizable_v< ElementType_t<VT1> > &&
@@ -467,12 +464,10 @@ class TSMatDVecMultExpr
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<MT1> >;
-
       for( size_t j=0UL; j<A.columns(); ++j )
       {
-         ConstIterator element( A.begin(j) );
-         const ConstIterator end( A.end(j) );
+         auto element( A.begin(j) );
+         const auto end( A.end(j) );
 
          for( ; element!=end; ++element ) {
             y[element->index()] += element->value() * x[j];
@@ -540,12 +535,10 @@ class TSMatDVecMultExpr
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<MT1> >;
-
       for( size_t j=0UL; j<A.columns(); ++j )
       {
-         ConstIterator element( A.begin(j) );
-         const ConstIterator end( A.end(j) );
+         auto element( A.begin(j) );
+         const auto end( A.end(j) );
 
          for( ; element!=end; ++element ) {
             y[element->index()] -= element->value() * x[j];

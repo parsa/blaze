@@ -71,7 +71,6 @@
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVoid.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
 
 
@@ -333,8 +332,6 @@ class TSMatTSMatSubExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using RightIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       assign( ~lhs, rhs.lhs_ );
 
       if( !IsResizable_v< ElementType_t<MT> > ) {
@@ -350,8 +347,8 @@ class TSMatTSMatSubExpr
          BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
          for( size_t j=0UL; j<(~lhs).columns(); ++j ) {
-            const RightIterator end( B.end(j) );
-            for( RightIterator element=B.begin(j); element!=end; ++element ) {
+            const auto end( B.end(j) );
+            for( auto element=B.begin(j); element!=end; ++element ) {
                if( isDefault( (~lhs)(element->index(),j) ) )
                   (~lhs)(element->index(),j) = -element->value();
                else
@@ -387,9 +384,6 @@ class TSMatTSMatSubExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<CT1> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
 
@@ -407,11 +401,11 @@ class TSMatTSMatSubExpr
       std::vector<size_t> nonzeros( m, 0UL );
       for( size_t j=0UL; j<n; ++j )
       {
-         const LeftIterator  lend( A.end(j) );
-         const RightIterator rend( B.end(j) );
+         const auto lend( A.end(j) );
+         const auto rend( B.end(j) );
 
-         LeftIterator  l( A.begin(j) );
-         RightIterator r( B.begin(j) );
+         auto l( A.begin(j) );
+         auto r( B.begin(j) );
 
          while( l != lend && r != rend )
          {
@@ -449,11 +443,11 @@ class TSMatTSMatSubExpr
       // Performing the matrix subtraction
       for( size_t j=0UL; j<n; ++j )
       {
-         const LeftIterator  lend( A.end(j) );
-         const RightIterator rend( B.end(j) );
+         const auto lend( A.end(j) );
+         const auto rend( B.end(j) );
 
-         LeftIterator  l( A.begin(j) );
-         RightIterator r( B.begin(j) );
+         auto l( A.begin(j) );
+         auto r( B.begin(j) );
 
          while( l != lend && r != rend )
          {
@@ -536,9 +530,6 @@ class TSMatTSMatSubExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<CT1> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
 
@@ -555,11 +546,11 @@ class TSMatTSMatSubExpr
       // Performing the matrix subtraction
       for( size_t j=0UL; j<(~lhs).columns(); ++j )
       {
-         const LeftIterator  lend( A.end(j) );
-         const RightIterator rend( B.end(j) );
+         const auto lend( A.end(j) );
+         const auto rend( B.end(j) );
 
-         LeftIterator  l( A.begin(j) );
-         RightIterator r( B.begin(j) );
+         auto l( A.begin(j) );
+         auto r( B.begin(j) );
 
          while( l != lend && r != rend )
          {

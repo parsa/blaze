@@ -72,7 +72,6 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
 
 
@@ -338,19 +337,16 @@ class SMatSVecMultExpr
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using MatrixIterator = ConstIterator_t< RemoveReference_t<LT> >;
-      using VectorIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
-      const VectorIterator vend( x.end() );
+      const auto vend( x.end() );
 
       for( size_t i=0UL; i<y.size(); ++i )
       {
-         const MatrixIterator mend ( A.end(i)   );
-         MatrixIterator       melem( A.begin(i) );
+         const auto mend ( A.end(i)   );
+         auto       melem( A.begin(i) );
 
          if( melem == mend ) continue;
 
-         VectorIterator velem( x.begin() );
+         auto velem( x.begin() );
 
          while( true ) {
             if( melem->index() < velem->index() ) {
@@ -413,9 +409,6 @@ class SMatSVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using MatrixIterator = ConstIterator_t< RemoveReference_t<LT> >;
-      using VectorIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
       RT x( rhs.vec_ );  // Evaluation of the right-hand side sparse vector operand
       if( x.nonZeros() == 0UL ) return;
 
@@ -427,16 +420,16 @@ class SMatSVecMultExpr
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size()     , "Invalid vector size"       );
 
       ElementType accu;
-      const VectorIterator vend( x.end() );
+      const auto vend( x.end() );
 
       for( size_t i=0UL; i<(~lhs).size(); ++i )
       {
-         const MatrixIterator mend ( A.end(i)   );
-         MatrixIterator       melem( A.begin(i) );
+         const auto mend ( A.end(i)   );
+         auto       melem( A.begin(i) );
 
          if( melem == mend ) continue;
 
-         VectorIterator velem( x.begin() );
+         auto velem( x.begin() );
 
          reset( accu );
 
@@ -542,19 +535,16 @@ class SMatSVecMultExpr
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using MatrixIterator = ConstIterator_t< RemoveReference_t<LT> >;
-      using VectorIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
-      const VectorIterator vend( x.end() );
+      const auto vend( x.end() );
 
       for( size_t i=0UL; i<y.size(); ++i )
       {
-         const MatrixIterator mend ( A.end(i)   );
-         MatrixIterator       melem( A.begin(i) );
+         const auto mend ( A.end(i)   );
+         auto       melem( A.begin(i) );
 
          if( melem == mend ) continue;
 
-         VectorIterator velem( x.begin() );
+         auto velem( x.begin() );
 
          while( true ) {
             if( melem->index() < velem->index() ) {
@@ -639,19 +629,16 @@ class SMatSVecMultExpr
            , typename VT2 >  // Type of the right-hand side vector operand
    static inline void selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using MatrixIterator = ConstIterator_t< RemoveReference_t<LT> >;
-      using VectorIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
-      const VectorIterator vend( x.end() );
+      const auto vend( x.end() );
 
       for( size_t i=0UL; i<y.size(); ++i )
       {
-         const MatrixIterator mend ( A.end(i)   );
-         MatrixIterator       melem( A.begin(i) );
+         const auto mend ( A.end(i)   );
+         auto       melem( A.begin(i) );
 
          if( melem == mend ) continue;
 
-         VectorIterator velem( x.begin() );
+         auto velem( x.begin() );
 
          while( true ) {
             if( melem->index() < velem->index() ) {

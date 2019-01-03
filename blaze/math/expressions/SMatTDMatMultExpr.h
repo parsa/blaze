@@ -97,7 +97,6 @@
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -487,8 +486,6 @@ class SMatTDMatMultExpr
    static inline DisableIf_t< UseOptimizedKernel_v<MT3,MT4,MT5> >
       selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT4>;
-
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
 
@@ -500,12 +497,12 @@ class SMatTDMatMultExpr
          for( ; (j+4UL) <= N; j+=4UL ) {
             for( size_t i=( SYM || HERM || LOW ? j : 0UL ); i<( UPP ? j+4UL : M ); ++i )
             {
-               const ConstIterator end( ( IsUpper_v<MT5> )
-                                        ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+4UL) : A.upperBound(i,j+4UL) )
-                                        :( A.end(i) ) );
-               ConstIterator element( ( IsLower_v<MT5> )
-                                      ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                      :( A.begin(i) ) );
+               const auto end( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+4UL) : A.upperBound(i,j+4UL) )
+                               :( A.end(i) ) );
+               auto element( ( IsLower_v<MT5> )
+                             ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
+                             :( A.begin(i) ) );
 
                if( element == end ) {
                   reset( C(i,j    ) );
@@ -532,12 +529,12 @@ class SMatTDMatMultExpr
          for( ; (j+2UL) <= N; j+=2UL ) {
             for( size_t i=( SYM || HERM || LOW ? j : 0UL ); i<( UPP ? j+2UL : M ); ++i )
             {
-               const ConstIterator end( ( IsUpper_v<MT5> )
-                                        ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+2UL) : A.upperBound(i,j+2UL) )
-                                        :( A.end(i) ) );
-               ConstIterator element( ( IsLower_v<MT5> )
-                                      ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                      :( A.begin(i) ) );
+               const auto end( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+2UL) : A.upperBound(i,j+2UL) )
+                               :( A.end(i) ) );
+               auto element( ( IsLower_v<MT5> )
+                             ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
+                             :( A.begin(i) ) );
 
                if( element == end ) {
                   reset( C(i,j    ) );
@@ -558,12 +555,12 @@ class SMatTDMatMultExpr
          for( ; j<N; ++j ) {
             for( size_t i=( SYM || HERM || LOW ? j : 0UL ); i<( UPP ? j+1UL : M ); ++i )
             {
-               const ConstIterator end( ( IsUpper_v<MT5> )
-                                        ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j) : A.upperBound(i,j) )
-                                        :( A.end(i) ) );
-               ConstIterator element( ( IsLower_v<MT5> )
-                                      ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                      :( A.begin(i) ) );
+               const auto end( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j) : A.upperBound(i,j) )
+                               :( A.end(i) ) );
+               auto element( ( IsLower_v<MT5> )
+                             ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
+                             :( A.begin(i) ) );
 
                if( element == end ) {
                   reset( C(i,j) );
@@ -624,8 +621,6 @@ class SMatTDMatMultExpr
    static inline EnableIf_t< UseOptimizedKernel_v<MT3,MT4,MT5> >
       selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT4>;
-
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
 
@@ -639,12 +634,12 @@ class SMatTDMatMultExpr
          for( ; (j+4UL) <= N; j+=4UL ) {
             for( size_t i=( SYM || HERM || LOW ? j : 0UL ); i<( UPP ? j+4UL : M ); ++i )
             {
-               const ConstIterator end( ( IsUpper_v<MT5> )
-                                        ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+4UL) : A.upperBound(i,j+4UL) )
-                                        :( A.end(i) ) );
-               ConstIterator element( ( IsLower_v<MT5> )
-                                      ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                      :( A.begin(i) ) );
+               const auto end( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+4UL) : A.upperBound(i,j+4UL) )
+                               :( A.end(i) ) );
+               auto element( ( IsLower_v<MT5> )
+                             ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
+                             :( A.begin(i) ) );
 
                const size_t nonzeros( end - element );
                const size_t kpos( nonzeros & size_t(-4) );
@@ -689,12 +684,12 @@ class SMatTDMatMultExpr
          for( ; (j+2UL) <= N; j+=2UL ) {
             for( size_t i=( SYM || HERM || LOW ? j : 0UL ); i<( UPP ? j+2UL : M ); ++i )
             {
-               const ConstIterator end( ( IsUpper_v<MT5> )
-                                        ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+2UL) : A.upperBound(i,j+2UL) )
-                                        :( A.end(i) ) );
-               ConstIterator element( ( IsLower_v<MT5> )
-                                      ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                      :( A.begin(i) ) );
+               const auto end( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+2UL) : A.upperBound(i,j+2UL) )
+                               :( A.end(i) ) );
+               auto element( ( IsLower_v<MT5> )
+                             ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
+                             :( A.begin(i) ) );
 
                const size_t nonzeros( end - element );
                const size_t kpos( nonzeros & size_t(-4) );
@@ -735,12 +730,12 @@ class SMatTDMatMultExpr
          for( ; j<N; ++j ) {
             for( size_t i=( SYM || HERM || LOW ? j : 0UL ); i<( UPP ? j+1UL : M ); ++i )
             {
-               const ConstIterator end( ( IsUpper_v<MT5> )
-                                        ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j) : A.upperBound(i,j) )
-                                        :( A.end(i) ) );
-               ConstIterator element( ( IsLower_v<MT5> )
-                                      ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                      :( A.begin(i) ) );
+               const auto end( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j) : A.upperBound(i,j) )
+                               :( A.end(i) ) );
+               auto element( ( IsLower_v<MT5> )
+                             ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
+                             :( A.begin(i) ) );
 
                const size_t nonzeros( end - element );
                const size_t kpos( nonzeros & size_t(-4) );
@@ -918,8 +913,6 @@ class SMatTDMatMultExpr
    static inline DisableIf_t< UseOptimizedKernel_v<MT3,MT4,MT5> >
       selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT4>;
-
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
 
@@ -931,12 +924,12 @@ class SMatTDMatMultExpr
          for( ; (j+4UL) <= N; j+=4UL ) {
             for( size_t i=( LOW ? j : 0UL ); i<( UPP ? j+4UL : M ); ++i )
             {
-               const ConstIterator end( ( IsUpper_v<MT5> )
-                                        ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+4UL) : A.upperBound(i,j+4UL) )
-                                        :( A.end(i) ) );
-               ConstIterator element( ( IsLower_v<MT5> )
-                                      ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                      :( A.begin(i) ) );
+               const auto end( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+4UL) : A.upperBound(i,j+4UL) )
+                               :( A.end(i) ) );
+               auto element( ( IsLower_v<MT5> )
+                             ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
+                             :( A.begin(i) ) );
 
                for( ; element!=end; ++element ) {
                   C(i,j    ) += element->value() * B(element->index(),j    );
@@ -950,12 +943,12 @@ class SMatTDMatMultExpr
          for( ; (j+2UL) <= N; j+=2UL ) {
             for( size_t i=( LOW ? j : 0UL ); i<( UPP ? j+2UL : M ); ++i )
             {
-               const ConstIterator end( ( IsUpper_v<MT5> )
-                                        ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+2UL) : A.upperBound(i,j+2UL) )
-                                        :( A.end(i) ) );
-               ConstIterator element( ( IsLower_v<MT5> )
-                                      ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                      :( A.begin(i) ) );
+               const auto end( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+2UL) : A.upperBound(i,j+2UL) )
+                               :( A.end(i) ) );
+               auto element( ( IsLower_v<MT5> )
+                             ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
+                             :( A.begin(i) ) );
 
                for( ; element!=end; ++element ) {
                   C(i,j    ) += element->value() * B(element->index(),j    );
@@ -967,12 +960,12 @@ class SMatTDMatMultExpr
          for( ; j<N; ++j ) {
             for( size_t i=( LOW ? j : 0UL ); i<( UPP ? j+1UL : M ); ++i )
             {
-               const ConstIterator end( ( IsUpper_v<MT5> )
-                                        ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j) : A.upperBound(i,j) )
-                                        :( A.end(i) ) );
-               ConstIterator element( ( IsLower_v<MT5> )
-                                      ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                      :( A.begin(i) ) );
+               const auto end( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j) : A.upperBound(i,j) )
+                               :( A.end(i) ) );
+               auto element( ( IsLower_v<MT5> )
+                             ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
+                             :( A.begin(i) ) );
 
                for( ; element!=end; ++element ) {
                   C(i,j) += element->value() * B(element->index(),j);
@@ -1004,8 +997,6 @@ class SMatTDMatMultExpr
    static inline EnableIf_t< UseOptimizedKernel_v<MT3,MT4,MT5> >
       selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT4>;
-
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
 
@@ -1017,12 +1008,12 @@ class SMatTDMatMultExpr
          for( ; (j+4UL) <= N; j+=4UL ) {
             for( size_t i=( LOW ? j : 0UL ); i<( UPP ? j+4UL : M ); ++i )
             {
-               const ConstIterator end( ( IsUpper_v<MT5> )
-                                        ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+4UL) : A.upperBound(i,j+4UL) )
-                                        :( A.end(i) ) );
-               ConstIterator element( ( IsLower_v<MT5> )
-                                      ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                      :( A.begin(i) ) );
+               const auto end( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+4UL) : A.upperBound(i,j+4UL) )
+                               :( A.end(i) ) );
+               auto element( ( IsLower_v<MT5> )
+                             ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
+                             :( A.begin(i) ) );
 
                const size_t nonzeros( end - element );
                const size_t kpos( nonzeros & size_t(-4) );
@@ -1067,12 +1058,12 @@ class SMatTDMatMultExpr
          for( ; (j+2UL) <= N; j+=2UL ) {
             for( size_t i=( LOW ? j : 0UL ); i<( UPP ? j+2UL : M ); ++i )
             {
-               const ConstIterator end( ( IsUpper_v<MT5> )
-                                        ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+2UL) : A.upperBound(i,j+2UL) )
-                                        :( A.end(i) ) );
-               ConstIterator element( ( IsLower_v<MT5> )
-                                      ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                      :( A.begin(i) ) );
+               const auto end( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+2UL) : A.upperBound(i,j+2UL) )
+                               :( A.end(i) ) );
+               auto element( ( IsLower_v<MT5> )
+                             ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
+                             :( A.begin(i) ) );
 
                const size_t nonzeros( end - element );
                const size_t kpos( nonzeros & size_t(-4) );
@@ -1113,12 +1104,12 @@ class SMatTDMatMultExpr
          for( ; j<N; ++j ) {
             for( size_t i=( LOW ? j : 0UL ); i<( UPP ? j+1UL : M ); ++i )
             {
-               const ConstIterator end( ( IsUpper_v<MT5> )
-                                        ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j) : A.upperBound(i,j) )
-                                        :( A.end(i) ) );
-               ConstIterator element( ( IsLower_v<MT5> )
-                                      ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                      :( A.begin(i) ) );
+               const auto end( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j) : A.upperBound(i,j) )
+                               :( A.end(i) ) );
+               auto element( ( IsLower_v<MT5> )
+                             ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
+                             :( A.begin(i) ) );
 
                const size_t nonzeros( end - element );
                const size_t kpos( nonzeros & size_t(-4) );
@@ -1252,8 +1243,6 @@ class SMatTDMatMultExpr
    static inline DisableIf_t< UseOptimizedKernel_v<MT3,MT4,MT5> >
       selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT4>;
-
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
 
@@ -1265,12 +1254,12 @@ class SMatTDMatMultExpr
          for( ; (j+4UL) <= N; j+=4UL ) {
             for( size_t i=( LOW ? j : 0UL ); i<( UPP ? j+4UL : M ); ++i )
             {
-               const ConstIterator end( ( IsUpper_v<MT5> )
-                                        ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+4UL) : A.upperBound(i,j+4UL) )
-                                        :( A.end(i) ) );
-               ConstIterator element( ( IsLower_v<MT5> )
-                                      ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                      :( A.begin(i) ) );
+               const auto end( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+4UL) : A.upperBound(i,j+4UL) )
+                               :( A.end(i) ) );
+               auto element( ( IsLower_v<MT5> )
+                             ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
+                             :( A.begin(i) ) );
 
                for( ; element!=end; ++element ) {
                   C(i,j    ) -= element->value() * B(element->index(),j    );
@@ -1284,12 +1273,12 @@ class SMatTDMatMultExpr
          for( ; (j+2UL) <= N; j+=2UL ) {
             for( size_t i=( LOW ? j : 0UL ); i<( UPP ? j+2UL : M ); ++i )
             {
-               const ConstIterator end( ( IsUpper_v<MT5> )
-                                        ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+2UL) : A.upperBound(i,j+2UL) )
-                                        :( A.end(i) ) );
-               ConstIterator element( ( IsLower_v<MT5> )
-                                      ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                      :( A.begin(i) ) );
+               const auto end( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+2UL) : A.upperBound(i,j+2UL) )
+                               :( A.end(i) ) );
+               auto element( ( IsLower_v<MT5> )
+                             ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
+                             :( A.begin(i) ) );
 
                for( ; element!=end; ++element ) {
                   C(i,j    ) -= element->value() * B(element->index(),j    );
@@ -1301,12 +1290,12 @@ class SMatTDMatMultExpr
          for( ; j<N; ++j ) {
             for( size_t i=( LOW ? j : 0UL ); i<( UPP ? j+1UL : M ); ++i )
             {
-               const ConstIterator end( ( IsUpper_v<MT5> )
-                                        ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j) : A.upperBound(i,j) )
-                                        :( A.end(i) ) );
-               ConstIterator element( ( IsLower_v<MT5> )
-                                      ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                      :( A.begin(i) ) );
+               const auto end( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j) : A.upperBound(i,j) )
+                               :( A.end(i) ) );
+               auto element( ( IsLower_v<MT5> )
+                             ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
+                             :( A.begin(i) ) );
 
                for( ; element!=end; ++element ) {
                   C(i,j) -= element->value() * B(element->index(),j);
@@ -1338,8 +1327,6 @@ class SMatTDMatMultExpr
    static inline EnableIf_t< UseOptimizedKernel_v<MT3,MT4,MT5> >
       selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT4>;
-
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
 
@@ -1351,12 +1338,12 @@ class SMatTDMatMultExpr
          for( ; (j+4UL) <= N; j+=4UL ) {
             for( size_t i=( LOW ? j : 0UL ); i<( UPP ? j+4UL : M ); ++i )
             {
-               const ConstIterator end( ( IsUpper_v<MT5> )
-                                        ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+4UL) : A.upperBound(i,j+4UL) )
-                                        :( A.end(i) ) );
-               ConstIterator element( ( IsLower_v<MT5> )
-                                      ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                      :( A.begin(i) ) );
+               const auto end( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+4UL) : A.upperBound(i,j+4UL) )
+                               :( A.end(i) ) );
+               auto element( ( IsLower_v<MT5> )
+                             ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
+                             :( A.begin(i) ) );
 
                const size_t nonzeros( end - element );
                const size_t kpos( nonzeros & size_t(-4) );
@@ -1401,12 +1388,12 @@ class SMatTDMatMultExpr
          for( ; (j+2UL) <= N; j+=2UL ) {
             for( size_t i=( LOW ? j : 0UL ); i<( UPP ? j+2UL : M ); ++i )
             {
-               const ConstIterator end( ( IsUpper_v<MT5> )
-                                        ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+2UL) : A.upperBound(i,j+2UL) )
-                                        :( A.end(i) ) );
-               ConstIterator element( ( IsLower_v<MT5> )
-                                      ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                      :( A.begin(i) ) );
+               const auto end( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j+2UL) : A.upperBound(i,j+2UL) )
+                               :( A.end(i) ) );
+               auto element( ( IsLower_v<MT5> )
+                             ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
+                             :( A.begin(i) ) );
 
                const size_t nonzeros( end - element );
                const size_t kpos( nonzeros & size_t(-4) );
@@ -1447,12 +1434,12 @@ class SMatTDMatMultExpr
          for( ; j<N; ++j ) {
             for( size_t i=( LOW ? j : 0UL ); i<( UPP ? j+1UL : M ); ++i )
             {
-               const ConstIterator end( ( IsUpper_v<MT5> )
-                                        ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j) : A.upperBound(i,j) )
-                                        :( A.end(i) ) );
-               ConstIterator element( ( IsLower_v<MT5> )
-                                      ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
-                                      :( A.begin(i) ) );
+               const auto end( ( IsUpper_v<MT5> )
+                               ?( IsStrictlyUpper_v<MT5> ? A.lowerBound(i,j) : A.upperBound(i,j) )
+                               :( A.end(i) ) );
+               auto element( ( IsLower_v<MT5> )
+                             ?( IsStrictlyLower_v<MT5> ? A.upperBound(i,j) : A.lowerBound(i,j) )
+                             :( A.begin(i) ) );
 
                const size_t nonzeros( end - element );
                const size_t kpos( nonzeros & size_t(-4) );

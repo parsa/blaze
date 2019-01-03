@@ -65,7 +65,6 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
 
 
@@ -267,9 +266,6 @@ class SVecSVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<CT1> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -277,11 +273,11 @@ class SVecSVecMultExpr
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
 
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
 
-      LeftIterator  l( x.begin()  );
-      RightIterator r( y.begin() );
+      auto l( x.begin()  );
+      auto r( y.begin() );
 
       for( ; l!=lend; ++l ) {
          while( r!=rend && r->index() < l->index() ) ++r;
@@ -314,9 +310,6 @@ class SVecSVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<CT1> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -328,11 +321,11 @@ class SVecSVecMultExpr
       (~lhs).reserve( min( x.nonZeros(), y.nonZeros() ) );
 
       // Performing the vector multiplication
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
 
-      LeftIterator  l( x.begin()  );
-      RightIterator r( y.begin() );
+      auto l( x.begin()  );
+      auto r( y.begin() );
 
       for( ; l!=lend; ++l ) {
          while( r!=rend && r->index() < l->index() ) ++r;
@@ -365,9 +358,6 @@ class SVecSVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<CT1> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -375,11 +365,11 @@ class SVecSVecMultExpr
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
 
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
 
-      LeftIterator  l( x.begin() );
-      RightIterator r( y.begin() );
+      auto l( x.begin() );
+      auto r( y.begin() );
 
       for( ; l!=lend; ++l ) {
          while( r!=rend && r->index() < l->index() ) ++r;
@@ -416,9 +406,6 @@ class SVecSVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<CT1> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -426,11 +413,11 @@ class SVecSVecMultExpr
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
 
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
 
-      LeftIterator  l( x.begin()  );
-      RightIterator r( y.begin() );
+      auto l( x.begin()  );
+      auto r( y.begin() );
 
       for( ; l!=lend; ++l ) {
          while( r!=rend && r->index() < l->index() ) ++r;
@@ -467,9 +454,6 @@ class SVecSVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<CT1> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -477,11 +461,11 @@ class SVecSVecMultExpr
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
 
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
 
-      LeftIterator  l( x.begin()  );
-      RightIterator r( y.begin() );
+      auto l( x.begin()  );
+      auto r( y.begin() );
 
       size_t i( 0 );
 
@@ -522,10 +506,6 @@ class SVecSVecMultExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using Iterator1 = ConstIterator_t<VT>;
-      using Iterator2 = ConstIterator_t< RemoveReference_t<CT1> >;
-      using Iterator3 = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -535,13 +515,13 @@ class SVecSVecMultExpr
 
       VT tmp( rhs.size(), rhs.nonZeros() );
 
-      const Iterator1 end1( (~lhs).end() );
-      const Iterator2 end2( x.end() );
-      const Iterator3 end3( y.end() );
+      const auto end1( (~lhs).end() );
+      const auto end2( x.end() );
+      const auto end3( y.end() );
 
-      Iterator1 i1( (~lhs).begin() );
-      Iterator2 i2( x.begin() );
-      Iterator3 i3( y.begin() );
+      auto i1( (~lhs).begin() );
+      auto i2( x.begin() );
+      auto i3( y.begin() );
 
       for( ; i1!=end1; ++i1 ) {
          while( i2!=end2 && i2->index() < i1->index() ) ++i2;

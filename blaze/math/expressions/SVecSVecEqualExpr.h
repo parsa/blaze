@@ -45,7 +45,6 @@
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -78,8 +77,6 @@ inline bool equal( const SparseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>
 {
    using CT1 = CompositeType_t<VT1>;
    using CT2 = CompositeType_t<VT2>;
-   using LhsConstIterator = ConstIterator_t< RemoveReference_t<CT1> >;
-   using RhsConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
 
    // Early exit in case the vector sizes don't match
    if( (~lhs).size() != (~rhs).size() ) return false;
@@ -90,11 +87,11 @@ inline bool equal( const SparseVector<VT1,TF1>& lhs, const SparseVector<VT2,TF2>
 
    // In order to compare the two vectors, the data values of the lower-order data
    // type are converted to the higher-order data type within the equal function.
-   const LhsConstIterator lend( a.end() );
-   const RhsConstIterator rend( b.end() );
+   const auto lend( a.end() );
+   const auto rend( b.end() );
 
-   LhsConstIterator lelem( a.begin() );
-   RhsConstIterator relem( b.begin() );
+   auto lelem( a.begin() );
+   auto relem( b.begin() );
 
    while( lelem != lend && relem != rend )
    {

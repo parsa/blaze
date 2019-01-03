@@ -65,7 +65,6 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -302,9 +301,6 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<LT> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -313,12 +309,12 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
 
-      for( LeftIterator lelem=x.begin(); lelem!=lend; ++lelem ) {
+      for( auto lelem=x.begin(); lelem!=lend; ++lelem ) {
          if( !isDefault( lelem->value() ) ) {
-            for( RightIterator relem=y.begin(); relem!=rend; ++relem ) {
+            for( auto relem=y.begin(); relem!=rend; ++relem ) {
                (~lhs)(lelem->index(),relem->index()) = lelem->value() * relem->value();
             }
          }
@@ -350,9 +346,6 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<LT> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -361,12 +354,12 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
 
-      for( RightIterator relem=y.begin(); relem!=rend; ++relem ) {
+      for( auto relem=y.begin(); relem!=rend; ++relem ) {
          if( !isDefault( relem->value() ) ) {
-            for( LeftIterator lelem=x.begin(); lelem!=lend; ++lelem ) {
+            for( auto lelem=x.begin(); lelem!=lend; ++lelem ) {
                (~lhs)(lelem->index(),relem->index()) = lelem->value() * relem->value();
             }
          }
@@ -396,9 +389,6 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).columns()  == rhs.columns() , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( (~lhs).capacity() >= rhs.nonZeros(), "Insufficient capacity"     );
 
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<LT> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -411,16 +401,16 @@ class SVecSVecOuterExpr
       (~lhs).reserve( x.nonZeros() * y.nonZeros() );
 
       // Performing the outer product
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
       size_t index( 0UL );
 
-      for( LeftIterator lelem=x.begin(); lelem!=lend; ++lelem ) {
+      for( auto lelem=x.begin(); lelem!=lend; ++lelem ) {
          if( !isDefault( lelem->value() ) ) {
             for( ; index < lelem->index(); ++index ) {
                (~lhs).finalize( index );
             }
-            for( RightIterator relem=y.begin(); relem!=rend; ++relem ) {
+            for( auto relem=y.begin(); relem!=rend; ++relem ) {
                (~lhs).append( lelem->index(), relem->index(), lelem->value() * relem->value() );
             }
             (~lhs).finalize( index++ );
@@ -458,9 +448,6 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).columns()  == rhs.columns() , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( (~lhs).capacity() >= rhs.nonZeros(), "Insufficient capacity"     );
 
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<LT> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -469,16 +456,16 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
       size_t index( 0UL );
 
-      for( RightIterator relem=y.begin(); relem!=rend; ++relem ) {
+      for( auto relem=y.begin(); relem!=rend; ++relem ) {
          if( !isDefault( relem->value() ) ) {
             for( ; index < relem->index(); ++index ) {
                (~lhs).finalize( index );
             }
-            for( LeftIterator lelem=x.begin(); lelem!=lend; ++lelem ) {
+            for( auto lelem=x.begin(); lelem!=lend; ++lelem ) {
                (~lhs).append( lelem->index(), relem->index(), lelem->value() * relem->value() );
             }
             (~lhs).finalize( index++ );
@@ -513,9 +500,6 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<LT> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -524,12 +508,12 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
 
-      for( LeftIterator lelem=x.begin(); lelem!=lend; ++lelem ) {
+      for( auto lelem=x.begin(); lelem!=lend; ++lelem ) {
          if( !isDefault( lelem->value() ) ) {
-            for( RightIterator relem=y.begin(); relem!=rend; ++relem ) {
+            for( auto relem=y.begin(); relem!=rend; ++relem ) {
                (~lhs)(lelem->index(),relem->index()) += lelem->value() * relem->value();
             }
          }
@@ -561,9 +545,6 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<LT> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -572,12 +553,12 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
 
-      for( RightIterator relem=y.begin(); relem!=rend; ++relem ) {
+      for( auto relem=y.begin(); relem!=rend; ++relem ) {
          if( !isDefault( relem->value() ) ) {
-            for( LeftIterator lelem=x.begin(); lelem!=lend; ++lelem ) {
+            for( auto lelem=x.begin(); lelem!=lend; ++lelem ) {
                (~lhs)(lelem->index(),relem->index()) += lelem->value() * relem->value();
             }
          }
@@ -611,9 +592,6 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<LT> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -622,12 +600,12 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
 
-      for( LeftIterator lelem=x.begin(); lelem!=lend; ++lelem ) {
+      for( auto lelem=x.begin(); lelem!=lend; ++lelem ) {
          if( !isDefault( lelem->value() ) ) {
-            for( RightIterator relem=y.begin(); relem!=rend; ++relem ) {
+            for( auto relem=y.begin(); relem!=rend; ++relem ) {
                (~lhs)(lelem->index(),relem->index()) -= lelem->value() * relem->value();
             }
          }
@@ -659,9 +637,6 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<LT> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -670,12 +645,12 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
 
-      for( RightIterator relem=y.begin(); relem!=rend; ++relem ) {
+      for( auto relem=y.begin(); relem!=rend; ++relem ) {
          if( !isDefault( relem->value() ) ) {
-            for( LeftIterator lelem=x.begin(); lelem!=lend; ++lelem ) {
+            for( auto lelem=x.begin(); lelem!=lend; ++lelem ) {
                (~lhs)(lelem->index(),relem->index()) -= lelem->value() * relem->value();
             }
          }
@@ -709,9 +684,6 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<LT> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -720,12 +692,12 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
 
       size_t i( 0UL );
 
-      for( LeftIterator lelem=x.begin(); lelem!=lend; ++lelem )
+      for( auto lelem=x.begin(); lelem!=lend; ++lelem )
       {
          if( isDefault( lelem->value() ) ) continue;
 
@@ -736,7 +708,7 @@ class SVecSVecOuterExpr
 
          size_t j( 0UL );
 
-         for( RightIterator relem=y.begin(); relem!=rend; ++relem, ++j ) {
+         for( auto relem=y.begin(); relem!=rend; ++relem, ++j ) {
             for( ; j<relem->index(); ++j )
                reset( (~lhs)(i,j) );
             (~lhs)(lelem->index(),relem->index()) *= lelem->value() * relem->value();
@@ -780,9 +752,6 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<LT> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
       LT x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       RT y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -791,12 +760,12 @@ class SVecSVecOuterExpr
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).rows()   , "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( y.size() == (~lhs).columns(), "Invalid vector size" );
 
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
 
       size_t j( 0UL );
 
-      for( RightIterator relem=y.begin(); relem!=rend; ++relem )
+      for( auto relem=y.begin(); relem!=rend; ++relem )
       {
          if( isDefault( relem->value() ) ) continue;
 
@@ -807,7 +776,7 @@ class SVecSVecOuterExpr
 
          size_t i( 0UL );
 
-         for( LeftIterator lelem=x.begin(); lelem!=lend; ++lelem, ++i ) {
+         for( auto lelem=x.begin(); lelem!=lend; ++lelem, ++i ) {
             for( ; i<lelem->index(); ++i )
                reset( (~lhs)(i,j) );
             (~lhs)(lelem->index(),relem->index()) *= lelem->value() * relem->value();

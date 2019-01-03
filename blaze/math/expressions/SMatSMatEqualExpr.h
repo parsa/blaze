@@ -46,7 +46,6 @@
 #include <blaze/math/shims/Equal.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -77,8 +76,6 @@ inline bool equal( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,fa
 {
    using CT1 = CompositeType_t<MT1>;
    using CT2 = CompositeType_t<MT2>;
-   using LhsConstIterator = ConstIterator_t< RemoveReference_t<CT1> >;
-   using RhsConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
 
    // Early exit in case the matrix sizes don't match
    if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
@@ -92,11 +89,11 @@ inline bool equal( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,fa
    // type are converted to the higher-order data type within the equal function.
    for( size_t i=0UL; i<A.rows(); ++i )
    {
-      const LhsConstIterator lend( A.end(i) );
-      const RhsConstIterator rend( B.end(i) );
+      const auto lend( A.end(i) );
+      const auto rend( B.end(i) );
 
-      LhsConstIterator lelem( A.begin(i) );
-      RhsConstIterator relem( B.begin(i) );
+      auto lelem( A.begin(i) );
+      auto relem( B.begin(i) );
 
       while( lelem != lend && relem != rend )
       {
@@ -158,8 +155,6 @@ inline bool equal( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,tru
 {
    using CT1 = CompositeType_t<MT1>;
    using CT2 = CompositeType_t<MT2>;
-   using LhsConstIterator = ConstIterator_t< RemoveReference_t<CT1> >;
-   using RhsConstIterator = ConstIterator_t< RemoveReference_t<CT2> >;
 
    // Early exit in case the matrix sizes don't match
    if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() )
@@ -173,11 +168,11 @@ inline bool equal( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,tru
    // type are converted to the higher-order data type within the equal function.
    for( size_t j=0UL; j<A.columns(); ++j )
    {
-      const LhsConstIterator lend( A.end(j) );
-      const RhsConstIterator rend( B.end(j) );
+      const auto lend( A.end(j) );
+      const auto rend( B.end(j) );
 
-      LhsConstIterator lelem( A.begin(j) );
-      RhsConstIterator relem( B.begin(j) );
+      auto lelem( A.begin(j) );
+      auto relem( B.begin(j) );
 
       while( lelem != lend && relem != rend )
       {

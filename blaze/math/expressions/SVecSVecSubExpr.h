@@ -67,7 +67,6 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsSame.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
 
 
@@ -283,9 +282,6 @@ class SVecSVecSubExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<CT1> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -293,14 +289,14 @@ class SVecSVecSubExpr
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
 
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
 
-      for( LeftIterator l=x.begin(); l!=lend; ++l ) {
+      for( auto l=x.begin(); l!=lend; ++l ) {
          (~lhs)[l->index()] = l->value();
       }
 
-      for( RightIterator r=y.begin(); r!=rend; ++r ) {
+      for( auto r=y.begin(); r!=rend; ++r ) {
          if( isDefault( (~lhs)[r->index()] ) )
             (~lhs)[r->index()] = -r->value();
          else
@@ -331,9 +327,6 @@ class SVecSVecSubExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<CT1> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -341,14 +334,14 @@ class SVecSVecSubExpr
       BLAZE_INTERNAL_ASSERT( y.size() == rhs.rhs_.size(), "Invalid vector size" );
       BLAZE_INTERNAL_ASSERT( x.size() == (~lhs).size()  , "Invalid vector size" );
 
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
 
-      for( LeftIterator l=x.begin(); l!=lend; ++l ) {
+      for( auto l=x.begin(); l!=lend; ++l ) {
          (~lhs)[l->index()] = l->value();
       }
 
-      for( RightIterator r=y.begin(); r!=rend; ++r ) {
+      for( auto r=y.begin(); r!=rend; ++r ) {
          (~lhs)[r->index()] -= r->value();
       }
    }
@@ -374,9 +367,6 @@ class SVecSVecSubExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<CT1> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 x( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse vector operand
       CT2 y( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse vector operand
 
@@ -388,11 +378,11 @@ class SVecSVecSubExpr
       (~lhs).reserve( min( x.size(), x.nonZeros() + y.nonZeros() ) );
 
       // Performing the vector subtraction
-      const LeftIterator  lend( x.end() );
-      const RightIterator rend( y.end() );
+      const auto lend( x.end() );
+      const auto rend( y.end() );
 
-      LeftIterator  l( x.begin() );
-      RightIterator r( y.begin() );
+      auto l( x.begin() );
+      auto r( y.begin() );
 
       while( l != lend && r != rend )
       {

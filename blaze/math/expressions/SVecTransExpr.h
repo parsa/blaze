@@ -64,7 +64,6 @@
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/GetMemberType.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {

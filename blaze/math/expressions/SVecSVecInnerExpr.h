@@ -96,15 +96,13 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   using CT1           = CompositeType_t<VT1>;    // Composite type of the left-hand side sparse vector expression
-   using CT2           = CompositeType_t<VT2>;    // Composite type of the right-hand side sparse vector expression
-   using XT1           = RemoveReference_t<CT1>;  // Auxiliary type for the left-hand side composite type
-   using XT2           = RemoveReference_t<CT2>;  // Auxiliary type for the right-hand side composite type
-   using ET1           = ElementType_t<XT1>;      // Element type of the left-hand side sparse vector expression
-   using ET2           = ElementType_t<XT2>;      // Element type of the right-hand side sparse vector expression
-   using MultType      = MultTrait_t<ET1,ET2>;    // Multiplication result type
-   using LeftIterator  = ConstIterator_t<XT1>;    // Iterator type of the left-hand sparse vector expression
-   using RightIterator = ConstIterator_t<XT2>;    // Iterator type of the right-hand sparse vector expression
+   using CT1      = CompositeType_t<VT1>;    // Composite type of the left-hand side sparse vector expression
+   using CT2      = CompositeType_t<VT2>;    // Composite type of the right-hand side sparse vector expression
+   using XT1      = RemoveReference_t<CT1>;  // Auxiliary type for the left-hand side composite type
+   using XT2      = RemoveReference_t<CT2>;  // Auxiliary type for the right-hand side composite type
+   using ET1      = ElementType_t<XT1>;      // Element type of the left-hand side sparse vector expression
+   using ET2      = ElementType_t<XT2>;      // Element type of the right-hand side sparse vector expression
+   using MultType = MultTrait_t<ET1,ET2>;    // Multiplication result typen
 
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT1 );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE( VT2 );
@@ -134,8 +132,8 @@ inline decltype(auto)
    }
    else if( IsOpposedView_v<VT1> )
    {
-      const RightIterator rend( right.end() );
-      RightIterator r( right.begin() );
+      const auto rend( right.end() );
+      auto r( right.begin() );
 
       if( r == rend ) return sp;
 
@@ -147,8 +145,8 @@ inline decltype(auto)
    }
    else if( IsOpposedView_v<VT2> )
    {
-      const LeftIterator lend( left.end()  );
-      LeftIterator l( left.begin()  );
+      const auto lend( left.end()  );
+      auto l( left.begin()  );
 
       if( l == lend ) return sp;
 
@@ -160,10 +158,10 @@ inline decltype(auto)
    }
    else
    {
-      const LeftIterator  lend( left.end()  );
-      const RightIterator rend( right.end() );
-      LeftIterator  l( left.begin()  );
-      RightIterator r( right.begin() );
+      const auto lend( left.end()  );
+      const auto rend( right.end() );
+      auto l( left.begin()  );
+      auto r( right.begin() );
 
       if( l == lend || r == rend ) return sp;
 

@@ -77,7 +77,6 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
 
 
@@ -363,16 +362,13 @@ class TSVecSMatMultExpr
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline void selectAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using VectorIterator = ConstIterator_t< RemoveReference_t<VT2> >;
-      using MatrixIterator = ConstIterator_t< RemoveReference_t<MT1> >;
-
-      const VectorIterator vend( x.end() );
-      VectorIterator velem( x.begin() );
+      const auto vend( x.end() );
+      auto velem( x.begin() );
 
       for( ; velem!=vend; ++velem )
       {
-         const MatrixIterator mend( A.end( velem->index() ) );
-         MatrixIterator melem( A.begin( velem->index() ) );
+         const auto mend( A.end( velem->index() ) );
+         auto melem( A.begin( velem->index() ) );
 
          for( ; melem!=mend; ++melem ) {
             if( IsResizable_v< ElementType_t<VT1> > &&
@@ -469,16 +465,13 @@ class TSVecSMatMultExpr
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline void selectAddAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using VectorIterator = ConstIterator_t< RemoveReference_t<VT2> >;
-      using MatrixIterator = ConstIterator_t< RemoveReference_t<MT1> >;
-
-      const VectorIterator vend( x.end() );
-      VectorIterator velem( x.begin() );
+      const auto vend( x.end() );
+      auto velem( x.begin() );
 
       for( ; velem!=vend; ++velem )
       {
-         const MatrixIterator mend( A.end( velem->index() ) );
-         MatrixIterator melem( A.begin( velem->index() ) );
+         const auto mend( A.end( velem->index() ) );
+         auto melem( A.begin( velem->index() ) );
 
          for( ; melem!=mend; ++melem ) {
             y[melem->index()] += velem->value() * melem->value();
@@ -550,16 +543,13 @@ class TSVecSMatMultExpr
            , typename MT1 >  // Type of the right-hand side matrix operand
    static inline void selectSubAssignKernel( VT1& y, const VT2& x, const MT1& A )
    {
-      using VectorIterator = ConstIterator_t< RemoveReference_t<VT2> >;
-      using MatrixIterator = ConstIterator_t< RemoveReference_t<MT1> >;
-
-      const VectorIterator vend( x.end() );
-      VectorIterator velem( x.begin() );
+      const auto vend( x.end() );
+      auto velem( x.begin() );
 
       for( ; velem!=vend; ++velem )
       {
-         const MatrixIterator mend( A.end( velem->index() ) );
-         MatrixIterator melem( A.begin( velem->index() ) );
+         const auto mend( A.end( velem->index() ) );
+         auto melem( A.begin( velem->index() ) );
 
          for( ; melem!=mend; ++melem ) {
             y[melem->index()] -= velem->value() * melem->value();

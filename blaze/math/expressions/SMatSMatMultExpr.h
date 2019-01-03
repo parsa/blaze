@@ -83,7 +83,6 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/SmallArray.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
 
 
@@ -414,14 +413,11 @@ class SMatSMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using LeftIterator  = ConstIterator_t<MT4>;
-      using RightIterator = ConstIterator_t<MT5>;
-
       for( size_t i=0UL; i<C.rows(); ++i ) {
-         const LeftIterator lend( A.end(i) );
-         for( LeftIterator lelem=A.begin(i); lelem!=lend; ++lelem ) {
-            const RightIterator rend( B.end( lelem->index() ) );
-            for( RightIterator relem=B.begin( lelem->index() ); relem!=rend; ++relem )
+         const auto lend( A.end(i) );
+         for( auto lelem=A.begin(i); lelem!=lend; ++lelem ) {
+            const auto rend( B.end( lelem->index() ) );
+            for( auto relem=B.begin( lelem->index() ); relem!=rend; ++relem )
             {
                if( IsResizable_v< ElementType_t<MT3> > &&
                    isDefault( C(i,relem->index()) ) ) {
@@ -458,9 +454,6 @@ class SMatSMatMultExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      using LeftIterator  = ConstIterator_t< RemoveReference_t<CT1> >;
-      using RightIterator = ConstIterator_t< RemoveReference_t<CT2> >;
-
       CT1 A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side sparse matrix operand
       CT2 B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side sparse matrix operand
 
@@ -475,8 +468,8 @@ class SMatSMatMultExpr
       size_t nonzeros( 0UL );
 
       for( size_t i=0UL; i<(~lhs).rows(); ++i ) {
-         const LeftIterator lend( A.end(i) );
-         for( LeftIterator lelem=A.begin(i); lelem!=lend; ++lelem ) {
+         const auto lend( A.end(i) );
+         for( auto lelem=A.begin(i); lelem!=lend; ++lelem ) {
             nonzeros += B.nonZeros( lelem->index() );
          }
       }
@@ -496,11 +489,11 @@ class SMatSMatMultExpr
 
       for( size_t i=0UL; i<(~lhs).rows(); ++i )
       {
-         const LeftIterator lend( A.end(i) );
-         for( LeftIterator lelem=A.begin(i); lelem!=lend; ++lelem )
+         const auto lend( A.end(i) );
+         for( auto lelem=A.begin(i); lelem!=lend; ++lelem )
          {
-            const RightIterator rend( B.end( lelem->index() ) );
-            for( RightIterator relem=B.begin( lelem->index() ); relem!=rend; ++relem )
+            const auto rend( B.end( lelem->index() ) );
+            for( auto relem=B.begin( lelem->index() ); relem!=rend; ++relem )
             {
                if( !valid[relem->index()] ) {
                   values[relem->index()] = lelem->value() * relem->value();
@@ -682,14 +675,11 @@ class SMatSMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using LeftIterator  = ConstIterator_t<MT4>;
-      using RightIterator = ConstIterator_t<MT5>;
-
       for( size_t i=0UL; i<C.rows(); ++i ) {
-         const LeftIterator lend( A.end(i) );
-         for( LeftIterator lelem=A.begin(i); lelem!=lend; ++lelem ) {
-            const RightIterator rend( B.end( lelem->index() ) );
-            for( RightIterator relem=B.begin( lelem->index() ); relem!=rend; ++relem ) {
+         const auto lend( A.end(i) );
+         for( auto lelem=A.begin(i); lelem!=lend; ++lelem ) {
+            const auto rend( B.end( lelem->index() ) );
+            for( auto relem=B.begin( lelem->index() ); relem!=rend; ++relem ) {
                C(i,relem->index()) += lelem->value() * relem->value();
             }
          }
@@ -790,14 +780,11 @@ class SMatSMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using LeftIterator  = ConstIterator_t<MT4>;
-      using RightIterator = ConstIterator_t<MT5>;
-
       for( size_t i=0UL; i<C.rows(); ++i ) {
-         const LeftIterator lend( A.end(i) );
-         for( LeftIterator lelem=A.begin(i); lelem!=lend; ++lelem ) {
-            const RightIterator rend( B.end( lelem->index() ) );
-            for( RightIterator relem=B.begin( lelem->index() ); relem!=rend; ++relem ) {
+         const auto lend( A.end(i) );
+         for( auto lelem=A.begin(i); lelem!=lend; ++lelem ) {
+            const auto rend( B.end( lelem->index() ) );
+            for( auto relem=B.begin( lelem->index() ); relem!=rend; ++relem ) {
                C(i,relem->index()) -= lelem->value() * relem->value();
             }
          }

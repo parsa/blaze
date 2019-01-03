@@ -84,7 +84,6 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/RemoveReference.h>
 #include <blaze/util/Unused.h>
 
 
@@ -431,14 +430,12 @@ class TDMatSVecMultExpr
    static inline EnableIf_t< UseDefaultKernel_v<VT1,MT1,VT2> >
       selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
       const size_t M( A.rows() );
 
-      ConstIterator element( x.begin() );
-      const ConstIterator end( x.end() );
+      auto element( x.begin() );
+      const auto end( x.end() );
 
       size_t last( 0UL );
 
@@ -509,14 +506,12 @@ class TDMatSVecMultExpr
    static inline EnableIf_t< UseOptimizedKernel_v<VT1,MT1,VT2> >
       selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
       const size_t M( A.rows() );
 
-      ConstIterator element( x.begin() );
-      const ConstIterator end( x.end() );
+      auto element( x.begin() );
+      const auto end( x.end() );
 
       const size_t jpos( x.nonZeros() & size_t(-4) );
       BLAZE_INTERNAL_ASSERT( ( x.nonZeros() - ( x.nonZeros() % 4UL ) ) == jpos, "Invalid end calculation" );
@@ -623,16 +618,14 @@ class TDMatSVecMultExpr
    static inline EnableIf_t< UseVectorizedKernel_v<VT1,MT1,VT2> >
       selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
       constexpr bool remainder( !IsPadded_v<MT1> || !IsPadded_v<VT1> );
 
       const size_t M( A.rows() );
 
-      ConstIterator element( x.begin() );
-      const ConstIterator end( x.end() );
+      auto element( x.begin() );
+      const auto end( x.end() );
 
       const size_t jpos( x.nonZeros() & size_t(-4) );
       BLAZE_INTERNAL_ASSERT( ( x.nonZeros() - ( x.nonZeros() % 4UL ) ) == jpos, "Invalid end calculation" );
@@ -855,14 +848,12 @@ class TDMatSVecMultExpr
    static inline EnableIf_t< UseDefaultKernel_v<VT1,MT1,VT2> >
       selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
       const size_t M( A.rows() );
 
-      ConstIterator element( x.begin() );
-      const ConstIterator end( x.end() );
+      auto element( x.begin() );
+      const auto end( x.end() );
 
       for( ; element!=end; ++element )
       {
@@ -911,14 +902,12 @@ class TDMatSVecMultExpr
    static inline EnableIf_t< UseOptimizedKernel_v<VT1,MT1,VT2> >
       selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
       const size_t M( A.rows() );
 
-      ConstIterator element( x.begin() );
-      const ConstIterator end( x.end() );
+      auto element( x.begin() );
+      const auto end( x.end() );
 
       const size_t jpos( x.nonZeros() & size_t(-4) );
       BLAZE_INTERNAL_ASSERT( ( x.nonZeros() - ( x.nonZeros() % 4UL ) ) == jpos, "Invalid end calculation" );
@@ -993,16 +982,14 @@ class TDMatSVecMultExpr
    static inline EnableIf_t< UseVectorizedKernel_v<VT1,MT1,VT2> >
       selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
       constexpr bool remainder( !IsPadded_v<MT1> || !IsPadded_v<VT1> );
 
       const size_t M( A.rows() );
 
-      ConstIterator element( x.begin() );
-      const ConstIterator end( x.end() );
+      auto element( x.begin() );
+      const auto end( x.end() );
 
       const size_t jpos( x.nonZeros() & size_t(-4) );
       BLAZE_INTERNAL_ASSERT( ( x.nonZeros() - ( x.nonZeros() % 4UL ) ) == jpos, "Invalid end calculation" );
@@ -1143,14 +1130,12 @@ class TDMatSVecMultExpr
    static inline EnableIf_t< UseDefaultKernel_v<VT1,MT1,VT2> >
       selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
       const size_t M( A.rows() );
 
-      ConstIterator element( x.begin() );
-      const ConstIterator end( x.end() );
+      auto element( x.begin() );
+      const auto end( x.end() );
 
       for( ; element!=end; ++element )
       {
@@ -1199,14 +1184,12 @@ class TDMatSVecMultExpr
    static inline EnableIf_t< UseOptimizedKernel_v<VT1,MT1,VT2> >
       selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
       const size_t M( A.rows() );
 
-      ConstIterator element( x.begin() );
-      const ConstIterator end( x.end() );
+      auto element( x.begin() );
+      const auto end( x.end() );
 
       const size_t jpos( x.nonZeros() & size_t(-4) );
       BLAZE_INTERNAL_ASSERT( ( x.nonZeros() - ( x.nonZeros() % 4UL ) ) == jpos, "Invalid end calculation" );
@@ -1281,16 +1264,14 @@ class TDMatSVecMultExpr
    static inline EnableIf_t< UseVectorizedKernel_v<VT1,MT1,VT2> >
       selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
    {
-      using ConstIterator = ConstIterator_t< RemoveReference_t<RT> >;
-
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
       constexpr bool remainder( !IsPadded_v<MT1> || !IsPadded_v<VT1> );
 
       const size_t M( A.rows() );
 
-      ConstIterator element( x.begin() );
-      const ConstIterator end( x.end() );
+      auto element( x.begin() );
+      const auto end( x.end() );
 
       const size_t jpos( x.nonZeros() & size_t(-4) );
       BLAZE_INTERNAL_ASSERT( ( x.nonZeros() - ( x.nonZeros() % 4UL ) ) == jpos, "Invalid end calculation" );

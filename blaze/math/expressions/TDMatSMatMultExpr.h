@@ -522,14 +522,12 @@ class TDMatSMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT5>;
-
       reset( C );
 
       for( size_t j=0UL; j<B.rows(); ++j )
       {
-         ConstIterator element( B.begin(j) );
-         const ConstIterator end( B.end(j) );
+         auto element( B.begin(j) );
+         const auto end( B.end(j) );
 
          if( IsDiagonal_v<MT4> )
          {
@@ -624,14 +622,12 @@ class TDMatSMatMultExpr
    static inline EnableIf_t< UseOptimizedKernel_v<MT3,MT4,MT5> >
       selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT5>;
-
       reset( C );
 
       for( size_t j=0UL; j<B.rows(); ++j )
       {
-         ConstIterator element( B.begin(j) );
-         const ConstIterator end( B.end(j) );
+         auto element( B.begin(j) );
+         const auto end( B.end(j) );
 
          const size_t nonzeros( B.nonZeros(j) );
          const size_t kpos( nonzeros & size_t(-4) );
@@ -960,14 +956,12 @@ class TDMatSMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT5>;
-
       size_t i( 0UL );
 
       for( size_t j=0UL; j<B.rows(); ++j )
       {
-         ConstIterator element( B.begin(j) );
-         const ConstIterator end( B.end(j) );
+         auto element( B.begin(j) );
+         const auto end( B.end(j) );
 
          if( IsDiagonal_v<MT4> )
          {
@@ -1061,12 +1055,10 @@ class TDMatSMatMultExpr
    static inline EnableIf_t< UseOptimizedKernel_v<MT3,MT4,MT5> >
       selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT5>;
-
       for( size_t j=0UL; j<B.rows(); ++j )
       {
-         ConstIterator element( B.begin(j) );
-         const ConstIterator end( B.end(j) );
+         auto element( B.begin(j) );
+         const auto end( B.end(j) );
 
          const size_t nonzeros( B.nonZeros(j) );
          const size_t kpos( nonzeros & size_t(-4) );
@@ -1349,14 +1341,12 @@ class TDMatSMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT5>;
-
       size_t i( 0UL );
 
       for( size_t j=0UL; j<B.rows(); ++j )
       {
-         ConstIterator element( B.begin(j) );
-         const ConstIterator end( B.end(j) );
+         auto element( B.begin(j) );
+         const auto end( B.end(j) );
 
          if( IsDiagonal_v<MT4> )
          {
@@ -1450,12 +1440,10 @@ class TDMatSMatMultExpr
    static inline EnableIf_t< UseOptimizedKernel_v<MT3,MT4,MT5> >
       selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using ConstIterator = ConstIterator_t<MT5>;
-
       for( size_t j=0UL; j<B.rows(); ++j )
       {
-         ConstIterator element( B.begin(j) );
-         const ConstIterator end( B.end(j) );
+         auto element( B.begin(j) );
+         const auto end( B.end(j) );
 
          const size_t nonzeros( B.nonZeros(j) );
          const size_t kpos( nonzeros & size_t(-4) );

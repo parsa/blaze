@@ -419,14 +419,11 @@ class TSMatSMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using LeftIterator  = ConstIterator_t<MT4>;
-      using RightIterator = ConstIterator_t<MT5>;
-
       for( size_t j=0UL; j<A.columns(); ++j ) {
-         const LeftIterator lend( A.end(j) );
-         for( LeftIterator lelem=A.begin(j); lelem!=lend; ++lelem ) {
-            const RightIterator rend( B.end(j) );
-            for( RightIterator relem=B.begin(j); relem!=rend; ++relem )
+         const auto lend( A.end(j) );
+         for( auto lelem=A.begin(j); lelem!=lend; ++lelem ) {
+            const auto rend( B.end(j) );
+            for( auto relem=B.begin(j); relem!=rend; ++relem )
             {
                if( IsResizable_v< ElementType_t<MT3> > &&
                    isDefault( C(lelem->index(),relem->index()) ) ) {
@@ -621,14 +618,11 @@ class TSMatSMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using LeftIterator  = ConstIterator_t<MT4>;
-      using RightIterator = ConstIterator_t<MT5>;
-
       for( size_t j=0UL; j<A.columns(); ++j ) {
-         const LeftIterator lend( A.end(j) );
-         for( LeftIterator lelem=A.begin(j); lelem!=lend; ++lelem ) {
-            const RightIterator rend( B.end(j) );
-            for( RightIterator relem=B.begin(j); relem!=rend; ++relem ) {
+         const auto lend( A.end(j) );
+         for( auto lelem=A.begin(j); lelem!=lend; ++lelem ) {
+            const auto rend( B.end(j) );
+            for( auto relem=B.begin(j); relem!=rend; ++relem ) {
                C(lelem->index(),relem->index()) += lelem->value() * relem->value();
             }
          }
@@ -757,14 +751,11 @@ class TSMatSMatMultExpr
            , typename MT5 >  // Type of the right-hand side matrix operand
    static inline void selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
-      using LeftIterator  = ConstIterator_t<MT4>;
-      using RightIterator = ConstIterator_t<MT5>;
-
       for( size_t j=0UL; j<A.columns(); ++j ) {
-         const LeftIterator lend( A.end(j) );
-         for( LeftIterator lelem=A.begin(j); lelem!=lend; ++lelem ) {
-            const RightIterator rend( B.end(j) );
-            for( RightIterator relem=B.begin(j); relem!=rend; ++relem ) {
+         const auto lend( A.end(j) );
+         for( auto lelem=A.begin(j); lelem!=lend; ++lelem ) {
+            const auto rend( B.end(j) );
+            for( auto relem=B.begin(j); relem!=rend; ++relem ) {
                C(lelem->index(),relem->index()) -= lelem->value() * relem->value();
             }
          }
