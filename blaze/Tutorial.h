@@ -2536,6 +2536,43 @@
    expand<3>( b );  // Compile time parameter
    \endcode
 
+// \n \section vector_operations_declaration_operations Declaration Operations
+// <hr>
+//
+// \subsection vector_operations_declzero declzero()
+//
+// The \c declzero() operation can be used to explicitly declare any vector or vector expression
+// as zero vector:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+
+   b = declzero( a );
+   \endcode
+
+// Any vector or vector expression that has been declared as zero vector via \c declzero() will
+// gain all the benefits of a zero vector, which range from reduced runtime checking to a
+// considerable speed-up in computations:
+
+   \code
+   using blaze::DynamicVector;
+
+   DynamicVector<double> a, b, c;
+   // ... Resizing and initialization
+
+   isZero( declzero( a ) );  // Will always return true without runtime effort
+
+   c = declzero( a ) + b;  // Declare the left operand of the vector addition as a
+                           // zero vector, i.e. no addition needs to be performed
+   \endcode
+
+// \warning The \c declzero() operation has the semantics of a cast: The caller is completely
+// responsible and the system trusts the given information. Declaring a non-zero vector or
+// vector expression as zero vector via the \c declzero() operation leads to undefined behavior
+// (which can be violated invariants or wrong computation results)!
+//
+//
 // \n Previous: \ref vector_types &nbsp; &nbsp; Next: \ref matrices
 */
 //*************************************************************************************************
@@ -5360,14 +5397,13 @@
 
    \code
    using blaze::DynamicMatrix;
-   using blaze::DiagonalMatrix;
 
    DynamicMatrix<double> A, B, C;
    // ... Resizing and initialization
 
    isZero( declzero( A ) );  // Will always return true without runtime effort
 
-   C = declzero( A ) + B;  // Declare the left operand of the matrix addition as an
+   C = declzero( A ) + B;  // Declare the left operand of the matrix addition as a
                            // zero matrix, i.e. no addition needs to be performed
    \endcode
 
