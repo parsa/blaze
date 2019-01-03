@@ -49,6 +49,7 @@
 #include <blaze/math/shims/Real.h>
 #include <blaze/math/StaticMatrix.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/math/ZeroMatrix.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/Random.h>
