@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {

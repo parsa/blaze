@@ -51,7 +51,6 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsIntegral.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
