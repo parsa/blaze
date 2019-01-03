@@ -300,14 +300,18 @@ class StaticMatrix
    explicit inline constexpr StaticMatrix( initializer_list< initializer_list<Type> > list );
 
    template< typename Other >
-   explicit inline constexpr StaticMatrix( size_t m, size_t n, const Other* array );
+   explicit inline StaticMatrix( size_t m, size_t n, const Other* array );
 
    template< typename Other, size_t Rows, size_t Cols >
-   explicit inline constexpr StaticMatrix( const Other (&array)[Rows][Cols] );
+   explicit inline StaticMatrix( const Other (&array)[Rows][Cols] );
 
-                                        inline StaticMatrix( const StaticMatrix& m );
-   template< typename Other, bool SO2 > inline StaticMatrix( const StaticMatrix<Other,M,N,SO2>& m );
-   template< typename MT   , bool SO2 > inline StaticMatrix( const Matrix<MT,SO2>& m );
+   inline constexpr StaticMatrix( const StaticMatrix& m );
+
+   template< typename Other, bool SO2 >
+   inline StaticMatrix( const StaticMatrix<Other,M,N,SO2>& m );
+
+   template< typename MT, bool SO2 >
+   inline StaticMatrix( const Matrix<MT,SO2>& m );
    //@}
    //**********************************************************************************************
 
@@ -345,14 +349,17 @@ class StaticMatrix
    inline constexpr StaticMatrix& operator=( initializer_list< initializer_list<Type> > list );
 
    template< typename Other, size_t Rows, size_t Cols >
-   inline constexpr StaticMatrix& operator=( const Other (&array)[Rows][Cols] );
+   inline StaticMatrix& operator=( const Other (&array)[Rows][Cols] );
 
-                                        inline StaticMatrix& operator= ( const StaticMatrix& rhs );
-   template< typename Other, bool SO2 > inline StaticMatrix& operator= ( const StaticMatrix<Other,M,N,SO2>& rhs );
-   template< typename MT   , bool SO2 > inline StaticMatrix& operator= ( const Matrix<MT,SO2>& rhs );
-   template< typename MT   , bool SO2 > inline StaticMatrix& operator+=( const Matrix<MT,SO2>& rhs );
-   template< typename MT   , bool SO2 > inline StaticMatrix& operator-=( const Matrix<MT,SO2>& rhs );
-   template< typename MT   , bool SO2 > inline StaticMatrix& operator%=( const Matrix<MT,SO2>& rhs );
+   inline constexpr StaticMatrix& operator=( const StaticMatrix& rhs );
+
+   template< typename Other, bool SO2 >
+   inline StaticMatrix& operator=( const StaticMatrix<Other,M,N,SO2>& rhs );
+
+   template< typename MT, bool SO2 > inline StaticMatrix& operator= ( const Matrix<MT,SO2>& rhs );
+   template< typename MT, bool SO2 > inline StaticMatrix& operator+=( const Matrix<MT,SO2>& rhs );
+   template< typename MT, bool SO2 > inline StaticMatrix& operator-=( const Matrix<MT,SO2>& rhs );
+   template< typename MT, bool SO2 > inline StaticMatrix& operator%=( const Matrix<MT,SO2>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -705,7 +712,7 @@ template< typename Type     // Data type of the matrix
         , size_t N          // Number of columns
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the initialization array
-inline constexpr StaticMatrix<Type,M,N,SO>::StaticMatrix( size_t m, size_t n, const Other* array )
+inline StaticMatrix<Type,M,N,SO>::StaticMatrix( size_t m, size_t n, const Other* array )
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
@@ -763,7 +770,7 @@ template< typename Type   // Data type of the matrix
 template< typename Other  // Data type of the initialization array
         , size_t Rows     // Number of rows of the initialization array
         , size_t Cols >   // Number of columns of the initialization array
-inline constexpr StaticMatrix<Type,M,N,SO>::StaticMatrix( const Other (&array)[Rows][Cols] )
+inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Other (&array)[Rows][Cols] )
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
@@ -793,13 +800,10 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const StaticMatrix& m )
-   : v_()  // The statically allocated matrix elements
+inline constexpr StaticMatrix<Type,M,N,SO>::StaticMatrix( const StaticMatrix& m )
+   : v_( m.v_ )  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
-   for( size_t i=0UL; i<M*NN; ++i )
-      v_[i] = m.v_[i];
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -1338,7 +1342,7 @@ template< typename Type   // Data type of the matrix
 template< typename Other  // Data type of the initialization array
         , size_t Rows     // Number of rows of the initialization array
         , size_t Cols >   // Number of columns of the initialization array
-inline constexpr StaticMatrix<Type,M,N,SO>&
+inline StaticMatrix<Type,M,N,SO>&
    StaticMatrix<Type,M,N,SO>::operator=( const Other (&array)[Rows][Cols] )
 {
    BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
@@ -1366,11 +1370,10 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline StaticMatrix<Type,M,N,SO>& StaticMatrix<Type,M,N,SO>::operator=( const StaticMatrix& rhs )
+inline constexpr StaticMatrix<Type,M,N,SO>&
+   StaticMatrix<Type,M,N,SO>::operator=( const StaticMatrix& rhs )
 {
-   using blaze::assign;
-
-   assign( *this, ~rhs );
+   v_ = rhs.v_;
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
@@ -2580,7 +2583,7 @@ inline auto StaticMatrix<Type,M,N,SO>::assign( const DenseMatrix<MT,SO2>& rhs )
 
    constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
-   const size_t jpos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
+   constexpr size_t jpos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
    for( size_t i=0UL; i<M; ++i )
@@ -3023,11 +3026,11 @@ inline auto StaticMatrix<Type,M,N,SO>::schurAssign( const DenseMatrix<MT,SO2>& r
 
    constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
+   constexpr size_t jpos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+
    for( size_t i=0UL; i<M; ++i )
    {
-      const size_t jpos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
-
       size_t j( 0UL );
 
       for( ; j<jpos; j+=SIMDSIZE ) {
@@ -3206,14 +3209,18 @@ class StaticMatrix<Type,M,N,true>
    explicit inline constexpr StaticMatrix( initializer_list< initializer_list<Type> > list );
 
    template< typename Other >
-   explicit inline constexpr StaticMatrix( size_t m, size_t n, const Other* array );
+   explicit inline StaticMatrix( size_t m, size_t n, const Other* array );
 
    template< typename Other, size_t Rows, size_t Cols >
-   explicit inline constexpr StaticMatrix( const Other (&array)[Rows][Cols] );
+   explicit inline StaticMatrix( const Other (&array)[Rows][Cols] );
 
-                                       inline StaticMatrix( const StaticMatrix& m );
-   template< typename Other, bool SO > inline StaticMatrix( const StaticMatrix<Other,M,N,SO>&  m );
-   template< typename MT   , bool SO > inline StaticMatrix( const Matrix<MT,SO>& m );
+   inline constexpr StaticMatrix( const StaticMatrix& m );
+
+   template< typename Other, bool SO >
+   inline StaticMatrix( const StaticMatrix<Other,M,N,SO>&  m );
+
+   template< typename MT, bool SO >
+   inline StaticMatrix( const Matrix<MT,SO>& m );
    //@}
    //**********************************************************************************************
 
@@ -3251,14 +3258,17 @@ class StaticMatrix<Type,M,N,true>
    inline constexpr StaticMatrix& operator=( initializer_list< initializer_list<Type> > list );
 
    template< typename Other, size_t Rows, size_t Cols >
-   inline constexpr StaticMatrix& operator=( const Other (&array)[Rows][Cols] );
+   inline StaticMatrix& operator=( const Other (&array)[Rows][Cols] );
 
-                                       inline StaticMatrix& operator= ( const StaticMatrix& rhs );
-   template< typename Other, bool SO > inline StaticMatrix& operator= ( const StaticMatrix<Other,M,N,SO>& rhs );
-   template< typename MT   , bool SO > inline StaticMatrix& operator= ( const Matrix<MT,SO>& rhs );
-   template< typename MT   , bool SO > inline StaticMatrix& operator+=( const Matrix<MT,SO>& rhs );
-   template< typename MT   , bool SO > inline StaticMatrix& operator-=( const Matrix<MT,SO>& rhs );
-   template< typename MT   , bool SO > inline StaticMatrix& operator%=( const Matrix<MT,SO>& rhs );
+   inline constexpr StaticMatrix& operator=( const StaticMatrix& rhs );
+
+   template< typename Other, bool SO >
+   inline StaticMatrix& operator=( const StaticMatrix<Other,M,N,SO>& rhs );
+
+   template< typename MT, bool SO > inline StaticMatrix& operator= ( const Matrix<MT,SO>& rhs );
+   template< typename MT, bool SO > inline StaticMatrix& operator+=( const Matrix<MT,SO>& rhs );
+   template< typename MT, bool SO > inline StaticMatrix& operator-=( const Matrix<MT,SO>& rhs );
+   template< typename MT, bool SO > inline StaticMatrix& operator%=( const Matrix<MT,SO>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -3594,7 +3604,7 @@ template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows
         , size_t N >        // Number of columns
 template< typename Other >  // Data type of the initialization array
-inline constexpr StaticMatrix<Type,M,N,true>::StaticMatrix( size_t m, size_t n, const Other* array )
+inline StaticMatrix<Type,M,N,true>::StaticMatrix( size_t m, size_t n, const Other* array )
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
@@ -3653,7 +3663,7 @@ template< typename Type   // Data type of the matrix
 template< typename Other  // Data type of the initialization array
         , size_t Rows     // Number of rows of the initialization array
         , size_t Cols >   // Number of columns of the initialization array
-inline constexpr StaticMatrix<Type,M,N,true>::StaticMatrix( const Other (&array)[Rows][Cols] )
+inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Other (&array)[Rows][Cols] )
    : v_()  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
@@ -3684,13 +3694,10 @@ inline constexpr StaticMatrix<Type,M,N,true>::StaticMatrix( const Other (&array)
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline StaticMatrix<Type,M,N,true>::StaticMatrix( const StaticMatrix& m )
-   : v_()  // The statically allocated matrix elements
+inline constexpr StaticMatrix<Type,M,N,true>::StaticMatrix( const StaticMatrix& m )
+   : v_( m.v_ )  // The statically allocated matrix elements
 {
    BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
-
-   for( size_t i=0UL; i<MM*N; ++i )
-      v_[i] = m.v_[i];
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -4216,7 +4223,7 @@ template< typename Type   // Data type of the matrix
 template< typename Other  // Data type of the initialization array
         , size_t Rows     // Number of rows of the initialization array
         , size_t Cols >   // Number of columns of the initialization array
-inline constexpr StaticMatrix<Type,M,N,true>&
+inline StaticMatrix<Type,M,N,true>&
    StaticMatrix<Type,M,N,true>::operator=( const Other (&array)[Rows][Cols] )
 {
    BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
@@ -4245,12 +4252,10 @@ inline constexpr StaticMatrix<Type,M,N,true>&
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline StaticMatrix<Type,M,N,true>&
+inline constexpr StaticMatrix<Type,M,N,true>&
    StaticMatrix<Type,M,N,true>::operator=( const StaticMatrix& rhs )
 {
-   using blaze::assign;
-
-   assign( *this, ~rhs );
+   v_ = rhs.v_;
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
@@ -5477,7 +5482,7 @@ inline auto StaticMatrix<Type,M,N,true>::assign( const DenseMatrix<MT,SO>& rhs )
 
    constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
-   const size_t ipos( ( remainder )?( M & size_t(-SIMDSIZE) ):( M ) );
+   constexpr size_t ipos( ( remainder )?( M & size_t(-SIMDSIZE) ):( M ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    for( size_t j=0UL; j<N; ++j )
@@ -5932,11 +5937,11 @@ inline auto StaticMatrix<Type,M,N,true>::schurAssign( const DenseMatrix<MT,SO>& 
 
    constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
+   constexpr size_t ipos( ( remainder )?( M & size_t(-SIMDSIZE) ):( M ) );
+   BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
+
    for( size_t j=0UL; j<N; ++j )
    {
-      const size_t ipos( ( remainder )?( M & size_t(-SIMDSIZE) ):( M ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
-
       size_t i( 0UL );
 
       for( ; i<ipos; i+=SIMDSIZE ) {
