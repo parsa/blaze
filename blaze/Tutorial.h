@@ -502,8 +502,9 @@
 //
 // The \b Blaze library currently offers five dense vector types (\ref vector_types_static_vector,
 // \ref vector_types_dynamic_vector, \ref vector_types_hybrid_vector, \ref vector_types_custom_vector,
-// and \ref vector_types_uniform_vector) and one sparse vector type (\ref vector_types_compressed_vector).
-// All vectors can be specified as either column vectors or row vectors:
+// and \ref vector_types_uniform_vector) and two sparse vector types (\ref vector_types_compressed_vector
+// and \ref vector_types_zero_vector). All vectors can be specified as either column vectors or row
+// vectors:
 
    \code
    using blaze::DynamicVector;
@@ -992,6 +993,42 @@
 
    // Definition of a double precision row vector with size 0
    blaze::CompressedVector<double,blaze::rowVector> c;
+   \endcode
+
+// \n \section vector_types_zero_vector ZeroVector
+// <hr>
+//
+// The blaze::ZeroVector class template is the representation of an immutable, arbitrary sized
+// zero vector with elements of arbitrary type. It can be included via the header file
+
+   \code
+   #include <blaze/math/ZeroVector.h>
+   \endcode
+
+// The type of the elements and the transpose flag of the vector can be specified via the two
+// template parameters:
+
+   \code
+   template< typename Type, bool TF >
+   class ZeroVector;
+   \endcode
+
+//  - \c Type: specifies the type of the vector elements. ZeroVector can be used with any
+//             non-cv-qualified, non-reference, non-pointer element type.
+//  - \c TF  : specifies whether the vector is a row vector (\c blaze::rowVector) or a column
+//             vector (\c blaze::columnVector). The default value is \c blaze::columnVector.
+//
+// The blaze::ZeroVector is the perfect choice to represent a zero vector:
+
+   \code
+   // Definition of a 3-dimensional integral zero column vector
+   blaze::ZeroVector<int> a( 3UL );
+
+   // Definition of a 6-dimensional single precision zero column vector
+   blaze::ZeroVector<float,blaze::columnVector> b( 6UL );
+
+   // Definition of a double precision row vector with size 0
+   blaze::ZeroVector<double,blaze::rowVector> c;
    \endcode
 
 // \n Previous: \ref vectors &nbsp; &nbsp; Next: \ref vector_operations
