@@ -271,14 +271,18 @@ class StaticVector
    explicit inline constexpr StaticVector( initializer_list<Type> list );
 
    template< typename Other >
-   explicit inline constexpr StaticVector( size_t n, const Other* array );
+   explicit inline StaticVector( size_t n, const Other* array );
 
    template< typename Other, size_t Dim >
-   explicit inline constexpr StaticVector( const Other (&array)[Dim] );
+   explicit inline StaticVector( const Other (&array)[Dim] );
 
-                              inline StaticVector( const StaticVector& v );
-   template< typename Other > inline StaticVector( const StaticVector<Other,N,TF>& v );
-   template< typename VT >    inline StaticVector( const Vector<VT,TF>& v );
+   inline constexpr StaticVector( const StaticVector& v );
+
+   template< typename Other >
+   inline StaticVector( const StaticVector<Other,N,TF>& v );
+
+   template< typename VT >
+   inline StaticVector( const Vector<VT,TF>& v );
    //@}
    //**********************************************************************************************
 
@@ -314,9 +318,9 @@ class StaticVector
    inline constexpr StaticVector& operator=( initializer_list<Type> list );
 
    template< typename Other, size_t Dim >
-   inline constexpr StaticVector& operator=( const Other (&array)[Dim] );
+   inline StaticVector& operator=( const Other (&array)[Dim] );
 
-   inline StaticVector& operator=( const StaticVector& rhs );
+   inline constexpr StaticVector& operator=( const StaticVector& rhs );
 
    template< typename Other >
    inline StaticVector& operator=( const StaticVector<Other,N,TF>& rhs );
@@ -647,7 +651,7 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the initialization array
-inline constexpr StaticVector<Type,N,TF>::StaticVector( size_t n, const Other* array )
+inline StaticVector<Type,N,TF>::StaticVector( size_t n, const Other* array )
    : v_()  // The statically allocated vector elements
 {
    BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
@@ -690,7 +694,7 @@ template< typename Type   // Data type of the vector
         , bool TF >       // Transpose flag
 template< typename Other  // Data type of the initialization array
         , size_t Dim >    // Dimension of the initialization array
-inline constexpr StaticVector<Type,N,TF>::StaticVector( const Other (&array)[Dim] )
+inline StaticVector<Type,N,TF>::StaticVector( const Other (&array)[Dim] )
    : v_()  // The statically allocated vector elements
 {
    BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
@@ -717,13 +721,10 @@ inline constexpr StaticVector<Type,N,TF>::StaticVector( const Other (&array)[Dim
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline StaticVector<Type,N,TF>::StaticVector( const StaticVector& v )
-   : v_()  // The statically allocated vector elements
+inline constexpr StaticVector<Type,N,TF>::StaticVector( const StaticVector& v )
+   : v_( v.v_ )  // The statically allocated vector elements
 {
    BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
-   for( size_t i=0UL; i<NN; ++i )
-      v_[i] = v.v_[i];
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -1114,8 +1115,7 @@ template< typename Type   // Data type of the vector
         , bool TF >       // Transpose flag
 template< typename Other  // Data type of the initialization array
         , size_t Dim >    // Dimension of the initialization array
-inline constexpr StaticVector<Type,N,TF>&
-   StaticVector<Type,N,TF>::operator=( const Other (&array)[Dim] )
+inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( const Other (&array)[Dim] )
 {
    BLAZE_STATIC_ASSERT( Dim == N );
 
@@ -1137,11 +1137,9 @@ inline constexpr StaticVector<Type,N,TF>&
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( const StaticVector& rhs )
+inline constexpr StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( const StaticVector& rhs )
 {
-   using blaze::assign;
-
-   assign( *this, ~rhs );
+   v_ = rhs.v_;
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
@@ -2088,7 +2086,7 @@ inline auto StaticVector<Type,N,TF>::assign( const DenseVector<VT,TF>& rhs )
 
    constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
 
-   const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
+   constexpr size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
@@ -2178,7 +2176,7 @@ inline auto StaticVector<Type,N,TF>::addAssign( const DenseVector<VT,TF>& rhs )
 
    constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
 
-   const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
+   constexpr size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
@@ -2268,7 +2266,7 @@ inline auto StaticVector<Type,N,TF>::subAssign( const DenseVector<VT,TF>& rhs )
 
    constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
 
-   const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
+   constexpr size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
@@ -2358,7 +2356,7 @@ inline auto StaticVector<Type,N,TF>::multAssign( const DenseVector<VT,TF>& rhs )
 
    constexpr bool remainder( !usePadding || !IsPadded_v<VT> );
 
-   const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
+   constexpr size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
@@ -2450,7 +2448,7 @@ inline auto StaticVector<Type,N,TF>::divAssign( const DenseVector<VT,TF>& rhs )
 
    BLAZE_INTERNAL_ASSERT( (~rhs).size() == N, "Invalid vector sizes" );
 
-   const size_t ipos( N & size_t(-SIMDSIZE) );
+   constexpr size_t ipos( N & size_t(-SIMDSIZE) );
    BLAZE_INTERNAL_ASSERT( ( N - ( N % (SIMDSIZE) ) ) == ipos, "Invalid end calculation" );
 
    size_t i( 0UL );
