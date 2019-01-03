@@ -49,7 +49,6 @@ BIN = $(SRC:.cpp=)
 
 # General rules
 default: VCaMCa VCaMCb VCbMCa VCbMCb \
-         VCaMIa VCaMIb VCbMIa VCbMIb \
          VCaSCa VCaSCb VCbSCa VCbSCb \
          VCaHCa VCaHCb VCbHCa VCbHCb \
          VCaLCa VCaLCb VCbLCa VCbLCb \

@@ -49,17 +49,9 @@ BIN = $(SRC:.cpp=)
 
 # General rules
 default: M3x3aMCa M3x3aMCb M3x3bMCa M3x3bMCb \
-         M3x3aMIa M3x3aMIb M3x3bMIa M3x3bMIb \
-         M3x3aMZa M3x3aMZb M3x3bMZa M3x3bMZb \
          MHaMCa MHaMCb MHbMCa MHbMCb \
-         MHaMIa MHaMIb MHbMIa MHbMIb \
-         MHaMZa MHaMZb MHbMZa MHbMZb \
          MDaMCa MDaMCb MDbMCa MDbMCb \
-         MDaMIa MDaMIb MDbMIa MDbMIb \
-         MDaMZa MDaMZb MDbMZa MDbMZb \
          MUaMCa MUaMCb MUbMCa MUbMCb \
-         MUaMIa MUaMIb MUbMIa MUbMIb \
-         MUaMZa MUaMZb MUbMZa MUbMZb \
          SDaSCa SDaSCb SDbSCa SDbSCb \
          HDaHCa HDaHCb HDbHCa HDbHCb \
          LDaLCa LDaLCb LDbLCa LDbLCb \
@@ -67,8 +59,7 @@ default: M3x3aMCa M3x3aMCb M3x3bMCa M3x3bMCb \
          DDaDCa DDaDCb DDbDCa DDbDCb \
          AliasingTest
 all: $(BIN)
-essential: M3x3aMCa M3x3aMIa M3x3aMZa MHaMCa MHaMIa MHaMZa MDaMCa MDaMIa MDaMZa \
-           MUaMCa MUaMIa MUaMZa SDaSCa HDaHCa LDaLCa UDaUCa DDaDCa AliasingTest
+essential: M3x3aMCa MHaMCa MDaMCa MUaMCa SDaSCa HDaHCa LDaLCa UDaUCa DDaDCa AliasingTest
 single: MDaMCa
 
 

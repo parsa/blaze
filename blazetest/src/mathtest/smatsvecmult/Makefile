@@ -49,7 +49,6 @@ BIN = $(SRC:.cpp=)
 
 # General rules
 default: MCaVCa MCaVCb MCbVCa MCbVCb \
-         MIaVCa MIaVCb MIbVCa MIbVCb \
          SCaVCa SCaVCb SCbVCa SCbVCb \
          HCaVCa HCaVCb HCbVCa HCbVCb \
          LCaVCa LCaVCb LCbVCa LCbVCb \
@@ -57,7 +56,7 @@ default: MCaVCa MCaVCb MCbVCa MCbVCb \
          DCaVCa DCaVCb DCbVCa DCbVCb \
          AliasingTest
 all: $(BIN)
-essential: MCaVCa MIaVCa SCaVCa HCaVCa LCaVCa UCaVCa DCaVCa AliasingTest
+essential: MCaVCa SCaVCa HCaVCa LCaVCa UCaVCa DCaVCa AliasingTest
 single: MCaVCa
 
 

@@ -52,10 +52,6 @@ default: MCaV3a MCaV3b MCbV3a MCbV3b \
          MCaVHa MCaVHb MCbVHa MCbVHb \
          MCaVDa MCaVDb MCbVDa MCbVDb \
          MCaVUa MCaVUb MCbVUa MCbVUb \
-         MIaV3a MIaV3b MIbV3a MIbV3b \
-         MIaVHa MIaVHb MIbVHa MIbVHb \
-         MIaVDa MIaVDb MIbVDa MIbVDb \
-         MIaVUa MIaVUb MIbVUa MIbVUb \
          SCaVDa SCaVDb SCbVDa SCbVDb \
          HCaVDa HCaVDb HCbVDa HCbVDb \
          LCaVDa LCaVDb LCbVDa LCbVDb \
@@ -63,8 +59,7 @@ default: MCaV3a MCaV3b MCbV3a MCbV3b \
          DCaVDa DCaVDb DCbVDa DCbVDb \
          AliasingTest
 all: $(BIN)
-essential: MCaV3a MCaVHa MCaVDa MCaVUa MIaV3a MIaVHa MIaVDa MIaVUa \
-           SCaVDa HCaVDa LCaVDa UCaVDa DCaVDa AliasingTest
+essential: MCaV3a MCaVHa MCaVDa MCaVUa SCaVDa HCaVDa LCaVDa UCaVDa DCaVDa AliasingTest
 single: MCaVDa
 
 

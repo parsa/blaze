@@ -52,14 +52,6 @@ default: MCaM3x3a MCaM3x3b MCbM3x3a MCbM3x3b \
          MCaMHa MCaMHb MCbMHa MCbMHb \
          MCaMDa MCaMDb MCbMDa MCbMDb \
          MCaMUa MCaMUb MCbMUa MCbMUb \
-         MIaM3x3a MIaM3x3b MIbM3x3a MIbM3x3b \
-         MIaMHa MIaMHb MIbMHa MIbMHb \
-         MIaMDa MIaMDb MIbMDa MIbMDb \
-         MIaMUa MIaMUb MIbMUa MIbMUb \
-         MZaM3x3a MZaM3x3b MZbM3x3a MZbM3x3b \
-         MZaMHa MZaMHb MZbMHa MZbMHb \
-         MZaMDa MZaMDb MZbMDa MZbMDb \
-         MZaMUa MZaMUb MZbMUa MZbMUb \
          SCaSDa SCaSDb SCbSDa SCbSDb \
          HCaHDa HCaHDb HCbHDa HCbHDb \
          LCaLDa LCaLDb LCbLDa LCbLDb \
@@ -67,8 +59,7 @@ default: MCaM3x3a MCaM3x3b MCbM3x3a MCbM3x3b \
          DCaDDa DCaDDb DCbDDa DCbDDb \
          AliasingTest
 all: $(BIN)
-essential: MCaM3x3a MCaMHa MCaMDa MCaMUa MIaM3x3a MIaMHa MIaMDa MIaMUa \
-           MZaM3x3a MZaMHa MZaMDa MZaMUa SCaSDa HCaHDa LCaLDa UCaUDa DCaDDa AliasingTest
+essential: MCaM3x3a MCaMHa MCaMDa MCaMUa SCaSDa HCaHDa LCaLDa UCaUDa DCaDDa AliasingTest
 single: MCaMDa
 
 
