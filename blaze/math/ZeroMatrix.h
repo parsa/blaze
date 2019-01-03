@@ -43,6 +43,7 @@
 #include <blaze/math/sparse/ZeroMatrix.h>
 #include <blaze/math/CompressedMatrix.h>
 #include <blaze/math/CompressedVector.h>
+#include <blaze/math/ZeroVector.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/Types.h>
 
@@ -82,7 +83,7 @@ class Rand< ZeroMatrix<Type,SO> >
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Generation of a random ZeroMatrix.
 //
-// \param n The number of rows of the random matrix.
+// \param m The number of rows of the random matrix.
 // \param n The number of columns of the random matrix.
 // \return The generated random matrix.
 */

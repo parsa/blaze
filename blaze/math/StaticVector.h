@@ -44,6 +44,7 @@
 #include <blaze/math/DenseVector.h>
 #include <blaze/math/DynamicVector.h>
 #include <blaze/math/StaticMatrix.h>
+#include <blaze/math/ZeroVector.h>
 #include <blaze/util/Random.h>
 
 
