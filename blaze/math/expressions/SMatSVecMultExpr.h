@@ -61,6 +61,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -915,7 +916,10 @@ class SMatSVecMultExpr
 */
 template< typename MT  // Type of the left-hand side sparse matrix
         , typename VT  // Type of the right-hand side sparse vector
-        , DisableIf_t< IsSymmetric_v<MT> || IsZero_v<MT> || IsZero_v<VT> >* = nullptr >
+        , DisableIf_t< IsSymmetric_v<MT> ||
+                       ( IsIdentity_v<MT> &&
+                         IsSame_v< ElementType_t<MT>, ElementType_t<VT> > ) ||
+                       ( IsZero_v<MT> || IsZero_v<VT> ) >* = nullptr >
 inline const SMatSVecMultExpr<MT,VT>
    smatsvecmult( const SparseMatrix<MT,false>& mat, const SparseVector<VT,false>& vec )
 {
@@ -945,7 +949,10 @@ inline const SMatSVecMultExpr<MT,VT>
 */
 template< typename MT  // Type of the left-hand side sparse matrix
         , typename VT  // Type of the right-hand side sparse vector
-        , EnableIf_t< IsSymmetric_v<MT> && !IsZero_v<MT> && !IsZero_v<VT> >* = nullptr >
+        , EnableIf_t< IsSymmetric_v<MT> &&
+                      !( IsIdentity_v<MT> &&
+                         IsSame_v< ElementType_t<MT>, ElementType_t<VT> > ) &&
+                      !( IsZero_v<MT> || IsZero_v<VT> ) >* = nullptr >
 inline decltype(auto)
    smatsvecmult( const SparseMatrix<MT,false>& mat, const SparseVector<VT,false>& vec )
 {
@@ -954,6 +961,40 @@ inline decltype(auto)
    BLAZE_INTERNAL_ASSERT( (~mat).columns() == (~vec).size(), "Invalid matrix and vector sizes" );
 
    return trans( ~mat ) * (~vec);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the multiplication of a row-major identity matrix and a
+//        sparse vector (\f$ \vec{y}=A*\vec{x} \f$).
+// \ingroup sparse_vector
+//
+// \param mat The left-hand side row-major identity matrix for the multiplication.
+// \param vec The right-hand side sparse vector for the multiplication.
+// \return Reference to the given sparse vector.
+//
+// This function implements the performance optimized treatment of the multiplication of a
+// row-major identity matrix and a sparse vector. It returns a reference to the given sparse
+// vector.
+*/
+template< typename MT  // Type of the left-hand side sparse matrix
+        , typename VT  // Type of the right-hand side sparse vector
+        , EnableIf_t< ( IsIdentity_v<MT> &&
+                        IsSame_v< ElementType_t<MT>, ElementType_t<VT> > ) &&
+                      !IsZero_v<VT> >* = nullptr >
+inline const VT&
+   smatsvecmult( const SparseMatrix<MT,false>& mat, const SparseVector<VT,false>& vec )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( mat );
+
+   BLAZE_INTERNAL_ASSERT( (~mat).columns() == (~vec).size(), "Invalid matrix and vector sizes" );
+
+   return (~vec);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -972,7 +1013,7 @@ inline decltype(auto)
 // This function implements the performance optimized treatment of the multiplication of a
 // row-major (zero) sparse matrix and a (zero) sparse vector. It returns a zero vector.
 */
-template< typename MT  // Type of the left-hand side dense matrix
+template< typename MT  // Type of the left-hand side sparse matrix
         , typename VT  // Type of the right-hand side sparse vector
         , EnableIf_t< IsZero_v<MT> || IsZero_v<VT> >* = nullptr >
 inline decltype(auto)

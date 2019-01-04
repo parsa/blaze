@@ -63,6 +63,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
@@ -869,7 +870,10 @@ class TDVecSMatMultExpr
 */
 template< typename VT  // Type of the left-hand side dense vector
         , typename MT  // Type of the right-hand side sparse matrix
-        , DisableIf_t< IsSymmetric_v<MT> || IsZero_v<MT> >* = nullptr >
+        , DisableIf_t< IsSymmetric_v<MT> ||
+                       ( IsIdentity_v<MT> &&
+                         IsSame_v< ElementType_t<VT>, ElementType_t<MT> > ) ||
+                       IsZero_v<MT> >* = nullptr >
 inline const TDVecSMatMultExpr<VT,MT>
    tdvecsmatmult( const DenseVector<VT,true>& vec, const SparseMatrix<MT,false>& mat )
 {
@@ -899,7 +903,10 @@ inline const TDVecSMatMultExpr<VT,MT>
 */
 template< typename VT  // Type of the left-hand side dense vector
         , typename MT  // Type of the right-hand side sparse matrix
-        , EnableIf_t< IsSymmetric_v<MT> && !IsZero_v<MT> >* = nullptr >
+        , EnableIf_t< IsSymmetric_v<MT> &&
+                      !( IsIdentity_v<MT> &&
+                         IsSame_v< ElementType_t<VT>, ElementType_t<MT> > ) &&
+                      !IsZero_v<MT> >* = nullptr >
 inline decltype(auto)
    tdvecsmatmult( const DenseVector<VT,true>& vec, const SparseMatrix<MT,false>& mat )
 {
@@ -908,6 +915,39 @@ inline decltype(auto)
    BLAZE_INTERNAL_ASSERT( (~vec).size() == (~mat).rows(), "Invalid vector and matrix sizes" );
 
    return (~vec) * trans( ~mat );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the multiplication of a transpose dense vector
+//        and a row-major identity matrix (\f$ \vec{a}=B*\vec{c} \f$).
+// \ingroup dense_vector
+//
+// \param vec The left-hand side transpose dense vector for the multiplication.
+// \param mat The right-hand side row-major identity matrix for the multiplication.
+// \return Reference to the given dense vector.
+//
+// This function implements the performance optimized treatment of the multiplication of a
+// transpose dense vector and a row-major identity matrix. It returns a reference to the
+// given dense vector.
+*/
+template< typename VT  // Type of the left-hand side dense vector
+        , typename MT  // Type of the right-hand side sparse matrix
+        , EnableIf_t< IsIdentity_v<MT> &&
+                      IsSame_v< ElementType_t<VT>, ElementType_t<MT> > >* = nullptr >
+inline const VT&
+   tdvecsmatmult( const DenseVector<VT,true>& vec, const SparseMatrix<MT,false>& mat )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( mat );
+
+   BLAZE_INTERNAL_ASSERT( (~vec).size() == (~mat).rows(), "Invalid vector and matrix sizes" );
+
+   return (~vec);
 }
 /*! \endcond */
 //*************************************************************************************************

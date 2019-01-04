@@ -64,6 +64,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
@@ -878,7 +879,7 @@ class TSMatDVecMultExpr
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Backend implementation of the multiplication of a column-major sparse matrix and
 //        a dense vector (\f$ \vec{a}=B*\vec{c} \f$).
-// \ingroup sparse_vector
+// \ingroup dense_vector
 //
 // \param mat The left-hand side column-major sparse matrix for the multiplication.
 // \param vec The right-hand side dense vector for the multiplication.
@@ -889,7 +890,10 @@ class TSMatDVecMultExpr
 */
 template< typename MT  // Type of the left-hand side sparse matrix
         , typename VT  // Type of the right-hand side dense vector
-        , DisableIf_t< IsSymmetric_v<MT> || IsZero_v<MT> >* = nullptr >
+        , DisableIf_t< IsSymmetric_v<MT> ||
+                       ( IsIdentity_v<MT> &&
+                         IsSame_v< ElementType_t<MT>, ElementType_t<VT> > ) ||
+                       IsZero_v<MT> >* = nullptr >
 inline const TSMatDVecMultExpr<MT,VT>
    tsmatdvecmult( const SparseMatrix<MT,true>& mat, const DenseVector<VT,false>& vec )
 {
@@ -907,7 +911,7 @@ inline const TSMatDVecMultExpr<MT,VT>
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Backend implementation of the multiplication of a symmetric column-major sparse matrix
 //        and a dense vector (\f$ \vec{a}=B*\vec{c} \f$).
-// \ingroup sparse_vector
+// \ingroup dense_vector
 //
 // \param mat The left-hand side column-major sparse matrix for the multiplication.
 // \param vec The right-hand side dense vector for the multiplication.
@@ -919,7 +923,10 @@ inline const TSMatDVecMultExpr<MT,VT>
 */
 template< typename MT  // Type of the left-hand side sparse matrix
         , typename VT  // Type of the right-hand side dense vector
-        , EnableIf_t< IsSymmetric_v<MT> && !IsZero_v<MT> >* = nullptr >
+        , EnableIf_t< IsSymmetric_v<MT> &&
+                      !( IsIdentity_v<MT> &&
+                         IsSame_v< ElementType_t<MT>, ElementType_t<VT> > ) &&
+                      !IsZero_v<MT> >* = nullptr >
 inline decltype(auto)
    tsmatdvecmult( const SparseMatrix<MT,true>& mat, const DenseVector<VT,false>& vec )
 {
@@ -928,6 +935,39 @@ inline decltype(auto)
    BLAZE_INTERNAL_ASSERT( (~mat).columns() == (~vec).size(), "Invalid matrix and vector sizes" );
 
    return trans( ~mat ) * (~vec);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the multiplication of a column-major identity matrix and a
+//        dense vector (\f$ \vec{y}=A*\vec{x} \f$).
+// \ingroup dense_vector
+//
+// \param mat The left-hand side column-major identity matrix for the multiplication.
+// \param vec The right-hand side dense vector for the multiplication.
+// \return Reference to the given dense vector.
+//
+// This function implements the performance optimized treatment of the multiplication of a
+// column-major identity matrix and a dense vector. It returns a reference to the given dense
+// vector.
+*/
+template< typename MT  // Type of the left-hand side sparse matrix
+        , typename VT  // Type of the right-hand side dense vector
+        , EnableIf_t< IsIdentity_v<MT> &&
+                      IsSame_v< ElementType_t<MT>, ElementType_t<VT> > >* = nullptr >
+inline const VT&
+   tsmatdvecmult( const SparseMatrix<MT,true>& mat, const DenseVector<VT,false>& vec )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( mat );
+
+   BLAZE_INTERNAL_ASSERT( (~mat).columns() == (~vec).size(), "Invalid matrix and vector sizes" );
+
+   return (~vec);
 }
 /*! \endcond */
 //*************************************************************************************************

@@ -62,6 +62,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
@@ -814,7 +815,9 @@ class TSMatSVecMultExpr
 */
 template< typename MT  // Type of the left-hand side sparse matrix
         , typename VT  // Type of the right-hand side sparse vector
-        , DisableIf_t< IsZero_v<MT> || IsZero_v<VT> >* = nullptr >
+        , DisableIf_t< ( IsIdentity_v<MT> &&
+                         IsSame_v< ElementType_t<MT>, ElementType_t<VT> > ) ||
+                       ( IsZero_v<MT> || IsZero_v<VT> ) >* = nullptr >
 inline const TSMatSVecMultExpr<MT,VT>
    tsmatsvecmult( const SparseMatrix<MT,true>& mat, const SparseVector<VT,false>& vec )
 {
@@ -823,6 +826,40 @@ inline const TSMatSVecMultExpr<MT,VT>
    BLAZE_INTERNAL_ASSERT( (~mat).columns() == (~vec).size(), "Invalid matrix and vector sizes" );
 
    return TSMatSVecMultExpr<MT,VT>( ~mat, ~vec );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the multiplication of a column-major identity matrix and a
+//        sparse vector (\f$ \vec{y}=A*\vec{x} \f$).
+// \ingroup sparse_vector
+//
+// \param mat The left-hand side column-major identity matrix for the multiplication.
+// \param vec The right-hand side sparse vector for the multiplication.
+// \return Reference to the given sparse vector.
+//
+// This function implements the performance optimized treatment of the multiplication of a
+// column-major identity matrix and a sparse vector. It returns a reference to the given sparse
+// vector.
+*/
+template< typename MT  // Type of the left-hand side sparse matrix
+        , typename VT  // Type of the right-hand side sparse vector
+        , EnableIf_t< ( IsIdentity_v<MT> &&
+                        IsSame_v< ElementType_t<MT>, ElementType_t<VT> > ) &&
+                      !IsZero_v<VT> >* = nullptr >
+inline const VT&
+   tsmatsvecmult( const SparseMatrix<MT,true>& mat, const SparseVector<VT,false>& vec )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( mat );
+
+   BLAZE_INTERNAL_ASSERT( (~mat).columns() == (~vec).size(), "Invalid matrix and vector sizes" );
+
+   return (~vec);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -841,7 +878,7 @@ inline const TSMatSVecMultExpr<MT,VT>
 // This function implements the performance optimized treatment of the multiplication of a
 // column-major (zero) sparse matrix and a (zero) sparse vector. It returns a zero vector.
 */
-template< typename MT  // Type of the left-hand side dense matrix
+template< typename MT  // Type of the left-hand side sparse matrix
         , typename VT  // Type of the right-hand side sparse vector
         , EnableIf_t< IsZero_v<MT> || IsZero_v<VT> >* = nullptr >
 inline decltype(auto)

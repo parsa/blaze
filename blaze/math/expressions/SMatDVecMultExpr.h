@@ -60,6 +60,7 @@
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/views/Check.h>
@@ -812,7 +813,9 @@ class SMatDVecMultExpr
 */
 template< typename MT  // Type of the left-hand side sparse matrix
         , typename VT  // Type of the right-hand side dense vector
-        , DisableIf_t< IsZero_v<MT> >* = nullptr >
+        , DisableIf_t< ( IsIdentity_v<MT> &&
+                         IsSame_v< ElementType_t<MT>, ElementType_t<VT> > ) ||
+                       IsZero_v<MT> >* = nullptr >
 inline const SMatDVecMultExpr<MT,VT>
    smatdvecmult( const SparseMatrix<MT,false>& mat, const DenseVector<VT,false>& vec )
 {
@@ -821,6 +824,39 @@ inline const SMatDVecMultExpr<MT,VT>
    BLAZE_INTERNAL_ASSERT( (~mat).columns() == (~vec).size(), "Invalid matrix and vector sizes" );
 
    return SMatDVecMultExpr<MT,VT>( ~mat, ~vec );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the multiplication of a row-major identity matrix and a dense
+//        vector (\f$ \vec{y}=A*\vec{x} \f$).
+// \ingroup dense_vector
+//
+// \param mat The left-hand side row-major identity matrix for the multiplication.
+// \param vec The right-hand side dense vector for the multiplication.
+// \return Reference to the given dense vector.
+//
+// This function implements the performance optimized treatment of the multiplication of a
+// row-major identity matrix and a dense vector. It returns a reference to the given dense
+// vector.
+*/
+template< typename MT  // Type of the left-hand side sparse matrix
+        , typename VT  // Type of the right-hand side dense vector
+        , EnableIf_t< IsIdentity_v<MT> &&
+                      IsSame_v< ElementType_t<MT>, ElementType_t<VT> > >* = nullptr >
+inline const VT&
+   smatdvecmult( const SparseMatrix<MT,false>& mat, const DenseVector<VT,false>& vec )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( mat );
+
+   BLAZE_INTERNAL_ASSERT( (~mat).columns() == (~vec).size(), "Invalid matrix and vector sizes" );
+
+   return (~vec);
 }
 /*! \endcond */
 //*************************************************************************************************
