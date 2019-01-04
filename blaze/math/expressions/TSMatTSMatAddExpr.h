@@ -880,10 +880,11 @@ inline const TSMatTSMatAddExpr<MT1,MT2>
 //
 // \param lhs The left-hand side sparse matrix for the addition.
 // \param rhs The right-hand side zero matrix for the addition.
-// \return The sum of the two matrices.
+// \return Reference to the left-hand side sparse matrix.
 //
 // This function implements a performance optimized treatment of the addition between a
-// column-major sparse matrix and a column-major zero matrix.
+// column-major sparse matrix and a column-major zero matrix. It returns a reference to the
+// left-hand side sparse matrix.
 */
 template< typename MT1  // Type of the left-hand side sparse matrix
         , typename MT2  // Type of the right-hand side sparse matrix
@@ -913,10 +914,11 @@ inline const MT1&
 //
 // \param lhs The left-hand side zero matrix for the addition.
 // \param rhs The right-hand side sparse matrix for the addition.
-// \return The sum of the two matrices.
+// \return Reference to the right-hand side sparse matrix.
 //
 // This function implements a performance optimized treatment of the addition between a
-// column-major zero matrix and a column-major sparse matrix.
+// column-major zero matrix and a column-major sparse matrix. It returns a reference to the
+// right-hand side sparse matrix.
 */
 template< typename MT1  // Type of the left-hand side sparse matrix
         , typename MT2  // Type of the right-hand side sparse matrix
