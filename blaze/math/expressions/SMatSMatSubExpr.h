@@ -872,10 +872,11 @@ inline const SMatSMatSubExpr<MT1,MT2>
 //
 // \param lhs The left-hand side sparse matrix for the subtraction.
 // \param rhs The right-hand side zero matrix for the subtraction.
-// \return The difference of the two matrices.
+// \return Reference to the left-hand side sparse matrix.
 //
 // This function implements a performance optimized treatment of the subtraction between a
-// row-major sparse matrix and a row-major zero matrix.
+// row-major sparse matrix and a row-major zero matrix. It returns a reference to the left-hand
+// side sparse matrix.
 */
 template< typename MT1  // Type of the left-hand side sparse matrix
         , typename MT2  // Type of the right-hand side sparse matrix
@@ -905,10 +906,11 @@ inline const MT1&
 //
 // \param lhs The left-hand side zero matrix for the subtraction.
 // \param rhs The right-hand side sparse matrix for the subtraction.
-// \return The difference of the two matrices.
+// \return The negated right-hand side sparse matrix.
 //
 // This function implements a performance optimized treatment of the subtraction between a
-// row-major zero matrix and a row-major sparse matrix.
+// row-major zero matrix and a row-major sparse matrix. It returns the negated right-hand side
+// sparse matrix.
 */
 template< typename MT1  // Type of the left-hand side sparse matrix
         , typename MT2  // Type of the right-hand side sparse matrix

@@ -695,10 +695,10 @@ inline const DMatSMatSubExpr<MT1,MT2,SO>
 //
 // \param lhs The left-hand side dense matrix for the subtraction.
 // \param rhs The right-hand side zero matrix for the subtraction.
-// \return The difference of the two matrices.
+// \return Reference to the left-hand side dense matrix.
 //
 // This function implements a performance optimized treatment of the subtraction between a dense
-// matrix and a zero matrix.
+// matrix and a zero matrix. It returns a reference to the left-hand side dense matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side sparse matrix
