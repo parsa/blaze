@@ -73,6 +73,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
@@ -1908,7 +1909,9 @@ class SMatTDMatMultExpr
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side sparse matrix
-        , DisableIf_t< IsZero_v<MT1> >* = nullptr >
+        , DisableIf_t< ( IsIdentity_v<MT1> &&
+                         IsSame_v< ElementType_t<MT1>, ElementType_t<MT2> > ) ||
+                       IsZero_v<MT1> >* = nullptr >
 inline const SMatTDMatMultExpr<MT1,MT2,false,false,false,false>
    smattdmatmult( const SparseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
 {
@@ -1917,6 +1920,39 @@ inline const SMatTDMatMultExpr<MT1,MT2,false,false,false,false>
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).rows(), "Invalid matrix sizes" );
 
    return SMatTDMatMultExpr<MT1,MT2,false,false,false,false>( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the multiplication between a row-major identity matrix and
+//        a column-major dense matrix (\f$ A=B*C \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side identity matrix for the multiplication.
+// \param rhs The right-hand side dense matrix for the multiplication.
+// \return Reference to the right-hand side dense matrix.
+//
+// This function implements a performance optimized treatment of the multiplication between
+// a row-major identity matrix and a column-major dense matrix. It returns a reference to the
+// right-hand side dense matrix.
+*/
+template< typename MT1  // Type of the left-hand side sparse matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , EnableIf_t< IsIdentity_v<MT1> &&
+                      IsSame_v< ElementType_t<MT1>, ElementType_t<MT2> > >* = nullptr >
+inline const MT2&
+   smattdmatmult( const SparseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,true>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( lhs );
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).rows(), "Invalid matrix sizes" );
+
+   return (~rhs);
 }
 /*! \endcond */
 //*************************************************************************************************

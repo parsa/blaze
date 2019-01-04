@@ -42,6 +42,7 @@
 
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
+#include <blaze/math/constraints/Identity.h>
 #include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
@@ -1263,7 +1264,10 @@ class TSMatSMatMultExpr
 */
 template< typename MT1  // Type of the left-hand side sparse matrix
         , typename MT2  // Type of the right-hand side sparse matrix
-        , DisableIf_t< IsZero_v<MT1> || IsZero_v<MT2> >* = nullptr >
+        , DisableIf_t< ( ( IsIdentity_v<MT1> || IsIdentity_v<MT2> ) &&
+                         IsSame_v< ElementType_t<MT1>, ElementType_t<MT2> > ) ||
+                       ( IsIdentity_v<MT1> && IsIdentity_v<MT2> ) ||
+                       ( IsZero_v<MT1> || IsZero_v<MT2> ) >* = nullptr >
 inline const TSMatSMatMultExpr<MT1,MT2>
    tsmatsmatmult( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
@@ -1272,6 +1276,108 @@ inline const TSMatSMatMultExpr<MT1,MT2>
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).rows(), "Invalid matrix sizes" );
 
    return TSMatSMatMultExpr<MT1,MT2>( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the multiplication between a column-major sparse matrix and
+//        a row-major identity matrix (\f$ A=B*C \f$).
+// \ingroup sparse_matrix
+//
+// \param lhs The left-hand side sparse matrix for the multiplication.
+// \param rhs The right-hand side identity matrix for the multiplication.
+// \return Reference to the left-hand side sparse matrix.
+//
+// This function implements a performance optimized treatment of the multiplication between
+// a column-major sparse matrix and a row-major identity matrix. It returns a reference to the
+// left-hand side sparse matrix.
+*/
+template< typename MT1  // Type of the left-hand side sparse matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , EnableIf_t< !IsIdentity_v<MT1> && IsIdentity_v<MT2> &&
+                      IsSame_v< ElementType_t<MT1>, ElementType_t<MT2> > >* = nullptr >
+inline const MT1&
+   tsmatsmatmult( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( rhs );
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).rows(), "Invalid matrix sizes" );
+
+   return (~lhs);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the multiplication between a column-major identity matrix
+//        and a row-major sparse matrix (\f$ A=B*C \f$).
+// \ingroup sparse_matrix
+//
+// \param lhs The left-hand side identity matrix for the multiplication.
+// \param rhs The right-hand side sparse matrix for the multiplication.
+// \return Reference to the right-hand side sparse matrix.
+//
+// This function implements a performance optimized treatment of the multiplication between a
+// column-major identity matrix and a row-major sparse matrix. It returns a reference to the
+// right-hand side sparse matrix.
+*/
+template< typename MT1  // Type of the left-hand side sparse matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , EnableIf_t< IsIdentity_v<MT1> && !IsIdentity_v<MT2> &&
+                      IsSame_v< ElementType_t<MT1>, ElementType_t<MT2> > >* = nullptr >
+inline const MT2&
+   tsmatsmatmult( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( lhs );
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).rows(), "Invalid matrix sizes" );
+
+   return (~rhs);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the multiplication between a column-major identity matrix
+//        and a row-major identity matrix (\f$ A=B*C \f$).
+// \ingroup sparse_matrix
+//
+// \param lhs The left-hand side identity matrix for the multiplication.
+// \param rhs The right-hand side identity matrix for the multiplication.
+// \return The resulting identity matrix.
+//
+// This function implements a performance optimized treatment of the multiplication between a
+// column-major identity matrix and a row-major identity matrix. It returns an identity matrix.
+*/
+template< typename MT1  // Type of the left-hand side sparse matrix
+        , typename MT2  // Type of the right-hand side sparse matrix
+        , EnableIf_t< IsIdentity_v<MT1> && IsIdentity_v<MT2> >* = nullptr >
+inline decltype(auto)
+   tsmatsmatmult( const SparseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( lhs );
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).rows(), "Invalid matrix sizes" );
+
+   using ReturnType = const MultTrait_t< ResultType_t<MT1>, ResultType_t<MT2> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ReturnType );
+   BLAZE_CONSTRAINT_MUST_BE_IDENTITY_MATRIX_TYPE( ReturnType );
+
+   return ReturnType( (~lhs).rows() );
 }
 /*! \endcond */
 //*************************************************************************************************
