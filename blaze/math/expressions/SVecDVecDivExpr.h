@@ -719,16 +719,16 @@ inline const SVecDVecDivExpr<VT1,VT2,TF>
 //
 // \param lhs The left-hand side zero vector for the component quotient.
 // \param rhs The right-hand side dense vector for the component quotient.
-// \return The quotient of the two vectors.
+// \return The resulting zero vector.
 //
 // This function implements a performance optimized treatment of the componentwise division
-// of a zero vector and a dense vector.
+// of a zero vector and a dense vector. It returns a zero vector.
 */
 template< typename VT1  // Type of the left-hand side sparse vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF       // Transpose flag
         , EnableIf_t< IsZero_v<VT1> >* = nullptr >
-inline const ZeroVector< DivTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >, TF >
+inline decltype(auto)
    svecdvecdiv( const SparseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -737,8 +737,12 @@ inline const ZeroVector< DivTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >, T
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   using ET = DivTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >;
-   return ZeroVector<ET,TF>( (~lhs).size() );
+   using ReturnType = const DivTrait_t< ResultType_t<VT1>, ResultType_t<VT2> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ReturnType, TF );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( (~lhs).size() );
 }
 /*! \endcond */
 //*************************************************************************************************

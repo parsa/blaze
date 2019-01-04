@@ -56,8 +56,6 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/CrossTrait.h>
-#include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
@@ -517,17 +515,16 @@ inline const DVecSVecCrossExpr<VT1,VT2,TF>
 //
 // \param lhs The left-hand side dense vector for the cross product.
 // \param rhs The right-hand side zero vector for the cross product.
-// \return The cross product of the two vectors.
+// \return The resulting zero vector.
 //
 // This function implements a performance optimized treatment of the cross product of a dense
-// vector and a zero vector.
+// vector and a zero vector. It returns a zero vector.
 */
 template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side sparse vector
         , bool TF       // Transpose flag
         , EnableIf_t< IsZero_v<VT2> >* = nullptr >
-inline const ZeroVector< SubTrait_t< MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >
-                                   , MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> > >, TF >
+inline decltype(auto)
    dvecsveccross( const DenseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -536,9 +533,12 @@ inline const ZeroVector< SubTrait_t< MultTrait_t< ElementType_t<VT1>, ElementTyp
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   using ET = SubTrait_t< MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >
-                        , MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> > >;
-   return ZeroVector<ET,TF>( 3UL );
+   using ReturnType = const CrossTrait_t< ResultType_t<VT1>, ResultType_t<VT2> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ReturnType, TF );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( 3UL );
 }
 /*! \endcond */
 //*************************************************************************************************

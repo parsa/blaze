@@ -46,6 +46,7 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/VecVecSubExpr.h>
+#include <blaze/math/constraints/Zero.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Forward.h>
@@ -740,16 +741,16 @@ inline decltype(auto)
 //
 // \param lhs The left-hand side zero vector for the subtraction.
 // \param rhs The right-hand side zero vector for the subtraction.
-// \return The difference of the two vectors.
+// \return The resulting zero vector.
 //
 // This function implements a performance optimized treatment of the subtraction between two zero
-// vectors.
+// vectors. It returns a zero vector.
 */
 template< typename VT1  // Type of the left-hand side sparse vector
         , typename VT2  // Type of the right-hand side sparse vector
         , bool TF       // Transpose flag
         , EnableIf_t< IsZero_v<VT1> && IsZero_v<VT2> >* = nullptr >
-inline const ZeroVector< SubTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >, TF >
+inline decltype(auto)
    svecsvecsub( const SparseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -758,8 +759,12 @@ inline const ZeroVector< SubTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >, T
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   using ET = SubTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >;
-   return ZeroVector<ET,TF>( (~lhs).size() );
+   using ReturnType = const SubTrait_t< ResultType_t<VT1>, ResultType_t<VT2> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ReturnType, TF );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( (~lhs).size() );
 }
 /*! \endcond */
 //*************************************************************************************************

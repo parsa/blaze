@@ -1879,7 +1879,7 @@ class TDMatTSMatMultExpr
 //
 // \param lhs The left-hand side dense matrix for the multiplication.
 // \param rhs The right-hand side sparse matrix for the multiplication.
-// \return The sum of the two matrices.
+// \return The product of the two matrices.
 //
 // This function implements a performance optimized treatment of the multiplication between a
 // column-major dense matrix and a column-major sparse matrix.
@@ -1908,23 +1908,27 @@ inline const TDMatTSMatMultExpr<MT1,MT2,false,false,false,false>
 //
 // \param lhs The left-hand side dense matrix for the multiplication.
 // \param rhs The right-hand side zero matrix for the multiplication.
-// \return The sum of the two matrices.
+// \return The resulting zero matrix.
 //
 // This function implements a performance optimized treatment of the multiplication between a
-// column-major dense matrix and a column-major zero matrix.
+// column-major dense matrix and a column-major zero matrix. It returns a zero matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side sparse matrix
         , EnableIf_t< IsZero_v<MT2> >* = nullptr >
-inline const ZeroMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, true >
+inline decltype(auto)
    tdmattsmatmult( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).rows(), "Invalid matrix sizes" );
 
-   using ET = MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >;
-   return ZeroMatrix<ET,true>( (~lhs).rows(), (~rhs).columns() );
+   using ReturnType = const MultTrait_t< ResultType_t<MT1>, ResultType_t<MT2> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ReturnType );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( (~lhs).rows(), (~rhs).columns() );
 }
 /*! \endcond */
 //*************************************************************************************************

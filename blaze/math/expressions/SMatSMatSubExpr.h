@@ -47,6 +47,7 @@
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/constraints/Zero.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Forward.h>
@@ -936,15 +937,15 @@ inline decltype(auto)
 //
 // \param lhs The left-hand side zero matrix for the subtraction.
 // \param rhs The right-hand side zero matrix for the subtraction.
-// \return The difference of the two matrices.
+// \return The resulting zero matrix.
 //
 // This function implements a performance optimized treatment of the subtraction between two
-// row-major zero matrices.
+// row-major zero matrices. It returns a zero matrix.
 */
 template< typename MT1  // Type of the left-hand side sparse matrix
         , typename MT2  // Type of the right-hand side sparse matrix
         , EnableIf_t< IsZero_v<MT1> && IsZero_v<MT2> >* = nullptr >
-inline const ZeroMatrix< SubTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, false >
+inline decltype(auto)
    smatsmatsub( const SparseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -954,8 +955,12 @@ inline const ZeroMatrix< SubTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, f
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   using ET = SubTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >;
-   return ZeroMatrix<ET,false>( (~lhs).rows(), (~lhs).columns() );
+   using ReturnType = const SubTrait_t< ResultType_t<MT1>, ResultType_t<MT2> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ReturnType );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( (~lhs).rows(), (~lhs).columns() );
 }
 /*! \endcond */
 //*************************************************************************************************

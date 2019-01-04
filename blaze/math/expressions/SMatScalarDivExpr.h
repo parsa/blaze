@@ -912,24 +912,28 @@ inline const typename SMatScalarDivExprHelper<MT,ST,SO>::Type
 //
 // \param mat The left-hand side zero matrix for the division.
 // \param scalar The right-hand side scalar value for the division.
-// \return The scaled result matrix.
+// \return The resulting zero matrix.
 //
 // This function implements a performance optimized treatment of the division between a zero
-// matrix and a scalar value.
+// matrix and a scalar value. It returns a zero matrix.
 */
 template< typename MT  // Type of the left-hand side sparse matrix
         , bool SO      // Storage order of the left-hand side zero matrix
         , typename ST  // Type of the right-hand side scalar
         , EnableIf_t< IsZero_v<MT> >* = nullptr >
-inline const ZeroMatrix< DivTrait_t< ElementType_t<MT>, ST >, SO >
+inline decltype(auto)
    smatscalardiv( const SparseMatrix<MT,SO>& mat, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
    UNUSED_PARAMETER( scalar );
 
-   using ET = DivTrait_t< ElementType_t<MT>, ST >;
-   return ZeroMatrix<ET,SO>( (~mat).rows(), (~mat).columns() );
+   using ReturnType = const DivTrait_t< ResultType_t<MT>, ST >;
+
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ReturnType, SO );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( (~mat).rows(), (~mat).columns() );
 }
 /*! \endcond */
 //*************************************************************************************************

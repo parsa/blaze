@@ -851,24 +851,28 @@ inline const typename SVecScalarDivExprHelper<VT,ST,TF>::Type
 //
 // \param vec The left-hand side zero vector for the division.
 // \param scalar The right-hand side scalar value for the division.
-// \return The scaled result vector.
+// \return The resulting zero vector.
 //
 // This function implements a performance optimized treatment of the division between a zero
-// vector and a scalar value.
+// vector and a scalar value. It returns a zero vector.
 */
 template< typename VT  // Type of the left-hand side sparse vector
         , bool TF      // Transpose flag of the left-hand side sparse vector
         , typename ST  // Type of the right-hand side scalar
         , EnableIf_t< IsZero_v<VT> >* = nullptr >
-inline const ZeroVector< DivTrait_t< ElementType_t<VT>, ST >, TF >
+inline decltype(auto)
    svecscalardiv( const SparseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
    UNUSED_PARAMETER( scalar );
 
-   using ET = DivTrait_t< ElementType_t<VT>, ST >;
-   return ZeroVector<ET,TF>( (~vec).size() );
+   using ReturnType = const DivTrait_t< ResultType_t<VT>, ST >;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ReturnType, TF );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( (~vec).size() );
 }
 /*! \endcond */
 //*************************************************************************************************

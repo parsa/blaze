@@ -44,9 +44,11 @@
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseMatrix.h>
+#include <blaze/math/constraints/Identity.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SchurExpr.h>
 #include <blaze/math/constraints/StorageOrder.h>
+#include <blaze/math/constraints/Zero.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/DenseMatrix.h>
@@ -1243,17 +1245,17 @@ inline const DMatDMatSchurExpr<MT1,MT2,SO>
 //
 // \param lhs The left-hand side dense matrix for the Schur product.
 // \param rhs The right-hand side dense matrix for the Schur product.
-// \return The Schur product of the two matrices.
+// \return The resulting identity matrix.
 //
 // This function implements a performance optimized treatment of the Schur product between two
-// unitriangular dense matrices with identical storage order.
+// unitriangular dense matrices with identical storage order. It returns an identity matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
         , bool SO       // Storage order
         , EnableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
                       ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
-inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, SO >
+inline decltype(auto)
    dmatdmatschur( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1263,8 +1265,12 @@ inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2>
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   using ET = MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >;
-   return IdentityMatrix<ET,SO>( (~lhs).rows() );
+   using ReturnType = const SchurTrait_t< ResultType_t<MT1>, ResultType_t<MT2> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ReturnType, SO );
+   BLAZE_CONSTRAINT_MUST_BE_IDENTITY_MATRIX_TYPE( ReturnType );
+
+   return ReturnType( (~lhs).rows() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1278,10 +1284,10 @@ inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2>
 //
 // \param lhs The left-hand side dense matrix for the Schur product.
 // \param rhs The right-hand side dense matrix for the Schur product.
-// \return The Schur product of the two matrices.
+// \return The resulting zero matrix.
 //
 // This function implements a performance optimized treatment of the Schur product between two
-// (strictly) triangular dense matrices with identical storage order.
+// (strictly) triangular dense matrices with identical storage order. It returns a zero matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side dense matrix
@@ -1290,7 +1296,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
                       ( IsStrictlyUpper_v<MT1> && IsLower_v<MT2> ) ||
                       ( IsLower_v<MT1> && IsStrictlyUpper_v<MT2> ) ||
                       ( IsUpper_v<MT1> && IsStrictlyLower_v<MT2> ) >* = nullptr >
-inline const ZeroMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, SO >
+inline decltype(auto)
    dmatdmatschur( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1300,8 +1306,12 @@ inline const ZeroMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, 
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   using ET = MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >;
-   return ZeroMatrix<ET,SO>( (~lhs).rows(), (~lhs).columns() );
+   using ReturnType = const SchurTrait_t< ResultType_t<MT1>, ResultType_t<MT2> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_MATRIX_WITH_STORAGE_ORDER( ReturnType, SO );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( (~lhs).rows(), (~lhs).columns() );
 }
 /*! \endcond */
 //*************************************************************************************************

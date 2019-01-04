@@ -46,6 +46,7 @@
 #include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/RowVector.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
@@ -1424,21 +1425,25 @@ inline const DVecSVecOuterExpr<VT1,VT2>
 //
 // \param lhs The left-hand side dense vector for the outer product.
 // \param rhs The right-hand side transpose zero vector for the outer product.
-// \return The resulting sparse matrix.
+// \return The resulting zero matrix.
 //
 // This function implements a performance optimized treatment of the dense vector-zero vector
-// outer product.
+// outer product. It returns a zero matrix.
 */
 template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side sparse vector
         , EnableIf_t< IsZero_v<VT2> >* = nullptr >
-inline const ZeroMatrix< MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >, false >
+inline decltype(auto)
    dvecsvecouter( const DenseVector<VT1,false>& lhs, const SparseVector<VT2,true>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ET = MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >;
-   return ZeroMatrix<ET,false>( (~lhs).size(), (~rhs).size() );
+   using ReturnType = const MultTrait_t< ResultType_t<VT1>, ResultType_t<VT2> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ReturnType );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( (~lhs).size(), (~rhs).size() );
 }
 /*! \endcond */
 //*************************************************************************************************

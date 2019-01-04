@@ -720,16 +720,16 @@ inline const SVecDVecMultExpr<VT1,VT2,TF>
 //
 // \param lhs The left-hand side zero vector for the component product.
 // \param rhs The right-hand side dense vector for the component product.
-// \return The product of the two vectors.
+// \return The resulting zero vector.
 //
 // This function implements a performance optimized treatment of the componentwise multiplication
-// of a zero vector and a dense vector.
+// of a zero vector and a dense vector. It returns a zero vector.
 */
 template< typename VT1  // Type of the left-hand side sparse vector
         , typename VT2  // Type of the right-hand side dense vector
         , bool TF       // Transpose flag
         , EnableIf_t< IsZero_v<VT1> >* = nullptr >
-inline const ZeroVector< MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >, TF >
+inline decltype(auto)
    svecdvecmult( const SparseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -738,8 +738,12 @@ inline const ZeroVector< MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >, 
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   using ET = MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >;
-   return ZeroVector<ET,TF>( (~lhs).size() );
+   using ReturnType = const MultTrait_t< ResultType_t<VT1>, ResultType_t<VT2> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ReturnType, TF );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( (~lhs).size() );
 }
 /*! \endcond */
 //*************************************************************************************************

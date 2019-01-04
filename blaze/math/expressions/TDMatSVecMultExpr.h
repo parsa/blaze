@@ -1724,15 +1724,15 @@ inline const TDMatSVecMultExpr<MT,VT>
 //
 // \param mat The left-hand side column-major dense matrix for the multiplication.
 // \param vec The right-hand side zero vector for the multiplication.
-// \return The resulting vector.
+// \return The resulting zero vector.
 //
 // This function implements the performance optimized treatment of the multiplication of a
-// column-major dense matrix and a zero vector.
+// column-major dense matrix and a zero vector. It returns a zero vector.
 */
 template< typename MT  // Type of the left-hand side dense matrix
         , typename VT  // Type of the right-hand side sparse vector
         , EnableIf_t< IsZero_v<VT> >* = nullptr >
-inline const ZeroVector< MultTrait_t< ElementType_t<MT>, ElementType_t<VT> >, false >
+inline decltype(auto)
    tdmatsvecmult( const DenseMatrix<MT,true>& mat, const SparseVector<VT,false>& vec )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1741,8 +1741,12 @@ inline const ZeroVector< MultTrait_t< ElementType_t<MT>, ElementType_t<VT> >, fa
 
    BLAZE_INTERNAL_ASSERT( (~mat).columns() == (~vec).size(), "Invalid matrix and vector sizes" );
 
-   using ET = MultTrait_t< ElementType_t<MT>, ElementType_t<VT> >;
-   return ZeroVector<ET,false>( (~mat).rows() );
+   using ReturnType = const MultTrait_t< ResultType_t<MT>, ResultType_t<VT> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( ReturnType );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( (~mat).rows() );
 }
 /*! \endcond */
 //*************************************************************************************************

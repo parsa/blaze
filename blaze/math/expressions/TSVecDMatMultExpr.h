@@ -1708,15 +1708,15 @@ inline const TSVecDMatMultExpr<VT,MT>
 //
 // \param vec The left-hand side transpose zero vector for the multiplication.
 // \param mat The right-hand side row-major dense matrix for the multiplication.
-// \return The resulting transpose vector.
+// \return The resulting zero vector.
 //
 // This function implements the performance optimized treatment of the multiplication of a
-// transpose zero vector and a row-major dense matrix.
+// transpose zero vector and a row-major dense matrix. It returns a zero vector.
 */
 template< typename VT  // Type of the left-hand side sparse vector
         , typename MT  // Type of the right-hand side dense matrix
         , EnableIf_t< IsZero_v<VT> >* = nullptr >
-inline const ZeroVector< MultTrait_t< ElementType_t<VT>, ElementType_t<MT> >, true >
+inline decltype(auto)
    tsvecdmatmult( const SparseVector<VT,true>& vec, const DenseMatrix<MT,false>& mat )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1725,8 +1725,12 @@ inline const ZeroVector< MultTrait_t< ElementType_t<VT>, ElementType_t<MT> >, tr
 
    BLAZE_INTERNAL_ASSERT( (~vec).size() == (~mat).rows(), "Invalid vector and matrix sizes" );
 
-   using ET = MultTrait_t< ElementType_t<VT>, ElementType_t<MT> >;
-   return ZeroVector<ET,true>( (~mat).columns() );
+   using ReturnType = const MultTrait_t< ResultType_t<VT>, ResultType_t<MT> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE( ReturnType );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( (~mat).columns() );
 }
 /*! \endcond */
 //*************************************************************************************************

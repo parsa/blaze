@@ -46,6 +46,7 @@
 #include <blaze/math/constraints/SparseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
 #include <blaze/math/constraints/VecVecAddExpr.h>
+#include <blaze/math/constraints/Zero.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
 #include <blaze/math/expressions/Forward.h>
@@ -739,16 +740,16 @@ inline const VT2&
 //
 // \param lhs The left-hand side zero vector for the vector addition.
 // \param rhs The right-hand side zero vector for the vector addition.
-// \return The sum of the two sparse vectors.
+// \return The resulting zero vector.
 //
 // This function implements a performance optimized treatment of the addition between two zero
-// vectors.
+// vectors. It returns a zero vector.
 */
 template< typename VT1  // Type of the left-hand side sparse vector
         , typename VT2  // Type of the right-hand side sparse vector
         , bool TF       // Transpose flag
         , EnableIf_t< IsZero_v<VT1> && IsZero_v<VT2> >* = nullptr >
-inline const ZeroVector< AddTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >, TF >
+inline decltype(auto)
    svecsvecadd( const SparseVector<VT1,TF>& lhs, const SparseVector<VT2,TF>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -757,8 +758,12 @@ inline const ZeroVector< AddTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >, T
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
-   using ET = AddTrait_t< ElementType_t<VT1>, ElementType_t<VT2> >;
-   return ZeroVector<ET,TF>( (~lhs).size() );
+   using ReturnType = const AddTrait_t< ResultType_t<VT1>, ResultType_t<VT2> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ReturnType, TF );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( (~lhs).size() );
 }
 /*! \endcond */
 //*************************************************************************************************

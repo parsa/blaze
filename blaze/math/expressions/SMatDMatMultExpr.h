@@ -1881,7 +1881,7 @@ class SMatDMatMultExpr
 //
 // \param lhs The left-hand side sparse matrix for the multiplication.
 // \param rhs The right-hand side dense matrix for the multiplication.
-// \return The sum of the two matrices.
+// \return The product of the two matrices.
 //
 // This function implements a performance optimized treatment of the multiplication between a
 // row-major sparse matrix and a row-major dense matrix.
@@ -1910,23 +1910,27 @@ inline const SMatDMatMultExpr<MT1,MT2,false,false,false,false>
 //
 // \param lhs The left-hand side zero matrix for the multiplication.
 // \param rhs The right-hand side dense matrix for the multiplication.
-// \return The sum of the two matrices.
+// \return The resulting zero matrix.
 //
 // This function implements a performance optimized treatment of the multiplication between a
-// row-major zero matrix and a row-major dense matrix.
+// row-major zero matrix and a row-major dense matrix. It returns a zero matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side sparse matrix
         , EnableIf_t< IsZero_v<MT1> >* = nullptr >
-inline const ZeroMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, false >
+inline decltype(auto)
    smatdmatmult( const SparseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).rows(), "Invalid matrix sizes" );
 
-   using ET = MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >;
-   return ZeroMatrix<ET,false>( (~lhs).rows(), (~rhs).columns() );
+   using ReturnType = const MultTrait_t< ResultType_t<MT1>, ResultType_t<MT2> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ReturnType );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( (~lhs).rows(), (~rhs).columns() );
 }
 /*! \endcond */
 //*************************************************************************************************

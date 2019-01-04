@@ -44,6 +44,7 @@
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseMatrix.h>
+#include <blaze/math/constraints/Identity.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/SchurExpr.h>
@@ -923,16 +924,17 @@ inline const DMatSMatSchurExpr<MT1,MT2>
 //
 // \param lhs The left-hand side dense matrix for the Schur product.
 // \param rhs The right-hand side sparse matrix for the Schur product.
-// \return The Schur product of the two matrices.
+// \return The resulting identity matrix.
 //
 // This function implements a performance optimized treatment of the Schur product between a
-// unitriangular row-major dense matrix and a unitriangular row-major sparse matrix.
+// unitriangular row-major dense matrix and a unitriangular row-major sparse matrix. It
+// returns an identity matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side sparse matrix
         , EnableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
                       ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
-inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, false >
+inline decltype(auto)
    dmatsmatschur( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -942,8 +944,12 @@ inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2>
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   using ET = MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >;
-   return IdentityMatrix<ET,false>( (~lhs).rows() );
+   using ReturnType = const SchurTrait_t< ResultType_t<MT1>, ResultType_t<MT2> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ReturnType );
+   BLAZE_CONSTRAINT_MUST_BE_IDENTITY_MATRIX_TYPE( ReturnType );
+
+   return ReturnType( (~lhs).rows() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -957,11 +963,11 @@ inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2>
 //
 // \param lhs The left-hand side dense matrix for the Schur product.
 // \param rhs The right-hand side sparse matrix for the Schur product.
-// \return The Schur product of the two matrices.
+// \return The resulting zero matrix.
 //
 // This function implements a performance optimized treatment of the Schur product between a
 // (strictly) triangular row-major dense matrix and a (strictly) triangular row-major sparse
-// matrix.
+// matrix. It returns a zero matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side sparse matrix
@@ -970,7 +976,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
                       ( IsLower_v<MT1> && IsStrictlyUpper_v<MT2> ) ||
                       ( IsUpper_v<MT1> && IsStrictlyLower_v<MT2> ) ||
                       IsZero_v<MT2> >* = nullptr >
-inline const ZeroMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, false >
+inline decltype(auto)
    dmatsmatschur( const DenseMatrix<MT1,false>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -980,8 +986,12 @@ inline const ZeroMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, 
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   using ET = MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >;
-   return ZeroMatrix<ET,false>( (~lhs).rows(), (~lhs).columns() );
+   using ReturnType = const SchurTrait_t< ResultType_t<MT1>, ResultType_t<MT2> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ReturnType );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( (~lhs).rows(), (~lhs).columns() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1075,16 +1085,17 @@ inline const DMatSMatSchurExpr<MT1,MT2>
 //
 // \param lhs The left-hand side dense matrix for the Schur product.
 // \param rhs The right-hand side sparse matrix for the Schur product.
-// \return The Schur product of the two matrices.
+// \return The resulting identity matrix.
 //
 // This function implements a performance optimized treatment of the Schur product between a
-// unitriangular column-major dense matrix and a unitriangular row-major sparse matrix.
+// unitriangular column-major dense matrix and a unitriangular row-major sparse matrix.  It
+// returns an identity matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side sparse matrix
         , EnableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
                       ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
-inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, false >
+inline decltype(auto)
    tdmatsmatschur( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1094,8 +1105,12 @@ inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2>
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   using ET = MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >;
-   return IdentityMatrix<ET,false>( (~lhs).rows() );
+   using ReturnType = const SchurTrait_t< ResultType_t<MT1>, ResultType_t<MT2> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ReturnType );
+   BLAZE_CONSTRAINT_MUST_BE_IDENTITY_MATRIX_TYPE( ReturnType );
+
+   return ReturnType( (~lhs).rows() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1109,11 +1124,11 @@ inline const IdentityMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2>
 //
 // \param lhs The left-hand side dense matrix for the Schur product.
 // \param rhs The right-hand side sparse matrix for the Schur product.
-// \return The Schur product of the two matrices.
+// \return The resulting zero matrix.
 //
 // This function implements a performance optimized treatment of the Schur product between a
 // (strictly) triangular column-major dense matrix and a (strictly) triangular row-major sparse
-// matrix.
+// matrix. It returns a zero matrix.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , typename MT2  // Type of the right-hand side sparse matrix
@@ -1122,7 +1137,7 @@ template< typename MT1  // Type of the left-hand side dense matrix
                       ( IsLower_v<MT1> && IsStrictlyUpper_v<MT2> ) ||
                       ( IsUpper_v<MT1> && IsStrictlyLower_v<MT2> ) ||
                       IsZero_v<MT2> >* = nullptr >
-inline const ZeroMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, false >
+inline decltype(auto)
    tdmatsmatschur( const DenseMatrix<MT1,true>& lhs, const SparseMatrix<MT2,false>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1132,8 +1147,12 @@ inline const ZeroMatrix< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >, 
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   using ET = MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> >;
-   return ZeroMatrix<ET,false>( (~lhs).rows(), (~lhs).columns() );
+   using ReturnType = const SchurTrait_t< ResultType_t<MT1>, ResultType_t<MT2> >;
+
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ReturnType );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( (~lhs).rows(), (~lhs).columns() );
 }
 /*! \endcond */
 //*************************************************************************************************

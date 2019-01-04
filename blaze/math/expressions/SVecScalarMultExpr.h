@@ -844,24 +844,28 @@ inline const SVecScalarMultExpr< VT, MultTrait_t< UnderlyingBuiltin_t<VT>, ST >,
 //
 // \param vec The left-hand side zero vector for the multiplication.
 // \param scalar The right-hand side scalar value for the multiplication.
-// \return The scaled result vector.
+// \return The resulting zero vector.
 //
 // This function implements a performance optimized treatment of the multiplication between a
-// zero vector and a scalar value.
+// zero vector and a scalar value. It returns a zero vector.
 */
 template< typename VT  // Type of the left-hand side sparse vector
         , bool TF      // Transpose flag of the left-hand side sparse vector
         , typename ST  // Type of the right-hand side scalar
         , EnableIf_t< IsZero_v<VT> >* = nullptr >
-inline const ZeroVector< MultTrait_t< ElementType_t<VT>, ST >, TF >
+inline decltype(auto)
    svecscalarmult( const SparseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
    UNUSED_PARAMETER( scalar );
 
-   using ET = MultTrait_t< ElementType_t<VT>, ST >;
-   return ZeroVector<ET,TF>( (~vec).size() );
+   using ReturnType = const MultTrait_t< ResultType_t<VT>, ST >;
+
+   BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ReturnType, TF );
+   BLAZE_CONSTRAINT_MUST_BE_ZERO_TYPE( ReturnType );
+
+   return ReturnType( (~vec).size() );
 }
 /*! \endcond */
 //*************************************************************************************************
