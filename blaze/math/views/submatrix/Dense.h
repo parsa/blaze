@@ -6996,7 +6996,7 @@ inline Submatrix<MT,aligned,false,true,CSAs...>::Submatrix( MT& matrix, RSAs... 
       }
       if( ( simdEnabled && IsContiguous_v<MT> &&
             matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
-          ( rows() > 1UL && matrix_.spacing() % SIMDSIZE != 0UL ) ) {
+          ( rows() > 1UL && !matrix_.isAligned() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
       }
    }
@@ -7005,7 +7005,7 @@ inline Submatrix<MT,aligned,false,true,CSAs...>::Submatrix( MT& matrix, RSAs... 
       BLAZE_USER_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
 
       BLAZE_USER_ASSERT( !simdEnabled || !IsContiguous_v<MT> || matrix_.data() == nullptr || checkAlignment( data() ), "Invalid submatrix alignment" );
-      BLAZE_USER_ASSERT( rows() <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
+      BLAZE_USER_ASSERT( rows() <= 1UL || matrix_.isAligned(), "Invalid submatrix alignment" );
    }
 }
 /*! \endcond */
@@ -9858,7 +9858,7 @@ inline Submatrix<MT,aligned,true,true,CSAs...>::Submatrix( MT& matrix, RSAs... a
 
       if( ( simdEnabled && IsContiguous_v<MT> &&
             matrix_.data() != nullptr && !checkAlignment( data() ) ) ||
-          ( columns() > 1UL && matrix_.spacing() % SIMDSIZE != 0UL ) ) {
+          ( columns() > 1UL && !matrix_.isAligned() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix alignment" );
       }
    }
@@ -9867,7 +9867,7 @@ inline Submatrix<MT,aligned,true,true,CSAs...>::Submatrix( MT& matrix, RSAs... a
       BLAZE_USER_ASSERT( column() + columns() <= matrix_.columns(), "Invalid submatrix specification" );
 
       BLAZE_USER_ASSERT( !simdEnabled || !IsContiguous_v<MT> || matrix_.data() == nullptr || checkAlignment( data() ), "Invalid submatrix alignment" );
-      BLAZE_USER_ASSERT( columns() <= 1UL || matrix_.spacing() % SIMDSIZE == 0UL, "Invalid submatrix alignment" );
+      BLAZE_USER_ASSERT( columns() <= 1UL || matrix_.isAligned(), "Invalid submatrix alignment" );
    }
 }
 /*! \endcond */
