@@ -969,7 +969,7 @@ void ClassTest::testMultAssign()
       using blaze::columnMajor;
 
       using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,columnMajor>;
-      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
       AlignedPadded mat1( memory.get(), 3UL, 4UL, 16UL );
       mat1 = 2;
 
@@ -1325,7 +1325,7 @@ void ClassTest::testMultAssign()
       using blaze::columnMajor;
 
       using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,columnMajor>;
-      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
       AlignedPadded mat1( memory.get(), 3UL, 4UL, 16UL );
       mat1 = 2;
 
