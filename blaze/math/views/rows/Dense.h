@@ -4672,7 +4672,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CRAs >  // Compile time row arguments
 inline size_t Rows<MT,false,true,false,CRAs...>::spacing() const noexcept
 {
-   return matrix_.spacing();
+   return matrix_.columns();
 }
 /*! \endcond */
 //*************************************************************************************************
