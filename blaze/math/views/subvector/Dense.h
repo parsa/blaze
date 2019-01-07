@@ -2964,14 +2964,14 @@ inline Subvector<VT,aligned,TF,true,CSAs...>::Subvector( VT& vector, RSAs... arg
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector specification" );
       }
 
-      if( simdEnabled && IsContiguous_v<VT> &&
-          vector_.data() != nullptr && !checkAlignment( data() ) ) {
+      if( simdEnabled && IsContiguous_v<VT> && !checkAlignment( data() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subvector alignment" );
       }
    }
-   else {
+   else
+   {
       BLAZE_USER_ASSERT( offset() + size() <= vector.size(), "Invalid subvector specification" );
-      BLAZE_USER_ASSERT( !simdEnabled || !IsContiguous_v<VT> || vector_.data() == nullptr || checkAlignment( data() ), "Invalid subvector alignment" );
+      BLAZE_USER_ASSERT( !simdEnabled || !IsContiguous_v<VT> || checkAlignment( data() ), "Invalid subvector alignment" );
    }
 }
 /*! \endcond */
