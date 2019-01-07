@@ -2183,7 +2183,7 @@ inline auto CustomVector<Type,AF,PF,TF,RT>::assign( const DenseVector<VT,TF>& rh
    }
    else
    {
-      const size_t i4way( size_ & size_t(-SIMDSIZE*4) );
+      const size_t i4way( size_ & size_t( -(SIMDSIZE*4UL) ) );
       BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE*4UL) ) ) == i4way, "Invalid end calculation" );
       BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
@@ -2296,7 +2296,7 @@ inline auto CustomVector<Type,AF,PF,TF,RT>::addAssign( const DenseVector<VT,TF>&
    const size_t ipos( size_ & size_t(-SIMDSIZE) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
-   const size_t i4way( size_ & size_t(-SIMDSIZE*4) );
+   const size_t i4way( size_ & size_t( -(SIMDSIZE*4UL) ) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE*4UL) ) ) == i4way, "Invalid end calculation" );
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
@@ -2408,7 +2408,7 @@ inline auto CustomVector<Type,AF,PF,TF,RT>::subAssign( const DenseVector<VT,TF>&
    const size_t ipos( size_ & size_t(-SIMDSIZE) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
-   const size_t i4way( size_ & size_t(-SIMDSIZE*4) );
+   const size_t i4way( size_ & size_t( -(SIMDSIZE*4UL) ) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE*4UL) ) ) == i4way, "Invalid end calculation" );
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
@@ -2520,7 +2520,7 @@ inline auto CustomVector<Type,AF,PF,TF,RT>::multAssign( const DenseVector<VT,TF>
    const size_t ipos( size_ & size_t(-SIMDSIZE) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
-   const size_t i4way( size_ & size_t(-SIMDSIZE*4) );
+   const size_t i4way( size_ & size_t( -(SIMDSIZE*4UL) ) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE*4UL) ) ) == i4way, "Invalid end calculation" );
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
@@ -2636,7 +2636,7 @@ inline auto CustomVector<Type,AF,PF,TF,RT>::divAssign( const DenseVector<VT,TF>&
    const size_t ipos( size_ & size_t(-SIMDSIZE) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
-   const size_t i4way( size_ & size_t(-SIMDSIZE*4) );
+   const size_t i4way( size_ & size_t( -(SIMDSIZE*4UL) ) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE*4UL) ) ) == i4way, "Invalid end calculation" );
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
@@ -4461,7 +4461,7 @@ inline auto CustomVector<Type,AF,padded,TF,RT>::assign( const DenseVector<VT,TF>
    }
    else
    {
-      const size_t i4way( size_ & size_t(-SIMDSIZE*4) );
+      const size_t i4way( size_ & size_t( -(SIMDSIZE*4UL) ) );
       BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE*4UL) ) ) == i4way, "Invalid end calculation" );
       BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
@@ -4579,7 +4579,7 @@ inline auto CustomVector<Type,AF,padded,TF,RT>::addAssign( const DenseVector<VT,
    const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
-   const size_t i4way( size_ & size_t(-SIMDSIZE*4) );
+   const size_t i4way( size_ & size_t( -(SIMDSIZE*4UL) ) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE*4UL) ) ) == i4way, "Invalid end calculation" );
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
@@ -4696,7 +4696,7 @@ inline auto CustomVector<Type,AF,padded,TF,RT>::subAssign( const DenseVector<VT,
    const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
-   const size_t i4way( size_ & size_t(-SIMDSIZE*4) );
+   const size_t i4way( size_ & size_t( -(SIMDSIZE*4UL) ) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE*4UL) ) ) == i4way, "Invalid end calculation" );
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
@@ -4813,7 +4813,7 @@ inline auto CustomVector<Type,AF,padded,TF,RT>::multAssign( const DenseVector<VT
    const size_t ipos( ( remainder )?( size_ & size_t(-SIMDSIZE) ):( size_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( size_ - ( size_ % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
-   const size_t i4way( size_ & size_t(-SIMDSIZE*4) );
+   const size_t i4way( size_ & size_t( -(SIMDSIZE*4UL) ) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE*4UL) ) ) == i4way, "Invalid end calculation" );
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
@@ -4932,7 +4932,7 @@ inline auto CustomVector<Type,AF,padded,TF,RT>::divAssign( const DenseVector<VT,
    const size_t ipos( size_ & size_t(-SIMDSIZE) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
-   const size_t i4way( size_ & size_t(-SIMDSIZE*4) );
+   const size_t i4way( size_ & size_t( -(SIMDSIZE*4UL) ) );
    BLAZE_INTERNAL_ASSERT( ( size_ - ( size_ % (SIMDSIZE*4UL) ) ) == i4way, "Invalid end calculation" );
    BLAZE_INTERNAL_ASSERT( i4way <= ipos, "Invalid end calculation" );
 
