@@ -40,8 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <algorithm>
 #include <array>
+#include <utility>
 #include <vector>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
@@ -981,8 +981,7 @@ inline decltype(auto) rows( Rows<MT,SO,DF,SF,I2,Is2...>& r, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   static constexpr size_t indices[] = { I2, Is2... };
-   return rows< indices[I1], indices[Is1]... >( r.operand(), args... );
+   return rows< r.idx(I1), r.idx(Is1)... >( r.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1013,8 +1012,7 @@ inline decltype(auto) rows( const Rows<MT,SO,DF,SF,I2,Is2...>& r, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   static constexpr size_t indices[] = { I2, Is2... };
-   return rows< indices[I1], indices[Is1]... >( r.operand(), args... );
+   return rows< r.idx(I1), r.idx(Is1)... >( r.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1045,8 +1043,7 @@ inline decltype(auto) rows( Rows<MT,SO,DF,SF,I2,Is2...>&& r, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   static constexpr size_t indices[] = { I2, Is2... };
-   return rows< indices[I1], indices[Is1]... >( r.operand(), args... );
+   return rows< r.idx(I1), r.idx(Is1)... >( r.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1087,8 +1084,7 @@ inline decltype(auto) rows( Rows<MT,SO,DF,SF,CRAs...>& r, RRAs... args )
       }
    }
 
-   decltype(auto) indices( r.idces() );
-   return rows( r.operand(), { indices[I], indices[Is]... }, args... );
+   return rows( r.operand(), { r.idx(I), r.idx(Is)... }, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1130,8 +1126,7 @@ inline decltype(auto) rows( const Rows<MT,SO,DF,SF,CRAs...>& r, RRAs... args )
       }
    }
 
-   decltype(auto) indices( r.idces() );
-   return rows( r.operand(), { indices[I], indices[Is]... }, args... );
+   return rows( r.operand(), { r.idx(I), r.idx(Is)... }, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1173,8 +1168,7 @@ inline decltype(auto) rows( Rows<MT,SO,DF,SF,CRAs...>&& r, RRAs... args )
       }
    }
 
-   decltype(auto) indices( r.idces() );
-   return rows( r.operand(), { indices[I], indices[Is]... }, args... );
+   return rows( r.operand(), { r.idx(I), r.idx(Is)... }, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1215,12 +1209,11 @@ inline decltype(auto) rows( Rows<MT,SO,DF,SF,CRAs...>& r, const T* indices, size
       }
    }
 
-   decltype(auto) oldIndices( r.idces() );
    SmallArray<size_t,128UL> newIndices;
    newIndices.reserve( n );
 
    for( size_t i=0UL; i<n; ++i ) {
-      newIndices.pushBack( oldIndices[indices[i]] );
+      newIndices.pushBack( r.idx( indices[i] ) );
    }
 
    return rows( r.operand(), newIndices.data(), newIndices.size(), args... );
@@ -1265,12 +1258,11 @@ inline decltype(auto) rows( const Rows<MT,SO,DF,SF,CRAs...>& r, const T* indices
       }
    }
 
-   decltype(auto) oldIndices( r.idces() );
    SmallArray<size_t,128UL> newIndices;
    newIndices.reserve( n );
 
    for( size_t i=0UL; i<n; ++i ) {
-      newIndices.pushBack( oldIndices[indices[i]] );
+      newIndices.pushBack( r.idx( indices[i] ) );
    }
 
    return rows( r.operand(), newIndices.data(), newIndices.size(), args... );
@@ -1315,12 +1307,11 @@ inline decltype(auto) rows( Rows<MT,SO,DF,SF,CRAs...>&& r, const T* indices, siz
       }
    }
 
-   decltype(auto) oldIndices( r.idces() );
    SmallArray<size_t,128UL> newIndices;
    newIndices.reserve( n );
 
    for( size_t i=0UL; i<n; ++i ) {
-      newIndices.pushBack( oldIndices[indices[i]] );
+      newIndices.pushBack( r.idx( indices[i] ) );
    }
 
    return rows( r.operand(), newIndices.data(), newIndices.size(), args... );
@@ -1512,17 +1503,16 @@ inline decltype(auto) row( Rows<MT,SO,DF,SF,CRAs2...>& rows, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    const RowData<CRAs1...> rd( args... );
-   decltype(auto) indices( rows.idces() );
 
    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( indices.size() <= rd.row() ) {
+      if( rows.rows() <= rd.row() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
    }
 
-   return row( rows.operand(), indices[rd.row()], args... );
+   return row( rows.operand(), rows.idx( rd.row() ), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1553,17 +1543,16 @@ inline decltype(auto) row( const Rows<MT,SO,DF,SF,CRAs2...>& rows, RRAs... args 
    BLAZE_FUNCTION_TRACE;
 
    const RowData<CRAs1...> rd( args... );
-   decltype(auto) indices( rows.idces() );
 
    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( indices.size() <= rd.row() ) {
+      if( rows.rows() <= rd.row() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
    }
 
-   return row( rows.operand(), indices[rd.row()], args... );
+   return row( rows.operand(), rows.idx( rd.row() ), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1594,17 +1583,16 @@ inline decltype(auto) row( Rows<MT,SO,DF,SF,CRAs2...>&& rows, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    const RowData<CRAs1...> rd( args... );
-   decltype(auto) indices( rows.idces() );
 
    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( indices.size() <= rd.row() ) {
+      if( rows.rows() <= rd.row() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
    }
 
-   return row( rows.operand(), indices[rd.row()], args... );
+   return row( rows.operand(), rows.idx( rd.row() ), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2069,9 +2057,8 @@ inline bool isSame( const Rows<MT,SO1,DF,SF,CRAs...>& a, const Matrix<MT,SO2>& b
    if( !isSame( a.operand(), ~b ) || ( a.rows() != (~b).rows() ) || ( a.columns() != (~b).columns() ) )
       return false;
 
-   decltype(auto) indices( a.idces() );
    for( size_t i=0UL; i<a.rows(); ++i ) {
-      if( indices[i] != i )
+      if( a.idx(i) != i )
          return false;
    }
 
@@ -2134,9 +2121,8 @@ inline bool isSame( const Rows<MT,SO1,DF,SF,CRAs...>& a, const Submatrix<MT,AF,S
    if( !isSame( a.operand(), b.operand() ) || ( a.rows() != (~b).rows() ) || ( a.columns() != (~b).columns() ) )
       return false;
 
-   decltype(auto) indices( a.idces() );
    for( size_t i=0UL; i<a.rows(); ++i ) {
-      if( indices[i] != b.row()+i )
+      if( a.idx(i) != b.row()+i )
          return false;
    }
 
@@ -2200,10 +2186,12 @@ inline bool isSame( const Rows<MT,SO,DF,SF,CRAs1...>& a,
    if( !isSame( a.operand(), b.operand() ) || a.rows() != b.rows() || a.columns() != b.columns() )
       return false;
 
-   decltype(auto) indices1( a.idces() );
-   decltype(auto) indices2( b.idces() );
+   for( size_t i=0UL; i<a.rows(); ++i ) {
+      if( a.idx(i) != b.idx(i) )
+         return false;
+   }
 
-   return std::equal( indices1.begin(), indices1.end(), indices2.begin() );
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3385,8 +3373,7 @@ template< typename MT  // Type of the matrix
         , bool SF >    // Symmetry flag
 inline decltype(auto) derestrict( Rows<MT,SO,DF,SF>& r )
 {
-   decltype(auto) indices( r.idces() );
-   return rows( derestrict( r.operand() ), indices.data(), indices.size(), unchecked );
+   return rows( derestrict( r.operand() ), r.idces(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3413,8 +3400,7 @@ template< typename MT  // Type of the matrix
         , bool SF >    // Symmetry flag
 inline decltype(auto) derestrict( Rows<MT,SO,DF,SF>&& r )
 {
-   decltype(auto) indices( r.idces() );
-   return rows( derestrict( r.operand() ), indices.data(), indices.size(), unchecked );
+   return rows( derestrict( r.operand() ), r.idces(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************

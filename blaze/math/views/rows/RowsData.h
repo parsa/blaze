@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/IntegerSequence.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/SmallArray.h>
 #include <blaze/util/Types.h>
@@ -68,10 +69,6 @@ template< size_t... CRAs >  // Compile time row arguments
 struct RowsData
 {
  public:
-   //**Type definitions****************************************************************************
-   using Indices = std::array<size_t,sizeof...(CRAs)>;  //!< Type of the container for row indices.
-   //**********************************************************************************************
-
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -99,13 +96,17 @@ struct RowsData
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline static constexpr const Indices& idces() noexcept;
+   inline static constexpr decltype(auto) idces() noexcept;
    inline static constexpr size_t         idx  ( size_t i ) noexcept;
    inline static constexpr size_t         rows () noexcept;
    //@}
    //**********************************************************************************************
 
  private:
+   //**Type definitions****************************************************************************
+   using Indices = std::array<size_t,sizeof...(CRAs)>;  //!< Type of the container for row indices.
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -146,14 +147,14 @@ inline RowsData<CRAs...>::RowsData( RRAs... args ) noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the indices of the specified rows in the underlying matrix.
+/*!\brief Returns a representation of the indices of the specified rows in the underlying matrix.
 //
-// \return The indices of the specified rows.
+// \return A representation of the indices of the specified rows.
 */
 template< size_t... CRAs >  // Compile time row arguments
-inline constexpr const typename RowsData<CRAs...>::Indices& RowsData<CRAs...>::idces() noexcept
+inline constexpr decltype(auto) RowsData<CRAs...>::idces() noexcept
 {
-   return indices_;
+   return index_sequence<CRAs...>();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -211,10 +212,6 @@ template<>
 struct RowsData<>
 {
  public:
-   //**Type definitions****************************************************************************
-   using Indices = SmallArray<size_t,8UL>;  //!< Type of the container for row indices.
-   //**********************************************************************************************
-
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -243,13 +240,17 @@ struct RowsData<>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline const Indices& idces() const noexcept;
+   inline decltype(auto) idces() const noexcept;
    inline size_t         idx  ( size_t i ) const noexcept;
    inline size_t         rows () const noexcept;
    //@}
    //**********************************************************************************************
 
  private:
+   //**Type definitions****************************************************************************
+   using Indices = SmallArray<size_t,8UL>;  //!< Type of the container for row indices.
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -282,13 +283,13 @@ inline RowsData<>::RowsData( const T* indices, size_t n, RRAs... args )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the indices of the specified rows in the underlying matrix.
+/*!\brief Returns a representation of the indices of the specified rows in the underlying matrix.
 //
-// \return The indices of the specified rows.
+// \return A representation of the indices of the specified rows.
 */
-inline const RowsData<>::Indices& RowsData<>::idces() const noexcept
+inline decltype(auto) RowsData<>::idces() const noexcept
 {
-   return indices_;
+   return const_cast<const Indices&>( indices_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -321,6 +322,41 @@ inline size_t RowsData<>::idx( size_t i ) const noexcept
 inline size_t RowsData<>::rows() const noexcept
 {
    return indices_.size();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Compares the indices of two RowsData instances.
+// \ingroup rows
+//
+// \param lhs The left-hand side instance for the comparison.
+// \param rhs The right-hand side instance for the comparison.
+// \return \a true if the indices of both instances are equal, \a false if not.
+*/
+template< size_t... CRAs1, size_t... CRAs2 >
+inline constexpr bool
+   compareIndices( const RowsData<CRAs1...>& lhs, const RowsData<CRAs2...>& rhs ) noexcept
+{
+   if( lhs.rows() != rhs.rows() )
+      return false;
+
+   for( size_t i=0UL; i<lhs.rows(); ++i ) {
+      if( lhs.idx(i) != rhs.idx(i) )
+         return false;
+   }
+
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************

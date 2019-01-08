@@ -924,7 +924,7 @@ inline Rows<MT,true,true,SF,CRAs...>&
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-   if( this == &rhs || ( &matrix_ == &rhs.matrix_ && idces() == rhs.idces() ) )
+   if( this == &rhs || ( &matrix_ == &rhs.matrix_ && compareIndices( *this, rhs ) ) )
       return *this;
 
    if( rows() != rhs.rows() || columns() != rhs.columns() ) {
@@ -4136,7 +4136,7 @@ inline Rows<MT,false,true,false,CRAs...>&
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-   if( this == &rhs || ( &matrix_ == &rhs.matrix_ && idces() == rhs.idces() ) )
+   if( this == &rhs || ( &matrix_ == &rhs.matrix_ && compareIndices( *this, rhs ) ) )
       return *this;
 
    if( rows() != rhs.rows() || columns() != rhs.columns() ) {
