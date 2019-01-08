@@ -53,6 +53,7 @@
 #include <blaze/math/expressions/VecExpandExpr.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/ExpandTrait.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/system/Inline.h>
@@ -91,7 +92,7 @@ class SVecExpandExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using CT = CompositeType_t<VT>;  //!< Composite type of the sparse vector expression.
+   using RT = ResultType_t<VT>;  //!< Result type of the sparse vector expression.
 
    using DataType = ExpandExprData<CEAs...>;  //!< The type of the ExpandExprData base class.
 
@@ -103,11 +104,11 @@ class SVecExpandExpr
    //! Compilation switch for the serial evaluation strategy of the expansion expression.
    /*! The \a useAssign compile time constant expression represents a compilation switch for
        the serial evaluation strategy of the expansion expression. In case the given sparse
-       vector expression of type \a VT requires an intermediate evaluation, \a useAssign will
-       be set to 1 and the expansion expression will be evaluated via the \a assign function
-       family. Otherwise \a useAssign will be set to 0 and the expression will be evaluated via
-       the subscript operator. */
-   static constexpr bool useAssign = RequiresEvaluation_v<VT>;
+       vector expression of type \a VT is a computation or requires an intermediate evaluation,
+       \a useAssign will be set to 1 and the expansion expression will be evaluated via the
+       \a assign function family. Otherwise \a useAssign will be set to 0 and the expression
+       will be evaluated via the subscript operator. */
+   static constexpr bool useAssign = IsComputation_v<VT> || RequiresEvaluation_v<VT>;
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper variable template for the explicit application of the SFINAE principle.
@@ -391,7 +392,7 @@ class SVecExpandExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      CT tmp( serial( ~rhs.sv_ ) );
+      const RT tmp( serial( ~rhs.sv_ ) );
 
       assign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
@@ -424,7 +425,7 @@ class SVecExpandExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      CT tmp( serial( ~rhs.sv_ ) );
+      const RT tmp( serial( ~rhs.sv_ ) );
 
       addAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
@@ -457,7 +458,7 @@ class SVecExpandExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      CT tmp( serial( ~rhs.sv_ ) );
+      const RT tmp( serial( ~rhs.sv_ ) );
 
       subAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
@@ -490,7 +491,7 @@ class SVecExpandExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      CT tmp( serial( ~rhs.sv_ ) );
+      const RT tmp( serial( ~rhs.sv_ ) );
 
       schurAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
@@ -523,7 +524,7 @@ class SVecExpandExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      CT tmp( serial( ~rhs.sv_ ) );
+      const RT tmp( serial( ~rhs.sv_ ) );
 
       multAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
@@ -556,7 +557,7 @@ class SVecExpandExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      CT tmp( ~rhs.sv_ );
+      const RT tmp( ~rhs.sv_ );
 
       smpAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
@@ -589,7 +590,7 @@ class SVecExpandExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      CT tmp( ~rhs.sv_ );
+      const RT tmp( ~rhs.sv_ );
 
       smpAddAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
@@ -622,7 +623,7 @@ class SVecExpandExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      CT tmp( ~rhs.sv_ );
+      const RT tmp( ~rhs.sv_ );
 
       smpSubAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
@@ -655,7 +656,7 @@ class SVecExpandExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      CT tmp( ~rhs.sv_ );
+      const RT tmp( ~rhs.sv_ );
 
       smpSchurAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
@@ -688,7 +689,7 @@ class SVecExpandExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      CT tmp( ~rhs.sv_ );
+      const RT tmp( ~rhs.sv_ );
 
       smpMultAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
