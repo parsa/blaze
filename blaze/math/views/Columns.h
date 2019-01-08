@@ -40,8 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <algorithm>
 #include <array>
+#include <utility>
 #include <vector>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
@@ -984,8 +984,7 @@ inline decltype(auto) columns( Columns<MT,SO,DF,SF,I2,Is2...>& c, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   static constexpr size_t indices[] = { I2, Is2... };
-   return columns< indices[I1], indices[Is1]... >( c.operand(), args... );
+   return columns< c.idx(I1), c.idx(Is1)... >( c.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1016,8 +1015,7 @@ inline decltype(auto) columns( const Columns<MT,SO,DF,SF,I2,Is2...>& c, RCAs... 
 {
    BLAZE_FUNCTION_TRACE;
 
-   static constexpr size_t indices[] = { I2, Is2... };
-   return columns< indices[I1], indices[Is1]... >( c.operand(), args... );
+   return columns< c.idx(I1), c.idx(Is1)... >( c.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1048,8 +1046,7 @@ inline decltype(auto) columns( Columns<MT,SO,DF,SF,I2,Is2...>&& c, RCAs... args 
 {
    BLAZE_FUNCTION_TRACE;
 
-   static constexpr size_t indices[] = { I2, Is2... };
-   return columns< indices[I1], indices[Is1]... >( c.operand(), args... );
+   return columns< c.idx(I1), c.idx(Is1)... >( c.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1091,8 +1088,7 @@ inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>& c, RCAs... args )
       }
    }
 
-   decltype(auto) indices( c.idces() );
-   return columns( c.operand(), { indices[I], indices[Is]... }, args... );
+   return columns( c.operand(), { c.idx(I), c.idx(Is)... }, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1134,8 +1130,7 @@ inline decltype(auto) columns( const Columns<MT,SO,DF,SF,CCAs...>& c, RCAs... ar
       }
    }
 
-   decltype(auto) indices( c.idces() );
-   return columns( c.operand(), { indices[I], indices[Is]... }, args... );
+   return columns( c.operand(), { c.idx(I), c.idx(Is)... }, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1177,8 +1172,7 @@ inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>&& c, RCAs... args )
       }
    }
 
-   decltype(auto) indices( c.idces() );
-   return columns( c.operand(), { indices[I], indices[Is]... }, args... );
+   return columns( c.operand(), { c.idx(I), c.idx(Is)... }, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1220,12 +1214,11 @@ inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>& c, const T* indices
       }
    }
 
-   decltype(auto) oldIndices( c.idces() );
    SmallArray<size_t,128UL> newIndices;
    newIndices.reserve( n );
 
    for( size_t i=0UL; i<n; ++i ) {
-      newIndices.pushBack( oldIndices[indices[i]] );
+      newIndices.pushBack( c.idx( indices[i] ) );
    }
 
    return columns( c.operand(), newIndices.data(), newIndices.size(), args... );
@@ -1270,12 +1263,11 @@ inline decltype(auto) columns( const Columns<MT,SO,DF,SF,CCAs...>& c, const T* i
       }
    }
 
-   decltype(auto) oldIndices( c.idces() );
    SmallArray<size_t,128UL> newIndices;
    newIndices.reserve( n );
 
    for( size_t i=0UL; i<n; ++i ) {
-      newIndices.pushBack( oldIndices[indices[i]] );
+      newIndices.pushBack( c.idx( indices[i] ) );
    }
 
    return columns( c.operand(), newIndices.data(), newIndices.size(), args... );
@@ -1320,12 +1312,11 @@ inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>&& c, const T* indice
       }
    }
 
-   decltype(auto) oldIndices( c.idces() );
    SmallArray<size_t,128UL> newIndices;
    newIndices.reserve( n );
 
    for( size_t i=0UL; i<n; ++i ) {
-      newIndices.pushBack( oldIndices[indices[i]] );
+      newIndices.pushBack( c.idx( indices[i] ) );
    }
 
    return columns( c.operand(), newIndices.data(), newIndices.size(), args... );
@@ -1699,17 +1690,16 @@ inline decltype(auto) column( Columns<MT,SO,DF,SF,CCAs2...>& columns, RCAs... ar
    BLAZE_FUNCTION_TRACE;
 
    const ColumnData<CCAs1...> cd( args... );
-   decltype(auto) indices( columns.idces() );
 
    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( indices.size() <= cd.column() ) {
+      if( columns.columns() <= cd.column() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
    }
 
-   return column( columns.operand(), indices[cd.column()], args... );
+   return column( columns.operand(), columns.idx( cd.column() ), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1740,17 +1730,16 @@ inline decltype(auto) column( const Columns<MT,SO,DF,SF,CCAs2...>& columns, RCAs
    BLAZE_FUNCTION_TRACE;
 
    const ColumnData<CCAs1...> cd( args... );
-   decltype(auto) indices( columns.idces() );
 
    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( indices.size() <= cd.column() ) {
+      if( columns.columns() <= cd.column() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
    }
 
-   return column( columns.operand(), indices[cd.column()], args... );
+   return column( columns.operand(), columns.idx( cd.column() ), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1781,17 +1770,16 @@ inline decltype(auto) column( Columns<MT,SO,DF,SF,CCAs2...>&& columns, RCAs... a
    BLAZE_FUNCTION_TRACE;
 
    const ColumnData<CCAs1...> cd( args... );
-   decltype(auto) indices( columns.idces() );
 
    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( indices.size() <= cd.column() ) {
+      if( columns.columns() <= cd.column() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
    }
 
-   return column( columns.operand(), indices[cd.column()], args... );
+   return column( columns.operand(), columns.idx( cd.column() ), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2075,9 +2063,8 @@ inline bool isSame( const Columns<MT,SO1,DF,SF,CCAs...>& a, const Matrix<MT,SO2>
    if( !isSame( a.operand(), ~b ) || ( a.rows() != (~b).rows() ) || ( a.columns() != (~b).columns() ) )
       return false;
 
-   decltype(auto) indices( a.idces() );
    for( size_t j=0UL; j<a.columns(); ++j ) {
-      if( indices[j] != j )
+      if( a.idx(j) != j )
          return false;
    }
 
@@ -2140,9 +2127,8 @@ inline bool isSame( const Columns<MT,SO1,DF,SF,CCAs...>& a, const Submatrix<MT,A
    if( !isSame( a.operand(), b.operand() ) || ( a.rows() != (~b).rows() ) || ( a.columns() != (~b).columns() ) )
       return false;
 
-   decltype(auto) indices( a.idces() );
    for( size_t j=0UL; j<a.columns(); ++j ) {
-      if( indices[j] != b.column()+j )
+      if( a.idx(j) != b.column()+j )
          return false;
    }
 
@@ -2206,10 +2192,12 @@ inline bool isSame( const Columns<MT,SO,DF,SF,CCAs1...>& a,
    if( !isSame( a.operand(), b.operand() ) || a.rows() != b.rows() || a.columns() != b.columns() )
       return false;
 
-   decltype(auto) indices1( a.idces() );
-   decltype(auto) indices2( b.idces() );
+   for( size_t i=0UL; i<a.columns(); ++i ) {
+      if( a.idx(i) != b.idx(i) )
+         return false;
+   }
 
-   return std::equal( indices1.begin(), indices1.end(), indices2.begin() );
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3392,8 +3380,7 @@ template< typename MT  // Type of the matrix
         , bool SF >    // Symmetry flag
 inline decltype(auto) derestrict( Columns<MT,SO,DF,SF>& c )
 {
-   decltype(auto) indices( c.idces() );
-   return columns( derestrict( c.operand() ), indices.data(), indices.size(), unchecked );
+   return columns( derestrict( c.operand() ), c.idces(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3418,10 +3405,9 @@ template< typename MT  // Type of the matrix
         , bool SO      // Storage order
         , bool DF      // Density flag
         , bool SF >    // Symmetry flag
-inline decltype(auto) derestrict( Columns<MT,SO,DF,SF>&& r )
+inline decltype(auto) derestrict( Columns<MT,SO,DF,SF>&& c )
 {
-   decltype(auto) indices( r.idces() );
-   return columns( derestrict( r.operand() ), indices.data(), indices.size(), unchecked );
+   return columns( derestrict( c.operand() ), c.idces(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************

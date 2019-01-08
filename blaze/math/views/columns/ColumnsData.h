@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/IntegerSequence.h>
 #include <blaze/system/Standard.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/SmallArray.h>
@@ -69,10 +70,6 @@ template< size_t... CCAs >  // Compile time column arguments
 struct ColumnsData
 {
  public:
-   //**Type definitions****************************************************************************
-   using Indices = std::array<size_t,sizeof...(CCAs)>;  //!< Type of the container for column indices.
-   //**********************************************************************************************
-
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -100,13 +97,17 @@ struct ColumnsData
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   static inline constexpr const Indices& idces  () noexcept;
+   static inline constexpr decltype(auto) idces  () noexcept;
    static inline constexpr size_t         idx    ( size_t i ) noexcept;
    static inline constexpr size_t         columns() noexcept;
    //@}
    //**********************************************************************************************
 
  private:
+   //**Type definitions****************************************************************************
+   using Indices = std::array<size_t,sizeof...(CCAs)>;  //!< Type of the container for column indices.
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -147,14 +148,14 @@ inline ColumnsData<CCAs...>::ColumnsData( RCAs... args ) noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the indices of the specified columns in the underlying matrix.
+/*!\brief Returns a representation of the indices of the specified columns in the underlying matrix.
 //
-// \return The indices of the specified columns.
+// \return A representation of the indices of the specified columns.
 */
 template< size_t... CCAs >  // Compile time column arguments
-inline constexpr const typename ColumnsData<CCAs...>::Indices& ColumnsData<CCAs...>::idces() noexcept
+inline constexpr decltype(auto) ColumnsData<CCAs...>::idces() noexcept
 {
-   return indices_;
+   return index_sequence<CCAs...>();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -212,10 +213,6 @@ template<>
 struct ColumnsData<>
 {
  public:
-   //**Type definitions****************************************************************************
-   using Indices = SmallArray<size_t,8UL>;  //!< Type of the container for column indices.
-   //**********************************************************************************************
-
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -244,13 +241,17 @@ struct ColumnsData<>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline const Indices& idces  () const noexcept;
+   inline decltype(auto) idces  () const noexcept;
    inline size_t         idx    ( size_t i ) const noexcept;
    inline size_t         columns() const noexcept;
    //@}
    //**********************************************************************************************
 
  private:
+   //**Type definitions****************************************************************************
+   using Indices = SmallArray<size_t,8UL>;  //!< Type of the container for column indices.
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -283,13 +284,13 @@ inline ColumnsData<>::ColumnsData( const T* indices, size_t n, RCAs... args )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the indices of the specified columns in the underlying matrix.
+/*!\brief Returns a representation of the indices of the specified columns in the underlying matrix.
 //
-// \return The indices of the specified columns.
+// \return A representation of the indices of the specified columns.
 */
-inline const ColumnsData<>::Indices& ColumnsData<>::idces() const noexcept
+inline decltype(auto) ColumnsData<>::idces() const noexcept
 {
-   return indices_;
+   return const_cast<const Indices&>( indices_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -322,6 +323,41 @@ inline size_t ColumnsData<>::idx( size_t i ) const noexcept
 inline size_t ColumnsData<>::columns() const noexcept
 {
    return indices_.size();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Compares the indices of two ColumsData instances.
+// \ingroup columns
+//
+// \param lhs The left-hand side instance for the comparison.
+// \param rhs The right-hand side instance for the comparison.
+// \return \a true if the indices of both instances are equal, \a false if not.
+*/
+template< size_t... CRAs1, size_t... CRAs2 >
+inline constexpr bool
+   compareIndices( const ColumnsData<CRAs1...>& lhs, const ColumnsData<CRAs2...>& rhs ) noexcept
+{
+   if( lhs.columns() != rhs.columns() )
+      return false;
+
+   for( size_t i=0UL; i<lhs.columns(); ++i ) {
+      if( lhs.idx(i) != rhs.idx(i) )
+         return false;
+   }
+
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
