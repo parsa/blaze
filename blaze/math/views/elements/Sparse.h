@@ -928,7 +928,7 @@ inline Elements<VT,TF,false,CEAs...>&
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_VECTOR_TYPE ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-   if( &rhs == this || ( &vector_ == &rhs.vector_ && idces() == rhs.idces() ) )
+   if( &rhs == this || ( &vector_ == &rhs.vector_ && compareIndices( *this, rhs ) ) )
       return *this;
 
    if( size() != rhs.size() ) {

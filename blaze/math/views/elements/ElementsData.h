@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/IntegerSequence.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/SmallArray.h>
 #include <blaze/util/Types.h>
@@ -68,10 +69,6 @@ template< size_t... CEAs >  // Compile time element arguments
 struct ElementsData
 {
  public:
-   //**Type definitions****************************************************************************
-   using Indices = std::array<size_t,sizeof...(CEAs)>;  //!< Type of the container for element indices.
-   //**********************************************************************************************
-
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -99,13 +96,17 @@ struct ElementsData
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   static inline constexpr const Indices& idces() noexcept;
+   static inline constexpr decltype(auto) idces() noexcept;
    static inline constexpr size_t         idx  ( size_t i ) noexcept;
    static inline constexpr size_t         size () noexcept;
    //@}
    //**********************************************************************************************
 
  private:
+   //**Type definitions****************************************************************************
+   using Indices = std::array<size_t,sizeof...(CEAs)>;  //!< Type of the container for element indices.
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -146,14 +147,14 @@ inline ElementsData<CEAs...>::ElementsData( REAs... args ) noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the indices of the specified elements in the underlying vector.
+/*!\brief Returns a representation of the indices of the specified elements in the underlying vector.
 //
-// \return The indices of the specified elements.
+// \return A representation of the indices of the specified elements.
 */
 template< size_t... CEAs >  // Compile time element arguments
-inline constexpr const typename ElementsData<CEAs...>::Indices& ElementsData<CEAs...>::idces() noexcept
+inline constexpr decltype(auto) ElementsData<CEAs...>::idces() noexcept
 {
-   return indices_;
+   return index_sequence<CEAs...>();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -211,10 +212,6 @@ template<>
 struct ElementsData<>
 {
  public:
-   //**Type definitions****************************************************************************
-   using Indices = SmallArray<size_t,8UL>;  //!< Type of the container for element indices.
-   //**********************************************************************************************
-
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -243,13 +240,17 @@ struct ElementsData<>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline const Indices& idces() const noexcept;
+   inline decltype(auto) idces() const noexcept;
    inline size_t         idx  ( size_t i ) const noexcept;
    inline size_t         size () const noexcept;
    //@}
    //**********************************************************************************************
 
  private:
+   //**Type definitions****************************************************************************
+   using Indices = SmallArray<size_t,8UL>;  //!< Type of the container for element indices.
+   //**********************************************************************************************
+
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -282,13 +283,13 @@ inline ElementsData<>::ElementsData( const T* indices, size_t n, REAs... args )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the indices of the specified elements in the underlying vector.
+/*!\brief Returns a representation of the indices of the specified elements in the underlying vector.
 //
-// \return The indices of the specified elements.
+// \return A representation of the indices of the specified elements.
 */
-inline const ElementsData<>::Indices& ElementsData<>::idces() const noexcept
+inline decltype(auto) ElementsData<>::idces() const noexcept
 {
-   return indices_;
+   return const_cast<const Indices&>( indices_ );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -321,6 +322,41 @@ inline size_t ElementsData<>::idx( size_t i ) const noexcept
 inline size_t ElementsData<>::size() const noexcept
 {
    return indices_.size();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Compares the indices of two ElementsData instances.
+// \ingroup elements
+//
+// \param lhs The left-hand side instance for the comparison.
+// \param rhs The right-hand side instance for the comparison.
+// \return \a true if the indices of both instances are equal, \a false if not.
+*/
+template< size_t... CEAs1, size_t... CEAs2 >
+inline constexpr bool
+   compareIndices( const ElementsData<CEAs1...>& lhs, const ElementsData<CEAs2...>& rhs ) noexcept
+{
+   if( lhs.size() != rhs.size() )
+      return false;
+
+   for( size_t i=0UL; i<lhs.size(); ++i ) {
+      if( lhs.idx(i) != rhs.idx(i) )
+         return false;
+   }
+
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************

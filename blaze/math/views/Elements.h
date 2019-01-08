@@ -40,9 +40,9 @@
 // Includes
 //*************************************************************************************************
 
-#include <algorithm>
 #include <array>
 #include <numeric>
+#include <utility>
 #include <vector>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
@@ -844,8 +844,7 @@ inline decltype(auto) elements( Elements<VT,TF,DF,I2,Is2...>& e, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   static constexpr size_t indices[] = { I2, Is2... };
-   return elements< indices[I1], indices[Is1]... >( e.operand(), args... );
+   return elements< e.idx(I1), e.idx(Is1)... >( e.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -875,8 +874,7 @@ inline decltype(auto) elements( const Elements<VT,TF,DF,I2,Is2...>& e, REAs... a
 {
    BLAZE_FUNCTION_TRACE;
 
-   static constexpr size_t indices[] = { I2, Is2... };
-   return elements< indices[I1], indices[Is1]... >( e.operand(), args... );
+   return elements< e.idx(I1), e.idx(Is1)... >( e.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -906,8 +904,7 @@ inline decltype(auto) elements( Elements<VT,TF,DF,I2,Is2...>&& e, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   static constexpr size_t indices[] = { I2, Is2... };
-   return elements< indices[I1], indices[Is1]... >( e.operand(), args... );
+   return elements< e.idx(I1), e.idx(Is1)... >( e.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -947,8 +944,7 @@ inline decltype(auto) elements( Elements<VT,TF,DF>& e, REAs... args )
       }
    }
 
-   decltype(auto) indices( e.idces() );
-   return elements( e.operand(), { indices[I], indices[Is]... }, args... );
+   return elements( e.operand(), { e.idx(I), e.idx(Is)... }, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -988,8 +984,7 @@ inline decltype(auto) elements( const Elements<VT,TF,DF>& e, REAs... args )
       }
    }
 
-   decltype(auto) indices( e.idces() );
-   return elements( e.operand(), { indices[I], indices[Is]... }, args... );
+   return elements( e.operand(), { e.idx(I), e.idx(Is)... }, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1029,8 +1024,7 @@ inline decltype(auto) elements( Elements<VT,TF,DF>&& e, REAs... args )
       }
    }
 
-   decltype(auto) indices( e.idces() );
-   return elements( e.operand(), { indices[I], indices[Is]... }, args... );
+   return elements( e.operand(), { e.idx(I), e.idx(Is)... }, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1072,12 +1066,11 @@ inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>& e,
       }
    }
 
-   decltype(auto) oldIndices( e.idces() );
    SmallArray<size_t,128UL> newIndices;
    newIndices.reserve( n );
 
    for( size_t i=0UL; i<n; ++i ) {
-      newIndices.pushBack( oldIndices[indices[i]] );
+      newIndices.pushBack( e.idx( indices[i] ) );
    }
 
    return elements( e.operand(), newIndices.data(), newIndices.size(), args... );
@@ -1122,12 +1115,11 @@ inline decltype(auto) elements( const Elements<VT,TF,DF,CEAs...>& e,
       }
    }
 
-   decltype(auto) oldIndices( e.idces() );
    SmallArray<size_t,128UL> newIndices;
    newIndices.reserve( n );
 
    for( size_t i=0UL; i<n; ++i ) {
-      newIndices.pushBack( oldIndices[indices[i]] );
+      newIndices.pushBack( e.idx( indices[i] ) );
    }
 
    return elements( e.operand(), newIndices.data(), newIndices.size(), args... );
@@ -1172,12 +1164,11 @@ inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>&& e,
       }
    }
 
-   decltype(auto) oldIndices( e.idces() );
    SmallArray<size_t,128UL> newIndices;
    newIndices.reserve( n );
 
    for( size_t i=0UL; i<n; ++i ) {
-      newIndices.pushBack( oldIndices[indices[i]] );
+      newIndices.pushBack( e.idx( indices[i] ) );
    }
 
    return elements( e.operand(), newIndices.data(), newIndices.size(), args... );
@@ -1611,9 +1602,8 @@ inline bool isSame( const Elements<VT,TF,DF,CEAs...>& a, const Vector<VT,TF>& b 
    if( !isSame( a.operand(), ~b ) || ( a.size() != (~b).size() ) )
       return false;
 
-   decltype(auto) indices( a.idces() );
    for( size_t i=0UL; i<a.size(); ++i ) {
-      if( indices[i] != i )
+      if( a.idx(i) != i )
          return false;
    }
 
@@ -1675,9 +1665,8 @@ inline bool isSame( const Elements<VT1,TF,DF,CEAs...>& a, const Subvector<VT2,AF
    if( !isSame( a.operand(), b.operand() ) || ( a.size() != b.size() ) )
       return false;
 
-   decltype(auto) indices( a.idces() );
    for( size_t i=0UL; i<a.size(); ++i ) {
-      if( indices[i] != b.offset()+i )
+      if( a.idx(i) != b.offset()+i )
          return false;
    }
 
@@ -1743,10 +1732,12 @@ inline bool isSame( const Elements<VT1,TF1,DF1,CEAs1...>& a,
    if( !isSame( a.operand(), b.operand() ) || a.size() != b.size() )
       return false;
 
-   decltype(auto) indices1( a.idces() );
-   decltype(auto) indices2( b.idces() );
+   for( size_t i=0UL; i<a.size(); ++i ) {
+      if( a.idx(i) != b.idx(i) )
+         return false;
+   }
 
-   return std::equal( indices1.begin(), indices1.end(), indices2.begin() );
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2247,8 +2238,7 @@ template< typename VT  // Type of the vector
         , bool DF >    // Density flag
 inline decltype(auto) derestrict( Elements<VT,TF,DF>& e )
 {
-   decltype(auto) indices( e.idces() );
-   return elements( derestrict( e.operand() ), indices.data(), indices.size(), unchecked );
+   return elements( derestrict( e.operand() ), e.idces(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2274,8 +2264,7 @@ template< typename VT  // Type of the vector
         , bool DF >    // Density flag
 inline decltype(auto) derestrict( Elements<VT,TF,DF>&& e )
 {
-   decltype(auto) indices( e.idces() );
-   return elements( derestrict( e.operand() ), indices.data(), indices.size(), unchecked );
+   return elements( derestrict( e.operand() ), e.idces(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
