@@ -39,7 +39,7 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <blaze/math/DynamicVector.h>
+#include <blaze/math/StaticVector.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/dvecexpand/OperationTest.h>
 #include <blazetest/system/MathTest.h>
@@ -65,7 +65,7 @@ int main()
    try
    {
       // Vector type definitions
-      using V3b = blaze::DynamicVector<TypeB>;
+      using V3b = blaze::StaticVector<TypeB,3UL>;
 
       // Creator type definitions
       using CV3b = blazetest::Creator<V3b>;
