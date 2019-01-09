@@ -385,7 +385,12 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
       // result in erroneous results and/or in compilation errors.
       */
       inline void store( const SIMDType& value ) const {
-         storeu( value );
+         if( isAligned_ ) {
+            storea( value );
+         }
+         else {
+            storeu( value );
+         }
       }
       //*******************************************************************************************
 
@@ -417,12 +422,7 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
       // might result in erroneous results and/or in compilation errors.
       */
       inline void storeu( const SIMDType& value ) const {
-         if( isAligned_ ) {
-            iterator_.storea( value );
-         }
-         else {
-            iterator_.storeu( value );
-         }
+         iterator_.storeu( value );
       }
       //*******************************************************************************************
 
@@ -3667,7 +3667,12 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
       // result in erroneous results and/or in compilation errors.
       */
       inline void store( const SIMDType& value ) const {
-         storeu( value );
+         if( isAligned_ ) {
+            storea( value );
+         }
+         else {
+            storeu( value );
+         }
       }
       //*******************************************************************************************
 
@@ -3699,12 +3704,7 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
       // might result in erroneous results and/or in compilation errors.
       */
       inline void storeu( const SIMDType& value ) const {
-         if( isAligned_ ) {
-            iterator_.storea( value );
-         }
-         else {
-            iterator_.storeu( value );
-         }
+         iterator_.storeu( value );
       }
       //*******************************************************************************************
 
