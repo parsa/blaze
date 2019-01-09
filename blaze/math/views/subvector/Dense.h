@@ -307,7 +307,12 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       // result in erroneous results and/or in compilation errors.
       */
       inline SIMDType load() const {
-         return loadu();
+         if( isAligned_ ) {
+            return loada();
+         }
+         else {
+            return loadu();
+         }
       }
       //*******************************************************************************************
 
@@ -337,12 +342,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       // might result in erroneous results and/or in compilation errors.
       */
       inline SIMDType loadu() const {
-         if( isAligned_ ) {
-            return iterator_.loada();
-         }
-         else {
-            return iterator_.loadu();
-         }
+         return iterator_.loadu();
       }
       //*******************************************************************************************
 
@@ -358,7 +358,12 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       // result in erroneous results and/or in compilation errors.
       */
       inline void store( const SIMDType& value ) const {
-         storeu( value );
+         if( isAligned_ ) {
+            storea( value );
+         }
+         else {
+            storeu( value );
+         }
       }
       //*******************************************************************************************
 
@@ -390,12 +395,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       // might result in erroneous results and/or in compilation errors.
       */
       inline void storeu( const SIMDType& value ) const {
-         if( isAligned_ ) {
-            iterator_.storea( value );
-         }
-         else {
-            iterator_.storeu( value );
-         }
+         iterator_.storeu( value );
       }
       //*******************************************************************************************
 
