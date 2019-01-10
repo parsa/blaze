@@ -1214,7 +1214,7 @@ inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>& c, const T* indices
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
-         if( c.columns() <= indices[i] ) {
+         if( c.columns() <= size_t( indices[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
          }
       }
@@ -1264,7 +1264,7 @@ inline decltype(auto) columns( const Columns<MT,SO,DF,SF,CCAs...>& c, const T* i
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
-         if( c.columns() <= indices[i] ) {
+         if( c.columns() <= size_t( indices[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
          }
       }
@@ -1314,7 +1314,7 @@ inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>&& c, const T* indice
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
-         if( c.columns() <= indices[i] ) {
+         if( c.columns() <= size_t( indices[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
          }
       }

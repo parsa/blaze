@@ -1066,7 +1066,7 @@ inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>& e,
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
-         if( e.size() <= indices[i] ) {
+         if( e.size() <= size_t( indices[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
          }
       }
@@ -1116,7 +1116,7 @@ inline decltype(auto) elements( const Elements<VT,TF,DF,CEAs...>& e,
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
-         if( e.size() <= indices[i] ) {
+         if( e.size() <= size_t( indices[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
          }
       }
@@ -1166,7 +1166,7 @@ inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>&& e,
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
-         if( e.size() <= indices[i] ) {
+         if( e.size() <= size_t( indices[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
          }
       }

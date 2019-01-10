@@ -1209,7 +1209,7 @@ inline decltype(auto) rows( Rows<MT,SO,DF,SF,CRAs...>& r, const T* indices, size
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
-         if( r.rows() <= indices[i] ) {
+         if( r.rows() <= size_t( indices[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
          }
       }
@@ -1259,7 +1259,7 @@ inline decltype(auto) rows( const Rows<MT,SO,DF,SF,CRAs...>& r, const T* indices
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
-         if( r.rows() <= indices[i] ) {
+         if( r.rows() <= size_t( indices[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
          }
       }
@@ -1309,7 +1309,7 @@ inline decltype(auto) rows( Rows<MT,SO,DF,SF,CRAs...>&& r, const T* indices, siz
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
-         if( r.rows() <= indices[i] ) {
+         if( r.rows() <= size_t( indices[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
          }
       }
