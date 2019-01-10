@@ -135,9 +135,9 @@ template< typename MT    // Type of the matrix A
         , typename VT    // Type of the vector s
         , bool TF        // Transpose flag of the vector s
         , typename ST >  // Type of the scalar boundary values
-inline DisableIf_t< IsComplex_v< ElementType_t<MT> >, size_t >
-   gesvdx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s,
-                   char range, ST vl, ST vu, int il, int iu )
+inline auto gesvdx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s,
+                            char range, ST vl, ST vu, int il, int iu )
+   -> DisableIf_t< IsComplex_v< ElementType_t<MT> >, size_t >
 {
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
    BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
@@ -225,9 +225,9 @@ template< typename MT    // Type of the matrix A
         , typename VT    // Type of the vector s
         , bool TF        // Transpose flag of the vector s
         , typename ST >  // Type of the scalar boundary values
-inline EnableIf_t< IsComplex_v< ElementType_t<MT> >, size_t >
-   gesvdx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s,
-                   char range, ST vl, ST vu, int il, int iu )
+inline auto gesvdx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s,
+                            char range, ST vl, ST vu, int il, int iu )
+   -> EnableIf_t< IsComplex_v< ElementType_t<MT> >, size_t >
 {
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
    BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
@@ -547,9 +547,9 @@ template< typename MT1   // Type of the matrix A
         , typename VT    // Type of the vector s
         , bool TF        // Transpose flag of the vector s
         , typename ST >  // Type of the scalar boundary values
-inline DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
-   gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
-                   char range, ST vl, ST vu, int il, int iu )
+inline auto gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
+                            char range, ST vl, ST vu, int il, int iu )
+   -> DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
 {
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
    BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
@@ -667,9 +667,9 @@ template< typename MT1   // Type of the matrix A
         , typename VT    // Type of the vector s
         , bool TF        // Transpose flag of the vector s
         , typename ST >  // Type of the scalar boundary values
-inline EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
-   gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
-                   char range, ST vl, ST vu, int il, int iu )
+inline auto gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
+                            char range, ST vl, ST vu, int il, int iu )
+   -> EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
 {
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
    BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
@@ -1052,9 +1052,9 @@ template< typename MT1   // Type of the matrix A
         , bool TF        // Transpose flag of the vector s
         , typename MT2   // Type of the matrix V
         , typename ST >  // Type of the scalar boundary values
-inline DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
-   gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V,
-                   char range, ST vl, ST vu, int il, int iu )
+inline auto gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V,
+                            char range, ST vl, ST vu, int il, int iu )
+   -> DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
 {
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
    BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
@@ -1172,9 +1172,9 @@ template< typename MT1   // Type of the matrix A
         , bool TF        // Transpose flag of the vector s
         , typename MT2   // Type of the matrix V
         , typename ST >  // Type of the scalar boundary values
-inline EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
-   gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V,
-                   char range, ST vl, ST vu, int il, int iu )
+inline auto gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V,
+                            char range, ST vl, ST vu, int il, int iu )
+   -> EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
 {
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
    BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
@@ -1559,9 +1559,9 @@ template< typename MT1   // Type of the matrix A
         , bool TF        // Transpose flag of the vector s
         , typename MT3   // Type of the matrix V
         , typename ST >  // Type of the scalar boundary values
-inline DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
-   gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
-                   DenseMatrix<MT3,SO>& V, char range, ST vl, ST vu, int il, int iu )
+inline auto gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
+                            DenseMatrix<MT3,SO>& V, char range, ST vl, ST vu, int il, int iu )
+   -> DisableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
 {
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
    BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );
@@ -1699,9 +1699,9 @@ template< typename MT1   // Type of the matrix A
         , bool TF        // Transpose flag of the vector s
         , typename MT3   // Type of the matrix V
         , typename ST >  // Type of the scalar boundary values
-inline EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
-   gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
-                   DenseMatrix<MT3,SO>& V, char range, ST vl, ST vu, int il, int iu )
+inline auto gesvdx_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s,
+                            DenseMatrix<MT3,SO>& V, char range, ST vl, ST vu, int il, int iu )
+   -> EnableIf_t< IsComplex_v< ElementType_t<MT1> >, size_t >
 {
    BLAZE_INTERNAL_ASSERT( range == 'A' || range == 'V' || range == 'I', "Invalid range flag detected" );
    BLAZE_INTERNAL_ASSERT( range != 'A' || (~s).size() == min( (~A).rows(), (~A).columns() ), "Invalid vector dimension detected" );

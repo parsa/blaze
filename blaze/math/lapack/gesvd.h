@@ -113,8 +113,8 @@ template< typename MT  // Type of the matrix A
         , bool SO      // Storage order of the matrix A
         , typename VT  // Type of the vector s
         , bool TF >    // Transpose flag of the vector s
-inline DisableIf_t< IsComplex_v< ElementType_t<MT> > >
-   gesvd_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, char jobu, char jobv )
+inline auto gesvd_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, char jobu, char jobv )
+   -> DisableIf_t< IsComplex_v< ElementType_t<MT> > >
 {
    BLAZE_INTERNAL_ASSERT( jobu == 'O' || jobu == 'N', "Invalid jobu flag detected" );
    BLAZE_INTERNAL_ASSERT( jobv == 'O' || jobv == 'N', "Invalid jobv flag detected" );
@@ -170,8 +170,8 @@ template< typename MT  // Type of the matrix A
         , bool SO      // Storage order of the matrix A
         , typename VT  // Type of the vector s
         , bool TF >    // Transpose flag of the vector s
-inline EnableIf_t< IsComplex_v< ElementType_t<MT> > >
-   gesvd_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, char jobu, char jobv )
+inline auto gesvd_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, char jobu, char jobv )
+   -> EnableIf_t< IsComplex_v< ElementType_t<MT> > >
 {
    BLAZE_INTERNAL_ASSERT( jobu == 'O' || jobu == 'N', "Invalid jobu flag detected" );
    BLAZE_INTERNAL_ASSERT( jobv == 'O' || jobv == 'N', "Invalid jobv flag detected" );
@@ -359,9 +359,9 @@ template< typename MT1    // Type of the matrix A
         , typename MT2    // Type of the matrix U
         , typename VT     // Type of the vector s
         , bool TF >       // Transpose flag of the vector s
-inline DisableIf_t< IsComplex_v< ElementType_t<MT1> > >
-   gesvd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
-                  DenseVector<VT,TF>& s, char jobu, char jobv )
+inline auto gesvd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
+                           DenseVector<VT,TF>& s, char jobu, char jobv )
+   -> DisableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
    BLAZE_INTERNAL_ASSERT( jobu == 'A' || jobu == 'S' || jobu == 'N', "Invalid jobu flag detected" );
    BLAZE_INTERNAL_ASSERT( jobv == 'O' || jobv == 'N', "Invalid jobv flag detected" );
@@ -425,9 +425,9 @@ template< typename MT1    // Type of the matrix A
         , typename MT2    // Type of the matrix U
         , typename VT     // Type of the vector s
         , bool TF >       // Transpose flag of the vector s
-inline EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
-   gesvd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
-                  DenseVector<VT,TF>& s, char jobu, char jobv )
+inline auto gesvd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
+                           DenseVector<VT,TF>& s, char jobu, char jobv )
+   -> EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
    BLAZE_INTERNAL_ASSERT( jobu == 'A' || jobu == 'S' || jobu == 'N', "Invalid jobu flag detected" );
    BLAZE_INTERNAL_ASSERT( jobv == 'O' || jobv == 'N', "Invalid jobv flag detected" );
@@ -646,9 +646,9 @@ template< typename MT1    // Type of the matrix A
         , typename VT     // Type of the vector s
         , bool TF         // Transpose flag of the vector s
         , typename MT2 >  // Type of the matrix V
-inline DisableIf_t< IsComplex_v< ElementType_t<MT1> > >
-   gesvd_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
-                  DenseMatrix<MT2,SO>& V, char jobu, char jobv )
+inline auto gesvd_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
+                           DenseMatrix<MT2,SO>& V, char jobu, char jobv )
+   -> DisableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
    BLAZE_INTERNAL_ASSERT( jobu == 'O' || jobu == 'N', "Invalid jobu flag detected" );
    BLAZE_INTERNAL_ASSERT( jobv == 'A' || jobv == 'S' || jobv == 'N', "Invalid jobv flag detected" );
@@ -712,9 +712,9 @@ template< typename MT1    // Type of the matrix A
         , typename VT     // Type of the vector s
         , bool TF         // Transpose flag of the vector s
         , typename MT2 >  // Type of the matrix V
-inline EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
-   gesvd_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
-                  DenseMatrix<MT2,SO>& V, char jobu, char jobv )
+inline auto gesvd_backend( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
+                           DenseMatrix<MT2,SO>& V, char jobu, char jobv )
+   -> EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
    BLAZE_INTERNAL_ASSERT( jobu == 'O' || jobu == 'N', "Invalid jobu flag detected" );
    BLAZE_INTERNAL_ASSERT( jobv == 'A' || jobv == 'S' || jobv == 'N', "Invalid jobv flag detected" );
@@ -935,9 +935,9 @@ template< typename MT1    // Type of the matrix A
         , typename VT     // Type of the vector s
         , bool TF         // Transpose flag of the vector s
         , typename MT3 >  // Type of the matrix V
-inline DisableIf_t< IsComplex_v< ElementType_t<MT1> > >
-   gesvd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
-                  DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, char jobu, char jobv )
+inline auto gesvd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
+                           DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, char jobu, char jobv )
+   -> DisableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
    BLAZE_INTERNAL_ASSERT( jobu == 'A' || jobu == 'S' || jobu == 'N', "Invalid jobu flag detected" );
    BLAZE_INTERNAL_ASSERT( jobv == 'A' || jobv == 'S' || jobv == 'N', "Invalid jobv flag detected" );
@@ -1007,9 +1007,9 @@ template< typename MT1    // Type of the matrix A
         , typename VT     // Type of the vector s
         , bool TF         // Transpose flag of the vector s
         , typename MT3 >  // Type of the matrix V
-inline EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
-   gesvd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
-                  DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, char jobu, char jobv )
+inline auto gesvd_backend( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
+                           DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, char jobu, char jobv )
+   -> EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
    BLAZE_INTERNAL_ASSERT( jobu == 'A' || jobu == 'S' || jobu == 'N', "Invalid jobu flag detected" );
    BLAZE_INTERNAL_ASSERT( jobv == 'A' || jobv == 'S' || jobv == 'N', "Invalid jobv flag detected" );
