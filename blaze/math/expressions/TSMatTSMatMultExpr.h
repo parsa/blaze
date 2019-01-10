@@ -375,8 +375,8 @@ class TSMatTSMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      assign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatMultExpr& rhs )
+   friend inline auto assign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatMultExpr& rhs )
+      -> DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -451,8 +451,8 @@ class TSMatTSMatMultExpr
    // transpose sparse matrix multiplication expression to a row-major sparse matrix.
    */
    template< typename MT >  // Type of the target sparse matrix
-   friend inline DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      assign( SparseMatrix<MT,false>& lhs, const TSMatTSMatMultExpr& rhs )
+   friend inline auto assign( SparseMatrix<MT,false>& lhs, const TSMatTSMatMultExpr& rhs )
+      -> DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -607,8 +607,8 @@ class TSMatTSMatMultExpr
    // compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      assign( Matrix<MT,false>& lhs, const TSMatTSMatMultExpr& rhs )
+   friend inline auto assign( Matrix<MT,false>& lhs, const TSMatTSMatMultExpr& rhs )
+      -> EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -637,8 +637,8 @@ class TSMatTSMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matarix
-   friend inline DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      addAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatMultExpr& rhs )
+   friend inline auto addAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatMultExpr& rhs )
+      -> DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -708,8 +708,8 @@ class TSMatTSMatMultExpr
    // the compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      addAssign( Matrix<MT,false>& lhs, const TSMatTSMatMultExpr& rhs )
+   friend inline auto addAssign( Matrix<MT,false>& lhs, const TSMatTSMatMultExpr& rhs )
+      -> EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -742,8 +742,8 @@ class TSMatTSMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matarix
-   friend inline DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      subAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatMultExpr& rhs )
+   friend inline auto subAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatMultExpr& rhs )
+      -> DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -814,8 +814,8 @@ class TSMatTSMatMultExpr
    // can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      subAssign( Matrix<MT,false>& lhs, const TSMatTSMatMultExpr& rhs )
+   friend inline auto subAssign( Matrix<MT,false>& lhs, const TSMatTSMatMultExpr& rhs )
+      -> EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -895,8 +895,8 @@ class TSMatTSMatMultExpr
    */
    template< typename MT  // Type of the target matrix
            , bool SO >    // Storage order of the target matrix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpAssign( Matrix<MT,SO>& lhs, const TSMatTSMatMultExpr& rhs )
+   friend inline auto smpAssign( Matrix<MT,SO>& lhs, const TSMatTSMatMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -934,8 +934,8 @@ class TSMatTSMatMultExpr
    // the compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      smpAssign( Matrix<MT,false>& lhs, const TSMatTSMatMultExpr& rhs )
+   friend inline auto smpAssign( Matrix<MT,false>& lhs, const TSMatTSMatMultExpr& rhs )
+      -> EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -967,8 +967,8 @@ class TSMatTSMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matarix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpAddAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatMultExpr& rhs )
+   friend inline auto smpAddAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1007,8 +1007,8 @@ class TSMatTSMatMultExpr
    // exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      smpAddAssign( Matrix<MT,false>& lhs, const TSMatTSMatMultExpr& rhs )
+   friend inline auto smpAddAssign( Matrix<MT,false>& lhs, const TSMatTSMatMultExpr& rhs )
+      -> EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1044,8 +1044,8 @@ class TSMatTSMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matarix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpSubAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatMultExpr& rhs )
+   friend inline auto smpSubAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1084,8 +1084,8 @@ class TSMatTSMatMultExpr
    // exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      smpSubAssign( Matrix<MT,false>& lhs, const TSMatTSMatMultExpr& rhs )
+   friend inline auto smpSubAssign( Matrix<MT,false>& lhs, const TSMatTSMatMultExpr& rhs )
+      -> EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 

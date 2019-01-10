@@ -615,8 +615,8 @@ class TSMatSVecMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT1> >
-      smpAssign( DenseVector<VT1,false>& lhs, const TSMatSVecMultExpr& rhs )
+   friend inline auto smpAssign( DenseVector<VT1,false>& lhs, const TSMatSVecMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT1> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -664,8 +664,8 @@ class TSMatSVecMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT1> >
-      smpAddAssign( DenseVector<VT1,false>& lhs, const TSMatSVecMultExpr& rhs )
+   friend inline auto smpAddAssign( DenseVector<VT1,false>& lhs, const TSMatSVecMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT1> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -710,8 +710,8 @@ class TSMatSVecMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT1> >
-      smpSubAssign( DenseVector<VT1,false>& lhs, const TSMatSVecMultExpr& rhs )
+   friend inline auto smpSubAssign( DenseVector<VT1,false>& lhs, const TSMatSVecMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT1> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -756,8 +756,8 @@ class TSMatSVecMultExpr
    // by the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT1> >
-      smpMultAssign( DenseVector<VT1,false>& lhs, const TSMatSVecMultExpr& rhs )
+   friend inline auto smpMultAssign( DenseVector<VT1,false>& lhs, const TSMatSVecMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT1> >
    {
       BLAZE_FUNCTION_TRACE;
 

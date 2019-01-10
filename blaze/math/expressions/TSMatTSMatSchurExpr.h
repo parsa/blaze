@@ -314,8 +314,8 @@ class TSMatTSMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
-      assign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatSchurExpr& rhs )
+   friend inline auto assign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatSchurExpr& rhs )
+      -> DisableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -367,8 +367,8 @@ class TSMatTSMatSchurExpr
    // sparse matrix Schur product expression to a row-major sparse matrix.
    */
    template< typename MT >  // Type of the target sparse matrix
-   friend inline DisableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
-      assign( SparseMatrix<MT,false>& lhs, const TSMatTSMatSchurExpr& rhs )
+   friend inline auto assign( SparseMatrix<MT,false>& lhs, const TSMatTSMatSchurExpr& rhs )
+      -> DisableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -509,8 +509,8 @@ class TSMatTSMatSchurExpr
    // transpose sparse matrix Schur product expression to a row-major matrix.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
-      assign( Matrix<MT,false>& lhs, const TSMatTSMatSchurExpr& rhs )
+   friend inline auto assign( Matrix<MT,false>& lhs, const TSMatTSMatSchurExpr& rhs )
+      -> EnableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -539,8 +539,8 @@ class TSMatTSMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
-      addAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatSchurExpr& rhs )
+   friend inline auto addAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatSchurExpr& rhs )
+      -> DisableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -592,8 +592,8 @@ class TSMatTSMatSchurExpr
    // matrix-transpose sparse matrix Schur product expression to a row-major matrix.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
-      addAssign( Matrix<MT,false>& lhs, const TSMatTSMatSchurExpr& rhs )
+   friend inline auto addAssign( Matrix<MT,false>& lhs, const TSMatTSMatSchurExpr& rhs )
+      -> EnableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -626,8 +626,8 @@ class TSMatTSMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
-      subAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatSchurExpr& rhs )
+   friend inline auto subAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatSchurExpr& rhs )
+      -> DisableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -679,8 +679,8 @@ class TSMatTSMatSchurExpr
    // sparse matrix-transpose sparse matrix Schur product expression to a row-major matrix.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
-      subAssign( Matrix<MT,false>& lhs, const TSMatTSMatSchurExpr& rhs )
+   friend inline auto subAssign( Matrix<MT,false>& lhs, const TSMatTSMatSchurExpr& rhs )
+      -> EnableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -713,8 +713,8 @@ class TSMatTSMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
-      schurAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatSchurExpr& rhs )
+   friend inline auto schurAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatSchurExpr& rhs )
+      -> DisableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -774,8 +774,8 @@ class TSMatTSMatSchurExpr
    // sparse matrix-transpose sparse matrix Schur product expression to a row-major matrix.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
-      schurAssign( Matrix<MT,false>& lhs, const TSMatTSMatSchurExpr& rhs )
+   friend inline auto schurAssign( Matrix<MT,false>& lhs, const TSMatTSMatSchurExpr& rhs )
+      -> EnableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 

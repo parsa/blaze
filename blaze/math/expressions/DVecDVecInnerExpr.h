@@ -121,9 +121,9 @@ struct DVecDVecInnerExprHelper
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-inline DisableIf_t< DVecDVecInnerExprHelper<VT1,VT2>::value
-                  , const MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> > >
-   dvecdvecinner( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
+inline auto dvecdvecinner( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
+   -> DisableIf_t< DVecDVecInnerExprHelper<VT1,VT2>::value
+                 , const MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> > >
 {
    using CT1      = CompositeType_t<VT1>;
    using CT2      = CompositeType_t<VT2>;
@@ -177,9 +177,9 @@ inline DisableIf_t< DVecDVecInnerExprHelper<VT1,VT2>::value
 */
 template< typename VT1    // Type of the left-hand side dense vector
         , typename VT2 >  // Type of the right-hand side dense vector
-inline EnableIf_t< DVecDVecInnerExprHelper<VT1,VT2>::value
-                 , const MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> > >
-   dvecdvecinner( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
+inline auto dvecdvecinner( const DenseVector<VT1,true>& lhs, const DenseVector<VT2,false>& rhs )
+   -> EnableIf_t< DVecDVecInnerExprHelper<VT1,VT2>::value
+                , const MultTrait_t< ElementType_t<VT1>, ElementType_t<VT2> > >
 {
    using CT1      = CompositeType_t<VT1>;
    using CT2      = CompositeType_t<VT2>;

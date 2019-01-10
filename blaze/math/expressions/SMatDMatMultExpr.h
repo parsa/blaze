@@ -517,8 +517,8 @@ class SMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseDefaultKernel_v<MT3,MT4,MT5> >
-      selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< UseDefaultKernel_v<MT3,MT4,MT5> >
    {
       const size_t block( IsRowMajorMatrix_v<MT3> || IsDiagonal_v<MT5> ? B.columns() : 64UL );
 
@@ -598,8 +598,8 @@ class SMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseOptimizedKernel_v<MT3,MT4,MT5> >
-      selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< UseOptimizedKernel_v<MT3,MT4,MT5> >
    {
       const size_t block( IsRowMajorMatrix_v<MT3> ? B.columns() : 64UL );
 
@@ -732,8 +732,8 @@ class SMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedKernel_v<MT3,MT4,MT5> >
-      selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< UseVectorizedKernel_v<MT3,MT4,MT5> >
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT5> );
 
@@ -932,8 +932,8 @@ class SMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseDefaultKernel_v<MT3,MT4,MT5> >
-      selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< UseDefaultKernel_v<MT3,MT4,MT5> >
    {
       const size_t block( IsRowMajorMatrix_v<MT3> || IsDiagonal_v<MT5> ? B.columns() : 64UL );
 
@@ -1010,8 +1010,8 @@ class SMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseOptimizedKernel_v<MT3,MT4,MT5> >
-      selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< UseOptimizedKernel_v<MT3,MT4,MT5> >
    {
       const size_t block( IsRowMajorMatrix_v<MT3> ? B.columns() : 64UL );
 
@@ -1134,8 +1134,8 @@ class SMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedKernel_v<MT3,MT4,MT5> >
-      selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< UseVectorizedKernel_v<MT3,MT4,MT5> >
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT5> );
 
@@ -1289,8 +1289,8 @@ class SMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseDefaultKernel_v<MT3,MT4,MT5> >
-      selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< UseDefaultKernel_v<MT3,MT4,MT5> >
    {
       const size_t block( IsRowMajorMatrix_v<MT3> || IsDiagonal_v<MT5> ? B.columns() : 64UL );
 
@@ -1367,8 +1367,8 @@ class SMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseOptimizedKernel_v<MT3,MT4,MT5> >
-      selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< UseOptimizedKernel_v<MT3,MT4,MT5> >
    {
       const size_t block( IsRowMajorMatrix_v<MT3> ? B.columns() : 64UL );
 
@@ -1491,8 +1491,8 @@ class SMatDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedKernel_v<MT3,MT4,MT5> >
-      selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< UseVectorizedKernel_v<MT3,MT4,MT5> >
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT5> );
 
@@ -1653,8 +1653,8 @@ class SMatDMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpAssign( DenseMatrix<MT,SO>& lhs, const SMatDMatMultExpr& rhs )
+   friend inline auto smpAssign( DenseMatrix<MT,SO>& lhs, const SMatDMatMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1693,8 +1693,8 @@ class SMatDMatMultExpr
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpAssign( SparseMatrix<MT,SO>& lhs, const SMatDMatMultExpr& rhs )
+   friend inline auto smpAssign( SparseMatrix<MT,SO>& lhs, const SMatDMatMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1736,8 +1736,8 @@ class SMatDMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpAddAssign( DenseMatrix<MT,SO>& lhs, const SMatDMatMultExpr& rhs )
+   friend inline auto smpAddAssign( DenseMatrix<MT,SO>& lhs, const SMatDMatMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1781,8 +1781,8 @@ class SMatDMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpSubAssign( DenseMatrix<MT,SO>& lhs, const SMatDMatMultExpr& rhs )
+   friend inline auto smpSubAssign( DenseMatrix<MT,SO>& lhs, const SMatDMatMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 

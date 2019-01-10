@@ -112,8 +112,8 @@ const typename VT::ElementType* data( const DenseVector<VT,TF>& dv ) noexcept;
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-BLAZE_ALWAYS_INLINE DisableIf_t< HasMutableDataAccess_v<VT>, typename VT::ElementType* >
-   data_backend( DenseVector<VT,TF>& dv ) noexcept
+BLAZE_ALWAYS_INLINE auto data_backend( DenseVector<VT,TF>& dv ) noexcept
+   -> DisableIf_t< HasMutableDataAccess_v<VT>, typename VT::ElementType* >
 {
    UNUSED_PARAMETER( dv );
 
@@ -135,8 +135,8 @@ BLAZE_ALWAYS_INLINE DisableIf_t< HasMutableDataAccess_v<VT>, typename VT::Elemen
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-BLAZE_ALWAYS_INLINE EnableIf_t< HasMutableDataAccess_v<VT>, typename VT::ElementType* >
-   data_backend( DenseVector<VT,TF>& dv ) noexcept
+BLAZE_ALWAYS_INLINE auto data_backend( DenseVector<VT,TF>& dv ) noexcept
+   -> EnableIf_t< HasMutableDataAccess_v<VT>, typename VT::ElementType* >
 {
    return (~dv).data();
 }
@@ -179,8 +179,8 @@ BLAZE_ALWAYS_INLINE typename VT::ElementType* data( DenseVector<VT,TF>& dv ) noe
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-BLAZE_ALWAYS_INLINE DisableIf_t< HasConstDataAccess_v<VT>, const typename VT::ElementType* >
-   data_backend( const DenseVector<VT,TF>& dv ) noexcept
+BLAZE_ALWAYS_INLINE auto data_backend( const DenseVector<VT,TF>& dv ) noexcept
+   -> DisableIf_t< HasConstDataAccess_v<VT>, const typename VT::ElementType* >
 {
    UNUSED_PARAMETER( dv );
 
@@ -202,8 +202,8 @@ BLAZE_ALWAYS_INLINE DisableIf_t< HasConstDataAccess_v<VT>, const typename VT::El
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag of the vector
-BLAZE_ALWAYS_INLINE EnableIf_t< HasConstDataAccess_v<VT>, const typename VT::ElementType* >
-   data_backend( const DenseVector<VT,TF>& dv ) noexcept
+BLAZE_ALWAYS_INLINE auto data_backend( const DenseVector<VT,TF>& dv ) noexcept
+   -> EnableIf_t< HasConstDataAccess_v<VT>, const typename VT::ElementType* >
 {
    return (~dv).data();
 }

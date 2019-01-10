@@ -78,12 +78,14 @@
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsBLASCompatible.h>
+#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
@@ -562,8 +564,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -581,7 +583,7 @@ class DMatTDMatMultExpr
 
       for( size_t i=0UL; i<ibegin; ++i ) {
          for( size_t j=0UL; j<N; ++j ) {
-            reset( (~C)(i,j) );
+            reset( C(i,j) );
          }
       }
       for( size_t i=ibegin; i<iend; ++i )
@@ -603,7 +605,7 @@ class DMatTDMatMultExpr
 
          if( ( SYM || HERM || LOW || UPP ) && ( jbegin > jend ) ) {
             for( size_t j=0UL; j<N; ++j ) {
-               reset( (~C)(i,j) );
+               reset( C(i,j) );
             }
             continue;
          }
@@ -611,7 +613,7 @@ class DMatTDMatMultExpr
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          for( size_t j=( SYM || HERM ? i : 0UL ); j<jbegin; ++j ) {
-            reset( (~C)(i,j) );
+            reset( C(i,j) );
          }
          for( size_t j=jbegin; j<jend; ++j )
          {
@@ -633,25 +635,25 @@ class DMatTDMatMultExpr
                                   :( K ) ) );
             BLAZE_INTERNAL_ASSERT( kbegin < kend, "Invalid loop indices detected" );
 
-            (~C)(i,j) = A(i,kbegin) * B(kbegin,j);
+            C(i,j) = A(i,kbegin) * B(kbegin,j);
             for( size_t k=kbegin+1UL; k<kend; ++k ) {
-               (~C)(i,j) += A(i,k) * B(k,j);
+               C(i,j) += A(i,k) * B(k,j);
             }
          }
          for( size_t j=jend; j<N; ++j ) {
-            reset( (~C)(i,j) );
+            reset( C(i,j) );
          }
       }
       for( size_t i=iend; i<M; ++i ) {
          for( size_t j=0UL; j<N; ++j ) {
-            reset( (~C)(i,j) );
+            reset( C(i,j) );
          }
       }
 
       if( SYM || HERM ) {
          for( size_t i=1UL; i<M; ++i ) {
             for( size_t j=0UL; j<i; ++j ) {
-               (~C)(i,j) = HERM ? conj( (~C)(j,i) ) : (~C)(j,i);
+               C(i,j) = HERM ? conj( C(j,i) ) : C(j,i);
             }
          }
       }
@@ -676,8 +678,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -695,7 +697,7 @@ class DMatTDMatMultExpr
 
       for( size_t j=0UL; j<jbegin; ++j ) {
          for( size_t i=0UL; i<M; ++i ) {
-            reset( (~C)(i,j) );
+            reset( C(i,j) );
          }
       }
       for( size_t j=jbegin; j<jend; ++j )
@@ -717,7 +719,7 @@ class DMatTDMatMultExpr
 
          if( ( SYM || HERM || LOW || UPP ) && ( ibegin > iend ) ) {
             for( size_t i=0UL; i<M; ++i ) {
-               reset( (~C)(i,j) );
+               reset( C(i,j) );
             }
             continue;
          }
@@ -725,7 +727,7 @@ class DMatTDMatMultExpr
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          for( size_t i=( SYM || HERM ? j : 0UL ); i<ibegin; ++i ) {
-            reset( (~C)(i,j) );
+            reset( C(i,j) );
          }
          for( size_t i=ibegin; i<iend; ++i )
          {
@@ -747,25 +749,25 @@ class DMatTDMatMultExpr
                                   :( K ) ) );
             BLAZE_INTERNAL_ASSERT( kbegin < kend, "Invalid loop indices detected" );
 
-            (~C)(i,j) = A(i,kbegin) * B(kbegin,j);
+            C(i,j) = A(i,kbegin) * B(kbegin,j);
             for( size_t k=kbegin+1UL; k<kend; ++k ) {
-               (~C)(i,j) += A(i,k) * B(k,j);
+               C(i,j) += A(i,k) * B(k,j);
             }
          }
          for( size_t i=iend; i<M; ++i ) {
-            reset( (~C)(i,j) );
+            reset( C(i,j) );
          }
       }
       for( size_t j=jend; j<N; ++j ) {
          for( size_t i=0UL; i<M; ++i ) {
-            reset( (~C)(i,j) );
+            reset( C(i,j) );
          }
       }
 
       if( SYM || HERM ) {
          for( size_t j=1UL; j<N; ++j ) {
             for( size_t i=0UL; i<j; ++i ) {
-               (~C)(i,j) = HERM ? conj( (~C)(j,i) ) : (~C)(j,i);
+               C(i,j) = HERM ? conj( C(j,i) ) : C(j,i);
             }
          }
       }
@@ -790,8 +792,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -808,15 +810,15 @@ class DMatTDMatMultExpr
 
          if( IsUpper_v<MT4> ) {
             for( size_t j=0UL; j<jbegin; ++j ) {
-               reset( (~C)(i,j) );
+               reset( C(i,j) );
             }
          }
          for( size_t j=jbegin; j<jend; ++j ) {
-            (~C)(i,j) = A(i,j) * B(j,j);
+            C(i,j) = A(i,j) * B(j,j);
          }
          if( IsLower_v<MT4> ) {
             for( size_t j=jend; j<N; ++j ) {
-               reset( (~C)(i,j) );
+               reset( C(i,j) );
             }
          }
       }
@@ -841,8 +843,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       constexpr size_t block( BLOCK_SIZE );
 
@@ -864,15 +866,15 @@ class DMatTDMatMultExpr
 
                if( IsLower_v<MT4> ) {
                   for( size_t i=ii; i<ibegin; ++i ) {
-                     reset( (~C)(i,j) );
+                     reset( C(i,j) );
                   }
                }
                for( size_t i=ibegin; i<ipos; ++i ) {
-                  (~C)(i,j) = A(i,j) * B(j,j);
+                  C(i,j) = A(i,j) * B(j,j);
                }
                if( IsUpper_v<MT4> ) {
                   for( size_t i=ipos; i<iend; ++i ) {
-                     reset( (~C)(i,j) );
+                     reset( C(i,j) );
                   }
                }
             }
@@ -899,8 +901,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       constexpr size_t block( BLOCK_SIZE );
 
@@ -922,15 +924,15 @@ class DMatTDMatMultExpr
 
                if( IsUpper_v<MT5> ) {
                   for( size_t j=jj; j<jbegin; ++j ) {
-                     reset( (~C)(i,j) );
+                     reset( C(i,j) );
                   }
                }
                for( size_t j=jbegin; j<jpos; ++j ) {
-                  (~C)(i,j) = A(i,i) * B(i,j);
+                  C(i,j) = A(i,i) * B(i,j);
                }
                if( IsLower_v<MT5> ) {
                   for( size_t j=jpos; j<jend; ++j ) {
-                     reset( (~C)(i,j) );
+                     reset( C(i,j) );
                   }
                }
             }
@@ -957,8 +959,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -975,15 +977,15 @@ class DMatTDMatMultExpr
 
          if( IsLower_v<MT5> ) {
             for( size_t i=0UL; i<ibegin; ++i ) {
-               reset( (~C)(i,j) );
+               reset( C(i,j) );
             }
          }
          for( size_t i=ibegin; i<iend; ++i ) {
-            (~C)(i,j) = A(i,i) * B(i,j);
+            C(i,j) = A(i,i) * B(i,j);
          }
          if( IsUpper_v<MT5> ) {
             for( size_t i=iend; i<M; ++i ) {
-               reset( (~C)(i,j) );
+               reset( C(i,j) );
             }
          }
       }
@@ -1008,8 +1010,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       reset( C );
 
@@ -1037,8 +1039,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       selectDefaultAssignKernel( C, A, B );
    }
@@ -1063,8 +1065,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectSmallAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+   static inline auto selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       constexpr bool remainder( !IsPadded_v<MT4> || !IsPadded_v<MT5> );
 
@@ -1075,7 +1077,7 @@ class DMatTDMatMultExpr
       BLAZE_INTERNAL_ASSERT( !( SYM || HERM || LOW || UPP ) || ( M == N ), "Broken invariant detected" );
 
       if( LOW && UPP ) {
-         reset( ~C );
+         reset( C );
       }
 
       {
@@ -1118,24 +1120,24 @@ class DMatTDMatMultExpr
                   xmm8 += a2 * b4;
                }
 
-               (~C)(i    ,j    ) = sum( xmm1 );
-               (~C)(i    ,j+1UL) = sum( xmm2 );
-               (~C)(i    ,j+2UL) = sum( xmm3 );
-               (~C)(i    ,j+3UL) = sum( xmm4 );
-               (~C)(i+1UL,j    ) = sum( xmm5 );
-               (~C)(i+1UL,j+1UL) = sum( xmm6 );
-               (~C)(i+1UL,j+2UL) = sum( xmm7 );
-               (~C)(i+1UL,j+3UL) = sum( xmm8 );
+               C(i    ,j    ) = sum( xmm1 );
+               C(i    ,j+1UL) = sum( xmm2 );
+               C(i    ,j+2UL) = sum( xmm3 );
+               C(i    ,j+3UL) = sum( xmm4 );
+               C(i+1UL,j    ) = sum( xmm5 );
+               C(i+1UL,j+1UL) = sum( xmm6 );
+               C(i+1UL,j+2UL) = sum( xmm7 );
+               C(i+1UL,j+3UL) = sum( xmm8 );
 
                for( ; remainder && k<kend; ++k ) {
-                  (~C)(i    ,j    ) += A(i    ,k) * B(k,j    );
-                  (~C)(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
-                  (~C)(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL);
-                  (~C)(i    ,j+3UL) += A(i    ,k) * B(k,j+3UL);
-                  (~C)(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
-                  (~C)(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
-                  (~C)(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL);
-                  (~C)(i+1UL,j+3UL) += A(i+1UL,k) * B(k,j+3UL);
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL);
+                  C(i    ,j+3UL) += A(i    ,k) * B(k,j+3UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+                  C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL);
+                  C(i+1UL,j+3UL) += A(i+1UL,k) * B(k,j+3UL);
                }
             }
 
@@ -1165,16 +1167,16 @@ class DMatTDMatMultExpr
                   xmm4 += a2 * b2;
                }
 
-               (~C)(i    ,j    ) = sum( xmm1 );
-               (~C)(i    ,j+1UL) = sum( xmm2 );
-               (~C)(i+1UL,j    ) = sum( xmm3 );
-               (~C)(i+1UL,j+1UL) = sum( xmm4 );
+               C(i    ,j    ) = sum( xmm1 );
+               C(i    ,j+1UL) = sum( xmm2 );
+               C(i+1UL,j    ) = sum( xmm3 );
+               C(i+1UL,j+1UL) = sum( xmm4 );
 
                for( ; remainder && k<kend; ++k ) {
-                  (~C)(i    ,j    ) += A(i    ,k) * B(k,j    );
-                  (~C)(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
-                  (~C)(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
-                  (~C)(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
                }
             }
 
@@ -1197,12 +1199,12 @@ class DMatTDMatMultExpr
                   xmm2 += A.load(i+1UL,k) * b1;
                }
 
-               (~C)(i    ,j) = sum( xmm1 );
-               (~C)(i+1UL,j) = sum( xmm2 );
+               C(i    ,j) = sum( xmm1 );
+               C(i+1UL,j) = sum( xmm2 );
 
                for( ; remainder && k<kend; ++k ) {
-                  (~C)(i    ,j) += A(i    ,k) * B(k,j);
-                  (~C)(i+1UL,j) += A(i+1UL,k) * B(k,j);
+                  C(i    ,j) += A(i    ,k) * B(k,j);
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j);
                }
             }
          }
@@ -1233,16 +1235,16 @@ class DMatTDMatMultExpr
                   xmm4 += a1 * B.load(k,j+3UL);
                }
 
-               (~C)(i,j    ) = sum( xmm1 );
-               (~C)(i,j+1UL) = sum( xmm2 );
-               (~C)(i,j+2UL) = sum( xmm3 );
-               (~C)(i,j+3UL) = sum( xmm4 );
+               C(i,j    ) = sum( xmm1 );
+               C(i,j+1UL) = sum( xmm2 );
+               C(i,j+2UL) = sum( xmm3 );
+               C(i,j+3UL) = sum( xmm4 );
 
                for( ; remainder && k<kend; ++k ) {
-                  (~C)(i,j    ) += A(i,k) * B(k,j    );
-                  (~C)(i,j+1UL) += A(i,k) * B(k,j+1UL);
-                  (~C)(i,j+2UL) += A(i,k) * B(k,j+2UL);
-                  (~C)(i,j+3UL) += A(i,k) * B(k,j+3UL);
+                  C(i,j    ) += A(i,k) * B(k,j    );
+                  C(i,j+1UL) += A(i,k) * B(k,j+1UL);
+                  C(i,j+2UL) += A(i,k) * B(k,j+2UL);
+                  C(i,j+3UL) += A(i,k) * B(k,j+3UL);
                }
             }
 
@@ -1265,12 +1267,12 @@ class DMatTDMatMultExpr
                   xmm2 += a1 * B.load(k,j+1UL);
                }
 
-               (~C)(i,j    ) = sum( xmm1 );
-               (~C)(i,j+1UL) = sum( xmm2 );
+               C(i,j    ) = sum( xmm1 );
+               C(i,j+1UL) = sum( xmm2 );
 
                for( ; remainder && k<kend; ++k ) {
-                  (~C)(i,j    ) += A(i,k) * B(k,j    );
-                  (~C)(i,j+1UL) += A(i,k) * B(k,j+1UL);
+                  C(i,j    ) += A(i,k) * B(k,j    );
+                  C(i,j+1UL) += A(i,k) * B(k,j+1UL);
                }
             }
 
@@ -1290,10 +1292,10 @@ class DMatTDMatMultExpr
                   xmm1 += A.load(i,k) * B.load(k,j);
                }
 
-               (~C)(i,j) = sum( xmm1 );
+               C(i,j) = sum( xmm1 );
 
                for( ; remainder && k<K; ++k ) {
-                  (~C)(i,j) += A(i,k) * B(k,j);
+                  C(i,j) += A(i,k) * B(k,j);
                }
             }
          }
@@ -1303,7 +1305,7 @@ class DMatTDMatMultExpr
          for( size_t i=2UL; i<M; ++i ) {
             const size_t jend( 2UL * ( i/2UL ) );
             for( size_t j=0UL; j<jend; ++j ) {
-               (~C)(i,j) = HERM ? conj( (~C)(j,i) ) : (~C)(j,i);
+               C(i,j) = HERM ? conj( C(j,i) ) : C(j,i);
             }
          }
       }
@@ -1311,7 +1313,7 @@ class DMatTDMatMultExpr
          for( size_t j=2UL; j<N; ++j ) {
             const size_t iend( 2UL * ( j/2UL ) );
             for( size_t i=0UL; i<iend; ++i ) {
-               reset( (~C)(i,j) );
+               reset( C(i,j) );
             }
          }
       }
@@ -1319,7 +1321,7 @@ class DMatTDMatMultExpr
          for( size_t i=2UL; i<M; ++i ) {
             const size_t jend( 2UL * ( i/2UL ) );
             for( size_t j=0UL; j<jend; ++j ) {
-               reset( (~C)(i,j) );
+               reset( C(i,j) );
             }
          }
       }
@@ -1345,8 +1347,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectSmallAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   static inline auto selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       constexpr bool remainder( !IsPadded_v<MT4> || !IsPadded_v<MT5> );
 
@@ -1357,7 +1359,7 @@ class DMatTDMatMultExpr
       BLAZE_INTERNAL_ASSERT( !( SYM || HERM || LOW || UPP ) || ( M == N ), "Broken invariant detected" );
 
       if( LOW && UPP ) {
-         reset( ~C );
+         reset( C );
       }
 
       {
@@ -1400,24 +1402,24 @@ class DMatTDMatMultExpr
                   xmm8 += a4 * b2;
                }
 
-               (~C)(i    ,j    ) = sum( xmm1 );
-               (~C)(i    ,j+1UL) = sum( xmm2 );
-               (~C)(i+1UL,j    ) = sum( xmm3 );
-               (~C)(i+1UL,j+1UL) = sum( xmm4 );
-               (~C)(i+2UL,j    ) = sum( xmm5 );
-               (~C)(i+2UL,j+1UL) = sum( xmm6 );
-               (~C)(i+3UL,j    ) = sum( xmm7 );
-               (~C)(i+3UL,j+1UL) = sum( xmm8 );
+               C(i    ,j    ) = sum( xmm1 );
+               C(i    ,j+1UL) = sum( xmm2 );
+               C(i+1UL,j    ) = sum( xmm3 );
+               C(i+1UL,j+1UL) = sum( xmm4 );
+               C(i+2UL,j    ) = sum( xmm5 );
+               C(i+2UL,j+1UL) = sum( xmm6 );
+               C(i+3UL,j    ) = sum( xmm7 );
+               C(i+3UL,j+1UL) = sum( xmm8 );
 
                for( ; remainder && k<kend; ++k ) {
-                  (~C)(i    ,j    ) += A(i    ,k) * B(k,j    );
-                  (~C)(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
-                  (~C)(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
-                  (~C)(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
-                  (~C)(i+2UL,j    ) += A(i+2UL,k) * B(k,j    );
-                  (~C)(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL);
-                  (~C)(i+3UL,j    ) += A(i+3UL,k) * B(k,j    );
-                  (~C)(i+3UL,j+1UL) += A(i+3UL,k) * B(k,j+1UL);
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL);
+                  C(i+3UL,j    ) += A(i+3UL,k) * B(k,j    );
+                  C(i+3UL,j+1UL) += A(i+3UL,k) * B(k,j+1UL);
                }
             }
 
@@ -1442,16 +1444,16 @@ class DMatTDMatMultExpr
                   xmm4 += A.load(i+3UL,k) * b1;
                }
 
-               (~C)(i    ,j) = sum( xmm1 );
-               (~C)(i+1UL,j) = sum( xmm2 );
-               (~C)(i+2UL,j) = sum( xmm3 );
-               (~C)(i+3UL,j) = sum( xmm4 );
+               C(i    ,j) = sum( xmm1 );
+               C(i+1UL,j) = sum( xmm2 );
+               C(i+2UL,j) = sum( xmm3 );
+               C(i+3UL,j) = sum( xmm4 );
 
                for( ; remainder && k<kend; ++k ) {
-                  (~C)(i    ,j) += A(i    ,k) * B(k,j);
-                  (~C)(i+1UL,j) += A(i+1UL,k) * B(k,j);
-                  (~C)(i+2UL,j) += A(i+2UL,k) * B(k,j);
-                  (~C)(i+3UL,j) += A(i+3UL,k) * B(k,j);
+                  C(i    ,j) += A(i    ,k) * B(k,j);
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j);
+                  C(i+2UL,j) += A(i+2UL,k) * B(k,j);
+                  C(i+3UL,j) += A(i+3UL,k) * B(k,j);
                }
             }
          }
@@ -1486,16 +1488,16 @@ class DMatTDMatMultExpr
                   xmm4 += a2 * b2;
                }
 
-               (~C)(i    ,j    ) = sum( xmm1 );
-               (~C)(i    ,j+1UL) = sum( xmm2 );
-               (~C)(i+1UL,j    ) = sum( xmm3 );
-               (~C)(i+1UL,j+1UL) = sum( xmm4 );
+               C(i    ,j    ) = sum( xmm1 );
+               C(i    ,j+1UL) = sum( xmm2 );
+               C(i+1UL,j    ) = sum( xmm3 );
+               C(i+1UL,j+1UL) = sum( xmm4 );
 
                for( ; remainder && k<kend; ++k ) {
-                  (~C)(i    ,j    ) += A(i    ,k) * B(k,j    );
-                  (~C)(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
-                  (~C)(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
-                  (~C)(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
                }
             }
 
@@ -1518,12 +1520,12 @@ class DMatTDMatMultExpr
                   xmm2 += A.load(i+1UL,k) * b1;
                }
 
-               (~C)(i    ,j) = sum( xmm1 );
-               (~C)(i+1UL,j) = sum( xmm2 );
+               C(i    ,j) = sum( xmm1 );
+               C(i+1UL,j) = sum( xmm2 );
 
                for( ; remainder && k<kend; ++k ) {
-                  (~C)(i    ,j) += A(i    ,k) * B(k,j);
-                  (~C)(i+1UL,j) += A(i+1UL,k) * B(k,j);
+                  C(i    ,j) += A(i    ,k) * B(k,j);
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j);
                }
             }
          }
@@ -1552,12 +1554,12 @@ class DMatTDMatMultExpr
                   xmm2 += a1 * B.load(k,j+1UL);
                }
 
-               (~C)(i,j    ) = sum( xmm1 );
-               (~C)(i,j+1UL) = sum( xmm2 );
+               C(i,j    ) = sum( xmm1 );
+               C(i,j+1UL) = sum( xmm2 );
 
                for( ; remainder && k<kend; ++k ) {
-                  (~C)(i,j    ) += A(i,k) * B(k,j    );
-                  (~C)(i,j+1UL) += A(i,k) * B(k,j+1UL);
+                  C(i,j    ) += A(i,k) * B(k,j    );
+                  C(i,j+1UL) += A(i,k) * B(k,j+1UL);
                }
             }
 
@@ -1577,10 +1579,10 @@ class DMatTDMatMultExpr
                   xmm1 += A.load(i,k) * B.load(k,j);
                }
 
-               (~C)(i,j) = sum( xmm1 );
+               C(i,j) = sum( xmm1 );
 
                for( ; remainder && k<K; ++k ) {
-                  (~C)(i,j) += A(i,k) * B(k,j);
+                  C(i,j) += A(i,k) * B(k,j);
                }
             }
          }
@@ -1590,7 +1592,7 @@ class DMatTDMatMultExpr
          for( size_t j=4UL; j<N; ++j ) {
             const size_t iend( 4UL * ( j/4UL ) );
             for( size_t i=0UL; i<iend; ++i ) {
-               (~C)(i,j) = HERM ? conj( (~C)(j,i) ) : (~C)(j,i);
+               C(i,j) = HERM ? conj( C(j,i) ) : C(j,i);
             }
          }
       }
@@ -1598,7 +1600,7 @@ class DMatTDMatMultExpr
          for( size_t j=4UL; j<N; ++j ) {
             const size_t iend( 4UL * ( j/4UL ) );
             for( size_t i=0UL; i<iend; ++i ) {
-               reset( (~C)(i,j) );
+               reset( C(i,j) );
             }
          }
       }
@@ -1606,7 +1608,7 @@ class DMatTDMatMultExpr
          for( size_t i=4UL; i<N; ++i ) {
             const size_t jend( 4UL * ( i/4UL ) );
             for( size_t j=0UL; j<jend; ++j ) {
-               reset( (~C)(i,j) );
+               reset( C(i,j) );
             }
          }
       }
@@ -1631,8 +1633,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       selectDefaultAssignKernel( C, A, B );
    }
@@ -1657,8 +1659,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       if( SYM )
          smmm( C, A, B, ElementType(1) );
@@ -1691,8 +1693,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
-      selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
    {
       selectLargeAssignKernel( C, A, B );
    }
@@ -1717,8 +1719,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
-      selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
    {
       using ET = ElementType_t<MT3>;
 
@@ -1860,8 +1862,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -1921,11 +1923,11 @@ class DMatTDMatMultExpr
             const size_t kpos( kbegin + ( knum & size_t(-2) ) );
 
             for( size_t k=kbegin; k<kpos; k+=2UL ) {
-               (~C)(i,j) += A(i,k    ) * B(k    ,j);
-               (~C)(i,j) += A(i,k+1UL) * B(k+1UL,j);
+               C(i,j) += A(i,k    ) * B(k    ,j);
+               C(i,j) += A(i,k+1UL) * B(k+1UL,j);
             }
             if( kpos < kend ) {
-               (~C)(i,j) += A(i,kpos) * B(kpos,j);
+               C(i,j) += A(i,kpos) * B(kpos,j);
             }
          }
       }
@@ -1950,8 +1952,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -2011,11 +2013,11 @@ class DMatTDMatMultExpr
             const size_t kpos( kbegin + ( knum & size_t(-2) ) );
 
             for( size_t k=kbegin; k<kpos; k+=2UL ) {
-               (~C)(i,j) += A(i,k    ) * B(k    ,j);
-               (~C)(i,j) += A(i,k+1UL) * B(k+1UL,j);
+               C(i,j) += A(i,k    ) * B(k    ,j);
+               C(i,j) += A(i,k+1UL) * B(k+1UL,j);
             }
             if( kpos < kend ) {
-               (~C)(i,j) += A(i,kpos) * B(kpos,j);
+               C(i,j) += A(i,kpos) * B(kpos,j);
             }
          }
       }
@@ -2040,8 +2042,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -2060,11 +2062,11 @@ class DMatTDMatMultExpr
          const size_t jpos( jbegin + ( jnum & size_t(-2) ) );
 
          for( size_t j=jbegin; j<jpos; j+=2UL ) {
-            (~C)(i,j    ) += A(i,j    ) * B(j    ,j    );
-            (~C)(i,j+1UL) += A(i,j+1UL) * B(j+1UL,j+1UL);
+            C(i,j    ) += A(i,j    ) * B(j    ,j    );
+            C(i,j+1UL) += A(i,j+1UL) * B(j+1UL,j+1UL);
          }
          if( jpos < jend ) {
-            (~C)(i,jpos) += A(i,jpos) * B(jpos,jpos);
+            C(i,jpos) += A(i,jpos) * B(jpos,jpos);
          }
       }
    }
@@ -2088,8 +2090,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       constexpr size_t block( BLOCK_SIZE );
 
@@ -2110,7 +2112,7 @@ class DMatTDMatMultExpr
                                   :( iend ) );
 
                for( size_t i=ibegin; i<ipos; ++i ) {
-                  (~C)(i,j) += A(i,j) * B(j,j);
+                  C(i,j) += A(i,j) * B(j,j);
                }
             }
          }
@@ -2136,8 +2138,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       constexpr size_t block( BLOCK_SIZE );
 
@@ -2158,7 +2160,7 @@ class DMatTDMatMultExpr
                                   :( jend ) );
 
                for( size_t j=jbegin; j<jpos; ++j ) {
-                  (~C)(i,j) += A(i,i) * B(i,j);
+                  C(i,j) += A(i,i) * B(i,j);
                }
             }
          }
@@ -2184,8 +2186,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -2204,11 +2206,11 @@ class DMatTDMatMultExpr
          const size_t ipos( ibegin + ( inum & size_t(-2) ) );
 
          for( size_t i=ibegin; i<ipos; i+=2UL ) {
-            (~C)(i    ,j) += A(i    ,i    ) * B(i    ,j);
-            (~C)(i+1UL,j) += A(i+1UL,i+1UL) * B(i+1UL,j);
+            C(i    ,j) += A(i    ,i    ) * B(i    ,j);
+            C(i+1UL,j) += A(i+1UL,i+1UL) * B(i+1UL,j);
          }
          if( ipos < iend ) {
-            (~C)(ipos,j) += A(ipos,ipos) * B(ipos,j);
+            C(ipos,j) += A(ipos,ipos) * B(ipos,j);
          }
       }
    }
@@ -2232,8 +2234,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       for( size_t i=0UL; i<A.rows(); ++i ) {
          C(i,i) += A(i,i) * B(i,i);
@@ -2259,8 +2261,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       selectDefaultAddAssignKernel( C, A, B );
    }
@@ -2285,8 +2287,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectSmallAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+   static inline auto selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       constexpr bool remainder( !IsPadded_v<MT4> || !IsPadded_v<MT5> );
 
@@ -2335,24 +2337,24 @@ class DMatTDMatMultExpr
                xmm8 += a2 * b4;
             }
 
-            (~C)(i    ,j    ) += sum( xmm1 );
-            (~C)(i    ,j+1UL) += sum( xmm2 );
-            (~C)(i    ,j+2UL) += sum( xmm3 );
-            (~C)(i    ,j+3UL) += sum( xmm4 );
-            (~C)(i+1UL,j    ) += sum( xmm5 );
-            (~C)(i+1UL,j+1UL) += sum( xmm6 );
-            (~C)(i+1UL,j+2UL) += sum( xmm7 );
-            (~C)(i+1UL,j+3UL) += sum( xmm8 );
+            C(i    ,j    ) += sum( xmm1 );
+            C(i    ,j+1UL) += sum( xmm2 );
+            C(i    ,j+2UL) += sum( xmm3 );
+            C(i    ,j+3UL) += sum( xmm4 );
+            C(i+1UL,j    ) += sum( xmm5 );
+            C(i+1UL,j+1UL) += sum( xmm6 );
+            C(i+1UL,j+2UL) += sum( xmm7 );
+            C(i+1UL,j+3UL) += sum( xmm8 );
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j    ) += A(i    ,k) * B(k,j    );
-               (~C)(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
-               (~C)(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL);
-               (~C)(i    ,j+3UL) += A(i    ,k) * B(k,j+3UL);
-               (~C)(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
-               (~C)(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
-               (~C)(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL);
-               (~C)(i+1UL,j+3UL) += A(i+1UL,k) * B(k,j+3UL);
+               C(i    ,j    ) += A(i    ,k) * B(k,j    );
+               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+               C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL);
+               C(i    ,j+3UL) += A(i    ,k) * B(k,j+3UL);
+               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+               C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL);
+               C(i+1UL,j+3UL) += A(i+1UL,k) * B(k,j+3UL);
             }
          }
 
@@ -2382,16 +2384,16 @@ class DMatTDMatMultExpr
                xmm4 += a2 * b2;
             }
 
-            (~C)(i    ,j    ) += sum( xmm1 );
-            (~C)(i    ,j+1UL) += sum( xmm2 );
-            (~C)(i+1UL,j    ) += sum( xmm3 );
-            (~C)(i+1UL,j+1UL) += sum( xmm4 );
+            C(i    ,j    ) += sum( xmm1 );
+            C(i    ,j+1UL) += sum( xmm2 );
+            C(i+1UL,j    ) += sum( xmm3 );
+            C(i+1UL,j+1UL) += sum( xmm4 );
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j    ) += A(i    ,k) * B(k,j    );
-               (~C)(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
-               (~C)(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
-               (~C)(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+               C(i    ,j    ) += A(i    ,k) * B(k,j    );
+               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
             }
          }
 
@@ -2414,12 +2416,12 @@ class DMatTDMatMultExpr
                xmm2 += A.load(i+1UL,k) * b1;
             }
 
-            (~C)(i    ,j) += sum( xmm1 );
-            (~C)(i+1UL,j) += sum( xmm2 );
+            C(i    ,j) += sum( xmm1 );
+            C(i+1UL,j) += sum( xmm2 );
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j) += A(i    ,k) * B(k,j);
-               (~C)(i+1UL,j) += A(i+1UL,k) * B(k,j);
+               C(i    ,j) += A(i    ,k) * B(k,j);
+               C(i+1UL,j) += A(i+1UL,k) * B(k,j);
             }
          }
       }
@@ -2450,16 +2452,16 @@ class DMatTDMatMultExpr
                xmm4 += a1 * B.load(k,j+3UL);
             }
 
-            (~C)(i,j    ) += sum( xmm1 );
-            (~C)(i,j+1UL) += sum( xmm2 );
-            (~C)(i,j+2UL) += sum( xmm3 );
-            (~C)(i,j+3UL) += sum( xmm4 );
+            C(i,j    ) += sum( xmm1 );
+            C(i,j+1UL) += sum( xmm2 );
+            C(i,j+2UL) += sum( xmm3 );
+            C(i,j+3UL) += sum( xmm4 );
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i,j    ) += A(i,k) * B(k,j    );
-               (~C)(i,j+1UL) += A(i,k) * B(k,j+1UL);
-               (~C)(i,j+2UL) += A(i,k) * B(k,j+2UL);
-               (~C)(i,j+3UL) += A(i,k) * B(k,j+3UL);
+               C(i,j    ) += A(i,k) * B(k,j    );
+               C(i,j+1UL) += A(i,k) * B(k,j+1UL);
+               C(i,j+2UL) += A(i,k) * B(k,j+2UL);
+               C(i,j+3UL) += A(i,k) * B(k,j+3UL);
             }
          }
 
@@ -2482,12 +2484,12 @@ class DMatTDMatMultExpr
                xmm2 += a1 * B.load(k,j+1UL);
             }
 
-            (~C)(i,j    ) += sum( xmm1 );
-            (~C)(i,j+1UL) += sum( xmm2 );
+            C(i,j    ) += sum( xmm1 );
+            C(i,j+1UL) += sum( xmm2 );
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i,j    ) += A(i,k) * B(k,j    );
-               (~C)(i,j+1UL) += A(i,k) * B(k,j+1UL);
+               C(i,j    ) += A(i,k) * B(k,j    );
+               C(i,j+1UL) += A(i,k) * B(k,j+1UL);
             }
          }
 
@@ -2507,10 +2509,10 @@ class DMatTDMatMultExpr
                xmm1 += A.load(i,k) * B.load(k,j);
             }
 
-            (~C)(i,j) += sum( xmm1 );
+            C(i,j) += sum( xmm1 );
 
             for( ; remainder && k<K; ++k ) {
-               (~C)(i,j) += A(i,k) * B(k,j);
+               C(i,j) += A(i,k) * B(k,j);
             }
          }
       }
@@ -2536,8 +2538,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectSmallAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   static inline auto selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       constexpr bool remainder( !IsPadded_v<MT4> || !IsPadded_v<MT5> );
 
@@ -2585,24 +2587,24 @@ class DMatTDMatMultExpr
                xmm8 += a4 * b2;
             }
 
-            (~C)(i    ,j    ) += sum( xmm1 );
-            (~C)(i    ,j+1UL) += sum( xmm2 );
-            (~C)(i+1UL,j    ) += sum( xmm3 );
-            (~C)(i+1UL,j+1UL) += sum( xmm4 );
-            (~C)(i+2UL,j    ) += sum( xmm5 );
-            (~C)(i+2UL,j+1UL) += sum( xmm6 );
-            (~C)(i+3UL,j    ) += sum( xmm7 );
-            (~C)(i+3UL,j+1UL) += sum( xmm8 );
+            C(i    ,j    ) += sum( xmm1 );
+            C(i    ,j+1UL) += sum( xmm2 );
+            C(i+1UL,j    ) += sum( xmm3 );
+            C(i+1UL,j+1UL) += sum( xmm4 );
+            C(i+2UL,j    ) += sum( xmm5 );
+            C(i+2UL,j+1UL) += sum( xmm6 );
+            C(i+3UL,j    ) += sum( xmm7 );
+            C(i+3UL,j+1UL) += sum( xmm8 );
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j    ) += A(i    ,k) * B(k,j    );
-               (~C)(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
-               (~C)(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
-               (~C)(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
-               (~C)(i+2UL,j    ) += A(i+2UL,k) * B(k,j    );
-               (~C)(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL);
-               (~C)(i+3UL,j    ) += A(i+3UL,k) * B(k,j    );
-               (~C)(i+3UL,j+1UL) += A(i+3UL,k) * B(k,j+1UL);
+               C(i    ,j    ) += A(i    ,k) * B(k,j    );
+               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+               C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    );
+               C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL);
+               C(i+3UL,j    ) += A(i+3UL,k) * B(k,j    );
+               C(i+3UL,j+1UL) += A(i+3UL,k) * B(k,j+1UL);
             }
          }
 
@@ -2627,16 +2629,16 @@ class DMatTDMatMultExpr
                xmm4 += A.load(i+3UL,k) * b1;
             }
 
-            (~C)(i    ,j) += sum( xmm1 );
-            (~C)(i+1UL,j) += sum( xmm2 );
-            (~C)(i+2UL,j) += sum( xmm3 );
-            (~C)(i+3UL,j) += sum( xmm4 );
+            C(i    ,j) += sum( xmm1 );
+            C(i+1UL,j) += sum( xmm2 );
+            C(i+2UL,j) += sum( xmm3 );
+            C(i+3UL,j) += sum( xmm4 );
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j) += A(i    ,k) * B(k,j);
-               (~C)(i+1UL,j) += A(i+1UL,k) * B(k,j);
-               (~C)(i+2UL,j) += A(i+2UL,k) * B(k,j);
-               (~C)(i+3UL,j) += A(i+3UL,k) * B(k,j);
+               C(i    ,j) += A(i    ,k) * B(k,j);
+               C(i+1UL,j) += A(i+1UL,k) * B(k,j);
+               C(i+2UL,j) += A(i+2UL,k) * B(k,j);
+               C(i+3UL,j) += A(i+3UL,k) * B(k,j);
             }
          }
       }
@@ -2672,16 +2674,16 @@ class DMatTDMatMultExpr
                xmm4 += a2 * b2;
             }
 
-            (~C)(i    ,j    ) += sum( xmm1 );
-            (~C)(i    ,j+1UL) += sum( xmm2 );
-            (~C)(i+1UL,j    ) += sum( xmm3 );
-            (~C)(i+1UL,j+1UL) += sum( xmm4 );
+            C(i    ,j    ) += sum( xmm1 );
+            C(i    ,j+1UL) += sum( xmm2 );
+            C(i+1UL,j    ) += sum( xmm3 );
+            C(i+1UL,j+1UL) += sum( xmm4 );
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j    ) += A(i    ,k) * B(k,j    );
-               (~C)(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
-               (~C)(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
-               (~C)(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+               C(i    ,j    ) += A(i    ,k) * B(k,j    );
+               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
             }
          }
 
@@ -2704,12 +2706,12 @@ class DMatTDMatMultExpr
                xmm2 += A.load(i+1UL,k) * b1;
             }
 
-            (~C)(i    ,j) += sum( xmm1 );
-            (~C)(i+1UL,j) += sum( xmm2 );
+            C(i    ,j) += sum( xmm1 );
+            C(i+1UL,j) += sum( xmm2 );
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j) += A(i    ,k) * B(k,j);
-               (~C)(i+1UL,j) += A(i+1UL,k) * B(k,j);
+               C(i    ,j) += A(i    ,k) * B(k,j);
+               C(i+1UL,j) += A(i+1UL,k) * B(k,j);
             }
          }
       }
@@ -2738,12 +2740,12 @@ class DMatTDMatMultExpr
                xmm2 += a1 * B.load(k,j+1UL);
             }
 
-            (~C)(i,j    ) += sum( xmm1 );
-            (~C)(i,j+1UL) += sum( xmm2 );
+            C(i,j    ) += sum( xmm1 );
+            C(i,j+1UL) += sum( xmm2 );
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i,j    ) += A(i,k) * B(k,j    );
-               (~C)(i,j+1UL) += A(i,k) * B(k,j+1UL);
+               C(i,j    ) += A(i,k) * B(k,j    );
+               C(i,j+1UL) += A(i,k) * B(k,j+1UL);
             }
          }
 
@@ -2763,10 +2765,10 @@ class DMatTDMatMultExpr
                xmm1 += A.load(i,k) * B.load(k,j);
             }
 
-            (~C)(i,j) += sum( xmm1 );
+            C(i,j) += sum( xmm1 );
 
             for( ; remainder && k<K; ++k ) {
-               (~C)(i,j) += A(i,k) * B(k,j);
+               C(i,j) += A(i,k) * B(k,j);
             }
          }
       }
@@ -2791,8 +2793,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       selectDefaultAddAssignKernel( C, A, B );
    }
@@ -2817,8 +2819,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       if( LOW )
          lmmm( C, A, B, ElementType(1), ElementType(1) );
@@ -2847,8 +2849,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
-      selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
    {
       selectLargeAddAssignKernel( C, A, B );
    }
@@ -2873,8 +2875,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
-      selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
    {
       using ET = ElementType_t<MT3>;
 
@@ -2983,8 +2985,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -3044,11 +3046,11 @@ class DMatTDMatMultExpr
             const size_t kpos( kbegin + ( knum & size_t(-2) ) );
 
             for( size_t k=kbegin; k<kpos; k+=2UL ) {
-               (~C)(i,j) -= A(i,k    ) * B(k    ,j);
-               (~C)(i,j) -= A(i,k+1UL) * B(k+1UL,j);
+               C(i,j) -= A(i,k    ) * B(k    ,j);
+               C(i,j) -= A(i,k+1UL) * B(k+1UL,j);
             }
             if( kpos < kend ) {
-               (~C)(i,j) -= A(i,kpos) * B(kpos,j);
+               C(i,j) -= A(i,kpos) * B(kpos,j);
             }
          }
       }
@@ -3073,8 +3075,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -3134,11 +3136,11 @@ class DMatTDMatMultExpr
             const size_t kpos( kbegin + ( knum & size_t(-2) ) );
 
             for( size_t k=kbegin; k<kpos; k+=2UL ) {
-               (~C)(i,j) -= A(i,k    ) * B(k    ,j);
-               (~C)(i,j) -= A(i,k+1UL) * B(k+1UL,j);
+               C(i,j) -= A(i,k    ) * B(k    ,j);
+               C(i,j) -= A(i,k+1UL) * B(k+1UL,j);
             }
             if( kpos < kend ) {
-               (~C)(i,j) -= A(i,kpos) * B(kpos,j);
+               C(i,j) -= A(i,kpos) * B(kpos,j);
             }
          }
       }
@@ -3163,8 +3165,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -3183,11 +3185,11 @@ class DMatTDMatMultExpr
          const size_t jpos( jbegin + ( jnum & size_t(-2) ) );
 
          for( size_t j=jbegin; j<jpos; j+=2UL ) {
-            (~C)(i,j    ) -= A(i,j    ) * B(j    ,j    );
-            (~C)(i,j+1UL) -= A(i,j+1UL) * B(j+1UL,j+1UL);
+            C(i,j    ) -= A(i,j    ) * B(j    ,j    );
+            C(i,j+1UL) -= A(i,j+1UL) * B(j+1UL,j+1UL);
          }
          if( jpos < jend ) {
-            (~C)(i,jpos) -= A(i,jpos) * B(jpos,jpos);
+            C(i,jpos) -= A(i,jpos) * B(jpos,jpos);
          }
       }
    }
@@ -3211,8 +3213,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       constexpr size_t block( BLOCK_SIZE );
 
@@ -3233,7 +3235,7 @@ class DMatTDMatMultExpr
                                   :( iend ) );
 
                for( size_t i=ibegin; i<ipos; ++i ) {
-                  (~C)(i,j) -= A(i,j) * B(j,j);
+                  C(i,j) -= A(i,j) * B(j,j);
                }
             }
          }
@@ -3259,8 +3261,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       constexpr size_t block( BLOCK_SIZE );
 
@@ -3281,7 +3283,7 @@ class DMatTDMatMultExpr
                                   :( jend ) );
 
                for( size_t j=jbegin; j<jpos; ++j ) {
-                  (~C)(i,j) -= A(i,i) * B(i,j);
+                  C(i,j) -= A(i,i) * B(i,j);
                }
             }
          }
@@ -3307,8 +3309,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -3327,11 +3329,11 @@ class DMatTDMatMultExpr
          const size_t ipos( ibegin + ( inum & size_t(-2) ) );
 
          for( size_t i=ibegin; i<ipos; i+=2UL ) {
-            (~C)(i    ,j) -= A(i    ,i    ) * B(i    ,j);
-            (~C)(i+1UL,j) -= A(i+1UL,i+1UL) * B(i+1UL,j);
+            C(i    ,j) -= A(i    ,i    ) * B(i    ,j);
+            C(i+1UL,j) -= A(i+1UL,i+1UL) * B(i+1UL,j);
          }
          if( ipos < iend ) {
-            (~C)(ipos,j) -= A(ipos,ipos) * B(ipos,j);
+            C(ipos,j) -= A(ipos,ipos) * B(ipos,j);
          }
       }
    }
@@ -3355,8 +3357,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       for( size_t i=0UL; i<A.rows(); ++i ) {
          C(i,i) -= A(i,i) * B(i,i);
@@ -3382,10 +3384,10 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
-      selectDefaultSubAssignKernel( ~C, A, B );
+      selectDefaultSubAssignKernel( C, A, B );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -3408,8 +3410,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectSmallSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+   static inline auto selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       constexpr bool remainder( !IsPadded_v<MT4> || !IsPadded_v<MT5> );
 
@@ -3458,24 +3460,24 @@ class DMatTDMatMultExpr
                xmm8 += a2 * b4;
             }
 
-            (~C)(i    ,j    ) -= sum( xmm1 );
-            (~C)(i    ,j+1UL) -= sum( xmm2 );
-            (~C)(i    ,j+2UL) -= sum( xmm3 );
-            (~C)(i    ,j+3UL) -= sum( xmm4 );
-            (~C)(i+1UL,j    ) -= sum( xmm5 );
-            (~C)(i+1UL,j+1UL) -= sum( xmm6 );
-            (~C)(i+1UL,j+2UL) -= sum( xmm7 );
-            (~C)(i+1UL,j+3UL) -= sum( xmm8 );
+            C(i    ,j    ) -= sum( xmm1 );
+            C(i    ,j+1UL) -= sum( xmm2 );
+            C(i    ,j+2UL) -= sum( xmm3 );
+            C(i    ,j+3UL) -= sum( xmm4 );
+            C(i+1UL,j    ) -= sum( xmm5 );
+            C(i+1UL,j+1UL) -= sum( xmm6 );
+            C(i+1UL,j+2UL) -= sum( xmm7 );
+            C(i+1UL,j+3UL) -= sum( xmm8 );
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j    ) -= A(i    ,k) * B(k,j    );
-               (~C)(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
-               (~C)(i    ,j+2UL) -= A(i    ,k) * B(k,j+2UL);
-               (~C)(i    ,j+3UL) -= A(i    ,k) * B(k,j+3UL);
-               (~C)(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
-               (~C)(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
-               (~C)(i+1UL,j+2UL) -= A(i+1UL,k) * B(k,j+2UL);
-               (~C)(i+1UL,j+3UL) -= A(i+1UL,k) * B(k,j+3UL);
+               C(i    ,j    ) -= A(i    ,k) * B(k,j    );
+               C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
+               C(i    ,j+2UL) -= A(i    ,k) * B(k,j+2UL);
+               C(i    ,j+3UL) -= A(i    ,k) * B(k,j+3UL);
+               C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
+               C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
+               C(i+1UL,j+2UL) -= A(i+1UL,k) * B(k,j+2UL);
+               C(i+1UL,j+3UL) -= A(i+1UL,k) * B(k,j+3UL);
             }
          }
 
@@ -3505,16 +3507,16 @@ class DMatTDMatMultExpr
                xmm4 += a2 * b2;
             }
 
-            (~C)(i    ,j    ) -= sum( xmm1 );
-            (~C)(i    ,j+1UL) -= sum( xmm2 );
-            (~C)(i+1UL,j    ) -= sum( xmm3 );
-            (~C)(i+1UL,j+1UL) -= sum( xmm4 );
+            C(i    ,j    ) -= sum( xmm1 );
+            C(i    ,j+1UL) -= sum( xmm2 );
+            C(i+1UL,j    ) -= sum( xmm3 );
+            C(i+1UL,j+1UL) -= sum( xmm4 );
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j    ) -= A(i    ,k) * B(k,j    );
-               (~C)(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
-               (~C)(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
-               (~C)(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
+               C(i    ,j    ) -= A(i    ,k) * B(k,j    );
+               C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
+               C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
+               C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
             }
          }
 
@@ -3537,12 +3539,12 @@ class DMatTDMatMultExpr
                xmm2 += A.load(i+1UL,k) * b1;
             }
 
-            (~C)(i    ,j) -= sum( xmm1 );
-            (~C)(i+1UL,j) -= sum( xmm2 );
+            C(i    ,j) -= sum( xmm1 );
+            C(i+1UL,j) -= sum( xmm2 );
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j) -= A(i    ,k) * B(k,j);
-               (~C)(i+1UL,j) -= A(i+1UL,k) * B(k,j);
+               C(i    ,j) -= A(i    ,k) * B(k,j);
+               C(i+1UL,j) -= A(i+1UL,k) * B(k,j);
             }
          }
       }
@@ -3573,16 +3575,16 @@ class DMatTDMatMultExpr
                xmm4 += a1 * B.load(k,j+3UL);
             }
 
-            (~C)(i,j    ) -= sum( xmm1 );
-            (~C)(i,j+1UL) -= sum( xmm2 );
-            (~C)(i,j+2UL) -= sum( xmm3 );
-            (~C)(i,j+3UL) -= sum( xmm4 );
+            C(i,j    ) -= sum( xmm1 );
+            C(i,j+1UL) -= sum( xmm2 );
+            C(i,j+2UL) -= sum( xmm3 );
+            C(i,j+3UL) -= sum( xmm4 );
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i,j    ) -= A(i,k) * B(k,j    );
-               (~C)(i,j+1UL) -= A(i,k) * B(k,j+1UL);
-               (~C)(i,j+2UL) -= A(i,k) * B(k,j+2UL);
-               (~C)(i,j+3UL) -= A(i,k) * B(k,j+3UL);
+               C(i,j    ) -= A(i,k) * B(k,j    );
+               C(i,j+1UL) -= A(i,k) * B(k,j+1UL);
+               C(i,j+2UL) -= A(i,k) * B(k,j+2UL);
+               C(i,j+3UL) -= A(i,k) * B(k,j+3UL);
             }
          }
 
@@ -3605,12 +3607,12 @@ class DMatTDMatMultExpr
                xmm2 += a1 * B.load(k,j+1UL);
             }
 
-            (~C)(i,j    ) -= sum( xmm1 );
-            (~C)(i,j+1UL) -= sum( xmm2 );
+            C(i,j    ) -= sum( xmm1 );
+            C(i,j+1UL) -= sum( xmm2 );
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i,j    ) -= A(i,k) * B(k,j    );
-               (~C)(i,j+1UL) -= A(i,k) * B(k,j+1UL);
+               C(i,j    ) -= A(i,k) * B(k,j    );
+               C(i,j+1UL) -= A(i,k) * B(k,j+1UL);
             }
          }
 
@@ -3630,10 +3632,10 @@ class DMatTDMatMultExpr
                xmm1 += A.load(i,k) * B.load(k,j);
             }
 
-            (~C)(i,j) -= sum( xmm1 );
+            C(i,j) -= sum( xmm1 );
 
             for( ; remainder && k<K; ++k ) {
-               (~C)(i,j) -= A(i,k) * B(k,j);
+               C(i,j) -= A(i,k) * B(k,j);
             }
          }
       }
@@ -3659,8 +3661,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectSmallSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   static inline auto selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       constexpr bool remainder( !IsPadded_v<MT4> || !IsPadded_v<MT5> );
 
@@ -3708,24 +3710,24 @@ class DMatTDMatMultExpr
                xmm8 += a4 * b2;
             }
 
-            (~C)(i    ,j    ) -= sum( xmm1 );
-            (~C)(i    ,j+1UL) -= sum( xmm2 );
-            (~C)(i+1UL,j    ) -= sum( xmm3 );
-            (~C)(i+1UL,j+1UL) -= sum( xmm4 );
-            (~C)(i+2UL,j    ) -= sum( xmm5 );
-            (~C)(i+2UL,j+1UL) -= sum( xmm6 );
-            (~C)(i+3UL,j    ) -= sum( xmm7 );
-            (~C)(i+3UL,j+1UL) -= sum( xmm8 );
+            C(i    ,j    ) -= sum( xmm1 );
+            C(i    ,j+1UL) -= sum( xmm2 );
+            C(i+1UL,j    ) -= sum( xmm3 );
+            C(i+1UL,j+1UL) -= sum( xmm4 );
+            C(i+2UL,j    ) -= sum( xmm5 );
+            C(i+2UL,j+1UL) -= sum( xmm6 );
+            C(i+3UL,j    ) -= sum( xmm7 );
+            C(i+3UL,j+1UL) -= sum( xmm8 );
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j    ) -= A(i    ,k) * B(k,j    );
-               (~C)(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
-               (~C)(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
-               (~C)(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
-               (~C)(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    );
-               (~C)(i+2UL,j+1UL) -= A(i+2UL,k) * B(k,j+1UL);
-               (~C)(i+3UL,j    ) -= A(i+3UL,k) * B(k,j    );
-               (~C)(i+3UL,j+1UL) -= A(i+3UL,k) * B(k,j+1UL);
+               C(i    ,j    ) -= A(i    ,k) * B(k,j    );
+               C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
+               C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
+               C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
+               C(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    );
+               C(i+2UL,j+1UL) -= A(i+2UL,k) * B(k,j+1UL);
+               C(i+3UL,j    ) -= A(i+3UL,k) * B(k,j    );
+               C(i+3UL,j+1UL) -= A(i+3UL,k) * B(k,j+1UL);
             }
          }
 
@@ -3750,16 +3752,16 @@ class DMatTDMatMultExpr
                xmm4 += A.load(i+3UL,k) * b1;
             }
 
-            (~C)(i    ,j) -= sum( xmm1 );
-            (~C)(i+1UL,j) -= sum( xmm2 );
-            (~C)(i+2UL,j) -= sum( xmm3 );
-            (~C)(i+3UL,j) -= sum( xmm4 );
+            C(i    ,j) -= sum( xmm1 );
+            C(i+1UL,j) -= sum( xmm2 );
+            C(i+2UL,j) -= sum( xmm3 );
+            C(i+3UL,j) -= sum( xmm4 );
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j    ) -= A(i    ,k) * B(k,j    );
-               (~C)(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
-               (~C)(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    );
-               (~C)(i+3UL,j    ) -= A(i+3UL,k) * B(k,j    );
+               C(i    ,j    ) -= A(i    ,k) * B(k,j    );
+               C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
+               C(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    );
+               C(i+3UL,j    ) -= A(i+3UL,k) * B(k,j    );
             }
          }
       }
@@ -3795,16 +3797,16 @@ class DMatTDMatMultExpr
                xmm4 += a2 * b2;
             }
 
-            (~C)(i    ,j    ) -= sum( xmm1 );
-            (~C)(i    ,j+1UL) -= sum( xmm2 );
-            (~C)(i+1UL,j    ) -= sum( xmm3 );
-            (~C)(i+1UL,j+1UL) -= sum( xmm4 );
+            C(i    ,j    ) -= sum( xmm1 );
+            C(i    ,j+1UL) -= sum( xmm2 );
+            C(i+1UL,j    ) -= sum( xmm3 );
+            C(i+1UL,j+1UL) -= sum( xmm4 );
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j    ) -= A(i    ,k) * B(k,j    );
-               (~C)(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
-               (~C)(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
-               (~C)(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
+               C(i    ,j    ) -= A(i    ,k) * B(k,j    );
+               C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
+               C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
+               C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
             }
          }
 
@@ -3827,12 +3829,12 @@ class DMatTDMatMultExpr
                xmm2 += A.load(i+1UL,k) * b1;
             }
 
-            (~C)(i    ,j) -= sum( xmm1 );
-            (~C)(i+1UL,j) -= sum( xmm2 );
+            C(i    ,j) -= sum( xmm1 );
+            C(i+1UL,j) -= sum( xmm2 );
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j) -= A(i    ,k) * B(k,j);
-               (~C)(i+1UL,j) -= A(i+1UL,k) * B(k,j);
+               C(i    ,j) -= A(i    ,k) * B(k,j);
+               C(i+1UL,j) -= A(i+1UL,k) * B(k,j);
             }
          }
       }
@@ -3861,12 +3863,12 @@ class DMatTDMatMultExpr
                xmm2 += a1 * B.load(k,j+1UL);
             }
 
-            (~C)(i,j    ) -= sum( xmm1 );
-            (~C)(i,j+1UL) -= sum( xmm2 );
+            C(i,j    ) -= sum( xmm1 );
+            C(i,j+1UL) -= sum( xmm2 );
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i,j    ) -= A(i,k) * B(k,j    );
-               (~C)(i,j+1UL) -= A(i,k) * B(k,j+1UL);
+               C(i,j    ) -= A(i,k) * B(k,j    );
+               C(i,j+1UL) -= A(i,k) * B(k,j+1UL);
             }
          }
 
@@ -3886,10 +3888,10 @@ class DMatTDMatMultExpr
                xmm1 += A.load(i,k) * B.load(k,j);
             }
 
-            (~C)(i,j) -= sum( xmm1 );
+            C(i,j) -= sum( xmm1 );
 
             for( ; remainder && k<K; ++k ) {
-               (~C)(i,j) -= A(i,k) * B(k,j);
+               C(i,j) -= A(i,k) * B(k,j);
             }
          }
       }
@@ -3914,10 +3916,10 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
-      selectDefaultSubAssignKernel( ~C, A, B );
+      selectDefaultSubAssignKernel( C, A, B );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -3940,8 +3942,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       if( LOW )
          lmmm( C, A, B, ElementType(-1), ElementType(1) );
@@ -3970,8 +3972,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
-      selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
    {
       selectLargeSubAssignKernel( C, A, B );
    }
@@ -3996,8 +3998,8 @@ class DMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
-      selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
    {
       using ET = ElementType_t<MT3>;
 
@@ -4084,8 +4086,8 @@ class DMatTDMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMultExpr& rhs )
+   friend inline auto smpAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -4132,8 +4134,8 @@ class DMatTDMatMultExpr
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpAssign( SparseMatrix<MT,SO>& lhs, const DMatTDMatMultExpr& rhs )
+   friend inline auto smpAssign( SparseMatrix<MT,SO>& lhs, const DMatTDMatMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -4175,8 +4177,8 @@ class DMatTDMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpAddAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMultExpr& rhs )
+   friend inline auto smpAddAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -4224,8 +4226,8 @@ class DMatTDMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpSubAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMultExpr& rhs )
+   friend inline auto smpSubAssign( DenseMatrix<MT,SO>& lhs, const DMatTDMatMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -4722,8 +4724,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -4741,7 +4743,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
 
       for( size_t i=0UL; i<ibegin; ++i ) {
          for( size_t j=0UL; j<N; ++j ) {
-            reset( (~C)(i,j) );
+            reset( C(i,j) );
          }
       }
       for( size_t i=ibegin; i<iend; ++i )
@@ -4763,7 +4765,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
 
          if( ( SYM || HERM || LOW || UPP ) && ( jbegin > jend ) ) {
             for( size_t j=0UL; j<N; ++j ) {
-               reset( (~C)(i,j) );
+               reset( C(i,j) );
             }
             continue;
          }
@@ -4771,7 +4773,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
          for( size_t j=( SYM || HERM ? i : 0UL ); j<jbegin; ++j ) {
-            reset( (~C)(i,j) );
+            reset( C(i,j) );
          }
          for( size_t j=jbegin; j<jend; ++j )
          {
@@ -4793,26 +4795,26 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                                   :( K ) ) );
             BLAZE_INTERNAL_ASSERT( kbegin < kend, "Invalid loop indices detected" );
 
-            (~C)(i,j) = A(i,kbegin) * B(kbegin,j);
+            C(i,j) = A(i,kbegin) * B(kbegin,j);
             for( size_t k=kbegin+1UL; k<kend; ++k ) {
-               (~C)(i,j) += A(i,k) * B(k,j);
+               C(i,j) += A(i,k) * B(k,j);
             }
-            (~C)(i,j) *= scalar;
+            C(i,j) *= scalar;
          }
          for( size_t j=jend; j<N; ++j ) {
-            reset( (~C)(i,j) );
+            reset( C(i,j) );
          }
       }
       for( size_t i=iend; i<M; ++i ) {
          for( size_t j=0UL; j<N; ++j ) {
-            reset( (~C)(i,j) );
+            reset( C(i,j) );
          }
       }
 
       if( SYM || HERM ) {
          for( size_t i=1UL; i<M; ++i ) {
             for( size_t j=0UL; j<i; ++j ) {
-               (~C)(i,j) = HERM ? conj( (~C)(j,i) ) : (~C)(j,i);
+               C(i,j) = HERM ? conj( C(j,i) ) : C(j,i);
             }
          }
       }
@@ -4837,8 +4839,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -4856,7 +4858,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
 
       for( size_t j=0UL; j<jbegin; ++j ) {
          for( size_t i=0UL; i<M; ++i ) {
-            reset( (~C)(i,j) );
+            reset( C(i,j) );
          }
       }
       for( size_t j=jbegin; j<jend; ++j )
@@ -4878,7 +4880,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
 
          if( ( SYM || HERM || LOW || UPP ) && ( ibegin > iend ) ) {
             for( size_t i=0UL; i<M; ++i ) {
-               reset( (~C)(i,j) );
+               reset( C(i,j) );
             }
             continue;
          }
@@ -4886,7 +4888,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          BLAZE_INTERNAL_ASSERT( ibegin <= iend, "Invalid loop indices detected" );
 
          for( size_t i=( SYM || HERM ? j : 0UL ); i<ibegin; ++i ) {
-            reset( (~C)(i,j) );
+            reset( C(i,j) );
          }
          for( size_t i=ibegin; i<iend; ++i )
          {
@@ -4908,26 +4910,26 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                                   :( K ) ) );
             BLAZE_INTERNAL_ASSERT( kbegin < kend, "Invalid loop indices detected" );
 
-            (~C)(i,j) = A(i,kbegin) * B(kbegin,j);
+            C(i,j) = A(i,kbegin) * B(kbegin,j);
             for( size_t k=kbegin+1UL; k<kend; ++k ) {
-               (~C)(i,j) += A(i,k) * B(k,j);
+               C(i,j) += A(i,k) * B(k,j);
             }
-            (~C)(i,j) *= scalar;
+            C(i,j) *= scalar;
          }
          for( size_t i=iend; i<M; ++i ) {
-            reset( (~C)(i,j) );
+            reset( C(i,j) );
          }
       }
       for( size_t j=jend; j<N; ++j ) {
          for( size_t i=0UL; i<M; ++i ) {
-            reset( (~C)(i,j) );
+            reset( C(i,j) );
          }
       }
 
       if( SYM || HERM ) {
          for( size_t j=1UL; j<N; ++j ) {
             for( size_t i=0UL; i<j; ++i ) {
-               (~C)(i,j) = HERM ? conj( (~C)(j,i) ) : (~C)(j,i);
+               C(i,j) = HERM ? conj( C(j,i) ) : C(j,i);
             }
          }
       }
@@ -4952,8 +4954,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -4970,15 +4972,15 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
 
          if( IsUpper_v<MT4> ) {
             for( size_t j=0UL; j<jbegin; ++j ) {
-               reset( (~C)(i,j) );
+               reset( C(i,j) );
             }
          }
          for( size_t j=jbegin; j<jend; ++j ) {
-            (~C)(i,j) = A(i,j) * B(j,j) * scalar;
+            C(i,j) = A(i,j) * B(j,j) * scalar;
          }
          if( IsLower_v<MT4> ) {
             for( size_t j=jend; j<N; ++j ) {
-               reset( (~C)(i,j) );
+               reset( C(i,j) );
             }
          }
       }
@@ -5003,8 +5005,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       constexpr size_t block( BLOCK_SIZE );
 
@@ -5026,15 +5028,15 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
 
                if( IsLower_v<MT4> ) {
                   for( size_t i=ii; i<ibegin; ++i ) {
-                     reset( (~C)(i,j) );
+                     reset( C(i,j) );
                   }
                }
                for( size_t i=ibegin; i<ipos; ++i ) {
-                  (~C)(i,j) = A(i,j) * B(j,j) * scalar;
+                  C(i,j) = A(i,j) * B(j,j) * scalar;
                }
                if( IsUpper_v<MT4> ) {
                   for( size_t i=ipos; i<iend; ++i ) {
-                     reset( (~C)(i,j) );
+                     reset( C(i,j) );
                   }
                }
             }
@@ -5061,8 +5063,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       constexpr size_t block( BLOCK_SIZE );
 
@@ -5084,15 +5086,15 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
 
                if( IsUpper_v<MT5> ) {
                   for( size_t j=jj; j<jbegin; ++j ) {
-                     reset( (~C)(i,j) );
+                     reset( C(i,j) );
                   }
                }
                for( size_t j=jbegin; j<jpos; ++j ) {
-                  (~C)(i,j) = A(i,i) * B(i,j) * scalar;
+                  C(i,j) = A(i,i) * B(i,j) * scalar;
                }
                if( IsLower_v<MT5> ) {
                   for( size_t j=jpos; j<jend; ++j ) {
-                     reset( (~C)(i,j) );
+                     reset( C(i,j) );
                   }
                }
             }
@@ -5119,8 +5121,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -5137,15 +5139,15 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
 
          if( IsLower_v<MT5> ) {
             for( size_t i=0UL; i<ibegin; ++i ) {
-               reset( (~C)(i,j) );
+               reset( C(i,j) );
             }
          }
          for( size_t i=ibegin; i<iend; ++i ) {
-            (~C)(i,j) = A(i,i) * B(i,j) * scalar;
+            C(i,j) = A(i,i) * B(i,j) * scalar;
          }
          if( IsUpper_v<MT5> ) {
             for( size_t i=iend; i<M; ++i ) {
-               reset( (~C)(i,j) );
+               reset( C(i,j) );
             }
          }
       }
@@ -5170,8 +5172,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       reset( C );
 
@@ -5199,8 +5201,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       selectDefaultAssignKernel( C, A, B, scalar );
    }
@@ -5225,8 +5227,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectSmallAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       constexpr bool remainder( !IsPadded_v<MT4> || !IsPadded_v<MT5> );
 
@@ -5237,7 +5239,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
       BLAZE_INTERNAL_ASSERT( !( SYM || HERM || LOW || UPP ) || ( M == N ), "Broken invariant detected" );
 
       if( LOW && UPP ) {
-         reset( ~C );
+         reset( C );
       }
 
       {
@@ -5280,24 +5282,24 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                   xmm8 += a2 * b4;
                }
 
-               (~C)(i    ,j    ) = sum( xmm1 ) * scalar;
-               (~C)(i    ,j+1UL) = sum( xmm2 ) * scalar;
-               (~C)(i    ,j+2UL) = sum( xmm3 ) * scalar;
-               (~C)(i    ,j+3UL) = sum( xmm4 ) * scalar;
-               (~C)(i+1UL,j    ) = sum( xmm5 ) * scalar;
-               (~C)(i+1UL,j+1UL) = sum( xmm6 ) * scalar;
-               (~C)(i+1UL,j+2UL) = sum( xmm7 ) * scalar;
-               (~C)(i+1UL,j+3UL) = sum( xmm8 ) * scalar;
+               C(i    ,j    ) = sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) = sum( xmm2 ) * scalar;
+               C(i    ,j+2UL) = sum( xmm3 ) * scalar;
+               C(i    ,j+3UL) = sum( xmm4 ) * scalar;
+               C(i+1UL,j    ) = sum( xmm5 ) * scalar;
+               C(i+1UL,j+1UL) = sum( xmm6 ) * scalar;
+               C(i+1UL,j+2UL) = sum( xmm7 ) * scalar;
+               C(i+1UL,j+3UL) = sum( xmm8 ) * scalar;
 
                for( ; remainder && k<kend; ++k ) {
-                  (~C)(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
-                  (~C)(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
-                  (~C)(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL) * scalar;
-                  (~C)(i    ,j+3UL) += A(i    ,k) * B(k,j+3UL) * scalar;
-                  (~C)(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
-                  (~C)(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
-                  (~C)(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL) * scalar;
-                  (~C)(i+1UL,j+3UL) += A(i+1UL,k) * B(k,j+3UL) * scalar;
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL) * scalar;
+                  C(i    ,j+3UL) += A(i    ,k) * B(k,j+3UL) * scalar;
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL) * scalar;
+                  C(i+1UL,j+3UL) += A(i+1UL,k) * B(k,j+3UL) * scalar;
                }
             }
 
@@ -5327,16 +5329,16 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                   xmm4 += a2 * b2;
                }
 
-               (~C)(i    ,j    ) = sum( xmm1 ) * scalar;
-               (~C)(i    ,j+1UL) = sum( xmm2 ) * scalar;
-               (~C)(i+1UL,j    ) = sum( xmm3 ) * scalar;
-               (~C)(i+1UL,j+1UL) = sum( xmm4 ) * scalar;
+               C(i    ,j    ) = sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) = sum( xmm2 ) * scalar;
+               C(i+1UL,j    ) = sum( xmm3 ) * scalar;
+               C(i+1UL,j+1UL) = sum( xmm4 ) * scalar;
 
                for( ; remainder && k<kend; ++k ) {
-                  (~C)(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
-                  (~C)(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
-                  (~C)(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
-                  (~C)(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
                }
             }
 
@@ -5359,12 +5361,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                   xmm2 += A.load(i+1UL,k) * b1;
                }
 
-               (~C)(i    ,j) = sum( xmm1 ) * scalar;
-               (~C)(i+1UL,j) = sum( xmm2 ) * scalar;
+               C(i    ,j) = sum( xmm1 ) * scalar;
+               C(i+1UL,j) = sum( xmm2 ) * scalar;
 
                for( ; remainder && k<kend; ++k ) {
-                  (~C)(i    ,j) += A(i    ,k) * B(k,j) * scalar;
-                  (~C)(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
+                  C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
                }
             }
          }
@@ -5395,16 +5397,16 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                   xmm4 += a1 * B.load(k,j+3UL);
                }
 
-               (~C)(i,j    ) = sum( xmm1 ) * scalar;
-               (~C)(i,j+1UL) = sum( xmm2 ) * scalar;
-               (~C)(i,j+2UL) = sum( xmm3 ) * scalar;
-               (~C)(i,j+3UL) = sum( xmm4 ) * scalar;
+               C(i,j    ) = sum( xmm1 ) * scalar;
+               C(i,j+1UL) = sum( xmm2 ) * scalar;
+               C(i,j+2UL) = sum( xmm3 ) * scalar;
+               C(i,j+3UL) = sum( xmm4 ) * scalar;
 
                for( ; remainder && k<kend; ++k ) {
-                  (~C)(i,j    ) += A(i,k) * B(k,j    ) * scalar;
-                  (~C)(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
-                  (~C)(i,j+2UL) += A(i,k) * B(k,j+2UL) * scalar;
-                  (~C)(i,j+3UL) += A(i,k) * B(k,j+3UL) * scalar;
+                  C(i,j    ) += A(i,k) * B(k,j    ) * scalar;
+                  C(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
+                  C(i,j+2UL) += A(i,k) * B(k,j+2UL) * scalar;
+                  C(i,j+3UL) += A(i,k) * B(k,j+3UL) * scalar;
                }
             }
 
@@ -5427,12 +5429,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                   xmm2 += a1 * B.load(k,j+1UL);
                }
 
-               (~C)(i,j    ) = sum( xmm1 ) * scalar;
-               (~C)(i,j+1UL) = sum( xmm2 ) * scalar;
+               C(i,j    ) = sum( xmm1 ) * scalar;
+               C(i,j+1UL) = sum( xmm2 ) * scalar;
 
                for( ; remainder && k<kend; ++k ) {
-                  (~C)(i,j    ) += A(i,k) * B(k,j    ) * scalar;
-                  (~C)(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
+                  C(i,j    ) += A(i,k) * B(k,j    ) * scalar;
+                  C(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
                }
             }
 
@@ -5452,10 +5454,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                   xmm1 += A.load(i,k) * B.load(k,j);
                }
 
-               (~C)(i,j) = sum( xmm1 ) * scalar;
+               C(i,j) = sum( xmm1 ) * scalar;
 
                for( ; remainder && k<K; ++k ) {
-                  (~C)(i,j) += A(i,k) * B(k,j) * scalar;
+                  C(i,j) += A(i,k) * B(k,j) * scalar;
                }
             }
          }
@@ -5465,7 +5467,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( size_t i=2UL; i<M; ++i ) {
             const size_t jend( 2UL * ( i/2UL ) );
             for( size_t j=0UL; j<jend; ++j ) {
-               (~C)(i,j) = HERM ? conj( (~C)(j,i) ) : (~C)(j,i);
+               C(i,j) = HERM ? conj( C(j,i) ) : C(j,i);
             }
          }
       }
@@ -5473,7 +5475,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( size_t j=2UL; j<N; ++j ) {
             const size_t iend( 2UL * ( j/2UL ) );
             for( size_t i=0UL; i<iend; ++i ) {
-               reset( (~C)(i,j) );
+               reset( C(i,j) );
             }
          }
       }
@@ -5481,7 +5483,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          for( size_t i=2UL; i<M; ++i ) {
             const size_t jend( 2UL * ( i/2UL ) );
             for( size_t j=0UL; j<jend; ++j ) {
-               reset( (~C)(i,j) );
+               reset( C(i,j) );
             }
          }
       }
@@ -5507,8 +5509,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectSmallAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       constexpr bool remainder( !IsPadded_v<MT4> || !IsPadded_v<MT5> );
 
@@ -5519,7 +5521,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
       BLAZE_INTERNAL_ASSERT( !( SYM || HERM || LOW || UPP ) || ( M == N ), "Broken invariant detected" );
 
       if( LOW || UPP ) {
-         reset( ~C );
+         reset( C );
       }
 
       {
@@ -5561,24 +5563,24 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                   xmm8 += a4 * b2;
                }
 
-               (~C)(i    ,j    ) = sum( xmm1 ) * scalar;
-               (~C)(i    ,j+1UL) = sum( xmm2 ) * scalar;
-               (~C)(i+1UL,j    ) = sum( xmm3 ) * scalar;
-               (~C)(i+1UL,j+1UL) = sum( xmm4 ) * scalar;
-               (~C)(i+2UL,j    ) = sum( xmm5 ) * scalar;
-               (~C)(i+2UL,j+1UL) = sum( xmm6 ) * scalar;
-               (~C)(i+3UL,j    ) = sum( xmm7 ) * scalar;
-               (~C)(i+3UL,j+1UL) = sum( xmm8 ) * scalar;
+               C(i    ,j    ) = sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) = sum( xmm2 ) * scalar;
+               C(i+1UL,j    ) = sum( xmm3 ) * scalar;
+               C(i+1UL,j+1UL) = sum( xmm4 ) * scalar;
+               C(i+2UL,j    ) = sum( xmm5 ) * scalar;
+               C(i+2UL,j+1UL) = sum( xmm6 ) * scalar;
+               C(i+3UL,j    ) = sum( xmm7 ) * scalar;
+               C(i+3UL,j+1UL) = sum( xmm8 ) * scalar;
 
                for( ; remainder && k<kend; ++k ) {
-                  (~C)(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
-                  (~C)(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
-                  (~C)(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
-                  (~C)(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
-                  (~C)(i+2UL,j    ) += A(i+2UL,k) * B(k,j    ) * scalar;
-                  (~C)(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL) * scalar;
-                  (~C)(i+3UL,j    ) += A(i+3UL,k) * B(k,j    ) * scalar;
-                  (~C)(i+3UL,j+1UL) += A(i+3UL,k) * B(k,j+1UL) * scalar;
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    ) * scalar;
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL) * scalar;
+                  C(i+3UL,j    ) += A(i+3UL,k) * B(k,j    ) * scalar;
+                  C(i+3UL,j+1UL) += A(i+3UL,k) * B(k,j+1UL) * scalar;
                }
             }
 
@@ -5603,16 +5605,16 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                   xmm4 += A.load(i+3UL,k) * b1;
                }
 
-               (~C)(i    ,j) = sum( xmm1 ) * scalar;
-               (~C)(i+1UL,j) = sum( xmm2 ) * scalar;
-               (~C)(i+2UL,j) = sum( xmm3 ) * scalar;
-               (~C)(i+3UL,j) = sum( xmm4 ) * scalar;
+               C(i    ,j) = sum( xmm1 ) * scalar;
+               C(i+1UL,j) = sum( xmm2 ) * scalar;
+               C(i+2UL,j) = sum( xmm3 ) * scalar;
+               C(i+3UL,j) = sum( xmm4 ) * scalar;
 
                for( ; remainder && k<kend; ++k ) {
-                  (~C)(i    ,j) += A(i    ,k) * B(k,j) * scalar;
-                  (~C)(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
-                  (~C)(i+2UL,j) += A(i+2UL,k) * B(k,j) * scalar;
-                  (~C)(i+3UL,j) += A(i+3UL,k) * B(k,j) * scalar;
+                  C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
+                  C(i+2UL,j) += A(i+2UL,k) * B(k,j) * scalar;
+                  C(i+3UL,j) += A(i+3UL,k) * B(k,j) * scalar;
                }
             }
          }
@@ -5648,16 +5650,16 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                   xmm4 += a2 * b2;
                }
 
-               (~C)(i    ,j    ) = sum( xmm1 ) * scalar;
-               (~C)(i    ,j+1UL) = sum( xmm2 ) * scalar;
-               (~C)(i+1UL,j    ) = sum( xmm3 ) * scalar;
-               (~C)(i+1UL,j+1UL) = sum( xmm4 ) * scalar;
+               C(i    ,j    ) = sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) = sum( xmm2 ) * scalar;
+               C(i+1UL,j    ) = sum( xmm3 ) * scalar;
+               C(i+1UL,j+1UL) = sum( xmm4 ) * scalar;
 
                for( ; remainder && k<kend; ++k ) {
-                  (~C)(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
-                  (~C)(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
-                  (~C)(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
-                  (~C)(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
                }
             }
 
@@ -5680,12 +5682,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                   xmm2 += A.load(i+1UL,k) * b1;
                }
 
-               (~C)(i    ,j) = sum( xmm1 ) * scalar;
-               (~C)(i+1UL,j) = sum( xmm2 ) * scalar;
+               C(i    ,j) = sum( xmm1 ) * scalar;
+               C(i+1UL,j) = sum( xmm2 ) * scalar;
 
                for( ; remainder && k<kend; ++k ) {
-                  (~C)(i    ,j) += A(i    ,k) * B(k,j) * scalar;
-                  (~C)(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
+                  C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
                }
             }
          }
@@ -5714,12 +5716,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                   xmm2 += a1 * B.load(k,j+1UL);
                }
 
-               (~C)(i,j    ) = sum( xmm1 ) * scalar;
-               (~C)(i,j+1UL) = sum( xmm2 ) * scalar;
+               C(i,j    ) = sum( xmm1 ) * scalar;
+               C(i,j+1UL) = sum( xmm2 ) * scalar;
 
                for( ; remainder && k<kend; ++k ) {
-                  (~C)(i,j    ) += A(i,k) * B(k,j    ) * scalar;
-                  (~C)(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
+                  C(i,j    ) += A(i,k) * B(k,j    ) * scalar;
+                  C(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
                }
             }
 
@@ -5739,10 +5741,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                   xmm1 += A.load(i,k) * B.load(k,j);
                }
 
-               (~C)(i,j) = sum( xmm1 ) * scalar;
+               C(i,j) = sum( xmm1 ) * scalar;
 
                for( ; remainder && k<K; ++k ) {
-                  (~C)(i,j) += A(i,k) * B(k,j) * scalar;
+                  C(i,j) += A(i,k) * B(k,j) * scalar;
                }
             }
          }
@@ -5751,7 +5753,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
       if( SYM || HERM ) {
          for( size_t j=0UL; j<N; ++j ) {
             for( size_t i=j+1UL; i<M; ++i ) {
-               (~C)(i,j) = HERM ? conj( (~C)(j,i) ) : (~C)(j,i);
+               C(i,j) = HERM ? conj( C(j,i) ) : C(j,i);
             }
          }
       }
@@ -5776,8 +5778,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       selectDefaultAssignKernel( C, A, B, scalar );
    }
@@ -5802,8 +5804,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       if( SYM )
          smmm( C, A, B, scalar );
@@ -5836,8 +5838,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
-      selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
    {
       selectLargeAssignKernel( C, A, B, scalar );
    }
@@ -5862,8 +5864,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
-      selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
    {
       using ET = ElementType_t<MT3>;
 
@@ -6004,8 +6006,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       const ResultType tmp( serial( A * B * scalar ) );
       addAssign( C, tmp );
@@ -6030,8 +6032,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -6050,11 +6052,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          const size_t jpos( jbegin + ( jnum & size_t(-2) ) );
 
          for( size_t j=jbegin; j<jpos; j+=2UL ) {
-            (~C)(i,j    ) += A(i,j    ) * B(j    ,j    ) * scalar;
-            (~C)(i,j+1UL) += A(i,j+1UL) * B(j+1UL,j+1UL) * scalar;
+            C(i,j    ) += A(i,j    ) * B(j    ,j    ) * scalar;
+            C(i,j+1UL) += A(i,j+1UL) * B(j+1UL,j+1UL) * scalar;
          }
          if( jpos < jend ) {
-            (~C)(i,jpos) += A(i,jpos) * B(jpos,jpos) * scalar;
+            C(i,jpos) += A(i,jpos) * B(jpos,jpos) * scalar;
          }
       }
    }
@@ -6078,8 +6080,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       constexpr size_t block( BLOCK_SIZE );
 
@@ -6100,7 +6102,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                                   :( iend ) );
 
                for( size_t i=ibegin; i<ipos; ++i ) {
-                  (~C)(i,j) += A(i,j) * B(j,j) * scalar;
+                  C(i,j) += A(i,j) * B(j,j) * scalar;
                }
             }
          }
@@ -6126,8 +6128,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       constexpr size_t block( BLOCK_SIZE );
 
@@ -6148,7 +6150,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                                   :( jend ) );
 
                for( size_t j=jbegin; j<jpos; ++j ) {
-                  (~C)(i,j) += A(i,i) * B(i,j) * scalar;
+                  C(i,j) += A(i,i) * B(i,j) * scalar;
                }
             }
          }
@@ -6174,8 +6176,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -6194,11 +6196,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          const size_t ipos( ibegin + ( inum & size_t(-2) ) );
 
          for( size_t i=ibegin; i<ipos; i+=2UL ) {
-            (~C)(i    ,j) += A(i    ,i    ) * B(i    ,j) * scalar;
-            (~C)(i+1UL,j) += A(i+1UL,i+1UL) * B(i+1UL,j) * scalar;
+            C(i    ,j) += A(i    ,i    ) * B(i    ,j) * scalar;
+            C(i+1UL,j) += A(i+1UL,i+1UL) * B(i+1UL,j) * scalar;
          }
          if( ipos < iend ) {
-            (~C)(ipos,j) += A(ipos,ipos) * B(ipos,j) * scalar;
+            C(ipos,j) += A(ipos,ipos) * B(ipos,j) * scalar;
          }
       }
    }
@@ -6222,8 +6224,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       for( size_t i=0UL; i<A.rows(); ++i ) {
          C(i,i) += A(i,i) * B(i,i) * scalar;
@@ -6249,8 +6251,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       selectDefaultAddAssignKernel( C, A, B, scalar );
    }
@@ -6275,8 +6277,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectSmallAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       constexpr bool remainder( !IsPadded_v<MT4> || !IsPadded_v<MT5> );
 
@@ -6325,24 +6327,24 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm8 += a2 * b4;
             }
 
-            (~C)(i    ,j    ) += sum( xmm1 ) * scalar;
-            (~C)(i    ,j+1UL) += sum( xmm2 ) * scalar;
-            (~C)(i    ,j+2UL) += sum( xmm3 ) * scalar;
-            (~C)(i    ,j+3UL) += sum( xmm4 ) * scalar;
-            (~C)(i+1UL,j    ) += sum( xmm5 ) * scalar;
-            (~C)(i+1UL,j+1UL) += sum( xmm6 ) * scalar;
-            (~C)(i+1UL,j+2UL) += sum( xmm7 ) * scalar;
-            (~C)(i+1UL,j+3UL) += sum( xmm8 ) * scalar;
+            C(i    ,j    ) += sum( xmm1 ) * scalar;
+            C(i    ,j+1UL) += sum( xmm2 ) * scalar;
+            C(i    ,j+2UL) += sum( xmm3 ) * scalar;
+            C(i    ,j+3UL) += sum( xmm4 ) * scalar;
+            C(i+1UL,j    ) += sum( xmm5 ) * scalar;
+            C(i+1UL,j+1UL) += sum( xmm6 ) * scalar;
+            C(i+1UL,j+2UL) += sum( xmm7 ) * scalar;
+            C(i+1UL,j+3UL) += sum( xmm8 ) * scalar;
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
-               (~C)(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
-               (~C)(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL) * scalar;
-               (~C)(i    ,j+3UL) += A(i    ,k) * B(k,j+3UL) * scalar;
-               (~C)(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
-               (~C)(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
-               (~C)(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL) * scalar;
-               (~C)(i+1UL,j+3UL) += A(i+1UL,k) * B(k,j+3UL) * scalar;
+               C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+               C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL) * scalar;
+               C(i    ,j+3UL) += A(i    ,k) * B(k,j+3UL) * scalar;
+               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+               C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL) * scalar;
+               C(i+1UL,j+3UL) += A(i+1UL,k) * B(k,j+3UL) * scalar;
             }
          }
 
@@ -6372,16 +6374,16 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm4 += a2 * b2;
             }
 
-            (~C)(i    ,j    ) += sum( xmm1 ) * scalar;
-            (~C)(i    ,j+1UL) += sum( xmm2 ) * scalar;
-            (~C)(i+1UL,j    ) += sum( xmm3 ) * scalar;
-            (~C)(i+1UL,j+1UL) += sum( xmm4 ) * scalar;
+            C(i    ,j    ) += sum( xmm1 ) * scalar;
+            C(i    ,j+1UL) += sum( xmm2 ) * scalar;
+            C(i+1UL,j    ) += sum( xmm3 ) * scalar;
+            C(i+1UL,j+1UL) += sum( xmm4 ) * scalar;
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
-               (~C)(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
-               (~C)(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
-               (~C)(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+               C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
             }
          }
 
@@ -6404,12 +6406,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm2 += A.load(i+1UL,k) * b1;
             }
 
-            (~C)(i    ,j) += sum( xmm1 ) * scalar;
-            (~C)(i+1UL,j) += sum( xmm2 ) * scalar;
+            C(i    ,j) += sum( xmm1 ) * scalar;
+            C(i+1UL,j) += sum( xmm2 ) * scalar;
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j) += A(i    ,k) * B(k,j) * scalar;
-               (~C)(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
+               C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
+               C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
             }
          }
       }
@@ -6440,16 +6442,16 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm4 += a1 * B.load(k,j+3UL);
             }
 
-            (~C)(i,j    ) += sum( xmm1 ) * scalar;
-            (~C)(i,j+1UL) += sum( xmm2 ) * scalar;
-            (~C)(i,j+2UL) += sum( xmm3 ) * scalar;
-            (~C)(i,j+3UL) += sum( xmm4 ) * scalar;
+            C(i,j    ) += sum( xmm1 ) * scalar;
+            C(i,j+1UL) += sum( xmm2 ) * scalar;
+            C(i,j+2UL) += sum( xmm3 ) * scalar;
+            C(i,j+3UL) += sum( xmm4 ) * scalar;
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i,j    ) += A(i,k) * B(k,j    ) * scalar;
-               (~C)(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
-               (~C)(i,j+2UL) += A(i,k) * B(k,j+2UL) * scalar;
-               (~C)(i,j+3UL) += A(i,k) * B(k,j+3UL) * scalar;
+               C(i,j    ) += A(i,k) * B(k,j    ) * scalar;
+               C(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
+               C(i,j+2UL) += A(i,k) * B(k,j+2UL) * scalar;
+               C(i,j+3UL) += A(i,k) * B(k,j+3UL) * scalar;
             }
          }
 
@@ -6472,12 +6474,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm2 += a1 * B.load(k,j+1UL);
             }
 
-            (~C)(i,j    ) += sum( xmm1 ) * scalar;
-            (~C)(i,j+1UL) += sum( xmm2 ) * scalar;
+            C(i,j    ) += sum( xmm1 ) * scalar;
+            C(i,j+1UL) += sum( xmm2 ) * scalar;
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i,j    ) += A(i,k) * B(k,j    ) * scalar;
-               (~C)(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
+               C(i,j    ) += A(i,k) * B(k,j    ) * scalar;
+               C(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
             }
          }
 
@@ -6497,10 +6499,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm1 += A.load(i,k) * B.load(k,j);
             }
 
-            (~C)(i,j) += sum( xmm1 ) * scalar;
+            C(i,j) += sum( xmm1 ) * scalar;
 
             for( ; remainder && k<K; ++k ) {
-               (~C)(i,j) += A(i,k) * B(k,j) * scalar;
+               C(i,j) += A(i,k) * B(k,j) * scalar;
             }
          }
       }
@@ -6526,8 +6528,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectSmallAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       constexpr bool remainder( !IsPadded_v<MT4> || !IsPadded_v<MT5> );
 
@@ -6575,24 +6577,24 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm8 += a4 * b2;
             }
 
-            (~C)(i    ,j    ) += sum( xmm1 ) * scalar;
-            (~C)(i    ,j+1UL) += sum( xmm2 ) * scalar;
-            (~C)(i+1UL,j    ) += sum( xmm3 ) * scalar;
-            (~C)(i+1UL,j+1UL) += sum( xmm4 ) * scalar;
-            (~C)(i+2UL,j    ) += sum( xmm5 ) * scalar;
-            (~C)(i+2UL,j+1UL) += sum( xmm6 ) * scalar;
-            (~C)(i+3UL,j    ) += sum( xmm7 ) * scalar;
-            (~C)(i+3UL,j+1UL) += sum( xmm8 ) * scalar;
+            C(i    ,j    ) += sum( xmm1 ) * scalar;
+            C(i    ,j+1UL) += sum( xmm2 ) * scalar;
+            C(i+1UL,j    ) += sum( xmm3 ) * scalar;
+            C(i+1UL,j+1UL) += sum( xmm4 ) * scalar;
+            C(i+2UL,j    ) += sum( xmm5 ) * scalar;
+            C(i+2UL,j+1UL) += sum( xmm6 ) * scalar;
+            C(i+3UL,j    ) += sum( xmm7 ) * scalar;
+            C(i+3UL,j+1UL) += sum( xmm8 ) * scalar;
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
-               (~C)(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
-               (~C)(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
-               (~C)(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
-               (~C)(i+2UL,j    ) += A(i+2UL,k) * B(k,j    ) * scalar;
-               (~C)(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL) * scalar;
-               (~C)(i+3UL,j    ) += A(i+3UL,k) * B(k,j    ) * scalar;
-               (~C)(i+3UL,j+1UL) += A(i+3UL,k) * B(k,j+1UL) * scalar;
+               C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+               C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    ) * scalar;
+               C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL) * scalar;
+               C(i+3UL,j    ) += A(i+3UL,k) * B(k,j    ) * scalar;
+               C(i+3UL,j+1UL) += A(i+3UL,k) * B(k,j+1UL) * scalar;
             }
          }
 
@@ -6617,16 +6619,16 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm4 += A.load(i+3UL,k) * b1;
             }
 
-            (~C)(i    ,j) += sum( xmm1 ) * scalar;
-            (~C)(i+1UL,j) += sum( xmm2 ) * scalar;
-            (~C)(i+2UL,j) += sum( xmm3 ) * scalar;
-            (~C)(i+3UL,j) += sum( xmm4 ) * scalar;
+            C(i    ,j) += sum( xmm1 ) * scalar;
+            C(i+1UL,j) += sum( xmm2 ) * scalar;
+            C(i+2UL,j) += sum( xmm3 ) * scalar;
+            C(i+3UL,j) += sum( xmm4 ) * scalar;
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j) += A(i    ,k) * B(k,j) * scalar;
-               (~C)(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
-               (~C)(i+2UL,j) += A(i+2UL,k) * B(k,j) * scalar;
-               (~C)(i+3UL,j) += A(i+3UL,k) * B(k,j) * scalar;
+               C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
+               C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
+               C(i+2UL,j) += A(i+2UL,k) * B(k,j) * scalar;
+               C(i+3UL,j) += A(i+3UL,k) * B(k,j) * scalar;
             }
          }
       }
@@ -6662,16 +6664,16 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm4 += a2 * b2;
             }
 
-            (~C)(i    ,j    ) += sum( xmm1 ) * scalar;
-            (~C)(i    ,j+1UL) += sum( xmm2 ) * scalar;
-            (~C)(i+1UL,j    ) += sum( xmm3 ) * scalar;
-            (~C)(i+1UL,j+1UL) += sum( xmm4 ) * scalar;
+            C(i    ,j    ) += sum( xmm1 ) * scalar;
+            C(i    ,j+1UL) += sum( xmm2 ) * scalar;
+            C(i+1UL,j    ) += sum( xmm3 ) * scalar;
+            C(i+1UL,j+1UL) += sum( xmm4 ) * scalar;
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
-               (~C)(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
-               (~C)(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
-               (~C)(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+               C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
             }
          }
 
@@ -6694,12 +6696,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm2 += A.load(i+1UL,k) * b1;
             }
 
-            (~C)(i    ,j) += sum( xmm1 ) * scalar;
-            (~C)(i+1UL,j) += sum( xmm2 ) * scalar;
+            C(i    ,j) += sum( xmm1 ) * scalar;
+            C(i+1UL,j) += sum( xmm2 ) * scalar;
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j) += A(i    ,k) * B(k,j) * scalar;
-               (~C)(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
+               C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
+               C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
             }
          }
       }
@@ -6728,12 +6730,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm2 += a1 * B.load(k,j+1UL);
             }
 
-            (~C)(i,j    ) += sum( xmm1 ) * scalar;
-            (~C)(i,j+1UL) += sum( xmm2 ) * scalar;
+            C(i,j    ) += sum( xmm1 ) * scalar;
+            C(i,j+1UL) += sum( xmm2 ) * scalar;
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i,j    ) += A(i,k) * B(k,j    ) * scalar;
-               (~C)(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
+               C(i,j    ) += A(i,k) * B(k,j    ) * scalar;
+               C(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
             }
          }
 
@@ -6753,10 +6755,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm1 += A.load(i,k) * B.load(k,j);
             }
 
-            (~C)(i,j) += sum( xmm1 ) * scalar;
+            C(i,j) += sum( xmm1 ) * scalar;
 
             for( ; remainder && k<K; ++k ) {
-               (~C)(i,j) += A(i,k) * B(k,j) * scalar;
+               C(i,j) += A(i,k) * B(k,j) * scalar;
             }
          }
       }
@@ -6781,8 +6783,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       selectDefaultAddAssignKernel( C, A, B, scalar );
    }
@@ -6807,8 +6809,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       if( LOW )
          lmmm( C, A, B, scalar, ST2(1) );
@@ -6837,8 +6839,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
-      selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
    {
       selectLargeAddAssignKernel( C, A, B, scalar );
    }
@@ -6863,8 +6865,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
-      selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
    {
       using ET = ElementType_t<MT3>;
 
@@ -6974,8 +6976,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       const ResultType tmp( serial( A * B * scalar ) );
       subAssign( C, tmp );
@@ -7000,8 +7002,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -7020,11 +7022,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          const size_t jpos( jbegin + ( jnum & size_t(-2) ) );
 
          for( size_t j=jbegin; j<jpos; j+=2UL ) {
-            (~C)(i,j    ) -= A(i,j    ) * B(j    ,j    ) * scalar;
-            (~C)(i,j+1UL) -= A(i,j+1UL) * B(j+1UL,j+1UL) * scalar;
+            C(i,j    ) -= A(i,j    ) * B(j    ,j    ) * scalar;
+            C(i,j+1UL) -= A(i,j+1UL) * B(j+1UL,j+1UL) * scalar;
          }
          if( jpos < jend ) {
-            (~C)(i,jpos) -= A(i,jpos) * B(jpos,jpos) * scalar;
+            C(i,jpos) -= A(i,jpos) * B(jpos,jpos) * scalar;
          }
       }
    }
@@ -7048,8 +7050,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       constexpr size_t block( BLOCK_SIZE );
 
@@ -7070,7 +7072,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                                   :( iend ) );
 
                for( size_t i=ibegin; i<ipos; ++i ) {
-                  (~C)(i,j) -= A(i,j) * B(j,j) * scalar;
+                  C(i,j) -= A(i,j) * B(j,j) * scalar;
                }
             }
          }
@@ -7097,8 +7099,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       constexpr size_t block( BLOCK_SIZE );
 
@@ -7119,7 +7121,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                                   :( jend ) );
 
                for( size_t j=jbegin; j<jpos; ++j ) {
-                  (~C)(i,j) -= A(i,i) * B(i,j) * scalar;
+                  C(i,j) -= A(i,i) * B(i,j) * scalar;
                }
             }
          }
@@ -7146,8 +7148,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -7166,11 +7168,11 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          const size_t ipos( ibegin + ( inum & size_t(-2) ) );
 
          for( size_t i=ibegin; i<ipos; i+=2UL ) {
-            (~C)(i    ,j) -= A(i    ,i    ) * B(i    ,j) * scalar;
-            (~C)(i+1UL,j) -= A(i+1UL,i+1UL) * B(i+1UL,j) * scalar;
+            C(i    ,j) -= A(i    ,i    ) * B(i    ,j) * scalar;
+            C(i+1UL,j) -= A(i+1UL,i+1UL) * B(i+1UL,j) * scalar;
          }
          if( ipos < iend ) {
-            (~C)(ipos,j) -= A(ipos,ipos) * B(ipos,j) * scalar;
+            C(ipos,j) -= A(ipos,ipos) * B(ipos,j) * scalar;
          }
       }
    }
@@ -7194,8 +7196,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       for( size_t i=0UL; i<A.rows(); ++i ) {
          C(i,i) -= A(i,i) * B(i,i) * scalar;
@@ -7221,8 +7223,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       selectDefaultSubAssignKernel( C, A, B, scalar );
    }
@@ -7247,8 +7249,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectSmallSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       constexpr bool remainder( !IsPadded_v<MT4> || !IsPadded_v<MT5> );
 
@@ -7297,24 +7299,24 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm8 += a2 * b4;
             }
 
-            (~C)(i    ,j    ) -= sum( xmm1 ) * scalar;
-            (~C)(i    ,j+1UL) -= sum( xmm2 ) * scalar;
-            (~C)(i    ,j+2UL) -= sum( xmm3 ) * scalar;
-            (~C)(i    ,j+3UL) -= sum( xmm4 ) * scalar;
-            (~C)(i+1UL,j    ) -= sum( xmm5 ) * scalar;
-            (~C)(i+1UL,j+1UL) -= sum( xmm6 ) * scalar;
-            (~C)(i+1UL,j+2UL) -= sum( xmm7 ) * scalar;
-            (~C)(i+1UL,j+3UL) -= sum( xmm8 ) * scalar;
+            C(i    ,j    ) -= sum( xmm1 ) * scalar;
+            C(i    ,j+1UL) -= sum( xmm2 ) * scalar;
+            C(i    ,j+2UL) -= sum( xmm3 ) * scalar;
+            C(i    ,j+3UL) -= sum( xmm4 ) * scalar;
+            C(i+1UL,j    ) -= sum( xmm5 ) * scalar;
+            C(i+1UL,j+1UL) -= sum( xmm6 ) * scalar;
+            C(i+1UL,j+2UL) -= sum( xmm7 ) * scalar;
+            C(i+1UL,j+3UL) -= sum( xmm8 ) * scalar;
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j    ) -= A(i    ,k) * B(k,j    ) * scalar;
-               (~C)(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL) * scalar;
-               (~C)(i    ,j+2UL) -= A(i    ,k) * B(k,j+2UL) * scalar;
-               (~C)(i    ,j+3UL) -= A(i    ,k) * B(k,j+3UL) * scalar;
-               (~C)(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    ) * scalar;
-               (~C)(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL) * scalar;
-               (~C)(i+1UL,j+2UL) -= A(i+1UL,k) * B(k,j+2UL) * scalar;
-               (~C)(i+1UL,j+3UL) -= A(i+1UL,k) * B(k,j+3UL) * scalar;
+               C(i    ,j    ) -= A(i    ,k) * B(k,j    ) * scalar;
+               C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL) * scalar;
+               C(i    ,j+2UL) -= A(i    ,k) * B(k,j+2UL) * scalar;
+               C(i    ,j+3UL) -= A(i    ,k) * B(k,j+3UL) * scalar;
+               C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    ) * scalar;
+               C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL) * scalar;
+               C(i+1UL,j+2UL) -= A(i+1UL,k) * B(k,j+2UL) * scalar;
+               C(i+1UL,j+3UL) -= A(i+1UL,k) * B(k,j+3UL) * scalar;
             }
          }
 
@@ -7344,16 +7346,16 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm4 += a2 * b2;
             }
 
-            (~C)(i    ,j    ) -= sum( xmm1 ) * scalar;
-            (~C)(i    ,j+1UL) -= sum( xmm2 ) * scalar;
-            (~C)(i+1UL,j    ) -= sum( xmm3 ) * scalar;
-            (~C)(i+1UL,j+1UL) -= sum( xmm4 ) * scalar;
+            C(i    ,j    ) -= sum( xmm1 ) * scalar;
+            C(i    ,j+1UL) -= sum( xmm2 ) * scalar;
+            C(i+1UL,j    ) -= sum( xmm3 ) * scalar;
+            C(i+1UL,j+1UL) -= sum( xmm4 ) * scalar;
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j    ) -= A(i    ,k) * B(k,j    ) * scalar;
-               (~C)(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL) * scalar;
-               (~C)(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    ) * scalar;
-               (~C)(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL) * scalar;
+               C(i    ,j    ) -= A(i    ,k) * B(k,j    ) * scalar;
+               C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL) * scalar;
+               C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    ) * scalar;
+               C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL) * scalar;
             }
          }
 
@@ -7376,12 +7378,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm2 += A.load(i+1UL,k) * b1;
             }
 
-            (~C)(i    ,j) -= sum( xmm1 ) * scalar;
-            (~C)(i+1UL,j) -= sum( xmm2 ) * scalar;
+            C(i    ,j) -= sum( xmm1 ) * scalar;
+            C(i+1UL,j) -= sum( xmm2 ) * scalar;
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j) -= A(i    ,k) * B(k,j) * scalar;
-               (~C)(i+1UL,j) -= A(i+1UL,k) * B(k,j) * scalar;
+               C(i    ,j) -= A(i    ,k) * B(k,j) * scalar;
+               C(i+1UL,j) -= A(i+1UL,k) * B(k,j) * scalar;
             }
          }
       }
@@ -7412,16 +7414,16 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm4 += a1 * B.load(k,j+3UL);
             }
 
-            (~C)(i,j    ) -= sum( xmm1 ) * scalar;
-            (~C)(i,j+1UL) -= sum( xmm2 ) * scalar;
-            (~C)(i,j+2UL) -= sum( xmm3 ) * scalar;
-            (~C)(i,j+3UL) -= sum( xmm4 ) * scalar;
+            C(i,j    ) -= sum( xmm1 ) * scalar;
+            C(i,j+1UL) -= sum( xmm2 ) * scalar;
+            C(i,j+2UL) -= sum( xmm3 ) * scalar;
+            C(i,j+3UL) -= sum( xmm4 ) * scalar;
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i,j    ) -= A(i,k) * B(k,j    ) * scalar;
-               (~C)(i,j+1UL) -= A(i,k) * B(k,j+1UL) * scalar;
-               (~C)(i,j+2UL) -= A(i,k) * B(k,j+2UL) * scalar;
-               (~C)(i,j+3UL) -= A(i,k) * B(k,j+3UL) * scalar;
+               C(i,j    ) -= A(i,k) * B(k,j    ) * scalar;
+               C(i,j+1UL) -= A(i,k) * B(k,j+1UL) * scalar;
+               C(i,j+2UL) -= A(i,k) * B(k,j+2UL) * scalar;
+               C(i,j+3UL) -= A(i,k) * B(k,j+3UL) * scalar;
             }
          }
 
@@ -7444,12 +7446,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm2 += a1 * B.load(k,j+1UL);
             }
 
-            (~C)(i,j    ) -= sum( xmm1 ) * scalar;
-            (~C)(i,j+1UL) -= sum( xmm2 ) * scalar;
+            C(i,j    ) -= sum( xmm1 ) * scalar;
+            C(i,j+1UL) -= sum( xmm2 ) * scalar;
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i,j    ) -= A(i,k) * B(k,j    ) * scalar;
-               (~C)(i,j+1UL) -= A(i,k) * B(k,j+1UL) * scalar;
+               C(i,j    ) -= A(i,k) * B(k,j    ) * scalar;
+               C(i,j+1UL) -= A(i,k) * B(k,j+1UL) * scalar;
             }
          }
 
@@ -7469,10 +7471,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm1 += A.load(i,k) * B.load(k,j);
             }
 
-            (~C)(i,j) -= sum( xmm1 ) * scalar;
+            C(i,j) -= sum( xmm1 ) * scalar;
 
             for( ; remainder && k<K; ++k ) {
-               (~C)(i,j) -= A(i,k) * B(k,j) * scalar;
+               C(i,j) -= A(i,k) * B(k,j) * scalar;
             }
          }
       }
@@ -7498,8 +7500,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectSmallSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       constexpr bool remainder( !IsPadded_v<MT4> || !IsPadded_v<MT5> );
 
@@ -7548,24 +7550,24 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm8 += a4 * b2;
             }
 
-            (~C)(i    ,j    ) -= sum( xmm1 ) * scalar;
-            (~C)(i    ,j+1UL) -= sum( xmm2 ) * scalar;
-            (~C)(i+1UL,j    ) -= sum( xmm3 ) * scalar;
-            (~C)(i+1UL,j+1UL) -= sum( xmm4 ) * scalar;
-            (~C)(i+2UL,j    ) -= sum( xmm5 ) * scalar;
-            (~C)(i+2UL,j+1UL) -= sum( xmm6 ) * scalar;
-            (~C)(i+3UL,j    ) -= sum( xmm7 ) * scalar;
-            (~C)(i+3UL,j+1UL) -= sum( xmm8 ) * scalar;
+            C(i    ,j    ) -= sum( xmm1 ) * scalar;
+            C(i    ,j+1UL) -= sum( xmm2 ) * scalar;
+            C(i+1UL,j    ) -= sum( xmm3 ) * scalar;
+            C(i+1UL,j+1UL) -= sum( xmm4 ) * scalar;
+            C(i+2UL,j    ) -= sum( xmm5 ) * scalar;
+            C(i+2UL,j+1UL) -= sum( xmm6 ) * scalar;
+            C(i+3UL,j    ) -= sum( xmm7 ) * scalar;
+            C(i+3UL,j+1UL) -= sum( xmm8 ) * scalar;
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j    ) -= A(i    ,k) * B(k,j    ) * scalar;
-               (~C)(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL) * scalar;
-               (~C)(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    ) * scalar;
-               (~C)(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL) * scalar;
-               (~C)(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    ) * scalar;
-               (~C)(i+2UL,j+1UL) -= A(i+2UL,k) * B(k,j+1UL) * scalar;
-               (~C)(i+3UL,j    ) -= A(i+3UL,k) * B(k,j    ) * scalar;
-               (~C)(i+3UL,j+1UL) -= A(i+3UL,k) * B(k,j+1UL) * scalar;
+               C(i    ,j    ) -= A(i    ,k) * B(k,j    ) * scalar;
+               C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL) * scalar;
+               C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    ) * scalar;
+               C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL) * scalar;
+               C(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    ) * scalar;
+               C(i+2UL,j+1UL) -= A(i+2UL,k) * B(k,j+1UL) * scalar;
+               C(i+3UL,j    ) -= A(i+3UL,k) * B(k,j    ) * scalar;
+               C(i+3UL,j+1UL) -= A(i+3UL,k) * B(k,j+1UL) * scalar;
             }
          }
 
@@ -7590,16 +7592,16 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm4 += A.load(i+3UL,k) * b1;
             }
 
-            (~C)(i    ,j) -= sum( xmm1 ) * scalar;
-            (~C)(i+1UL,j) -= sum( xmm2 ) * scalar;
-            (~C)(i+2UL,j) -= sum( xmm3 ) * scalar;
-            (~C)(i+3UL,j) -= sum( xmm4 ) * scalar;
+            C(i    ,j) -= sum( xmm1 ) * scalar;
+            C(i+1UL,j) -= sum( xmm2 ) * scalar;
+            C(i+2UL,j) -= sum( xmm3 ) * scalar;
+            C(i+3UL,j) -= sum( xmm4 ) * scalar;
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j) -= A(i    ,k) * B(k,j) * scalar;
-               (~C)(i+1UL,j) -= A(i+1UL,k) * B(k,j) * scalar;
-               (~C)(i+2UL,j) -= A(i+2UL,k) * B(k,j) * scalar;
-               (~C)(i+3UL,j) -= A(i+3UL,k) * B(k,j) * scalar;
+               C(i    ,j) -= A(i    ,k) * B(k,j) * scalar;
+               C(i+1UL,j) -= A(i+1UL,k) * B(k,j) * scalar;
+               C(i+2UL,j) -= A(i+2UL,k) * B(k,j) * scalar;
+               C(i+3UL,j) -= A(i+3UL,k) * B(k,j) * scalar;
             }
          }
       }
@@ -7635,16 +7637,16 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm4 += a2 * b2;
             }
 
-            (~C)(i    ,j    ) -= sum( xmm1 ) * scalar;
-            (~C)(i    ,j+1UL) -= sum( xmm2 ) * scalar;
-            (~C)(i+1UL,j    ) -= sum( xmm3 ) * scalar;
-            (~C)(i+1UL,j+1UL) -= sum( xmm4 ) * scalar;
+            C(i    ,j    ) -= sum( xmm1 ) * scalar;
+            C(i    ,j+1UL) -= sum( xmm2 ) * scalar;
+            C(i+1UL,j    ) -= sum( xmm3 ) * scalar;
+            C(i+1UL,j+1UL) -= sum( xmm4 ) * scalar;
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j    ) -= A(i    ,k) * B(k,j    ) * scalar;
-               (~C)(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL) * scalar;
-               (~C)(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    ) * scalar;
-               (~C)(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL) * scalar;
+               C(i    ,j    ) -= A(i    ,k) * B(k,j    ) * scalar;
+               C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL) * scalar;
+               C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    ) * scalar;
+               C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL) * scalar;
             }
          }
 
@@ -7667,12 +7669,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm2 += A.load(i+1UL,k) * b1;
             }
 
-            (~C)(i    ,j) -= sum( xmm1 ) * scalar;
-            (~C)(i+1UL,j) -= sum( xmm2 ) * scalar;
+            C(i    ,j) -= sum( xmm1 ) * scalar;
+            C(i+1UL,j) -= sum( xmm2 ) * scalar;
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i    ,j) -= A(i    ,k) * B(k,j) * scalar;
-               (~C)(i+1UL,j) -= A(i+1UL,k) * B(k,j) * scalar;
+               C(i    ,j) -= A(i    ,k) * B(k,j) * scalar;
+               C(i+1UL,j) -= A(i+1UL,k) * B(k,j) * scalar;
             }
          }
       }
@@ -7701,12 +7703,12 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm2 += a1 * B.load(k,j+1UL);
             }
 
-            (~C)(i,j    ) -= sum( xmm1 ) * scalar;
-            (~C)(i,j+1UL) -= sum( xmm2 ) * scalar;
+            C(i,j    ) -= sum( xmm1 ) * scalar;
+            C(i,j+1UL) -= sum( xmm2 ) * scalar;
 
             for( ; remainder && k<kend; ++k ) {
-               (~C)(i,j    ) -= A(i,k) * B(k,j    ) * scalar;
-               (~C)(i,j+1UL) -= A(i,k) * B(k,j+1UL) * scalar;
+               C(i,j    ) -= A(i,k) * B(k,j    ) * scalar;
+               C(i,j+1UL) -= A(i,k) * B(k,j+1UL) * scalar;
             }
          }
 
@@ -7726,10 +7728,10 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                xmm1 += A.load(i,k) * B.load(k,j);
             }
 
-            (~C)(i,j) -= sum( xmm1 ) * scalar;
+            C(i,j) -= sum( xmm1 ) * scalar;
 
             for( ; remainder && k<K; ++k ) {
-               (~C)(i,j) -= A(i,k) * B(k,j) * scalar;
+               C(i,j) -= A(i,k) * B(k,j) * scalar;
             }
          }
       }
@@ -7754,8 +7756,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       selectDefaultSubAssignKernel( C, A, B, scalar );
    }
@@ -7780,8 +7782,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       if( LOW )
          lmmm( C, A, B, -scalar, ST2(1) );
@@ -7810,8 +7812,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
-      selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
    {
       selectLargeSubAssignKernel( C, A, B, scalar );
    }
@@ -7836,8 +7838,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
-      selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
    {
       using ET = ElementType_t<MT3>;
 
@@ -7921,8 +7923,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto smpAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -7971,8 +7973,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpAssign( SparseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto smpAssign( SparseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -8012,8 +8014,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpAddAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto smpAddAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -8062,8 +8064,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpSubAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto smpSubAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 

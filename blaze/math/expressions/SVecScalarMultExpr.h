@@ -482,8 +482,8 @@ class SVecScalarMultExpr
    // operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT2> >
-      assign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+   friend inline auto assign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -510,8 +510,8 @@ class SVecScalarMultExpr
    // operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target sparse vector
-   friend inline EnableIf_t< UseAssign_v<VT2> >
-      assign( SparseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+   friend inline auto assign( SparseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -538,8 +538,8 @@ class SVecScalarMultExpr
    // operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT2> >
-      addAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+   friend inline auto addAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -574,8 +574,8 @@ class SVecScalarMultExpr
    // operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT2> >
-      subAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+   friend inline auto subAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -610,8 +610,8 @@ class SVecScalarMultExpr
    // vector operand requires an intermediate evaluation.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT2> >
-      multAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+   friend inline auto multAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -654,8 +654,8 @@ class SVecScalarMultExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
-      smpAddAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+   friend inline auto smpAddAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -690,8 +690,8 @@ class SVecScalarMultExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
-      smpSubAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+   friend inline auto smpSubAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -726,8 +726,8 @@ class SVecScalarMultExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT2 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT2> >
-      smpMultAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+   friend inline auto smpMultAssign( DenseVector<VT2,TF>& lhs, const SVecScalarMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 

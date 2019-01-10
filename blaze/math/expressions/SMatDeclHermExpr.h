@@ -324,8 +324,8 @@ class SMatDeclHermExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      assign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+   friend inline auto assign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -351,8 +351,8 @@ class SMatDeclHermExpr
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      assign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+   friend inline auto assign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -378,8 +378,8 @@ class SMatDeclHermExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      addAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+   friend inline auto addAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -405,8 +405,8 @@ class SMatDeclHermExpr
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      addAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+   friend inline auto addAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -432,8 +432,8 @@ class SMatDeclHermExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      subAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+   friend inline auto subAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -459,8 +459,8 @@ class SMatDeclHermExpr
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      subAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+   friend inline auto subAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -486,8 +486,8 @@ class SMatDeclHermExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      schurAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+   friend inline auto schurAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -513,8 +513,8 @@ class SMatDeclHermExpr
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      schurAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+   friend inline auto schurAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -540,8 +540,8 @@ class SMatDeclHermExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      multAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+   friend inline auto multAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -567,8 +567,8 @@ class SMatDeclHermExpr
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseAssign_v<MT2> >
-      multAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+   friend inline auto multAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -594,8 +594,8 @@ class SMatDeclHermExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+   friend inline auto smpAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -621,8 +621,8 @@ class SMatDeclHermExpr
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+   friend inline auto smpAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -648,8 +648,8 @@ class SMatDeclHermExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+   friend inline auto smpAddAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -675,8 +675,8 @@ class SMatDeclHermExpr
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpAddAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+   friend inline auto smpAddAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -702,8 +702,8 @@ class SMatDeclHermExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+   friend inline auto smpSubAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -729,8 +729,8 @@ class SMatDeclHermExpr
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpSubAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+   friend inline auto smpSubAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -756,8 +756,8 @@ class SMatDeclHermExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpSchurAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+   friend inline auto smpSchurAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -783,8 +783,8 @@ class SMatDeclHermExpr
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpSchurAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+   friend inline auto smpSchurAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -811,8 +811,8 @@ class SMatDeclHermExpr
    */
    template< typename MT2  // Type of the target dense matrix
            , bool SO2 >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpMultAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+   friend inline auto smpMultAssign( DenseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -839,8 +839,8 @@ class SMatDeclHermExpr
    */
    template< typename MT2  // Type of the target sparse matrix
            , bool SO2 >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpMultAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+   friend inline auto smpMultAssign( SparseMatrix<MT2,SO2>& lhs, const SMatDeclHermExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 

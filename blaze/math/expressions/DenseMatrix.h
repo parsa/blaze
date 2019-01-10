@@ -119,8 +119,8 @@ size_t spacing( const DenseMatrix<MT,SO>& dm ) noexcept;
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE DisableIf_t< HasMutableDataAccess_v<MT>, typename MT::ElementType* >
-   data_backend( DenseMatrix<MT,SO>& dm ) noexcept
+BLAZE_ALWAYS_INLINE auto data_backend( DenseMatrix<MT,SO>& dm ) noexcept
+   -> DisableIf_t< HasMutableDataAccess_v<MT>, typename MT::ElementType* >
 {
    UNUSED_PARAMETER( dm );
 
@@ -142,8 +142,8 @@ BLAZE_ALWAYS_INLINE DisableIf_t< HasMutableDataAccess_v<MT>, typename MT::Elemen
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE EnableIf_t< HasMutableDataAccess_v<MT>, typename MT::ElementType* >
-   data_backend( DenseMatrix<MT,SO>& dm ) noexcept
+BLAZE_ALWAYS_INLINE auto data_backend( DenseMatrix<MT,SO>& dm ) noexcept
+   -> EnableIf_t< HasMutableDataAccess_v<MT>, typename MT::ElementType* >
 {
    return (~dm).data();
 }
@@ -186,8 +186,8 @@ BLAZE_ALWAYS_INLINE typename MT::ElementType* data( DenseMatrix<MT,SO>& dm ) noe
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE DisableIf_t< HasConstDataAccess_v<MT>, typename MT::ElementType* >
-   data_backend( const DenseMatrix<MT,SO>& dm ) noexcept
+BLAZE_ALWAYS_INLINE auto data_backend( const DenseMatrix<MT,SO>& dm ) noexcept
+   -> DisableIf_t< HasConstDataAccess_v<MT>, typename MT::ElementType* >
 {
    UNUSED_PARAMETER( dm );
 
@@ -209,8 +209,8 @@ BLAZE_ALWAYS_INLINE DisableIf_t< HasConstDataAccess_v<MT>, typename MT::ElementT
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE EnableIf_t< HasConstDataAccess_v<MT>, typename MT::ElementType* >
-   data_backend( const DenseMatrix<MT,SO>& dm ) noexcept
+BLAZE_ALWAYS_INLINE auto data_backend( const DenseMatrix<MT,SO>& dm ) noexcept
+   -> EnableIf_t< HasConstDataAccess_v<MT>, typename MT::ElementType* >
 {
    return (~dm).data();
 }
@@ -268,7 +268,7 @@ BLAZE_ALWAYS_INLINE size_t spacing( const DenseMatrix<MT,SO>& dm ) noexcept
 // matrix.
 */
 template< typename MT >  // Type of the matrix
-inline DisableIf_t< IsUpper_v<MT> > resetLower_backend( DenseMatrix<MT,false>& dm )
+inline auto resetLower_backend( DenseMatrix<MT,false>& dm ) -> DisableIf_t< IsUpper_v<MT> >
 {
    const size_t m( (~dm).rows()    );
    const size_t n( (~dm).columns() );
@@ -296,7 +296,7 @@ inline DisableIf_t< IsUpper_v<MT> > resetLower_backend( DenseMatrix<MT,false>& d
 // matrix.
 */
 template< typename MT >  // Type of the matrix
-inline DisableIf_t< IsUpper_v<MT> > resetLower_backend( DenseMatrix<MT,true>& dm )
+inline auto resetLower_backend( DenseMatrix<MT,true>& dm ) -> DisableIf_t< IsUpper_v<MT> >
 {
    const size_t m   ( (~dm).rows()    );
    const size_t n   ( (~dm).columns() );
@@ -324,7 +324,7 @@ inline DisableIf_t< IsUpper_v<MT> > resetLower_backend( DenseMatrix<MT,true>& dm
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline EnableIf_t< IsUpper_v<MT> > resetLower_backend( DenseMatrix<MT,SO>& dm )
+inline auto resetLower_backend( DenseMatrix<MT,SO>& dm ) -> EnableIf_t< IsUpper_v<MT> >
 {
    UNUSED_PARAMETER( dm );
 }
@@ -364,7 +364,7 @@ inline void resetLower( DenseMatrix<MT,SO>& dm )
 // matrix.
 */
 template< typename MT >  // Type of the matrix
-inline DisableIf_t< IsLower_v<MT> > resetUpper_backend( DenseMatrix<MT,false>& dm )
+inline auto resetUpper_backend( DenseMatrix<MT,false>& dm ) -> DisableIf_t< IsLower_v<MT> >
 {
    const size_t m   ( (~dm).rows()    );
    const size_t n   ( (~dm).columns() );
@@ -392,7 +392,7 @@ inline DisableIf_t< IsLower_v<MT> > resetUpper_backend( DenseMatrix<MT,false>& d
 // matrix.
 */
 template< typename MT >  // Type of the matrix
-inline DisableIf_t< IsLower_v<MT> > resetUpper_backend( DenseMatrix<MT,true>& dm )
+inline auto resetUpper_backend( DenseMatrix<MT,true>& dm ) -> DisableIf_t< IsLower_v<MT> >
 {
    const size_t m( (~dm).rows()    );
    const size_t n( (~dm).columns() );
@@ -420,7 +420,7 @@ inline DisableIf_t< IsLower_v<MT> > resetUpper_backend( DenseMatrix<MT,true>& dm
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline EnableIf_t< IsLower_v<MT> > resetUpper_backend( DenseMatrix<MT,SO>& dm )
+inline auto resetUpper_backend( DenseMatrix<MT,SO>& dm ) -> EnableIf_t< IsLower_v<MT> >
 {
    UNUSED_PARAMETER( dm );
 }

@@ -514,8 +514,8 @@ class TSMatDMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      assign( DenseMatrix<MT,SO2>& lhs, const TSMatDMatSchurExpr& rhs )
+   friend inline auto assign( DenseMatrix<MT,SO2>& lhs, const TSMatDMatSchurExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -554,8 +554,8 @@ class TSMatDMatSchurExpr
    // dense matrix Schur product expression to a row-major sparse matrix.
    */
    template< typename MT >  // Type of the target sparse matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      assign( SparseMatrix<MT,false>& lhs, const TSMatDMatSchurExpr& rhs )
+   friend inline auto assign( SparseMatrix<MT,false>& lhs, const TSMatDMatSchurExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -612,8 +612,8 @@ class TSMatDMatSchurExpr
    // dense matrix Schur product expression to a column-major sparse matrix.
    */
    template< typename MT >  // Type of the target sparse matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      assign( SparseMatrix<MT,true>& lhs, const TSMatDMatSchurExpr& rhs )
+   friend inline auto assign( SparseMatrix<MT,true>& lhs, const TSMatDMatSchurExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -658,8 +658,8 @@ class TSMatDMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      addAssign( DenseMatrix<MT,SO2>& lhs, const TSMatDMatSchurExpr& rhs )
+   friend inline auto addAssign( DenseMatrix<MT,SO2>& lhs, const TSMatDMatSchurExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -703,8 +703,8 @@ class TSMatDMatSchurExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO2 >   // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      subAssign( DenseMatrix<MT,SO2>& lhs, const TSMatDMatSchurExpr& rhs )
+   friend inline auto subAssign( DenseMatrix<MT,SO2>& lhs, const TSMatDMatSchurExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 

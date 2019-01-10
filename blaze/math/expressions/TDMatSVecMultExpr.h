@@ -427,8 +427,8 @@ class TDMatSVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseDefaultKernel_v<VT1,MT1,VT2> >
-      selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   static inline auto selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
+      -> EnableIf_t< UseDefaultKernel_v<VT1,MT1,VT2> >
    {
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -503,8 +503,8 @@ class TDMatSVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseOptimizedKernel_v<VT1,MT1,VT2> >
-      selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   static inline auto selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
+      -> EnableIf_t< UseOptimizedKernel_v<VT1,MT1,VT2> >
    {
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -615,8 +615,8 @@ class TDMatSVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseVectorizedKernel_v<VT1,MT1,VT2> >
-      selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   static inline auto selectAssignKernel( VT1& y, const MT1& A, const VT2& x )
+      -> EnableIf_t< UseVectorizedKernel_v<VT1,MT1,VT2> >
    {
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -845,8 +845,8 @@ class TDMatSVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseDefaultKernel_v<VT1,MT1,VT2> >
-      selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   static inline auto selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
+      -> EnableIf_t< UseDefaultKernel_v<VT1,MT1,VT2> >
    {
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -899,8 +899,8 @@ class TDMatSVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseOptimizedKernel_v<VT1,MT1,VT2> >
-      selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   static inline auto selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
+      -> EnableIf_t< UseOptimizedKernel_v<VT1,MT1,VT2> >
    {
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -979,8 +979,8 @@ class TDMatSVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseVectorizedKernel_v<VT1,MT1,VT2> >
-      selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   static inline auto selectAddAssignKernel( VT1& y, const MT1& A, const VT2& x )
+      -> EnableIf_t< UseVectorizedKernel_v<VT1,MT1,VT2> >
    {
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -1127,8 +1127,8 @@ class TDMatSVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseDefaultKernel_v<VT1,MT1,VT2> >
-      selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   static inline auto selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
+      -> EnableIf_t< UseDefaultKernel_v<VT1,MT1,VT2> >
    {
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -1181,8 +1181,8 @@ class TDMatSVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseOptimizedKernel_v<VT1,MT1,VT2> >
-      selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   static inline auto selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
+      -> EnableIf_t< UseOptimizedKernel_v<VT1,MT1,VT2> >
    {
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -1261,8 +1261,8 @@ class TDMatSVecMultExpr
    template< typename VT1    // Type of the left-hand side target vector
            , typename MT1    // Type of the left-hand side matrix operand
            , typename VT2 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseVectorizedKernel_v<VT1,MT1,VT2> >
-      selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
+   static inline auto selectSubAssignKernel( VT1& y, const MT1& A, const VT2& x )
+      -> EnableIf_t< UseVectorizedKernel_v<VT1,MT1,VT2> >
    {
       BLAZE_INTERNAL_ASSERT( x.nonZeros() != 0UL, "Invalid number of non-zero elements" );
 
@@ -1437,8 +1437,8 @@ class TDMatSVecMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT1> >
-      smpAssign( DenseVector<VT1,false>& lhs, const TDMatSVecMultExpr& rhs )
+   friend inline auto smpAssign( DenseVector<VT1,false>& lhs, const TDMatSVecMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT1> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1482,8 +1482,8 @@ class TDMatSVecMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target sparse vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT1> >
-      smpAssign( SparseVector<VT1,false>& lhs, const TDMatSVecMultExpr& rhs )
+   friend inline auto smpAssign( SparseVector<VT1,false>& lhs, const TDMatSVecMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT1> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1515,8 +1515,8 @@ class TDMatSVecMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT1> >
-      smpAddAssign( DenseVector<VT1,false>& lhs, const TDMatSVecMultExpr& rhs )
+   friend inline auto smpAddAssign( DenseVector<VT1,false>& lhs, const TDMatSVecMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT1> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1561,8 +1561,8 @@ class TDMatSVecMultExpr
    // case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT1> >
-      smpSubAssign( DenseVector<VT1,false>& lhs, const TDMatSVecMultExpr& rhs )
+   friend inline auto smpSubAssign( DenseVector<VT1,false>& lhs, const TDMatSVecMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT1> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1607,8 +1607,8 @@ class TDMatSVecMultExpr
    // by the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT1> >
-      smpMultAssign( DenseVector<VT1,false>& lhs, const TDMatSVecMultExpr& rhs )
+   friend inline auto smpMultAssign( DenseVector<VT1,false>& lhs, const TDMatSVecMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT1> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1644,8 +1644,8 @@ class TDMatSVecMultExpr
    // case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT1 >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT1> >
-      smpDivAssign( DenseVector<VT1,false>& lhs, const TDMatSVecMultExpr& rhs )
+   friend inline auto smpDivAssign( DenseVector<VT1,false>& lhs, const TDMatSVecMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT1> >
    {
       BLAZE_FUNCTION_TRACE;
 

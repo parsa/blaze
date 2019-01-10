@@ -276,8 +276,8 @@ class SVecSVecAddExpr
    // type is resizable.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< IsResizable_v< ElementType_t<VT> > >
-      assign( DenseVector<VT,TF>& lhs, const SVecSVecAddExpr& rhs )
+   friend inline auto assign( DenseVector<VT,TF>& lhs, const SVecSVecAddExpr& rhs )
+      -> EnableIf_t< IsResizable_v< ElementType_t<VT> > >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -321,8 +321,8 @@ class SVecSVecAddExpr
    // type is not resizable.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline DisableIf_t< IsResizable_v< ElementType_t<VT> > >
-      assign( DenseVector<VT,TF>& lhs, const SVecSVecAddExpr& rhs )
+   friend inline auto assign( DenseVector<VT,TF>& lhs, const SVecSVecAddExpr& rhs )
+      -> DisableIf_t< IsResizable_v< ElementType_t<VT> > >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -529,8 +529,8 @@ class SVecSVecAddExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> >
-      smpAddAssign( DenseVector<VT,TF>& lhs, const SVecSVecAddExpr& rhs )
+   friend inline auto smpAddAssign( DenseVector<VT,TF>& lhs, const SVecSVecAddExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -561,8 +561,8 @@ class SVecSVecAddExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> >
-      smpSubAssign( DenseVector<VT,TF>& lhs, const SVecSVecAddExpr& rhs )
+   friend inline auto smpSubAssign( DenseVector<VT,TF>& lhs, const SVecSVecAddExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -594,8 +594,8 @@ class SVecSVecAddExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> >
-      smpMultAssign( DenseVector<VT,TF>& lhs, const SVecSVecAddExpr& rhs )
+   friend inline auto smpMultAssign( DenseVector<VT,TF>& lhs, const SVecSVecAddExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 

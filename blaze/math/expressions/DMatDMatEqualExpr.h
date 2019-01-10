@@ -116,8 +116,8 @@ struct DMatDMatEqualExprHelper
 template< bool RF         // Relaxation flag
         , typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-inline DisableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
-   equal( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,false>& rhs )
+inline auto equal( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,false>& rhs )
+   -> DisableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
 {
    using CT1 = CompositeType_t<MT1>;
    using CT2 = CompositeType_t<MT2>;
@@ -160,8 +160,8 @@ inline DisableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
 template< bool RF         // Relaxation flag
         , typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
-   equal( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,false>& rhs )
+inline auto equal( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,false>& rhs )
+   -> EnableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
 {
    using CT1 = CompositeType_t<MT1>;
    using CT2 = CompositeType_t<MT2>;
@@ -229,8 +229,8 @@ inline EnableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
 template< bool RF         // Relaxation flag
         , typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-inline DisableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
-   equal( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,true>& rhs )
+inline auto equal( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,true>& rhs )
+   -> DisableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
 {
    using CT1 = CompositeType_t<MT1>;
    using CT2 = CompositeType_t<MT2>;
@@ -273,8 +273,8 @@ inline DisableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
 template< bool RF         // Relaxation flag
         , typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-inline EnableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
-   equal( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,true>& rhs )
+inline auto equal( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,true>& rhs )
+   -> EnableIf_t< DMatDMatEqualExprHelper<MT1,MT2>::value, bool >
 {
    using CT1 = CompositeType_t<MT1>;
    using CT2 = CompositeType_t<MT2>;

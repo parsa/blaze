@@ -609,8 +609,8 @@ class DVecDVecMultExpr
    // in case either of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT> && !IsCommutative_v<VT1,VT2> >
-      assign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+   friend inline auto assign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT> && !IsCommutative_v<VT1,VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -643,8 +643,8 @@ class DVecDVecMultExpr
    // in case either of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT> && IsCommutative_v<VT1,VT2> >
-      assign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+   friend inline auto assign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT> && IsCommutative_v<VT1,VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -683,8 +683,8 @@ class DVecDVecMultExpr
    // of the two operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target sparse vector
-   friend inline EnableIf_t< UseAssign_v<VT> >
-      assign( SparseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+   friend inline auto assign( SparseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -715,8 +715,8 @@ class DVecDVecMultExpr
    // of the operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT> >
-      addAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+   friend inline auto addAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -751,8 +751,8 @@ class DVecDVecMultExpr
    // the operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT> >
-      subAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+   friend inline auto subAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -788,8 +788,8 @@ class DVecDVecMultExpr
    // the compiler in case either of the operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT> && !IsCommutative_v<VT1,VT2> >
-      multAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+   friend inline auto multAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT> && !IsCommutative_v<VT1,VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -821,8 +821,8 @@ class DVecDVecMultExpr
    // by the compiler in case either of the operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT> && IsCommutative_v<VT1,VT2> >
-      multAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+   friend inline auto multAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT> && IsCommutative_v<VT1,VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -859,8 +859,8 @@ class DVecDVecMultExpr
    // of the operands requires an intermediate evaluation.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseAssign_v<VT> >
-      divAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+   friend inline auto divAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+      -> EnableIf_t< UseAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -896,8 +896,8 @@ class DVecDVecMultExpr
    // case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> && !IsCommutative_v<VT1,VT2> >
-      smpAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+   friend inline auto smpAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> && !IsCommutative_v<VT1,VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -931,8 +931,8 @@ class DVecDVecMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> && IsCommutative_v<VT1,VT2> >
-      smpAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+   friend inline auto smpAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> && IsCommutative_v<VT1,VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -971,8 +971,8 @@ class DVecDVecMultExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target sparse vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> >
-      smpAssign( SparseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+   friend inline auto smpAssign( SparseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1003,8 +1003,8 @@ class DVecDVecMultExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> >
-      smpAddAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+   friend inline auto smpAddAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1040,8 +1040,8 @@ class DVecDVecMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> >
-      smpSubAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+   friend inline auto smpSubAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1077,8 +1077,8 @@ class DVecDVecMultExpr
    // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> && !IsCommutative_v<VT1,VT2> >
-      smpMultAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+   friend inline auto smpMultAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> && !IsCommutative_v<VT1,VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1110,8 +1110,8 @@ class DVecDVecMultExpr
    // by the compiler in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> && IsCommutative_v<VT1,VT2> >
-      smpMultAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+   friend inline auto smpMultAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> && IsCommutative_v<VT1,VT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1148,8 +1148,8 @@ class DVecDVecMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename VT >  // Type of the target dense vector
-   friend inline EnableIf_t< UseSMPAssign_v<VT> >
-      smpDivAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+   friend inline auto smpDivAssign( DenseVector<VT,TF>& lhs, const DVecDVecMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<VT> >
    {
       BLAZE_FUNCTION_TRACE;
 

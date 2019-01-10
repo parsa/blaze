@@ -99,7 +99,7 @@ struct SparseMatrix
 // matrix.
 */
 template< typename MT >  // Type of the matrix
-inline DisableIf_t< IsUpper_v<MT> > resetLower_backend( SparseMatrix<MT,false>& dm )
+inline auto resetLower_backend( SparseMatrix<MT,false>& dm ) -> DisableIf_t< IsUpper_v<MT> >
 {
    const size_t m( (~dm).rows() );
 
@@ -123,7 +123,7 @@ inline DisableIf_t< IsUpper_v<MT> > resetLower_backend( SparseMatrix<MT,false>& 
 // matrix.
 */
 template< typename MT >  // Type of the matrix
-inline DisableIf_t< IsUpper_v<MT> > resetLower_backend( SparseMatrix<MT,true>& dm )
+inline auto resetLower_backend( SparseMatrix<MT,true>& dm ) -> DisableIf_t< IsUpper_v<MT> >
 {
    const size_t m   ( (~dm).rows()    );
    const size_t n   ( (~dm).columns() );
@@ -149,7 +149,7 @@ inline DisableIf_t< IsUpper_v<MT> > resetLower_backend( SparseMatrix<MT,true>& d
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline EnableIf_t< IsUpper_v<MT> > resetLower_backend( SparseMatrix<MT,SO>& dm )
+inline auto resetLower_backend( SparseMatrix<MT,SO>& dm ) -> EnableIf_t< IsUpper_v<MT> >
 {
    UNUSED_PARAMETER( dm );
 }
@@ -189,7 +189,7 @@ inline void resetLower( SparseMatrix<MT,SO>& dm )
 // matrix.
 */
 template< typename MT >  // Type of the matrix
-inline DisableIf_t< IsLower_v<MT> > resetUpper_backend( SparseMatrix<MT,false>& dm )
+inline auto resetUpper_backend( SparseMatrix<MT,false>& dm ) -> DisableIf_t< IsLower_v<MT> >
 {
    const size_t m   ( (~dm).rows()    );
    const size_t n   ( (~dm).columns() );
@@ -215,7 +215,7 @@ inline DisableIf_t< IsLower_v<MT> > resetUpper_backend( SparseMatrix<MT,false>& 
 // matrix.
 */
 template< typename MT >  // Type of the matrix
-inline DisableIf_t< IsLower_v<MT> > resetUpper_backend( SparseMatrix<MT,true>& dm )
+inline auto resetUpper_backend( SparseMatrix<MT,true>& dm ) -> DisableIf_t< IsLower_v<MT> >
 {
    const size_t n( (~dm).columns() );
 
@@ -239,7 +239,7 @@ inline DisableIf_t< IsLower_v<MT> > resetUpper_backend( SparseMatrix<MT,true>& d
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline EnableIf_t< IsLower_v<MT> > resetUpper_backend( SparseMatrix<MT,SO>& dm )
+inline auto resetUpper_backend( SparseMatrix<MT,SO>& dm ) -> EnableIf_t< IsLower_v<MT> >
 {
    UNUSED_PARAMETER( dm );
 }

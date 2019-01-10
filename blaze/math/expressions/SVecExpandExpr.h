@@ -382,8 +382,8 @@ class SVecExpandExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      assign( Matrix<MT,SO>& lhs, const SVecExpandExpr& rhs )
+   friend inline auto assign( Matrix<MT,SO>& lhs, const SVecExpandExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       using blaze::expand;
 
@@ -415,8 +415,8 @@ class SVecExpandExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      addAssign( Matrix<MT,SO>& lhs, const SVecExpandExpr& rhs )
+   friend inline auto addAssign( Matrix<MT,SO>& lhs, const SVecExpandExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       using blaze::expand;
 
@@ -448,8 +448,8 @@ class SVecExpandExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      subAssign( Matrix<MT,SO>& lhs, const SVecExpandExpr& rhs )
+   friend inline auto subAssign( Matrix<MT,SO>& lhs, const SVecExpandExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       using blaze::expand;
 
@@ -481,8 +481,8 @@ class SVecExpandExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      schurAssign( Matrix<MT,SO>& lhs, const SVecExpandExpr& rhs )
+   friend inline auto schurAssign( Matrix<MT,SO>& lhs, const SVecExpandExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       using blaze::expand;
 
@@ -514,8 +514,8 @@ class SVecExpandExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      multAssign( Matrix<MT,SO>& lhs, const SVecExpandExpr& rhs )
+   friend inline auto multAssign( Matrix<MT,SO>& lhs, const SVecExpandExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       using blaze::expand;
 
@@ -547,8 +547,8 @@ class SVecExpandExpr
    */
    template< typename MT  // Type of the target matrix
            , bool SO >    // Storage order of the target matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpAssign( Matrix<MT,SO>& lhs, const SVecExpandExpr& rhs )
+   friend inline auto smpAssign( Matrix<MT,SO>& lhs, const SVecExpandExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       using blaze::expand;
 
@@ -580,8 +580,8 @@ class SVecExpandExpr
    */
    template< typename MT  // Type of the target matrix
            , bool SO >    // Storage order of the target matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpAddAssign( Matrix<MT,SO>& lhs, const SVecExpandExpr& rhs )
+   friend inline auto smpAddAssign( Matrix<MT,SO>& lhs, const SVecExpandExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       using blaze::expand;
 
@@ -613,8 +613,8 @@ class SVecExpandExpr
    */
    template< typename MT  // Type of the target matrix
            , bool SO >    // Storage order of the target matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpSubAssign( Matrix<MT,SO>& lhs, const SVecExpandExpr& rhs )
+   friend inline auto smpSubAssign( Matrix<MT,SO>& lhs, const SVecExpandExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       using blaze::expand;
 
@@ -646,8 +646,8 @@ class SVecExpandExpr
    */
    template< typename MT  // Type of the target matrix
            , bool SO >    // Storage order of the target matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpSchurAssign( Matrix<MT,SO>& lhs, const SVecExpandExpr& rhs )
+   friend inline auto smpSchurAssign( Matrix<MT,SO>& lhs, const SVecExpandExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       using blaze::expand;
 
@@ -679,8 +679,8 @@ class SVecExpandExpr
    */
    template< typename MT  // Type of the target matrix
            , bool SO >    // Storage order of the target matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpMultAssign( Matrix<MT,SO>& lhs, const SVecExpandExpr& rhs )
+   friend inline auto smpMultAssign( Matrix<MT,SO>& lhs, const SVecExpandExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       using blaze::expand;
 

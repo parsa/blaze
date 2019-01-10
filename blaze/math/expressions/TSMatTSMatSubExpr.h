@@ -375,8 +375,8 @@ class TSMatTSMatSubExpr
    // sparse matrix subtraction expression to a row-major sparse matrix.
    */
    template< typename MT >  // Type of the target sparse matrix
-   friend inline DisableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
-      assign( SparseMatrix<MT,false>& lhs, const TSMatTSMatSubExpr& rhs )
+   friend inline auto assign( SparseMatrix<MT,false>& lhs, const TSMatTSMatSubExpr& rhs )
+      -> DisableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -495,8 +495,8 @@ class TSMatTSMatSubExpr
    // transpose sparse matrix subtraction expression to a row-major sparse matrix.
    */
    template< typename MT >  // Type of the target sparse matrix
-   friend inline EnableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
-      assign( SparseMatrix<MT,false>& lhs, const TSMatTSMatSubExpr& rhs )
+   friend inline auto assign( SparseMatrix<MT,false>& lhs, const TSMatTSMatSubExpr& rhs )
+      -> EnableIf_t< UseSymmetricKernel_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -719,8 +719,8 @@ class TSMatTSMatSubExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpAddAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatSubExpr& rhs )
+   friend inline auto smpAddAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatSubExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -754,8 +754,8 @@ class TSMatTSMatSubExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpSubAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatSubExpr& rhs )
+   friend inline auto smpSubAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatSubExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -789,8 +789,8 @@ class TSMatTSMatSubExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpSchurAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatSubExpr& rhs )
+   friend inline auto smpSchurAssign( DenseMatrix<MT,SO>& lhs, const TSMatTSMatSubExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 

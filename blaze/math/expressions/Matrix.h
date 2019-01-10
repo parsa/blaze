@@ -629,8 +629,8 @@ BLAZE_ALWAYS_INLINE size_t nonZeros( const Matrix<MT,SO>& matrix, size_t i )
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE DisableIf_t< IsResizable_v<MT> >
-   resize_backend( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
+BLAZE_ALWAYS_INLINE auto resize_backend( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
+   -> DisableIf_t< IsResizable_v<MT> >
 {
    UNUSED_PARAMETER( preserve );
 
@@ -657,8 +657,8 @@ BLAZE_ALWAYS_INLINE DisableIf_t< IsResizable_v<MT> >
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE EnableIf_t< IsResizable_v<MT> && !IsSquare_v<MT> >
-   resize_backend( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
+BLAZE_ALWAYS_INLINE auto resize_backend( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
+   -> EnableIf_t< IsResizable_v<MT> && !IsSquare_v<MT> >
 {
    (~matrix).resize( m, n, preserve );
 }
@@ -682,8 +682,8 @@ BLAZE_ALWAYS_INLINE EnableIf_t< IsResizable_v<MT> && !IsSquare_v<MT> >
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE EnableIf_t< IsResizable_v<MT> && IsSquare_v<MT> >
-   resize_backend( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
+BLAZE_ALWAYS_INLINE auto resize_backend( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
+   -> EnableIf_t< IsResizable_v<MT> && IsSquare_v<MT> >
 {
    if( m != n ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid resize arguments for square matrix" );
@@ -752,8 +752,8 @@ BLAZE_ALWAYS_INLINE void resize( Matrix<MT,SO>& matrix, size_t m, size_t n, bool
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE DisableIf_t< IsShrinkable_v<MT> >
-   shrinkToFit_backend( Matrix<MT,SO>& matrix )
+BLAZE_ALWAYS_INLINE auto shrinkToFit_backend( Matrix<MT,SO>& matrix )
+   -> DisableIf_t< IsShrinkable_v<MT> >
 {
    UNUSED_PARAMETER( matrix );
 }
@@ -771,8 +771,8 @@ BLAZE_ALWAYS_INLINE DisableIf_t< IsShrinkable_v<MT> >
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE EnableIf_t< IsShrinkable_v<MT> >
-   shrinkToFit_backend( Matrix<MT,SO>& matrix )
+BLAZE_ALWAYS_INLINE auto shrinkToFit_backend( Matrix<MT,SO>& matrix )
+   -> EnableIf_t< IsShrinkable_v<MT> >
 {
    (~matrix).shrinkToFit();
 }
@@ -1031,8 +1031,8 @@ BLAZE_ALWAYS_INLINE void assign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,S
 template< typename MT1    // Type of the left-hand side matrix
         , bool SO         // Storage order of the left-hand side matrix
         , typename MT2 >  // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE DisableIf_t< IsSymmetric_v<MT2> >
-   assign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
+BLAZE_ALWAYS_INLINE auto assign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
+   -> DisableIf_t< IsSymmetric_v<MT2> >
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1057,8 +1057,8 @@ BLAZE_ALWAYS_INLINE DisableIf_t< IsSymmetric_v<MT2> >
 template< typename MT1    // Type of the left-hand side matrix
         , bool SO         // Storage order of the left-hand side matrix
         , typename MT2 >  // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE EnableIf_t< IsSymmetric_v<MT2> >
-   assign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
+BLAZE_ALWAYS_INLINE auto assign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
+   -> EnableIf_t< IsSymmetric_v<MT2> >
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1140,8 +1140,8 @@ BLAZE_ALWAYS_INLINE void addAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT
 template< typename MT1    // Type of the left-hand side matrix
         , bool SO         // Storage order of the left-hand side matrix
         , typename MT2 >  // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE DisableIf_t< IsSymmetric_v<MT2> >
-   addAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
+BLAZE_ALWAYS_INLINE auto addAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
+   -> DisableIf_t< IsSymmetric_v<MT2> >
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1166,8 +1166,8 @@ BLAZE_ALWAYS_INLINE DisableIf_t< IsSymmetric_v<MT2> >
 template< typename MT1    // Type of the left-hand side matrix
         , bool SO         // Storage order of the left-hand side matrix
         , typename MT2 >  // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE EnableIf_t< IsSymmetric_v<MT2> >
-   addAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
+BLAZE_ALWAYS_INLINE auto addAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
+   -> EnableIf_t< IsSymmetric_v<MT2> >
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1249,8 +1249,8 @@ BLAZE_ALWAYS_INLINE void subAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT
 template< typename MT1    // Type of the left-hand side matrix
         , bool SO         // Storage order of the left-hand side matrix
         , typename MT2 >  // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE DisableIf_t< IsSymmetric_v<MT2> >
-   subAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
+BLAZE_ALWAYS_INLINE auto subAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
+   -> DisableIf_t< IsSymmetric_v<MT2> >
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1275,8 +1275,8 @@ BLAZE_ALWAYS_INLINE DisableIf_t< IsSymmetric_v<MT2> >
 template< typename MT1    // Type of the left-hand side matrix
         , bool SO         // Storage order of the left-hand side matrix
         , typename MT2 >  // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE EnableIf_t< IsSymmetric_v<MT2> >
-   subAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
+BLAZE_ALWAYS_INLINE auto subAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
+   -> EnableIf_t< IsSymmetric_v<MT2> >
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1358,8 +1358,8 @@ BLAZE_ALWAYS_INLINE void schurAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<
 template< typename MT1    // Type of the left-hand side matrix
         , bool SO         // Storage order of the left-hand side matrix
         , typename MT2 >  // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE DisableIf_t< IsSymmetric_v<MT2> >
-   schurAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
+BLAZE_ALWAYS_INLINE auto schurAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
+   -> DisableIf_t< IsSymmetric_v<MT2> >
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1384,8 +1384,8 @@ BLAZE_ALWAYS_INLINE DisableIf_t< IsSymmetric_v<MT2> >
 template< typename MT1    // Type of the left-hand side matrix
         , bool SO         // Storage order of the left-hand side matrix
         , typename MT2 >  // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE EnableIf_t< IsSymmetric_v<MT2> >
-   schurAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
+BLAZE_ALWAYS_INLINE auto schurAssign_backend( Matrix<MT1,SO>& lhs, const Matrix<MT2,!SO>& rhs )
+   -> EnableIf_t< IsSymmetric_v<MT2> >
 {
    BLAZE_FUNCTION_TRACE;
 

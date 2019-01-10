@@ -79,6 +79,7 @@
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsBLASCompatible.h>
+#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
@@ -511,8 +512,8 @@ class TDMatTDMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      assign( DenseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
+   friend inline auto assign( DenseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
+      -> DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -585,8 +586,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -697,8 +698,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT3 );
 
@@ -750,8 +751,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT3 );
 
@@ -803,8 +804,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT3 );
 
@@ -834,8 +835,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       selectDefaultAssignKernel( C, A, B );
    }
@@ -860,8 +861,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectSmallAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+   static inline auto selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT4 );
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT5 );
@@ -872,19 +873,19 @@ class TDMatTDMatMultExpr
 
       if( IsResizable_v<MT4> && !IsResizable_v<MT5> ) {
          const OppositeType_t<MT5> tmp( serial( B ) );
-         assign( ~C, fwd( A * tmp ) );
+         assign( C, fwd( A * tmp ) );
       }
       else if( !IsResizable_v<MT4> && IsResizable_v<MT5> ) {
          const OppositeType_t<MT4> tmp( serial( A ) );
-         assign( ~C, fwd( tmp * B ) );
+         assign( C, fwd( tmp * B ) );
       }
       else if( B.rows() * B.columns() <= A.rows() * A.columns() ) {
          const OppositeType_t<MT5> tmp( serial( B ) );
-         assign( ~C, fwd( A * tmp ) );
+         assign( C, fwd( A * tmp ) );
       }
       else {
          const OppositeType_t<MT4> tmp( serial( A ) );
-         assign( ~C, fwd( tmp * B ) );
+         assign( C, fwd( tmp * B ) );
       }
    }
    /*! \endcond */
@@ -908,8 +909,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectSmallAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   static inline auto selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT4> );
 
@@ -923,7 +924,7 @@ class TDMatTDMatMultExpr
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
       if( LOW && UPP && M > SIMDSIZE*3UL ) {
-         reset( ~C );
+         reset( C );
       }
 
       {
@@ -959,14 +960,14 @@ class TDMatTDMatMultExpr
                      xmm8 += A.load(i+SIMDSIZE*7UL,k) * b1;
                   }
 
-                  (~C).store( i             , j, xmm1 );
-                  (~C).store( i+SIMDSIZE    , j, xmm2 );
-                  (~C).store( i+SIMDSIZE*2UL, j, xmm3 );
-                  (~C).store( i+SIMDSIZE*3UL, j, xmm4 );
-                  (~C).store( i+SIMDSIZE*4UL, j, xmm5 );
-                  (~C).store( i+SIMDSIZE*5UL, j, xmm6 );
-                  (~C).store( i+SIMDSIZE*6UL, j, xmm7 );
-                  (~C).store( i+SIMDSIZE*7UL, j, xmm8 );
+                  C.store( i             , j, xmm1 );
+                  C.store( i+SIMDSIZE    , j, xmm2 );
+                  C.store( i+SIMDSIZE*2UL, j, xmm3 );
+                  C.store( i+SIMDSIZE*3UL, j, xmm4 );
+                  C.store( i+SIMDSIZE*4UL, j, xmm5 );
+                  C.store( i+SIMDSIZE*5UL, j, xmm6 );
+                  C.store( i+SIMDSIZE*6UL, j, xmm7 );
+                  C.store( i+SIMDSIZE*7UL, j, xmm8 );
                }
             }
          }
@@ -1010,16 +1011,16 @@ class TDMatTDMatMultExpr
                   xmm10 += a5 * b2;
                }
 
-               (~C).store( i             , j    , xmm1  );
-               (~C).store( i+SIMDSIZE    , j    , xmm2  );
-               (~C).store( i+SIMDSIZE*2UL, j    , xmm3  );
-               (~C).store( i+SIMDSIZE*3UL, j    , xmm4  );
-               (~C).store( i+SIMDSIZE*4UL, j    , xmm5  );
-               (~C).store( i             , j+1UL, xmm6  );
-               (~C).store( i+SIMDSIZE    , j+1UL, xmm7  );
-               (~C).store( i+SIMDSIZE*2UL, j+1UL, xmm8  );
-               (~C).store( i+SIMDSIZE*3UL, j+1UL, xmm9  );
-               (~C).store( i+SIMDSIZE*4UL, j+1UL, xmm10 );
+               C.store( i             , j    , xmm1  );
+               C.store( i+SIMDSIZE    , j    , xmm2  );
+               C.store( i+SIMDSIZE*2UL, j    , xmm3  );
+               C.store( i+SIMDSIZE*3UL, j    , xmm4  );
+               C.store( i+SIMDSIZE*4UL, j    , xmm5  );
+               C.store( i             , j+1UL, xmm6  );
+               C.store( i+SIMDSIZE    , j+1UL, xmm7  );
+               C.store( i+SIMDSIZE*2UL, j+1UL, xmm8  );
+               C.store( i+SIMDSIZE*3UL, j+1UL, xmm9  );
+               C.store( i+SIMDSIZE*4UL, j+1UL, xmm10 );
             }
 
             if( j < N )
@@ -1042,11 +1043,11 @@ class TDMatTDMatMultExpr
                   xmm5 += A.load(i+SIMDSIZE*4UL,k) * b1;
                }
 
-               (~C).store( i             , j, xmm1 );
-               (~C).store( i+SIMDSIZE    , j, xmm2 );
-               (~C).store( i+SIMDSIZE*2UL, j, xmm3 );
-               (~C).store( i+SIMDSIZE*3UL, j, xmm4 );
-               (~C).store( i+SIMDSIZE*4UL, j, xmm5 );
+               C.store( i             , j, xmm1 );
+               C.store( i+SIMDSIZE    , j, xmm2 );
+               C.store( i+SIMDSIZE*2UL, j, xmm3 );
+               C.store( i+SIMDSIZE*3UL, j, xmm4 );
+               C.store( i+SIMDSIZE*4UL, j, xmm5 );
             }
          }
 
@@ -1087,14 +1088,14 @@ class TDMatTDMatMultExpr
                   xmm8 += a4 * b2;
                }
 
-               (~C).store( i             , j    , xmm1 );
-               (~C).store( i+SIMDSIZE    , j    , xmm2 );
-               (~C).store( i+SIMDSIZE*2UL, j    , xmm3 );
-               (~C).store( i+SIMDSIZE*3UL, j    , xmm4 );
-               (~C).store( i             , j+1UL, xmm5 );
-               (~C).store( i+SIMDSIZE    , j+1UL, xmm6 );
-               (~C).store( i+SIMDSIZE*2UL, j+1UL, xmm7 );
-               (~C).store( i+SIMDSIZE*3UL, j+1UL, xmm8 );
+               C.store( i             , j    , xmm1 );
+               C.store( i+SIMDSIZE    , j    , xmm2 );
+               C.store( i+SIMDSIZE*2UL, j    , xmm3 );
+               C.store( i+SIMDSIZE*3UL, j    , xmm4 );
+               C.store( i             , j+1UL, xmm5 );
+               C.store( i+SIMDSIZE    , j+1UL, xmm6 );
+               C.store( i+SIMDSIZE*2UL, j+1UL, xmm7 );
+               C.store( i+SIMDSIZE*3UL, j+1UL, xmm8 );
             }
 
             if( j < jend )
@@ -1116,10 +1117,10 @@ class TDMatTDMatMultExpr
                   xmm4 += A.load(i+SIMDSIZE*3UL,k) * b1;
                }
 
-               (~C).store( i             , j, xmm1 );
-               (~C).store( i+SIMDSIZE    , j, xmm2 );
-               (~C).store( i+SIMDSIZE*2UL, j, xmm3 );
-               (~C).store( i+SIMDSIZE*3UL, j, xmm4 );
+               C.store( i             , j, xmm1 );
+               C.store( i+SIMDSIZE    , j, xmm2 );
+               C.store( i+SIMDSIZE*2UL, j, xmm3 );
+               C.store( i+SIMDSIZE*3UL, j, xmm4 );
             }
          }
 
@@ -1157,12 +1158,12 @@ class TDMatTDMatMultExpr
                   xmm6 += a3 * b2;
                }
 
-               (~C).store( i             , j    , xmm1 );
-               (~C).store( i+SIMDSIZE    , j    , xmm2 );
-               (~C).store( i+SIMDSIZE*2UL, j    , xmm3 );
-               (~C).store( i             , j+1UL, xmm4 );
-               (~C).store( i+SIMDSIZE    , j+1UL, xmm5 );
-               (~C).store( i+SIMDSIZE*2UL, j+1UL, xmm6 );
+               C.store( i             , j    , xmm1 );
+               C.store( i+SIMDSIZE    , j    , xmm2 );
+               C.store( i+SIMDSIZE*2UL, j    , xmm3 );
+               C.store( i             , j+1UL, xmm4 );
+               C.store( i+SIMDSIZE    , j+1UL, xmm5 );
+               C.store( i+SIMDSIZE*2UL, j+1UL, xmm6 );
             }
 
             if( j < jend )
@@ -1183,9 +1184,9 @@ class TDMatTDMatMultExpr
                   xmm3 += A.load(i+SIMDSIZE*2UL,k) * b1;
                }
 
-               (~C).store( i             , j, xmm1 );
-               (~C).store( i+SIMDSIZE    , j, xmm2 );
-               (~C).store( i+SIMDSIZE*2UL, j, xmm3 );
+               C.store( i             , j, xmm1 );
+               C.store( i+SIMDSIZE    , j, xmm2 );
+               C.store( i+SIMDSIZE*2UL, j, xmm3 );
             }
          }
 
@@ -1226,14 +1227,14 @@ class TDMatTDMatMultExpr
                   xmm8 += a2 * b4;
                }
 
-               (~C).store( i         , j    , xmm1 );
-               (~C).store( i+SIMDSIZE, j    , xmm2 );
-               (~C).store( i         , j+1UL, xmm3 );
-               (~C).store( i+SIMDSIZE, j+1UL, xmm4 );
-               (~C).store( i         , j+2UL, xmm5 );
-               (~C).store( i+SIMDSIZE, j+2UL, xmm6 );
-               (~C).store( i         , j+3UL, xmm7 );
-               (~C).store( i+SIMDSIZE, j+3UL, xmm8 );
+               C.store( i         , j    , xmm1 );
+               C.store( i+SIMDSIZE, j    , xmm2 );
+               C.store( i         , j+1UL, xmm3 );
+               C.store( i+SIMDSIZE, j+1UL, xmm4 );
+               C.store( i         , j+2UL, xmm5 );
+               C.store( i+SIMDSIZE, j+2UL, xmm6 );
+               C.store( i         , j+3UL, xmm7 );
+               C.store( i+SIMDSIZE, j+3UL, xmm8 );
             }
 
             for( ; (j+3UL) <= jend; j+=3UL )
@@ -1265,12 +1266,12 @@ class TDMatTDMatMultExpr
                   xmm6 += a2 * b3;
                }
 
-               (~C).store( i         , j    , xmm1 );
-               (~C).store( i+SIMDSIZE, j    , xmm2 );
-               (~C).store( i         , j+1UL, xmm3 );
-               (~C).store( i+SIMDSIZE, j+1UL, xmm4 );
-               (~C).store( i         , j+2UL, xmm5 );
-               (~C).store( i+SIMDSIZE, j+2UL, xmm6 );
+               C.store( i         , j    , xmm1 );
+               C.store( i+SIMDSIZE, j    , xmm2 );
+               C.store( i         , j+1UL, xmm3 );
+               C.store( i+SIMDSIZE, j+1UL, xmm4 );
+               C.store( i         , j+2UL, xmm5 );
+               C.store( i+SIMDSIZE, j+2UL, xmm6 );
             }
 
             for( ; (j+2UL) <= jend; j+=2UL )
@@ -1319,10 +1320,10 @@ class TDMatTDMatMultExpr
                   xmm4 += a2 * b2;
                }
 
-               (~C).store( i         , j    , xmm1+xmm5 );
-               (~C).store( i+SIMDSIZE, j    , xmm2+xmm6 );
-               (~C).store( i         , j+1UL, xmm3+xmm7 );
-               (~C).store( i+SIMDSIZE, j+1UL, xmm4+xmm8 );
+               C.store( i         , j    , xmm1+xmm5 );
+               C.store( i+SIMDSIZE, j    , xmm2+xmm6 );
+               C.store( i         , j+1UL, xmm3+xmm7 );
+               C.store( i+SIMDSIZE, j+1UL, xmm4+xmm8 );
             }
 
             if( j < jend )
@@ -1352,8 +1353,8 @@ class TDMatTDMatMultExpr
                   xmm2 += A.load(i+SIMDSIZE,k) * b1;
                }
 
-               (~C).store( i         , j, xmm1+xmm3 );
-               (~C).store( i+SIMDSIZE, j, xmm2+xmm4 );
+               C.store( i         , j, xmm1+xmm3 );
+               C.store( i+SIMDSIZE, j, xmm2+xmm4 );
             }
          }
 
@@ -1397,10 +1398,10 @@ class TDMatTDMatMultExpr
                   xmm4 += a1 * set( B(k,j+3UL) );
                }
 
-               (~C).store( i, j    , xmm1+xmm5 );
-               (~C).store( i, j+1UL, xmm2+xmm6 );
-               (~C).store( i, j+2UL, xmm3+xmm7 );
-               (~C).store( i, j+3UL, xmm4+xmm8 );
+               C.store( i, j    , xmm1+xmm5 );
+               C.store( i, j+1UL, xmm2+xmm6 );
+               C.store( i, j+2UL, xmm3+xmm7 );
+               C.store( i, j+3UL, xmm4+xmm8 );
             }
 
             for( ; (j+3UL) <= jend; j+=3UL )
@@ -1435,9 +1436,9 @@ class TDMatTDMatMultExpr
                   xmm3 += a1 * set( B(k,j+2UL) );
                }
 
-               (~C).store( i, j    , xmm1+xmm4 );
-               (~C).store( i, j+1UL, xmm2+xmm5 );
-               (~C).store( i, j+2UL, xmm3+xmm6 );
+               C.store( i, j    , xmm1+xmm4 );
+               C.store( i, j+1UL, xmm2+xmm5 );
+               C.store( i, j+2UL, xmm3+xmm6 );
             }
 
             for( ; (j+2UL) <= jend; j+=2UL )
@@ -1469,8 +1470,8 @@ class TDMatTDMatMultExpr
                   xmm2 += a1 * set( B(k,j+1UL) );
                }
 
-               (~C).store( i, j    , xmm1+xmm3 );
-               (~C).store( i, j+1UL, xmm2+xmm4 );
+               C.store( i, j    , xmm1+xmm3 );
+               C.store( i, j+1UL, xmm2+xmm4 );
             }
 
             if( j < jend )
@@ -1493,7 +1494,7 @@ class TDMatTDMatMultExpr
                   xmm1 += A.load(i,k) * set( B(k,j) );
                }
 
-               (~C).store( i, j, xmm1+xmm2 );
+               C.store( i, j, xmm1+xmm2 );
             }
          }
 
@@ -1520,8 +1521,8 @@ class TDMatTDMatMultExpr
                   value2 += A(i,k) * B(k,j+1UL);
                }
 
-               (~C)(i,j    ) = value1;
-               (~C)(i,j+1UL) = value2;
+               C(i,j    ) = value1;
+               C(i,j+1UL) = value2;
             }
 
             if( j < N )
@@ -1538,7 +1539,7 @@ class TDMatTDMatMultExpr
                   value += A(i,k) * B(k,j);
                }
 
-               (~C)(i,j) = value;
+               C(i,j) = value;
             }
          }
       }
@@ -1547,7 +1548,7 @@ class TDMatTDMatMultExpr
          for( size_t j=SIMDSIZE*4UL; j<N; ++j ) {
             const size_t iend( ( SIMDSIZE*4UL ) * ( j / (SIMDSIZE*4UL) ) );
             for( size_t i=0UL; i<iend; ++i ) {
-               (~C)(i,j) = HERM ? conj( (~C)(j,i) ) : (~C)(j,i);
+               C(i,j) = HERM ? conj( C(j,i) ) : C(j,i);
             }
          }
       }
@@ -1555,7 +1556,7 @@ class TDMatTDMatMultExpr
          for( size_t j=SIMDSIZE*4UL; j<N; ++j ) {
             const size_t iend( ( SIMDSIZE*4UL ) * ( j / (SIMDSIZE*4UL) ) );
             for( size_t i=0UL; i<iend; ++i ) {
-               reset( (~C)(i,j) );
+               reset( C(i,j) );
             }
          }
       }
@@ -1563,7 +1564,7 @@ class TDMatTDMatMultExpr
          for( size_t i=SIMDSIZE*4UL; i<M; ++i ) {
             const size_t jend( ( SIMDSIZE*4UL ) * ( i / (SIMDSIZE*4UL) ) );
             for( size_t j=0UL; j<jend; ++j ) {
-               reset( (~C)(i,j) );
+               reset( C(i,j) );
             }
          }
       }
@@ -1588,8 +1589,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       selectDefaultAssignKernel( C, A, B );
    }
@@ -1614,8 +1615,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       if( SYM )
          smmm( C, A, B, ElementType(1) );
@@ -1648,8 +1649,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
-      selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
    {
       selectLargeAssignKernel( C, A, B );
    }
@@ -1674,8 +1675,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
-      selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
    {
       using ET = ElementType_t<MT3>;
 
@@ -1710,8 +1711,8 @@ class TDMatTDMatMultExpr
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      assign( SparseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
+   friend inline auto assign( SparseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
+      -> DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1751,8 +1752,8 @@ class TDMatTDMatMultExpr
    // compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      assign( Matrix<MT,false>& lhs, const TDMatTDMatMultExpr& rhs )
+   friend inline auto assign( Matrix<MT,false>& lhs, const TDMatTDMatMultExpr& rhs )
+      -> EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1788,8 +1789,8 @@ class TDMatTDMatMultExpr
    */
    template< typename MT   // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      addAssign( DenseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
+   friend inline auto addAssign( DenseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
+      -> DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1858,8 +1859,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -1926,8 +1927,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT3 );
 
@@ -1976,8 +1977,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT3 );
 
@@ -2026,8 +2027,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT3 );
 
@@ -2055,8 +2056,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       selectDefaultAddAssignKernel( C, A, B );
    }
@@ -2081,8 +2082,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectSmallAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+   static inline auto selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT4 );
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT5 );
@@ -2093,19 +2094,19 @@ class TDMatTDMatMultExpr
 
       if( IsResizable_v<MT4> && !IsResizable_v<MT5> ) {
          const OppositeType_t<MT5> tmp( serial( B ) );
-         addAssign( ~C, fwd( A * tmp ) );
+         addAssign( C, fwd( A * tmp ) );
       }
       else if( !IsResizable_v<MT4> && IsResizable_v<MT5> ) {
          const OppositeType_t<MT4> tmp( serial( A ) );
-         addAssign( ~C, fwd( tmp * B ) );
+         addAssign( C, fwd( tmp * B ) );
       }
       else if( B.rows() * B.columns() <= A.rows() * A.columns() ) {
          const OppositeType_t<MT5> tmp( serial( B ) );
-         addAssign( ~C, fwd( A * tmp ) );
+         addAssign( C, fwd( A * tmp ) );
       }
       else {
          const OppositeType_t<MT4> tmp( serial( A ) );
-         addAssign( ~C, fwd( tmp * B ) );
+         addAssign( C, fwd( tmp * B ) );
       }
    }
    /*! \endcond */
@@ -2129,8 +2130,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectSmallAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   static inline auto selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT4> );
 
@@ -2161,14 +2162,14 @@ class TDMatTDMatMultExpr
                                      :( IsStrictlyUpper_v<MT5> ? j : j+1UL ) )
                                   :( IsLower_v<MT4> ? min( i+SIMDSIZE*8UL, K ) : K ) );
 
-               SIMDType xmm1( (~C).load(i             ,j) );
-               SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j) );
-               SIMDType xmm3( (~C).load(i+SIMDSIZE*2UL,j) );
-               SIMDType xmm4( (~C).load(i+SIMDSIZE*3UL,j) );
-               SIMDType xmm5( (~C).load(i+SIMDSIZE*4UL,j) );
-               SIMDType xmm6( (~C).load(i+SIMDSIZE*5UL,j) );
-               SIMDType xmm7( (~C).load(i+SIMDSIZE*6UL,j) );
-               SIMDType xmm8( (~C).load(i+SIMDSIZE*7UL,j) );
+               SIMDType xmm1( C.load(i             ,j) );
+               SIMDType xmm2( C.load(i+SIMDSIZE    ,j) );
+               SIMDType xmm3( C.load(i+SIMDSIZE*2UL,j) );
+               SIMDType xmm4( C.load(i+SIMDSIZE*3UL,j) );
+               SIMDType xmm5( C.load(i+SIMDSIZE*4UL,j) );
+               SIMDType xmm6( C.load(i+SIMDSIZE*5UL,j) );
+               SIMDType xmm7( C.load(i+SIMDSIZE*6UL,j) );
+               SIMDType xmm8( C.load(i+SIMDSIZE*7UL,j) );
 
                for( size_t k=kbegin; k<kend; ++k ) {
                   const SIMDType b1( set( B(k,j) ) );
@@ -2182,14 +2183,14 @@ class TDMatTDMatMultExpr
                   xmm8 += A.load(i+SIMDSIZE*7UL,k) * b1;
                }
 
-               (~C).store( i             , j, xmm1 );
-               (~C).store( i+SIMDSIZE    , j, xmm2 );
-               (~C).store( i+SIMDSIZE*2UL, j, xmm3 );
-               (~C).store( i+SIMDSIZE*3UL, j, xmm4 );
-               (~C).store( i+SIMDSIZE*4UL, j, xmm5 );
-               (~C).store( i+SIMDSIZE*5UL, j, xmm6 );
-               (~C).store( i+SIMDSIZE*6UL, j, xmm7 );
-               (~C).store( i+SIMDSIZE*7UL, j, xmm8 );
+               C.store( i             , j, xmm1 );
+               C.store( i+SIMDSIZE    , j, xmm2 );
+               C.store( i+SIMDSIZE*2UL, j, xmm3 );
+               C.store( i+SIMDSIZE*3UL, j, xmm4 );
+               C.store( i+SIMDSIZE*4UL, j, xmm5 );
+               C.store( i+SIMDSIZE*5UL, j, xmm6 );
+               C.store( i+SIMDSIZE*6UL, j, xmm7 );
+               C.store( i+SIMDSIZE*7UL, j, xmm8 );
             }
          }
       }
@@ -2211,16 +2212,16 @@ class TDMatTDMatMultExpr
                                   :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
                                :( IsLower_v<MT4> ? min( i+SIMDSIZE*5UL, K ) : K ) );
 
-            SIMDType xmm1 ( (~C).load(i             ,j    ) );
-            SIMDType xmm2 ( (~C).load(i+SIMDSIZE    ,j    ) );
-            SIMDType xmm3 ( (~C).load(i+SIMDSIZE*2UL,j    ) );
-            SIMDType xmm4 ( (~C).load(i+SIMDSIZE*3UL,j    ) );
-            SIMDType xmm5 ( (~C).load(i+SIMDSIZE*4UL,j    ) );
-            SIMDType xmm6 ( (~C).load(i             ,j+1UL) );
-            SIMDType xmm7 ( (~C).load(i+SIMDSIZE    ,j+1UL) );
-            SIMDType xmm8 ( (~C).load(i+SIMDSIZE*2UL,j+1UL) );
-            SIMDType xmm9 ( (~C).load(i+SIMDSIZE*3UL,j+1UL) );
-            SIMDType xmm10( (~C).load(i+SIMDSIZE*4UL,j+1UL) );
+            SIMDType xmm1 ( C.load(i             ,j    ) );
+            SIMDType xmm2 ( C.load(i+SIMDSIZE    ,j    ) );
+            SIMDType xmm3 ( C.load(i+SIMDSIZE*2UL,j    ) );
+            SIMDType xmm4 ( C.load(i+SIMDSIZE*3UL,j    ) );
+            SIMDType xmm5 ( C.load(i+SIMDSIZE*4UL,j    ) );
+            SIMDType xmm6 ( C.load(i             ,j+1UL) );
+            SIMDType xmm7 ( C.load(i+SIMDSIZE    ,j+1UL) );
+            SIMDType xmm8 ( C.load(i+SIMDSIZE*2UL,j+1UL) );
+            SIMDType xmm9 ( C.load(i+SIMDSIZE*3UL,j+1UL) );
+            SIMDType xmm10( C.load(i+SIMDSIZE*4UL,j+1UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( A.load(i             ,k) );
@@ -2242,16 +2243,16 @@ class TDMatTDMatMultExpr
                xmm10 += a5 * b2;
             }
 
-            (~C).store( i             , j    , xmm1  );
-            (~C).store( i+SIMDSIZE    , j    , xmm2  );
-            (~C).store( i+SIMDSIZE*2UL, j    , xmm3  );
-            (~C).store( i+SIMDSIZE*3UL, j    , xmm4  );
-            (~C).store( i+SIMDSIZE*4UL, j    , xmm5  );
-            (~C).store( i             , j+1UL, xmm6  );
-            (~C).store( i+SIMDSIZE    , j+1UL, xmm7  );
-            (~C).store( i+SIMDSIZE*2UL, j+1UL, xmm8  );
-            (~C).store( i+SIMDSIZE*3UL, j+1UL, xmm9  );
-            (~C).store( i+SIMDSIZE*4UL, j+1UL, xmm10 );
+            C.store( i             , j    , xmm1  );
+            C.store( i+SIMDSIZE    , j    , xmm2  );
+            C.store( i+SIMDSIZE*2UL, j    , xmm3  );
+            C.store( i+SIMDSIZE*3UL, j    , xmm4  );
+            C.store( i+SIMDSIZE*4UL, j    , xmm5  );
+            C.store( i             , j+1UL, xmm6  );
+            C.store( i+SIMDSIZE    , j+1UL, xmm7  );
+            C.store( i+SIMDSIZE*2UL, j+1UL, xmm8  );
+            C.store( i+SIMDSIZE*3UL, j+1UL, xmm9  );
+            C.store( i+SIMDSIZE*4UL, j+1UL, xmm10 );
          }
 
          if( j < N )
@@ -2263,11 +2264,11 @@ class TDMatTDMatMultExpr
                                  :( IsUpper_v<MT4> ? i : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*5UL, K ) ):( K ) );
 
-            SIMDType xmm1( (~C).load(i             ,j) );
-            SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j) );
-            SIMDType xmm3( (~C).load(i+SIMDSIZE*2UL,j) );
-            SIMDType xmm4( (~C).load(i+SIMDSIZE*3UL,j) );
-            SIMDType xmm5( (~C).load(i+SIMDSIZE*4UL,j) );
+            SIMDType xmm1( C.load(i             ,j) );
+            SIMDType xmm2( C.load(i+SIMDSIZE    ,j) );
+            SIMDType xmm3( C.load(i+SIMDSIZE*2UL,j) );
+            SIMDType xmm4( C.load(i+SIMDSIZE*3UL,j) );
+            SIMDType xmm5( C.load(i+SIMDSIZE*4UL,j) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType b1( set( B(k,j) ) );
@@ -2278,11 +2279,11 @@ class TDMatTDMatMultExpr
                xmm5 += A.load(i+SIMDSIZE*4UL,k) * b1;
             }
 
-            (~C).store( i             , j, xmm1 );
-            (~C).store( i+SIMDSIZE    , j, xmm2 );
-            (~C).store( i+SIMDSIZE*2UL, j, xmm3 );
-            (~C).store( i+SIMDSIZE*3UL, j, xmm4 );
-            (~C).store( i+SIMDSIZE*4UL, j, xmm5 );
+            C.store( i             , j, xmm1 );
+            C.store( i+SIMDSIZE    , j, xmm2 );
+            C.store( i+SIMDSIZE*2UL, j, xmm3 );
+            C.store( i+SIMDSIZE*3UL, j, xmm4 );
+            C.store( i+SIMDSIZE*4UL, j, xmm5 );
          }
       }
 
@@ -2303,14 +2304,14 @@ class TDMatTDMatMultExpr
                                   :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
                                :( IsLower_v<MT4> ? min( i+SIMDSIZE*4UL, K ) : K ) );
 
-            SIMDType xmm1( (~C).load(i             ,j    ) );
-            SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j    ) );
-            SIMDType xmm3( (~C).load(i+SIMDSIZE*2UL,j    ) );
-            SIMDType xmm4( (~C).load(i+SIMDSIZE*3UL,j    ) );
-            SIMDType xmm5( (~C).load(i             ,j+1UL) );
-            SIMDType xmm6( (~C).load(i+SIMDSIZE    ,j+1UL) );
-            SIMDType xmm7( (~C).load(i+SIMDSIZE*2UL,j+1UL) );
-            SIMDType xmm8( (~C).load(i+SIMDSIZE*3UL,j+1UL) );
+            SIMDType xmm1( C.load(i             ,j    ) );
+            SIMDType xmm2( C.load(i+SIMDSIZE    ,j    ) );
+            SIMDType xmm3( C.load(i+SIMDSIZE*2UL,j    ) );
+            SIMDType xmm4( C.load(i+SIMDSIZE*3UL,j    ) );
+            SIMDType xmm5( C.load(i             ,j+1UL) );
+            SIMDType xmm6( C.load(i+SIMDSIZE    ,j+1UL) );
+            SIMDType xmm7( C.load(i+SIMDSIZE*2UL,j+1UL) );
+            SIMDType xmm8( C.load(i+SIMDSIZE*3UL,j+1UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( A.load(i             ,k) );
@@ -2329,14 +2330,14 @@ class TDMatTDMatMultExpr
                xmm8 += a4 * b2;
             }
 
-            (~C).store( i             , j    , xmm1 );
-            (~C).store( i+SIMDSIZE    , j    , xmm2 );
-            (~C).store( i+SIMDSIZE*2UL, j    , xmm3 );
-            (~C).store( i+SIMDSIZE*3UL, j    , xmm4 );
-            (~C).store( i             , j+1UL, xmm5 );
-            (~C).store( i+SIMDSIZE    , j+1UL, xmm6 );
-            (~C).store( i+SIMDSIZE*2UL, j+1UL, xmm7 );
-            (~C).store( i+SIMDSIZE*3UL, j+1UL, xmm8 );
+            C.store( i             , j    , xmm1 );
+            C.store( i+SIMDSIZE    , j    , xmm2 );
+            C.store( i+SIMDSIZE*2UL, j    , xmm3 );
+            C.store( i+SIMDSIZE*3UL, j    , xmm4 );
+            C.store( i             , j+1UL, xmm5 );
+            C.store( i+SIMDSIZE    , j+1UL, xmm6 );
+            C.store( i+SIMDSIZE*2UL, j+1UL, xmm7 );
+            C.store( i+SIMDSIZE*3UL, j+1UL, xmm8 );
          }
 
          if( j < N )
@@ -2348,10 +2349,10 @@ class TDMatTDMatMultExpr
                                  :( IsUpper_v<MT4> ? i : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*4UL, K ) ):( K ) );
 
-            SIMDType xmm1( (~C).load(i             ,j) );
-            SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j) );
-            SIMDType xmm3( (~C).load(i+SIMDSIZE*2UL,j) );
-            SIMDType xmm4( (~C).load(i+SIMDSIZE*3UL,j) );
+            SIMDType xmm1( C.load(i             ,j) );
+            SIMDType xmm2( C.load(i+SIMDSIZE    ,j) );
+            SIMDType xmm3( C.load(i+SIMDSIZE*2UL,j) );
+            SIMDType xmm4( C.load(i+SIMDSIZE*3UL,j) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType b1( set( B(k,j) ) );
@@ -2361,10 +2362,10 @@ class TDMatTDMatMultExpr
                xmm4 += A.load(i+SIMDSIZE*3UL,k) * b1;
             }
 
-            (~C).store( i             , j, xmm1 );
-            (~C).store( i+SIMDSIZE    , j, xmm2 );
-            (~C).store( i+SIMDSIZE*2UL, j, xmm3 );
-            (~C).store( i+SIMDSIZE*3UL, j, xmm4 );
+            C.store( i             , j, xmm1 );
+            C.store( i+SIMDSIZE    , j, xmm2 );
+            C.store( i+SIMDSIZE*2UL, j, xmm3 );
+            C.store( i+SIMDSIZE*3UL, j, xmm4 );
          }
       }
 
@@ -2385,12 +2386,12 @@ class TDMatTDMatMultExpr
                                   :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
                                :( IsLower_v<MT4> ? min( i+SIMDSIZE*3UL, K ) : K ) );
 
-            SIMDType xmm1( (~C).load(i             ,j    ) );
-            SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j    ) );
-            SIMDType xmm3( (~C).load(i+SIMDSIZE*2UL,j    ) );
-            SIMDType xmm4( (~C).load(i             ,j+1UL) );
-            SIMDType xmm5( (~C).load(i+SIMDSIZE    ,j+1UL) );
-            SIMDType xmm6( (~C).load(i+SIMDSIZE*2UL,j+1UL) );
+            SIMDType xmm1( C.load(i             ,j    ) );
+            SIMDType xmm2( C.load(i+SIMDSIZE    ,j    ) );
+            SIMDType xmm3( C.load(i+SIMDSIZE*2UL,j    ) );
+            SIMDType xmm4( C.load(i             ,j+1UL) );
+            SIMDType xmm5( C.load(i+SIMDSIZE    ,j+1UL) );
+            SIMDType xmm6( C.load(i+SIMDSIZE*2UL,j+1UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( A.load(i             ,k) );
@@ -2406,12 +2407,12 @@ class TDMatTDMatMultExpr
                xmm6 += a3 * b2;
             }
 
-            (~C).store( i             , j    , xmm1 );
-            (~C).store( i+SIMDSIZE    , j    , xmm2 );
-            (~C).store( i+SIMDSIZE*2UL, j    , xmm3 );
-            (~C).store( i             , j+1UL, xmm4 );
-            (~C).store( i+SIMDSIZE    , j+1UL, xmm5 );
-            (~C).store( i+SIMDSIZE*2UL, j+1UL, xmm6 );
+            C.store( i             , j    , xmm1 );
+            C.store( i+SIMDSIZE    , j    , xmm2 );
+            C.store( i+SIMDSIZE*2UL, j    , xmm3 );
+            C.store( i             , j+1UL, xmm4 );
+            C.store( i+SIMDSIZE    , j+1UL, xmm5 );
+            C.store( i+SIMDSIZE*2UL, j+1UL, xmm6 );
          }
 
          if( j < N )
@@ -2423,9 +2424,9 @@ class TDMatTDMatMultExpr
                                  :( IsUpper_v<MT4> ? i : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*3UL, K ) ):( K ) );
 
-            SIMDType xmm1( (~C).load(i             ,j) );
-            SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j) );
-            SIMDType xmm3( (~C).load(i+SIMDSIZE*2UL,j) );
+            SIMDType xmm1( C.load(i             ,j) );
+            SIMDType xmm2( C.load(i+SIMDSIZE    ,j) );
+            SIMDType xmm3( C.load(i+SIMDSIZE*2UL,j) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType b1( set( B(k,j) ) );
@@ -2434,9 +2435,9 @@ class TDMatTDMatMultExpr
                xmm3 += A.load(i+SIMDSIZE*2UL,k) * b1;
             }
 
-            (~C).store( i             , j, xmm1 );
-            (~C).store( i+SIMDSIZE    , j, xmm2 );
-            (~C).store( i+SIMDSIZE*2UL, j, xmm3 );
+            C.store( i             , j, xmm1 );
+            C.store( i+SIMDSIZE    , j, xmm2 );
+            C.store( i+SIMDSIZE*2UL, j, xmm3 );
          }
       }
 
@@ -2458,14 +2459,14 @@ class TDMatTDMatMultExpr
                                   :( IsStrictlyUpper_v<MT5> ? j+3UL : j+4UL ) )
                                :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
-            SIMDType xmm1( (~C).load(i         ,j    ) );
-            SIMDType xmm2( (~C).load(i+SIMDSIZE,j    ) );
-            SIMDType xmm3( (~C).load(i         ,j+1UL) );
-            SIMDType xmm4( (~C).load(i+SIMDSIZE,j+1UL) );
-            SIMDType xmm5( (~C).load(i         ,j+2UL) );
-            SIMDType xmm6( (~C).load(i+SIMDSIZE,j+2UL) );
-            SIMDType xmm7( (~C).load(i         ,j+3UL) );
-            SIMDType xmm8( (~C).load(i+SIMDSIZE,j+3UL) );
+            SIMDType xmm1( C.load(i         ,j    ) );
+            SIMDType xmm2( C.load(i+SIMDSIZE,j    ) );
+            SIMDType xmm3( C.load(i         ,j+1UL) );
+            SIMDType xmm4( C.load(i+SIMDSIZE,j+1UL) );
+            SIMDType xmm5( C.load(i         ,j+2UL) );
+            SIMDType xmm6( C.load(i+SIMDSIZE,j+2UL) );
+            SIMDType xmm7( C.load(i         ,j+3UL) );
+            SIMDType xmm8( C.load(i+SIMDSIZE,j+3UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( A.load(i         ,k) );
@@ -2484,14 +2485,14 @@ class TDMatTDMatMultExpr
                xmm8 += a2 * b4;
             }
 
-            (~C).store( i         , j    , xmm1 );
-            (~C).store( i+SIMDSIZE, j    , xmm2 );
-            (~C).store( i         , j+1UL, xmm3 );
-            (~C).store( i+SIMDSIZE, j+1UL, xmm4 );
-            (~C).store( i         , j+2UL, xmm5 );
-            (~C).store( i+SIMDSIZE, j+2UL, xmm6 );
-            (~C).store( i         , j+3UL, xmm7 );
-            (~C).store( i+SIMDSIZE, j+3UL, xmm8 );
+            C.store( i         , j    , xmm1 );
+            C.store( i+SIMDSIZE, j    , xmm2 );
+            C.store( i         , j+1UL, xmm3 );
+            C.store( i+SIMDSIZE, j+1UL, xmm4 );
+            C.store( i         , j+2UL, xmm5 );
+            C.store( i+SIMDSIZE, j+2UL, xmm6 );
+            C.store( i         , j+3UL, xmm7 );
+            C.store( i+SIMDSIZE, j+3UL, xmm8 );
          }
 
          for( ; (j+3UL) <= jend; j+=3UL )
@@ -2507,12 +2508,12 @@ class TDMatTDMatMultExpr
                                   :( IsStrictlyUpper_v<MT5> ? j+2UL : j+3UL ) )
                                :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
-            SIMDType xmm1( (~C).load(i         ,j    ) );
-            SIMDType xmm2( (~C).load(i+SIMDSIZE,j    ) );
-            SIMDType xmm3( (~C).load(i         ,j+1UL) );
-            SIMDType xmm4( (~C).load(i+SIMDSIZE,j+1UL) );
-            SIMDType xmm5( (~C).load(i         ,j+2UL) );
-            SIMDType xmm6( (~C).load(i+SIMDSIZE,j+2UL) );
+            SIMDType xmm1( C.load(i         ,j    ) );
+            SIMDType xmm2( C.load(i+SIMDSIZE,j    ) );
+            SIMDType xmm3( C.load(i         ,j+1UL) );
+            SIMDType xmm4( C.load(i+SIMDSIZE,j+1UL) );
+            SIMDType xmm5( C.load(i         ,j+2UL) );
+            SIMDType xmm6( C.load(i+SIMDSIZE,j+2UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( A.load(i         ,k) );
@@ -2528,12 +2529,12 @@ class TDMatTDMatMultExpr
                xmm6 += a2 * b3;
             }
 
-            (~C).store( i         , j    , xmm1 );
-            (~C).store( i+SIMDSIZE, j    , xmm2 );
-            (~C).store( i         , j+1UL, xmm3 );
-            (~C).store( i+SIMDSIZE, j+1UL, xmm4 );
-            (~C).store( i         , j+2UL, xmm5 );
-            (~C).store( i+SIMDSIZE, j+2UL, xmm6 );
+            C.store( i         , j    , xmm1 );
+            C.store( i+SIMDSIZE, j    , xmm2 );
+            C.store( i         , j+1UL, xmm3 );
+            C.store( i+SIMDSIZE, j+1UL, xmm4 );
+            C.store( i         , j+2UL, xmm5 );
+            C.store( i+SIMDSIZE, j+2UL, xmm6 );
          }
 
          for( ; (j+2UL) <= jend; j+=2UL )
@@ -2549,10 +2550,10 @@ class TDMatTDMatMultExpr
                                   :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
                                :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
-            SIMDType xmm1( (~C).load(i         ,j    ) );
-            SIMDType xmm2( (~C).load(i+SIMDSIZE,j    ) );
-            SIMDType xmm3( (~C).load(i         ,j+1UL) );
-            SIMDType xmm4( (~C).load(i+SIMDSIZE,j+1UL) );
+            SIMDType xmm1( C.load(i         ,j    ) );
+            SIMDType xmm2( C.load(i+SIMDSIZE,j    ) );
+            SIMDType xmm3( C.load(i         ,j+1UL) );
+            SIMDType xmm4( C.load(i+SIMDSIZE,j+1UL) );
             SIMDType xmm5, xmm6, xmm7, xmm8;
             size_t k( kbegin );
 
@@ -2586,10 +2587,10 @@ class TDMatTDMatMultExpr
                xmm4 += a2 * b2;
             }
 
-            (~C).store( i         , j    , xmm1+xmm5 );
-            (~C).store( i+SIMDSIZE, j    , xmm2+xmm6 );
-            (~C).store( i         , j+1UL, xmm3+xmm7 );
-            (~C).store( i+SIMDSIZE, j+1UL, xmm4+xmm8 );
+            C.store( i         , j    , xmm1+xmm5 );
+            C.store( i+SIMDSIZE, j    , xmm2+xmm6 );
+            C.store( i         , j+1UL, xmm3+xmm7 );
+            C.store( i+SIMDSIZE, j+1UL, xmm4+xmm8 );
          }
 
          if( j < jend )
@@ -2601,8 +2602,8 @@ class TDMatTDMatMultExpr
                                  :( IsUpper_v<MT4> ? i : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*2UL, K ) ):( K ) );
 
-            SIMDType xmm1( (~C).load(i         ,j) );
-            SIMDType xmm2( (~C).load(i+SIMDSIZE,j) );
+            SIMDType xmm1( C.load(i         ,j) );
+            SIMDType xmm2( C.load(i+SIMDSIZE,j) );
             SIMDType xmm3, xmm4;
             size_t k( kbegin );
 
@@ -2621,8 +2622,8 @@ class TDMatTDMatMultExpr
                xmm2 += A.load(i+SIMDSIZE,k) * b1;
             }
 
-            (~C).store( i         , j, xmm1+xmm3 );
-            (~C).store( i+SIMDSIZE, j, xmm2+xmm4 );
+            C.store( i         , j, xmm1+xmm3 );
+            C.store( i+SIMDSIZE, j, xmm2+xmm4 );
          }
       }
 
@@ -2642,10 +2643,10 @@ class TDMatTDMatMultExpr
                                ?( IsStrictlyUpper_v<MT5> ? j+3UL : j+4UL )
                                :( K ) );
 
-            SIMDType xmm1( (~C).load(i,j    ) );
-            SIMDType xmm2( (~C).load(i,j+1UL) );
-            SIMDType xmm3( (~C).load(i,j+2UL) );
-            SIMDType xmm4( (~C).load(i,j+3UL) );
+            SIMDType xmm1( C.load(i,j    ) );
+            SIMDType xmm2( C.load(i,j+1UL) );
+            SIMDType xmm3( C.load(i,j+2UL) );
+            SIMDType xmm4( C.load(i,j+3UL) );
             SIMDType xmm5, xmm6, xmm7, xmm8;
             size_t k( kbegin );
 
@@ -2670,10 +2671,10 @@ class TDMatTDMatMultExpr
                xmm4 += a1 * set( B(k,j+3UL) );
             }
 
-            (~C).store( i, j    , xmm1+xmm5 );
-            (~C).store( i, j+1UL, xmm2+xmm6 );
-            (~C).store( i, j+2UL, xmm3+xmm7 );
-            (~C).store( i, j+3UL, xmm4+xmm8 );
+            C.store( i, j    , xmm1+xmm5 );
+            C.store( i, j+1UL, xmm2+xmm6 );
+            C.store( i, j+2UL, xmm3+xmm7 );
+            C.store( i, j+3UL, xmm4+xmm8 );
          }
 
          for( ; (j+3UL) <= jend; j+=3UL )
@@ -2687,9 +2688,9 @@ class TDMatTDMatMultExpr
                                ?( IsStrictlyUpper_v<MT5> ? j+2UL : j+3UL )
                                :( K ) );
 
-            SIMDType xmm1( (~C).load(i,j    ) );
-            SIMDType xmm2( (~C).load(i,j+1UL) );
-            SIMDType xmm3( (~C).load(i,j+2UL) );
+            SIMDType xmm1( C.load(i,j    ) );
+            SIMDType xmm2( C.load(i,j+1UL) );
+            SIMDType xmm3( C.load(i,j+2UL) );
             SIMDType xmm4, xmm5, xmm6;
             size_t k( kbegin );
 
@@ -2711,9 +2712,9 @@ class TDMatTDMatMultExpr
                xmm3 += a1 * set( B(k,j+2UL) );
             }
 
-            (~C).store( i, j    , xmm1+xmm4 );
-            (~C).store( i, j+1UL, xmm2+xmm5 );
-            (~C).store( i, j+2UL, xmm3+xmm6 );
+            C.store( i, j    , xmm1+xmm4 );
+            C.store( i, j+1UL, xmm2+xmm5 );
+            C.store( i, j+2UL, xmm3+xmm6 );
          }
 
          for( ; (j+2UL) <= jend; j+=2UL )
@@ -2727,8 +2728,8 @@ class TDMatTDMatMultExpr
                                ?( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL )
                                :( K ) );
 
-            SIMDType xmm1( (~C).load(i,j    ) );
-            SIMDType xmm2( (~C).load(i,j+1UL) );
+            SIMDType xmm1( C.load(i,j    ) );
+            SIMDType xmm2( C.load(i,j+1UL) );
             SIMDType xmm3, xmm4;
             size_t k( kbegin );
 
@@ -2747,8 +2748,8 @@ class TDMatTDMatMultExpr
                xmm2 += a1 * set( B(k,j+1UL) );
             }
 
-            (~C).store( i, j    , xmm1+xmm3 );
-            (~C).store( i, j+1UL, xmm2+xmm4 );
+            C.store( i, j    , xmm1+xmm3 );
+            C.store( i, j+1UL, xmm2+xmm4 );
          }
 
          if( j < jend )
@@ -2759,7 +2760,7 @@ class TDMatTDMatMultExpr
                                     :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
                                  :( IsUpper_v<MT4> ? i : 0UL ) );
 
-            SIMDType xmm1( (~C).load(i,j) );
+            SIMDType xmm1( C.load(i,j) );
             SIMDType xmm2;
             size_t k( kbegin );
 
@@ -2772,7 +2773,7 @@ class TDMatTDMatMultExpr
                xmm1 += A.load(i,k) * set( B(k,j) );
             }
 
-            (~C).store( i, j, xmm1+xmm2 );
+            C.store( i, j, xmm1+xmm2 );
          }
       }
 
@@ -2792,16 +2793,16 @@ class TDMatTDMatMultExpr
                                ?( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL )
                                :( K ) );
 
-            ElementType value1( (~C)(i,j    ) );
-            ElementType value2( (~C)(i,j+1UL) );
+            ElementType value1( C(i,j    ) );
+            ElementType value2( C(i,j+1UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                value1 += A(i,k) * B(k,j    );
                value2 += A(i,k) * B(k,j+1UL);
             }
 
-            (~C)(i,j    ) = value1;
-            (~C)(i,j+1UL) = value2;
+            C(i,j    ) = value1;
+            C(i,j+1UL) = value2;
          }
 
          if( j < jend )
@@ -2812,13 +2813,13 @@ class TDMatTDMatMultExpr
                                     :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
                                  :( IsUpper_v<MT4> ? i : 0UL ) );
 
-            ElementType value( (~C)(i,j) );
+            ElementType value( C(i,j) );
 
             for( size_t k=kbegin; k<K; ++k ) {
                value += A(i,k) * B(k,j);
             }
 
-            (~C)(i,j) = value;
+            C(i,j) = value;
          }
       }
    }
@@ -2842,8 +2843,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       selectDefaultAddAssignKernel( C, A, B );
    }
@@ -2868,8 +2869,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       if( LOW )
          lmmm( C, A, B, ElementType(1), ElementType(1) );
@@ -2898,8 +2899,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
-      selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
    {
       selectLargeAddAssignKernel( C, A, B );
    }
@@ -2924,8 +2925,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
-      selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
    {
       using ET = ElementType_t<MT3>;
 
@@ -2963,8 +2964,8 @@ class TDMatTDMatMultExpr
    // compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      addAssign( Matrix<MT,false>& lhs, const TDMatTDMatMultExpr& rhs )
+   friend inline auto addAssign( Matrix<MT,false>& lhs, const TDMatTDMatMultExpr& rhs )
+      -> EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -3004,8 +3005,8 @@ class TDMatTDMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      subAssign( DenseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
+   friend inline auto subAssign( DenseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
+      -> DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -3074,8 +3075,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -3142,8 +3143,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT3 );
 
@@ -3192,8 +3193,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT3 );
 
@@ -3242,8 +3243,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT3 );
 
@@ -3271,8 +3272,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       selectDefaultSubAssignKernel( C, A, B );
    }
@@ -3297,8 +3298,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectSmallSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B )
+   static inline auto selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT4 );
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT5 );
@@ -3309,19 +3310,19 @@ class TDMatTDMatMultExpr
 
       if( IsResizable_v<MT4> && !IsResizable_v<MT5> ) {
          const OppositeType_t<MT5> tmp( serial( B ) );
-         subAssign( ~C, fwd( A * tmp ) );
+         subAssign( C, fwd( A * tmp ) );
       }
       else if( !IsResizable_v<MT4> && IsResizable_v<MT5> ) {
          const OppositeType_t<MT4> tmp( serial( A ) );
-         subAssign( ~C, fwd( tmp * B ) );
+         subAssign( C, fwd( tmp * B ) );
       }
       else if( B.rows() * B.columns() <= A.rows() * A.columns() ) {
          const OppositeType_t<MT5> tmp( serial( B ) );
-         subAssign( ~C, fwd( A * tmp ) );
+         subAssign( C, fwd( A * tmp ) );
       }
       else {
          const OppositeType_t<MT4> tmp( serial( A ) );
-         subAssign( ~C, fwd( tmp * B ) );
+         subAssign( C, fwd( tmp * B ) );
       }
    }
    /*! \endcond */
@@ -3345,8 +3346,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectSmallSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B )
+   static inline auto selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT4> );
 
@@ -3377,14 +3378,14 @@ class TDMatTDMatMultExpr
                                      :( IsStrictlyUpper_v<MT5> ? j : j+1UL ) )
                                   :( IsLower_v<MT4> ? min( i+SIMDSIZE*8UL, K ) : K ) );
 
-               SIMDType xmm1( (~C).load(i             ,j) );
-               SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j) );
-               SIMDType xmm3( (~C).load(i+SIMDSIZE*2UL,j) );
-               SIMDType xmm4( (~C).load(i+SIMDSIZE*3UL,j) );
-               SIMDType xmm5( (~C).load(i+SIMDSIZE*4UL,j) );
-               SIMDType xmm6( (~C).load(i+SIMDSIZE*5UL,j) );
-               SIMDType xmm7( (~C).load(i+SIMDSIZE*6UL,j) );
-               SIMDType xmm8( (~C).load(i+SIMDSIZE*7UL,j) );
+               SIMDType xmm1( C.load(i             ,j) );
+               SIMDType xmm2( C.load(i+SIMDSIZE    ,j) );
+               SIMDType xmm3( C.load(i+SIMDSIZE*2UL,j) );
+               SIMDType xmm4( C.load(i+SIMDSIZE*3UL,j) );
+               SIMDType xmm5( C.load(i+SIMDSIZE*4UL,j) );
+               SIMDType xmm6( C.load(i+SIMDSIZE*5UL,j) );
+               SIMDType xmm7( C.load(i+SIMDSIZE*6UL,j) );
+               SIMDType xmm8( C.load(i+SIMDSIZE*7UL,j) );
 
                for( size_t k=kbegin; k<kend; ++k ) {
                   const SIMDType b1( set( B(k,j) ) );
@@ -3398,14 +3399,14 @@ class TDMatTDMatMultExpr
                   xmm8 -= A.load(i+SIMDSIZE*7UL,k) * b1;
                }
 
-               (~C).store( i             , j, xmm1 );
-               (~C).store( i+SIMDSIZE    , j, xmm2 );
-               (~C).store( i+SIMDSIZE*2UL, j, xmm3 );
-               (~C).store( i+SIMDSIZE*3UL, j, xmm4 );
-               (~C).store( i+SIMDSIZE*4UL, j, xmm5 );
-               (~C).store( i+SIMDSIZE*5UL, j, xmm6 );
-               (~C).store( i+SIMDSIZE*6UL, j, xmm7 );
-               (~C).store( i+SIMDSIZE*7UL, j, xmm8 );
+               C.store( i             , j, xmm1 );
+               C.store( i+SIMDSIZE    , j, xmm2 );
+               C.store( i+SIMDSIZE*2UL, j, xmm3 );
+               C.store( i+SIMDSIZE*3UL, j, xmm4 );
+               C.store( i+SIMDSIZE*4UL, j, xmm5 );
+               C.store( i+SIMDSIZE*5UL, j, xmm6 );
+               C.store( i+SIMDSIZE*6UL, j, xmm7 );
+               C.store( i+SIMDSIZE*7UL, j, xmm8 );
             }
          }
       }
@@ -3427,16 +3428,16 @@ class TDMatTDMatMultExpr
                                   :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
                                :( IsLower_v<MT4> ? min( i+SIMDSIZE*5UL, K ) : K ) );
 
-            SIMDType xmm1 ( (~C).load(i             ,j    ) );
-            SIMDType xmm2 ( (~C).load(i+SIMDSIZE    ,j    ) );
-            SIMDType xmm3 ( (~C).load(i+SIMDSIZE*2UL,j    ) );
-            SIMDType xmm4 ( (~C).load(i+SIMDSIZE*3UL,j    ) );
-            SIMDType xmm5 ( (~C).load(i+SIMDSIZE*4UL,j    ) );
-            SIMDType xmm6 ( (~C).load(i             ,j+1UL) );
-            SIMDType xmm7 ( (~C).load(i+SIMDSIZE    ,j+1UL) );
-            SIMDType xmm8 ( (~C).load(i+SIMDSIZE*2UL,j+1UL) );
-            SIMDType xmm9 ( (~C).load(i+SIMDSIZE*3UL,j+1UL) );
-            SIMDType xmm10( (~C).load(i+SIMDSIZE*4UL,j+1UL) );
+            SIMDType xmm1 ( C.load(i             ,j    ) );
+            SIMDType xmm2 ( C.load(i+SIMDSIZE    ,j    ) );
+            SIMDType xmm3 ( C.load(i+SIMDSIZE*2UL,j    ) );
+            SIMDType xmm4 ( C.load(i+SIMDSIZE*3UL,j    ) );
+            SIMDType xmm5 ( C.load(i+SIMDSIZE*4UL,j    ) );
+            SIMDType xmm6 ( C.load(i             ,j+1UL) );
+            SIMDType xmm7 ( C.load(i+SIMDSIZE    ,j+1UL) );
+            SIMDType xmm8 ( C.load(i+SIMDSIZE*2UL,j+1UL) );
+            SIMDType xmm9 ( C.load(i+SIMDSIZE*3UL,j+1UL) );
+            SIMDType xmm10( C.load(i+SIMDSIZE*4UL,j+1UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( A.load(i             ,k) );
@@ -3458,16 +3459,16 @@ class TDMatTDMatMultExpr
                xmm10 -= a5 * b2;
             }
 
-            (~C).store( i             , j    , xmm1  );
-            (~C).store( i+SIMDSIZE    , j    , xmm2  );
-            (~C).store( i+SIMDSIZE*2UL, j    , xmm3  );
-            (~C).store( i+SIMDSIZE*3UL, j    , xmm4  );
-            (~C).store( i+SIMDSIZE*4UL, j    , xmm5  );
-            (~C).store( i             , j+1UL, xmm6  );
-            (~C).store( i+SIMDSIZE    , j+1UL, xmm7  );
-            (~C).store( i+SIMDSIZE*2UL, j+1UL, xmm8  );
-            (~C).store( i+SIMDSIZE*3UL, j+1UL, xmm9  );
-            (~C).store( i+SIMDSIZE*4UL, j+1UL, xmm10 );
+            C.store( i             , j    , xmm1  );
+            C.store( i+SIMDSIZE    , j    , xmm2  );
+            C.store( i+SIMDSIZE*2UL, j    , xmm3  );
+            C.store( i+SIMDSIZE*3UL, j    , xmm4  );
+            C.store( i+SIMDSIZE*4UL, j    , xmm5  );
+            C.store( i             , j+1UL, xmm6  );
+            C.store( i+SIMDSIZE    , j+1UL, xmm7  );
+            C.store( i+SIMDSIZE*2UL, j+1UL, xmm8  );
+            C.store( i+SIMDSIZE*3UL, j+1UL, xmm9  );
+            C.store( i+SIMDSIZE*4UL, j+1UL, xmm10 );
          }
 
          if( j < N )
@@ -3479,11 +3480,11 @@ class TDMatTDMatMultExpr
                                  :( IsUpper_v<MT4> ? i : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*5UL, K ) ):( K ) );
 
-            SIMDType xmm1( (~C).load(i             ,j) );
-            SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j) );
-            SIMDType xmm3( (~C).load(i+SIMDSIZE*2UL,j) );
-            SIMDType xmm4( (~C).load(i+SIMDSIZE*3UL,j) );
-            SIMDType xmm5( (~C).load(i+SIMDSIZE*4UL,j) );
+            SIMDType xmm1( C.load(i             ,j) );
+            SIMDType xmm2( C.load(i+SIMDSIZE    ,j) );
+            SIMDType xmm3( C.load(i+SIMDSIZE*2UL,j) );
+            SIMDType xmm4( C.load(i+SIMDSIZE*3UL,j) );
+            SIMDType xmm5( C.load(i+SIMDSIZE*4UL,j) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType b1( set( B(k,j) ) );
@@ -3494,11 +3495,11 @@ class TDMatTDMatMultExpr
                xmm5 -= A.load(i+SIMDSIZE*4UL,k) * b1;
             }
 
-            (~C).store( i             , j, xmm1 );
-            (~C).store( i+SIMDSIZE    , j, xmm2 );
-            (~C).store( i+SIMDSIZE*2UL, j, xmm3 );
-            (~C).store( i+SIMDSIZE*3UL, j, xmm4 );
-            (~C).store( i+SIMDSIZE*4UL, j, xmm5 );
+            C.store( i             , j, xmm1 );
+            C.store( i+SIMDSIZE    , j, xmm2 );
+            C.store( i+SIMDSIZE*2UL, j, xmm3 );
+            C.store( i+SIMDSIZE*3UL, j, xmm4 );
+            C.store( i+SIMDSIZE*4UL, j, xmm5 );
          }
       }
 
@@ -3519,14 +3520,14 @@ class TDMatTDMatMultExpr
                                   :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
                                :( IsLower_v<MT4> ? min( i+SIMDSIZE*4UL, K ) : K ) );
 
-            SIMDType xmm1( (~C).load(i             ,j    ) );
-            SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j    ) );
-            SIMDType xmm3( (~C).load(i+SIMDSIZE*2UL,j    ) );
-            SIMDType xmm4( (~C).load(i+SIMDSIZE*3UL,j    ) );
-            SIMDType xmm5( (~C).load(i             ,j+1UL) );
-            SIMDType xmm6( (~C).load(i+SIMDSIZE    ,j+1UL) );
-            SIMDType xmm7( (~C).load(i+SIMDSIZE*2UL,j+1UL) );
-            SIMDType xmm8( (~C).load(i+SIMDSIZE*3UL,j+1UL) );
+            SIMDType xmm1( C.load(i             ,j    ) );
+            SIMDType xmm2( C.load(i+SIMDSIZE    ,j    ) );
+            SIMDType xmm3( C.load(i+SIMDSIZE*2UL,j    ) );
+            SIMDType xmm4( C.load(i+SIMDSIZE*3UL,j    ) );
+            SIMDType xmm5( C.load(i             ,j+1UL) );
+            SIMDType xmm6( C.load(i+SIMDSIZE    ,j+1UL) );
+            SIMDType xmm7( C.load(i+SIMDSIZE*2UL,j+1UL) );
+            SIMDType xmm8( C.load(i+SIMDSIZE*3UL,j+1UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( A.load(i             ,k) );
@@ -3545,14 +3546,14 @@ class TDMatTDMatMultExpr
                xmm8 -= a4 * b2;
             }
 
-            (~C).store( i             , j    , xmm1 );
-            (~C).store( i+SIMDSIZE    , j    , xmm2 );
-            (~C).store( i+SIMDSIZE*2UL, j    , xmm3 );
-            (~C).store( i+SIMDSIZE*3UL, j    , xmm4 );
-            (~C).store( i             , j+1UL, xmm5 );
-            (~C).store( i+SIMDSIZE    , j+1UL, xmm6 );
-            (~C).store( i+SIMDSIZE*2UL, j+1UL, xmm7 );
-            (~C).store( i+SIMDSIZE*3UL, j+1UL, xmm8 );
+            C.store( i             , j    , xmm1 );
+            C.store( i+SIMDSIZE    , j    , xmm2 );
+            C.store( i+SIMDSIZE*2UL, j    , xmm3 );
+            C.store( i+SIMDSIZE*3UL, j    , xmm4 );
+            C.store( i             , j+1UL, xmm5 );
+            C.store( i+SIMDSIZE    , j+1UL, xmm6 );
+            C.store( i+SIMDSIZE*2UL, j+1UL, xmm7 );
+            C.store( i+SIMDSIZE*3UL, j+1UL, xmm8 );
          }
 
          if( j < N )
@@ -3564,10 +3565,10 @@ class TDMatTDMatMultExpr
                                  :( IsUpper_v<MT4> ? i : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*4UL, K ) ):( K ) );
 
-            SIMDType xmm1( (~C).load(i             ,j) );
-            SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j) );
-            SIMDType xmm3( (~C).load(i+SIMDSIZE*2UL,j) );
-            SIMDType xmm4( (~C).load(i+SIMDSIZE*3UL,j) );
+            SIMDType xmm1( C.load(i             ,j) );
+            SIMDType xmm2( C.load(i+SIMDSIZE    ,j) );
+            SIMDType xmm3( C.load(i+SIMDSIZE*2UL,j) );
+            SIMDType xmm4( C.load(i+SIMDSIZE*3UL,j) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType b1( set( B(k,j) ) );
@@ -3577,10 +3578,10 @@ class TDMatTDMatMultExpr
                xmm4 -= A.load(i+SIMDSIZE*3UL,k) * b1;
             }
 
-            (~C).store( i             , j, xmm1 );
-            (~C).store( i+SIMDSIZE    , j, xmm2 );
-            (~C).store( i+SIMDSIZE*2UL, j, xmm3 );
-            (~C).store( i+SIMDSIZE*3UL, j, xmm4 );
+            C.store( i             , j, xmm1 );
+            C.store( i+SIMDSIZE    , j, xmm2 );
+            C.store( i+SIMDSIZE*2UL, j, xmm3 );
+            C.store( i+SIMDSIZE*3UL, j, xmm4 );
          }
       }
 
@@ -3601,12 +3602,12 @@ class TDMatTDMatMultExpr
                                   :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
                                :( IsLower_v<MT4> ? min( i+SIMDSIZE*3UL, K ) : K ) );
 
-            SIMDType xmm1( (~C).load(i             ,j    ) );
-            SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j    ) );
-            SIMDType xmm3( (~C).load(i+SIMDSIZE*2UL,j    ) );
-            SIMDType xmm4( (~C).load(i             ,j+1UL) );
-            SIMDType xmm5( (~C).load(i+SIMDSIZE    ,j+1UL) );
-            SIMDType xmm6( (~C).load(i+SIMDSIZE*2UL,j+1UL) );
+            SIMDType xmm1( C.load(i             ,j    ) );
+            SIMDType xmm2( C.load(i+SIMDSIZE    ,j    ) );
+            SIMDType xmm3( C.load(i+SIMDSIZE*2UL,j    ) );
+            SIMDType xmm4( C.load(i             ,j+1UL) );
+            SIMDType xmm5( C.load(i+SIMDSIZE    ,j+1UL) );
+            SIMDType xmm6( C.load(i+SIMDSIZE*2UL,j+1UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( A.load(i             ,k) );
@@ -3622,12 +3623,12 @@ class TDMatTDMatMultExpr
                xmm6 -= a3 * b2;
             }
 
-            (~C).store( i             , j    , xmm1 );
-            (~C).store( i+SIMDSIZE    , j    , xmm2 );
-            (~C).store( i+SIMDSIZE*2UL, j    , xmm3 );
-            (~C).store( i             , j+1UL, xmm4 );
-            (~C).store( i+SIMDSIZE    , j+1UL, xmm5 );
-            (~C).store( i+SIMDSIZE*2UL, j+1UL, xmm6 );
+            C.store( i             , j    , xmm1 );
+            C.store( i+SIMDSIZE    , j    , xmm2 );
+            C.store( i+SIMDSIZE*2UL, j    , xmm3 );
+            C.store( i             , j+1UL, xmm4 );
+            C.store( i+SIMDSIZE    , j+1UL, xmm5 );
+            C.store( i+SIMDSIZE*2UL, j+1UL, xmm6 );
          }
 
          if( j < N )
@@ -3639,9 +3640,9 @@ class TDMatTDMatMultExpr
                                  :( IsUpper_v<MT4> ? i : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*3UL, K ) ):( K ) );
 
-            SIMDType xmm1( (~C).load(i             ,j) );
-            SIMDType xmm2( (~C).load(i+SIMDSIZE    ,j) );
-            SIMDType xmm3( (~C).load(i+SIMDSIZE*2UL,j) );
+            SIMDType xmm1( C.load(i             ,j) );
+            SIMDType xmm2( C.load(i+SIMDSIZE    ,j) );
+            SIMDType xmm3( C.load(i+SIMDSIZE*2UL,j) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType b1( set( B(k,j) ) );
@@ -3650,9 +3651,9 @@ class TDMatTDMatMultExpr
                xmm3 -= A.load(i+SIMDSIZE*2UL,k) * b1;
             }
 
-            (~C).store( i             , j, xmm1 );
-            (~C).store( i+SIMDSIZE    , j, xmm2 );
-            (~C).store( i+SIMDSIZE*2UL, j, xmm3 );
+            C.store( i             , j, xmm1 );
+            C.store( i+SIMDSIZE    , j, xmm2 );
+            C.store( i+SIMDSIZE*2UL, j, xmm3 );
          }
       }
 
@@ -3674,14 +3675,14 @@ class TDMatTDMatMultExpr
                                   :( IsStrictlyUpper_v<MT5> ? j+3UL : j+4UL ) )
                                :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
-            SIMDType xmm1( (~C).load(i         ,j    ) );
-            SIMDType xmm2( (~C).load(i+SIMDSIZE,j    ) );
-            SIMDType xmm3( (~C).load(i         ,j+1UL) );
-            SIMDType xmm4( (~C).load(i+SIMDSIZE,j+1UL) );
-            SIMDType xmm5( (~C).load(i         ,j+2UL) );
-            SIMDType xmm6( (~C).load(i+SIMDSIZE,j+2UL) );
-            SIMDType xmm7( (~C).load(i         ,j+3UL) );
-            SIMDType xmm8( (~C).load(i+SIMDSIZE,j+3UL) );
+            SIMDType xmm1( C.load(i         ,j    ) );
+            SIMDType xmm2( C.load(i+SIMDSIZE,j    ) );
+            SIMDType xmm3( C.load(i         ,j+1UL) );
+            SIMDType xmm4( C.load(i+SIMDSIZE,j+1UL) );
+            SIMDType xmm5( C.load(i         ,j+2UL) );
+            SIMDType xmm6( C.load(i+SIMDSIZE,j+2UL) );
+            SIMDType xmm7( C.load(i         ,j+3UL) );
+            SIMDType xmm8( C.load(i+SIMDSIZE,j+3UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( A.load(i         ,k) );
@@ -3700,14 +3701,14 @@ class TDMatTDMatMultExpr
                xmm8 -= a2 * b4;
             }
 
-            (~C).store( i         , j    , xmm1 );
-            (~C).store( i+SIMDSIZE, j    , xmm2 );
-            (~C).store( i         , j+1UL, xmm3 );
-            (~C).store( i+SIMDSIZE, j+1UL, xmm4 );
-            (~C).store( i         , j+2UL, xmm5 );
-            (~C).store( i+SIMDSIZE, j+2UL, xmm6 );
-            (~C).store( i         , j+3UL, xmm7 );
-            (~C).store( i+SIMDSIZE, j+3UL, xmm8 );
+            C.store( i         , j    , xmm1 );
+            C.store( i+SIMDSIZE, j    , xmm2 );
+            C.store( i         , j+1UL, xmm3 );
+            C.store( i+SIMDSIZE, j+1UL, xmm4 );
+            C.store( i         , j+2UL, xmm5 );
+            C.store( i+SIMDSIZE, j+2UL, xmm6 );
+            C.store( i         , j+3UL, xmm7 );
+            C.store( i+SIMDSIZE, j+3UL, xmm8 );
          }
 
          for( ; (j+3UL) <= jend; j+=3UL )
@@ -3723,12 +3724,12 @@ class TDMatTDMatMultExpr
                                   :( IsStrictlyUpper_v<MT5> ? j+2UL : j+3UL ) )
                                :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
-            SIMDType xmm1( (~C).load(i         ,j    ) );
-            SIMDType xmm2( (~C).load(i+SIMDSIZE,j    ) );
-            SIMDType xmm3( (~C).load(i         ,j+1UL) );
-            SIMDType xmm4( (~C).load(i+SIMDSIZE,j+1UL) );
-            SIMDType xmm5( (~C).load(i         ,j+2UL) );
-            SIMDType xmm6( (~C).load(i+SIMDSIZE,j+2UL) );
+            SIMDType xmm1( C.load(i         ,j    ) );
+            SIMDType xmm2( C.load(i+SIMDSIZE,j    ) );
+            SIMDType xmm3( C.load(i         ,j+1UL) );
+            SIMDType xmm4( C.load(i+SIMDSIZE,j+1UL) );
+            SIMDType xmm5( C.load(i         ,j+2UL) );
+            SIMDType xmm6( C.load(i+SIMDSIZE,j+2UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( A.load(i         ,k) );
@@ -3744,12 +3745,12 @@ class TDMatTDMatMultExpr
                xmm6 -= a2 * b3;
             }
 
-            (~C).store( i         , j    , xmm1 );
-            (~C).store( i+SIMDSIZE, j    , xmm2 );
-            (~C).store( i         , j+1UL, xmm3 );
-            (~C).store( i+SIMDSIZE, j+1UL, xmm4 );
-            (~C).store( i         , j+2UL, xmm5 );
-            (~C).store( i+SIMDSIZE, j+2UL, xmm6 );
+            C.store( i         , j    , xmm1 );
+            C.store( i+SIMDSIZE, j    , xmm2 );
+            C.store( i         , j+1UL, xmm3 );
+            C.store( i+SIMDSIZE, j+1UL, xmm4 );
+            C.store( i         , j+2UL, xmm5 );
+            C.store( i+SIMDSIZE, j+2UL, xmm6 );
          }
 
          for( ; (j+2UL) <= jend; j+=2UL )
@@ -3765,10 +3766,10 @@ class TDMatTDMatMultExpr
                                   :( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL ) )
                                :( IsLower_v<MT4> ? min( i+SIMDSIZE*2UL, K ) : K ) );
 
-            SIMDType xmm1( (~C).load(i         ,j    ) );
-            SIMDType xmm2( (~C).load(i+SIMDSIZE,j    ) );
-            SIMDType xmm3( (~C).load(i         ,j+1UL) );
-            SIMDType xmm4( (~C).load(i+SIMDSIZE,j+1UL) );
+            SIMDType xmm1( C.load(i         ,j    ) );
+            SIMDType xmm2( C.load(i+SIMDSIZE,j    ) );
+            SIMDType xmm3( C.load(i         ,j+1UL) );
+            SIMDType xmm4( C.load(i+SIMDSIZE,j+1UL) );
             SIMDType xmm5, xmm6, xmm7, xmm8;
             size_t k( kbegin );
 
@@ -3802,10 +3803,10 @@ class TDMatTDMatMultExpr
                xmm4 -= a2 * b2;
             }
 
-            (~C).store( i         , j    , xmm1+xmm5 );
-            (~C).store( i+SIMDSIZE, j    , xmm2+xmm6 );
-            (~C).store( i         , j+1UL, xmm3+xmm7 );
-            (~C).store( i+SIMDSIZE, j+1UL, xmm4+xmm8 );
+            C.store( i         , j    , xmm1+xmm5 );
+            C.store( i+SIMDSIZE, j    , xmm2+xmm6 );
+            C.store( i         , j+1UL, xmm3+xmm7 );
+            C.store( i+SIMDSIZE, j+1UL, xmm4+xmm8 );
          }
 
          if( j < jend )
@@ -3817,8 +3818,8 @@ class TDMatTDMatMultExpr
                                  :( IsUpper_v<MT4> ? i : 0UL ) );
             const size_t kend( ( IsLower_v<MT4> )?( min( i+SIMDSIZE*2UL, K ) ):( K ) );
 
-            SIMDType xmm1( (~C).load(i         ,j) );
-            SIMDType xmm2( (~C).load(i+SIMDSIZE,j) );
+            SIMDType xmm1( C.load(i         ,j) );
+            SIMDType xmm2( C.load(i+SIMDSIZE,j) );
             SIMDType xmm3, xmm4;
             size_t k( kbegin );
 
@@ -3837,8 +3838,8 @@ class TDMatTDMatMultExpr
                xmm2 -= A.load(i+SIMDSIZE,k) * b1;
             }
 
-            (~C).store( i         , j, xmm1+xmm3 );
-            (~C).store( i+SIMDSIZE, j, xmm2+xmm4 );
+            C.store( i         , j, xmm1+xmm3 );
+            C.store( i+SIMDSIZE, j, xmm2+xmm4 );
          }
       }
 
@@ -3858,10 +3859,10 @@ class TDMatTDMatMultExpr
                                ?( IsStrictlyUpper_v<MT5> ? j+3UL : j+4UL )
                                :( K ) );
 
-            SIMDType xmm1( (~C).load(i,j    ) );
-            SIMDType xmm2( (~C).load(i,j+1UL) );
-            SIMDType xmm3( (~C).load(i,j+2UL) );
-            SIMDType xmm4( (~C).load(i,j+3UL) );
+            SIMDType xmm1( C.load(i,j    ) );
+            SIMDType xmm2( C.load(i,j+1UL) );
+            SIMDType xmm3( C.load(i,j+2UL) );
+            SIMDType xmm4( C.load(i,j+3UL) );
             SIMDType xmm5, xmm6, xmm7, xmm8;
             size_t k( kbegin );
 
@@ -3886,10 +3887,10 @@ class TDMatTDMatMultExpr
                xmm4 -= a1 * set( B(k,j+3UL) );
             }
 
-            (~C).store( i, j    , xmm1+xmm5 );
-            (~C).store( i, j+1UL, xmm2+xmm6 );
-            (~C).store( i, j+2UL, xmm3+xmm7 );
-            (~C).store( i, j+3UL, xmm4+xmm8 );
+            C.store( i, j    , xmm1+xmm5 );
+            C.store( i, j+1UL, xmm2+xmm6 );
+            C.store( i, j+2UL, xmm3+xmm7 );
+            C.store( i, j+3UL, xmm4+xmm8 );
          }
 
          for( ; (j+3UL) <= jend; j+=3UL )
@@ -3903,9 +3904,9 @@ class TDMatTDMatMultExpr
                                ?( IsStrictlyUpper_v<MT5> ? j+2UL : j+3UL )
                                :( K ) );
 
-            SIMDType xmm1( (~C).load(i,j    ) );
-            SIMDType xmm2( (~C).load(i,j+1UL) );
-            SIMDType xmm3( (~C).load(i,j+2UL) );
+            SIMDType xmm1( C.load(i,j    ) );
+            SIMDType xmm2( C.load(i,j+1UL) );
+            SIMDType xmm3( C.load(i,j+2UL) );
             SIMDType xmm4, xmm5, xmm6;
             size_t k( kbegin );
 
@@ -3927,9 +3928,9 @@ class TDMatTDMatMultExpr
                xmm3 -= a1 * set( B(k,j+2UL) );
             }
 
-            (~C).store( i, j    , xmm1+xmm4 );
-            (~C).store( i, j+1UL, xmm2+xmm5 );
-            (~C).store( i, j+2UL, xmm3+xmm6 );
+            C.store( i, j    , xmm1+xmm4 );
+            C.store( i, j+1UL, xmm2+xmm5 );
+            C.store( i, j+2UL, xmm3+xmm6 );
          }
 
          for( ; (j+2UL) <= jend; j+=2UL )
@@ -3943,8 +3944,8 @@ class TDMatTDMatMultExpr
                                ?( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL )
                                :( K ) );
 
-            SIMDType xmm1( (~C).load(i,j    ) );
-            SIMDType xmm2( (~C).load(i,j+1UL) );
+            SIMDType xmm1( C.load(i,j    ) );
+            SIMDType xmm2( C.load(i,j+1UL) );
             SIMDType xmm3, xmm4;
             size_t k( kbegin );
 
@@ -3963,8 +3964,8 @@ class TDMatTDMatMultExpr
                xmm2 -= a1 * set( B(k,j+1UL) );
             }
 
-            (~C).store( i, j    , xmm1+xmm3 );
-            (~C).store( i, j+1UL, xmm2+xmm4 );
+            C.store( i, j    , xmm1+xmm3 );
+            C.store( i, j+1UL, xmm2+xmm4 );
          }
 
          if( j < jend )
@@ -3975,7 +3976,7 @@ class TDMatTDMatMultExpr
                                     :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
                                  :( IsUpper_v<MT4> ? i : 0UL ) );
 
-            SIMDType xmm1( (~C).load(i,j) );
+            SIMDType xmm1( C.load(i,j) );
             SIMDType xmm2;
             size_t k( kbegin );
 
@@ -3988,7 +3989,7 @@ class TDMatTDMatMultExpr
                xmm1 -= A.load(i,k) * set( B(k,j) );
             }
 
-            (~C).store( i, j, xmm1+xmm2 );
+            C.store( i, j, xmm1+xmm2 );
          }
       }
 
@@ -4008,16 +4009,16 @@ class TDMatTDMatMultExpr
                                ?( IsStrictlyUpper_v<MT5> ? j+1UL : j+2UL )
                                :( K ) );
 
-            ElementType value1( (~C)(i,j    ) );
-            ElementType value2( (~C)(i,j+1UL) );
+            ElementType value1( C(i,j    ) );
+            ElementType value2( C(i,j+1UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                value1 -= A(i,k) * B(k,j    );
                value2 -= A(i,k) * B(k,j+1UL);
             }
 
-            (~C)(i,j    ) = value1;
-            (~C)(i,j+1UL) = value2;
+            C(i,j    ) = value1;
+            C(i,j+1UL) = value2;
          }
 
          if( j < jend )
@@ -4028,13 +4029,13 @@ class TDMatTDMatMultExpr
                                     :( IsStrictlyLower_v<MT5> ? j+1UL : j ) )
                                  :( IsUpper_v<MT4> ? i : 0UL ) );
 
-            ElementType value( (~C)(i,j) );
+            ElementType value( C(i,j) );
 
             for( size_t k=kbegin; k<K; ++k ) {
                value -= A(i,k) * B(k,j);
             }
 
-            (~C)(i,j) = value;
+            C(i,j) = value;
          }
       }
    }
@@ -4058,8 +4059,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       selectDefaultSubAssignKernel( C, A, B );
    }
@@ -4084,8 +4085,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
-      selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
    {
       if( LOW )
          lmmm( C, A, B, ElementType(-1), ElementType(1) );
@@ -4114,8 +4115,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
-      selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
    {
       selectLargeSubAssignKernel( C, A, B );
    }
@@ -4140,8 +4141,8 @@ class TDMatTDMatMultExpr
    template< typename MT3    // Type of the left-hand side target matrix
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5 >  // Type of the right-hand side matrix operand
-   static inline EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
-      selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+   static inline auto selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
+      -> EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
    {
       using ET = ElementType_t<MT3>;
 
@@ -4180,8 +4181,8 @@ class TDMatTDMatMultExpr
    // can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      subAssign( Matrix<MT,false>& lhs, const TDMatTDMatMultExpr& rhs )
+   friend inline auto subAssign( Matrix<MT,false>& lhs, const TDMatTDMatMultExpr& rhs )
+      -> EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -4264,8 +4265,8 @@ class TDMatTDMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpAssign( DenseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
+   friend inline auto smpAssign( DenseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -4313,8 +4314,8 @@ class TDMatTDMatMultExpr
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpAssign( SparseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
+   friend inline auto smpAssign( SparseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -4354,8 +4355,8 @@ class TDMatTDMatMultExpr
    // the compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      smpAssign( Matrix<MT,false>& lhs, const TDMatTDMatMultExpr& rhs )
+   friend inline auto smpAssign( Matrix<MT,false>& lhs, const TDMatTDMatMultExpr& rhs )
+      -> EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -4394,8 +4395,8 @@ class TDMatTDMatMultExpr
    */
    template< typename MT   // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpAddAssign( DenseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
+   friend inline auto smpAddAssign( DenseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -4438,8 +4439,8 @@ class TDMatTDMatMultExpr
    // exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      smpAddAssign( Matrix<MT,false>& lhs, const TDMatTDMatMultExpr& rhs )
+   friend inline auto smpAddAssign( Matrix<MT,false>& lhs, const TDMatTDMatMultExpr& rhs )
+      -> EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -4482,8 +4483,8 @@ class TDMatTDMatMultExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpSubAssign( DenseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
+   friend inline auto smpSubAssign( DenseMatrix<MT,SO>& lhs, const TDMatTDMatMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -4526,8 +4527,8 @@ class TDMatTDMatMultExpr
    // exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      smpSubAssign( Matrix<MT,false>& lhs, const TDMatTDMatMultExpr& rhs )
+   friend inline auto smpSubAssign( Matrix<MT,false>& lhs, const TDMatTDMatMultExpr& rhs )
+      -> EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -4957,8 +4958,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      assign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto assign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+      -> DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -5034,8 +5035,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       const size_t M( A.rows()    );
       const size_t N( B.columns() );
@@ -5162,8 +5163,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT3 );
 
@@ -5215,8 +5216,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT3 );
 
@@ -5268,8 +5269,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT3 );
 
@@ -5299,8 +5300,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       selectDefaultAssignKernel( C, A, B, scalar );
    }
@@ -5325,8 +5326,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectSmallAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT4 );
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT5 );
@@ -5337,19 +5338,19 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       if( IsResizable_v<MT4> && !IsResizable_v<MT5> ) {
          const OppositeType_t<MT5> tmp( serial( B ) );
-         assign( ~C, fwd( A * tmp ) * scalar );
+         assign( C, fwd( A * tmp ) * scalar );
       }
       else if( !IsResizable_v<MT4> && IsResizable_v<MT5> ) {
          const OppositeType_t<MT4> tmp( serial( A ) );
-         assign( ~C, fwd( tmp * B ) * scalar );
+         assign( C, fwd( tmp * B ) * scalar );
       }
       else if( B.rows() * B.columns() <= A.rows() * A.columns() ) {
          const OppositeType_t<MT5> tmp( serial( B ) );
-         assign( ~C, fwd( A * tmp ) * scalar );
+         assign( C, fwd( A * tmp ) * scalar );
       }
       else {
          const OppositeType_t<MT4> tmp( serial( A ) );
-         assign( ~C, fwd( tmp * B ) * scalar );
+         assign( C, fwd( tmp * B ) * scalar );
       }
    }
    //**********************************************************************************************
@@ -5373,8 +5374,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectSmallAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT4> );
 
@@ -5390,7 +5391,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
       const SIMDType factor( set( scalar ) );
 
       if( LOW && UPP && M > SIMDSIZE*3UL ) {
-         reset( ~C );
+         reset( C );
       }
 
       {
@@ -5426,14 +5427,14 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                      xmm8 += A.load(i+SIMDSIZE*7UL,k) * b1;
                   }
 
-                  (~C).store( i             , j, xmm1 * factor );
-                  (~C).store( i+SIMDSIZE    , j, xmm2 * factor );
-                  (~C).store( i+SIMDSIZE*2UL, j, xmm3 * factor );
-                  (~C).store( i+SIMDSIZE*3UL, j, xmm4 * factor );
-                  (~C).store( i+SIMDSIZE*4UL, j, xmm5 * factor );
-                  (~C).store( i+SIMDSIZE*5UL, j, xmm6 * factor );
-                  (~C).store( i+SIMDSIZE*6UL, j, xmm7 * factor );
-                  (~C).store( i+SIMDSIZE*7UL, j, xmm8 * factor );
+                  C.store( i             , j, xmm1 * factor );
+                  C.store( i+SIMDSIZE    , j, xmm2 * factor );
+                  C.store( i+SIMDSIZE*2UL, j, xmm3 * factor );
+                  C.store( i+SIMDSIZE*3UL, j, xmm4 * factor );
+                  C.store( i+SIMDSIZE*4UL, j, xmm5 * factor );
+                  C.store( i+SIMDSIZE*5UL, j, xmm6 * factor );
+                  C.store( i+SIMDSIZE*6UL, j, xmm7 * factor );
+                  C.store( i+SIMDSIZE*7UL, j, xmm8 * factor );
                }
             }
          }
@@ -5477,16 +5478,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                   xmm10 += a5 * b2;
                }
 
-               (~C).store( i             , j    , xmm1  * factor );
-               (~C).store( i+SIMDSIZE    , j    , xmm2  * factor );
-               (~C).store( i+SIMDSIZE*2UL, j    , xmm3  * factor );
-               (~C).store( i+SIMDSIZE*3UL, j    , xmm4  * factor );
-               (~C).store( i+SIMDSIZE*4UL, j    , xmm5  * factor );
-               (~C).store( i             , j+1UL, xmm6  * factor );
-               (~C).store( i+SIMDSIZE    , j+1UL, xmm7  * factor );
-               (~C).store( i+SIMDSIZE*2UL, j+1UL, xmm8  * factor );
-               (~C).store( i+SIMDSIZE*3UL, j+1UL, xmm9  * factor );
-               (~C).store( i+SIMDSIZE*4UL, j+1UL, xmm10 * factor );
+               C.store( i             , j    , xmm1  * factor );
+               C.store( i+SIMDSIZE    , j    , xmm2  * factor );
+               C.store( i+SIMDSIZE*2UL, j    , xmm3  * factor );
+               C.store( i+SIMDSIZE*3UL, j    , xmm4  * factor );
+               C.store( i+SIMDSIZE*4UL, j    , xmm5  * factor );
+               C.store( i             , j+1UL, xmm6  * factor );
+               C.store( i+SIMDSIZE    , j+1UL, xmm7  * factor );
+               C.store( i+SIMDSIZE*2UL, j+1UL, xmm8  * factor );
+               C.store( i+SIMDSIZE*3UL, j+1UL, xmm9  * factor );
+               C.store( i+SIMDSIZE*4UL, j+1UL, xmm10 * factor );
             }
 
             if( j < N )
@@ -5509,11 +5510,11 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                   xmm5 += A.load(i+SIMDSIZE*4UL,k) * b1;
                }
 
-               (~C).store( i             , j, xmm1 * factor );
-               (~C).store( i+SIMDSIZE    , j, xmm2 * factor );
-               (~C).store( i+SIMDSIZE*2UL, j, xmm3 * factor );
-               (~C).store( i+SIMDSIZE*3UL, j, xmm4 * factor );
-               (~C).store( i+SIMDSIZE*4UL, j, xmm5 * factor );
+               C.store( i             , j, xmm1 * factor );
+               C.store( i+SIMDSIZE    , j, xmm2 * factor );
+               C.store( i+SIMDSIZE*2UL, j, xmm3 * factor );
+               C.store( i+SIMDSIZE*3UL, j, xmm4 * factor );
+               C.store( i+SIMDSIZE*4UL, j, xmm5 * factor );
             }
          }
 
@@ -5554,14 +5555,14 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                   xmm8 += a4 * b2;
                }
 
-               (~C).store( i             , j    , xmm1 * factor );
-               (~C).store( i+SIMDSIZE    , j    , xmm2 * factor );
-               (~C).store( i+SIMDSIZE*2UL, j    , xmm3 * factor );
-               (~C).store( i+SIMDSIZE*3UL, j    , xmm4 * factor );
-               (~C).store( i             , j+1UL, xmm5 * factor );
-               (~C).store( i+SIMDSIZE    , j+1UL, xmm6 * factor );
-               (~C).store( i+SIMDSIZE*2UL, j+1UL, xmm7 * factor );
-               (~C).store( i+SIMDSIZE*3UL, j+1UL, xmm8 * factor );
+               C.store( i             , j    , xmm1 * factor );
+               C.store( i+SIMDSIZE    , j    , xmm2 * factor );
+               C.store( i+SIMDSIZE*2UL, j    , xmm3 * factor );
+               C.store( i+SIMDSIZE*3UL, j    , xmm4 * factor );
+               C.store( i             , j+1UL, xmm5 * factor );
+               C.store( i+SIMDSIZE    , j+1UL, xmm6 * factor );
+               C.store( i+SIMDSIZE*2UL, j+1UL, xmm7 * factor );
+               C.store( i+SIMDSIZE*3UL, j+1UL, xmm8 * factor );
             }
 
             if( j < jend )
@@ -5583,10 +5584,10 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                   xmm4 += A.load(i+SIMDSIZE*3UL,k) * b1;
                }
 
-               (~C).store( i             , j, xmm1 * factor );
-               (~C).store( i+SIMDSIZE    , j, xmm2 * factor );
-               (~C).store( i+SIMDSIZE*2UL, j, xmm3 * factor );
-               (~C).store( i+SIMDSIZE*3UL, j, xmm4 * factor );
+               C.store( i             , j, xmm1 * factor );
+               C.store( i+SIMDSIZE    , j, xmm2 * factor );
+               C.store( i+SIMDSIZE*2UL, j, xmm3 * factor );
+               C.store( i+SIMDSIZE*3UL, j, xmm4 * factor );
             }
          }
 
@@ -5624,12 +5625,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                   xmm6 += a3 * b2;
                }
 
-               (~C).store( i             , j    , xmm1 * factor );
-               (~C).store( i+SIMDSIZE    , j    , xmm2 * factor );
-               (~C).store( i+SIMDSIZE*2UL, j    , xmm3 * factor );
-               (~C).store( i             , j+1UL, xmm4 * factor );
-               (~C).store( i+SIMDSIZE    , j+1UL, xmm5 * factor );
-               (~C).store( i+SIMDSIZE*2UL, j+1UL, xmm6 * factor );
+               C.store( i             , j    , xmm1 * factor );
+               C.store( i+SIMDSIZE    , j    , xmm2 * factor );
+               C.store( i+SIMDSIZE*2UL, j    , xmm3 * factor );
+               C.store( i             , j+1UL, xmm4 * factor );
+               C.store( i+SIMDSIZE    , j+1UL, xmm5 * factor );
+               C.store( i+SIMDSIZE*2UL, j+1UL, xmm6 * factor );
             }
 
             if( j < jend )
@@ -5650,9 +5651,9 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                   xmm3 += A.load(i+SIMDSIZE*2UL,k) * b1;
                }
 
-               (~C).store( i             , j, xmm1 * factor );
-               (~C).store( i+SIMDSIZE    , j, xmm2 * factor );
-               (~C).store( i+SIMDSIZE*2UL, j, xmm3 * factor );
+               C.store( i             , j, xmm1 * factor );
+               C.store( i+SIMDSIZE    , j, xmm2 * factor );
+               C.store( i+SIMDSIZE*2UL, j, xmm3 * factor );
             }
          }
 
@@ -5693,14 +5694,14 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                   xmm8 += a2 * b4;
                }
 
-               (~C).store( i         , j    , xmm1 * factor );
-               (~C).store( i+SIMDSIZE, j    , xmm2 * factor );
-               (~C).store( i         , j+1UL, xmm3 * factor );
-               (~C).store( i+SIMDSIZE, j+1UL, xmm4 * factor );
-               (~C).store( i         , j+2UL, xmm5 * factor );
-               (~C).store( i+SIMDSIZE, j+2UL, xmm6 * factor );
-               (~C).store( i         , j+3UL, xmm7 * factor );
-               (~C).store( i+SIMDSIZE, j+3UL, xmm8 * factor );
+               C.store( i         , j    , xmm1 * factor );
+               C.store( i+SIMDSIZE, j    , xmm2 * factor );
+               C.store( i         , j+1UL, xmm3 * factor );
+               C.store( i+SIMDSIZE, j+1UL, xmm4 * factor );
+               C.store( i         , j+2UL, xmm5 * factor );
+               C.store( i+SIMDSIZE, j+2UL, xmm6 * factor );
+               C.store( i         , j+3UL, xmm7 * factor );
+               C.store( i+SIMDSIZE, j+3UL, xmm8 * factor );
             }
 
             for( ; (j+3UL) <= jend; j+=3UL )
@@ -5732,12 +5733,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                   xmm6 += a2 * b3;
                }
 
-               (~C).store( i         , j    , xmm1 * factor );
-               (~C).store( i+SIMDSIZE, j    , xmm2 * factor );
-               (~C).store( i         , j+1UL, xmm3 * factor );
-               (~C).store( i+SIMDSIZE, j+1UL, xmm4 * factor );
-               (~C).store( i         , j+2UL, xmm5 * factor );
-               (~C).store( i+SIMDSIZE, j+2UL, xmm6 * factor );
+               C.store( i         , j    , xmm1 * factor );
+               C.store( i+SIMDSIZE, j    , xmm2 * factor );
+               C.store( i         , j+1UL, xmm3 * factor );
+               C.store( i+SIMDSIZE, j+1UL, xmm4 * factor );
+               C.store( i         , j+2UL, xmm5 * factor );
+               C.store( i+SIMDSIZE, j+2UL, xmm6 * factor );
             }
 
             for( ; (j+2UL) <= jend; j+=2UL )
@@ -5786,10 +5787,10 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                   xmm4 += a2 * b2;
                }
 
-               (~C).store( i         , j    , (xmm1+xmm5) * factor );
-               (~C).store( i+SIMDSIZE, j    , (xmm2+xmm6) * factor );
-               (~C).store( i         , j+1UL, (xmm3+xmm7) * factor );
-               (~C).store( i+SIMDSIZE, j+1UL, (xmm4+xmm8) * factor );
+               C.store( i         , j    , (xmm1+xmm5) * factor );
+               C.store( i+SIMDSIZE, j    , (xmm2+xmm6) * factor );
+               C.store( i         , j+1UL, (xmm3+xmm7) * factor );
+               C.store( i+SIMDSIZE, j+1UL, (xmm4+xmm8) * factor );
             }
 
             if( j < jend )
@@ -5819,8 +5820,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                   xmm2 += A.load(i+SIMDSIZE,k) * b1;
                }
 
-               (~C).store( i         , j, (xmm1+xmm3) * factor );
-               (~C).store( i+SIMDSIZE, j, (xmm2+xmm4) * factor );
+               C.store( i         , j, (xmm1+xmm3) * factor );
+               C.store( i+SIMDSIZE, j, (xmm2+xmm4) * factor );
             }
          }
 
@@ -5864,10 +5865,10 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                   xmm4 += a1 * set( B(k,j+3UL) );
                }
 
-               (~C).store( i, j    , (xmm1+xmm5) * factor );
-               (~C).store( i, j+1UL, (xmm2+xmm6) * factor );
-               (~C).store( i, j+2UL, (xmm3+xmm7) * factor );
-               (~C).store( i, j+3UL, (xmm4+xmm8) * factor );
+               C.store( i, j    , (xmm1+xmm5) * factor );
+               C.store( i, j+1UL, (xmm2+xmm6) * factor );
+               C.store( i, j+2UL, (xmm3+xmm7) * factor );
+               C.store( i, j+3UL, (xmm4+xmm8) * factor );
             }
 
             for( ; (j+3UL) <= jend; j+=3UL )
@@ -5902,9 +5903,9 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                   xmm3 += a1 * set( B(k,j+2UL) );
                }
 
-               (~C).store( i, j    , (xmm1+xmm4) * factor );
-               (~C).store( i, j+1UL, (xmm2+xmm5) * factor );
-               (~C).store( i, j+2UL, (xmm3+xmm6) * factor );
+               C.store( i, j    , (xmm1+xmm4) * factor );
+               C.store( i, j+1UL, (xmm2+xmm5) * factor );
+               C.store( i, j+2UL, (xmm3+xmm6) * factor );
             }
 
             for( ; (j+2UL) <= jend; j+=2UL )
@@ -5936,8 +5937,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                   xmm4 += a2 * set( B(k+1UL,j+1UL) );
                }
 
-               (~C).store( i, j    , (xmm1+xmm3) * factor );
-               (~C).store( i, j+1UL, (xmm2+xmm4) * factor );
+               C.store( i, j    , (xmm1+xmm3) * factor );
+               C.store( i, j+1UL, (xmm2+xmm4) * factor );
             }
 
             if( j < jend )
@@ -5960,7 +5961,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                   xmm1 += A.load(i,k) * set( B(k,j) );
                }
 
-               (~C).store( i, j, (xmm1+xmm2) * factor );
+               C.store( i, j, (xmm1+xmm2) * factor );
             }
          }
 
@@ -5987,8 +5988,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                   value2 += A(i,k) * B(k,j+1UL);
                }
 
-               (~C)(i,j    ) = value1 * scalar;
-               (~C)(i,j+1UL) = value2 * scalar;
+               C(i,j    ) = value1 * scalar;
+               C(i,j+1UL) = value2 * scalar;
             }
 
             if( j < N )
@@ -6005,7 +6006,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                   value += A(i,k) * B(k,j);
                }
 
-               (~C)(i,j) = value * scalar;
+               C(i,j) = value * scalar;
             }
          }
       }
@@ -6014,7 +6015,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
          for( size_t j=SIMDSIZE*4UL; j<N; ++j ) {
             const size_t iend( ( SIMDSIZE*4UL ) * ( j / (SIMDSIZE*4UL) ) );
             for( size_t i=0UL; i<iend; ++i ) {
-               (~C)(i,j) = HERM ? conj( (~C)(j,i) ) : (~C)(j,i);
+               C(i,j) = HERM ? conj( C(j,i) ) : C(j,i);
             }
          }
       }
@@ -6022,7 +6023,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
          for( size_t j=SIMDSIZE*4UL; j<N; ++j ) {
             const size_t iend( ( SIMDSIZE*4UL ) * ( j / (SIMDSIZE*4UL) ) );
             for( size_t i=0UL; i<iend; ++i ) {
-               reset( (~C)(i,j) );
+               reset( C(i,j) );
             }
          }
       }
@@ -6030,7 +6031,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
          for( size_t i=SIMDSIZE*4UL; i<M; ++i ) {
             const size_t jend( ( SIMDSIZE*4UL ) * ( i / (SIMDSIZE*4UL) ) );
             for( size_t j=0UL; j<jend; ++j ) {
-               reset( (~C)(i,j) );
+               reset( C(i,j) );
             }
          }
       }
@@ -6055,8 +6056,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       selectDefaultAssignKernel( C, A, B, scalar );
    }
@@ -6081,8 +6082,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       if( SYM )
          smmm( C, A, B, scalar );
@@ -6115,8 +6116,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
-      selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
    {
       selectLargeAssignKernel( C, A, B, scalar );
    }
@@ -6141,8 +6142,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
-      selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
    {
       using ET = ElementType_t<MT3>;
 
@@ -6175,8 +6176,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      assign( SparseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto assign( SparseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+      -> DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -6214,8 +6215,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    // compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      assign( Matrix<MT,false>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto assign( Matrix<MT,false>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -6252,8 +6253,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      addAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto addAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+      -> DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -6325,8 +6326,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       const ResultType tmp( serial( A * B * scalar ) );
       addAssign( C, tmp );
@@ -6351,8 +6352,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT3 );
 
@@ -6401,8 +6402,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT3 );
 
@@ -6451,8 +6452,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT3 );
 
@@ -6480,8 +6481,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       selectDefaultAddAssignKernel( C, A, B, scalar );
    }
@@ -6506,8 +6507,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectSmallAddAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT4 );
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT5 );
@@ -6518,19 +6519,19 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       if( IsResizable_v<MT4> && !IsResizable_v<MT5> ) {
          const OppositeType_t<MT5> tmp( serial( B ) );
-         addAssign( ~C, fwd( A * tmp ) * scalar );
+         addAssign( C, fwd( A * tmp ) * scalar );
       }
       else if( !IsResizable_v<MT4> && IsResizable_v<MT5> ) {
          const OppositeType_t<MT4> tmp( serial( A ) );
-         addAssign( ~C, fwd( tmp * B ) * scalar );
+         addAssign( C, fwd( tmp * B ) * scalar );
       }
       else if( B.rows() * B.columns() <= A.rows() * A.columns() ) {
          const OppositeType_t<MT5> tmp( serial( B ) );
-         addAssign( ~C, fwd( A * tmp ) * scalar );
+         addAssign( C, fwd( A * tmp ) * scalar );
       }
       else {
          const OppositeType_t<MT4> tmp( serial( A ) );
-         addAssign( ~C, fwd( tmp * B ) * scalar );
+         addAssign( C, fwd( tmp * B ) * scalar );
       }
    }
    //**********************************************************************************************
@@ -6554,8 +6555,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectSmallAddAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT4> );
 
@@ -6602,14 +6603,14 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                   xmm8 += A.load(i+SIMDSIZE*7UL,k) * b1;
                }
 
-               (~C).store( i             , j, (~C).load(i             ,j) + xmm1 * factor );
-               (~C).store( i+SIMDSIZE    , j, (~C).load(i+SIMDSIZE    ,j) + xmm2 * factor );
-               (~C).store( i+SIMDSIZE*2UL, j, (~C).load(i+SIMDSIZE*2UL,j) + xmm3 * factor );
-               (~C).store( i+SIMDSIZE*3UL, j, (~C).load(i+SIMDSIZE*3UL,j) + xmm4 * factor );
-               (~C).store( i+SIMDSIZE*4UL, j, (~C).load(i+SIMDSIZE*4UL,j) + xmm5 * factor );
-               (~C).store( i+SIMDSIZE*5UL, j, (~C).load(i+SIMDSIZE*5UL,j) + xmm6 * factor );
-               (~C).store( i+SIMDSIZE*6UL, j, (~C).load(i+SIMDSIZE*6UL,j) + xmm7 * factor );
-               (~C).store( i+SIMDSIZE*7UL, j, (~C).load(i+SIMDSIZE*7UL,j) + xmm8 * factor );
+               C.store( i             , j, C.load(i             ,j) + xmm1 * factor );
+               C.store( i+SIMDSIZE    , j, C.load(i+SIMDSIZE    ,j) + xmm2 * factor );
+               C.store( i+SIMDSIZE*2UL, j, C.load(i+SIMDSIZE*2UL,j) + xmm3 * factor );
+               C.store( i+SIMDSIZE*3UL, j, C.load(i+SIMDSIZE*3UL,j) + xmm4 * factor );
+               C.store( i+SIMDSIZE*4UL, j, C.load(i+SIMDSIZE*4UL,j) + xmm5 * factor );
+               C.store( i+SIMDSIZE*5UL, j, C.load(i+SIMDSIZE*5UL,j) + xmm6 * factor );
+               C.store( i+SIMDSIZE*6UL, j, C.load(i+SIMDSIZE*6UL,j) + xmm7 * factor );
+               C.store( i+SIMDSIZE*7UL, j, C.load(i+SIMDSIZE*7UL,j) + xmm8 * factor );
             }
          }
       }
@@ -6653,16 +6654,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm10 += a5 * b2;
             }
 
-            (~C).store( i             , j    , (~C).load(i             ,j    ) + xmm1  * factor );
-            (~C).store( i+SIMDSIZE    , j    , (~C).load(i+SIMDSIZE    ,j    ) + xmm2  * factor );
-            (~C).store( i+SIMDSIZE*2UL, j    , (~C).load(i+SIMDSIZE*2UL,j    ) + xmm3  * factor );
-            (~C).store( i+SIMDSIZE*3UL, j    , (~C).load(i+SIMDSIZE*3UL,j    ) + xmm4  * factor );
-            (~C).store( i+SIMDSIZE*4UL, j    , (~C).load(i+SIMDSIZE*4UL,j    ) + xmm5  * factor );
-            (~C).store( i             , j+1UL, (~C).load(i             ,j+1UL) + xmm6  * factor );
-            (~C).store( i+SIMDSIZE    , j+1UL, (~C).load(i+SIMDSIZE    ,j+1UL) + xmm7  * factor );
-            (~C).store( i+SIMDSIZE*2UL, j+1UL, (~C).load(i+SIMDSIZE*2UL,j+1UL) + xmm8  * factor );
-            (~C).store( i+SIMDSIZE*3UL, j+1UL, (~C).load(i+SIMDSIZE*3UL,j+1UL) + xmm9  * factor );
-            (~C).store( i+SIMDSIZE*4UL, j+1UL, (~C).load(i+SIMDSIZE*4UL,j+1UL) + xmm10 * factor );
+            C.store( i             , j    , C.load(i             ,j    ) + xmm1  * factor );
+            C.store( i+SIMDSIZE    , j    , C.load(i+SIMDSIZE    ,j    ) + xmm2  * factor );
+            C.store( i+SIMDSIZE*2UL, j    , C.load(i+SIMDSIZE*2UL,j    ) + xmm3  * factor );
+            C.store( i+SIMDSIZE*3UL, j    , C.load(i+SIMDSIZE*3UL,j    ) + xmm4  * factor );
+            C.store( i+SIMDSIZE*4UL, j    , C.load(i+SIMDSIZE*4UL,j    ) + xmm5  * factor );
+            C.store( i             , j+1UL, C.load(i             ,j+1UL) + xmm6  * factor );
+            C.store( i+SIMDSIZE    , j+1UL, C.load(i+SIMDSIZE    ,j+1UL) + xmm7  * factor );
+            C.store( i+SIMDSIZE*2UL, j+1UL, C.load(i+SIMDSIZE*2UL,j+1UL) + xmm8  * factor );
+            C.store( i+SIMDSIZE*3UL, j+1UL, C.load(i+SIMDSIZE*3UL,j+1UL) + xmm9  * factor );
+            C.store( i+SIMDSIZE*4UL, j+1UL, C.load(i+SIMDSIZE*4UL,j+1UL) + xmm10 * factor );
          }
 
          if( j < N )
@@ -6685,11 +6686,11 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm5 += A.load(i+SIMDSIZE*4UL,k) * b1;
             }
 
-            (~C).store( i             , j, (~C).load(i             ,j) + xmm1 * factor );
-            (~C).store( i+SIMDSIZE    , j, (~C).load(i+SIMDSIZE    ,j) + xmm2 * factor );
-            (~C).store( i+SIMDSIZE*2UL, j, (~C).load(i+SIMDSIZE*2UL,j) + xmm3 * factor );
-            (~C).store( i+SIMDSIZE*3UL, j, (~C).load(i+SIMDSIZE*3UL,j) + xmm4 * factor );
-            (~C).store( i+SIMDSIZE*4UL, j, (~C).load(i+SIMDSIZE*4UL,j) + xmm5 * factor );
+            C.store( i             , j, C.load(i             ,j) + xmm1 * factor );
+            C.store( i+SIMDSIZE    , j, C.load(i+SIMDSIZE    ,j) + xmm2 * factor );
+            C.store( i+SIMDSIZE*2UL, j, C.load(i+SIMDSIZE*2UL,j) + xmm3 * factor );
+            C.store( i+SIMDSIZE*3UL, j, C.load(i+SIMDSIZE*3UL,j) + xmm4 * factor );
+            C.store( i+SIMDSIZE*4UL, j, C.load(i+SIMDSIZE*4UL,j) + xmm5 * factor );
          }
       }
 
@@ -6729,14 +6730,14 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm8 += a4 * b2;
             }
 
-            (~C).store( i             , j    , (~C).load(i             ,j    ) + xmm1 * factor );
-            (~C).store( i+SIMDSIZE    , j    , (~C).load(i+SIMDSIZE    ,j    ) + xmm2 * factor );
-            (~C).store( i+SIMDSIZE*2UL, j    , (~C).load(i+SIMDSIZE*2UL,j    ) + xmm3 * factor );
-            (~C).store( i+SIMDSIZE*3UL, j    , (~C).load(i+SIMDSIZE*3UL,j    ) + xmm4 * factor );
-            (~C).store( i             , j+1UL, (~C).load(i             ,j+1UL) + xmm5 * factor );
-            (~C).store( i+SIMDSIZE    , j+1UL, (~C).load(i+SIMDSIZE    ,j+1UL) + xmm6 * factor );
-            (~C).store( i+SIMDSIZE*2UL, j+1UL, (~C).load(i+SIMDSIZE*2UL,j+1UL) + xmm7 * factor );
-            (~C).store( i+SIMDSIZE*3UL, j+1UL, (~C).load(i+SIMDSIZE*3UL,j+1UL) + xmm8 * factor );
+            C.store( i             , j    , C.load(i             ,j    ) + xmm1 * factor );
+            C.store( i+SIMDSIZE    , j    , C.load(i+SIMDSIZE    ,j    ) + xmm2 * factor );
+            C.store( i+SIMDSIZE*2UL, j    , C.load(i+SIMDSIZE*2UL,j    ) + xmm3 * factor );
+            C.store( i+SIMDSIZE*3UL, j    , C.load(i+SIMDSIZE*3UL,j    ) + xmm4 * factor );
+            C.store( i             , j+1UL, C.load(i             ,j+1UL) + xmm5 * factor );
+            C.store( i+SIMDSIZE    , j+1UL, C.load(i+SIMDSIZE    ,j+1UL) + xmm6 * factor );
+            C.store( i+SIMDSIZE*2UL, j+1UL, C.load(i+SIMDSIZE*2UL,j+1UL) + xmm7 * factor );
+            C.store( i+SIMDSIZE*3UL, j+1UL, C.load(i+SIMDSIZE*3UL,j+1UL) + xmm8 * factor );
          }
 
          if( j < N )
@@ -6758,10 +6759,10 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm4 += A.load(i+SIMDSIZE*3UL,k) * b1;
             }
 
-            (~C).store( i             , j, (~C).load(i             ,j) + xmm1 * factor );
-            (~C).store( i+SIMDSIZE    , j, (~C).load(i+SIMDSIZE    ,j) + xmm2 * factor );
-            (~C).store( i+SIMDSIZE*2UL, j, (~C).load(i+SIMDSIZE*2UL,j) + xmm3 * factor );
-            (~C).store( i+SIMDSIZE*3UL, j, (~C).load(i+SIMDSIZE*3UL,j) + xmm4 * factor );
+            C.store( i             , j, C.load(i             ,j) + xmm1 * factor );
+            C.store( i+SIMDSIZE    , j, C.load(i+SIMDSIZE    ,j) + xmm2 * factor );
+            C.store( i+SIMDSIZE*2UL, j, C.load(i+SIMDSIZE*2UL,j) + xmm3 * factor );
+            C.store( i+SIMDSIZE*3UL, j, C.load(i+SIMDSIZE*3UL,j) + xmm4 * factor );
          }
       }
 
@@ -6798,12 +6799,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm6 += a3 * b2;
             }
 
-            (~C).store( i             , j    , (~C).load(i             ,j    ) + xmm1 * factor );
-            (~C).store( i+SIMDSIZE    , j    , (~C).load(i+SIMDSIZE    ,j    ) + xmm2 * factor );
-            (~C).store( i+SIMDSIZE*2UL, j    , (~C).load(i+SIMDSIZE*2UL,j    ) + xmm3 * factor );
-            (~C).store( i             , j+1UL, (~C).load(i             ,j+1UL) + xmm4 * factor );
-            (~C).store( i+SIMDSIZE    , j+1UL, (~C).load(i+SIMDSIZE    ,j+1UL) + xmm5 * factor );
-            (~C).store( i+SIMDSIZE*2UL, j+1UL, (~C).load(i+SIMDSIZE*2UL,j+1UL) + xmm6 * factor );
+            C.store( i             , j    , C.load(i             ,j    ) + xmm1 * factor );
+            C.store( i+SIMDSIZE    , j    , C.load(i+SIMDSIZE    ,j    ) + xmm2 * factor );
+            C.store( i+SIMDSIZE*2UL, j    , C.load(i+SIMDSIZE*2UL,j    ) + xmm3 * factor );
+            C.store( i             , j+1UL, C.load(i             ,j+1UL) + xmm4 * factor );
+            C.store( i+SIMDSIZE    , j+1UL, C.load(i+SIMDSIZE    ,j+1UL) + xmm5 * factor );
+            C.store( i+SIMDSIZE*2UL, j+1UL, C.load(i+SIMDSIZE*2UL,j+1UL) + xmm6 * factor );
          }
 
          if( j < N )
@@ -6824,9 +6825,9 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm3 += A.load(i+SIMDSIZE*2UL,k) * b1;
             }
 
-            (~C).store( i             , j, (~C).load(i             ,j) + xmm1 * factor );
-            (~C).store( i+SIMDSIZE    , j, (~C).load(i+SIMDSIZE    ,j) + xmm2 * factor );
-            (~C).store( i+SIMDSIZE*2UL, j, (~C).load(i+SIMDSIZE*2UL,j) + xmm3 * factor );
+            C.store( i             , j, C.load(i             ,j) + xmm1 * factor );
+            C.store( i+SIMDSIZE    , j, C.load(i+SIMDSIZE    ,j) + xmm2 * factor );
+            C.store( i+SIMDSIZE*2UL, j, C.load(i+SIMDSIZE*2UL,j) + xmm3 * factor );
          }
       }
 
@@ -6867,14 +6868,14 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm8 += a2 * b4;
             }
 
-            (~C).store( i         , j    , (~C).load(i         ,j    ) + xmm1 * factor );
-            (~C).store( i+SIMDSIZE, j    , (~C).load(i+SIMDSIZE,j    ) + xmm2 * factor );
-            (~C).store( i         , j+1UL, (~C).load(i         ,j+1UL) + xmm3 * factor );
-            (~C).store( i+SIMDSIZE, j+1UL, (~C).load(i+SIMDSIZE,j+1UL) + xmm4 * factor );
-            (~C).store( i         , j+2UL, (~C).load(i         ,j+2UL) + xmm5 * factor );
-            (~C).store( i+SIMDSIZE, j+2UL, (~C).load(i+SIMDSIZE,j+2UL) + xmm6 * factor );
-            (~C).store( i         , j+3UL, (~C).load(i         ,j+3UL) + xmm7 * factor );
-            (~C).store( i+SIMDSIZE, j+3UL, (~C).load(i+SIMDSIZE,j+3UL) + xmm8 * factor );
+            C.store( i         , j    , C.load(i         ,j    ) + xmm1 * factor );
+            C.store( i+SIMDSIZE, j    , C.load(i+SIMDSIZE,j    ) + xmm2 * factor );
+            C.store( i         , j+1UL, C.load(i         ,j+1UL) + xmm3 * factor );
+            C.store( i+SIMDSIZE, j+1UL, C.load(i+SIMDSIZE,j+1UL) + xmm4 * factor );
+            C.store( i         , j+2UL, C.load(i         ,j+2UL) + xmm5 * factor );
+            C.store( i+SIMDSIZE, j+2UL, C.load(i+SIMDSIZE,j+2UL) + xmm6 * factor );
+            C.store( i         , j+3UL, C.load(i         ,j+3UL) + xmm7 * factor );
+            C.store( i+SIMDSIZE, j+3UL, C.load(i+SIMDSIZE,j+3UL) + xmm8 * factor );
          }
 
          for( ; (j+3UL) <= jend; j+=3UL )
@@ -6906,12 +6907,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm6 += a2 * b3;
             }
 
-            (~C).store( i         , j    , (~C).load(i         ,j    ) + xmm1 * factor );
-            (~C).store( i+SIMDSIZE, j    , (~C).load(i+SIMDSIZE,j    ) + xmm2 * factor );
-            (~C).store( i         , j+1UL, (~C).load(i         ,j+1UL) + xmm3 * factor );
-            (~C).store( i+SIMDSIZE, j+1UL, (~C).load(i+SIMDSIZE,j+1UL) + xmm4 * factor );
-            (~C).store( i         , j+2UL, (~C).load(i         ,j+2UL) + xmm5 * factor );
-            (~C).store( i+SIMDSIZE, j+2UL, (~C).load(i+SIMDSIZE,j+2UL) + xmm6 * factor );
+            C.store( i         , j    , C.load(i         ,j    ) + xmm1 * factor );
+            C.store( i+SIMDSIZE, j    , C.load(i+SIMDSIZE,j    ) + xmm2 * factor );
+            C.store( i         , j+1UL, C.load(i         ,j+1UL) + xmm3 * factor );
+            C.store( i+SIMDSIZE, j+1UL, C.load(i+SIMDSIZE,j+1UL) + xmm4 * factor );
+            C.store( i         , j+2UL, C.load(i         ,j+2UL) + xmm5 * factor );
+            C.store( i+SIMDSIZE, j+2UL, C.load(i+SIMDSIZE,j+2UL) + xmm6 * factor );
          }
 
          for( ; (j+2UL) <= jend; j+=2UL )
@@ -6960,10 +6961,10 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm4 += a2 * b2;
             }
 
-            (~C).store( i         , j    , (~C).load(i         ,j    ) + (xmm1+xmm5) * factor );
-            (~C).store( i+SIMDSIZE, j    , (~C).load(i+SIMDSIZE,j    ) + (xmm2+xmm6) * factor );
-            (~C).store( i         , j+1UL, (~C).load(i         ,j+1UL) + (xmm3+xmm7) * factor );
-            (~C).store( i+SIMDSIZE, j+1UL, (~C).load(i+SIMDSIZE,j+1UL) + (xmm4+xmm8) * factor );
+            C.store( i         , j    , C.load(i         ,j    ) + (xmm1+xmm5) * factor );
+            C.store( i+SIMDSIZE, j    , C.load(i+SIMDSIZE,j    ) + (xmm2+xmm6) * factor );
+            C.store( i         , j+1UL, C.load(i         ,j+1UL) + (xmm3+xmm7) * factor );
+            C.store( i+SIMDSIZE, j+1UL, C.load(i+SIMDSIZE,j+1UL) + (xmm4+xmm8) * factor );
          }
 
          if( j < jend )
@@ -6993,8 +6994,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm2 += A.load(i+SIMDSIZE,k) * b1;
             }
 
-            (~C).store( i         , j, (~C).load(i         ,j) + (xmm1+xmm3) * factor );
-            (~C).store( i+SIMDSIZE, j, (~C).load(i+SIMDSIZE,j) + (xmm2+xmm4) * factor );
+            C.store( i         , j, C.load(i         ,j) + (xmm1+xmm3) * factor );
+            C.store( i+SIMDSIZE, j, C.load(i+SIMDSIZE,j) + (xmm2+xmm4) * factor );
          }
       }
 
@@ -7038,10 +7039,10 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm4 += a1 * set( B(k,j+3UL) );
             }
 
-            (~C).store( i, j    , (~C).load(i,j    ) + (xmm1+xmm5) * factor );
-            (~C).store( i, j+1UL, (~C).load(i,j+1UL) + (xmm2+xmm6) * factor );
-            (~C).store( i, j+2UL, (~C).load(i,j+2UL) + (xmm3+xmm7) * factor );
-            (~C).store( i, j+3UL, (~C).load(i,j+3UL) + (xmm4+xmm8) * factor );
+            C.store( i, j    , C.load(i,j    ) + (xmm1+xmm5) * factor );
+            C.store( i, j+1UL, C.load(i,j+1UL) + (xmm2+xmm6) * factor );
+            C.store( i, j+2UL, C.load(i,j+2UL) + (xmm3+xmm7) * factor );
+            C.store( i, j+3UL, C.load(i,j+3UL) + (xmm4+xmm8) * factor );
          }
 
          for( ; (j+3UL) <= jend; j+=3UL )
@@ -7076,9 +7077,9 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm3 += a1 * set( B(k,j+2UL) );
             }
 
-            (~C).store( i, j    , (~C).load(i,j    ) + (xmm1+xmm4) * factor );
-            (~C).store( i, j+1UL, (~C).load(i,j+1UL) + (xmm2+xmm5) * factor );
-            (~C).store( i, j+2UL, (~C).load(i,j+2UL) + (xmm3+xmm6) * factor );
+            C.store( i, j    , C.load(i,j    ) + (xmm1+xmm4) * factor );
+            C.store( i, j+1UL, C.load(i,j+1UL) + (xmm2+xmm5) * factor );
+            C.store( i, j+2UL, C.load(i,j+2UL) + (xmm3+xmm6) * factor );
          }
 
          for( ; (j+2UL) <= jend; j+=2UL )
@@ -7110,8 +7111,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm2 += a1 * set( B(k,j+1UL) );
             }
 
-            (~C).store( i, j    , (~C).load(i,j    ) + (xmm1+xmm3) * factor );
-            (~C).store( i, j+1UL, (~C).load(i,j+1UL) + (xmm2+xmm4) * factor );
+            C.store( i, j    , C.load(i,j    ) + (xmm1+xmm3) * factor );
+            C.store( i, j+1UL, C.load(i,j+1UL) + (xmm2+xmm4) * factor );
          }
 
          if( j < jend )
@@ -7134,7 +7135,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm1 += A.load(i,k) * set( B(k,j) );
             }
 
-            (~C).store( i, j, (~C).load(i,j) + (xmm1+xmm2) * factor );
+            C.store( i, j, C.load(i,j) + (xmm1+xmm2) * factor );
          }
       }
 
@@ -7162,8 +7163,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                value2 += A(i,k) * B(k,j+1UL);
             }
 
-            (~C)(i,j    ) += value1 * scalar;
-            (~C)(i,j+1UL) += value2 * scalar;
+            C(i,j    ) += value1 * scalar;
+            C(i,j+1UL) += value2 * scalar;
          }
 
          if( j < jend )
@@ -7180,7 +7181,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                value += A(i,k) * B(k,j);
             }
 
-            (~C)(i,j) += value * scalar;
+            C(i,j) += value * scalar;
          }
       }
    }
@@ -7204,8 +7205,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       selectDefaultAddAssignKernel( C, A, B, scalar );
    }
@@ -7230,8 +7231,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       if( LOW )
          lmmm( C, A, B, scalar, ST2(1) );
@@ -7261,8 +7262,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
-      selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
    {
       selectLargeAddAssignKernel( C, A, B, scalar );
    }
@@ -7287,8 +7288,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
-      selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
    {
       using ET = ElementType_t<MT3>;
 
@@ -7325,8 +7326,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    // exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      addAssign( Matrix<MT,false>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto addAssign( Matrix<MT,false>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -7367,8 +7368,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      subAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto subAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+      -> DisableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -7440,8 +7441,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< !IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       const ResultType tmp( serial( A * B * scalar ) );
       subAssign( C, tmp );
@@ -7466,8 +7467,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< !IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT3 );
 
@@ -7516,8 +7517,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
-      selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsDiagonal_v<MT4> && !IsDiagonal_v<MT5> >
    {
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT3 );
 
@@ -7566,8 +7567,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
-      selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectDefaultSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsDiagonal_v<MT4> && IsDiagonal_v<MT5> >
    {
       BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT3 );
 
@@ -7595,8 +7596,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       selectDefaultSubAssignKernel( C, A, B, scalar );
    }
@@ -7621,8 +7622,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectSmallSubAssignKernel( DenseMatrix<MT3,false>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT4 );
       BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT5 );
@@ -7633,19 +7634,19 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       if( IsResizable_v<MT4> && !IsResizable_v<MT5> ) {
          const OppositeType_t<MT5> tmp( serial( B ) );
-         subAssign( ~C, fwd( A * tmp ) * scalar );
+         subAssign( C, fwd( A * tmp ) * scalar );
       }
       else if( !IsResizable_v<MT4> && IsResizable_v<MT5> ) {
          const OppositeType_t<MT4> tmp( serial( A ) );
-         subAssign( ~C, fwd( tmp * B ) * scalar );
+         subAssign( C, fwd( tmp * B ) * scalar );
       }
       else if( B.rows() * B.columns() <= A.rows() * A.columns() ) {
          const OppositeType_t<MT5> tmp( serial( B ) );
-         subAssign( ~C, fwd( A * tmp ) * scalar );
+         subAssign( C, fwd( A * tmp ) * scalar );
       }
       else {
          const OppositeType_t<MT4> tmp( serial( A ) );
-         subAssign( ~C, fwd( tmp * B ) * scalar );
+         subAssign( C, fwd( tmp * B ) * scalar );
       }
    }
    //**********************************************************************************************
@@ -7669,8 +7670,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectSmallSubAssignKernel( DenseMatrix<MT3,true>& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT3> && UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       constexpr bool remainder( !IsPadded_v<MT3> || !IsPadded_v<MT4> );
 
@@ -7717,14 +7718,14 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                   xmm8 += A.load(i+SIMDSIZE*7UL,k) * b1;
                }
 
-               (~C).store( i             , j, (~C).load(i             ,j) - xmm1 * factor );
-               (~C).store( i+SIMDSIZE    , j, (~C).load(i+SIMDSIZE    ,j) - xmm2 * factor );
-               (~C).store( i+SIMDSIZE*2UL, j, (~C).load(i+SIMDSIZE*2UL,j) - xmm3 * factor );
-               (~C).store( i+SIMDSIZE*3UL, j, (~C).load(i+SIMDSIZE*3UL,j) - xmm4 * factor );
-               (~C).store( i+SIMDSIZE*4UL, j, (~C).load(i+SIMDSIZE*4UL,j) - xmm5 * factor );
-               (~C).store( i+SIMDSIZE*5UL, j, (~C).load(i+SIMDSIZE*5UL,j) - xmm6 * factor );
-               (~C).store( i+SIMDSIZE*6UL, j, (~C).load(i+SIMDSIZE*6UL,j) - xmm7 * factor );
-               (~C).store( i+SIMDSIZE*7UL, j, (~C).load(i+SIMDSIZE*7UL,j) - xmm8 * factor );
+               C.store( i             , j, C.load(i             ,j) - xmm1 * factor );
+               C.store( i+SIMDSIZE    , j, C.load(i+SIMDSIZE    ,j) - xmm2 * factor );
+               C.store( i+SIMDSIZE*2UL, j, C.load(i+SIMDSIZE*2UL,j) - xmm3 * factor );
+               C.store( i+SIMDSIZE*3UL, j, C.load(i+SIMDSIZE*3UL,j) - xmm4 * factor );
+               C.store( i+SIMDSIZE*4UL, j, C.load(i+SIMDSIZE*4UL,j) - xmm5 * factor );
+               C.store( i+SIMDSIZE*5UL, j, C.load(i+SIMDSIZE*5UL,j) - xmm6 * factor );
+               C.store( i+SIMDSIZE*6UL, j, C.load(i+SIMDSIZE*6UL,j) - xmm7 * factor );
+               C.store( i+SIMDSIZE*7UL, j, C.load(i+SIMDSIZE*7UL,j) - xmm8 * factor );
             }
          }
       }
@@ -7768,16 +7769,16 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm10 += a5 * b2;
             }
 
-            (~C).store( i             , j    , (~C).load(i             ,j    ) - xmm1  * factor );
-            (~C).store( i+SIMDSIZE    , j    , (~C).load(i+SIMDSIZE    ,j    ) - xmm2  * factor );
-            (~C).store( i+SIMDSIZE*2UL, j    , (~C).load(i+SIMDSIZE*2UL,j    ) - xmm3  * factor );
-            (~C).store( i+SIMDSIZE*3UL, j    , (~C).load(i+SIMDSIZE*3UL,j    ) - xmm4  * factor );
-            (~C).store( i+SIMDSIZE*4UL, j    , (~C).load(i+SIMDSIZE*4UL,j    ) - xmm5  * factor );
-            (~C).store( i             , j+1UL, (~C).load(i             ,j+1UL) - xmm6  * factor );
-            (~C).store( i+SIMDSIZE    , j+1UL, (~C).load(i+SIMDSIZE    ,j+1UL) - xmm7  * factor );
-            (~C).store( i+SIMDSIZE*2UL, j+1UL, (~C).load(i+SIMDSIZE*2UL,j+1UL) - xmm8  * factor );
-            (~C).store( i+SIMDSIZE*3UL, j+1UL, (~C).load(i+SIMDSIZE*3UL,j+1UL) - xmm9  * factor );
-            (~C).store( i+SIMDSIZE*4UL, j+1UL, (~C).load(i+SIMDSIZE*4UL,j+1UL) - xmm10 * factor );
+            C.store( i             , j    , C.load(i             ,j    ) - xmm1  * factor );
+            C.store( i+SIMDSIZE    , j    , C.load(i+SIMDSIZE    ,j    ) - xmm2  * factor );
+            C.store( i+SIMDSIZE*2UL, j    , C.load(i+SIMDSIZE*2UL,j    ) - xmm3  * factor );
+            C.store( i+SIMDSIZE*3UL, j    , C.load(i+SIMDSIZE*3UL,j    ) - xmm4  * factor );
+            C.store( i+SIMDSIZE*4UL, j    , C.load(i+SIMDSIZE*4UL,j    ) - xmm5  * factor );
+            C.store( i             , j+1UL, C.load(i             ,j+1UL) - xmm6  * factor );
+            C.store( i+SIMDSIZE    , j+1UL, C.load(i+SIMDSIZE    ,j+1UL) - xmm7  * factor );
+            C.store( i+SIMDSIZE*2UL, j+1UL, C.load(i+SIMDSIZE*2UL,j+1UL) - xmm8  * factor );
+            C.store( i+SIMDSIZE*3UL, j+1UL, C.load(i+SIMDSIZE*3UL,j+1UL) - xmm9  * factor );
+            C.store( i+SIMDSIZE*4UL, j+1UL, C.load(i+SIMDSIZE*4UL,j+1UL) - xmm10 * factor );
          }
 
          if( j < N )
@@ -7800,11 +7801,11 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm5 += A.load(i+SIMDSIZE*4UL,k) * b1;
             }
 
-            (~C).store( i             , j, (~C).load(i             ,j) - xmm1 * factor );
-            (~C).store( i+SIMDSIZE    , j, (~C).load(i+SIMDSIZE    ,j) - xmm2 * factor );
-            (~C).store( i+SIMDSIZE*2UL, j, (~C).load(i+SIMDSIZE*2UL,j) - xmm3 * factor );
-            (~C).store( i+SIMDSIZE*3UL, j, (~C).load(i+SIMDSIZE*3UL,j) - xmm4 * factor );
-            (~C).store( i+SIMDSIZE*4UL, j, (~C).load(i+SIMDSIZE*4UL,j) - xmm5 * factor );
+            C.store( i             , j, C.load(i             ,j) - xmm1 * factor );
+            C.store( i+SIMDSIZE    , j, C.load(i+SIMDSIZE    ,j) - xmm2 * factor );
+            C.store( i+SIMDSIZE*2UL, j, C.load(i+SIMDSIZE*2UL,j) - xmm3 * factor );
+            C.store( i+SIMDSIZE*3UL, j, C.load(i+SIMDSIZE*3UL,j) - xmm4 * factor );
+            C.store( i+SIMDSIZE*4UL, j, C.load(i+SIMDSIZE*4UL,j) - xmm5 * factor );
          }
       }
 
@@ -7844,14 +7845,14 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm8 += a4 * b2;
             }
 
-            (~C).store( i             , j    , (~C).load(i             ,j    ) - xmm1 * factor );
-            (~C).store( i+SIMDSIZE    , j    , (~C).load(i+SIMDSIZE    ,j    ) - xmm2 * factor );
-            (~C).store( i+SIMDSIZE*2UL, j    , (~C).load(i+SIMDSIZE*2UL,j    ) - xmm3 * factor );
-            (~C).store( i+SIMDSIZE*3UL, j    , (~C).load(i+SIMDSIZE*3UL,j    ) - xmm4 * factor );
-            (~C).store( i             , j+1UL, (~C).load(i             ,j+1UL) - xmm5 * factor );
-            (~C).store( i+SIMDSIZE    , j+1UL, (~C).load(i+SIMDSIZE    ,j+1UL) - xmm6 * factor );
-            (~C).store( i+SIMDSIZE*2UL, j+1UL, (~C).load(i+SIMDSIZE*2UL,j+1UL) - xmm7 * factor );
-            (~C).store( i+SIMDSIZE*3UL, j+1UL, (~C).load(i+SIMDSIZE*3UL,j+1UL) - xmm8 * factor );
+            C.store( i             , j    , C.load(i             ,j    ) - xmm1 * factor );
+            C.store( i+SIMDSIZE    , j    , C.load(i+SIMDSIZE    ,j    ) - xmm2 * factor );
+            C.store( i+SIMDSIZE*2UL, j    , C.load(i+SIMDSIZE*2UL,j    ) - xmm3 * factor );
+            C.store( i+SIMDSIZE*3UL, j    , C.load(i+SIMDSIZE*3UL,j    ) - xmm4 * factor );
+            C.store( i             , j+1UL, C.load(i             ,j+1UL) - xmm5 * factor );
+            C.store( i+SIMDSIZE    , j+1UL, C.load(i+SIMDSIZE    ,j+1UL) - xmm6 * factor );
+            C.store( i+SIMDSIZE*2UL, j+1UL, C.load(i+SIMDSIZE*2UL,j+1UL) - xmm7 * factor );
+            C.store( i+SIMDSIZE*3UL, j+1UL, C.load(i+SIMDSIZE*3UL,j+1UL) - xmm8 * factor );
          }
 
          if( j < N )
@@ -7873,10 +7874,10 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm4 += A.load(i+SIMDSIZE*3UL,k) * b1;
             }
 
-            (~C).store( i             , j, (~C).load(i             ,j) - xmm1 * factor );
-            (~C).store( i+SIMDSIZE    , j, (~C).load(i+SIMDSIZE    ,j) - xmm2 * factor );
-            (~C).store( i+SIMDSIZE*2UL, j, (~C).load(i+SIMDSIZE*2UL,j) - xmm3 * factor );
-            (~C).store( i+SIMDSIZE*3UL, j, (~C).load(i+SIMDSIZE*3UL,j) - xmm4 * factor );
+            C.store( i             , j, C.load(i             ,j) - xmm1 * factor );
+            C.store( i+SIMDSIZE    , j, C.load(i+SIMDSIZE    ,j) - xmm2 * factor );
+            C.store( i+SIMDSIZE*2UL, j, C.load(i+SIMDSIZE*2UL,j) - xmm3 * factor );
+            C.store( i+SIMDSIZE*3UL, j, C.load(i+SIMDSIZE*3UL,j) - xmm4 * factor );
          }
       }
 
@@ -7913,12 +7914,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm6 += a3 * b2;
             }
 
-            (~C).store( i             , j    , (~C).load(i             ,j    ) - xmm1 * factor );
-            (~C).store( i+SIMDSIZE    , j    , (~C).load(i+SIMDSIZE    ,j    ) - xmm2 * factor );
-            (~C).store( i+SIMDSIZE*2UL, j    , (~C).load(i+SIMDSIZE*2UL,j    ) - xmm3 * factor );
-            (~C).store( i             , j+1UL, (~C).load(i             ,j+1UL) - xmm4 * factor );
-            (~C).store( i+SIMDSIZE    , j+1UL, (~C).load(i+SIMDSIZE    ,j+1UL) - xmm5 * factor );
-            (~C).store( i+SIMDSIZE*2UL, j+1UL, (~C).load(i+SIMDSIZE*2UL,j+1UL) - xmm6 * factor );
+            C.store( i             , j    , C.load(i             ,j    ) - xmm1 * factor );
+            C.store( i+SIMDSIZE    , j    , C.load(i+SIMDSIZE    ,j    ) - xmm2 * factor );
+            C.store( i+SIMDSIZE*2UL, j    , C.load(i+SIMDSIZE*2UL,j    ) - xmm3 * factor );
+            C.store( i             , j+1UL, C.load(i             ,j+1UL) - xmm4 * factor );
+            C.store( i+SIMDSIZE    , j+1UL, C.load(i+SIMDSIZE    ,j+1UL) - xmm5 * factor );
+            C.store( i+SIMDSIZE*2UL, j+1UL, C.load(i+SIMDSIZE*2UL,j+1UL) - xmm6 * factor );
          }
 
          if( j < N )
@@ -7939,9 +7940,9 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm3 += A.load(i+SIMDSIZE*2UL,k) * b1;
             }
 
-            (~C).store( i             , j, (~C).load(i             ,j) - xmm1 * factor );
-            (~C).store( i+SIMDSIZE    , j, (~C).load(i+SIMDSIZE    ,j) - xmm2 * factor );
-            (~C).store( i+SIMDSIZE*2UL, j, (~C).load(i+SIMDSIZE*2UL,j) - xmm3 * factor );
+            C.store( i             , j, C.load(i             ,j) - xmm1 * factor );
+            C.store( i+SIMDSIZE    , j, C.load(i+SIMDSIZE    ,j) - xmm2 * factor );
+            C.store( i+SIMDSIZE*2UL, j, C.load(i+SIMDSIZE*2UL,j) - xmm3 * factor );
          }
       }
 
@@ -7982,14 +7983,14 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm8 += a2 * b4;
             }
 
-            (~C).store( i         , j    , (~C).load(i         ,j    ) - xmm1 * factor );
-            (~C).store( i+SIMDSIZE, j    , (~C).load(i+SIMDSIZE,j    ) - xmm2 * factor );
-            (~C).store( i         , j+1UL, (~C).load(i         ,j+1UL) - xmm3 * factor );
-            (~C).store( i+SIMDSIZE, j+1UL, (~C).load(i+SIMDSIZE,j+1UL) - xmm4 * factor );
-            (~C).store( i         , j+2UL, (~C).load(i         ,j+2UL) - xmm5 * factor );
-            (~C).store( i+SIMDSIZE, j+2UL, (~C).load(i+SIMDSIZE,j+2UL) - xmm6 * factor );
-            (~C).store( i         , j+3UL, (~C).load(i         ,j+3UL) - xmm7 * factor );
-            (~C).store( i+SIMDSIZE, j+3UL, (~C).load(i+SIMDSIZE,j+3UL) - xmm8 * factor );
+            C.store( i         , j    , C.load(i         ,j    ) - xmm1 * factor );
+            C.store( i+SIMDSIZE, j    , C.load(i+SIMDSIZE,j    ) - xmm2 * factor );
+            C.store( i         , j+1UL, C.load(i         ,j+1UL) - xmm3 * factor );
+            C.store( i+SIMDSIZE, j+1UL, C.load(i+SIMDSIZE,j+1UL) - xmm4 * factor );
+            C.store( i         , j+2UL, C.load(i         ,j+2UL) - xmm5 * factor );
+            C.store( i+SIMDSIZE, j+2UL, C.load(i+SIMDSIZE,j+2UL) - xmm6 * factor );
+            C.store( i         , j+3UL, C.load(i         ,j+3UL) - xmm7 * factor );
+            C.store( i+SIMDSIZE, j+3UL, C.load(i+SIMDSIZE,j+3UL) - xmm8 * factor );
          }
 
          for( ; (j+3UL) <= jend; j+=3UL )
@@ -8021,12 +8022,12 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm6 += a2 * b3;
             }
 
-            (~C).store( i         , j    , (~C).load(i         ,j    ) - xmm1 * factor );
-            (~C).store( i+SIMDSIZE, j    , (~C).load(i+SIMDSIZE,j    ) - xmm2 * factor );
-            (~C).store( i         , j+1UL, (~C).load(i         ,j+1UL) - xmm3 * factor );
-            (~C).store( i+SIMDSIZE, j+1UL, (~C).load(i+SIMDSIZE,j+1UL) - xmm4 * factor );
-            (~C).store( i         , j+2UL, (~C).load(i         ,j+2UL) - xmm5 * factor );
-            (~C).store( i+SIMDSIZE, j+2UL, (~C).load(i+SIMDSIZE,j+2UL) - xmm6 * factor );
+            C.store( i         , j    , C.load(i         ,j    ) - xmm1 * factor );
+            C.store( i+SIMDSIZE, j    , C.load(i+SIMDSIZE,j    ) - xmm2 * factor );
+            C.store( i         , j+1UL, C.load(i         ,j+1UL) - xmm3 * factor );
+            C.store( i+SIMDSIZE, j+1UL, C.load(i+SIMDSIZE,j+1UL) - xmm4 * factor );
+            C.store( i         , j+2UL, C.load(i         ,j+2UL) - xmm5 * factor );
+            C.store( i+SIMDSIZE, j+2UL, C.load(i+SIMDSIZE,j+2UL) - xmm6 * factor );
          }
 
          for( ; (j+2UL) <= jend; j+=2UL )
@@ -8075,10 +8076,10 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm4 += a2 * b2;
             }
 
-            (~C).store( i         , j    , (~C).load(i         ,j    ) - (xmm1+xmm5) * factor );
-            (~C).store( i+SIMDSIZE, j    , (~C).load(i+SIMDSIZE,j    ) - (xmm2+xmm6) * factor );
-            (~C).store( i         , j+1UL, (~C).load(i         ,j+1UL) - (xmm3+xmm7) * factor );
-            (~C).store( i+SIMDSIZE, j+1UL, (~C).load(i+SIMDSIZE,j+1UL) - (xmm4+xmm8) * factor );
+            C.store( i         , j    , C.load(i         ,j    ) - (xmm1+xmm5) * factor );
+            C.store( i+SIMDSIZE, j    , C.load(i+SIMDSIZE,j    ) - (xmm2+xmm6) * factor );
+            C.store( i         , j+1UL, C.load(i         ,j+1UL) - (xmm3+xmm7) * factor );
+            C.store( i+SIMDSIZE, j+1UL, C.load(i+SIMDSIZE,j+1UL) - (xmm4+xmm8) * factor );
          }
 
          if( j < jend )
@@ -8108,8 +8109,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm2 += A.load(i+SIMDSIZE,k) * b1;
             }
 
-            (~C).store( i         , j, (~C).load(i         ,j) - (xmm1+xmm3) * factor );
-            (~C).store( i+SIMDSIZE, j, (~C).load(i+SIMDSIZE,j) - (xmm2+xmm4) * factor );
+            C.store( i         , j, C.load(i         ,j) - (xmm1+xmm3) * factor );
+            C.store( i+SIMDSIZE, j, C.load(i+SIMDSIZE,j) - (xmm2+xmm4) * factor );
          }
       }
 
@@ -8153,10 +8154,10 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm4 += a1 * set( B(k,j+3UL) );
             }
 
-            (~C).store( i, j    , (~C).load(i,j    ) - (xmm1+xmm5) * factor );
-            (~C).store( i, j+1UL, (~C).load(i,j+1UL) - (xmm2+xmm6) * factor );
-            (~C).store( i, j+2UL, (~C).load(i,j+2UL) - (xmm3+xmm7) * factor );
-            (~C).store( i, j+3UL, (~C).load(i,j+3UL) - (xmm4+xmm8) * factor );
+            C.store( i, j    , C.load(i,j    ) - (xmm1+xmm5) * factor );
+            C.store( i, j+1UL, C.load(i,j+1UL) - (xmm2+xmm6) * factor );
+            C.store( i, j+2UL, C.load(i,j+2UL) - (xmm3+xmm7) * factor );
+            C.store( i, j+3UL, C.load(i,j+3UL) - (xmm4+xmm8) * factor );
          }
 
          for( ; (j+3UL) <= jend; j+=3UL )
@@ -8191,9 +8192,9 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm3 += a1 * set( B(k,j+2UL) );
             }
 
-            (~C).store( i, j    , (~C).load(i,j    ) - (xmm1+xmm4) * factor );
-            (~C).store( i, j+1UL, (~C).load(i,j+1UL) - (xmm2+xmm5) * factor );
-            (~C).store( i, j+2UL, (~C).load(i,j+2UL) - (xmm3+xmm6) * factor );
+            C.store( i, j    , C.load(i,j    ) - (xmm1+xmm4) * factor );
+            C.store( i, j+1UL, C.load(i,j+1UL) - (xmm2+xmm5) * factor );
+            C.store( i, j+2UL, C.load(i,j+2UL) - (xmm3+xmm6) * factor );
          }
 
          for( ; (j+2UL) <= jend; j+=2UL )
@@ -8225,8 +8226,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm2 += a1 * set( B(k,j+1UL) );
             }
 
-            (~C).store( i, j    , (~C).load(i,j    ) - (xmm1+xmm3) * factor );
-            (~C).store( i, j+1UL, (~C).load(i,j+1UL) - (xmm2+xmm4) * factor );
+            C.store( i, j    , C.load(i,j    ) - (xmm1+xmm3) * factor );
+            C.store( i, j+1UL, C.load(i,j+1UL) - (xmm2+xmm4) * factor );
          }
 
          if( j < jend )
@@ -8249,7 +8250,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                xmm1 += A.load(i,k) * set( B(k,j) );
             }
 
-            (~C).store( i, j, (~C).load(i,j) - (xmm1+xmm2) * factor );
+            C.store( i, j, C.load(i,j) - (xmm1+xmm2) * factor );
          }
       }
 
@@ -8277,8 +8278,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                value2 += A(i,k) * B(k,j+1UL);
             }
 
-            (~C)(i,j    ) -= value1 * scalar;
-            (~C)(i,j+1UL) -= value2 * scalar;
+            C(i,j    ) -= value1 * scalar;
+            C(i,j+1UL) -= value2 * scalar;
          }
 
          if( j < jend )
@@ -8295,7 +8296,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
                value += A(i,k) * B(k,j);
             }
 
-            (~C)(i,j) -= value * scalar;
+            C(i,j) -= value * scalar;
          }
       }
    }
@@ -8319,8 +8320,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       selectDefaultSubAssignKernel( C, A, B, scalar );
    }
@@ -8345,8 +8346,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
-      selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
    {
       if( LOW )
          lmmm( C, A, B, -scalar, ST2(1) );
@@ -8376,8 +8377,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
-      selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
    {
       selectLargeSubAssignKernel( C, A, B, scalar );
    }
@@ -8402,8 +8403,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
            , typename MT4    // Type of the left-hand side matrix operand
            , typename MT5    // Type of the right-hand side matrix operand
            , typename ST2 >  // Type of the scalar value
-   static inline EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
-      selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+   static inline auto selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
+      -> EnableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
    {
       using ET = ElementType_t<MT3>;
 
@@ -8439,8 +8440,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    // by the compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      subAssign( Matrix<MT,false>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto subAssign( Matrix<MT,false>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -8526,8 +8527,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto smpAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -8576,8 +8577,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpAssign( SparseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto smpAssign( SparseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -8615,8 +8616,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    // the compiler in case the symmetry of either of the two matrix operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      smpAssign( Matrix<MT,false>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto smpAssign( Matrix<MT,false>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -8656,8 +8657,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpAddAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto smpAddAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -8701,8 +8702,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    // operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      smpAddAssign( Matrix<MT,false>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto smpAddAssign( Matrix<MT,false>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -8746,8 +8747,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
-      smpSubAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto smpSubAssign( DenseMatrix<MT,SO>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< IsEvaluationRequired_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -8791,8 +8792,8 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    // operands can be exploited.
    */
    template< typename MT >  // Type of the target matrix
-   friend inline EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
-      smpSubAssign( Matrix<MT,false>& lhs, const DMatScalarMultExpr& rhs )
+   friend inline auto smpSubAssign( Matrix<MT,false>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< CanExploitSymmetry_v<MT,MT1,MT2> >
    {
       BLAZE_FUNCTION_TRACE;
 

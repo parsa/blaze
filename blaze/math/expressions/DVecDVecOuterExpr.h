@@ -63,9 +63,11 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
@@ -671,8 +673,8 @@ class DVecDVecOuterExpr
    // in case either of the two operands requires an intermediate evaluation.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      assign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
+   friend inline auto assign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -709,22 +711,22 @@ class DVecDVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseDefaultKernel_v<MT,VT3,VT4> >
-      selectAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
+   static inline auto selectAssignKernel( MT& A, const VT3& x, const VT4& y )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT> && UseDefaultKernel_v<MT,VT3,VT4> >
    {
-      const size_t M( (~A).rows() );
-      const size_t N( (~A).columns() );
+      const size_t M( A.rows() );
+      const size_t N( A.columns() );
 
       const size_t jpos( N & size_t(-2) );
       BLAZE_INTERNAL_ASSERT( ( N - ( N % 2UL ) ) == jpos, "Invalid end calculation" );
 
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
-            (~A)(i,j    ) = x[i] * y[j  ];
-            (~A)(i,j+1UL) = x[i] * y[j+1];
+            A(i,j    ) = x[i] * y[j  ];
+            A(i,j+1UL) = x[i] * y[j+1];
          }
          if( jpos < N ) {
-            (~A)(i,jpos) = x[i] * y[jpos];
+            A(i,jpos) = x[i] * y[jpos];
          }
       }
    }
@@ -748,13 +750,13 @@ class DVecDVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseVectorizedKernel_v<MT,VT3,VT4> >
-      selectAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
+   static inline auto selectAssignKernel( MT& A, const VT3& x, const VT4& y )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT> && UseVectorizedKernel_v<MT,VT3,VT4> >
    {
       constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT4> );
 
-      const size_t M( (~A).rows() );
-      const size_t N( (~A).columns() );
+      const size_t M( A.rows() );
+      const size_t N( A.columns() );
 
       const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
@@ -766,10 +768,10 @@ class DVecDVecOuterExpr
          size_t j( 0UL );
 
          for( ; j<jpos; j+=SIMDSIZE ) {
-            (~A).store( i, j, x1 * y.load(j) );
+            A.store( i, j, x1 * y.load(j) );
          }
          for( ; remainder && j<N; ++j ) {
-            (~A)(i,j) = x[i] * y[j];
+            A(i,j) = x[i] * y[j];
          }
       }
    }
@@ -828,22 +830,22 @@ class DVecDVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseDefaultKernel_v<MT,VT3,VT4> >
-      selectAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
+   static inline auto selectAssignKernel( MT& A, const VT3& x, const VT4& y )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT> && UseDefaultKernel_v<MT,VT3,VT4> >
    {
-      const size_t M( (~A).rows() );
-      const size_t N( (~A).columns() );
+      const size_t M( A.rows() );
+      const size_t N( A.columns() );
 
       const size_t ipos( M & size_t(-2) );
       BLAZE_INTERNAL_ASSERT( ( M - ( M % 2UL ) ) == ipos, "Invalid end calculation" );
 
       for( size_t j=0UL; j<N; ++j ) {
          for( size_t i=0UL; i<ipos; i+=2UL ) {
-            (~A)(i    ,j) = x[i  ] * y[j];
-            (~A)(i+1UL,j) = x[i+1] * y[j];
+            A(i    ,j) = x[i  ] * y[j];
+            A(i+1UL,j) = x[i+1] * y[j];
          }
          if( ipos < M ) {
-            (~A)(ipos,j) = x[ipos] * y[j];
+            A(ipos,j) = x[ipos] * y[j];
          }
       }
    }
@@ -867,13 +869,13 @@ class DVecDVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseVectorizedKernel_v<MT,VT3,VT4> >
-      selectAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
+   static inline auto selectAssignKernel( MT& A, const VT3& x, const VT4& y )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT> && UseVectorizedKernel_v<MT,VT3,VT4> >
    {
       constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT3> );
 
-      const size_t M( (~A).rows() );
-      const size_t N( (~A).columns() );
+      const size_t M( A.rows() );
+      const size_t N( A.columns() );
 
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
@@ -885,10 +887,10 @@ class DVecDVecOuterExpr
          size_t i( 0UL );
 
          for( ; i<ipos; i+=SIMDSIZE ) {
-            (~A).store( i, j, x.load(i) * y1 );
+            A.store( i, j, x.load(i) * y1 );
          }
          for( ; remainder && i<M; ++i ) {
-            (~A)(i,j) = x[i] * y[j];
+            A(i,j) = x[i] * y[j];
          }
       }
    }
@@ -947,8 +949,8 @@ class DVecDVecOuterExpr
    // in case either of the two operands requires an intermediate evaluation.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      addAssign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
+   friend inline auto addAssign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -985,22 +987,22 @@ class DVecDVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseDefaultKernel_v<MT,VT3,VT4> >
-      selectAddAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
+   static inline auto selectAddAssignKernel( MT& A, const VT3& x, const VT4& y )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT> && UseDefaultKernel_v<MT,VT3,VT4> >
    {
-      const size_t M( (~A).rows() );
-      const size_t N( (~A).columns() );
+      const size_t M( A.rows() );
+      const size_t N( A.columns() );
 
       const size_t jpos( N & size_t(-2) );
       BLAZE_INTERNAL_ASSERT( ( N - ( N % 2UL ) ) == jpos, "Invalid end calculation" );
 
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
-            (~A)(i,j    ) += x[i] * y[j    ];
-            (~A)(i,j+1UL) += x[i] * y[j+1UL];
+            A(i,j    ) += x[i] * y[j    ];
+            A(i,j+1UL) += x[i] * y[j+1UL];
          }
          if( jpos < N ) {
-            (~A)(i,jpos) += x[i] * y[jpos];
+            A(i,jpos) += x[i] * y[jpos];
          }
       }
    }
@@ -1024,13 +1026,13 @@ class DVecDVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseVectorizedKernel_v<MT,VT3,VT4> >
-      selectAddAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
+   static inline auto selectAddAssignKernel( MT& A, const VT3& x, const VT4& y )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT> && UseVectorizedKernel_v<MT,VT3,VT4> >
    {
       constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT4> );
 
-      const size_t M( (~A).rows() );
-      const size_t N( (~A).columns() );
+      const size_t M( A.rows() );
+      const size_t N( A.columns() );
 
       const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
@@ -1042,10 +1044,10 @@ class DVecDVecOuterExpr
          size_t j( 0UL );
 
          for( ; j<jpos; j+=SIMDSIZE ) {
-            (~A).store( i, j, (~A).load(i,j) + x1 * y.load(j) );
+            A.store( i, j, A.load(i,j) + x1 * y.load(j) );
          }
          for( ; remainder && j<N; ++j ) {
-            (~A)(i,j) += x[i] * y[j];
+            A(i,j) += x[i] * y[j];
          }
       }
    }
@@ -1105,22 +1107,22 @@ class DVecDVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseDefaultKernel_v<MT,VT3,VT4> >
-      selectAddAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
+   static inline auto selectAddAssignKernel( MT& A, const VT3& x, const VT4& y )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT> && UseDefaultKernel_v<MT,VT3,VT4> >
    {
-      const size_t M( (~A).rows() );
-      const size_t N( (~A).columns() );
+      const size_t M( A.rows() );
+      const size_t N( A.columns() );
 
       const size_t ipos( M & size_t(-2) );
       BLAZE_INTERNAL_ASSERT( ( M - ( M % 2UL ) ) == ipos, "Invalid end calculation" );
 
       for( size_t j=0UL; j<N; ++j ) {
          for( size_t i=0UL; i<ipos; i+=2UL ) {
-            (~A)(i    ,j) += x[i    ] * y[j];
-            (~A)(i+1UL,j) += x[i+1UL] * y[j];
+            A(i    ,j) += x[i    ] * y[j];
+            A(i+1UL,j) += x[i+1UL] * y[j];
          }
          if( ipos < M ) {
-            (~A)(ipos,j) += x[ipos] * y[j];
+            A(ipos,j) += x[ipos] * y[j];
          }
       }
    }
@@ -1144,13 +1146,13 @@ class DVecDVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseVectorizedKernel_v<MT,VT3,VT4> >
-      selectAddAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
+   static inline auto selectAddAssignKernel( MT& A, const VT3& x, const VT4& y )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT> && UseVectorizedKernel_v<MT,VT3,VT4> >
    {
       constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT3> );
 
-      const size_t M( (~A).rows() );
-      const size_t N( (~A).columns() );
+      const size_t M( A.rows() );
+      const size_t N( A.columns() );
 
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
@@ -1162,10 +1164,10 @@ class DVecDVecOuterExpr
          size_t i( 0UL );
 
          for( ; i<ipos; i+=SIMDSIZE ) {
-            (~A).store( i, j, (~A).load(i,j) + x.load(i) * y1 );
+            A.store( i, j, A.load(i,j) + x.load(i) * y1 );
          }
          for( ; remainder && i<M; ++i ) {
-            (~A)(i,j) += x[i] * y[j];
+            A(i,j) += x[i] * y[j];
          }
       }
    }
@@ -1192,8 +1194,8 @@ class DVecDVecOuterExpr
    // in case either of the two operands requires an intermediate evaluation.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      subAssign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
+   friend inline auto subAssign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1230,22 +1232,22 @@ class DVecDVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseDefaultKernel_v<MT,VT3,VT4> >
-      selectSubAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
+   static inline auto selectSubAssignKernel( MT& A, const VT3& x, const VT4& y )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT> && UseDefaultKernel_v<MT,VT3,VT4> >
    {
-      const size_t M( (~A).rows() );
-      const size_t N( (~A).columns() );
+      const size_t M( A.rows() );
+      const size_t N( A.columns() );
 
       const size_t jpos( N & size_t(-2) );
       BLAZE_INTERNAL_ASSERT( ( N - ( N % 2UL ) ) == jpos, "Invalid end calculation" );
 
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
-            (~A)(i,j    ) -= x[i] * y[j    ];
-            (~A)(i,j+1UL) -= x[i] * y[j+1UL];
+            A(i,j    ) -= x[i] * y[j    ];
+            A(i,j+1UL) -= x[i] * y[j+1UL];
          }
          if( jpos < N ) {
-            (~A)(i,jpos) -= x[i] * y[jpos];
+            A(i,jpos) -= x[i] * y[jpos];
          }
       }
    }
@@ -1269,13 +1271,13 @@ class DVecDVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseVectorizedKernel_v<MT,VT3,VT4> >
-      selectSubAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
+   static inline auto selectSubAssignKernel( MT& A, const VT3& x, const VT4& y )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT> && UseVectorizedKernel_v<MT,VT3,VT4> >
    {
       constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT4> );
 
-      const size_t M( (~A).rows() );
-      const size_t N( (~A).columns() );
+      const size_t M( A.rows() );
+      const size_t N( A.columns() );
 
       const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
@@ -1287,10 +1289,10 @@ class DVecDVecOuterExpr
          size_t j( 0UL );
 
          for( ; j<jpos; j+=SIMDSIZE ) {
-            (~A).store( i, j, (~A).load(i,j) - x1 * y.load(j) );
+            A.store( i, j, A.load(i,j) - x1 * y.load(j) );
          }
          for( ; remainder && j<N; ++j ) {
-            (~A)(i,j) -= x[i] * y[j];
+            A(i,j) -= x[i] * y[j];
          }
       }
    }
@@ -1350,22 +1352,22 @@ class DVecDVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseDefaultKernel_v<MT,VT3,VT4> >
-      selectSubAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
+   static inline auto selectSubAssignKernel( MT& A, const VT3& x, const VT4& y )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT> && UseDefaultKernel_v<MT,VT3,VT4> >
    {
-      const size_t M( (~A).rows() );
-      const size_t N( (~A).columns() );
+      const size_t M( A.rows() );
+      const size_t N( A.columns() );
 
       const size_t ipos( M & size_t(-2) );
       BLAZE_INTERNAL_ASSERT( ( M - ( M % 2UL ) ) == ipos, "Invalid end calculation" );
 
       for( size_t j=0UL; j<N; ++j ) {
          for( size_t i=0UL; i<ipos; i+=2UL ) {
-            (~A)(i    ,j) -= x[i    ] * y[j];
-            (~A)(i+1UL,j) -= x[i+1UL] * y[j];
+            A(i    ,j) -= x[i    ] * y[j];
+            A(i+1UL,j) -= x[i+1UL] * y[j];
          }
          if( ipos < M ) {
-            (~A)(ipos,j) -= x[ipos] * y[j];
+            A(ipos,j) -= x[ipos] * y[j];
          }
       }
    }
@@ -1389,13 +1391,13 @@ class DVecDVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseVectorizedKernel_v<MT,VT3,VT4> >
-      selectSubAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
+   static inline auto selectSubAssignKernel( MT& A, const VT3& x, const VT4& y )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT> && UseVectorizedKernel_v<MT,VT3,VT4> >
    {
       constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT3> );
 
-      const size_t M( (~A).rows() );
-      const size_t N( (~A).columns() );
+      const size_t M( A.rows() );
+      const size_t N( A.columns() );
 
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
@@ -1407,10 +1409,10 @@ class DVecDVecOuterExpr
          size_t i( 0UL );
 
          for( ; i<ipos; i+=SIMDSIZE ) {
-            (~A).store( i, j, (~A).load(i,j) - x.load(i) * y1 );
+            A.store( i, j, A.load(i,j) - x.load(i) * y1 );
          }
          for( ; remainder && i<M; ++i ) {
-            (~A)(i,j) -= x[i] * y[j];
+            A(i,j) -= x[i] * y[j];
          }
       }
    }
@@ -1437,8 +1439,8 @@ class DVecDVecOuterExpr
    // the compiler in case either of the two operands requires an intermediate evaluation.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      schurAssign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
+   friend inline auto schurAssign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
+      -> EnableIf_t< UseAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1475,22 +1477,22 @@ class DVecDVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseDefaultKernel_v<MT,VT3,VT4> >
-      selectSchurAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
+   static inline auto selectSchurAssignKernel( MT& A, const VT3& x, const VT4& y )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT> && UseDefaultKernel_v<MT,VT3,VT4> >
    {
-      const size_t M( (~A).rows() );
-      const size_t N( (~A).columns() );
+      const size_t M( A.rows() );
+      const size_t N( A.columns() );
 
       const size_t jpos( N & size_t(-2) );
       BLAZE_INTERNAL_ASSERT( ( N - ( N % 2UL ) ) == jpos, "Invalid end calculation" );
 
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
-            (~A)(i,j    ) *= x[i] * y[j    ];
-            (~A)(i,j+1UL) *= x[i] * y[j+1UL];
+            A(i,j    ) *= x[i] * y[j    ];
+            A(i,j+1UL) *= x[i] * y[j+1UL];
          }
          if( jpos < N ) {
-            (~A)(i,jpos) *= x[i] * y[jpos];
+            A(i,jpos) *= x[i] * y[jpos];
          }
       }
    }
@@ -1514,13 +1516,13 @@ class DVecDVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseVectorizedKernel_v<MT,VT3,VT4> >
-      selectSchurAssignKernel( DenseMatrix<MT,false>& A, const VT3& x, const VT4& y )
+   static inline auto selectSchurAssignKernel( MT& A, const VT3& x, const VT4& y )
+      -> EnableIf_t< IsRowMajorMatrix_v<MT> && UseVectorizedKernel_v<MT,VT3,VT4> >
    {
       constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT4> );
 
-      const size_t M( (~A).rows() );
-      const size_t N( (~A).columns() );
+      const size_t M( A.rows() );
+      const size_t N( A.columns() );
 
       const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
@@ -1532,10 +1534,10 @@ class DVecDVecOuterExpr
          size_t j( 0UL );
 
          for( ; j<jpos; j+=SIMDSIZE ) {
-            (~A).store( i, j, (~A).load(i,j) * ( x1 * y.load(j) ) );
+            A.store( i, j, A.load(i,j) * ( x1 * y.load(j) ) );
          }
          for( ; remainder && j<N; ++j ) {
-            (~A)(i,j) *= x[i] * y[j];
+            A(i,j) *= x[i] * y[j];
          }
       }
    }
@@ -1595,22 +1597,22 @@ class DVecDVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseDefaultKernel_v<MT,VT3,VT4> >
-      selectSchurAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
+   static inline auto selectSchurAssignKernel( MT& A, const VT3& x, const VT4& y )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT> && UseDefaultKernel_v<MT,VT3,VT4> >
    {
-      const size_t M( (~A).rows() );
-      const size_t N( (~A).columns() );
+      const size_t M( A.rows() );
+      const size_t N( A.columns() );
 
       const size_t ipos( M & size_t(-2) );
       BLAZE_INTERNAL_ASSERT( ( M - ( M % 2UL ) ) == ipos, "Invalid end calculation" );
 
       for( size_t j=0UL; j<N; ++j ) {
          for( size_t i=0UL; i<ipos; i+=2UL ) {
-            (~A)(i    ,j) *= x[i    ] * y[j];
-            (~A)(i+1UL,j) *= x[i+1UL] * y[j];
+            A(i    ,j) *= x[i    ] * y[j];
+            A(i+1UL,j) *= x[i+1UL] * y[j];
          }
          if( ipos < M ) {
-            (~A)(ipos,j) *= x[ipos] * y[j];
+            A(ipos,j) *= x[ipos] * y[j];
          }
       }
    }
@@ -1634,13 +1636,13 @@ class DVecDVecOuterExpr
    template< typename MT     // Type of the left-hand side target matrix
            , typename VT3    // Type of the left-hand side vector operand
            , typename VT4 >  // Type of the right-hand side vector operand
-   static inline EnableIf_t< UseVectorizedKernel_v<MT,VT3,VT4> >
-      selectSchurAssignKernel( DenseMatrix<MT,true>& A, const VT3& x, const VT4& y )
+   static inline auto selectSchurAssignKernel( MT& A, const VT3& x, const VT4& y )
+      -> EnableIf_t< IsColumnMajorMatrix_v<MT> && UseVectorizedKernel_v<MT,VT3,VT4> >
    {
       constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT3> );
 
-      const size_t M( (~A).rows() );
-      const size_t N( (~A).columns() );
+      const size_t M( A.rows() );
+      const size_t N( A.columns() );
 
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
@@ -1652,10 +1654,10 @@ class DVecDVecOuterExpr
          size_t i( 0UL );
 
          for( ; i<ipos; i+=SIMDSIZE ) {
-            (~A).store( i, j, (~A).load(i,j) * ( x.load(i) * y1 ) );
+            A.store( i, j, A.load(i,j) * ( x.load(i) * y1 ) );
          }
          for( ; remainder && i<M; ++i ) {
-            (~A)(i,j) *= x[i] * y[j];
+            A(i,j) *= x[i] * y[j];
          }
       }
    }
@@ -1690,8 +1692,8 @@ class DVecDVecOuterExpr
    */
    template< typename MT  // Type of the target dense matrix
            , bool SO >    // Storage order of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpAssign( DenseMatrix<MT,SO>& lhs, const DVecDVecOuterExpr& rhs )
+   friend inline auto smpAssign( DenseMatrix<MT,SO>& lhs, const DVecDVecOuterExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1727,8 +1729,8 @@ class DVecDVecOuterExpr
    */
    template< typename MT  // Type of the target sparse matrix
            , bool SO >    // Storage order of the target sparse matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpAssign( SparseMatrix<MT,SO>& lhs, const DVecDVecOuterExpr& rhs )
+   friend inline auto smpAssign( SparseMatrix<MT,SO>& lhs, const DVecDVecOuterExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1765,8 +1767,8 @@ class DVecDVecOuterExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpAddAssign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
+   friend inline auto smpAddAssign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1806,8 +1808,8 @@ class DVecDVecOuterExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpSubAssign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
+   friend inline auto smpSubAssign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1847,8 +1849,8 @@ class DVecDVecOuterExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT >  // Type of the target dense matrix
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpSchurAssign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
+   friend inline auto smpSchurAssign( DenseMatrix<MT,false>& lhs, const DVecDVecOuterExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
