@@ -41,8 +41,8 @@
 //*************************************************************************************************
 
 #include <algorithm>
+#include <iterator>
 #include <memory>
-#include <vector>
 #include <blaze/util/algorithms/Destroy.h>
 #include <blaze/util/algorithms/DestroyAt.h>
 #include <blaze/util/algorithms/Max.h>
@@ -53,8 +53,8 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/InitializerList.h>
+#include <blaze/util/smallarray/SmallArrayData.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/AlignmentOf.h>
 #include <blaze/util/typetraits/IsConstructible.h>
 #include <blaze/util/typetraits/IsAssignable.h>
 
@@ -79,7 +79,8 @@ template< typename T                        // Data type of the elements
         , size_t N                          // Number of preallocated elements
         , typename A = std::allocator<T> >  // Type of the allocator
 class SmallArray
-   : private A
+   : private SmallArrayData<T,N>
+   , private A
 {
  public:
    //**Type definitions****************************************************************************
@@ -195,8 +196,6 @@ class SmallArray
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   alignas( AlignmentOf_v<T> ) byte_t v_[N*sizeof(T)];  //!< The static storage.
-
    T* begin_;  //!< Pointer to the beginning of the currently used storage.
    T* end_;    //!< Pointer to the end of the currently used storage.
    T* final_;  //!< Pointer to the very end of the currently used storage.
@@ -344,21 +343,20 @@ template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
 inline SmallArray<T,N,A>::SmallArray( SmallArray&& sa )
-   // arr_ is intentionally not initialized
-   : A     ()             // Base class initialization
-   , begin_( sa.begin_ )  // Pointer to the beginning of the currently used storage
+   // Base class initialization is intentionally omitted
+   : begin_( sa.begin_ )  // Pointer to the beginning of the currently used storage
    , end_  ( sa.end_   )  // Pointer to the end of the currently used storage
    , final_( sa.final_ )  // Pointer to the very end of the currently used storage
 {
    if( !sa.isDynamic() ) {
-      begin_ = reinterpret_cast<T*>( v_ );
+      begin_ = this->array();
       end_   = begin_ + sa.size();
       final_ = begin_ + N;
       blaze::uninitialized_move( sa.begin_, sa.end_, begin_ );
       blaze::destroy( sa.begin_, sa.end_ );
    }
 
-   sa.begin_ = reinterpret_cast<T*>( sa.v_ );
+   sa.begin_ = sa.array();
    sa.end_   = sa.begin_;
    sa.final_ = sa.begin_ + N;
 }
@@ -375,14 +373,14 @@ template< typename T    // Data type of the elements
         , size_t N      // Number of preallocated elements
         , typename A >  // Type of the allocator
 inline SmallArray<T,N,A>::SmallArray( size_t n, const A& alloc, Uninitialized )
-   // v_ is intentionally not initialized
+   // SmallArrayData is initialization
    // begin_ is intentionally not initialized
    // end_ is intentionally not initialized
    // final_ is intentionally not initialized
    : A( alloc )  // Base class initialization
 {
    if( n <= N ) {
-      begin_ = reinterpret_cast<T*>( v_ );
+      begin_ = this->array();
       end_   = begin_ + n;
       final_ = begin_ + N;
    }
@@ -726,7 +724,7 @@ inline SmallArray<T,N,A>& SmallArray<T,N,A>::operator=( SmallArray&& rhs )
    std::move( rhs.begin_, rhs.end_, begin_ );
    blaze::destroy( rhs.begin_, rhs.end_ );
 
-   rhs.begin_ = reinterpret_cast<T*>( rhs.v_ );
+   rhs.begin_ = rhs.array();
    rhs.end_   = rhs.begin_;
    rhs.final_ = rhs.begin_ + N;
 
@@ -806,7 +804,7 @@ inline void SmallArray<T,N,A>::clear()
       deallocate( begin_, capacity() );
    }
 
-   begin_ = reinterpret_cast<T*>( v_ );
+   begin_ = this->array();
    end_   = begin_;
    final_ = begin_ + N;
 }
@@ -1023,7 +1021,7 @@ typename SmallArray<T,N,A>::Iterator
 
    if( oldSize == oldCapacity )
    {
-      const size_t newCapacity( 2UL*oldCapacity );
+      const size_t newCapacity( max( 1UL, 2UL*oldCapacity ) );
       const size_t index( pos - begin_ );
 
       T* tmp   ( allocate( newCapacity ) );
@@ -1090,7 +1088,7 @@ typename SmallArray<T,N,A>::Iterator
 
    if( oldSize == oldCapacity )
    {
-      const size_t newCapacity( 2UL*oldCapacity );
+      const size_t newCapacity( max( 1UL, 2UL*oldCapacity ) );
       const size_t index( pos - begin_ );
 
       T* tmp   ( allocate( newCapacity ) );
@@ -1217,14 +1215,14 @@ void SmallArray<T,N,A>::swap( SmallArray& sa ) noexcept( IsNothrowMoveConstructi
    {
       const size_t n( sa.size() );
 
-      blaze::uninitialized_move( sa.begin_, sa.end_, reinterpret_cast<T*>( v_ ) );
+      blaze::uninitialized_move( sa.begin_, sa.end_, this->array() );
       blaze::destroy( sa.begin_, sa.end_ );
 
       sa.begin_ = begin_;
       sa.end_   = end_;
       sa.final_ = final_;
 
-      begin_ = reinterpret_cast<T*>( v_ );
+      begin_ = this->array();
       end_   = begin_ + n;
       final_ = begin_ + N;
    }
@@ -1232,14 +1230,14 @@ void SmallArray<T,N,A>::swap( SmallArray& sa ) noexcept( IsNothrowMoveConstructi
    {
       const size_t n( size() );
 
-      blaze::uninitialized_move( begin_, end_, reinterpret_cast<T*>( sa.v_ ) );
+      blaze::uninitialized_move( begin_, end_, sa.array() );
       blaze::destroy( begin_, end_ );
 
       begin_ = sa.begin_;
       end_   = sa.end_;
       final_ = sa.final_;
 
-      sa.begin_ = reinterpret_cast<T*>( sa.v_ );
+      sa.begin_ = sa.array();
       sa.end_   = sa.begin_ + n;
       sa.final_ = sa.begin_ + N;
    }
@@ -1277,810 +1275,8 @@ template< typename T    // Data type of the elements
         , typename A >  // Type of the allocator
 inline bool SmallArray<T,N,A>::isDynamic() const noexcept
 {
-   return begin_ != reinterpret_cast<const T*>( v_ );
+   return ( N == 0UL || begin_ != this->array() );
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  CLASS TEMPLATE SPECIALIZATION FOR PURELY DYNAMIC ARRAYS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of SmallArray for purely dynamic arrays.
-// \ingroup util
-//
-// This specialization of SmallArray adapts the class template to the requirements of purely
-// dynamic arrays.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-class SmallArray<T,0UL,A>
-{
- private:
-   //**Type definitions****************************************************************************
-   using Storage = std::vector<T,A>;  //!< Type of the dynamic storage.
-   //**********************************************************************************************
-
- public:
-   //**Type definitions****************************************************************************
-   using ElementType    = typename Storage::value_type;       //!< Type of the array elements.
-   using Pointer        = typename Storage::pointer;          //!< Pointer to a non-constant array element.
-   using ConstPointer   = typename Storage::const_pointer;    //!< Pointer to a constant array element.
-   using Reference      = typename Storage::reference;        //!< Reference to a non-constant array element.
-   using ConstReference = typename Storage::const_reference;  //!< Reference to a constant array element.
-   using Iterator       = typename Storage::iterator;         //!< Iterator over non-constant elements.
-   using ConstIterator  = typename Storage::const_iterator;   //!< Iterator over constant elements.
-   //**********************************************************************************************
-
-   //**Constructors********************************************************************************
-   /*!\name Constructors */
-   //@{
-   explicit inline SmallArray( const A& alloc = A() );
-   explicit inline SmallArray( size_t n, const A& alloc = A() );
-   explicit inline SmallArray( size_t n, const T& init, const A& alloc = A() );
-
-   template< typename InputIt >
-   explicit inline SmallArray( InputIt first, InputIt last, const A& alloc = A() );
-
-   template< typename U >
-   explicit inline SmallArray( initializer_list<U> list, const A& alloc = A() );
-
-   inline SmallArray( const SmallArray& sa ) = default;
-   inline SmallArray( SmallArray&& sa ) = default;
-   //@}
-   //**********************************************************************************************
-
-   //**Destructor**********************************************************************************
-   /*!\name Destructor */
-   //@{
-   inline ~SmallArray() = default;
-   //@}
-   //**********************************************************************************************
-
-   //**Data access functions***********************************************************************
-   /*!\name Data access functions */
-   //@{
-   inline Reference      operator[]( size_t index ) noexcept;
-   inline ConstReference operator[]( size_t index ) const noexcept;
-   inline Reference      at( size_t index );
-   inline ConstReference at( size_t index ) const;
-   inline Pointer        data() noexcept;
-   inline ConstPointer   data() const noexcept;
-   inline Iterator       begin () noexcept;
-   inline ConstIterator  begin () const noexcept;
-   inline ConstIterator  cbegin() const noexcept;
-   inline Iterator       end   () noexcept;
-   inline ConstIterator  end   () const noexcept;
-   inline ConstIterator  cend  () const noexcept;
-   //@}
-   //**********************************************************************************************
-
-   //**Assignment operators************************************************************************
-   /*!\name Assignment operators */
-   //@{
-   template< typename U >
-   inline SmallArray& operator=( initializer_list<U> list );
-
-   inline SmallArray& operator=( const SmallArray& rhs ) = default;
-   inline SmallArray& operator=( SmallArray&& rhs ) = default;
-   //@}
-   //**********************************************************************************************
-
-   //**Utility functions***************************************************************************
-   /*!\name Utility functions */
-   //@{
-   inline bool   empty() const noexcept;
-   inline size_t size() const noexcept;
-   inline size_t capacity() const noexcept;
-
-   inline void     clear();
-          void     resize( size_t n );
-          void     resize( size_t n, const T& value );
-          void     reserve( size_t n );
-          void     shrinkToFit();
-          void     pushBack( const T& value );
-          void     pushBack( T&& value );
-          Iterator insert( Iterator pos, const T& value );
-          Iterator insert( Iterator pos, T&& value );
-          Iterator erase( Iterator pos );
-          Iterator erase( Iterator first, Iterator last );
-          void     swap( SmallArray& sa ) noexcept;
-   //@}
-   //**********************************************************************************************
-
- private:
-   //**Member variables****************************************************************************
-   /*!\name Member variables */
-   //@{
-   Storage v_;  //!< The dynamic storage.
-   //@}
-   //**********************************************************************************************
-
-   //**Compile time checks*************************************************************************
-   BLAZE_CONSTRAINT_MUST_NOT_BE_CONST   ( T );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE( T );
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  CONSTRUCTORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief The (default) constructor for SmallArray.
-//
-// \param alloc Allocator for all memory allocations of this container.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-inline SmallArray<T,0UL,A>::SmallArray( const A& alloc )
-   : v_( alloc )  // The dynamic storage
-{}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for an array of size \a n. No element initialization is performed!
-//
-// \param n The initial size of the array.
-// \param alloc Allocator for all memory allocations of this container.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-inline SmallArray<T,0UL,A>::SmallArray( size_t n, const A& alloc )
-   : v_( n, alloc )  // The dynamic storage
-{}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for an array of size \a n.
-//
-// \param n The initial size of the array.
-// \param init The initial value of the array elements.
-// \param alloc Allocator for all memory allocations of this container.
-//
-// All array elements are initialized with the specified value.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-inline SmallArray<T,0UL,A>::SmallArray( size_t n, const T& init, const A& alloc )
-   : v_( n, init, alloc )  // The dynamic storage
-{}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for a range of elements.
-//
-// \param first Iterator to the be first element of the input range.
-// \param last Iterator to the element one past the last element of the input range.
-// \param alloc Allocator for all memory allocations of this container.
-*/
-template< typename T          // Data type of the elements
-        , typename A >        // Type of the allocator
-template< typename InputIt >  // Type of the iterators
-inline SmallArray<T,0UL,A>::SmallArray( InputIt first, InputIt last, const A& alloc )
-   : v_( first, last, alloc )  // The dynamic storage
-{}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief List initialization of all array elements.
-//
-// \param list The initializer list.
-// \param alloc Allocator for all memory allocations of this container.
-//
-// This constructor provides the option to explicitly initialize the elements of the small array
-// within a constructor call:
-
-   \code
-   blaze::SmallArray<double,8UL> v1{ 4.2, 6.3, -1.2 };
-   \endcode
-
-// The array is sized according to the size of the initializer list and all its elements are
-// copy initialized by the elements of the given initializer list.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-template< typename U >  // Type of the initializer list elements
-inline SmallArray<T,0UL,A>::SmallArray( initializer_list<U> list, const A& alloc )
-   : v_( list, alloc )  // The dynamic storage
-{}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  DATA ACCESS FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Subscript operator for the direct access to the array elements.
-//
-// \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
-// \return Reference to the accessed value.
-//
-// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
-// the at() function is guaranteed to perform a check of the given access index.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-inline typename SmallArray<T,0UL,A>::Reference
-   SmallArray<T,0UL,A>::operator[]( size_t index ) noexcept
-{
-   BLAZE_USER_ASSERT( index < size(), "Invalid small array access index" );
-   return v_[index];
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Subscript operator for the direct access to the array elements.
-//
-// \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
-// \return Reference-to-const to the accessed value.
-//
-// This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
-// the at() function is guaranteed to perform a check of the given access index.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-inline typename SmallArray<T,0UL,A>::ConstReference
-   SmallArray<T,0UL,A>::operator[]( size_t index ) const noexcept
-{
-   BLAZE_USER_ASSERT( index < size(), "Invalid small array access index" );
-   return v_[index];
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checked access to the array elements.
-//
-// \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
-// \return Reference to the accessed value.
-// \exception std::out_of_range Invalid small array access index.
-//
-// In contrast to the subscript operator this function always performs a check of the given
-// access index.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-inline typename SmallArray<T,0UL,A>::Reference
-   SmallArray<T,0UL,A>::at( size_t index )
-{
-   if( index >= size() ) {
-      BLAZE_THROW_OUT_OF_RANGE( "Invalid small array access index" );
-   }
-   return v_.at( index );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checked access to the array elements.
-//
-// \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
-// \return Reference to the accessed value.
-// \exception std::out_of_range Invalid small array access index.
-//
-// In contrast to the subscript operator this function always performs a check of the given
-// access index.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-inline typename SmallArray<T,0UL,A>::ConstReference
-   SmallArray<T,0UL,A>::at( size_t index ) const
-{
-   if( index >= size() ) {
-      BLAZE_THROW_OUT_OF_RANGE( "Invalid small array access index" );
-   }
-   return v_.at( index );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Low-level data access to the array elements.
-//
-// \return Pointer to the internal element storage.
-//
-// This function returns a pointer to the internal storage of the small array.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-inline typename SmallArray<T,0UL,A>::Pointer
-   SmallArray<T,0UL,A>::data() noexcept
-{
-   return v_.data();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Low-level data access to the array elements.
-//
-// \return Pointer to the internal element storage.
-//
-// This function returns a pointer to the internal storage of the small array.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-inline typename SmallArray<T,0UL,A>::ConstPointer
-   SmallArray<T,0UL,A>::data() const noexcept
-{
-   return v_.data();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Returns an iterator to the first element of the small array.
-//
-// \return Iterator to the first element of the small array.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-inline typename SmallArray<T,0UL,A>::Iterator
-   SmallArray<T,0UL,A>::begin() noexcept
-{
-   return v_.begin();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Returns an iterator to the first element of the small array.
-//
-// \return Iterator to the first element of the small array.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-inline typename SmallArray<T,0UL,A>::ConstIterator
-   SmallArray<T,0UL,A>::begin() const noexcept
-{
-   return v_.begin();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Returns an iterator to the first element of the small array.
-//
-// \return Iterator to the first element of the small array.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-inline typename SmallArray<T,0UL,A>::ConstIterator
-   SmallArray<T,0UL,A>::cbegin() const noexcept
-{
-   return v_.cbegin();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Returns an iterator just past the last element of the small array.
-//
-// \return Iterator just past the last element of the small array.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-inline typename SmallArray<T,0UL,A>::Iterator
-   SmallArray<T,0UL,A>::end() noexcept
-{
-   return v_.end();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Returns an iterator just past the last element of the small array.
-//
-// \return Iterator just past the last element of the small array.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-inline typename SmallArray<T,0UL,A>::ConstIterator
-   SmallArray<T,0UL,A>::end() const noexcept
-{
-   return v_.end();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Returns an iterator just past the last element of the small array.
-//
-// \return Iterator just past the last element of the small array.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-inline typename SmallArray<T,0UL,A>::ConstIterator
-   SmallArray<T,0UL,A>::cend() const noexcept
-{
-   return v_.cend();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ASSIGNMENT OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief List assignment to all array elements.
-//
-// \param list The initializer list.
-//
-// This assignment operator offers the option to directly assign to all elements of the small
-// array by means of an initializer list:
-
-   \code
-   blaze::SmallArray<double,8UL> v;
-   v = { 4.2, 6.3, -1.2 };
-   \endcode
-
-// The array is resized according to the size of the initializer list and all its elements are
-// assigned the values from the given initializer list.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-template< typename U >  // Type of the initializer list elements
-inline SmallArray<T,0UL,A>& SmallArray<T,0UL,A>::operator=( initializer_list<U> list )
-{
-   v_ = list;
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  UTILITY FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the array is empty.
-//
-// \return \a true in case the array is empty, \a false if not.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-inline bool SmallArray<T,0UL,A>::empty() const noexcept
-{
-   return v_.empty();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the current size/dimension of the small array.
-//
-// \return The current size of the small array.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-inline size_t SmallArray<T,0UL,A>::size() const noexcept
-{
-   return v_.size();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the maximum capacity of the small array.
-//
-// \return The capacity of the small array.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-inline size_t SmallArray<T,0UL,A>::capacity() const noexcept
-{
-   return v_.capacity();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Clearing the array.
-//
-// \return void
-//
-// After the clear() function, the size of the array is 0.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-inline void SmallArray<T,0UL,A>::clear()
-{
-   v_.clear();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Changing the size of the array.
-//
-// \param n The new size of the array.
-// \return void
-//
-// This function resizes the array using the given size to \a n. During this operation, new
-// dynamic memory may be allocated in case the capacity of the array is too small. New array
-// elements are not initialized!
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-void SmallArray<T,0UL,A>::resize( size_t n )
-{
-   v_.resize( n );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Changing the size of the array.
-//
-// \param n The new size of the array.
-// \param value The initial value of new array elements.
-// \return void
-//
-// This function resizes the array using the given size to \a n. During this operation, new
-// dynamic memory may be allocated in case the capacity of the array is too small. New array
-// elements are initialized to \a value!
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-void SmallArray<T,0UL,A>::resize( size_t n, const T& value )
-{
-   v_.resize( n, value );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Setting the minimum capacity of the array.
-//
-// \param n The new minimum capacity of the array.
-// \return void
-//
-// This function increases the capacity of the array to at least \a n elements. The current
-// values of the array elements are preserved.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-void SmallArray<T,0UL,A>::reserve( size_t n )
-{
-   v_.reserve( n );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Requesting the removal of unused capacity.
-//
-// \return void
-//
-// This function minimizes the capacity of the array by removing unused capacity. Please note
-// that in case a reallocation occurs, all iterators (including end() iterators), all pointers
-// and references to elements of this array are invalidated.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-void SmallArray<T,0UL,A>::shrinkToFit()
-{
-   v_.shrink_to_fit();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Adding an element to the end of the small array.
-//
-// \param value The element to be added to the end of the small array.
-// \return void
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-void SmallArray<T,0UL,A>::pushBack( const T& value )
-{
-   v_.push_back( value );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Adding an element to the end of the small array.
-//
-// \param value The element to be added to the end of the small array.
-// \return void
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-void SmallArray<T,0UL,A>::pushBack( T&& value )
-{
-   v_.push_back( std::move( value ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Inserting an element at the specified position into the small array.
-//
-// \param pos The position of the new element.
-// \param value The value of the element to be inserted.
-// \return Reference to the inserted value.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-typename SmallArray<T,0UL,A>::Iterator
-   SmallArray<T,0UL,A>::insert( Iterator pos, const T& value )
-{
-   return v_.insert( pos, value );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Inserting an element at the specified position into the small array.
-//
-// \param pos The position of the new element.
-// \param value The value of the element to be inserted.
-// \return Reference to the inserted value.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-typename SmallArray<T,0UL,A>::Iterator
-   SmallArray<T,0UL,A>::insert( Iterator pos, T&& value )
-{
-   return v_.insert( pos, std::move( value ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing an element from the small array.
-//
-// \param pos Iterator to the element to be erased.
-// \return Iterator to the element after the erased element.
-//
-// This function erases an element from the small array.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-typename SmallArray<T,0UL,A>::Iterator
-   SmallArray<T,0UL,A>::erase( Iterator pos )
-{
-   return v_.erase( pos );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Erasing a range of elements from the small array.
-//
-// \param first Iterator to first element to be erased.
-// \param last Iterator just past the last element to be erased.
-// \return Iterator to the element after the erased element.
-//
-// This function erases a range of elements from the small array.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-typename SmallArray<T,0UL,A>::Iterator
-   SmallArray<T,0UL,A>::erase( Iterator first, Iterator last )
-{
-   return v_.erase( first, last );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Swapping the contents of two small arrays.
-//
-// \param sa The small array to be swapped.
-// \return void
-//
-// This function swaps the contents of two small arrays. Please note that this function is only
-// guaranteed to not throw an exception if the move constructor of the underlying data type \a T
-// is guaranteed to be noexcept.
-*/
-template< typename T    // Data type of the elements
-        , typename A >  // Type of the allocator
-void SmallArray<T,0UL,A>::swap( SmallArray& sa ) noexcept
-{
-   v_.swap( sa.v_ );
-}
-/*! \endcond */
 //*************************************************************************************************
 
 
