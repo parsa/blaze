@@ -91,6 +91,70 @@ using std::make_index_sequence;
 
 //=================================================================================================
 //
+//  GLOBAL OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Equality operator for the comparison of two index sequences.
+// \ingroup math
+//
+// \param lhs The left-hand side index sequence for the comparison.
+// \param rhs The right-hand side index sequence for the comparison.
+// \return \a true if the two index sequences are equal, \a false if not.
+*/
+template< size_t... I1s, size_t... I2s >  //
+constexpr bool operator==( index_sequence<I1s...> lhs, index_sequence<I2s...> rhs ) noexcept
+{
+   UNUSED_PARAMETER( lhs, rhs );
+
+   return false;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Equality operator for the comparison of two identical index sequences.
+// \ingroup math
+//
+// \param lhs The left-hand side index sequence for the comparison.
+// \param rhs The right-hand side index sequence for the comparison.
+// \return \a true.
+*/
+template< size_t... I1s >  //
+constexpr bool operator==( index_sequence<I1s...> lhs, index_sequence<I1s...> rhs ) noexcept
+{
+   UNUSED_PARAMETER( lhs, rhs );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Inequality operator for the comparison of two index sequences.
+// \ingroup math
+//
+// \param lhs The left-hand side index sequence for the comparison.
+// \param rhs The right-hand side index sequence for the comparison.
+// \return \a true if the two index sequences are not equal, \a false if they are equal.
+*/
+template< size_t... I1s, size_t... I2s >
+constexpr bool operator!=( index_sequence<I1s...> lhs, index_sequence<I2s...> rhs ) noexcept
+{
+   UNUSED_PARAMETER( lhs, rhs );
+
+   return !( lhs == rhs );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
