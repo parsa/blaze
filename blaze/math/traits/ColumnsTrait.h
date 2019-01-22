@@ -55,7 +55,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename, size_t... > struct ColumnsTrait;
+template< typename, size_t > struct ColumnsTrait;
 template< typename, size_t, typename = void > struct ColumnsTraitEval1;
 template< typename, size_t, typename = void > struct ColumnsTraitEval2;
 /*! \endcond */
@@ -64,17 +64,17 @@ template< typename, size_t, typename = void > struct ColumnsTraitEval2;
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< size_t... CCAs, typename T >
+template< size_t N, typename T >
 auto evalColumnsTrait( T& )
-   -> typename ColumnsTraitEval1<T,sizeof...(CCAs)>::Type;
+   -> typename ColumnsTraitEval1<T,N>::Type;
 
-template< size_t... CCAs, typename T >
+template< size_t N, typename T >
 auto evalColumnsTrait( const T& )
-   -> typename ColumnsTrait<T,CCAs...>::Type;
+   -> typename ColumnsTrait<T,N>::Type;
 
-template< size_t... CCAs, typename T >
+template< size_t N, typename T >
 auto evalColumnsTrait( const volatile T& )
-   -> typename ColumnsTrait<T,CCAs...>::Type;
+   -> typename ColumnsTrait<T,N>::Type;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -100,8 +100,8 @@ auto evalColumnsTrait( const volatile T& )
 // The following example shows the according specialization for the DynamicMatrix class template:
 
    \code
-   template< typename T1, bool SO, size_t... CCAs >
-   struct ColumnsTrait< DynamicMatrix<T1,SO>, CCAs... >
+   template< typename T1, bool SO, size_t N >
+   struct ColumnsTrait< DynamicMatrix<T1,SO>, N >
    {
       using Type = DynamicMatrix<T1,true>;
    };
@@ -118,21 +118,21 @@ auto evalColumnsTrait( const volatile T& )
 
    // Definition of the columns type of a column-major dynamic matrix
    using MatrixType1 = blaze::DynamicMatrix<int,columnMajor>;
-   using ResultType1 = typename blaze::ColumnsTrait<MatrixType1>::Type;
+   using ResultType1 = typename blaze::ColumnsTrait<MatrixType1,0UL>::Type;
 
-   // Definition of the columns type for the 1st and 3rd column of a row-major static matrix
+   // Definition of the columns type for two columns of a row-major static matrix
    using MatrixType2 = blaze::StaticMatrix<int,4UL,3UL,rowMajor>;
-   using ResultType2 = typename blaze::ColumnsTrait<MatrixType2,1UL,3UL>::Type;
+   using ResultType2 = typename blaze::ColumnsTrait<MatrixType2,2UL>::Type;
    \endcode
 */
-template< typename MT       // Type of the matrix
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT  // Type of the matrix
+        , size_t N >   // Number of compile time indices
 struct ColumnsTrait
 {
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = decltype( evalColumnsTrait<CCAs...>( std::declval<MT&>() ) );
+   using Type = decltype( evalColumnsTrait<N>( std::declval<MT&>() ) );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -152,9 +152,9 @@ struct ColumnsTrait
    using Type2 = blaze::ColumnsTrait_t<MT>;
    \endcode
 */
-template< typename MT       // Type of the matrix
-        , size_t... CCAs >  // Compile time column arguments
-using ColumnsTrait_t = typename ColumnsTrait<MT,CCAs...>::Type;
+template< typename MT  // Type of the matrix
+        , size_t N >   // Number of compile time indices
+using ColumnsTrait_t = typename ColumnsTrait<MT,N>::Type;
 //*************************************************************************************************
 
 
@@ -164,7 +164,7 @@ using ColumnsTrait_t = typename ColumnsTrait<MT,CCAs...>::Type;
 // \ingroup math_traits
 */
 template< typename MT  // Type of the matrix
-        , size_t N     // Number of columns
+        , size_t N     // Number of compile time indices
         , typename >   // Restricting condition
 struct ColumnsTraitEval1
 {
@@ -183,7 +183,7 @@ struct ColumnsTraitEval1
 // \ingroup math_traits
 */
 template< typename MT  // Type of the matrix
-        , size_t N     // Number of columns
+        , size_t N     // Number of compile time indices
         , typename >   // Restricting condition
 struct ColumnsTraitEval2
 {

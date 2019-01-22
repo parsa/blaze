@@ -130,6 +130,10 @@ class Columns<MT,true,true,SF,CCAs...>
    using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = sizeof...( CCAs );  //! Number of compile time indices.
+   //**********************************************************************************************
+
    //**********************************************************************************************
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT1, typename MT2 >
@@ -144,7 +148,7 @@ class Columns<MT,true,true,SF,CCAs...>
 
    using BaseType      = DenseMatrix<This,true>;       //!< Base type of this Columns instance.
    using ViewedType    = MT;                           //!< The type viewed by this Columns instance.
-   using ResultType    = ColumnsTrait_t<MT,CCAs...>;   //!< Result type for expression template evaluations.
+   using ResultType    = ColumnsTrait_t<MT,N>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<MT>;            //!< Type of the column elements.
@@ -3112,6 +3116,10 @@ class Columns<MT,false,true,false,CCAs...>
    using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = sizeof...( CCAs );  //! Number of compile time indices.
+   //**********************************************************************************************
+
    //**********************************************************************************************
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT1, typename MT2 >
@@ -3126,7 +3134,7 @@ class Columns<MT,false,true,false,CCAs...>
 
    using BaseType      = DenseMatrix<This,true>;       //!< Base type of this Columns instance.
    using ViewedType    = MT;                           //!< The type viewed by this Columns instance.
-   using ResultType    = ColumnsTrait_t<MT,CCAs...>;   //!< Result type for expression template evaluations.
+   using ResultType    = ColumnsTrait_t<MT,N>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<MT>;            //!< Type of the column elements.
@@ -5847,6 +5855,10 @@ class Columns<MT,false,true,true,CCAs...>
    using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = sizeof...( CCAs );  //! Number of compile time indices.
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    //! Type of this Columns instance.
@@ -5854,7 +5866,7 @@ class Columns<MT,false,true,true,CCAs...>
 
    using BaseType      = DenseMatrix<This,true>;       //!< Base type of this Columns instance.
    using ViewedType    = MT;                           //!< The type viewed by this Columns instance.
-   using ResultType    = ColumnsTrait_t<MT,CCAs...>;   //!< Result type for expression template evaluations.
+   using ResultType    = ColumnsTrait_t<MT,N>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<MT>;            //!< Type of the column elements.
