@@ -130,6 +130,10 @@ class Rows<MT,true,true,SF,CRAs...>
    using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = sizeof...( CRAs );  //! Number of compile time indices.
+   //**********************************************************************************************
+
    //**********************************************************************************************
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT1, typename MT2 >
@@ -144,7 +148,7 @@ class Rows<MT,true,true,SF,CRAs...>
 
    using BaseType      = DenseMatrix<This,false>;      //!< Base type of this Rows instance.
    using ViewedType    = MT;                           //!< The type viewed by this Rows instance.
-   using ResultType    = RowsTrait_t<MT,CRAs...>;      //!< Result type for expression template evaluations.
+   using ResultType    = RowsTrait_t<MT,N>;            //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<MT>;            //!< Type of the row elements.
@@ -3109,6 +3113,10 @@ class Rows<MT,false,true,false,CRAs...>
    using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = sizeof...( CRAs );  //! Number of compile time indices.
+   //**********************************************************************************************
+
    //**********************************************************************************************
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename MT1, typename MT2 >
@@ -3123,7 +3131,7 @@ class Rows<MT,false,true,false,CRAs...>
 
    using BaseType      = DenseMatrix<This,false>;      //!< Base type of this Rows instance.
    using ViewedType    = MT;                           //!< The type viewed by this Rows instance.
-   using ResultType    = RowsTrait_t<MT,CRAs...>;      //!< Result type for expression template evaluations.
+   using ResultType    = RowsTrait_t<MT,N>;            //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<MT>;            //!< Type of the row elements.
@@ -5838,6 +5846,10 @@ class Rows<MT,false,true,true,CRAs...>
    using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the dense matrix expression.
    //**********************************************************************************************
 
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = sizeof...( CRAs );  //! Number of compile time indices.
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    //! Type of this Rows instance.
@@ -5845,7 +5857,7 @@ class Rows<MT,false,true,true,CRAs...>
 
    using BaseType      = DenseMatrix<This,false>;      //!< Base type of this Rows instance.
    using ViewedType    = MT;                           //!< The type viewed by this Rows instance.
-   using ResultType    = RowsTrait_t<MT,CRAs...>;      //!< Result type for expression template evaluations.
+   using ResultType    = RowsTrait_t<MT,N>;            //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<MT>;            //!< Type of the row elements.

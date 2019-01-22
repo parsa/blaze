@@ -121,6 +121,10 @@ class Rows<MT,true,false,SF,CRAs...>
    using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
    //**********************************************************************************************
 
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = sizeof...( CRAs );  //! Number of compile time indices.
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    //! Type of this Rows instance.
@@ -128,7 +132,7 @@ class Rows<MT,true,false,SF,CRAs...>
 
    using BaseType      = SparseMatrix<This,false>;     //!< Base type of this Rows instance.
    using ViewedType    = MT;                           //!< The type viewed by this Rows instance.
-   using ResultType    = RowsTrait_t<MT,CRAs...>;      //!< Result type for expression template evaluations.
+   using ResultType    = RowsTrait_t<MT,N>;            //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<MT>;            //!< Type of the row elements.
@@ -2258,6 +2262,10 @@ class Rows<MT,false,false,false,CRAs...>
    using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the sparse matrix expression.
    //**********************************************************************************************
 
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = sizeof...( CRAs );  //! Number of compile time indices.
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    //! Type of this Rows instance.
@@ -2265,7 +2273,7 @@ class Rows<MT,false,false,false,CRAs...>
 
    using BaseType      = SparseMatrix<This,false>;     //!< Base type of this Rows instance.
    using ViewedType    = MT;                           //!< The type viewed by this Rows instance.
-   using ResultType    = RowsTrait_t<MT,CRAs...>;      //!< Result type for expression template evaluations.
+   using ResultType    = RowsTrait_t<MT,N>;            //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<MT>;            //!< Type of the row elements.
@@ -4686,6 +4694,10 @@ class Rows<MT,false,false,true,CRAs...>
    using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
    //**********************************************************************************************
 
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = sizeof...( CRAs );  //! Number of compile time indices.
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    //! Type of this Rows instance.
@@ -4693,7 +4705,7 @@ class Rows<MT,false,false,true,CRAs...>
 
    using BaseType      = SparseMatrix<This,false>;     //!< Base type of this Rows instance.
    using ViewedType    = MT;                           //!< The type viewed by this Rows instance.
-   using ResultType    = RowsTrait_t<MT,CRAs...>;      //!< Result type for expression template evaluations.
+   using ResultType    = RowsTrait_t<MT,N>;            //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<MT>;            //!< Type of the row elements.
