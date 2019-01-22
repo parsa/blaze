@@ -103,6 +103,10 @@ class Elements<VT,TF,true,CEAs...>
    using Operand  = If_t< IsExpression_v<VT>, VT, VT& >;  //!< Composite data type of the vector expression.
    //**********************************************************************************************
 
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = sizeof...( CEAs );  //! Number of compile time indices.
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    //! Type of this Elements instance.
@@ -110,7 +114,7 @@ class Elements<VT,TF,true,CEAs...>
 
    using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
    using ViewedType    = VT;                           //!< The type viewed by this Elements instance.
-   using ResultType    = ElementsTrait_t<VT,CEAs...>;  //!< Result type for expression template evaluations.
+   using ResultType    = ElementsTrait_t<VT,N>;        //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<VT>;            //!< Type of the elements.
    using ReturnType    = ReturnType_t<VT>;             //!< Return type for expression template evaluations
@@ -1934,6 +1938,10 @@ class Elements< DVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
    using DataType = ElementsData<CEAs...>;          //!< The type of the ElementsData base class.
    //**********************************************************************************************
 
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = sizeof...( CEAs );  //! Number of compile time indices.
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    //! Type of this Elements instance.
@@ -1941,7 +1949,7 @@ class Elements< DVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
 
    using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
    using ViewedType    = CPE;                          //!< The type viewed by this Elements instance.
-   using ResultType    = ElementsTrait_t<RT,CEAs...>;  //!< Result type for expression template evaluations.
+   using ResultType    = ElementsTrait_t<RT,N>;        //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<CPE>;           //!< Type of the elements.
    using ReturnType    = ReturnType_t<CPE>;            //!< Return type for expression template evaluations
@@ -2089,6 +2097,10 @@ class Elements< DVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
    using DataType = ElementsData<CEAs...>;          //!< The type of the ElementsData base class.
    //**********************************************************************************************
 
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = sizeof...( CEAs );  //! Number of compile time indices.
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    //! Type of this Elements instance.
@@ -2096,7 +2108,7 @@ class Elements< DVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
 
    using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
    using ViewedType    = CPE;                          //!< The type viewed by this Elements instance.
-   using ResultType    = ElementsTrait_t<RT,CEAs...>;  //!< Result type for expression template evaluations.
+   using ResultType    = ElementsTrait_t<RT,N>;        //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<CPE>;           //!< Type of the elements.
    using ReturnType    = ReturnType_t<CPE>;            //!< Return type for expression template evaluations
@@ -2244,6 +2256,10 @@ class Elements< SVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
    using DataType = ElementsData<CEAs...>;          //!< The type of the ElementsData base class.
    //**********************************************************************************************
 
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = sizeof...( CEAs );  //! Number of compile time indices.
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    //! Type of this Elements instance.
@@ -2251,7 +2267,7 @@ class Elements< SVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
 
    using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
    using ViewedType    = CPE;                          //!< The type viewed by this Elements instance.
-   using ResultType    = ElementsTrait_t<RT,CEAs...>;  //!< Result type for expression template evaluations.
+   using ResultType    = ElementsTrait_t<RT,N>;        //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<CPE>;           //!< Type of the elements.
    using ReturnType    = ReturnType_t<CPE>;            //!< Return type for expression template evaluations
@@ -2399,6 +2415,10 @@ class Elements< SVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
    using DataType = ElementsData<CEAs...>;          //!< The type of the ElementsData base class.
    //**********************************************************************************************
 
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = sizeof...( CEAs );  //! Number of compile time indices.
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    //! Type of this Elements instance.
@@ -2406,7 +2426,7 @@ class Elements< SVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
 
    using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
    using ViewedType    = CPE;                          //!< The type viewed by this Elements instance.
-   using ResultType    = ElementsTrait_t<RT,CEAs...>;  //!< Result type for expression template evaluations.
+   using ResultType    = ElementsTrait_t<RT,N>;        //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<CPE>;           //!< Type of the elements.
    using ReturnType    = ReturnType_t<CPE>;            //!< Return type for expression template evaluations

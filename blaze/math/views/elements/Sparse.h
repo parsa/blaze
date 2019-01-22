@@ -109,6 +109,10 @@ class Elements<VT,TF,false,CEAs...>
    using Operand  = If_t< IsExpression_v<VT>, VT, VT& >;  //!< Composite data type of the vector expression.
    //**********************************************************************************************
 
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = sizeof...( CEAs );  //! Number of compile time indices.
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    //! Type of this Elements instance.
@@ -116,7 +120,7 @@ class Elements<VT,TF,false,CEAs...>
 
    using BaseType      = SparseVector<This,TF>;        //!< Base type of this Elements instance.
    using ViewedType    = VT;                           //!< The type viewed by this Elements instance.
-   using ResultType    = ElementsTrait_t<VT,CEAs...>;  //!< Result type for expression template evaluations.
+   using ResultType    = ElementsTrait_t<VT,N>;        //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<VT>;            //!< Type of the elements.
    using ReturnType    = ReturnType_t<VT>;             //!< Return type for expression template evaluations
