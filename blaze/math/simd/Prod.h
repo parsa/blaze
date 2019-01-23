@@ -310,7 +310,7 @@ BLAZE_ALWAYS_INLINE float prod( const SIMDfloat& a ) noexcept
 #elif BLAZE_AVX_MODE
    const __m256 b( _mm256_mul_ps( a.value, _mm256_permute2f128_ps( a.value, a.value, 1 ) ) );
    const __m256 c( _mm256_mul_ps( b, _mm256_shuffle_ps( b, b, _MM_SHUFFLE(1,0,3,2) ) ) );
-   return _mm256_cvtss_f32( _mm256_mul_ps( c, _mm256_shuffle_ps( c, c, 1 ) ) );
+   return _mm_cvtss_f32( _mm256_castps256_ps128( _mm256_mul_ps( c, _mm256_shuffle_ps( c, c, 1 ) ) ) );
 #elif BLAZE_SSE_MODE
    const __m128 b = _mm_mul_ps( a.value, _mm_movehl_ps( a.value, a.value ) );
    return _mm_cvtss_f32( _mm_mul_ss( b, _mm_shuffle_ps( b, b, 1U ) ) );
@@ -364,7 +364,7 @@ BLAZE_ALWAYS_INLINE double prod( const SIMDdouble& a ) noexcept
    return _mm512_reduce_mul_pd( a.value );
 #elif BLAZE_AVX_MODE
    const __m256d b( _mm256_mul_pd( a.value, _mm256_permute2f128_pd( a.value, a.value, 1 ) ) );
-   return _mm256_cvtsd_f64( _mm256_mul_pd( b, _mm256_shuffle_pd( b, b, 1 ) ) );
+   return _mm_cvtsd_f64( _mm256_castpd256_pd128( _mm256_mul_pd( b, _mm256_shuffle_pd( b, b, 1 ) ) ) );
 #elif BLAZE_SSE2_MODE
    return _mm_cvtsd_f64( _mm_mul_sd( a.value, _mm_unpackhi_pd( a.value, a.value ) ) );
 #else
