@@ -96,9 +96,9 @@ namespace blaze {
 //
 // This specialization of Elements adapts the class template to the requirements of sparse vectors.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 class Elements<VT,TF,false,CEAs...>
    : public View< SparseVector< Elements<VT,TF,false,CEAs...>, TF > >
    , private ElementsData<CEAs...>
@@ -110,7 +110,7 @@ class Elements<VT,TF,false,CEAs...>
    //**********************************************************************************************
 
    //**Compile time flags**************************************************************************
-   static constexpr size_t N = sizeof...( CEAs );  //! Number of compile time indices.
+   using DataType::N;  //! Number of compile time indices.
    //**********************************************************************************************
 
  public:
@@ -422,7 +422,7 @@ class Elements<VT,TF,false,CEAs...>
       //*******************************************************************************************
 
       //**Friend declarations**********************************************************************
-      template< typename VT2, bool TF2, bool DF2, size_t... CEAs2 > friend class Elements;
+      template< typename VT2, bool TF2, bool DF2, typename... CEAs2 > friend class Elements;
       template< typename ET2, typename IteratorType2 > friend class ElementsIterator;
       //*******************************************************************************************
    };
@@ -607,7 +607,7 @@ class Elements<VT,TF,false,CEAs...>
 */
 template< typename VT         // Type of the sparse vector
         , bool TF             // Transpose flag
-        , size_t... CEAs >    // Compile time element arguments
+        , typename... CEAs >  // Compile time element arguments
 template< typename... REAs >  // Optional arguments
 inline Elements<VT,TF,false,CEAs...>::Elements( VT& vector, REAs... args )
    : DataType( args... )  // Base class initialization
@@ -643,9 +643,9 @@ inline Elements<VT,TF,false,CEAs...>::Elements( VT& vector, REAs... args )
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access index.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline typename Elements<VT,TF,false,CEAs...>::Reference
    Elements<VT,TF,false,CEAs...>::operator[]( size_t index )
 {
@@ -666,9 +666,9 @@ inline typename Elements<VT,TF,false,CEAs...>::Reference
 // This function only performs an index check in case BLAZE_USER_ASSERT() is active. In contrast,
 // the at() function is guaranteed to perform a check of the given access index.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline typename Elements<VT,TF,false,CEAs...>::ConstReference
    Elements<VT,TF,false,CEAs...>::operator[]( size_t index ) const
 {
@@ -690,9 +690,9 @@ inline typename Elements<VT,TF,false,CEAs...>::ConstReference
 // In contrast to the subscript operator this function always performs a check of the given
 // access index.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline typename Elements<VT,TF,false,CEAs...>::Reference
    Elements<VT,TF,false,CEAs...>::at( size_t index )
 {
@@ -716,9 +716,9 @@ inline typename Elements<VT,TF,false,CEAs...>::Reference
 // In contrast to the subscript operator this function always performs a check of the given
 // access index.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline typename Elements<VT,TF,false,CEAs...>::ConstReference
    Elements<VT,TF,false,CEAs...>::at( size_t index ) const
 {
@@ -739,9 +739,9 @@ inline typename Elements<VT,TF,false,CEAs...>::ConstReference
 //
 // This function returns an iterator to the first element of the element selection.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline typename Elements<VT,TF,false,CEAs...>::Iterator
    Elements<VT,TF,false,CEAs...>::begin()
 {
@@ -759,9 +759,9 @@ inline typename Elements<VT,TF,false,CEAs...>::Iterator
 //
 // This function returns an iterator to the first element of the element selection.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline typename Elements<VT,TF,false,CEAs...>::ConstIterator
    Elements<VT,TF,false,CEAs...>::begin() const
 {
@@ -779,9 +779,9 @@ inline typename Elements<VT,TF,false,CEAs...>::ConstIterator
 //
 // This function returns an iterator to the first element of the element selection.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline typename Elements<VT,TF,false,CEAs...>::ConstIterator
    Elements<VT,TF,false,CEAs...>::cbegin() const
 {
@@ -799,9 +799,9 @@ inline typename Elements<VT,TF,false,CEAs...>::ConstIterator
 //
 // This function returns an iterator just past the last element of the element selection.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline typename Elements<VT,TF,false,CEAs...>::Iterator
    Elements<VT,TF,false,CEAs...>::end()
 {
@@ -819,9 +819,9 @@ inline typename Elements<VT,TF,false,CEAs...>::Iterator
 //
 // This function returns an iterator just past the last element of the element selection.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline typename Elements<VT,TF,false,CEAs...>::ConstIterator
    Elements<VT,TF,false,CEAs...>::end() const
 {
@@ -839,9 +839,9 @@ inline typename Elements<VT,TF,false,CEAs...>::ConstIterator
 //
 // This function returns an iterator just past the last element of the element selection.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline typename Elements<VT,TF,false,CEAs...>::ConstIterator
    Elements<VT,TF,false,CEAs...>::cend() const
 {
@@ -875,9 +875,9 @@ inline typename Elements<VT,TF,false,CEAs...>::ConstIterator
 // exception is thrown. Also, if the underlying vector \a VT is restricted and the assignment
 // would violate an invariant of the vector, a \a std::invalid_argument exception is thrown.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline Elements<VT,TF,false,CEAs...>&
    Elements<VT,TF,false,CEAs...>::operator=( initializer_list<ElementType> list )
 {
@@ -921,9 +921,9 @@ inline Elements<VT,TF,false,CEAs...>&
 // In case the current sizes of the two element selections don't match, a \a std::invalid_argument
 // exception is thrown.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline Elements<VT,TF,false,CEAs...>&
    Elements<VT,TF,false,CEAs...>::operator=( const Elements& rhs )
 {
@@ -977,9 +977,9 @@ inline Elements<VT,TF,false,CEAs...>&
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument
 // exception is thrown.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 template< typename VT2 >    // Type of the right-hand side vector
 inline Elements<VT,TF,false,CEAs...>&
    Elements<VT,TF,false,CEAs...>::operator=( const Vector<VT2,TF>& rhs )
@@ -1034,9 +1034,9 @@ inline Elements<VT,TF,false,CEAs...>&
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 template< typename VT2 >    // Type of the right-hand side vector
 inline Elements<VT,TF,false,CEAs...>&
    Elements<VT,TF,false,CEAs...>::operator+=( const Vector<VT2,TF>& rhs )
@@ -1091,9 +1091,9 @@ inline Elements<VT,TF,false,CEAs...>&
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 template< typename VT2 >    // Type of the right-hand side vector
 inline Elements<VT,TF,false,CEAs...>&
    Elements<VT,TF,false,CEAs...>::operator-=( const Vector<VT2,TF>& rhs )
@@ -1149,9 +1149,9 @@ inline Elements<VT,TF,false,CEAs...>&
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 template< typename VT2 >    // Type of the right-hand side vector
 inline Elements<VT,TF,false,CEAs...>&
    Elements<VT,TF,false,CEAs...>::operator*=( const Vector<VT2,TF>& rhs )
@@ -1205,9 +1205,9 @@ inline Elements<VT,TF,false,CEAs...>&
 // In case the current sizes of the two vectors don't match, a \a std::invalid_argument exception
 // is thrown.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
 inline Elements<VT,TF,false,CEAs...>&
    Elements<VT,TF,false,CEAs...>::operator/=( const DenseVector<VT2,TF>& rhs )
@@ -1264,9 +1264,9 @@ inline Elements<VT,TF,false,CEAs...>&
 // In case the current size of any of the two vectors is not equal to 3, a \a std::invalid_argument
 // exception is thrown.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 template< typename VT2 >    // Type of the right-hand side vector
 inline Elements<VT,TF,false,CEAs...>&
    Elements<VT,TF,false,CEAs...>::operator%=( const Vector<VT2,TF>& rhs )
@@ -1322,9 +1322,9 @@ inline Elements<VT,TF,false,CEAs...>&
 //
 // \return The vector containing the elements.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline VT& Elements<VT,TF,false,CEAs...>::operand() noexcept
 {
    return vector_;
@@ -1339,9 +1339,9 @@ inline VT& Elements<VT,TF,false,CEAs...>::operand() noexcept
 //
 // \return The vector containing the elements.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline const VT& Elements<VT,TF,false,CEAs...>::operand() const noexcept
 {
    return vector_;
@@ -1356,9 +1356,9 @@ inline const VT& Elements<VT,TF,false,CEAs...>::operand() const noexcept
 //
 // \return The maximum capacity of the element selection.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline size_t Elements<VT,TF,false,CEAs...>::capacity() const noexcept
 {
    return nonZeros() + vector_.capacity() - vector_.nonZeros();
@@ -1376,9 +1376,9 @@ inline size_t Elements<VT,TF,false,CEAs...>::capacity() const noexcept
 // Note that the number of non-zero elements is always less than or equal to the current number
 // of elements.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline size_t Elements<VT,TF,false,CEAs...>::nonZeros() const
 {
    size_t counter( 0UL );
@@ -1397,9 +1397,9 @@ inline size_t Elements<VT,TF,false,CEAs...>::nonZeros() const
 //
 // \return void
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline void Elements<VT,TF,false,CEAs...>::reset()
 {
    for( size_t i=0UL; i<size(); ++i )
@@ -1419,9 +1419,9 @@ inline void Elements<VT,TF,false,CEAs...>::reset()
 // This function increases the capacity of the element selection to at least \a n elements. The
 // current values of the elements are preserved.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 void Elements<VT,TF,false,CEAs...>::reserve( size_t n )
 {
    const size_t current( capacity() );
@@ -1454,9 +1454,9 @@ void Elements<VT,TF,false,CEAs...>::reserve( size_t n )
 // selection already contains an element with index \a index its value is modified, else a new
 // element with the given \a value is inserted.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline typename Elements<VT,TF,false,CEAs...>::Iterator
    Elements<VT,TF,false,CEAs...>::set( size_t index, const ElementType& value )
 {
@@ -1479,9 +1479,9 @@ inline typename Elements<VT,TF,false,CEAs...>::Iterator
 // are not allowed. In case the element selection already contains an element at index \a index,
 // a \a std::invalid_argument exception is thrown.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline typename Elements<VT,TF,false,CEAs...>::Iterator
    Elements<VT,TF,false,CEAs...>::insert( size_t index, const ElementType& value )
 {
@@ -1516,9 +1516,9 @@ inline typename Elements<VT,TF,false,CEAs...>::Iterator
 // \note Although append() does not allocate new memory, it still invalidates all iterators
 // returned by the end() functions!
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline void Elements<VT,TF,false,CEAs...>::append( size_t index, const ElementType& value, bool check )
 {
    if( !check || !isDefault<strict>( value ) )
@@ -1545,9 +1545,9 @@ inline void Elements<VT,TF,false,CEAs...>::append( size_t index, const ElementTy
 //
 // This function erases an element from the element selection.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline void Elements<VT,TF,false,CEAs...>::erase( size_t index )
 {
    vector_.erase( idx(index) );
@@ -1565,9 +1565,9 @@ inline void Elements<VT,TF,false,CEAs...>::erase( size_t index )
 //
 // This function erases an element from the element selection.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline typename Elements<VT,TF,false,CEAs...>::Iterator
    Elements<VT,TF,false,CEAs...>::erase( Iterator pos )
 {
@@ -1593,9 +1593,9 @@ inline typename Elements<VT,TF,false,CEAs...>::Iterator
 //
 // This function erases a range of elements from the element selection.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline typename Elements<VT,TF,false,CEAs...>::Iterator
    Elements<VT,TF,false,CEAs...>::erase( Iterator first, Iterator last )
 {
@@ -1632,9 +1632,9 @@ inline typename Elements<VT,TF,false,CEAs...>::Iterator
 // \note The predicate is required to be pure, i.e. to produce deterministic results for elements
 // with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 template< typename Pred     // Type of the unary predicate
         , typename >        // Type restriction on the unary predicate
 inline void Elements<VT,TF,false,CEAs...>::erase( Pred predicate )
@@ -1671,9 +1671,9 @@ inline void Elements<VT,TF,false,CEAs...>::erase( Pred predicate )
 // \note The predicate is required to be pure, i.e. to produce deterministic results for elements
 // with the same value. The attempt to use an impure predicate leads to undefined behavior!
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 template< typename Pred >   // Type of the unary predicate
 inline void Elements<VT,TF,false,CEAs...>::erase( Iterator first, Iterator last, Pred predicate )
 {
@@ -1708,9 +1708,9 @@ inline void Elements<VT,TF,false,CEAs...>::erase( Iterator first, Iterator last,
 // the returned iterator is subject to invalidation due to inserting operations via the subscript
 // operator, the set() function or the insert() function!
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline typename Elements<VT,TF,false,CEAs...>::Iterator
    Elements<VT,TF,false,CEAs...>::find( size_t index )
 {
@@ -1739,9 +1739,9 @@ inline typename Elements<VT,TF,false,CEAs...>::Iterator
 // the returned iterator is subject to invalidation due to inserting operations via the subscript
 // operator, the set() function or the insert() function!
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline typename Elements<VT,TF,false,CEAs...>::ConstIterator
    Elements<VT,TF,false,CEAs...>::find( size_t index ) const
 {
@@ -1769,9 +1769,9 @@ inline typename Elements<VT,TF,false,CEAs...>::ConstIterator
 // iterator is subject to invalidation due to inserting operations via the subscript operator,
 // the set() function or the insert() function!
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline typename Elements<VT,TF,false,CEAs...>::Iterator
    Elements<VT,TF,false,CEAs...>::lowerBound( size_t index )
 {
@@ -1799,9 +1799,9 @@ inline typename Elements<VT,TF,false,CEAs...>::Iterator
 // iterator is subject to invalidation due to inserting operations via the subscript operator,
 // the set() function or the insert() function!
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline typename Elements<VT,TF,false,CEAs...>::ConstIterator
    Elements<VT,TF,false,CEAs...>::lowerBound( size_t index ) const
 {
@@ -1829,9 +1829,9 @@ inline typename Elements<VT,TF,false,CEAs...>::ConstIterator
 // iterator is subject to invalidation due to inserting operations via the subscript operator,
 // the set() function or the insert() function!
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline typename Elements<VT,TF,false,CEAs...>::Iterator
    Elements<VT,TF,false,CEAs...>::upperBound( size_t index )
 {
@@ -1859,9 +1859,9 @@ inline typename Elements<VT,TF,false,CEAs...>::Iterator
 // iterator is subject to invalidation due to inserting operations via the subscript operator,
 // the set() function or the insert() function!
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline typename Elements<VT,TF,false,CEAs...>::ConstIterator
    Elements<VT,TF,false,CEAs...>::upperBound( size_t index ) const
 {
@@ -1895,9 +1895,9 @@ inline typename Elements<VT,TF,false,CEAs...>::ConstIterator
 // element of the element selection. For built-in and \c complex data types it has the same effect
 // as using the multiplication assignment operator.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 template< typename Other >  // Data type of the scalar value
 inline Elements<VT,TF,false,CEAs...>&
    Elements<VT,TF,false,CEAs...>::scale( const Other& scalar )
@@ -1929,9 +1929,9 @@ inline Elements<VT,TF,false,CEAs...>&
 // In contrast to the isAliased() function this function is allowed to use compile time
 // expressions to optimize the evaluation.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 template< typename Other >  // Data type of the foreign expression
 inline bool Elements<VT,TF,false,CEAs...>::canAlias( const Other* alias ) const noexcept
 {
@@ -1952,9 +1952,9 @@ inline bool Elements<VT,TF,false,CEAs...>::canAlias( const Other* alias ) const 
 // In contrast to the canAlias() function this function is not allowed to use compile time
 // expressions to optimize the evaluation.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 template< typename Other >  // Data type of the foreign expression
 inline bool Elements<VT,TF,false,CEAs...>::isAliased( const Other* alias ) const noexcept
 {
@@ -1976,9 +1976,9 @@ inline bool Elements<VT,TF,false,CEAs...>::isAliased( const Other* alias ) const
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 template< typename VT2 >    // Type of the right-hand side dense vector
 inline void Elements<VT,TF,false,CEAs...>::assign( const DenseVector<VT2,TF>& rhs )
 {
@@ -2011,9 +2011,9 @@ inline void Elements<VT,TF,false,CEAs...>::assign( const DenseVector<VT2,TF>& rh
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 template< typename VT2 >    // Type of the right-hand side sparse vector
 inline void Elements<VT,TF,false,CEAs...>::assign( const SparseVector<VT2,TF>& rhs )
 {
@@ -2052,9 +2052,9 @@ inline void Elements<VT,TF,false,CEAs...>::assign( const SparseVector<VT2,TF>& r
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 template< typename VT2 >    // Type of the right-hand side vector
 inline void Elements<VT,TF,false,CEAs...>::addAssign( const Vector<VT2,TF>& rhs )
 {
@@ -2084,9 +2084,9 @@ inline void Elements<VT,TF,false,CEAs...>::addAssign( const Vector<VT2,TF>& rhs 
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 template< typename VT2 >    // Type of the right-hand side vector
 inline void Elements<VT,TF,false,CEAs...>::subAssign( const Vector<VT2,TF>& rhs )
 {

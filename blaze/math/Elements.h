@@ -67,9 +67,9 @@ namespace blaze {
 //
 // This specialization of the Rand class randomizes dense element selections.
 */
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 class Rand< Elements<VT,TF,true,CEAs...> >
 {
  public:
@@ -95,9 +95,9 @@ class Rand< Elements<VT,TF,true,CEAs...> >
 // \param elements The element selection to be randomized.
 // \return void
 */
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 template< typename ET >     // Type of the element selection
 inline void Rand< Elements<VT,TF,true,CEAs...> >::randomize( ET&& elements ) const
 {
@@ -125,11 +125,11 @@ inline void Rand< Elements<VT,TF,true,CEAs...> >::randomize( ET&& elements ) con
 // \param max The largest possible value for an element.
 // \return void
 */
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
-template< typename ET       // Type of the element selection
-        , typename Arg >    // Min/max argument type
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
+template< typename ET         // Type of the element selection
+        , typename Arg >      // Min/max argument type
 inline void Rand< Elements<VT,TF,true,CEAs...> >::randomize( ET&& elements, const Arg& min, const Arg& max ) const
 {
    using blaze::randomize;
@@ -162,9 +162,9 @@ inline void Rand< Elements<VT,TF,true,CEAs...> >::randomize( ET&& elements, cons
 //
 // This specialization of the Rand class randomizes sparse element selections.
 */
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 class Rand< Elements<VT,TF,false,CEAs...> >
 {
  public:
@@ -196,10 +196,10 @@ class Rand< Elements<VT,TF,false,CEAs...> >
 // \param elements The element selection to be randomized.
 // \return void
 */
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
-template< typename ET >     // Type of the element selection
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
+template< typename ET >       // Type of the element selection
 inline void Rand< Elements<VT,TF,false,CEAs...> >::randomize( ET&& elements ) const
 {
    using ElementsType = RemoveReference_t<ET>;
@@ -234,10 +234,10 @@ inline void Rand< Elements<VT,TF,false,CEAs...> >::randomize( ET&& elements ) co
 // \return void
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
-template< typename ET >     // Type of the element selection
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
+template< typename ET >       // Type of the element selection
 inline void Rand< Elements<VT,TF,false,CEAs...> >::randomize( ET&& elements, size_t nonzeros ) const
 {
    using ElementsType = RemoveReference_t<ET>;
@@ -274,11 +274,11 @@ inline void Rand< Elements<VT,TF,false,CEAs...> >::randomize( ET&& elements, siz
 // \param max The largest possible value for an element.
 // \return void
 */
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
-template< typename ET       // Type of the element selection
-        , typename Arg >    // Min/max argument type
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
+template< typename ET         // Type of the element selection
+        , typename Arg >      // Min/max argument type
 inline void Rand< Elements<VT,TF,false,CEAs...> >::randomize( ET&& elements,
                                                               const Arg& min, const Arg& max ) const
 {
@@ -316,11 +316,11 @@ inline void Rand< Elements<VT,TF,false,CEAs...> >::randomize( ET&& elements,
 // \return void
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
-template< typename ET       // Type of the element selection
-        , typename Arg >    // Min/max argument type
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
+template< typename ET         // Type of the element selection
+        , typename Arg >      // Min/max argument type
 inline void Rand< Elements<VT,TF,false,CEAs...> >::randomize( ET&& elements, size_t nonzeros,
                                                               const Arg& min, const Arg& max ) const
 {

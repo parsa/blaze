@@ -96,7 +96,7 @@ struct IsElements
 /*!\brief Specialization of the IsElements type trait for 'Elements'.
 // \ingroup math_type_traits
 */
-template< typename VT, bool TF, bool DF, size_t... CEAs >
+template< typename VT, bool TF, bool DF, typename... CEAs >
 struct IsElements< Elements<VT,TF,DF,CEAs...> >
    : public TrueType
 {};
@@ -109,7 +109,7 @@ struct IsElements< Elements<VT,TF,DF,CEAs...> >
 /*!\brief Specialization of the IsElements type trait for 'const Elements'.
 // \ingroup math_type_traits
 */
-template< typename VT, bool TF, bool DF, size_t... CEAs >
+template< typename VT, bool TF, bool DF, typename... CEAs >
 struct IsElements< const Elements<VT,TF,DF,CEAs...> >
    : public TrueType
 {};
@@ -122,7 +122,7 @@ struct IsElements< const Elements<VT,TF,DF,CEAs...> >
 /*!\brief Specialization of the IsElements type trait for 'volatile Elements'.
 // \ingroup math_type_traits
 */
-template< typename VT, bool TF, bool DF, size_t... CEAs >
+template< typename VT, bool TF, bool DF, typename... CEAs >
 struct IsElements< volatile Elements<VT,TF,DF,CEAs...> >
    : public TrueType
 {};
@@ -135,7 +135,7 @@ struct IsElements< volatile Elements<VT,TF,DF,CEAs...> >
 /*!\brief Specialization of the IsElements type trait for 'const volatile Elements'.
 // \ingroup math_type_traits
 */
-template< typename VT, bool TF, bool DF, size_t... CEAs >
+template< typename VT, bool TF, bool DF, typename... CEAs >
 struct IsElements< const volatile Elements<VT,TF,DF,CEAs...> >
    : public TrueType
 {};

@@ -80,6 +80,7 @@
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsPointer.h>
 #include <blaze/util/Unused.h>
 
 
@@ -110,10 +111,10 @@ namespace blaze {
    // ... Resizing and initialization
 
    // Creating a view on the 1st and 3rd element of the dense vector d
-   auto elements1 = elements<1UL,3UL>( D );
+   auto elements1 = elements<1UL,3UL>( d );
 
    // Creating a view on the 4th and 2nd element of the sparse vector s
-   auto elements2 = elements<4UL,2UL>( S );
+   auto elements2 = elements<4UL,2UL>( s );
    \endcode
 
 // By default, the provided element indices are checked at runtime. In case any element is not
@@ -135,7 +136,7 @@ inline decltype(auto) elements( Vector<VT,TF>& vector, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = Elements_<VT,I,Is...>;
+   using ReturnType = Elements_< VT, index_sequence<I,Is...> >;
    return ReturnType( ~vector, args... );
 }
 //*************************************************************************************************
@@ -160,10 +161,10 @@ inline decltype(auto) elements( Vector<VT,TF>& vector, REAs... args )
    const blaze::CompressedVector<double,rowVector> s( ... );
 
    // Creating a view on the 1st and 3rd element of the dense vector d
-   auto elements1 = elements<1UL,3UL>( D );
+   auto elements1 = elements<1UL,3UL>( d );
 
    // Creating a view on the 4th and 2nd element of the sparse vector s
-   auto elements2 = elements<4UL,2UL>( S );
+   auto elements2 = elements<4UL,2UL>( s );
    \endcode
 
 // By default, the provided element indices are checked at runtime. In case any element is not
@@ -185,7 +186,7 @@ inline decltype(auto) elements( const Vector<VT,TF>& vector, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const Elements_<const VT,I,Is...>;
+   using ReturnType = const Elements_< const VT, index_sequence<I,Is...> >;
    return ReturnType( ~vector, args... );
 }
 //*************************************************************************************************
@@ -214,7 +215,7 @@ inline decltype(auto) elements( Vector<VT,TF>&& vector, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = Elements_<VT,I,Is...>;
+   using ReturnType = Elements_< VT, index_sequence<I,Is...> >;
    return ReturnType( ~vector, args... );
 }
 //*************************************************************************************************
@@ -242,11 +243,11 @@ inline decltype(auto) elements( Vector<VT,TF>&& vector, REAs... args )
 
    // Creating a view on the 1st and 3rd element of the dense vector d
    const std::vector<size_t> indices1{ 1UL, 3UL };
-   auto elements1 = elements( D, indices1.data(), indices1.size() );
+   auto elements1 = elements( d, indices1.data(), indices1.size() );
 
    // Creating a view on the 4th and 2nd element of the sparse vector s
    const std::array<size_t,2UL> indices2{ 4UL, 2UL };
-   auto elements2 = elements( S, indices2.data(), indices2.size() );
+   auto elements2 = elements( s, indices2.data(), indices2.size() );
    \endcode
 
 // By default, the provided element indices are checked at runtime. In case any element is not
@@ -295,11 +296,11 @@ inline decltype(auto) elements( Vector<VT,TF>& vector, const T* indices, size_t 
 
    // Creating a view on the 1st and 3rd element of the dense vector d
    const std::vector<size_t> indices1{ 1UL, 3UL };
-   auto elements1 = elements( D, indices1.data(), indices1.size() );
+   auto elements1 = elements( d, indices1.data(), indices1.size() );
 
    // Creating a view on the 4th and 2nd element of the sparse vector s
    const std::array<size_t,2UL> indices2{ 4UL, 2UL };
-   auto elements2 = elements( S, indices2.data(), indices2.size() );
+   auto elements2 = elements( s, indices2.data(), indices2.size() );
    \endcode
 
 // By default, the provided element indices are checked at runtime. In case any element is not
@@ -368,9 +369,30 @@ inline decltype(auto) elements( Vector<VT,TF>&& vector, const T* indices, size_t
 // \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing a selection of elements of the given vector.
-// In case any element is not properly specified (i.e. if any specified index is greater than
-// or equal to the total number of elements in the given vector) a \a std::invalid_argument
-// exception is thrown.
+
+   \code
+   using blaze::rowVector;
+   using blaze::index_sequence;
+
+   blaze::DynamicVector<double,rowVector> d( ... );
+   blaze::CompressedVector<double,rowVector> s( ... );
+
+   // Creating a view on the 1st and 3rd element of the dense vector d
+   auto elements1 = elements( d, index_sequence<1UL,3UL>() );
+
+   // Creating a view on the 4th and 2nd element of the sparse vector s
+   auto elements2 = elements( s, index_sequence<4UL,2UL>() );
+   \endcode
+
+// By default, the provided element indices are checked at runtime. In case any element is not
+// properly specified (i.e. if any specified index is greater than or equal to the total number
+// of elements in the given vector) a \a std::invalid_argument exception is thrown. The checks
+// can be skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto elements1 = elements( d, index_sequence<1UL,3UL>(), unchecked );
+   auto elements2 = elements( s, index_sequence<4UL,2UL>(), unchecked );
+   \endcode
 */
 template< typename VT         // Type of the vector
         , size_t... Is        // Element indices
@@ -388,7 +410,6 @@ inline decltype(auto) elements( VT&& vector, index_sequence<Is...> indices, REAs
 
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a selection of elements of the given vector.
 // \ingroup elements
 //
@@ -399,9 +420,29 @@ inline decltype(auto) elements( VT&& vector, index_sequence<Is...> indices, REAs
 // \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing a selection of elements of the given vector.
-// In case any element is not properly specified (i.e. if any specified index is greater than
-// or equal to the total number of elements in the given vector) a \a std::invalid_argument
-// exception is thrown.
+
+   \code
+   using blaze::rowVector;
+
+   blaze::DynamicVector<double,rowVector> d( ... );
+   blaze::CompressedVector<double,rowVector> s( ... );
+
+   // Creating a view on the 1st and 3rd element of the dense vector d
+   auto elements1 = elements( d, { 1UL, 3UL } );
+
+   // Creating a view on the 4th and 2nd element of the sparse vector s
+   auto elements2 = elements( s, { 4UL, 2UL } );
+   \endcode
+
+// By default, the provided element indices are checked at runtime. In case any element is not
+// properly specified (i.e. if any specified index is greater than or equal to the total number
+// of elements in the given vector) a \a std::invalid_argument exception is thrown. The checks
+// can be skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto elements1 = elements( d, { 1UL, 3UL }, unchecked );
+   auto elements2 = elements( s, { 4UL, 2UL }, unchecked );
+   \endcode
 */
 template< typename VT         // Type of the vector
         , typename T          // Type of the element indices
@@ -412,12 +453,10 @@ inline decltype(auto) elements( VT&& vector, initializer_list<T> indices, REAs..
 
    return elements( std::forward<VT>( vector ), indices.begin(), indices.size(), args... );
 }
-/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a selection of elements of the given vector.
 // \ingroup elements
 //
@@ -428,9 +467,31 @@ inline decltype(auto) elements( VT&& vector, initializer_list<T> indices, REAs..
 // \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing a selection of elements of the given vector.
-// In case any element is not properly specified (i.e. if any specified index is greater than
-// or equal to the total number of elements in the given vector) a \a std::invalid_argument
-// exception is thrown.
+
+   \code
+   using blaze::rowVector;
+
+   blaze::DynamicVector<double,rowVector> d( ... );
+   blaze::CompressedVector<double,rowVector> s( ... );
+
+   // Creating a view on the 1st and 3rd element of the dense vector d
+   const std::array<size_t,2UL> indices1{ 1UL, 3UL };
+   auto elements1 = elements( d, indices1 );
+
+   // Creating a view on the 4th and 2nd element of the sparse vector s
+   const std::array<size_t,2UL> indices2{ 4UL, 2UL };
+   auto elements2 = elements( s, indices2 );
+   \endcode
+
+// By default, the provided element indices are checked at runtime. In case any element is not
+// properly specified (i.e. if any specified index is greater than or equal to the total number
+// of elements in the given vector) a \a std::invalid_argument exception is thrown. The checks
+// can be skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto elements1 = elements( d, indices1, unchecked );
+   auto elements2 = elements( s, indices2, unchecked );
+   \endcode
 */
 template< typename VT         // Type of the vector
         , typename T          // Type of the element indices
@@ -442,12 +503,10 @@ inline decltype(auto) elements( VT&& vector, const std::array<T,N>& indices, REA
 
    return elements( std::forward<VT>( vector ), indices.data(), N, args... );
 }
-/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a selection of elements of the given vector.
 // \ingroup elements
 //
@@ -458,9 +517,31 @@ inline decltype(auto) elements( VT&& vector, const std::array<T,N>& indices, REA
 // \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing a selection of elements of the given vector.
-// In case any element is not properly specified (i.e. if any specified index is greater than
-// or equal to the total number of elements in the given vector) a \a std::invalid_argument
-// exception is thrown.
+
+   \code
+   using blaze::rowVector;
+
+   blaze::DynamicVector<double,rowVector> d( ... );
+   blaze::CompressedVector<double,rowVector> s( ... );
+
+   // Creating a view on the 1st and 3rd element of the dense vector d
+   const std::vector<size_t> indices1{ 1UL, 3UL };
+   auto elements1 = elements( d, indices1 );
+
+   // Creating a view on the 4th and 2nd element of the sparse vector s
+   const std::vector<size_t> indices2{ 4UL, 2UL };
+   auto elements2 = elements( s, indices2 );
+   \endcode
+
+// By default, the provided element indices are checked at runtime. In case any element is not
+// properly specified (i.e. if any specified index is greater than or equal to the total number
+// of elements in the given vector) a \a std::invalid_argument exception is thrown. The checks
+// can be skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto elements1 = elements( d, indices1, unchecked );
+   auto elements2 = elements( s, indices2, unchecked );
+   \endcode
 */
 template< typename VT         // Type of the vector
         , typename T          // Type of the element indices
@@ -471,12 +552,10 @@ inline decltype(auto) elements( VT&& vector, const std::vector<T>& indices, REAs
 
    return elements( std::forward<VT>( vector ), indices.data(), indices.size(), args... );
 }
-/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a selection of elements of the given vector.
 // \ingroup elements
 //
@@ -487,9 +566,31 @@ inline decltype(auto) elements( VT&& vector, const std::vector<T>& indices, REAs
 // \exception std::invalid_argument Invalid element access index.
 //
 // This function returns an expression representing a selection of elements of the given vector.
-// In case any element is not properly specified (i.e. if any specified index is greater than
-// or equal to the total number of elements in the given vector) a \a std::invalid_argument
-// exception is thrown.
+
+   \code
+   using blaze::rowVector;
+
+   blaze::DynamicVector<double,rowVector> d( ... );
+   blaze::CompressedVector<double,rowVector> s( ... );
+
+   // Creating a view on the 1st and 3rd element of the dense vector d
+   const blaze::SmallArray<size_t,2UL> indices1{ 1UL, 3UL };
+   auto elements1 = elements( d, indices1 );
+
+   // Creating a view on the 4th and 2nd element of the sparse vector s
+   const blaze::SmallArray<size_t,2UL> indices2{ 4UL, 2UL };
+   auto elements2 = elements( s, indices2 );
+   \endcode
+
+// By default, the provided element indices are checked at runtime. In case any element is not
+// properly specified (i.e. if any specified index is greater than or equal to the total number
+// of elements in the given vector) a \a std::invalid_argument exception is thrown. The checks
+// can be skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto elements1 = elements( d, indices1, unchecked );
+   auto elements2 = elements( s, indices2, unchecked );
+   \endcode
 */
 template< typename VT         // Type of the vector
         , typename T          // Type of the element indices
@@ -501,7 +602,6 @@ inline decltype(auto) elements( VT&& vector, const SmallArray<T,N>& indices, REA
 
    return elements( std::forward<VT>( vector ), indices.data(), indices.size(), args... );
 }
-/*! \endcond */
 //*************************************************************************************************
 
 
@@ -525,7 +625,7 @@ inline decltype(auto) elements( VT&& vector, const SmallArray<T,N>& indices, REA
 // This function returns an expression representing the specified selection of elements on the
 // given vector/vector addition.
 */
-template< size_t... CEAs      // Compile time element arguments
+template< typename... CEAs    // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const VecVecAddExpr<VT>& vector, REAs... args )
@@ -551,7 +651,7 @@ inline decltype(auto) elements( const VecVecAddExpr<VT>& vector, REAs... args )
 // This function returns an expression representing the specified selection of elements on the
 // given vector/vector subtraction.
 */
-template< size_t... CEAs      // Compile time element arguments
+template< typename... CEAs    // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const VecVecSubExpr<VT>& vector, REAs... args )
@@ -577,7 +677,7 @@ inline decltype(auto) elements( const VecVecSubExpr<VT>& vector, REAs... args )
 // This function returns an expression representing the specified selection of elements on the
 // given vector/vector multiplication.
 */
-template< size_t... CEAs      // Compile time element arguments
+template< typename... CEAs    // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const VecVecMultExpr<VT>& vector, REAs... args )
@@ -603,7 +703,7 @@ inline decltype(auto) elements( const VecVecMultExpr<VT>& vector, REAs... args )
 // This function returns an expression representing the specified selection of elements on the
 // given vector/vector division.
 */
-template< size_t... CEAs      // Compile time element arguments
+template< typename... CEAs    // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const VecVecDivExpr<VT>& vector, REAs... args )
@@ -629,7 +729,7 @@ inline decltype(auto) elements( const VecVecDivExpr<VT>& vector, REAs... args )
 // This function returns an expression representing the specified selection of elements on the
 // given vector/vector cross product.
 */
-template< size_t... CEAs      // Compile time element arguments
+template< typename... CEAs    // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const CrossExpr<VT>& vector, REAs... args )
@@ -655,7 +755,7 @@ inline decltype(auto) elements( const CrossExpr<VT>& vector, REAs... args )
 // This function returns an expression representing the specified selection of elements on the
 // given vector/scalar multiplication.
 */
-template< size_t... CEAs      // Compile time element arguments
+template< typename... CEAs    // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const VecScalarMultExpr<VT>& vector, REAs... args )
@@ -680,7 +780,7 @@ inline decltype(auto) elements( const VecScalarMultExpr<VT>& vector, REAs... arg
 // This function returns an expression representing the specified selection of elements on the
 // given vector/scalar division.
 */
-template< size_t... CEAs      // Compile time element arguments
+template< typename... CEAs    // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const VecScalarDivExpr<VT>& vector, REAs... args )
@@ -705,7 +805,7 @@ inline decltype(auto) elements( const VecScalarDivExpr<VT>& vector, REAs... args
 // This function returns an expression representing the specified selection of elements on the
 // given unary vector map operation.
 */
-template< size_t... CEAs      // Compile time element arguments
+template< typename... CEAs    // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const VecMapExpr<VT>& vector, REAs... args )
@@ -730,7 +830,7 @@ inline decltype(auto) elements( const VecMapExpr<VT>& vector, REAs... args )
 // This function returns an expression representing the specified selection of elements on the
 // given binary vector map operation.
 */
-template< size_t... CEAs      // Compile time element arguments
+template< typename... CEAs    // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const VecVecMapExpr<VT>& vector, REAs... args )
@@ -757,7 +857,7 @@ inline decltype(auto) elements( const VecVecMapExpr<VT>& vector, REAs... args )
 // This function returns an expression representing the specified selection of elements on the
 // given vector evaluation operation.
 */
-template< size_t... CEAs      // Compile time element arguments
+template< typename... CEAs    // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const VecEvalExpr<VT>& vector, REAs... args )
@@ -782,7 +882,7 @@ inline decltype(auto) elements( const VecEvalExpr<VT>& vector, REAs... args )
 // This function returns an expression representing the specified selection of elements on the
 // given vector serialization operation.
 */
-template< size_t... CEAs      // Compile time element arguments
+template< typename... CEAs    // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const VecSerialExpr<VT>& vector, REAs... args )
@@ -807,7 +907,7 @@ inline decltype(auto) elements( const VecSerialExpr<VT>& vector, REAs... args )
 // This function returns an expression representing the specified selection of elements on the
 // given vector transpose operation.
 */
-template< size_t... CEAs      // Compile time element arguments
+template< typename... CEAs    // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const VecTransExpr<VT>& vector, REAs... args )
@@ -839,12 +939,14 @@ template< size_t I1           // First required element index
         , bool DF             // Density flag
         , size_t I2           // First present element index
         , size_t... Is2       // Remaining present element indices
+        , typename... CEAs    // Compile time element arguments
         , typename... REAs >  // Optional element arguments
-inline decltype(auto) elements( Elements<VT,TF,DF,I2,Is2...>& e, REAs... args )
+inline decltype(auto) elements( Elements<VT,TF,DF,index_sequence<I2,Is2...>,CEAs...>& e, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return elements< e.idx(I1), e.idx(Is1)... >( e.operand(), args... );
+   static constexpr size_t indices[] = { I2, Is2... };
+   return elements< indices[I1], indices[Is1]... >( e.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -869,12 +971,14 @@ template< size_t I1           // First required element index
         , bool DF             // Density flag
         , size_t I2           // First present element index
         , size_t... Is2       // Remaining present element indices
+        , typename... CEAs    // Compile time element arguments
         , typename... REAs >  // Optional element arguments
-inline decltype(auto) elements( const Elements<VT,TF,DF,I2,Is2...>& e, REAs... args )
+inline decltype(auto) elements( const Elements<VT,TF,DF,index_sequence<I2,Is2...>,CEAs...>& e, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return elements< e.idx(I1), e.idx(Is1)... >( e.operand(), args... );
+   static constexpr size_t indices[] = { I2, Is2... };
+   return elements< indices[I1], indices[Is1]... >( e.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -899,12 +1003,14 @@ template< size_t I1           // First required element index
         , bool DF             // Density flag
         , size_t I2           // First present element index
         , size_t... Is2       // Remaining present element indices
+        , typename... CEAs    // Compile time element arguments
         , typename... REAs >  // Optional element arguments
-inline decltype(auto) elements( Elements<VT,TF,DF,I2,Is2...>&& e, REAs... args )
+inline decltype(auto) elements( Elements<VT,TF,DF,index_sequence<I2,Is2...>,CEAs...>&& e, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return elements< e.idx(I1), e.idx(Is1)... >( e.operand(), args... );
+   static constexpr size_t indices[] = { I2, Is2... };
+   return elements< indices[I1], indices[Is1]... >( e.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -928,8 +1034,9 @@ template< size_t I            // First element index
         , typename VT         // Type of the vector
         , bool TF             // Transpose flag
         , bool DF             // Density flag
+        , typename... CEAs    // Compile time element arguments
         , typename... REAs >  // Optional element arguments
-inline decltype(auto) elements( Elements<VT,TF,DF>& e, REAs... args )
+inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>& e, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -968,8 +1075,9 @@ template< size_t I            // First element index
         , typename VT         // Type of the vector
         , bool TF             // Transpose flag
         , bool DF             // Density flag
+        , typename... CEAs    // Compile time element arguments
         , typename... REAs >  // Optional element arguments
-inline decltype(auto) elements( const Elements<VT,TF,DF>& e, REAs... args )
+inline decltype(auto) elements( const Elements<VT,TF,DF,CEAs...>& e, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1008,8 +1116,9 @@ template< size_t I            // First element index
         , typename VT         // Type of the vector
         , bool TF             // Transpose flag
         , bool DF             // Density flag
+        , typename... CEAs    // Compile time element arguments
         , typename... REAs >  // Optional element arguments
-inline decltype(auto) elements( Elements<VT,TF,DF>&& e, REAs... args )
+inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>&& e, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1048,7 +1157,7 @@ inline decltype(auto) elements( Elements<VT,TF,DF>&& e, REAs... args )
 template< typename VT         // Type of the vector
         , bool TF             // Transpose flag
         , bool DF             // Density flag
-        , size_t... CEAs      // Compile time element arguments
+        , typename... CEAs    // Compile time element arguments
         , typename T          // Type of the element indices
         , typename... REAs >  // Optional element arguments
 inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>& e,
@@ -1097,7 +1206,7 @@ inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>& e,
 template< typename VT         // Type of the vector
         , bool TF             // Transpose flag
         , bool DF             // Density flag
-        , size_t... CEAs      // Compile time element arguments
+        , typename... CEAs    // Compile time element arguments
         , typename T          // Type of the element indices
         , typename... REAs >  // Optional element arguments
 inline decltype(auto) elements( const Elements<VT,TF,DF,CEAs...>& e,
@@ -1146,7 +1255,7 @@ inline decltype(auto) elements( const Elements<VT,TF,DF,CEAs...>& e,
 template< typename VT         // Type of the vector
         , bool TF             // Transpose flag
         , bool DF             // Density flag
-        , size_t... CEAs      // Compile time element arguments
+        , typename... CEAs    // Compile time element arguments
         , typename T          // Type of the element indices
         , typename... REAs >  // Optional element arguments
 inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>&& e,
@@ -1203,7 +1312,7 @@ template< AlignmentFlag AF    // Alignment flag
         , typename VT         // Type of the vector
         , bool TF             // Transpose flag
         , bool DF             // Density flag
-        , size_t... CEAs      // Compile time element arguments
+        , typename... CEAs    // Compile time element arguments
         , typename... RSAs >  // Optional arguments
 inline decltype(auto) subvector( Elements<VT,TF,DF,CEAs...>& e, RSAs... args )
 {
@@ -1233,7 +1342,7 @@ template< AlignmentFlag AF    // Alignment flag
         , typename VT         // Type of the vector
         , bool TF             // Transpose flag
         , bool DF             // Density flag
-        , size_t... CEAs      // Compile time element arguments
+        , typename... CEAs    // Compile time element arguments
         , typename... RSAs >  // Optional arguments
 inline decltype(auto) subvector( const Elements<VT,TF,DF,CEAs...>& e, RSAs... args )
 {
@@ -1263,7 +1372,7 @@ template< AlignmentFlag AF    // Alignment flag
         , typename VT         // Type of the vector
         , bool TF             // Transpose flag
         , bool DF             // Density flag
-        , size_t... CEAs      // Compile time element arguments
+        , typename... CEAs    // Compile time element arguments
         , typename... RSAs >  // Optional arguments
 inline decltype(auto) subvector( Elements<VT,TF,DF,CEAs...>&& e, RSAs... args )
 {
@@ -1293,7 +1402,7 @@ template< AlignmentFlag AF    // Alignment flag
         , typename VT         // Type of the vector
         , bool TF             // Transpose flag
         , bool DF             // Density flag
-        , size_t... CEAs      // Compile time element arguments
+        , typename... CEAs    // Compile time element arguments
         , typename... RSAs >  // Optional arguments
 inline decltype(auto)
    subvector( Elements<VT,TF,DF,CEAs...>& e, size_t index, size_t size, RSAs... args )
@@ -1327,7 +1436,7 @@ template< AlignmentFlag AF    // Alignment flag
         , typename VT         // Type of the vector
         , bool TF             // Transpose flag
         , bool DF             // Density flag
-        , size_t... CEAs      // Compile time element arguments
+        , typename... CEAs    // Compile time element arguments
         , typename... RSAs >  // Optional arguments
 inline decltype(auto)
    subvector( const Elements<VT,TF,DF,CEAs...>& e, size_t index, size_t size, RSAs... args )
@@ -1361,7 +1470,7 @@ template< AlignmentFlag AF    // Alignment flag
         , typename VT         // Type of the vector
         , bool TF             // Transpose flag
         , bool DF             // Density flag
-        , size_t... CEAs      // Compile time element arguments
+        , typename... CEAs    // Compile time element arguments
         , typename... RSAs >  // Optional arguments
 inline decltype(auto)
    subvector( Elements<VT,TF,DF,CEAs...>&& e, size_t index, size_t size, RSAs... args )
@@ -1393,10 +1502,10 @@ inline decltype(auto)
 // \param e The selection of elements to be resetted.
 // \return void
 */
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , bool DF           // Density flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , typename... CEAs >  // Compile time element arguments
 inline void reset( Elements<VT,TF,DF,CEAs...>& e )
 {
    e.reset();
@@ -1413,10 +1522,10 @@ inline void reset( Elements<VT,TF,DF,CEAs...>& e )
 // \param e The temporary selection of elements to be resetted.
 // \return void
 */
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , bool DF           // Density flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , typename... CEAs >  // Compile time element arguments
 inline void reset( Elements<VT,TF,DF,CEAs...>&& e )
 {
    e.reset();
@@ -1433,10 +1542,10 @@ inline void reset( Elements<VT,TF,DF,CEAs...>&& e )
 // \param e The selection of elements to be cleared.
 // \return void
 */
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , bool DF           // Density flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , typename... CEAs >  // Compile time element arguments
 inline void clear( Elements<VT,TF,DF,CEAs...>& e )
 {
    e.reset();
@@ -1453,10 +1562,10 @@ inline void clear( Elements<VT,TF,DF,CEAs...>& e )
 // \param e The temporary selection of elements to be cleared.
 // \return void
 */
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , bool DF           // Density flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , typename... CEAs >  // Compile time element arguments
 inline void clear( Elements<VT,TF,DF,CEAs...>&& e )
 {
    e.reset();
@@ -1491,10 +1600,10 @@ inline void clear( Elements<VT,TF,DF,CEAs...>&& e )
    if( isDefault<relaxed>( elements( v, { 5UL, 10UL, 15UL } ) ) ) { ... }
    \endcode
 */
-template< bool RF           // Relaxation flag
-        , typename VT       // Type of the dense vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< bool RF             // Relaxation flag
+        , typename VT         // Type of the dense vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline bool isDefault( const Elements<VT,TF,true,CEAs...>& e )
 {
    using blaze::isDefault;
@@ -1533,10 +1642,10 @@ inline bool isDefault( const Elements<VT,TF,true,CEAs...>& e )
    if( isDefault<relaxed>( elements( v, { 5UL, 10UL, 15UL } ) ) ) { ... }
    \endcode
 */
-template< bool RF           // Relaxation flag
-        , typename VT       // Type of the sparse vector
-        , bool TF           // Transpose flag
-        , size_t... CEAs >  // Compile time element arguments
+template< bool RF             // Relaxation flag
+        , typename VT         // Type of the sparse vector
+        , bool TF             // Transpose flag
+        , typename... CEAs >  // Compile time element arguments
 inline bool isDefault( const Elements<VT,TF,false,CEAs...>& e )
 {
    using blaze::isDefault;
@@ -1567,10 +1676,10 @@ inline bool isDefault( const Elements<VT,TF,false,CEAs...>& e )
    if( isIntact( elements( v, { 5UL, 10UL, 15UL } ) ) ) { ... }
    \endcode
 */
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , bool DF           // Density flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , typename... CEAs >  // Compile time element arguments
 inline bool isIntact( const Elements<VT,TF,DF,CEAs...>& e ) noexcept
 {
    return ( e.size() <= e.operand().size() && isIntact( e.operand() ) );
@@ -1593,10 +1702,10 @@ inline bool isIntact( const Elements<VT,TF,DF,CEAs...>& e ) noexcept
 // the same observable state. In this case, the function returns \a true, otherwise it returns
 // \a false.
 */
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , bool DF           // Density flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , typename... CEAs >  // Compile time element arguments
 inline bool isSame( const Elements<VT,TF,DF,CEAs...>& a, const Vector<VT,TF>& b ) noexcept
 {
    if( !isSame( a.operand(), ~b ) || ( a.size() != (~b).size() ) )
@@ -1627,10 +1736,10 @@ inline bool isSame( const Elements<VT,TF,DF,CEAs...>& a, const Vector<VT,TF>& b 
 // the same observable state. In this case, the function returns \a true, otherwise it returns
 // \a false.
 */
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , bool DF           // Density flag
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , typename... CEAs >  // Compile time element arguments
 inline bool isSame( const Vector<VT,TF>& a, const Elements<VT,TF,DF,CEAs...>& b ) noexcept
 {
    return isSame( b, a );
@@ -1656,7 +1765,7 @@ inline bool isSame( const Vector<VT,TF>& a, const Elements<VT,TF,DF,CEAs...>& b 
 template< typename VT1      // Type of the left-hand side vector
         , bool TF           // Transpose flag
         , bool DF           // Density flag
-        , size_t... CEAs    // Compile time element arguments
+        , typename... CEAs  // Compile time element arguments
         , typename VT2      // Type of the right-hand side vector
         , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time subvector arguments
@@ -1690,13 +1799,13 @@ inline bool isSame( const Elements<VT1,TF,DF,CEAs...>& a, const Subvector<VT2,AF
 // the same observable state. In this case, the function returns \a true, otherwise it returns
 // \a false.
 */
-template< typename VT1      // Type of the left-hand side vector
-        , AlignmentFlag AF  // Alignment flag
-        , bool TF           // Transpose flag
-        , bool DF           // Density flag
-        , size_t... CSAs    // Compile time subvector arguments
-        , typename VT2      // Type of the right-hand side vector
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT1        // Type of the left-hand side vector
+        , AlignmentFlag AF    // Alignment flag
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename VT2        // Type of the right-hand side vector
+        , typename... CEAs >  // Compile time element arguments
 inline bool isSame( const Subvector<VT1,AF,TF,DF,CSAs...>& a, const Elements<VT2,TF,DF,CEAs...>& b ) noexcept
 {
    return isSame( b, a );
@@ -1718,14 +1827,14 @@ inline bool isSame( const Subvector<VT1,AF,TF,DF,CSAs...>& a, const Elements<VT2
 // the same range of the same vector. In case both selections represent the same observable state,
 // the function returns \a true, otherwise it returns \a false.
 */
-template< typename VT1       // Type of the vector of the left-hand side selection of elements
-        , bool TF1           // Transpose flag of the left-hand side selection of elements
-        , bool DF1           // Density flag of the left-hand side selection of elements
-        , size_t... CEAs1    // Compile time element arguments of the left-hand side selection of elements
-        , typename VT2       // Type of the vector of the right-hand side selection of elements
-        , bool TF2           // Transpose flag of the right-hand side selection of elements
-        , bool DF2           // Density flag of the right-hand side selection of elements
-        , size_t... CEAs2 >  // Compile time element arguments of the right-hand side selection of elements
+template< typename VT1         // Type of the vector of the left-hand side selection of elements
+        , bool TF1             // Transpose flag of the left-hand side selection of elements
+        , bool DF1             // Density flag of the left-hand side selection of elements
+        , typename... CEAs1    // Compile time element arguments of the left-hand side selection of elements
+        , typename VT2         // Type of the vector of the right-hand side selection of elements
+        , bool TF2             // Transpose flag of the right-hand side selection of elements
+        , bool DF2             // Density flag of the right-hand side selection of elements
+        , typename... CEAs2 >  // Compile time element arguments of the right-hand side selection of elements
 inline bool isSame( const Elements<VT1,TF1,DF1,CEAs1...>& a,
                     const Elements<VT2,TF2,DF2,CEAs2...>& b ) noexcept
 {
@@ -1761,7 +1870,7 @@ inline bool isSame( const Elements<VT1,TF1,DF1,CEAs1...>& a,
 template< typename VT       // Type of the vector
         , bool TF           // Transpose flag
         , bool DF           // Density flag
-        , size_t... CEAs    // Compile time element arguments
+        , typename... CEAs  // Compile time element arguments
         , typename ET >     // Type of the element
 inline bool trySet( const Elements<VT,TF,DF,CEAs...>& e, size_t index, const ET& value )
 {
@@ -1791,7 +1900,7 @@ inline bool trySet( const Elements<VT,TF,DF,CEAs...>& e, size_t index, const ET&
 template< typename VT       // Type of the vector
         , bool TF           // Transpose flag
         , bool DF           // Density flag
-        , size_t... CEAs    // Compile time element arguments
+        , typename... CEAs  // Compile time element arguments
         , typename ET >     // Type of the element
 inline bool tryAdd( const Elements<VT,TF,DF,CEAs...>& e, size_t index, const ET& value )
 {
@@ -1821,7 +1930,7 @@ inline bool tryAdd( const Elements<VT,TF,DF,CEAs...>& e, size_t index, const ET&
 template< typename VT       // Type of the vector
         , bool TF           // Transpose flag
         , bool DF           // Density flag
-        , size_t... CEAs    // Compile time element arguments
+        , typename... CEAs  // Compile time element arguments
         , typename ET >     // Type of the element
 inline bool trySub( const Elements<VT,TF,DF,CEAs...>& e, size_t index, const ET& value )
 {
@@ -1851,7 +1960,7 @@ inline bool trySub( const Elements<VT,TF,DF,CEAs...>& e, size_t index, const ET&
 template< typename VT       // Type of the vector
         , bool TF           // Transpose flag
         , bool DF           // Density flag
-        , size_t... CEAs    // Compile time element arguments
+        , typename... CEAs  // Compile time element arguments
         , typename ET >     // Type of the element
 inline bool tryMult( const Elements<VT,TF,DF,CEAs...>& e, size_t index, const ET& value )
 {
@@ -1879,11 +1988,11 @@ inline bool tryMult( const Elements<VT,TF,DF,CEAs...>& e, size_t index, const ET
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT     // Type of the vector
-        , bool TF         // Transpose flag
-        , bool DF         // Density flag
-        , size_t... CEAs  // Compile time element arguments
-        , typename ET >   // Type of the element
+template< typename VT       // Type of the vector
+        , bool TF           // Transpose flag
+        , bool DF           // Density flag
+        , typename... CEAs  // Compile time element arguments
+        , typename ET >     // Type of the element
 BLAZE_ALWAYS_INLINE bool
    tryMult( const Elements<VT,TF,DF,CEAs...>& e, size_t index, size_t size, const ET& value )
 {
@@ -1921,7 +2030,7 @@ BLAZE_ALWAYS_INLINE bool
 template< typename VT       // Type of the vector
         , bool TF           // Transpose flag
         , bool DF           // Density flag
-        , size_t... CEAs    // Compile time element arguments
+        , typename... CEAs  // Compile time element arguments
         , typename ET >     // Type of the element
 inline bool tryDiv( const Elements<VT,TF,DF,CEAs...>& e, size_t index, const ET& value )
 {
@@ -1949,11 +2058,11 @@ inline bool tryDiv( const Elements<VT,TF,DF,CEAs...>& e, size_t index, const ET&
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename VT     // Type of the vector
-        , bool TF         // Transpose flag
-        , bool DF         // Density flag
-        , size_t... CEAs  // Compile time element arguments
-        , typename ET >   // Type of the element
+template< typename VT       // Type of the vector
+        , bool TF           // Transpose flag
+        , bool DF           // Density flag
+        , typename... CEAs  // Compile time element arguments
+        , typename ET >     // Type of the element
 BLAZE_ALWAYS_INLINE bool
    tryDiv( const Elements<VT,TF,DF,CEAs...>& e, size_t index, size_t size, const ET& value )
 {
@@ -1991,7 +2100,7 @@ BLAZE_ALWAYS_INLINE bool
 template< typename VT1      // Type of the vector
         , bool TF           // Transpose flag
         , bool DF           // Density flag
-        , size_t... CEAs    // Compile time element arguments
+        , typename... CEAs  // Compile time element arguments
         , typename VT2 >    // Type of the right-hand side vector
 inline bool tryAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
                        const Vector<VT2,TF>& rhs, size_t index )
@@ -2029,7 +2138,7 @@ inline bool tryAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
 template< typename VT1      // Type of the vector
         , bool TF           // Transpose flag
         , bool DF           // Density flag
-        , size_t... CEAs    // Compile time element arguments
+        , typename... CEAs  // Compile time element arguments
         , typename VT2 >    // Type of the right-hand side vector
 inline bool tryAddAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
                           const Vector<VT2,TF>& rhs, size_t index )
@@ -2067,7 +2176,7 @@ inline bool tryAddAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
 template< typename VT1      // Type of the vector
         , bool TF           // Transpose flag
         , bool DF           // Density flag
-        , size_t... CEAs    // Compile time element arguments
+        , typename... CEAs  // Compile time element arguments
         , typename VT2 >    // Type of the right-hand side vector
 inline bool trySubAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
                           const Vector<VT2,TF>& rhs, size_t index )
@@ -2105,7 +2214,7 @@ inline bool trySubAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
 template< typename VT1      // Type of the vector
         , bool TF           // Transpose flag
         , bool DF           // Density flag
-        , size_t... CEAs    // Compile time element arguments
+        , typename... CEAs  // Compile time element arguments
         , typename VT2 >    // Type of the right-hand side vector
 inline bool tryMultAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
                            const Vector<VT2,TF>& rhs, size_t index )
@@ -2143,7 +2252,7 @@ inline bool tryMultAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
 template< typename VT1      // Type of the vector
         , bool TF           // Transpose flag
         , bool DF           // Density flag
-        , size_t... CEAs    // Compile time element arguments
+        , typename... CEAs  // Compile time element arguments
         , typename VT2 >    // Type of the right-hand side vector
 inline bool tryDivAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
                           const Vector<VT2,TF>& rhs, size_t index )
@@ -2177,14 +2286,13 @@ inline bool tryDivAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename VT     // Type of the vector
-        , bool TF         // Transpose flag
-        , bool DF         // Density flag
-        , size_t I        // First element index
-        , size_t... Is >  // Remaining element indices
-inline decltype(auto) derestrict( Elements<VT,TF,DF,I,Is...>& e )
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , typename... CEAs >  // Compile time element arguments
+inline decltype(auto) derestrict( Elements<VT,TF,DF,CEAs...>& e )
 {
-   return elements<I,Is...>( derestrict( e.operand() ), unchecked );
+   return elements( derestrict( e.operand() ), e.idces(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2205,64 +2313,11 @@ inline decltype(auto) derestrict( Elements<VT,TF,DF,I,Is...>& e )
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename VT     // Type of the vector
-        , bool TF         // Transpose flag
-        , bool DF         // Density flag
-        , size_t I        // First element index
-        , size_t... Is >  // Remaining element indices
-inline decltype(auto) derestrict( Elements<VT,TF,DF,I,Is...>&& e )
-{
-   return elements<I,Is...>( derestrict( e.operand() ), unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Removal of all restrictions on the data access to the given element selection.
-// \ingroup elements
-//
-// \param e The element selection to be derestricted.
-// \return Element selection without access restrictions.
-//
-// This function removes all restrictions on the data access to the given element selection.
-// It returns an element selection that does provide the same interface but does not have any
-// restrictions on the data access.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in the violation of invariants, erroneous results and/or in compilation errors.
-*/
-template< typename VT  // Type of the vector
-        , bool TF      // Transpose flag
-        , bool DF >    // Density flag
-inline decltype(auto) derestrict( Elements<VT,TF,DF>& e )
-{
-   return elements( derestrict( e.operand() ), e.idces(), unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Removal of all restrictions on the data access to the given temporary element selection.
-// \ingroup elements
-//
-// \param e The temporary element selection to be derestricted.
-// \return Element selection without access restrictions.
-//
-// This function removes all restrictions on the data access to the given temporary element
-// selection. It returns an element selection that does provide the same interface but does not
-// have any restrictions on the data access.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in the violation of invariants, erroneous results and/or in compilation errors.
-*/
-template< typename VT  // Type of the vector
-        , bool TF      // Transpose flag
-        , bool DF >    // Density flag
-inline decltype(auto) derestrict( Elements<VT,TF,DF>&& e )
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , typename... CEAs >  // Compile time element arguments
+inline decltype(auto) derestrict( Elements<VT,TF,DF,CEAs...>&& e )
 {
    return elements( derestrict( e.operand() ), e.idces(), unchecked );
 }
@@ -2280,8 +2335,8 @@ inline decltype(auto) derestrict( Elements<VT,TF,DF>&& e )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF, bool DF, size_t I, size_t... Is >
-struct Size< Elements<VT,TF,DF,I,Is...>, 0UL >
+template< typename VT, bool TF, bool DF, size_t I, size_t... Is, typename... CEAs >
+struct Size< Elements<VT,TF,DF,index_sequence<I,Is...>,CEAs...>, 0UL >
    : public PtrdiffT<1UL+sizeof...(Is)>
 {};
 /*! \endcond */
@@ -2298,8 +2353,8 @@ struct Size< Elements<VT,TF,DF,I,Is...>, 0UL >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF, bool DF, size_t I, size_t... Is >
-struct MaxSize< Elements<VT,TF,DF,I,Is...>, 0UL >
+template< typename VT, bool TF, bool DF, size_t I, size_t... Is, typename... CEAs >
+struct MaxSize< Elements<VT,TF,DF,index_sequence<I,Is...>,CEAs...>, 0UL >
    : public PtrdiffT<1UL+sizeof...(Is)>
 {};
 /*! \endcond */
@@ -2316,7 +2371,7 @@ struct MaxSize< Elements<VT,TF,DF,I,Is...>, 0UL >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF, bool DF, size_t... CEAs >
+template< typename VT, bool TF, bool DF, typename... CEAs >
 struct IsRestricted< Elements<VT,TF,DF,CEAs...> >
    : public IsRestricted<VT>
 {};
@@ -2334,7 +2389,7 @@ struct IsRestricted< Elements<VT,TF,DF,CEAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF, size_t... CEAs >
+template< typename VT, bool TF, typename... CEAs >
 struct HasConstDataAccess< Elements<VT,TF,true,CEAs...> >
    : public HasConstDataAccess<VT>
 {};
@@ -2352,7 +2407,7 @@ struct HasConstDataAccess< Elements<VT,TF,true,CEAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF, size_t... CEAs >
+template< typename VT, bool TF, typename... CEAs >
 struct HasMutableDataAccess< Elements<VT,TF,true,CEAs...> >
    : public HasMutableDataAccess<VT>
 {};

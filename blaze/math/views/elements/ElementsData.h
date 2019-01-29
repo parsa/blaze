@@ -65,9 +65,38 @@ namespace blaze {
 // of compile time element arguments. The basic implementation of ElementsData adapts the class
 // template to the requirements of multiple compile time element arguments.
 */
-template< size_t... CEAs >  // Compile time element arguments
+template< typename... CEAs >  // Compile time element arguments
 struct ElementsData
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CLASS TEMPLATE SPECIALIZATION FOR INDEX SEQUENCES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the ElementsData class template for index sequences.
+// \ingroup elements
+//
+// This specialization of ElementsData adapts the class template to the requirements of a non-zero
+// number of compile time indices.
+*/
+template< size_t I        // First element index
+        , size_t... Is >  // Remaining element indices
+struct ElementsData< index_sequence<I,Is...> >
 {
+ protected:
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = sizeof...( Is ) + 1UL;  //! Number of compile time indices.
+   //**********************************************************************************************
+
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
@@ -104,13 +133,13 @@ struct ElementsData
 
  private:
    //**Type definitions****************************************************************************
-   using Indices = std::array<size_t,sizeof...(CEAs)>;  //!< Type of the container for element indices.
+   using Indices = std::array<size_t,N>;  //!< Type of the container for element indices.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   static constexpr Indices indices_{ { CEAs... } };  //!< The indices of the elements in the vector.
+   static constexpr Indices indices_{ { I, Is... } };  //!< The indices of the elements in the vector.
    //@}
    //**********************************************************************************************
 };
@@ -122,8 +151,10 @@ struct ElementsData
 /*! \cond BLAZE_INTERNAL */
 #if BLAZE_CPP14_MODE
 // Definition and initialization of the static member variables
-template< size_t... CEAs >  // Compile time element arguments
-constexpr typename ElementsData<CEAs...>::Indices ElementsData<CEAs...>::indices_;
+template< size_t I        // First element index
+        , size_t... Is >  // Remaining element indices
+constexpr typename ElementsData< index_sequence<I,Is...> >::Indices
+   ElementsData< index_sequence<I,Is...> >::indices_;
 #endif
 /*! \endcond */
 //*************************************************************************************************
@@ -135,9 +166,10 @@ constexpr typename ElementsData<CEAs...>::Indices ElementsData<CEAs...>::indices
 //
 // \param args The optional element arguments.
 */
-template< size_t... CEAs >    // Compile time element arguments
+template< size_t I            // First element index
+        , size_t... Is >      // Remaining element indices
 template< typename... REAs >  // Optional element arguments
-inline ElementsData<CEAs...>::ElementsData( REAs... args ) noexcept
+inline ElementsData< index_sequence<I,Is...> >::ElementsData( REAs... args ) noexcept
 {
    UNUSED_PARAMETER( args... );
 }
@@ -151,10 +183,11 @@ inline ElementsData<CEAs...>::ElementsData( REAs... args ) noexcept
 //
 // \return A representation of the indices of the specified elements.
 */
-template< size_t... CEAs >  // Compile time element arguments
-inline constexpr decltype(auto) ElementsData<CEAs...>::idces() noexcept
+template< size_t I        // First element index
+        , size_t... Is >  // Remaining element indices
+inline constexpr decltype(auto) ElementsData< index_sequence<I,Is...> >::idces() noexcept
 {
-   return index_sequence<CEAs...>();
+   return index_sequence<I,Is...>();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -167,8 +200,9 @@ inline constexpr decltype(auto) ElementsData<CEAs...>::idces() noexcept
 // \param i Access index for the element.
 // \return The index of the specified element.
 */
-template< size_t... CEAs >  // Compile time element arguments
-inline constexpr size_t ElementsData<CEAs...>::idx( size_t i ) noexcept
+template< size_t I        // First element index
+        , size_t... Is >  // Remaining element indices
+inline constexpr size_t ElementsData< index_sequence<I,Is...> >::idx( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < size(), "Invalid element access index" );
    return indices_[i];
@@ -183,10 +217,11 @@ inline constexpr size_t ElementsData<CEAs...>::idx( size_t i ) noexcept
 //
 // \return The number of elements.
 */
-template< size_t... CEAs >  // Compile time element arguments
-inline constexpr size_t ElementsData<CEAs...>::size() noexcept
+template< size_t I        // First element index
+        , size_t... Is >  // Remaining element indices
+inline constexpr size_t ElementsData< index_sequence<I,Is...> >::size() noexcept
 {
-   return sizeof...( CEAs );
+   return N;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -211,6 +246,11 @@ inline constexpr size_t ElementsData<CEAs...>::size() noexcept
 template<>
 struct ElementsData<>
 {
+ protected:
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = 0UL;  //! Number of compile time indices.
+   //**********************************************************************************************
+
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
@@ -344,7 +384,7 @@ inline size_t ElementsData<>::size() const noexcept
 // \param rhs The right-hand side instance for the comparison.
 // \return \a true if the indices of both instances are equal, \a false if not.
 */
-template< size_t... CEAs1, size_t... CEAs2 >
+template< typename... CEAs1, typename... CEAs2 >
 inline constexpr bool
    compareIndices( const ElementsData<CEAs1...>& lhs, const ElementsData<CEAs2...>& rhs ) noexcept
 {

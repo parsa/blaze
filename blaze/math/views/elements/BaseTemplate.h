@@ -61,7 +61,7 @@ namespace blaze {
 template< typename VT                    // Type of the vector
         , bool TF = IsRowVector_v<VT>    // Transpose flag
         , bool DF = IsDenseVector_v<VT>  // Density flag
-        , size_t... CEAs >               // Compile time element arguments
+        , typename... CEAs >             // Compile time element arguments
 class Elements
 {};
 /*! \endcond */
@@ -84,8 +84,8 @@ class Elements
 // The Elements_ alias declaration represents a convenient shortcut for the specification of the
 // non-derived template arguments of the Elements class template.
 */
-template< typename VT       // Type of the vector
-        , size_t... CEAs >  // Compile time element arguments
+template< typename VT         // Type of the vector
+        , typename... CEAs >  // Compile time element arguments
 using Elements_ = Elements< VT
                           , IsRowVector_v<VT>
                           , IsDenseVector_v<VT>
