@@ -231,6 +231,146 @@ inline constexpr size_t ElementsData< index_sequence<I,Is...> >::size() noexcept
 
 //=================================================================================================
 //
+//  CLASS TEMPLATE SPECIALIZATION FOR INDEX PRODUCING CALLABLES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the ElementsData class template for index producing callables.
+// \ingroup elements
+//
+// This specialization of ElementsData adapts the class template to the requirements of index
+// producing callables.
+*/
+template< typename P >  // Type of the index producer
+struct ElementsData<P>
+{
+ protected:
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = 0UL;  //! Number of compile time indices.
+   //**********************************************************************************************
+
+ public:
+   //**Constructors********************************************************************************
+   /*!\name Constructors */
+   //@{
+   template< typename... REAs >
+   explicit inline ElementsData( P p, size_t n, REAs... args ) noexcept;
+
+   ElementsData( const ElementsData& ) = default;
+   ElementsData( ElementsData&& ) = default;
+   //@}
+   //**********************************************************************************************
+
+   //**Destructor**********************************************************************************
+   /*!\name Destructor */
+   //@{
+   ~ElementsData() = default;
+   //@}
+   //**********************************************************************************************
+
+   //**Assignment operators************************************************************************
+   /*!\name Assignment operators */
+   //@{
+   ElementsData& operator=( const ElementsData& ) = delete;
+   ElementsData& operator=( ElementsData&& ) = delete;
+   //@}
+   //**********************************************************************************************
+
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+   inline decltype(auto) idces() const noexcept;
+   inline size_t         idx  ( size_t i ) const noexcept;
+   inline size_t         size () const noexcept;
+   //@}
+   //**********************************************************************************************
+
+ private:
+   //**Member variables****************************************************************************
+   /*!\name Member variables */
+   //@{
+   P      p_;  //!< The callable producing the indices.
+   size_t n_;  //!< The total number of indices.
+   //@}
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The constructor for ElementsData.
+//
+// \param p A callable producing the indices.
+// \param n The total number of indices.
+// \param args The optional element arguments.
+*/
+template< typename P >        // Type of the index producer
+template< typename... REAs >  // Optional element arguments
+inline ElementsData<P>::ElementsData( P p, size_t n, REAs... args ) noexcept
+   : p_( p )
+   , n_( n )
+{
+   UNUSED_PARAMETER( args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns a representation of the indices of the specified elements in the underlying vector.
+//
+// \return A representation of the indices of the specified elements.
+*/
+template< typename P >  // Type of the index producer
+inline decltype(auto) ElementsData<P>::idces() const noexcept
+{
+   return std::make_pair( p_, n_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the index of the specified element in the underlying vector.
+//
+// \param i Access index for the element.
+// \return The index of the specified element.
+*/
+template< typename P >  // Type of the index producer
+inline size_t ElementsData<P>::idx( size_t i ) const noexcept
+{
+   BLAZE_USER_ASSERT( i < size(), "Invalid element access index" );
+   return p_(i);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the number of elements.
+//
+// \return The number of elements.
+*/
+template< typename P >  // Type of the index producer
+inline size_t ElementsData<P>::size() const noexcept
+{
+   return n_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  CLASS TEMPLATE SPECIALIZATION FOR ZERO COMPILE TIME ELEMENT ARGUMENTS
 //
 //=================================================================================================
