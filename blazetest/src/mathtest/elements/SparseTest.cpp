@@ -116,59 +116,527 @@ SparseTest::SparseTest()
 */
 void SparseTest::testConstructors()
 {
-   test_ = "Elements constructor";
+   using blaze::index_sequence;
+   using blaze::initializer_list;
 
-   initialize();
 
-   // Setup of empty element selection
+   //=====================================================================================
+   // Setup via index_sequence
+   //=====================================================================================
+
    {
-      std::vector<size_t> indices;
-      ET e = blaze::elements( vec_, indices.data(), 0UL );
+      test_ = "Elements constructor (index_sequence)";
 
-      if( e.size() != 0UL ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Setup of empty element selection failed\n"
-             << " Details:\n"
-             << "   Result:\n" << e << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
+      initialize();
 
-   // Setup of random in-bounds element selection
-   for( size_t rep=0UL; rep<100UL; ++rep )
-   {
-      blaze::DynamicVector<size_t> indices( blaze::rand<size_t>( 1UL, 20UL ) );
-      randomize( indices, 0UL, vec_.size()-1UL );
-      ET e = blaze::elements( vec_, indices.data(), indices.size() );
-
-      for( size_t i=0UL; i<e.size(); ++i )
+      // Setup of a regular element selection
       {
-         if( e[i] != vec_[indices[i]] ) {
+         auto e = blaze::elements( vec_, index_sequence<2,6,4>() );
+
+         if( e.size() != 3UL || e[0] != vec_[2] || e[1] != vec_[6] || e[2] != vec_[4] ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setup of element selection failed\n"
                 << " Details:\n"
-                << "   Indices:\n" << indices << "\n"
-                << "   Element selection:\n" << e << "\n"
-                << "   Vector:\n" << vec_ << "\n";
+                << "   Result:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds element selection
+      try {
+         auto e = blaze::elements( vec_, index_sequence<8>() );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds element selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << e << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of an element selection on a compile-time element selection
+      {
+         auto e1 = blaze::elements( vec_, index_sequence<2,6,4,3,5>() );
+         auto e2 = blaze::elements( e1, index_sequence<1,3,2>() );
+
+         if( e2.size() != 3UL || e2[0] != vec_[6] || e2[1] != vec_[3] || e2[2] != vec_[4] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of element selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a element selection on an explicit element selection
+      {
+         auto e1 = blaze::elements( vec_, { 2, 6, 4, 3, 5 } );
+         auto e2 = blaze::elements( e1, index_sequence<1,3,2>() );
+
+         if( e2.size() != 3UL || e2[0] != vec_[6] || e2[1] != vec_[3] || e2[2] != vec_[4] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of element selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a element selection on an implicit element selection
+      {
+         const std::array<size_t,5UL> indices{ 2, 6, 4, 3, 5 };
+         auto e1 = blaze::elements( vec_, [indices]( size_t i ){ return indices[i]; }, 5UL );
+         auto e2 = blaze::elements( e1, index_sequence<1,3,2>() );
+
+         if( e2.size() != 3UL || e2[0] != vec_[6] || e2[1] != vec_[3] || e2[2] != vec_[4] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of element selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e2 << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
    }
 
-   // Trying to setup an out-of-bounds element selection
-   try {
-      ET e = blaze::elements( vec_, { 8 } );
 
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Setup of out-of-bounds element selection succeeded\n"
-          << " Details:\n"
-          << "   Result:\n" << e << "\n";
-      throw std::runtime_error( oss.str() );
+   //=====================================================================================
+   // Setup via initializer_list
+   //=====================================================================================
+
+   {
+      test_ = "Elements constructor (initializer_list)";
+
+      initialize();
+
+      // Setup of empty element selection
+      {
+         std::initializer_list<size_t> indices{};
+         auto e = blaze::elements( vec_, indices );
+
+         if( e.size() != 0UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of empty element selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a regular element selection
+      {
+         auto e = blaze::elements( vec_, { 2, 6, 4 } );
+
+         if( e.size() != 3UL || e[0] != vec_[2] || e[1] != vec_[6] || e[2] != vec_[4] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of element selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds element selection
+      try {
+         auto e = blaze::elements( vec_, { 8 } );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds element selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << e << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of an element selection on a compile-time element selection
+      {
+         auto e1 = blaze::elements( vec_, index_sequence<2,6,4,3,5>() );
+         auto e2 = blaze::elements( e1, { 1, 3, 2 } );
+
+         if( e2.size() != 3UL || e2[0] != vec_[6] || e2[1] != vec_[3] || e2[2] != vec_[4] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of element selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a element selection on an explicit element selection
+      {
+         auto e1 = blaze::elements( vec_, { 2, 6, 4, 3, 5 } );
+         auto e2 = blaze::elements( e1, { 1, 3, 2 } );
+
+         if( e2.size() != 3UL || e2[0] != vec_[6] || e2[1] != vec_[3] || e2[2] != vec_[4] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of element selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a element selection on an implicit element selection
+      {
+         const std::array<size_t,5UL> indices{ 2, 6, 4, 3, 5 };
+         auto e1 = blaze::elements( vec_, [indices]( size_t i ){ return indices[i]; }, 5UL );
+         auto e2 = blaze::elements( e1, { 1, 3, 2 } );
+
+         if( e2.size() != 3UL || e2[0] != vec_[6] || e2[1] != vec_[3] || e2[2] != vec_[4] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of element selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
    }
-   catch( std::invalid_argument& ) {}
+
+
+   //=====================================================================================
+   // Setup via std::vector
+   //=====================================================================================
+
+   {
+      test_ = "Elements constructor (std::vector)";
+
+      initialize();
+
+      // Setup of empty element selection
+      {
+         const std::vector<size_t> indices;
+         auto e = blaze::elements( vec_, indices );
+
+         if( e.size() != 0UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of empty element selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a regular element selection
+      {
+         const std::vector<size_t> indices{ 2, 6, 4 };
+         auto e = blaze::elements( vec_, indices );
+
+         if( e.size() != 3UL || e[0] != vec_[2] || e[1] != vec_[6] || e[2] != vec_[4] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of element selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds element selection
+      try {
+         const std::vector<size_t> indices{ 8 };
+         auto e = blaze::elements( vec_, indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds element selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << e << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of an element selection on a compile-time element selection
+      {
+         auto e1 = blaze::elements( vec_, index_sequence<2,6,4,3,5>() );
+
+         const std::vector<size_t> indices{ 1, 3, 2 };
+         auto e2 = blaze::elements( e1, indices );
+
+         if( e2.size() != 3UL || e2[0] != vec_[6] || e2[1] != vec_[3] || e2[2] != vec_[4] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of element selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a element selection on an explicit element selection
+      {
+         auto e1 = blaze::elements( vec_, { 2, 6, 4, 3, 5 } );
+
+         const std::vector<size_t> indices{ 1, 3, 2 };
+         auto e2 = blaze::elements( e1, indices );
+
+         if( e2.size() != 3UL || e2[0] != vec_[6] || e2[1] != vec_[3] || e2[2] != vec_[4] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of element selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a element selection on an implicit element selection
+      {
+         const std::array<size_t,5UL> indices1{ 2, 6, 4, 3, 5 };
+         auto e1 = blaze::elements( vec_, [indices1]( size_t i ){ return indices1[i]; }, 5UL );
+
+         const std::vector<size_t> indices2{ 1, 3, 2 };
+         auto e2 = blaze::elements( e1, indices2 );
+
+         if( e2.size() != 3UL || e2[0] != vec_[6] || e2[1] != vec_[3] || e2[2] != vec_[4] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of element selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Setup via std::array
+   //=====================================================================================
+
+   {
+      test_ = "Elements constructor (std::array)";
+
+      initialize();
+
+      // Setup of a regular element selection
+      {
+         const std::array<size_t,3UL> indices{ 2, 6, 4 };
+         auto e = blaze::elements( vec_, indices );
+
+         if( e.size() != 3UL || e[0] != vec_[2] || e[1] != vec_[6] || e[2] != vec_[4] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of element selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds element selection
+      try {
+         const std::array<size_t,1UL> indices{ 8 };
+         auto e = blaze::elements( vec_, indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds element selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << e << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of an element selection on a compile-time element selection
+      {
+         auto e1 = blaze::elements( vec_, index_sequence<2,6,4,3,5>() );
+
+         const std::array<size_t,3UL> indices{ 1, 3, 2 };
+         auto e2 = blaze::elements( e1, indices );
+
+         if( e2.size() != 3UL || e2[0] != vec_[6] || e2[1] != vec_[3] || e2[2] != vec_[4] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of element selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a element selection on an explicit element selection
+      {
+         auto e1 = blaze::elements( vec_, { 2, 6, 4, 3, 5 } );
+
+         const std::array<size_t,3UL> indices{ 1, 3, 2 };
+         auto e2 = blaze::elements( e1, indices );
+
+         if( e2.size() != 3UL || e2[0] != vec_[6] || e2[1] != vec_[3] || e2[2] != vec_[4] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of element selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a element selection on an implicit element selection
+      {
+         const std::array<size_t,5UL> indices1{ 2, 6, 4, 3, 5 };
+         auto e1 = blaze::elements( vec_, [indices1]( size_t i ){ return indices1[i]; }, 5UL );
+
+         const std::array<size_t,3UL> indices2{ 1, 3, 2 };
+         auto e2 = blaze::elements( e1, indices2 );
+
+         if( e2.size() != 3UL || e2[0] != vec_[6] || e2[1] != vec_[3] || e2[2] != vec_[4] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of element selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Setup via lambda expression
+   //=====================================================================================
+
+   {
+      test_ = "Elements constructor (lambda expression)";
+
+      initialize();
+
+      // Setup of empty element selection
+      {
+         auto e = blaze::elements( vec_, []( size_t ){ return 0UL; }, 0UL );
+
+         if( e.size() != 0UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of empty element selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a regular element selection
+      {
+         const std::array<size_t,3UL> indices{ 2, 6, 4 };
+         auto e = blaze::elements( vec_, [indices]( size_t i ){ return indices[i]; }, 3UL );
+
+         if( e.size() != 3UL || e[0] != vec_[2] || e[1] != vec_[6] || e[2] != vec_[4] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of element selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds element selection
+      try {
+         auto e = blaze::elements( vec_, []( size_t ){ return 8UL; }, 1UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds element selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << e << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of an element selection on a compile-time element selection
+      {
+         auto e1 = blaze::elements( vec_, index_sequence<2,6,4,3,5>() );
+
+         const std::array<size_t,3UL> indices{ 1, 3, 2 };
+         auto e2 = blaze::elements( e1, [indices]( size_t i ){ return indices[i]; }, 3UL );
+
+         if( e2.size() != 3UL || e2[0] != vec_[6] || e2[1] != vec_[3] || e2[2] != vec_[4] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of element selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a element selection on an explicit element selection
+      {
+         auto e1 = blaze::elements( vec_, { 2, 6, 4, 3, 5 } );
+
+         const std::array<size_t,3UL> indices{ 1, 3, 2 };
+         auto e2 = blaze::elements( e1, [indices]( size_t i ){ return indices[i]; }, 3UL );
+
+         if( e2.size() != 3UL || e2[0] != vec_[6] || e2[1] != vec_[3] || e2[2] != vec_[4] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of element selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a element selection on an implicit element selection
+      {
+         const std::array<size_t,5UL> indices1{ 2, 6, 4, 3, 5 };
+         auto e1 = blaze::elements( vec_, [indices1]( size_t i ){ return indices1[i]; }, 5UL );
+
+         const std::array<size_t,3UL> indices2{ 1, 3, 2 };
+         auto e2 = blaze::elements( e1, [indices2]( size_t i ){ return indices2[i]; }, 3UL );
+
+         if( e2.size() != 3UL || e2[0] != vec_[6] || e2[1] != vec_[3] || e2[2] != vec_[4] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of element selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Setup of random in-bounds element selection
+   //=====================================================================================
+
+   {
+      test_ = "Elements constructor (stress test)";
+
+      initialize();
+
+      for( size_t rep=0UL; rep<100UL; ++rep )
+      {
+         blaze::DynamicVector<size_t> indices( blaze::rand<size_t>( 1UL, 20UL ) );
+         randomize( indices, 0UL, vec_.size()-1UL );
+         auto e = blaze::elements( vec_, indices.data(), indices.size() );
+
+         for( size_t i=0UL; i<e.size(); ++i )
+         {
+            if( e[i] != vec_[indices[i]] ) {
+               std::ostringstream oss;
+               oss << " Test: " << test_ << "\n"
+                   << " Error: Setup of element selection failed\n"
+                   << " Details:\n"
+                   << "   Indices:\n" << indices << "\n"
+                   << "   Element selection:\n" << e << "\n"
+                   << "   Vector:\n" << vec_ << "\n";
+               throw std::runtime_error( oss.str() );
+            }
+         }
+      }
+   }
 }
 //*************************************************************************************************
 
@@ -193,7 +661,7 @@ void SparseTest::testAssignment()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 0UL, 4UL, 3UL, 7UL } );
+      auto e = blaze::elements( vec_, { 0UL, 4UL, 3UL, 7UL } );
       e = { 1, 2, 3, 4 };
 
       checkSize    ( e   ,  4UL );
@@ -228,7 +696,7 @@ void SparseTest::testAssignment()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 0UL, 4UL, 3UL, 7UL } );
+      auto e = blaze::elements( vec_, { 0UL, 4UL, 3UL, 7UL } );
       e = { 1, 2 };
 
       checkSize    ( e   ,  4UL );
@@ -272,7 +740,7 @@ void SparseTest::testAssignment()
       vec[5] =  6;
       vec[6] = -8;
 
-      ET e = blaze::elements( vec, { 5UL, 2UL, 7UL } );
+      auto e = blaze::elements( vec, { 5UL, 2UL, 7UL } );
       e = blaze::elements( vec_, { 7UL, 3UL, 6UL } );
 
       checkSize    ( e   ,  3UL );
@@ -309,7 +777,7 @@ void SparseTest::testAssignment()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL } );
+      auto e = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL } );
       e = blaze::elements( vec_, { 6UL, 5UL, 4UL, 3UL } );
 
       checkSize    ( e   , 4UL );
@@ -349,7 +817,7 @@ void SparseTest::testAssignment()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 1UL, 3UL, 5UL, 6UL } );
+      auto e = blaze::elements( vec_, { 1UL, 3UL, 5UL, 6UL } );
 
       const blaze::DynamicVector<int,blaze::rowVector> vec{ 0, 8, 0, 9 };
 
@@ -393,7 +861,7 @@ void SparseTest::testAssignment()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 1UL, 3UL, 5UL, 6UL } );
+      auto e = blaze::elements( vec_, { 1UL, 3UL, 5UL, 6UL } );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL, 1UL );
       vec[3] = 9;
@@ -455,7 +923,7 @@ void SparseTest::testAddAssign()
       vec[5] =  6;
       vec[6] = -8;
 
-      ET e = blaze::elements( vec, { 5UL, 2UL, 7UL } );
+      auto e = blaze::elements( vec, { 5UL, 2UL, 7UL } );
       e += blaze::elements( vec_, { 7UL, 3UL, 6UL } );
 
       checkSize    ( e   ,  3UL );
@@ -492,7 +960,7 @@ void SparseTest::testAddAssign()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 3UL, 4UL, 5UL, 6UL } );
+      auto e = blaze::elements( vec_, { 3UL, 4UL, 5UL, 6UL } );
       e += blaze::elements( vec_, { 4UL, 3UL, 2UL, 1UL } );
 
       checkSize    ( e   , 4UL );
@@ -532,7 +1000,7 @@ void SparseTest::testAddAssign()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 1UL, 3UL, 5UL, 6UL } );
+      auto e = blaze::elements( vec_, { 1UL, 3UL, 5UL, 6UL } );
 
       const blaze::DynamicVector<int,blaze::rowVector> vec{ 0, 8, 0, 9 };
 
@@ -575,7 +1043,7 @@ void SparseTest::testAddAssign()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 1UL, 3UL, 5UL, 6UL } );
+      auto e = blaze::elements( vec_, { 1UL, 3UL, 5UL, 6UL } );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL, 1UL );
       vec[3] = 9;
@@ -636,7 +1104,7 @@ void SparseTest::testSubAssign()
       vec[5] =  6;
       vec[6] = -8;
 
-      ET e = blaze::elements( vec, { 5UL, 2UL, 7UL } );
+      auto e = blaze::elements( vec, { 5UL, 2UL, 7UL } );
       e -= blaze::elements( vec_, { 7UL, 3UL, 6UL } );
 
       checkSize    ( e   ,  3UL );
@@ -673,7 +1141,7 @@ void SparseTest::testSubAssign()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 3UL, 4UL, 5UL, 6UL } );
+      auto e = blaze::elements( vec_, { 3UL, 4UL, 5UL, 6UL } );
       e -= blaze::elements( vec_, { 4UL, 3UL, 2UL, 1UL } );
 
       checkSize    ( e   , 4UL );
@@ -713,7 +1181,7 @@ void SparseTest::testSubAssign()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 1UL, 3UL, 5UL, 6UL } );
+      auto e = blaze::elements( vec_, { 1UL, 3UL, 5UL, 6UL } );
 
       const blaze::DynamicVector<int,blaze::rowVector> vec{ 0, 8, 0, 9 };
 
@@ -756,7 +1224,7 @@ void SparseTest::testSubAssign()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 1UL, 3UL, 5UL, 6UL } );
+      auto e = blaze::elements( vec_, { 1UL, 3UL, 5UL, 6UL } );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL, 1UL );
       vec[3] = 9;
@@ -817,7 +1285,7 @@ void SparseTest::testMultAssign()
       vec[5] =  6;
       vec[6] = -8;
 
-      ET e = blaze::elements( vec, { 6UL, 2UL, 5UL } );
+      auto e = blaze::elements( vec, { 6UL, 2UL, 5UL } );
       e *= blaze::elements( vec_, { 7UL, 3UL, 6UL } );
 
       checkSize    ( e   ,  3UL );
@@ -854,7 +1322,7 @@ void SparseTest::testMultAssign()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 3UL, 4UL, 5UL, 6UL } );
+      auto e = blaze::elements( vec_, { 3UL, 4UL, 5UL, 6UL } );
       e *= blaze::elements( vec_, { 4UL, 3UL, 2UL, 1UL } );
 
       checkSize    ( e   , 4UL );
@@ -894,7 +1362,7 @@ void SparseTest::testMultAssign()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 1UL, 3UL, 5UL, 6UL } );
+      auto e = blaze::elements( vec_, { 1UL, 3UL, 5UL, 6UL } );
 
       const blaze::DynamicVector<int,blaze::rowVector> vec{ 2, 0, -8, 1 };
 
@@ -937,7 +1405,7 @@ void SparseTest::testMultAssign()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 1UL, 3UL, 5UL, 6UL } );
+      auto e = blaze::elements( vec_, { 1UL, 3UL, 5UL, 6UL } );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 4UL, 2UL );
       vec[0] = 2;
@@ -995,7 +1463,7 @@ void SparseTest::testDivAssign()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 1UL, 3UL, 5UL, 6UL } );
+      auto e = blaze::elements( vec_, { 1UL, 3UL, 5UL, 6UL } );
 
       const blaze::DynamicVector<int,blaze::rowVector> vec{ 2, -2, 1, -2 };
 
@@ -1056,7 +1524,7 @@ void SparseTest::testCrossAssign()
       vec[6] = -2;
       vec[7] =  4;
 
-      ET e = blaze::elements( vec, { 6UL, 5UL, 4UL } );
+      auto e = blaze::elements( vec, { 6UL, 5UL, 4UL } );
       e %= blaze::elements( vec_, { 1UL, 5UL, 3UL } );
 
       checkSize    ( e   ,  3UL );
@@ -1093,7 +1561,7 @@ void SparseTest::testCrossAssign()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 3UL, 2UL, 1UL } );
+      auto e = blaze::elements( vec_, { 3UL, 2UL, 1UL } );
       e %= blaze::elements( vec_, { 1UL, 5UL, 3UL } );
 
       checkSize    ( e   , 3UL );
@@ -1133,7 +1601,7 @@ void SparseTest::testCrossAssign()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 3UL, 2UL, 1UL } );
+      auto e = blaze::elements( vec_, { 3UL, 2UL, 1UL } );
 
       const blaze::DynamicVector<int,blaze::rowVector> vec{ 1, 0, -2 };
 
@@ -1176,7 +1644,7 @@ void SparseTest::testCrossAssign()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 3UL, 2UL, 1UL } );
+      auto e = blaze::elements( vec_, { 3UL, 2UL, 1UL } );
 
       blaze::CompressedVector<int,blaze::rowVector> vec( 3UL, 2UL );
       vec[0] =  1;
@@ -1234,7 +1702,7 @@ void SparseTest::testScaling()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 1UL, 3UL, 2UL } );
+      auto e = blaze::elements( vec_, { 1UL, 3UL, 2UL } );
 
       e *= 3;
 
@@ -1275,7 +1743,7 @@ void SparseTest::testScaling()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 1UL, 3UL, 2UL } );
+      auto e = blaze::elements( vec_, { 1UL, 3UL, 2UL } );
 
       e = e * 3;
 
@@ -1316,7 +1784,7 @@ void SparseTest::testScaling()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 1UL, 3UL, 2UL } );
+      auto e = blaze::elements( vec_, { 1UL, 3UL, 2UL } );
 
       e = 3 * e;
 
@@ -1357,7 +1825,7 @@ void SparseTest::testScaling()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 1UL, 3UL, 2UL } );
+      auto e = blaze::elements( vec_, { 1UL, 3UL, 2UL } );
 
       e /= 0.5;
 
@@ -1398,7 +1866,7 @@ void SparseTest::testScaling()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 1UL, 3UL, 2UL } );
+      auto e = blaze::elements( vec_, { 1UL, 3UL, 2UL } );
 
       e = e / 0.5;
 
@@ -1439,7 +1907,7 @@ void SparseTest::testScaling()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 1UL, 3UL, 2UL } );
+      auto e = blaze::elements( vec_, { 1UL, 3UL, 2UL } );
 
       // Integral scaling of the element selection in the range [1,4]
       e.scale( 3 );
@@ -1519,7 +1987,7 @@ void SparseTest::testSubscript()
 
    initialize();
 
-   ET e = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL } );
+   auto e = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL } );
 
    // Assignment to the element at index 1
    e[1] = 9;
@@ -1772,8 +2240,8 @@ void SparseTest::testIterator()
    {
       test_ = "Iterator/ConstIterator conversion";
 
-      ET e = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL } );
-      ET::ConstIterator it( begin( e ) );
+      auto e = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL } );
+      auto it( begin( e ) );
 
       if( it == end( e ) || it->value() != 1 ) {
          std::ostringstream oss;
@@ -1787,7 +2255,7 @@ void SparseTest::testIterator()
    {
       test_ = "Iterator subtraction (end-begin)";
 
-      ET e = blaze::elements( vec_, { 0UL, 1UL, 2UL, 3UL } );
+      auto e = blaze::elements( vec_, { 0UL, 1UL, 2UL, 3UL } );
       const ptrdiff_t number( end( e ) - begin( e ) );
 
       if( number != 2L ) {
@@ -1805,7 +2273,7 @@ void SparseTest::testIterator()
    {
       test_ = "ConstIterator subtraction (end-begin)";
 
-      ET e = blaze::elements( vec_, { 4UL, 5UL, 6UL, 7UL } );
+      auto e = blaze::elements( vec_, { 4UL, 5UL, 6UL, 7UL } );
       const ptrdiff_t number( cend( e ) - cbegin( e ) );
 
       if( number != 2L ) {
@@ -1823,9 +2291,9 @@ void SparseTest::testIterator()
    {
       test_ = "Read-only access via ConstIterator";
 
-      ET e = blaze::elements( vec_, { 1UL, 2UL, 3UL } );
-      ET::ConstIterator it ( cbegin( e ) );
-      ET::ConstIterator end( cend( e ) );
+      auto e = blaze::elements( vec_, { 1UL, 2UL, 3UL } );
+      auto it ( cbegin( e ) );
+      auto end( cend( e ) );
 
       if( it == end || it->value() != 1 ) {
          std::ostringstream oss;
@@ -1857,10 +2325,10 @@ void SparseTest::testIterator()
    {
       test_ = "Assignment via Iterator";
 
-      ET e = blaze::elements( vec_, { 2UL, 3UL, 4UL, 5UL } );
+      auto e = blaze::elements( vec_, { 2UL, 3UL, 4UL, 5UL } );
       int value = 6;
 
-      for( ET::Iterator it=begin( e ); it!=end( e ); ++it ) {
+      for( auto it=begin( e ); it!=end( e ); ++it ) {
          *it = value++;
       }
 
@@ -1890,10 +2358,10 @@ void SparseTest::testIterator()
    {
       test_ = "Addition assignment via Iterator";
 
-      ET e = blaze::elements( vec_, { 2UL, 3UL, 4UL, 5UL } );
+      auto e = blaze::elements( vec_, { 2UL, 3UL, 4UL, 5UL } );
       int value = 2;
 
-      for( ET::Iterator it=begin( e ); it!=end( e ); ++it ) {
+      for( auto it=begin( e ); it!=end( e ); ++it ) {
          *it += value++;
       }
 
@@ -1923,10 +2391,10 @@ void SparseTest::testIterator()
    {
       test_ = "Subtraction assignment via Iterator";
 
-      ET e = blaze::elements( vec_, { 2UL, 3UL, 4UL, 5UL } );
+      auto e = blaze::elements( vec_, { 2UL, 3UL, 4UL, 5UL } );
       int value = 2;
 
-      for( ET::Iterator it=begin( e ); it!=end( e ); ++it ) {
+      for( auto it=begin( e ); it!=end( e ); ++it ) {
          *it -= value++;
       }
 
@@ -1956,10 +2424,10 @@ void SparseTest::testIterator()
    {
       test_ = "Multiplication assignment via Iterator";
 
-      ET e = blaze::elements( vec_, { 2UL, 3UL, 4UL, 5UL } );
+      auto e = blaze::elements( vec_, { 2UL, 3UL, 4UL, 5UL } );
       int value = 1;
 
-      for( ET::Iterator it=begin( e ); it!=end( e ); ++it ) {
+      for( auto it=begin( e ); it!=end( e ); ++it ) {
          *it *= value++;
       }
 
@@ -1989,9 +2457,9 @@ void SparseTest::testIterator()
    {
       test_ = "Division assignment via Iterator";
 
-      ET e = blaze::elements( vec_, { 2UL, 3UL, 4UL, 5UL } );
+      auto e = blaze::elements( vec_, { 2UL, 3UL, 4UL, 5UL } );
 
-      for( ET::Iterator it=begin( e ); it!=end( e ); ++it ) {
+      for( auto it=begin( e ); it!=end( e ); ++it ) {
          *it /= 2;
       }
 
@@ -2036,7 +2504,7 @@ void SparseTest::testNonZeros()
    initialize();
 
    // Initialization check
-   ET e = blaze::elements( vec_, { 3UL, 2UL, 1UL, 0UL } );
+   auto e = blaze::elements( vec_, { 3UL, 2UL, 1UL, 0UL } );
 
    checkSize    ( e   , 4UL );
    checkNonZeros( e   , 2UL );
@@ -2111,7 +2579,7 @@ void SparseTest::testReset()
    {
       initialize();
 
-      ET e = blaze::elements( vec_, { 6UL, 3UL, 2UL, 5UL, 4UL, 1UL } );
+      auto e = blaze::elements( vec_, { 6UL, 3UL, 2UL, 5UL, 4UL, 1UL } );
       reset( e[1] );
 
       checkSize    ( e   , 6UL );
@@ -2134,7 +2602,7 @@ void SparseTest::testReset()
    {
       initialize();
 
-      ET e = blaze::elements( vec_, { 3UL, 2UL, 1UL, 0UL } );
+      auto e = blaze::elements( vec_, { 3UL, 2UL, 1UL, 0UL } );
       reset( e );
 
       checkSize    ( e   , 4UL );
@@ -2207,7 +2675,7 @@ void SparseTest::testClear()
    {
       initialize();
 
-      ET e = blaze::elements( vec_, { 6UL, 3UL, 2UL, 5UL, 4UL, 1UL } );
+      auto e = blaze::elements( vec_, { 6UL, 3UL, 2UL, 5UL, 4UL, 1UL } );
       clear( e[1] );
 
       checkSize    ( e   , 6UL );
@@ -2230,7 +2698,7 @@ void SparseTest::testClear()
    {
       initialize();
 
-      ET e = blaze::elements( vec_, { 3UL, 2UL, 1UL, 0UL } );
+      auto e = blaze::elements( vec_, { 3UL, 2UL, 1UL, 0UL } );
       clear( e );
 
       checkSize    ( e   , 4UL );
@@ -2299,7 +2767,7 @@ void SparseTest::testReserve()
 
    VT vec( 10UL );
 
-   ET e = blaze::elements( vec, { 2UL, 5UL, 4UL, 3UL } );
+   auto e = blaze::elements( vec, { 2UL, 5UL, 4UL, 3UL } );
 
    // Increasing the capacity of the vector
    e.reserve( 10UL );
@@ -2333,11 +2801,11 @@ void SparseTest::testSet()
 
    initialize();
 
-   ET e = blaze::elements( vec_, { 0UL, 1UL, 2UL, 3UL, 4UL, 5UL, 6UL, 7UL } );
+   auto e = blaze::elements( vec_, { 0UL, 1UL, 2UL, 3UL, 4UL, 5UL, 6UL, 7UL } );
 
    // Setting a non-zero element at the end of the element selection
    {
-      ET::Iterator pos = e.set( 7UL, 9 );
+      auto pos = e.set( 7UL, 9 );
 
       checkSize    ( e   , 8UL );
       checkNonZeros( e   , 5UL );
@@ -2370,7 +2838,7 @@ void SparseTest::testSet()
 
    // Setting a non-zero element at the beginning of the element selection
    {
-      ET::Iterator pos = e.set( 0UL, 9 );
+      auto pos = e.set( 0UL, 9 );
 
       checkSize    ( e   , 8UL );
       checkNonZeros( e   , 6UL );
@@ -2403,7 +2871,7 @@ void SparseTest::testSet()
 
    // Setting a non-zero element at the center of the element selection
    {
-      ET::Iterator pos = e.set( 2UL, 9 );
+      auto pos = e.set( 2UL, 9 );
 
       checkSize    ( e   , 8UL );
       checkNonZeros( e   , 7UL );
@@ -2436,7 +2904,7 @@ void SparseTest::testSet()
 
    // Setting an already existing element
    {
-      ET::Iterator pos = e.set( 3UL, 9 );
+      auto pos = e.set( 3UL, 9 );
 
       checkSize    ( e   , 8UL );
       checkNonZeros( e   , 7UL );
@@ -2485,11 +2953,11 @@ void SparseTest::testInsert()
 
    initialize();
 
-   ET e = blaze::elements( vec_, { 0UL, 1UL, 2UL, 3UL, 4UL, 5UL, 6UL, 7UL } );
+   auto e = blaze::elements( vec_, { 0UL, 1UL, 2UL, 3UL, 4UL, 5UL, 6UL, 7UL } );
 
    // Inserting a non-zero element at the end of the element selection
    {
-      ET::Iterator pos = e.insert( 7UL, 9 );
+      auto pos = e.insert( 7UL, 9 );
 
       checkSize    ( e   , 8UL );
       checkNonZeros( e   , 5UL );
@@ -2522,7 +2990,7 @@ void SparseTest::testInsert()
 
    // Inserting a non-zero element at the beginning of the element selection
    {
-      ET::Iterator pos = e.insert( 0UL, 9 );
+      auto pos = e.insert( 0UL, 9 );
 
       checkSize    ( e   , 8UL );
       checkNonZeros( e   , 6UL );
@@ -2555,7 +3023,7 @@ void SparseTest::testInsert()
 
    // Inserting a non-zero element at the center of the element selection
    {
-      ET::Iterator pos = e.insert( 2UL, 9 );
+      auto pos = e.insert( 2UL, 9 );
 
       checkSize    ( e   , 8UL );
       checkNonZeros( e   , 7UL );
@@ -2618,7 +3086,7 @@ void SparseTest::testAppend()
 
    VT vec( 10UL );
 
-   ET e = blaze::elements( vec, { 2UL, 3UL, 4UL, 5UL } );
+   auto e = blaze::elements( vec, { 2UL, 3UL, 4UL, 5UL } );
    e.reserve( 4UL );
 
    // Appending one non-zero element
@@ -2682,7 +3150,7 @@ void SparseTest::testErase()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL, 5UL, 6UL } );
+      auto e = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL, 5UL, 6UL } );
 
       // Erasing the non-zero element at the end of the element selection
       e.erase( 5UL );
@@ -2771,11 +3239,11 @@ void SparseTest::testErase()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL, 5UL, 6UL } );
+      auto e = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL, 5UL, 6UL } );
 
       // Erasing the non-zero element at the end of the element selection
       {
-         ET::Iterator pos = e.erase( e.find( 5UL ) );
+         auto pos = e.erase( e.find( 5UL ) );
 
          checkSize    ( e   , 6UL );
          checkNonZeros( e   , 3UL );
@@ -2805,7 +3273,7 @@ void SparseTest::testErase()
 
       // Erasing the non-zero element at the beginning of the element selection
       {
-         ET::Iterator pos = e.erase( e.find( 0UL ) );
+         auto pos = e.erase( e.find( 0UL ) );
 
          checkSize    ( e   , 6UL );
          checkNonZeros( e   , 2UL );
@@ -2838,7 +3306,7 @@ void SparseTest::testErase()
 
       // Erasing the non-zero element at the beginning of the element selection
       {
-         ET::Iterator pos = e.erase( e.find( 2UL ) );
+         auto pos = e.erase( e.find( 2UL ) );
 
          checkSize    ( e   , 6UL );
          checkNonZeros( e   , 1UL );
@@ -2871,7 +3339,7 @@ void SparseTest::testErase()
 
       // Trying to erase an already erased element
       {
-         ET::Iterator pos = e.erase( e.find( 2UL ) );
+         auto pos = e.erase( e.find( 2UL ) );
 
          checkSize    ( e   , 6UL );
          checkNonZeros( e   , 1UL );
@@ -2912,9 +3380,9 @@ void SparseTest::testErase()
       {
          initialize();
 
-         ET e = blaze::elements( vec_, { 0UL, 1UL, 2UL, 3UL, 4UL, 5UL, 6UL, 7UL } );
+         auto e = blaze::elements( vec_, { 0UL, 1UL, 2UL, 3UL, 4UL, 5UL, 6UL, 7UL } );
 
-         ET::Iterator pos = e.erase( e.begin(), e.end() );
+         auto pos = e.erase( e.begin(), e.end() );
 
          checkSize    ( e   , 8UL );
          checkNonZeros( e   , 0UL );
@@ -2946,9 +3414,9 @@ void SparseTest::testErase()
       {
          initialize();
 
-         ET e = blaze::elements( vec_, { 0UL, 1UL, 2UL, 3UL, 4UL, 5UL, 6UL, 7UL } );
+         auto e = blaze::elements( vec_, { 0UL, 1UL, 2UL, 3UL, 4UL, 5UL, 6UL, 7UL } );
 
-         ET::Iterator pos = e.erase( e.begin(), e.find( 4UL ) );
+         auto pos = e.erase( e.begin(), e.find( 4UL ) );
 
          checkSize    ( e   , 8UL );
          checkNonZeros( e   , 2UL );
@@ -2983,9 +3451,9 @@ void SparseTest::testErase()
       {
          initialize();
 
-         ET e = blaze::elements( vec_, { 0UL, 1UL, 2UL, 3UL, 4UL, 5UL, 6UL, 7UL } );
+         auto e = blaze::elements( vec_, { 0UL, 1UL, 2UL, 3UL, 4UL, 5UL, 6UL, 7UL } );
 
-         ET::Iterator pos = e.erase( e.find( 4UL ), e.end() );
+         auto pos = e.erase( e.find( 4UL ), e.end() );
 
          checkSize    ( e   , 8UL );
          checkNonZeros( e   , 2UL );
@@ -3017,9 +3485,9 @@ void SparseTest::testErase()
       {
          initialize();
 
-         ET e = blaze::elements( vec_, { 0UL, 1UL, 2UL, 3UL, 4UL, 5UL, 6UL, 7UL } );
+         auto e = blaze::elements( vec_, { 0UL, 1UL, 2UL, 3UL, 4UL, 5UL, 6UL, 7UL } );
 
-         ET::Iterator pos = e.erase( e.find( 1UL ), e.find( 1UL ) );
+         auto pos = e.erase( e.find( 1UL ), e.find( 1UL ) );
 
          checkSize    ( e   , 8UL );
          checkNonZeros( e   , 4UL );
@@ -3058,7 +3526,7 @@ void SparseTest::testErase()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL, 5UL, 6UL } );
+      auto e = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL, 5UL, 6UL } );
 
       // Erasing a selection of elements
       e.erase( []( int value ){ return value == 1 || value == 4; } );
@@ -3109,7 +3577,7 @@ void SparseTest::testErase()
 
       initialize();
 
-      ET e = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL, 5UL, 6UL } );
+      auto e = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL, 5UL, 6UL } );
 
       // Erasing a selection of elements
       e.erase( e.begin(), e.find( 3UL ), []( int value ){ return value == 1; } );
@@ -3168,11 +3636,11 @@ void SparseTest::testFind()
 
    initialize();
 
-   ET e = blaze::elements( vec_, { 1UL, 5UL, 2UL, 4UL, 3UL } );
+   auto e = blaze::elements( vec_, { 1UL, 5UL, 2UL, 4UL, 3UL } );
 
    // Searching for the first element
    {
-      ET::Iterator pos = e.find( 0UL );
+      auto pos = e.find( 0UL );
 
       if( pos == e.end() ) {
          std::ostringstream oss;
@@ -3199,7 +3667,7 @@ void SparseTest::testFind()
 
    // Searching for the second element
    {
-      ET::Iterator pos = e.find( 3UL );
+      auto pos = e.find( 3UL );
 
       if( pos == e.end() ) {
          std::ostringstream oss;
@@ -3226,7 +3694,7 @@ void SparseTest::testFind()
 
    // Searching for a non-existing non-zero element
    {
-      ET::Iterator pos = e.find( 1UL );
+      auto pos = e.find( 1UL );
 
       if( pos != e.end() ) {
          std::ostringstream oss;
@@ -3257,11 +3725,11 @@ void SparseTest::testLowerBound()
 
    initialize();
 
-   ET e = blaze::elements( vec_, { 2UL, 1UL, 0UL } );
+   auto e = blaze::elements( vec_, { 2UL, 1UL, 0UL } );
 
    // Determining the lower bound for index 0
    {
-      ET::Iterator pos = e.lowerBound( 0UL );
+      auto pos = e.lowerBound( 0UL );
 
       if( pos == e.end() ) {
          std::ostringstream oss;
@@ -3288,7 +3756,7 @@ void SparseTest::testLowerBound()
 
    // Determining the lower bound for index 1
    {
-      ET::Iterator pos = e.lowerBound( 1UL );
+      auto pos = e.lowerBound( 1UL );
 
       if( pos == e.end() ) {
          std::ostringstream oss;
@@ -3315,7 +3783,7 @@ void SparseTest::testLowerBound()
 
    // Determining the lower bound for index 2
    {
-      ET::Iterator pos = e.lowerBound( 2UL );
+      auto pos = e.lowerBound( 2UL );
 
       if( pos != e.end() ) {
          std::ostringstream oss;
@@ -3346,11 +3814,11 @@ void SparseTest::testUpperBound()
 
    initialize();
 
-   ET e = blaze::elements( vec_, { 2UL, 1UL, 0UL } );
+   auto e = blaze::elements( vec_, { 2UL, 1UL, 0UL } );
 
    // Determining the upper bound for index 0
    {
-      ET::Iterator pos = e.upperBound( 0UL );
+      auto pos = e.upperBound( 0UL );
 
       if( pos == e.end() ) {
          std::ostringstream oss;
@@ -3377,7 +3845,7 @@ void SparseTest::testUpperBound()
 
    // Determining the upper bound for index 1
    {
-      ET::Iterator pos = e.upperBound( 1UL );
+      auto pos = e.upperBound( 1UL );
 
       if( pos != e.end() ) {
          std::ostringstream oss;
@@ -3392,7 +3860,7 @@ void SparseTest::testUpperBound()
 
    // Determining the upper bound for index 2
    {
-      ET::Iterator pos = e.upperBound( 2UL );
+      auto pos = e.upperBound( 2UL );
 
       if( pos != e.end() ) {
          std::ostringstream oss;
@@ -3428,7 +3896,7 @@ void SparseTest::testIsDefault()
    // isDefault with default vector
    {
       VT vec( 8UL );
-      ET e = blaze::elements( vec, { 5UL, 4UL, 6UL, 2UL, 3UL } );
+      auto e = blaze::elements( vec, { 5UL, 4UL, 6UL, 2UL, 3UL } );
 
       if( isDefault( e[1] ) != true ) {
          std::ostringstream oss;
@@ -3451,7 +3919,7 @@ void SparseTest::testIsDefault()
 
    // isDefault with non-default vector
    {
-      ET e = blaze::elements( vec_, { 5UL, 4UL, 6UL, 2UL, 3UL } );
+      auto e = blaze::elements( vec_, { 5UL, 4UL, 6UL, 2UL, 3UL } );
 
       if( isDefault( e[1] ) != false ) {
          std::ostringstream oss;
@@ -4160,7 +4628,7 @@ void SparseTest::testSubvector()
    initialize();
 
    {
-      ET   e = blaze::elements( vec_, { 1UL, 3UL, 5UL, 2UL, 4UL, 6UL } );
+      auto e = blaze::elements( vec_, { 1UL, 3UL, 5UL, 2UL, 4UL, 6UL } );
       auto s = blaze::subvector( e, 1UL, 4UL );
 
       if( s[0] != -2 ) {
@@ -4185,7 +4653,7 @@ void SparseTest::testSubvector()
    }
 
    try {
-      ET   e = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL, 5UL, 6UL } );
+      auto e = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL, 5UL, 6UL } );
       auto s = blaze::subvector( e, 6UL, 4UL );
 
       std::ostringstream oss;
@@ -4198,7 +4666,7 @@ void SparseTest::testSubvector()
    catch( std::invalid_argument& ) {}
 
    try {
-      ET   e = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL, 5UL, 6UL } );
+      auto e = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL, 5UL, 6UL } );
       auto s = blaze::subvector( e, 2UL, 5UL );
 
       std::ostringstream oss;
@@ -4229,8 +4697,8 @@ void SparseTest::testElements()
    initialize();
 
    {
-      ET e1 = blaze::elements( vec_, { 1UL, 3UL, 5UL, 2UL, 4UL, 6UL } );
-      ET e2 = blaze::elements( e1  , { 1UL, 2UL, 3UL, 4UL } );
+      auto e1 = blaze::elements( vec_, { 1UL, 3UL, 5UL, 2UL, 4UL, 6UL } );
+      auto e2 = blaze::elements( e1  , { 1UL, 2UL, 3UL, 4UL } );
 
       if( e2[0] != -2 ) {
          std::ostringstream oss;
@@ -4254,8 +4722,8 @@ void SparseTest::testElements()
    }
 
    {
-      ET e1 = blaze::elements( vec_, { 3UL, 6UL } );
-      ET e2 = blaze::elements( e1  , { 1UL, 1UL, 1UL } );
+      auto e1 = blaze::elements( vec_, { 3UL, 6UL } );
+      auto e2 = blaze::elements( e1  , { 1UL, 1UL, 1UL } );
 
       if( e2[0] != 4 || e2[1] != 4 || e2[2] != 4 ) {
          std::ostringstream oss;
@@ -4279,8 +4747,8 @@ void SparseTest::testElements()
    }
 
    try {
-      ET e1 = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL, 5UL, 6UL } );
-      ET e2 = blaze::elements( e1  , { 6UL } );
+      auto e1 = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL, 5UL, 6UL } );
+      auto e2 = blaze::elements( e1  , { 6UL } );
 
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
