@@ -46,6 +46,7 @@
 #include <blaze/math/expressions/Vector.h>
 #include <blaze/math/RelaxationFlag.h>
 #include <blaze/math/TransposeFlag.h>
+#include <blaze/math/views/Elements.h>
 
 
 namespace blaze {
@@ -91,6 +92,9 @@ decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs );
 
 template< typename T1, typename T2 >
 decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs );
+
+template< typename VT, bool TF >
+decltype(auto) reverse( const Vector<VT,TF>& v );
 //@}
 //*************************************************************************************************
 
@@ -317,6 +321,32 @@ template< typename T1    // Type of the left-hand side vector
 inline decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs )
 {
    return trans(~lhs) * (~rhs);
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Reverse the elements of a vector.
+// \ingroup vector
+//
+// \param v The vector to be reversed.
+// \return The reversed vector.
+//
+// This function reverses the elements of a dense or sparse vector. The following examples
+// demonstrates this by means of a dense vector:
+
+   \code
+   blaze::DynamicVector<int> a{ 1, 2, 3, 4, 5 };
+   blaze::DynamicVector<int> b;
+
+   b = reverse( a );  // Results in ( 5 4 3 2 1 )
+   \endcode
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) reverse( const Vector<VT,TF>& v )
+{
+   return elements( ~v, [max=(~v).size()-1UL]( size_t i ){ return max - i; }, (~v).size() );
 }
 //*************************************************************************************************
 
