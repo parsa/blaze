@@ -1730,6 +1730,18 @@
    v1 = conj( trans( v2 ) );  // Computing the conjugate transpose vector
    \endcode
 
+// \n \subsection vector_operations_reverse reverse()
+//
+// Via the \c reverse() function is is possible to reverse the elements of a dense or sparse
+// vector. The following examples demonstrates this by means of a dense vector:
+
+   \code
+   blaze::DynamicVector<int> a{ 1, 2, 3, 4, 5 };
+   blaze::DynamicVector<int> b;
+
+   b = reverse( a );  // Results in ( 5 4 3 2 1 )
+   \endcode
+
 // \n \subsection vector_operations_evaluate eval() / evaluate()
 //
 // The \c evaluate() function forces an evaluation of the given vector expression and enables
