@@ -4183,7 +4183,35 @@
    M1 = conj( trans( M2 ) );  // Computing the conjugate transpose matrix
    \endcode
 
-// \n \subsection matrix_operations_matrix_evaluate eval() / evaluate()
+// \n \subsection matrix_operations_reverse reverse()
+//
+// Via the \c reverse() function is is possible to reverse the rows or columns of a dense or sparse
+// matrix. The following examples gives an impression of both alternatives:
+
+   \code
+   blaze::DynamicMatrix<int,rowMajor> A{ { 1, 0, 2, 3 },
+                                         { 2, 4, 0, 1 },
+                                         { 0, 3, 1, 0 } };
+   blaze::DynamicMatrix<int> B;
+
+   // Reversing the rows result in the matrix
+   //
+   //    ( 0 3 1 0 )
+   //    ( 2 4 0 1 )
+   //    ( 1 0 2 3 )
+   //
+   B = reverse<rowwise>( A );
+
+   // Reversing the columns result in the matrix
+   //
+   //    ( 3 2 0 1 )
+   //    ( 1 0 4 2 )
+   //    ( 0 1 3 0 )
+   //
+   B = reverse<columnwise>( A );
+   \endcode
+
+// \n \subsection matrix_operations_evaluate eval() / evaluate()
 //
 // The \c evaluate() function forces an evaluation of the given matrix expression and enables
 // an automatic deduction of the correct result type of an operation. The following code example
