@@ -115,127 +115,1137 @@ SparseSymmetricTest::SparseSymmetricTest()
 */
 void SparseSymmetricTest::testConstructors()
 {
+   using blaze::index_sequence;
+   using blaze::initializer_list;
+
+
    //=====================================================================================
-   // Row-major matrix tests
+   // Row-major setup via index_sequence
    //=====================================================================================
 
    {
-      test_ = "Row-major Rows constructor";
+      test_ = "Row-major Rows constructor (index_sequence)";
+
+      initialize();
+
+      // Setup of a regular row selection
+      {
+         auto rs = blaze::rows( mat_, index_sequence<0,3,2>() );
+
+         if( rs.rows() != 3UL || rs.columns() != mat_.columns() ||
+             rs(0,0) != mat_(0,0) || rs(0,1) != mat_(0,1) || rs(0,2) != mat_(0,2) || rs(0,3) != mat_(0,3) ||
+             rs(1,0) != mat_(3,0) || rs(1,1) != mat_(3,1) || rs(1,2) != mat_(3,2) || rs(1,3) != mat_(3,3) ||
+             rs(2,0) != mat_(2,0) || rs(2,1) != mat_(2,1) || rs(2,2) != mat_(2,2) || rs(2,3) != mat_(2,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds row selection
+      try {
+         auto rs = blaze::rows( mat_, index_sequence<4>() );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds row selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << rs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of a row selection on a compile-time row selection
+      {
+         auto rs1 = blaze::rows( mat_, index_sequence<0,3,2>() );
+         auto rs2 = blaze::rows( rs1, index_sequence<2,1>() );
+
+         if( rs2.rows() != 2UL || rs2.columns() != mat_.columns() ||
+             rs2(0,0) != mat_(2,0) || rs2(0,1) != mat_(2,1) || rs2(0,2) != mat_(2,2) || rs2(0,3) != mat_(2,3) ||
+             rs2(1,0) != mat_(3,0) || rs2(1,1) != mat_(3,1) || rs2(1,2) != mat_(3,2) || rs2(1,3) != mat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a row selection on an explicit row selection
+      {
+         auto rs1 = blaze::rows( mat_, { 0, 3, 2 } );
+         auto rs2 = blaze::rows( rs1, index_sequence<2,1>() );
+
+         if( rs2.rows() != 2UL || rs2.columns() != mat_.columns() ||
+             rs2(0,0) != mat_(2,0) || rs2(0,1) != mat_(2,1) || rs2(0,2) != mat_(2,2) || rs2(0,3) != mat_(2,3) ||
+             rs2(1,0) != mat_(3,0) || rs2(1,1) != mat_(3,1) || rs2(1,2) != mat_(3,2) || rs2(1,3) != mat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a row selection on an implicit row selection
+      {
+         const std::array<size_t,3UL> indices{ 0, 3, 2 };
+         auto rs1 = blaze::rows( mat_, [indices]( size_t i ){ return indices[i]; }, 3UL );
+         auto rs2 = blaze::rows( rs1, index_sequence<2,1>() );
+
+         if( rs2.rows() != 2UL || rs2.columns() != mat_.columns() ||
+             rs2(0,0) != mat_(2,0) || rs2(0,1) != mat_(2,1) || rs2(0,2) != mat_(2,2) || rs2(0,3) != mat_(2,3) ||
+             rs2(1,0) != mat_(3,0) || rs2(1,1) != mat_(3,1) || rs2(1,2) != mat_(3,2) || rs2(1,3) != mat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major setup via initializer_list
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Rows constructor (initializer_list)";
+
+      initialize();
+
+      // Setup of empty row selection
+      {
+         std::initializer_list<size_t> indices{};
+         auto rs = blaze::rows( mat_, indices );
+
+         if( rs.rows() != 0UL || rs.columns() != mat_.columns() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of empty row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a regular row selection
+      {
+         auto rs = blaze::rows( mat_, { 0, 3, 2 } );
+
+         if( rs.rows() != 3UL || rs.columns() != mat_.columns() ||
+             rs(0,0) != mat_(0,0) || rs(0,1) != mat_(0,1) || rs(0,2) != mat_(0,2) || rs(0,3) != mat_(0,3) ||
+             rs(1,0) != mat_(3,0) || rs(1,1) != mat_(3,1) || rs(1,2) != mat_(3,2) || rs(1,3) != mat_(3,3) ||
+             rs(2,0) != mat_(2,0) || rs(2,1) != mat_(2,1) || rs(2,2) != mat_(2,2) || rs(2,3) != mat_(2,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds row selection
+      try {
+         auto rs = blaze::rows( mat_, { 4 } );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds row selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << rs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of a row selection on a compile-time row selection
+      {
+         auto rs1 = blaze::rows( mat_, index_sequence<0,3,2>() );
+         auto rs2 = blaze::rows( rs1, { 2, 1 } );
+
+         if( rs2.rows() != 2UL || rs2.columns() != mat_.columns() ||
+             rs2(0,0) != mat_(2,0) || rs2(0,1) != mat_(2,1) || rs2(0,2) != mat_(2,2) || rs2(0,3) != mat_(2,3) ||
+             rs2(1,0) != mat_(3,0) || rs2(1,1) != mat_(3,1) || rs2(1,2) != mat_(3,2) || rs2(1,3) != mat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a row selection on an explicit row selection
+      {
+         auto rs1 = blaze::rows( mat_, { 0, 3, 2 } );
+         auto rs2 = blaze::rows( rs1, { 2, 1 } );
+
+         if( rs2.rows() != 2UL || rs2.columns() != mat_.columns() ||
+             rs2(0,0) != mat_(2,0) || rs2(0,1) != mat_(2,1) || rs2(0,2) != mat_(2,2) || rs2(0,3) != mat_(2,3) ||
+             rs2(1,0) != mat_(3,0) || rs2(1,1) != mat_(3,1) || rs2(1,2) != mat_(3,2) || rs2(1,3) != mat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a row selection on an implicit row selection
+      {
+         const std::array<size_t,3UL> indices{ 0, 3, 2 };
+         auto rs1 = blaze::rows( mat_, [indices]( size_t i ){ return indices[i]; }, 3UL );
+         auto rs2 = blaze::rows( rs1, { 2, 1 } );
+
+         if( rs2.rows() != 2UL || rs2.columns() != mat_.columns() ||
+             rs2(0,0) != mat_(2,0) || rs2(0,1) != mat_(2,1) || rs2(0,2) != mat_(2,2) || rs2(0,3) != mat_(2,3) ||
+             rs2(1,0) != mat_(3,0) || rs2(1,1) != mat_(3,1) || rs2(1,2) != mat_(3,2) || rs2(1,3) != mat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major setup via std::vector
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Rows constructor (std::vector)";
 
       initialize();
 
       // Setup of empty row selection
       {
          std::vector<size_t> indices;
-         RT r = blaze::rows( mat_, indices.data(), 0UL );
+         auto rs = blaze::rows( mat_, indices );
 
-         if( r.rows() != 0UL || r.columns() != mat_.columns() ) {
+         if( rs.rows() != 0UL || rs.columns() != mat_.columns() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setup of empty row selection failed\n"
                 << " Details:\n"
-                << "   Result:\n" << r << "\n";
+                << "   Result:\n" << rs << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // Setup of random in-bounds row selection
+      // Setup of a regular row selection
+      {
+         std::vector<size_t> indices{ 0, 3, 2 };
+         auto rs = blaze::rows( mat_, indices );
+
+         if( rs.rows() != 3UL || rs.columns() != mat_.columns() ||
+             rs(0,0) != mat_(0,0) || rs(0,1) != mat_(0,1) || rs(0,2) != mat_(0,2) || rs(0,3) != mat_(0,3) ||
+             rs(1,0) != mat_(3,0) || rs(1,1) != mat_(3,1) || rs(1,2) != mat_(3,2) || rs(1,3) != mat_(3,3) ||
+             rs(2,0) != mat_(2,0) || rs(2,1) != mat_(2,1) || rs(2,2) != mat_(2,2) || rs(2,3) != mat_(2,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds row selection
+      try {
+         std::vector<size_t> indices{ 4 };
+         auto rs = blaze::rows( mat_, indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds row selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << rs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of a row selection on a compile-time row selection
+      {
+         auto rs1 = blaze::rows( mat_, index_sequence<0,3,2>() );
+
+         const std::vector<size_t> indices{ 2, 1 };
+         auto rs2 = blaze::rows( rs1, indices );
+
+         if( rs2.rows() != 2UL || rs2.columns() != mat_.columns() ||
+             rs2(0,0) != mat_(2,0) || rs2(0,1) != mat_(2,1) || rs2(0,2) != mat_(2,2) || rs2(0,3) != mat_(2,3) ||
+             rs2(1,0) != mat_(3,0) || rs2(1,1) != mat_(3,1) || rs2(1,2) != mat_(3,2) || rs2(1,3) != mat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a row selection on an explicit row selection
+      {
+         auto rs1 = blaze::rows( mat_, { 0, 3, 2 } );
+
+         const std::vector<size_t> indices{ 2, 1 };
+         auto rs2 = blaze::rows( rs1, indices );
+
+         if( rs2.rows() != 2UL || rs2.columns() != mat_.columns() ||
+             rs2(0,0) != mat_(2,0) || rs2(0,1) != mat_(2,1) || rs2(0,2) != mat_(2,2) || rs2(0,3) != mat_(2,3) ||
+             rs2(1,0) != mat_(3,0) || rs2(1,1) != mat_(3,1) || rs2(1,2) != mat_(3,2) || rs2(1,3) != mat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a row selection on an implicit row selection
+      {
+         const std::array<size_t,3UL> indices1{ 0, 3, 2 };
+         auto rs1 = blaze::rows( mat_, [indices1]( size_t i ){ return indices1[i]; }, 3UL );
+
+         const std::vector<size_t> indices2{ 2, 1 };
+         auto rs2 = blaze::rows( rs1, indices2 );;
+
+         if( rs2.rows() != 2UL || rs2.columns() != mat_.columns() ||
+             rs2(0,0) != mat_(2,0) || rs2(0,1) != mat_(2,1) || rs2(0,2) != mat_(2,2) || rs2(0,3) != mat_(2,3) ||
+             rs2(1,0) != mat_(3,0) || rs2(1,1) != mat_(3,1) || rs2(1,2) != mat_(3,2) || rs2(1,3) != mat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major setup via std::array
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Rows constructor (std::array)";
+
+      initialize();
+
+      // Setup of a regular row selection
+      {
+         std::array<size_t,3UL> indices{ 0, 3, 2 };
+         auto rs = blaze::rows( mat_, indices );
+
+         if( rs.rows() != 3UL || rs.columns() != mat_.columns() ||
+             rs(0,0) != mat_(0,0) || rs(0,1) != mat_(0,1) || rs(0,2) != mat_(0,2) || rs(0,3) != mat_(0,3) ||
+             rs(1,0) != mat_(3,0) || rs(1,1) != mat_(3,1) || rs(1,2) != mat_(3,2) || rs(1,3) != mat_(3,3) ||
+             rs(2,0) != mat_(2,0) || rs(2,1) != mat_(2,1) || rs(2,2) != mat_(2,2) || rs(2,3) != mat_(2,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds row selection
+      try {
+         std::array<size_t,1UL> indices{ 4 };
+         auto rs = blaze::rows( mat_, indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds row selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << rs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of a row selection on a compile-time row selection
+      {
+         auto rs1 = blaze::rows( mat_, index_sequence<0,3,2>() );
+
+         const std::array<size_t,2UL> indices{ 2, 1 };
+         auto rs2 = blaze::rows( rs1, indices );
+
+         if( rs2.rows() != 2UL || rs2.columns() != mat_.columns() ||
+             rs2(0,0) != mat_(2,0) || rs2(0,1) != mat_(2,1) || rs2(0,2) != mat_(2,2) || rs2(0,3) != mat_(2,3) ||
+             rs2(1,0) != mat_(3,0) || rs2(1,1) != mat_(3,1) || rs2(1,2) != mat_(3,2) || rs2(1,3) != mat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a row selection on an explicit row selection
+      {
+         auto rs1 = blaze::rows( mat_, { 0, 3, 2 } );
+
+         const std::array<size_t,2UL> indices{ 2, 1 };
+         auto rs2 = blaze::rows( rs1, indices );
+
+         if( rs2.rows() != 2UL || rs2.columns() != mat_.columns() ||
+             rs2(0,0) != mat_(2,0) || rs2(0,1) != mat_(2,1) || rs2(0,2) != mat_(2,2) || rs2(0,3) != mat_(2,3) ||
+             rs2(1,0) != mat_(3,0) || rs2(1,1) != mat_(3,1) || rs2(1,2) != mat_(3,2) || rs2(1,3) != mat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a row selection on an implicit row selection
+      {
+         const std::array<size_t,3UL> indices1{ 0, 3, 2 };
+         auto rs1 = blaze::rows( mat_, [indices1]( size_t i ){ return indices1[i]; }, 3UL );
+
+         const std::array<size_t,2UL> indices2{ 2, 1 };
+         auto rs2 = blaze::rows( rs1, indices2 );
+
+         if( rs2.rows() != 2UL || rs2.columns() != mat_.columns() ||
+             rs2(0,0) != mat_(2,0) || rs2(0,1) != mat_(2,1) || rs2(0,2) != mat_(2,2) || rs2(0,3) != mat_(2,3) ||
+             rs2(1,0) != mat_(3,0) || rs2(1,1) != mat_(3,1) || rs2(1,2) != mat_(3,2) || rs2(1,3) != mat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major setup via lambda expression
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Rows constructor (lambda expression)";
+
+      initialize();
+
+      // Setup of empty row selection
+      {
+         auto rs = blaze::rows( mat_, []( size_t ){ return 0UL; }, 0UL );
+
+         if( rs.rows() != 0UL || rs.columns() != mat_.columns() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of empty row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a regular row selection
+      {
+         const std::array<size_t,3UL> indices{ 0, 3, 2 };
+         auto rs = blaze::rows( mat_, [indices]( size_t i ){ return indices[i]; }, 3UL );
+
+         if( rs.rows() != 3UL || rs.columns() != mat_.columns() ||
+             rs(0,0) != mat_(0,0) || rs(0,1) != mat_(0,1) || rs(0,2) != mat_(0,2) || rs(0,3) != mat_(0,3) ||
+             rs(1,0) != mat_(3,0) || rs(1,1) != mat_(3,1) || rs(1,2) != mat_(3,2) || rs(1,3) != mat_(3,3) ||
+             rs(2,0) != mat_(2,0) || rs(2,1) != mat_(2,1) || rs(2,2) != mat_(2,2) || rs(2,3) != mat_(2,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds row selection
+      try {
+         auto rs = blaze::rows( mat_, []( size_t ){ return 4UL; }, 1UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds row selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << rs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of a row selection on a compile-time row selection
+      {
+         auto rs1 = blaze::rows( mat_, index_sequence<0,3,2>() );
+
+         const std::array<size_t,2UL> indices{ 2, 1 };
+         auto rs2 = blaze::rows( rs1, [indices]( size_t i ){ return indices[i]; }, 2UL );
+
+         if( rs2.rows() != 2UL || rs2.columns() != mat_.columns() ||
+             rs2(0,0) != mat_(2,0) || rs2(0,1) != mat_(2,1) || rs2(0,2) != mat_(2,2) || rs2(0,3) != mat_(2,3) ||
+             rs2(1,0) != mat_(3,0) || rs2(1,1) != mat_(3,1) || rs2(1,2) != mat_(3,2) || rs2(1,3) != mat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a row selection on an explicit row selection
+      {
+         auto rs1 = blaze::rows( mat_, { 0, 3, 2 } );
+
+         const std::array<size_t,2UL> indices{ 2, 1 };
+         auto rs2 = blaze::rows( rs1, [indices]( size_t i ){ return indices[i]; }, 2UL );
+
+         if( rs2.rows() != 2UL || rs2.columns() != mat_.columns() ||
+             rs2(0,0) != mat_(2,0) || rs2(0,1) != mat_(2,1) || rs2(0,2) != mat_(2,2) || rs2(0,3) != mat_(2,3) ||
+             rs2(1,0) != mat_(3,0) || rs2(1,1) != mat_(3,1) || rs2(1,2) != mat_(3,2) || rs2(1,3) != mat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a row selection on an implicit row selection
+      {
+         const std::array<size_t,3UL> indices1{ 0, 3, 2 };
+         auto rs1 = blaze::rows( mat_, [indices1]( size_t i ){ return indices1[i]; }, 3UL );
+
+         const std::array<size_t,2UL> indices2{ 2, 1 };
+         auto rs2 = blaze::rows( rs1, [indices2]( size_t i ){ return indices2[i]; }, 2UL );
+
+         if( rs2.rows() != 2UL || rs2.columns() != mat_.columns() ||
+             rs2(0,0) != mat_(2,0) || rs2(0,1) != mat_(2,1) || rs2(0,2) != mat_(2,2) || rs2(0,3) != mat_(2,3) ||
+             rs2(1,0) != mat_(3,0) || rs2(1,1) != mat_(3,1) || rs2(1,2) != mat_(3,2) || rs2(1,3) != mat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major setup of random in-bounds element selection
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Rows constructor (stress test)";
+
+      initialize();
+
       for( size_t rep=0UL; rep<100UL; ++rep )
       {
          blaze::DynamicVector<size_t> indices( blaze::rand<size_t>( 1UL, 20UL ) );
          randomize( indices, 0UL, mat_.rows()-1UL );
-         RT r = blaze::rows( mat_, indices.data(), indices.size() );
+         auto rs = blaze::rows( mat_, indices.data(), indices.size() );
 
-         for( size_t i=0UL; i<r.rows(); ++i ) {
-            for( size_t j=0UL; j<r.columns(); ++j ) {
-               if( r(i,j) != mat_(indices[i],j) ) {
+         for( size_t i=0UL; i<rs.rows(); ++i ) {
+            for( size_t j=0UL; j<rs.columns(); ++j ) {
+               if( rs(i,j) != mat_(indices[i],j) ) {
                   std::ostringstream oss;
                   oss << " Test: " << test_ << "\n"
                       << " Error: Setup of row selection failed\n"
                       << " Details:\n"
                       << "   Indices:\n" << indices << "\n"
-                      << "   Row selection:\n" << r << "\n"
+                      << "   Row selection:\n" << rs << "\n"
                       << "   Matrix:\n" << mat_ << "\n";
                   throw std::runtime_error( oss.str() );
                }
             }
          }
       }
+   }
+
+
+   //=====================================================================================
+   // Column-major setup via index_sequence
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Rows constructor (index_sequence)";
+
+      initialize();
+
+      // Setup of a regular row selection
+      {
+         auto rs = blaze::rows( tmat_, index_sequence<0,3,2>() );
+
+         if( rs.rows() != 3UL || rs.columns() != tmat_.columns() ||
+             rs(0,0) != tmat_(0,0) || rs(0,1) != tmat_(0,1) || rs(0,2) != tmat_(0,2) || rs(0,3) != tmat_(0,3) ||
+             rs(1,0) != tmat_(3,0) || rs(1,1) != tmat_(3,1) || rs(1,2) != tmat_(3,2) || rs(1,3) != tmat_(3,3) ||
+             rs(2,0) != tmat_(2,0) || rs(2,1) != tmat_(2,1) || rs(2,2) != tmat_(2,2) || rs(2,3) != tmat_(2,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
 
       // Trying to setup an out-of-bounds row selection
       try {
-         RT r = blaze::rows( mat_, { 5 } );
+         auto rs = blaze::rows( tmat_, index_sequence<4>() );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Setup of out-of-bounds row selection succeeded\n"
              << " Details:\n"
-             << "   Result:\n" << r << "\n";
+             << "   Result:\n" << rs << "\n";
          throw std::runtime_error( oss.str() );
       }
       catch( std::invalid_argument& ) {}
+
+      // Setup of a row selection on a compile-time row selection
+      {
+         auto rs1 = blaze::rows( tmat_, index_sequence<0,3,2>() );
+         auto rs2 = blaze::rows( rs1, index_sequence<2,1>() );
+
+         if( rs2.rows() != 2UL || rs2.columns() != tmat_.columns() ||
+             rs2(0,0) != tmat_(2,0) || rs2(0,1) != tmat_(2,1) || rs2(0,2) != tmat_(2,2) || rs2(0,3) != tmat_(2,3) ||
+             rs2(1,0) != tmat_(3,0) || rs2(1,1) != tmat_(3,1) || rs2(1,2) != tmat_(3,2) || rs2(1,3) != tmat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a row selection on an explicit row selection
+      {
+         auto rs1 = blaze::rows( tmat_, { 0, 3, 2 } );
+         auto rs2 = blaze::rows( rs1, index_sequence<2,1>() );
+
+         if( rs2.rows() != 2UL || rs2.columns() != tmat_.columns() ||
+             rs2(0,0) != tmat_(2,0) || rs2(0,1) != tmat_(2,1) || rs2(0,2) != tmat_(2,2) || rs2(0,3) != tmat_(2,3) ||
+             rs2(1,0) != tmat_(3,0) || rs2(1,1) != tmat_(3,1) || rs2(1,2) != tmat_(3,2) || rs2(1,3) != tmat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a row selection on an implicit row selection
+      {
+         const std::array<size_t,3UL> indices{ 0, 3, 2 };
+         auto rs1 = blaze::rows( tmat_, [indices]( size_t i ){ return indices[i]; }, 3UL );
+         auto rs2 = blaze::rows( rs1, index_sequence<2,1>() );
+
+         if( rs2.rows() != 2UL || rs2.columns() != tmat_.columns() ||
+             rs2(0,0) != tmat_(2,0) || rs2(0,1) != tmat_(2,1) || rs2(0,2) != tmat_(2,2) || rs2(0,3) != tmat_(2,3) ||
+             rs2(1,0) != tmat_(3,0) || rs2(1,1) != tmat_(3,1) || rs2(1,2) != tmat_(3,2) || rs2(1,3) != tmat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
    }
 
 
    //=====================================================================================
-   // Column-major matrix tests
+   // Column-major setup via initializer_list
    //=====================================================================================
 
    {
-      test_ = "Column-major Rows constructor";
+      test_ = "Column-major Rows constructor (initializer_list)";
+
+      initialize();
+
+      // Setup of empty row selection
+      {
+         std::initializer_list<size_t> indices{};
+         auto rs = blaze::rows( tmat_, indices );
+
+         if( rs.rows() != 0UL || rs.columns() != tmat_.columns() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of empty row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a regular row selection
+      {
+         auto rs = blaze::rows( tmat_, { 0, 3, 2 } );
+
+         if( rs.rows() != 3UL || rs.columns() != tmat_.columns() ||
+             rs(0,0) != tmat_(0,0) || rs(0,1) != tmat_(0,1) || rs(0,2) != tmat_(0,2) || rs(0,3) != tmat_(0,3) ||
+             rs(1,0) != tmat_(3,0) || rs(1,1) != tmat_(3,1) || rs(1,2) != tmat_(3,2) || rs(1,3) != tmat_(3,3) ||
+             rs(2,0) != tmat_(2,0) || rs(2,1) != tmat_(2,1) || rs(2,2) != tmat_(2,2) || rs(2,3) != tmat_(2,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds row selection
+      try {
+         auto rs = blaze::rows( tmat_, { 4 } );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds row selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << rs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of a row selection on a compile-time row selection
+      {
+         auto rs1 = blaze::rows( tmat_, index_sequence<0,3,2>() );
+         auto rs2 = blaze::rows( rs1, { 2, 1 } );
+
+         if( rs2.rows() != 2UL || rs2.columns() != tmat_.columns() ||
+             rs2(0,0) != tmat_(2,0) || rs2(0,1) != tmat_(2,1) || rs2(0,2) != tmat_(2,2) || rs2(0,3) != tmat_(2,3) ||
+             rs2(1,0) != tmat_(3,0) || rs2(1,1) != tmat_(3,1) || rs2(1,2) != tmat_(3,2) || rs2(1,3) != tmat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a row selection on an explicit row selection
+      {
+         auto rs1 = blaze::rows( tmat_, { 0, 3, 2 } );
+         auto rs2 = blaze::rows( rs1, { 2, 1 } );
+
+         if( rs2.rows() != 2UL || rs2.columns() != tmat_.columns() ||
+             rs2(0,0) != tmat_(2,0) || rs2(0,1) != tmat_(2,1) || rs2(0,2) != tmat_(2,2) || rs2(0,3) != tmat_(2,3) ||
+             rs2(1,0) != tmat_(3,0) || rs2(1,1) != tmat_(3,1) || rs2(1,2) != tmat_(3,2) || rs2(1,3) != tmat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a row selection on an implicit row selection
+      {
+         const std::array<size_t,3UL> indices{ 0, 3, 2 };
+         auto rs1 = blaze::rows( tmat_, [indices]( size_t i ){ return indices[i]; }, 3UL );
+         auto rs2 = blaze::rows( rs1, { 2, 1 } );
+
+         if( rs2.rows() != 2UL || rs2.columns() != tmat_.columns() ||
+             rs2(0,0) != tmat_(2,0) || rs2(0,1) != tmat_(2,1) || rs2(0,2) != tmat_(2,2) || rs2(0,3) != tmat_(2,3) ||
+             rs2(1,0) != tmat_(3,0) || rs2(1,1) != tmat_(3,1) || rs2(1,2) != tmat_(3,2) || rs2(1,3) != tmat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major setup via std::vector
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Rows constructor (std::vector)";
 
       initialize();
 
       // Setup of empty row selection
       {
          std::vector<size_t> indices;
-         ORT r = blaze::rows( tmat_, indices.data(), 0UL );
+         auto rs = blaze::rows( tmat_, indices );
 
-         if( r.rows() != 0UL || r.columns() != tmat_.columns() ) {
+         if( rs.rows() != 0UL || rs.columns() != tmat_.columns() ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Setup of empty row selection failed\n"
                 << " Details:\n"
-                << "   Result:\n" << r << "\n";
+                << "   Result:\n" << rs << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // Setup of random in-bounds row selection
+      // Setup of a regular row selection
+      {
+         std::vector<size_t> indices{ 0, 3, 2 };
+         auto rs = blaze::rows( tmat_, indices );
+
+         if( rs.rows() != 3UL || rs.columns() != tmat_.columns() ||
+             rs(0,0) != tmat_(0,0) || rs(0,1) != tmat_(0,1) || rs(0,2) != tmat_(0,2) || rs(0,3) != tmat_(0,3) ||
+             rs(1,0) != tmat_(3,0) || rs(1,1) != tmat_(3,1) || rs(1,2) != tmat_(3,2) || rs(1,3) != tmat_(3,3) ||
+             rs(2,0) != tmat_(2,0) || rs(2,1) != tmat_(2,1) || rs(2,2) != tmat_(2,2) || rs(2,3) != tmat_(2,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds row selection
+      try {
+         std::vector<size_t> indices{ 4 };
+         auto rs = blaze::rows( tmat_, indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds row selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << rs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of a row selection on a compile-time row selection
+      {
+         auto rs1 = blaze::rows( tmat_, index_sequence<0,3,2>() );
+
+         const std::vector<size_t> indices{ 2, 1 };
+         auto rs2 = blaze::rows( rs1, indices );
+
+         if( rs2.rows() != 2UL || rs2.columns() != tmat_.columns() ||
+             rs2(0,0) != tmat_(2,0) || rs2(0,1) != tmat_(2,1) || rs2(0,2) != tmat_(2,2) || rs2(0,3) != tmat_(2,3) ||
+             rs2(1,0) != tmat_(3,0) || rs2(1,1) != tmat_(3,1) || rs2(1,2) != tmat_(3,2) || rs2(1,3) != tmat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a row selection on an explicit row selection
+      {
+         auto rs1 = blaze::rows( tmat_, { 0, 3, 2 } );
+
+         const std::vector<size_t> indices{ 2, 1 };
+         auto rs2 = blaze::rows( rs1, indices );
+
+         if( rs2.rows() != 2UL || rs2.columns() != tmat_.columns() ||
+             rs2(0,0) != tmat_(2,0) || rs2(0,1) != tmat_(2,1) || rs2(0,2) != tmat_(2,2) || rs2(0,3) != tmat_(2,3) ||
+             rs2(1,0) != tmat_(3,0) || rs2(1,1) != tmat_(3,1) || rs2(1,2) != tmat_(3,2) || rs2(1,3) != tmat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a row selection on an implicit row selection
+      {
+         const std::array<size_t,3UL> indices1{ 0, 3, 2 };
+         auto rs1 = blaze::rows( tmat_, [indices1]( size_t i ){ return indices1[i]; }, 3UL );
+
+         const std::vector<size_t> indices2{ 2, 1 };
+         auto rs2 = blaze::rows( rs1, indices2 );;
+
+         if( rs2.rows() != 2UL || rs2.columns() != tmat_.columns() ||
+             rs2(0,0) != tmat_(2,0) || rs2(0,1) != tmat_(2,1) || rs2(0,2) != tmat_(2,2) || rs2(0,3) != tmat_(2,3) ||
+             rs2(1,0) != tmat_(3,0) || rs2(1,1) != tmat_(3,1) || rs2(1,2) != tmat_(3,2) || rs2(1,3) != tmat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major setup via std::array
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Rows constructor (std::array)";
+
+      initialize();
+
+      // Setup of a regular row selection
+      {
+         std::array<size_t,3UL> indices{ 0, 3, 2 };
+         auto rs = blaze::rows( tmat_, indices );
+
+         if( rs.rows() != 3UL || rs.columns() != tmat_.columns() ||
+             rs(0,0) != tmat_(0,0) || rs(0,1) != tmat_(0,1) || rs(0,2) != tmat_(0,2) || rs(0,3) != tmat_(0,3) ||
+             rs(1,0) != tmat_(3,0) || rs(1,1) != tmat_(3,1) || rs(1,2) != tmat_(3,2) || rs(1,3) != tmat_(3,3) ||
+             rs(2,0) != tmat_(2,0) || rs(2,1) != tmat_(2,1) || rs(2,2) != tmat_(2,2) || rs(2,3) != tmat_(2,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds row selection
+      try {
+         std::array<size_t,1UL> indices{ 4 };
+         auto rs = blaze::rows( tmat_, indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds row selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << rs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of a row selection on a compile-time row selection
+      {
+         auto rs1 = blaze::rows( tmat_, index_sequence<0,3,2>() );
+
+         const std::array<size_t,2UL> indices{ 2, 1 };
+         auto rs2 = blaze::rows( rs1, indices );
+
+         if( rs2.rows() != 2UL || rs2.columns() != tmat_.columns() ||
+             rs2(0,0) != tmat_(2,0) || rs2(0,1) != tmat_(2,1) || rs2(0,2) != tmat_(2,2) || rs2(0,3) != tmat_(2,3) ||
+             rs2(1,0) != tmat_(3,0) || rs2(1,1) != tmat_(3,1) || rs2(1,2) != tmat_(3,2) || rs2(1,3) != tmat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a row selection on an explicit row selection
+      {
+         auto rs1 = blaze::rows( tmat_, { 0, 3, 2 } );
+
+         const std::array<size_t,2UL> indices{ 2, 1 };
+         auto rs2 = blaze::rows( rs1, indices );
+
+         if( rs2.rows() != 2UL || rs2.columns() != tmat_.columns() ||
+             rs2(0,0) != tmat_(2,0) || rs2(0,1) != tmat_(2,1) || rs2(0,2) != tmat_(2,2) || rs2(0,3) != tmat_(2,3) ||
+             rs2(1,0) != tmat_(3,0) || rs2(1,1) != tmat_(3,1) || rs2(1,2) != tmat_(3,2) || rs2(1,3) != tmat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a row selection on an implicit row selection
+      {
+         const std::array<size_t,3UL> indices1{ 0, 3, 2 };
+         auto rs1 = blaze::rows( tmat_, [indices1]( size_t i ){ return indices1[i]; }, 3UL );
+
+         const std::array<size_t,2UL> indices2{ 2, 1 };
+         auto rs2 = blaze::rows( rs1, indices2 );
+
+         if( rs2.rows() != 2UL || rs2.columns() != tmat_.columns() ||
+             rs2(0,0) != tmat_(2,0) || rs2(0,1) != tmat_(2,1) || rs2(0,2) != tmat_(2,2) || rs2(0,3) != tmat_(2,3) ||
+             rs2(1,0) != tmat_(3,0) || rs2(1,1) != tmat_(3,1) || rs2(1,2) != tmat_(3,2) || rs2(1,3) != tmat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major setup via lambda expression
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Rows constructor (lambda expression)";
+
+      initialize();
+
+      // Setup of empty row selection
+      {
+         auto rs = blaze::rows( tmat_, []( size_t ){ return 0UL; }, 0UL );
+
+         if( rs.rows() != 0UL || rs.columns() != tmat_.columns() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of empty row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a regular row selection
+      {
+         const std::array<size_t,3UL> indices{ 0, 3, 2 };
+         auto rs = blaze::rows( tmat_, [indices]( size_t i ){ return indices[i]; }, 3UL );
+
+         if( rs.rows() != 3UL || rs.columns() != tmat_.columns() ||
+             rs(0,0) != tmat_(0,0) || rs(0,1) != tmat_(0,1) || rs(0,2) != tmat_(0,2) || rs(0,3) != tmat_(0,3) ||
+             rs(1,0) != tmat_(3,0) || rs(1,1) != tmat_(3,1) || rs(1,2) != tmat_(3,2) || rs(1,3) != tmat_(3,3) ||
+             rs(2,0) != tmat_(2,0) || rs(2,1) != tmat_(2,1) || rs(2,2) != tmat_(2,2) || rs(2,3) != tmat_(2,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds row selection
+      try {
+         auto rs = blaze::rows( tmat_, []( size_t ){ return 4UL; }, 1UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds row selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << rs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of a row selection on a compile-time row selection
+      {
+         auto rs1 = blaze::rows( tmat_, index_sequence<0,3,2>() );
+
+         const std::array<size_t,2UL> indices{ 2, 1 };
+         auto rs2 = blaze::rows( rs1, [indices]( size_t i ){ return indices[i]; }, 2UL );
+
+         if( rs2.rows() != 2UL || rs2.columns() != tmat_.columns() ||
+             rs2(0,0) != tmat_(2,0) || rs2(0,1) != tmat_(2,1) || rs2(0,2) != tmat_(2,2) || rs2(0,3) != tmat_(2,3) ||
+             rs2(1,0) != tmat_(3,0) || rs2(1,1) != tmat_(3,1) || rs2(1,2) != tmat_(3,2) || rs2(1,3) != tmat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a row selection on an explicit row selection
+      {
+         auto rs1 = blaze::rows( tmat_, { 0, 3, 2 } );
+
+         const std::array<size_t,2UL> indices{ 2, 1 };
+         auto rs2 = blaze::rows( rs1, [indices]( size_t i ){ return indices[i]; }, 2UL );
+
+         if( rs2.rows() != 2UL || rs2.columns() != tmat_.columns() ||
+             rs2(0,0) != tmat_(2,0) || rs2(0,1) != tmat_(2,1) || rs2(0,2) != tmat_(2,2) || rs2(0,3) != tmat_(2,3) ||
+             rs2(1,0) != tmat_(3,0) || rs2(1,1) != tmat_(3,1) || rs2(1,2) != tmat_(3,2) || rs2(1,3) != tmat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a row selection on an implicit row selection
+      {
+         const std::array<size_t,3UL> indices1{ 0, 3, 2 };
+         auto rs1 = blaze::rows( tmat_, [indices1]( size_t i ){ return indices1[i]; }, 3UL );
+
+         const std::array<size_t,2UL> indices2{ 2, 1 };
+         auto rs2 = blaze::rows( rs1, [indices2]( size_t i ){ return indices2[i]; }, 2UL );
+
+         if( rs2.rows() != 2UL || rs2.columns() != tmat_.columns() ||
+             rs2(0,0) != tmat_(2,0) || rs2(0,1) != tmat_(2,1) || rs2(0,2) != tmat_(2,2) || rs2(0,3) != tmat_(2,3) ||
+             rs2(1,0) != tmat_(3,0) || rs2(1,1) != tmat_(3,1) || rs2(1,2) != tmat_(3,2) || rs2(1,3) != tmat_(3,3) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of row selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major setup of random in-bounds element selection
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Rows constructor (stress test)";
+
+      initialize();
+
       for( size_t rep=0UL; rep<100UL; ++rep )
       {
          blaze::DynamicVector<size_t> indices( blaze::rand<size_t>( 1UL, 20UL ) );
          randomize( indices, 0UL, tmat_.rows()-1UL );
-         ORT r = blaze::rows( tmat_, indices.data(), indices.size() );
+         auto rs = blaze::rows( tmat_, indices.data(), indices.size() );
 
-         for( size_t i=0UL; i<r.rows(); ++i ) {
-            for( size_t j=0UL; j<r.columns(); ++j ) {
-               if( r(i,j) != tmat_(indices[i],j) ) {
+         for( size_t i=0UL; i<rs.rows(); ++i ) {
+            for( size_t j=0UL; j<rs.columns(); ++j ) {
+               if( rs(i,j) != tmat_(indices[i],j) ) {
                   std::ostringstream oss;
                   oss << " Test: " << test_ << "\n"
                       << " Error: Setup of row selection failed\n"
                       << " Details:\n"
                       << "   Indices:\n" << indices << "\n"
-                      << "   Row selection:\n" << r << "\n"
+                      << "   Row selection:\n" << rs << "\n"
                       << "   Matrix:\n" << tmat_ << "\n";
                   throw std::runtime_error( oss.str() );
                }
             }
          }
       }
-
-      // Trying to setup an out-of-bounds row selection
-      try {
-         ORT r = blaze::rows( tmat_, { 5 } );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Setup of out-of-bounds row selection succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << r << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************

@@ -117,7 +117,7 @@ void DenseGeneralTest::testScaling()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 2UL, 3UL } );
 
       rs *= 3;
 
@@ -168,7 +168,7 @@ void DenseGeneralTest::testScaling()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 2UL, 3UL } );
 
       rs = rs * 3;
 
@@ -219,7 +219,7 @@ void DenseGeneralTest::testScaling()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 2UL, 3UL } );
 
       rs = 3 * rs;
 
@@ -270,7 +270,7 @@ void DenseGeneralTest::testScaling()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 2UL, 3UL } );
 
       rs /= 0.5;
 
@@ -321,7 +321,7 @@ void DenseGeneralTest::testScaling()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 2UL, 3UL } );
 
       rs = rs / 0.5;
 
@@ -373,7 +373,7 @@ void DenseGeneralTest::testScaling()
       initialize();
 
       // Initialization check
-      RT rs = blaze::rows( mat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 2UL, 3UL } );
 
       checkRows    ( rs, 2UL );
       checkColumns ( rs, 4UL );
@@ -443,7 +443,7 @@ void DenseGeneralTest::testScaling()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 2UL, 3UL } );
 
       rs *= 3;
 
@@ -494,7 +494,7 @@ void DenseGeneralTest::testScaling()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 2UL, 3UL } );
 
       rs = rs * 3;
 
@@ -545,7 +545,7 @@ void DenseGeneralTest::testScaling()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 2UL, 3UL } );
 
       rs = 3 * rs;
 
@@ -596,7 +596,7 @@ void DenseGeneralTest::testScaling()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 2UL, 3UL } );
 
       rs /= 0.5;
 
@@ -647,7 +647,7 @@ void DenseGeneralTest::testScaling()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 2UL, 3UL } );
 
       rs = rs / 0.5;
 
@@ -699,7 +699,7 @@ void DenseGeneralTest::testScaling()
       initialize();
 
       // Initialization check
-      ORT rs = blaze::rows( tmat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 2UL, 3UL } );
 
       checkRows    ( rs, 2UL );
       checkColumns ( rs, 4UL );
@@ -783,7 +783,7 @@ void DenseGeneralTest::testFunctionCall()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 1UL, 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 1UL, 2UL, 3UL } );
 
       // Assignment to the element (1,1)
       {
@@ -1111,7 +1111,7 @@ void DenseGeneralTest::testFunctionCall()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 1UL, 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 1UL, 2UL, 3UL } );
 
       // Assignment to the element (1,1)
       {
@@ -1482,8 +1482,8 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Row-major Iterator/ConstIterator conversion";
 
-         RT rs = blaze::rows( mat_, { 2UL } );
-         RT::ConstIterator it( begin( rs, 0UL ) );
+         auto rs = blaze::rows( mat_, { 2UL } );
+         auto it( begin( rs, 0UL ) );
 
          if( it == end( rs, 0UL ) || *it != -2 ) {
             std::ostringstream oss;
@@ -1497,7 +1497,7 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Row-major Iterator subtraction (end-begin)";
 
-         RT rs = blaze::rows( mat_, { 1UL } );
+         auto rs = blaze::rows( mat_, { 1UL } );
          const ptrdiff_t number( end( rs, 0UL ) - begin( rs, 0UL ) );
 
          if( number != 4L ) {
@@ -1515,7 +1515,7 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Row-major Iterator subtraction (begin-end)";
 
-         RT rs = blaze::rows( mat_, { 1UL } );
+         auto rs = blaze::rows( mat_, { 1UL } );
          const ptrdiff_t number( begin( rs, 0UL ) - end( rs, 0UL ) );
 
          if( number != -4L ) {
@@ -1533,7 +1533,7 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Row-major ConstIterator subtraction (end-begin)";
 
-         RT rs = blaze::rows( mat_, { 2UL } );
+         auto rs = blaze::rows( mat_, { 2UL } );
          const ptrdiff_t number( cend( rs, 0UL ) - cbegin( rs, 0UL ) );
 
          if( number != 4L ) {
@@ -1551,7 +1551,7 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Row-major ConstIterator subtraction (begin-end)";
 
-         RT rs = blaze::rows( mat_, { 2UL } );
+         auto rs = blaze::rows( mat_, { 2UL } );
          const ptrdiff_t number( cbegin( rs, 0UL ) - cend( rs, 0UL ) );
 
          if( number != -4L ) {
@@ -1569,9 +1569,9 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Row-major read-only access via ConstIterator";
 
-         RT rs = blaze::rows( mat_, { 3UL } );
-         RT::ConstIterator it ( cbegin( rs, 0UL ) );
-         RT::ConstIterator end( cend( rs, 0UL ) );
+         auto rs = blaze::rows( mat_, { 3UL } );
+         auto it ( cbegin( rs, 0UL ) );
+         auto end( cend( rs, 0UL ) );
 
          if( it == end || *it != 0 ) {
             std::ostringstream oss;
@@ -1666,10 +1666,10 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Row-major assignment via Iterator";
 
-         RT rs = blaze::rows( mat_, { 0UL } );
+         auto rs = blaze::rows( mat_, { 0UL } );
          int value = 6;
 
-         for( RT::Iterator it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
+         for( auto it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
             *it = value++;
          }
 
@@ -1706,10 +1706,10 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Row-major addition assignment via Iterator";
 
-         RT rs = blaze::rows( mat_, { 0UL } );
+         auto rs = blaze::rows( mat_, { 0UL } );
          int value = 2;
 
-         for( RT::Iterator it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
+         for( auto it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
             *it += value++;
          }
 
@@ -1746,10 +1746,10 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Row-major subtraction assignment via Iterator";
 
-         RT rs = blaze::rows( mat_, { 0UL } );
+         auto rs = blaze::rows( mat_, { 0UL } );
          int value = 2;
 
-         for( RT::Iterator it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
+         for( auto it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
             *it -= value++;
          }
 
@@ -1786,10 +1786,10 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Row-major multiplication assignment via Iterator";
 
-         RT rs = blaze::rows( mat_, { 0UL } );
+         auto rs = blaze::rows( mat_, { 0UL } );
          int value = 1;
 
-         for( RT::Iterator it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
+         for( auto it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
             *it *= value++;
          }
 
@@ -1826,9 +1826,9 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Row-major division assignment via Iterator";
 
-         RT rs = blaze::rows( mat_, { 0UL } );
+         auto rs = blaze::rows( mat_, { 0UL } );
 
-         for( RT::Iterator it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
+         for( auto it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
             *it /= 2;
          }
 
@@ -1902,8 +1902,8 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Column-major Iterator/ConstIterator conversion";
 
-         ORT rs = blaze::rows( tmat_, { 2UL } );
-         ORT::ConstIterator it( begin( rs, 0UL ) );
+         auto rs = blaze::rows( tmat_, { 2UL } );
+         auto it( begin( rs, 0UL ) );
 
          if( it == end( rs, 0UL ) || *it != -2 ) {
             std::ostringstream oss;
@@ -1917,7 +1917,7 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Column-major Iterator subtraction (end-begin)";
 
-         ORT rs = blaze::rows( tmat_, { 1UL } );
+         auto rs = blaze::rows( tmat_, { 1UL } );
          const ptrdiff_t number( end( rs, 0UL ) - begin( rs, 0UL ) );
 
          if( number != 4L ) {
@@ -1935,7 +1935,7 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Column-major Iterator subtraction (begin-end)";
 
-         ORT rs = blaze::rows( tmat_, { 1UL } );
+         auto rs = blaze::rows( tmat_, { 1UL } );
          const ptrdiff_t number( begin( rs, 0UL ) - end( rs, 0UL ) );
 
          if( number != -4L ) {
@@ -1953,7 +1953,7 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Column-major ConstIterator subtraction (end-begin)";
 
-         ORT rs = blaze::rows( tmat_, { 2UL } );
+         auto rs = blaze::rows( tmat_, { 2UL } );
          const ptrdiff_t number( cend( rs, 0UL ) - cbegin( rs, 0UL ) );
 
          if( number != 4L ) {
@@ -1971,7 +1971,7 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Column-major ConstIterator subtraction (begin-end)";
 
-         ORT rs = blaze::rows( tmat_, { 2UL } );
+         auto rs = blaze::rows( tmat_, { 2UL } );
          const ptrdiff_t number( cbegin( rs, 0UL ) - cend( rs, 0UL ) );
 
          if( number != -4L ) {
@@ -1989,9 +1989,9 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Column-major read-only access via ConstIterator";
 
-         ORT rs = blaze::rows( tmat_, { 3UL } );
-         ORT::ConstIterator it ( cbegin( rs, 0UL ) );
-         ORT::ConstIterator end( cend( rs, 0UL ) );
+         auto rs = blaze::rows( tmat_, { 3UL } );
+         auto it ( cbegin( rs, 0UL ) );
+         auto end( cend( rs, 0UL ) );
 
          if( it == end || *it != 0 ) {
             std::ostringstream oss;
@@ -2086,10 +2086,10 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Column-major assignment via Iterator";
 
-         ORT rs = blaze::rows( tmat_, { 0UL } );
+         auto rs = blaze::rows( tmat_, { 0UL } );
          int value = 6;
 
-         for( ORT::Iterator it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
+         for( auto it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
             *it = value++;
          }
 
@@ -2126,10 +2126,10 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Column-major addition assignment via Iterator";
 
-         ORT rs = blaze::rows( tmat_, { 0UL } );
+         auto rs = blaze::rows( tmat_, { 0UL } );
          int value = 2;
 
-         for( ORT::Iterator it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
+         for( auto it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
             *it += value++;
          }
 
@@ -2166,10 +2166,10 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Column-major subtraction assignment via Iterator";
 
-         ORT rs = blaze::rows( tmat_, { 0UL } );
+         auto rs = blaze::rows( tmat_, { 0UL } );
          int value = 2;
 
-         for( ORT::Iterator it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
+         for( auto it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
             *it -= value++;
          }
 
@@ -2206,10 +2206,10 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Column-major multiplication assignment via Iterator";
 
-         ORT rs = blaze::rows( tmat_, { 0UL } );
+         auto rs = blaze::rows( tmat_, { 0UL } );
          int value = 1;
 
-         for( ORT::Iterator it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
+         for( auto it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
             *it *= value++;
          }
 
@@ -2246,9 +2246,9 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Column-major division assignment via Iterator";
 
-         ORT rs = blaze::rows( tmat_, { 0UL } );
+         auto rs = blaze::rows( tmat_, { 0UL } );
 
-         for( ORT::Iterator it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
+         for( auto it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
             *it /= 2;
          }
 
@@ -2306,7 +2306,7 @@ void DenseGeneralTest::testNonZeros()
       initialize();
 
       // Initialization check
-      RT rs = blaze::rows( mat_, { 1UL, 2UL } );
+      auto rs = blaze::rows( mat_, { 1UL, 2UL } );
 
       checkRows    ( rs, 2UL );
       checkColumns ( rs, 4UL );
@@ -2377,7 +2377,7 @@ void DenseGeneralTest::testNonZeros()
       initialize();
 
       // Initialization check
-      ORT rs = blaze::rows( tmat_, { 1UL, 2UL } );
+      auto rs = blaze::rows( tmat_, { 1UL, 2UL } );
 
       checkRows    ( rs, 2UL );
       checkColumns ( rs, 4UL );
@@ -2463,7 +2463,7 @@ void DenseGeneralTest::testReset()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 1UL, 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 1UL, 2UL, 3UL } );
 
       reset( rs(0,1) );
 
@@ -2513,7 +2513,7 @@ void DenseGeneralTest::testReset()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 1UL, 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 1UL, 2UL, 3UL } );
 
       reset( rs );
 
@@ -2596,7 +2596,7 @@ void DenseGeneralTest::testReset()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 1UL, 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 1UL, 2UL, 3UL } );
 
       reset( rs(0,1) );
 
@@ -2646,7 +2646,7 @@ void DenseGeneralTest::testReset()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 1UL, 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 1UL, 2UL, 3UL } );
 
       reset( rs );
 
@@ -2742,7 +2742,7 @@ void DenseGeneralTest::testClear()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 1UL, 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 1UL, 2UL, 3UL } );
 
       clear( rs(0,1) );
 
@@ -2792,7 +2792,7 @@ void DenseGeneralTest::testClear()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 1UL, 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 1UL, 2UL, 3UL } );
 
       clear( rs );
 
@@ -2875,7 +2875,7 @@ void DenseGeneralTest::testClear()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 1UL, 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 1UL, 2UL, 3UL } );
 
       clear( rs(0,1) );
 
@@ -2925,7 +2925,7 @@ void DenseGeneralTest::testClear()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 1UL, 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 1UL, 2UL, 3UL } );
 
       clear( rs );
 
@@ -3019,7 +3019,7 @@ void DenseGeneralTest::testTranspose()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto rs = blaze::rows( mat_, { 3UL, 2UL, 1UL, 4UL } );
 
       transpose( rs );
 
@@ -3070,7 +3070,7 @@ void DenseGeneralTest::testTranspose()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto rs = blaze::rows( mat_, { 3UL, 2UL, 1UL, 4UL } );
 
       rs = trans( rs );
 
@@ -3126,7 +3126,7 @@ void DenseGeneralTest::testTranspose()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto rs = blaze::rows( tmat_, { 3UL, 2UL, 1UL, 4UL } );
 
       transpose( rs );
 
@@ -3177,7 +3177,7 @@ void DenseGeneralTest::testTranspose()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto rs = blaze::rows( tmat_, { 3UL, 2UL, 1UL, 4UL } );
 
       rs = trans( rs );
 
@@ -3247,7 +3247,7 @@ void DenseGeneralTest::testCTranspose()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto rs = blaze::rows( mat_, { 3UL, 2UL, 1UL, 4UL } );
 
       ctranspose( rs );
 
@@ -3298,7 +3298,7 @@ void DenseGeneralTest::testCTranspose()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto rs = blaze::rows( mat_, { 3UL, 2UL, 1UL, 4UL } );
 
       rs = ctrans( rs );
 
@@ -3354,7 +3354,7 @@ void DenseGeneralTest::testCTranspose()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto rs = blaze::rows( tmat_, { 3UL, 2UL, 1UL, 4UL } );
 
       ctranspose( rs );
 
@@ -3405,7 +3405,7 @@ void DenseGeneralTest::testCTranspose()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto rs = blaze::rows( tmat_, { 3UL, 2UL, 1UL, 4UL } );
 
       rs = ctrans( rs );
 
@@ -3478,7 +3478,7 @@ void DenseGeneralTest::testIsDefault()
 
       // isDefault with default row selection
       {
-         RT rs = blaze::rows( mat_, { 0UL } );
+         auto rs = blaze::rows( mat_, { 0UL } );
 
          if( isDefault( rs(0,1) ) != true ) {
             std::ostringstream oss;
@@ -3501,7 +3501,7 @@ void DenseGeneralTest::testIsDefault()
 
       // isDefault with non-default row selection
       {
-         RT rs = blaze::rows( mat_, { 1UL } );
+         auto rs = blaze::rows( mat_, { 1UL } );
 
          if( isDefault( rs(0,1) ) != false ) {
             std::ostringstream oss;
@@ -3537,7 +3537,7 @@ void DenseGeneralTest::testIsDefault()
 
       // isDefault with default row selection
       {
-         ORT rs = blaze::rows( tmat_, { 0UL } );
+         auto rs = blaze::rows( tmat_, { 0UL } );
 
          if( isDefault( rs(0,1) ) != true ) {
             std::ostringstream oss;
@@ -3560,7 +3560,7 @@ void DenseGeneralTest::testIsDefault()
 
       // isDefault with non-default row selection
       {
-         ORT rs = blaze::rows( tmat_, { 1UL } );
+         auto rs = blaze::rows( tmat_, { 1UL } );
 
          if( isDefault( rs(0,1) ) != false ) {
             std::ostringstream oss;
@@ -4277,7 +4277,7 @@ void DenseGeneralTest::testSubmatrix()
       initialize();
 
       {
-         RT   rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( rs, 0UL, 1UL, 3UL, 2UL );
 
          if( sm(0,0) !=  4 || sm(0,1) != 5 ||
@@ -4306,7 +4306,7 @@ void DenseGeneralTest::testSubmatrix()
       }
 
       try {
-         RT   rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( rs, 3UL, 1UL, 3UL, 2UL );
 
          std::ostringstream oss;
@@ -4319,7 +4319,7 @@ void DenseGeneralTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         RT   rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( rs, 0UL, 4UL, 3UL, 2UL );
 
          std::ostringstream oss;
@@ -4332,7 +4332,7 @@ void DenseGeneralTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         RT   rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( rs, 0UL, 1UL, 4UL, 2UL );
 
          std::ostringstream oss;
@@ -4345,7 +4345,7 @@ void DenseGeneralTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         RT   rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( rs, 0UL, 1UL, 3UL, 4UL );
 
          std::ostringstream oss;
@@ -4369,7 +4369,7 @@ void DenseGeneralTest::testSubmatrix()
       initialize();
 
       {
-         ORT  rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( rs, 0UL, 1UL, 3UL, 2UL );
 
          if( sm(0,0) !=  4 || sm(0,1) != 5 ||
@@ -4398,7 +4398,7 @@ void DenseGeneralTest::testSubmatrix()
       }
 
       try {
-         ORT  rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( rs, 3UL, 1UL, 3UL, 2UL );
 
          std::ostringstream oss;
@@ -4411,7 +4411,7 @@ void DenseGeneralTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         ORT  rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( rs, 0UL, 4UL, 3UL, 2UL );
 
          std::ostringstream oss;
@@ -4424,7 +4424,7 @@ void DenseGeneralTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         ORT  rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( rs, 0UL, 1UL, 4UL, 2UL );
 
          std::ostringstream oss;
@@ -4437,7 +4437,7 @@ void DenseGeneralTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         ORT  rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( rs, 0UL, 1UL, 3UL, 4UL );
 
          std::ostringstream oss;
@@ -4474,7 +4474,7 @@ void DenseGeneralTest::testRow()
       initialize();
 
       {
-         RT   rs   = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs   = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto row1 = row( rs, 1UL );
 
          if( row1[0] != 0 || row1[1] != 1 || row1[2] != 0 || row1[3] != 0 ) {
@@ -4499,7 +4499,7 @@ void DenseGeneralTest::testRow()
       }
 
       try {
-         RT   rs   = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs   = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto row3 = blaze::row( rs, 3UL );
 
          std::ostringstream oss;
@@ -4523,7 +4523,7 @@ void DenseGeneralTest::testRow()
       initialize();
 
       {
-         ORT  rs   = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs   = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto row1 = row( rs, 1UL );
 
          if( row1[0] != 0 || row1[1] != 1 || row1[2] != 0 || row1[3] != 0 ) {
@@ -4548,7 +4548,7 @@ void DenseGeneralTest::testRow()
       }
 
       try {
-         RT   rs   = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs   = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto row3 = blaze::row( rs, 3UL );
 
          std::ostringstream oss;
@@ -4585,8 +4585,8 @@ void DenseGeneralTest::testRows()
       initialize();
 
       {
-         RT rs1 = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
-         RT rs2 = blaze::rows( rs1, { 1UL, 0UL, 2UL } );
+         auto rs1 = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs2 = blaze::rows( rs1, { 1UL, 0UL, 2UL } );
 
          if( rs2(0,0) != 0 || rs2(0,1) !=  1 || rs2(0,2) != 0 || rs2(0,3) !=  0 ||
              rs2(1,0) != 0 || rs2(1,1) !=  4 || rs2(1,2) != 5 || rs2(1,3) != -6 ||
@@ -4612,8 +4612,8 @@ void DenseGeneralTest::testRows()
       }
 
       try {
-         RT rs1 = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
-         RT rs2 = blaze::rows( rs1, { 3UL } );
+         auto rs1 = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs2 = blaze::rows( rs1, { 3UL } );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -4636,8 +4636,8 @@ void DenseGeneralTest::testRows()
       initialize();
 
       {
-         ORT rs1 = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
-         ORT rs2 = blaze::rows( rs1, { 1UL, 0UL, 2UL } );
+         auto rs1 = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs2 = blaze::rows( rs1, { 1UL, 0UL, 2UL } );
 
          if( rs2(0,0) != 0 || rs2(0,1) !=  1 || rs2(0,2) != 0 || rs2(0,3) !=  0 ||
              rs2(1,0) != 0 || rs2(1,1) !=  4 || rs2(1,2) != 5 || rs2(1,3) != -6 ||
@@ -4663,8 +4663,8 @@ void DenseGeneralTest::testRows()
       }
 
       try {
-         ORT rs1 = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
-         ORT rs2 = blaze::rows( rs1, { 3UL } );
+         auto rs1 = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs2 = blaze::rows( rs1, { 3UL } );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -4700,7 +4700,7 @@ void DenseGeneralTest::testColumn()
       initialize();
 
       {
-         RT   rs   = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs   = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto col1 = blaze::column( rs, 1UL );
 
          if( col1[0] != 4 || col1[1] != 1 || col1[2] != -8 ) {
@@ -4725,7 +4725,7 @@ void DenseGeneralTest::testColumn()
       }
 
       try {
-         RT   rs   = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs   = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto col4 = blaze::column( rs, 4UL );
 
          std::ostringstream oss;
@@ -4749,7 +4749,7 @@ void DenseGeneralTest::testColumn()
       initialize();
 
       {
-         ORT  rs   = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs   = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto col1 = blaze::column( rs, 1UL );
 
          if( col1[0] != 4 || col1[1] != 1 || col1[2] != -8 ) {
@@ -4774,7 +4774,7 @@ void DenseGeneralTest::testColumn()
       }
 
       try {
-         ORT  rs   = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs   = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto col4 = blaze::column( rs, 4UL );
 
          std::ostringstream oss;
@@ -4811,7 +4811,7 @@ void DenseGeneralTest::testColumns()
       initialize();
 
       {
-         RT   rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto cs = blaze::columns( rs, { 1UL, 0UL, 2UL } );
 
          if( cs(0,0) !=  4 || cs(0,1) != 0 || cs(0,2) != 5 ||
@@ -4838,7 +4838,7 @@ void DenseGeneralTest::testColumns()
       }
 
       try {
-         RT   rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto cs = blaze::columns( rs, { 4UL } );
 
          std::ostringstream oss;
@@ -4862,7 +4862,7 @@ void DenseGeneralTest::testColumns()
       initialize();
 
       {
-         ORT  rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto cs = blaze::columns( rs, { 1UL, 0UL, 2UL } );
 
          if( cs(0,0) !=  4 || cs(0,1) != 0 || cs(0,2) != 5 ||
@@ -4889,7 +4889,7 @@ void DenseGeneralTest::testColumns()
       }
 
       try {
-         ORT  rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto cs = blaze::columns( rs, { 4UL } );
 
          std::ostringstream oss;
@@ -4926,7 +4926,7 @@ void DenseGeneralTest::testBand()
       initialize();
 
       {
-         RT   rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto b1 = blaze::band( rs, 1L );
 
          if( b1[0] != 4 || b1[1] != 0 || b1[2] != 10 ) {
@@ -4951,7 +4951,7 @@ void DenseGeneralTest::testBand()
       }
 
       try {
-         RT   rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto b4 = blaze::band( rs, 4L );
 
          std::ostringstream oss;
@@ -4964,7 +4964,7 @@ void DenseGeneralTest::testBand()
       catch( std::invalid_argument& ) {}
 
       try {
-         RT   rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto b3 = blaze::band( rs, -3L );
 
          std::ostringstream oss;
@@ -4988,7 +4988,7 @@ void DenseGeneralTest::testBand()
       initialize();
 
       {
-         ORT  rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto b1 = blaze::band( rs, 1L );
 
          if( b1[0] != 4 || b1[1] != 0 || b1[2] != 10 ) {
@@ -5013,7 +5013,7 @@ void DenseGeneralTest::testBand()
       }
 
       try {
-         ORT  rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto b4 = blaze::band( rs, 4L );
 
          std::ostringstream oss;
@@ -5026,7 +5026,7 @@ void DenseGeneralTest::testBand()
       catch( std::invalid_argument& ) {}
 
       try {
-         ORT  rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto b3 = blaze::band( rs, -3L );
 
          std::ostringstream oss;

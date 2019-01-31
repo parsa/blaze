@@ -124,7 +124,7 @@ void SparseGeneralTest::testScaling()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 2UL, 3UL } );
 
       rs *= 3;
 
@@ -175,7 +175,7 @@ void SparseGeneralTest::testScaling()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 2UL, 3UL } );
 
       rs = rs * 3;
 
@@ -226,7 +226,7 @@ void SparseGeneralTest::testScaling()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 2UL, 3UL } );
 
       rs = 3 * rs;
 
@@ -277,7 +277,7 @@ void SparseGeneralTest::testScaling()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 2UL, 3UL } );
 
       rs /= 0.5;
 
@@ -328,7 +328,7 @@ void SparseGeneralTest::testScaling()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 2UL, 3UL } );
 
       rs = rs / 0.5;
 
@@ -380,7 +380,7 @@ void SparseGeneralTest::testScaling()
       initialize();
 
       // Initialization check
-      RT rs = blaze::rows( mat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 2UL, 3UL } );
 
       checkRows    ( rs, 2UL );
       checkColumns ( rs, 4UL );
@@ -450,7 +450,7 @@ void SparseGeneralTest::testScaling()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 2UL, 3UL } );
 
       rs *= 3;
 
@@ -501,7 +501,7 @@ void SparseGeneralTest::testScaling()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 2UL, 3UL } );
 
       rs = rs * 3;
 
@@ -552,7 +552,7 @@ void SparseGeneralTest::testScaling()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 2UL, 3UL } );
 
       rs = 3 * rs;
 
@@ -603,7 +603,7 @@ void SparseGeneralTest::testScaling()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 2UL, 3UL } );
 
       rs /= 0.5;
 
@@ -654,7 +654,7 @@ void SparseGeneralTest::testScaling()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 2UL, 3UL } );
 
       rs = rs / 0.5;
 
@@ -706,7 +706,7 @@ void SparseGeneralTest::testScaling()
       initialize();
 
       // Initialization check
-      ORT rs = blaze::rows( tmat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 2UL, 3UL } );
 
       checkRows    ( rs, 2UL );
       checkColumns ( rs, 4UL );
@@ -790,7 +790,7 @@ void SparseGeneralTest::testFunctionCall()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 1UL, 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 1UL, 2UL, 3UL } );
 
       // Assignment to the element (1,1)
       {
@@ -1118,7 +1118,7 @@ void SparseGeneralTest::testFunctionCall()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 1UL, 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 1UL, 2UL, 3UL } );
 
       // Assignment to the element (1,1)
       {
@@ -1489,8 +1489,8 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Row-major Iterator/ConstIterator conversion";
 
-         RT rs = blaze::rows( mat_, { 2UL } );
-         RT::ConstIterator it( begin( rs, 0UL ) );
+         auto rs = blaze::rows( mat_, { 2UL } );
+         auto it( begin( rs, 0UL ) );
 
          if( it == end( rs, 0UL ) || it->value() != -2 ) {
             std::ostringstream oss;
@@ -1504,7 +1504,7 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Row-major Iterator subtraction (end-begin)";
 
-         RT rs = blaze::rows( mat_, { 1UL } );
+         auto rs = blaze::rows( mat_, { 1UL } );
          const ptrdiff_t number( end( rs, 0UL ) - begin( rs, 0UL ) );
 
          if( number != 1L ) {
@@ -1522,7 +1522,7 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Row-major ConstIterator subtraction (end-begin)";
 
-         RT rs = blaze::rows( mat_, { 2UL } );
+         auto rs = blaze::rows( mat_, { 2UL } );
          const ptrdiff_t number( cend( rs, 0UL ) - cbegin( rs, 0UL ) );
 
          if( number != 2L ) {
@@ -1540,9 +1540,9 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Row-major read-only access via ConstIterator";
 
-         RT rs = blaze::rows( mat_, { 2UL } );
-         RT::ConstIterator it ( cbegin( rs, 0UL ) );
-         RT::ConstIterator end( cend( rs, 0UL ) );
+         auto rs = blaze::rows( mat_, { 2UL } );
+         auto it ( cbegin( rs, 0UL ) );
+         auto end( cend( rs, 0UL ) );
 
          if( it == end || it->value() != -2 ) {
             std::ostringstream oss;
@@ -1574,10 +1574,10 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Row-major assignment via Iterator";
 
-         RT rs = blaze::rows( mat_, { 2UL } );
+         auto rs = blaze::rows( mat_, { 2UL } );
          int value = 8;
 
-         for( RT::Iterator it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
+         for( auto it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
             *it = value++;
          }
 
@@ -1614,10 +1614,10 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Row-major addition assignment via Iterator";
 
-         RT rs = blaze::rows( mat_, { 2UL } );
+         auto rs = blaze::rows( mat_, { 2UL } );
          int value = 2;
 
-         for( RT::Iterator it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
+         for( auto it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
             *it += value++;
          }
 
@@ -1654,10 +1654,10 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Row-major subtraction assignment via Iterator";
 
-         RT rs = blaze::rows( mat_, { 2UL } );
+         auto rs = blaze::rows( mat_, { 2UL } );
          int value = 2;
 
-         for( RT::Iterator it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
+         for( auto it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
             *it -= value++;
          }
 
@@ -1694,10 +1694,10 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Row-major multiplication assignment via Iterator";
 
-         RT rs = blaze::rows( mat_, { 2UL } );
+         auto rs = blaze::rows( mat_, { 2UL } );
          int value = 1;
 
-         for( RT::Iterator it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
+         for( auto it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
             *it *= value++;
          }
 
@@ -1734,9 +1734,9 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Row-major division assignment via Iterator";
 
-         RT rs = blaze::rows( mat_, { 2UL } );
+         auto rs = blaze::rows( mat_, { 2UL } );
 
-         for( RT::Iterator it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
+         for( auto it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
             *it /= 2;
          }
 
@@ -1810,8 +1810,8 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Column-major Iterator/ConstIterator conversion";
 
-         ORT rs = blaze::rows( tmat_, { 2UL } );
-         ORT::ConstIterator it( begin( rs, 0UL ) );
+         auto rs = blaze::rows( tmat_, { 2UL } );
+         auto it( begin( rs, 0UL ) );
 
          if( it == end( rs, 0UL ) || it->value() != -2 ) {
             std::ostringstream oss;
@@ -1825,7 +1825,7 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Column-major Iterator subtraction (end-begin)";
 
-         ORT rs = blaze::rows( tmat_, { 1UL } );
+         auto rs = blaze::rows( tmat_, { 1UL } );
          const ptrdiff_t number( end( rs, 0UL ) - begin( rs, 0UL ) );
 
          if( number != 1L ) {
@@ -1843,7 +1843,7 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Column-major ConstIterator subtraction (end-begin)";
 
-         ORT rs = blaze::rows( tmat_, { 2UL } );
+         auto rs = blaze::rows( tmat_, { 2UL } );
          const ptrdiff_t number( cend( rs, 0UL ) - cbegin( rs, 0UL ) );
 
          if( number != 2L ) {
@@ -1861,9 +1861,9 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Column-major read-only access via ConstIterator";
 
-         ORT rs = blaze::rows( tmat_, { 2UL } );
-         ORT::ConstIterator it ( cbegin( rs, 0UL ) );
-         ORT::ConstIterator end( cend( rs, 0UL ) );
+         auto rs = blaze::rows( tmat_, { 2UL } );
+         auto it ( cbegin( rs, 0UL ) );
+         auto end( cend( rs, 0UL ) );
 
          if( it == end || it->value() != -2 ) {
             std::ostringstream oss;
@@ -1895,10 +1895,10 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Column-major assignment via Iterator";
 
-         ORT rs = blaze::rows( tmat_, { 2UL } );
+         auto rs = blaze::rows( tmat_, { 2UL } );
          int value = 8;
 
-         for( ORT::Iterator it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
+         for( auto it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
             *it = value++;
          }
 
@@ -1935,10 +1935,10 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Column-major addition assignment via Iterator";
 
-         ORT rs = blaze::rows( tmat_, { 2UL } );
+         auto rs = blaze::rows( tmat_, { 2UL } );
          int value = 2;
 
-         for( ORT::Iterator it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
+         for( auto it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
             *it += value++;
          }
 
@@ -1975,10 +1975,10 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Column-major subtraction assignment via Iterator";
 
-         ORT rs = blaze::rows( tmat_, { 2UL } );
+         auto rs = blaze::rows( tmat_, { 2UL } );
          int value = 2;
 
-         for( ORT::Iterator it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
+         for( auto it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
             *it -= value++;
          }
 
@@ -2015,10 +2015,10 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Column-major multiplication assignment via Iterator";
 
-         ORT rs = blaze::rows( tmat_, { 2UL } );
+         auto rs = blaze::rows( tmat_, { 2UL } );
          int value = 1;
 
-         for( ORT::Iterator it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
+         for( auto it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
             *it *= value++;
          }
 
@@ -2055,9 +2055,9 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Column-major division assignment via Iterator";
 
-         ORT rs = blaze::rows( tmat_, { 2UL } );
+         auto rs = blaze::rows( tmat_, { 2UL } );
 
-         for( ORT::Iterator it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
+         for( auto it=begin( rs, 0UL ); it!=end( rs, 0UL ); ++it ) {
             *it /= 2;
          }
 
@@ -2115,7 +2115,7 @@ void SparseGeneralTest::testNonZeros()
       initialize();
 
       // Initialization check
-      RT rs = blaze::rows( mat_, { 1UL, 2UL } );
+      auto rs = blaze::rows( mat_, { 1UL, 2UL } );
 
       checkRows    ( rs, 2UL );
       checkColumns ( rs, 4UL );
@@ -2186,7 +2186,7 @@ void SparseGeneralTest::testNonZeros()
       initialize();
 
       // Initialization check
-      ORT rs = blaze::rows( tmat_, { 1UL, 2UL } );
+      auto rs = blaze::rows( tmat_, { 1UL, 2UL } );
 
       checkRows    ( rs, 2UL );
       checkColumns ( rs, 4UL );
@@ -2272,7 +2272,7 @@ void SparseGeneralTest::testReset()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 1UL, 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 1UL, 2UL, 3UL } );
 
       reset( rs(0,1) );
 
@@ -2322,7 +2322,7 @@ void SparseGeneralTest::testReset()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 1UL, 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 1UL, 2UL, 3UL } );
 
       reset( rs );
 
@@ -2405,7 +2405,7 @@ void SparseGeneralTest::testReset()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 1UL, 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 1UL, 2UL, 3UL } );
 
       reset( rs(0,1) );
 
@@ -2455,7 +2455,7 @@ void SparseGeneralTest::testReset()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 1UL, 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 1UL, 2UL, 3UL } );
 
       reset( rs );
 
@@ -2551,7 +2551,7 @@ void SparseGeneralTest::testClear()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 1UL, 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 1UL, 2UL, 3UL } );
 
       clear( rs(0,1) );
 
@@ -2601,7 +2601,7 @@ void SparseGeneralTest::testClear()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 1UL, 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 1UL, 2UL, 3UL } );
 
       clear( rs );
 
@@ -2684,7 +2684,7 @@ void SparseGeneralTest::testClear()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 1UL, 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 1UL, 2UL, 3UL } );
 
       clear( rs(0,1) );
 
@@ -2734,7 +2734,7 @@ void SparseGeneralTest::testClear()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 1UL, 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 1UL, 2UL, 3UL } );
 
       clear( rs );
 
@@ -2827,7 +2827,7 @@ void SparseGeneralTest::testReserve()
 
       MT mat( 3UL, 20UL );
 
-      RT rs = blaze::rows( mat, { 1UL } );
+      auto rs = blaze::rows( mat, { 1UL } );
 
       // Increasing the capacity of the row selection
       rs.reserve( 10UL );
@@ -2851,7 +2851,7 @@ void SparseGeneralTest::testReserve()
 
       MT mat( 3UL, 20UL );
 
-      RT rs = blaze::rows( mat, { 1UL } );
+      auto rs = blaze::rows( mat, { 1UL } );
 
       // Increasing the capacity of a single row
       rs.reserve( 0UL, 10UL );
@@ -2880,7 +2880,7 @@ void SparseGeneralTest::testReserve()
 
       OMT mat( 3UL, 20UL );
 
-      ORT rs = blaze::rows( mat, { 1UL } );
+      auto rs = blaze::rows( mat, { 1UL } );
 
       // Increasing the capacity of the row selection
       rs.reserve( 10UL );
@@ -2904,7 +2904,7 @@ void SparseGeneralTest::testReserve()
 
       OMT mat( 3UL, 20UL );
 
-      ORT rs = blaze::rows( mat, { 1UL } );
+      auto rs = blaze::rows( mat, { 1UL } );
 
       // Increasing the capacity of a single row
       rs.reserve( 0UL, 10UL );
@@ -2946,7 +2946,7 @@ void SparseGeneralTest::testTrim()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 2UL, 3UL } );
 
       // Increasing the row capacity of the matrix
       rs.reserve( 0UL, 10UL );
@@ -2979,7 +2979,7 @@ void SparseGeneralTest::testTrim()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 2UL, 3UL } );
 
       // Increasing the row capacity of the matrix
       rs.reserve( 0UL, 10UL );
@@ -3049,7 +3049,7 @@ void SparseGeneralTest::testSet()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 0UL, 1UL } );
+      auto rs = blaze::rows( mat_, { 0UL, 1UL } );
 
       // Setting a non-zero element at the end of the 0th row
       rs.set( 0UL, 3UL, 1 );
@@ -3146,7 +3146,7 @@ void SparseGeneralTest::testSet()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 0UL, 1UL } );
+      auto rs = blaze::rows( tmat_, { 0UL, 1UL } );
 
       // Setting a non-zero element at the end of the 0th row
       rs.set( 0UL, 3UL, 1 );
@@ -3256,7 +3256,7 @@ void SparseGeneralTest::testInsert()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 0UL, 1UL } );
+      auto rs = blaze::rows( mat_, { 0UL, 1UL } );
 
       // Inserting a non-zero element at the end of the 0th row
       rs.insert( 0UL, 3UL, 1 );
@@ -3346,7 +3346,7 @@ void SparseGeneralTest::testInsert()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 0UL, 1UL } );
+      auto rs = blaze::rows( tmat_, { 0UL, 1UL } );
 
       // Inserting a non-zero element at the end of the 0th row
       rs.insert( 0UL, 3UL, 1 );
@@ -3452,7 +3452,7 @@ void SparseGeneralTest::testAppend()
          mat_.reset();
 
          // Initialization check
-         RT rs = blaze::rows( mat_, { 3UL, 2UL, 1UL, 0UL } );
+         auto rs = blaze::rows( mat_, { 3UL, 2UL, 1UL, 0UL } );
          rs.reserve( 0UL, 2UL );
          rs.reserve( 2UL, 1UL );
          rs.reserve( 3UL, 2UL );
@@ -3541,7 +3541,7 @@ void SparseGeneralTest::testAppend()
          mat_.reset();
 
          // Initialization check
-         RT rs = blaze::rows( mat_, { 3UL, 2UL, 1UL, 0UL } );
+         auto rs = blaze::rows( mat_, { 3UL, 2UL, 1UL, 0UL } );
          rs.reserve( 0UL, 2UL );
          rs.reserve( 2UL, 1UL );
          rs.reserve( 3UL, 2UL );
@@ -3634,7 +3634,7 @@ void SparseGeneralTest::testAppend()
          tmat_.reset();
 
          // Initialization check
-         ORT rs = blaze::rows( tmat_, { 3UL, 2UL, 1UL, 0UL } );
+         auto rs = blaze::rows( tmat_, { 3UL, 2UL, 1UL, 0UL } );
          rs.reserve( 0UL, 2UL );
          rs.reserve( 2UL, 1UL );
          rs.reserve( 3UL, 2UL );
@@ -3723,7 +3723,7 @@ void SparseGeneralTest::testAppend()
          tmat_.reset();
 
          // Initialization check
-         ORT rs = blaze::rows( tmat_, { 3UL, 2UL, 1UL, 0UL } );
+         auto rs = blaze::rows( tmat_, { 3UL, 2UL, 1UL, 0UL } );
          rs.reserve( 0UL, 2UL );
          rs.reserve( 2UL, 1UL );
          rs.reserve( 3UL, 2UL );
@@ -3826,7 +3826,7 @@ void SparseGeneralTest::testErase()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 3UL, 4UL } );
+      auto rs = blaze::rows( mat_, { 3UL, 4UL } );
 
       // Erasing the non-zero element at the end of the 1st row
       rs.erase( 1UL, 3UL );
@@ -3923,11 +3923,11 @@ void SparseGeneralTest::testErase()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 3UL, 4UL } );
+      auto rs = blaze::rows( mat_, { 3UL, 4UL } );
 
       // Erasing the non-zero element at the end of the 1st row
       {
-         RT::Iterator pos = rs.erase( 1UL, rs.find( 1UL, 3UL ) );
+         auto pos = rs.erase( 1UL, rs.find( 1UL, 3UL ) );
 
          checkRows    ( rs  , 2UL );
          checkColumns ( rs  , 4UL );
@@ -3959,7 +3959,7 @@ void SparseGeneralTest::testErase()
 
       // Erasing the non-zero element at the beginning of the 1st row
       {
-         RT::Iterator pos = rs.erase( 1UL, rs.find( 1UL, 0UL ) );
+         auto pos = rs.erase( 1UL, rs.find( 1UL, 0UL ) );
 
          checkRows    ( rs  , 2UL );
          checkColumns ( rs  , 4UL );
@@ -3994,7 +3994,7 @@ void SparseGeneralTest::testErase()
 
       // Erasing the non-zero element at the beginning of the 1st row
       {
-         RT::Iterator pos = rs.erase( 1UL, rs.find( 1UL, 1UL ) );
+         auto pos = rs.erase( 1UL, rs.find( 1UL, 1UL ) );
 
          checkRows    ( rs  , 2UL );
          checkColumns ( rs  , 4UL );
@@ -4029,7 +4029,7 @@ void SparseGeneralTest::testErase()
 
       // Trying to erase an already erased element
       {
-         RT::Iterator pos = rs.erase( 1UL, rs.find( 1UL, 3UL ) );
+         auto pos = rs.erase( 1UL, rs.find( 1UL, 3UL ) );
 
          checkRows    ( rs  , 2UL );
          checkColumns ( rs  , 4UL );
@@ -4070,11 +4070,11 @@ void SparseGeneralTest::testErase()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 3UL, 4UL } );
+      auto rs = blaze::rows( mat_, { 3UL, 4UL } );
 
       // Erasing the 0th row
       {
-         RT::Iterator pos = rs.erase( 0UL, rs.begin( 0UL ), rs.end( 0UL ) );
+         auto pos = rs.erase( 0UL, rs.begin( 0UL ), rs.end( 0UL ) );
 
          checkRows    ( rs  , 2UL );
          checkColumns ( rs  , 4UL );
@@ -4106,7 +4106,7 @@ void SparseGeneralTest::testErase()
 
       // Erasing the first half of the 1st row
       {
-         RT::Iterator pos = rs.erase( 1UL, rs.begin( 1UL ), rs.find( 1UL, 2UL ) );
+         auto pos = rs.erase( 1UL, rs.begin( 1UL ), rs.find( 1UL, 2UL ) );
 
          checkRows    ( rs  , 2UL );
          checkColumns ( rs  , 4UL );
@@ -4141,7 +4141,7 @@ void SparseGeneralTest::testErase()
 
       // Erasing the second half of the 1st row
       {
-         RT::Iterator pos = rs.erase( 1UL, rs.find( 1UL, 2UL ), rs.end( 1UL ) );
+         auto pos = rs.erase( 1UL, rs.find( 1UL, 2UL ), rs.end( 1UL ) );
 
          checkRows    ( rs  , 2UL );
          checkColumns ( rs  , 4UL );
@@ -4173,7 +4173,7 @@ void SparseGeneralTest::testErase()
 
       // Trying to erase an empty range
       {
-         RT::Iterator pos = rs.erase( 1UL, rs.begin( 1UL ), rs.begin( 1UL ) );
+         auto pos = rs.erase( 1UL, rs.begin( 1UL ), rs.begin( 1UL ) );
 
          checkRows    ( rs  , 2UL );
          checkColumns ( rs  , 4UL );
@@ -4214,7 +4214,7 @@ void SparseGeneralTest::testErase()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 3UL, 4UL } );
+      auto rs = blaze::rows( mat_, { 3UL, 4UL } );
 
       // Erasing a selection of elements
       rs.erase( []( int value ) { return value == 4 || value == 10; } );
@@ -4269,7 +4269,7 @@ void SparseGeneralTest::testErase()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 3UL, 4UL } );
+      auto rs = blaze::rows( mat_, { 3UL, 4UL } );
 
       // Erasing a selection of elements
       rs.erase( 0UL, rs.begin( 0UL ), rs.find( 0UL, 3UL ),
@@ -4325,7 +4325,7 @@ void SparseGeneralTest::testErase()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 3UL, 4UL } );
+      auto rs = blaze::rows( tmat_, { 3UL, 4UL } );
 
       // Erasing the non-zero element at the end of the 1st row
       rs.erase( 1UL, 3UL );
@@ -4422,11 +4422,11 @@ void SparseGeneralTest::testErase()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 3UL, 4UL } );
+      auto rs = blaze::rows( tmat_, { 3UL, 4UL } );
 
       // Erasing the non-zero element at the end of the 1st row
       {
-         ORT::Iterator pos = rs.erase( 1UL, rs.find( 1UL, 3UL ) );
+         auto pos = rs.erase( 1UL, rs.find( 1UL, 3UL ) );
 
          checkRows    ( rs   , 2UL );
          checkColumns ( rs   , 4UL );
@@ -4458,7 +4458,7 @@ void SparseGeneralTest::testErase()
 
       // Erasing the non-zero element at the beginning of the 1st row
       {
-         ORT::Iterator pos = rs.erase( 1UL, rs.find( 1UL, 0UL ) );
+         auto pos = rs.erase( 1UL, rs.find( 1UL, 0UL ) );
 
          checkRows    ( rs   , 2UL );
          checkColumns ( rs   , 4UL );
@@ -4493,7 +4493,7 @@ void SparseGeneralTest::testErase()
 
       // Erasing the non-zero element at the beginning of the 1st row
       {
-         ORT::Iterator pos = rs.erase( 1UL, rs.find( 1UL, 1UL ) );
+         auto pos = rs.erase( 1UL, rs.find( 1UL, 1UL ) );
 
          checkRows    ( rs   , 2UL );
          checkColumns ( rs   , 4UL );
@@ -4528,7 +4528,7 @@ void SparseGeneralTest::testErase()
 
       // Trying to erase an already erased element
       {
-         ORT::Iterator pos = rs.erase( 1UL, rs.find( 1UL, 3UL ) );
+         auto pos = rs.erase( 1UL, rs.find( 1UL, 3UL ) );
 
          checkRows    ( rs   , 2UL );
          checkColumns ( rs   , 4UL );
@@ -4569,11 +4569,11 @@ void SparseGeneralTest::testErase()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 3UL, 4UL } );
+      auto rs = blaze::rows( tmat_, { 3UL, 4UL } );
 
       // Erasing the 0th row
       {
-         ORT::Iterator pos = rs.erase( 0UL, rs.begin( 0UL ), rs.end( 0UL ) );
+         auto pos = rs.erase( 0UL, rs.begin( 0UL ), rs.end( 0UL ) );
 
          checkRows    ( rs   , 2UL );
          checkColumns ( rs   , 4UL );
@@ -4605,7 +4605,7 @@ void SparseGeneralTest::testErase()
 
       // Erasing the first half of the 1st row
       {
-         ORT::Iterator pos = rs.erase( 1UL, rs.begin( 1UL ), rs.find( 1UL, 2UL ) );
+         auto pos = rs.erase( 1UL, rs.begin( 1UL ), rs.find( 1UL, 2UL ) );
 
          checkRows    ( rs   , 2UL );
          checkColumns ( rs   , 4UL );
@@ -4640,7 +4640,7 @@ void SparseGeneralTest::testErase()
 
       // Erasing the second half of the 1st row
       {
-         ORT::Iterator pos = rs.erase( 1UL, rs.find( 1UL, 2UL ), rs.end( 1UL ) );
+         auto pos = rs.erase( 1UL, rs.find( 1UL, 2UL ), rs.end( 1UL ) );
 
          checkRows    ( rs   , 2UL );
          checkColumns ( rs   , 4UL );
@@ -4672,7 +4672,7 @@ void SparseGeneralTest::testErase()
 
       // Trying to erase an empty range
       {
-         ORT::Iterator pos = rs.erase( 1UL, rs.begin( 1UL ), rs.begin( 1UL ) );
+         auto pos = rs.erase( 1UL, rs.begin( 1UL ), rs.begin( 1UL ) );
 
          checkRows    ( rs   , 2UL );
          checkColumns ( rs   , 4UL );
@@ -4713,7 +4713,7 @@ void SparseGeneralTest::testErase()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 3UL, 4UL } );
+      auto rs = blaze::rows( tmat_, { 3UL, 4UL } );
 
       // Erasing a selection of elements
       rs.erase( []( int value ) { return value == 4 || value == 10; } );
@@ -4768,7 +4768,7 @@ void SparseGeneralTest::testErase()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 3UL, 4UL } );
+      auto rs = blaze::rows( tmat_, { 3UL, 4UL } );
 
       // Erasing a selection of elements
       rs.erase( 0UL, rs.begin( 0UL ), rs.find( 0UL, 3UL ),
@@ -4835,11 +4835,9 @@ void SparseGeneralTest::testFind()
    {
       test_ = "Row-major Rows::find()";
 
-      using ConstIterator = RT::ConstIterator;
-
       initialize();
 
-      RT rs = blaze::rows( mat_, { 1UL, 2UL, 3UL } );
+      auto rs = blaze::rows( mat_, { 1UL, 2UL, 3UL } );
 
       checkRows    ( rs, 3UL );
       checkColumns ( rs, 4UL );
@@ -4850,7 +4848,7 @@ void SparseGeneralTest::testFind()
 
       // Searching for the first element
       {
-         ConstIterator pos( rs.find( 0UL, 1UL ) );
+         auto pos( rs.find( 0UL, 1UL ) );
 
          if( pos == rs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -4877,7 +4875,7 @@ void SparseGeneralTest::testFind()
 
       // Searching for the second element
       {
-         ConstIterator pos( rs.find( 1UL, 2UL ) );
+         auto pos( rs.find( 1UL, 2UL ) );
 
          if( pos == rs.end( 1UL ) ) {
             std::ostringstream oss;
@@ -4904,7 +4902,7 @@ void SparseGeneralTest::testFind()
 
       // Searching for a non-existing non-zero element
       {
-         ConstIterator pos( rs.find( 1UL, 1UL ) );
+         auto pos( rs.find( 1UL, 1UL ) );
 
          if( pos != rs.end( 1UL ) ) {
             std::ostringstream oss;
@@ -4929,11 +4927,9 @@ void SparseGeneralTest::testFind()
    {
       test_ = "Column-major Rows::find()";
 
-      using ConstIterator = ORT::ConstIterator;
-
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 1UL, 2UL, 3UL } );
+      auto rs = blaze::rows( tmat_, { 1UL, 2UL, 3UL } );
 
       checkRows    ( rs, 3UL );
       checkColumns ( rs, 4UL );
@@ -4944,7 +4940,7 @@ void SparseGeneralTest::testFind()
 
       // Searching for the first element
       {
-         ConstIterator pos( rs.find( 0UL, 1UL ) );
+         auto pos( rs.find( 0UL, 1UL ) );
 
          if( pos == rs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -4971,7 +4967,7 @@ void SparseGeneralTest::testFind()
 
       // Searching for the second element
       {
-         ConstIterator pos( rs.find( 1UL, 2UL ) );
+         auto pos( rs.find( 1UL, 2UL ) );
 
          if( pos == rs.end( 1UL ) ) {
             std::ostringstream oss;
@@ -4998,7 +4994,7 @@ void SparseGeneralTest::testFind()
 
       // Searching for a non-existing non-zero element
       {
-         ConstIterator pos( rs.find( 1UL, 1UL ) );
+         auto pos( rs.find( 1UL, 1UL ) );
 
          if( pos != rs.end( 1UL ) ) {
             std::ostringstream oss;
@@ -5036,9 +5032,7 @@ void SparseGeneralTest::testLowerBound()
    {
       test_ = "Row-major Rows::lowerBound()";
 
-      using ConstIterator = RT::ConstIterator;
-
-      RT rs = blaze::rows( mat_, { 1UL } );
+      auto rs = blaze::rows( mat_, { 1UL } );
 
       checkRows    ( rs, 1UL );
       checkColumns ( rs, 4UL );
@@ -5047,7 +5041,7 @@ void SparseGeneralTest::testLowerBound()
 
       // Determining the lower bound for position (0,0)
       {
-         ConstIterator pos( rs.lowerBound( 0UL, 0UL ) );
+         auto pos( rs.lowerBound( 0UL, 0UL ) );
 
          if( pos == rs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5074,7 +5068,7 @@ void SparseGeneralTest::testLowerBound()
 
       // Determining the lower bound for position (0,1)
       {
-         ConstIterator pos( rs.lowerBound( 0UL, 1UL ) );
+         auto pos( rs.lowerBound( 0UL, 1UL ) );
 
          if( pos == rs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5101,7 +5095,7 @@ void SparseGeneralTest::testLowerBound()
 
       // Determining the lower bound for position (0,2)
       {
-         ConstIterator pos( rs.lowerBound( 0UL, 2UL ) );
+         auto pos( rs.lowerBound( 0UL, 2UL ) );
 
          if( pos != rs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5123,9 +5117,7 @@ void SparseGeneralTest::testLowerBound()
    {
       test_ = "Column-major Rows::lowerBound()";
 
-      using ConstIterator = ORT::ConstIterator;
-
-      ORT rs = blaze::rows( tmat_, { 1UL } );
+      auto rs = blaze::rows( tmat_, { 1UL } );
 
       checkRows    ( rs, 1UL );
       checkColumns ( rs, 4UL );
@@ -5134,7 +5126,7 @@ void SparseGeneralTest::testLowerBound()
 
       // Determining the lower bound for position (0,0)
       {
-         ConstIterator pos( rs.lowerBound( 0UL, 0UL ) );
+         auto pos( rs.lowerBound( 0UL, 0UL ) );
 
          if( pos == rs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5161,7 +5153,7 @@ void SparseGeneralTest::testLowerBound()
 
       // Determining the lower bound for position (0,1)
       {
-         ConstIterator pos( rs.lowerBound( 0UL, 1UL ) );
+         auto pos( rs.lowerBound( 0UL, 1UL ) );
 
          if( pos == rs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5188,7 +5180,7 @@ void SparseGeneralTest::testLowerBound()
 
       // Determining the lower bound for position (0,2)
       {
-         ConstIterator pos( rs.lowerBound( 0UL, 2UL ) );
+         auto pos( rs.lowerBound( 0UL, 2UL ) );
 
          if( pos != rs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5223,9 +5215,7 @@ void SparseGeneralTest::testUpperBound()
    {
       test_ = "Row-major Rows::upperBound()";
 
-      using ConstIterator = RT::ConstIterator;
-
-      RT rs = blaze::rows( mat_, { 1UL } );
+      auto rs = blaze::rows( mat_, { 1UL } );
 
       checkRows    ( rs, 1UL );
       checkColumns ( rs, 4UL );
@@ -5234,7 +5224,7 @@ void SparseGeneralTest::testUpperBound()
 
       // Determining the upper bound for position (0,0)
       {
-         ConstIterator pos( rs.upperBound( 0UL, 0UL ) );
+         auto pos( rs.upperBound( 0UL, 0UL ) );
 
          if( pos == rs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5261,7 +5251,7 @@ void SparseGeneralTest::testUpperBound()
 
       // Determining the upper bound for position (0,1)
       {
-         ConstIterator pos( rs.upperBound( 0UL, 1UL ) );
+         auto pos( rs.upperBound( 0UL, 1UL ) );
 
          if( pos != rs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5276,7 +5266,7 @@ void SparseGeneralTest::testUpperBound()
 
       // Determining the upper bound for position (0,2)
       {
-         ConstIterator pos( rs.upperBound( 0UL, 2UL ) );
+         auto pos( rs.upperBound( 0UL, 2UL ) );
 
          if( pos != rs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5298,9 +5288,7 @@ void SparseGeneralTest::testUpperBound()
    {
       test_ = "Column-major Rows::upperBound()";
 
-      using ConstIterator = ORT::ConstIterator;
-
-      ORT rs = blaze::rows( tmat_, { 1UL } );
+      auto rs = blaze::rows( tmat_, { 1UL } );
 
       checkRows    ( rs, 1UL );
       checkColumns ( rs, 4UL );
@@ -5309,7 +5297,7 @@ void SparseGeneralTest::testUpperBound()
 
       // Determining the upper bound for position (0,0)
       {
-         ConstIterator pos( rs.upperBound( 0UL, 0UL ) );
+         auto pos( rs.upperBound( 0UL, 0UL ) );
 
          if( pos == rs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5336,7 +5324,7 @@ void SparseGeneralTest::testUpperBound()
 
       // Determining the upper bound for position (0,1)
       {
-         ConstIterator pos( rs.upperBound( 0UL, 1UL ) );
+         auto pos( rs.upperBound( 0UL, 1UL ) );
 
          if( pos != rs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5351,7 +5339,7 @@ void SparseGeneralTest::testUpperBound()
 
       // Determining the upper bound for position (0,2)
       {
-         ConstIterator pos( rs.upperBound( 0UL, 2UL ) );
+         auto pos( rs.upperBound( 0UL, 2UL ) );
 
          if( pos != rs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5389,7 +5377,7 @@ void SparseGeneralTest::testTranspose()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto rs = blaze::rows( mat_, { 3UL, 2UL, 1UL, 4UL } );
 
       transpose( rs );
 
@@ -5440,7 +5428,7 @@ void SparseGeneralTest::testTranspose()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto rs = blaze::rows( mat_, { 3UL, 2UL, 1UL, 4UL } );
 
       rs = trans( rs );
 
@@ -5496,7 +5484,7 @@ void SparseGeneralTest::testTranspose()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto rs = blaze::rows( tmat_, { 3UL, 2UL, 1UL, 4UL } );
 
       transpose( rs );
 
@@ -5547,7 +5535,7 @@ void SparseGeneralTest::testTranspose()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto rs = blaze::rows( tmat_, { 3UL, 2UL, 1UL, 4UL } );
 
       rs = trans( rs );
 
@@ -5617,7 +5605,7 @@ void SparseGeneralTest::testCTranspose()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto rs = blaze::rows( mat_, { 3UL, 2UL, 1UL, 4UL } );
 
       ctranspose( rs );
 
@@ -5668,7 +5656,7 @@ void SparseGeneralTest::testCTranspose()
 
       initialize();
 
-      RT rs = blaze::rows( mat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto rs = blaze::rows( mat_, { 3UL, 2UL, 1UL, 4UL } );
 
       rs = ctrans( rs );
 
@@ -5724,7 +5712,7 @@ void SparseGeneralTest::testCTranspose()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto rs = blaze::rows( tmat_, { 3UL, 2UL, 1UL, 4UL } );
 
       ctranspose( rs );
 
@@ -5775,7 +5763,7 @@ void SparseGeneralTest::testCTranspose()
 
       initialize();
 
-      ORT rs = blaze::rows( tmat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto rs = blaze::rows( tmat_, { 3UL, 2UL, 1UL, 4UL } );
 
       rs = ctrans( rs );
 
@@ -5848,7 +5836,7 @@ void SparseGeneralTest::testIsDefault()
 
       // isDefault with default row selection
       {
-         RT rs = blaze::rows( mat_, { 0UL } );
+         auto rs = blaze::rows( mat_, { 0UL } );
 
          if( isDefault( rs(0,1) ) != true ) {
             std::ostringstream oss;
@@ -5871,7 +5859,7 @@ void SparseGeneralTest::testIsDefault()
 
       // isDefault with non-default row selection
       {
-         RT rs = blaze::rows( mat_, { 1UL } );
+         auto rs = blaze::rows( mat_, { 1UL } );
 
          if( isDefault( rs(0,1) ) != false ) {
             std::ostringstream oss;
@@ -5907,7 +5895,7 @@ void SparseGeneralTest::testIsDefault()
 
       // isDefault with default row selection
       {
-         ORT rs = blaze::rows( tmat_, { 0UL } );
+         auto rs = blaze::rows( tmat_, { 0UL } );
 
          if( isDefault( rs(0,1) ) != true ) {
             std::ostringstream oss;
@@ -5930,7 +5918,7 @@ void SparseGeneralTest::testIsDefault()
 
       // isDefault with non-default row selection
       {
-         ORT rs = blaze::rows( tmat_, { 1UL } );
+         auto rs = blaze::rows( tmat_, { 1UL } );
 
          if( isDefault( rs(0,1) ) != false ) {
             std::ostringstream oss;
@@ -6647,7 +6635,7 @@ void SparseGeneralTest::testSubmatrix()
       initialize();
 
       {
-         RT   rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( rs, 0UL, 1UL, 3UL, 2UL );
 
          if( sm(0,0) !=  4 || sm(0,1) != 5 ||
@@ -6676,7 +6664,7 @@ void SparseGeneralTest::testSubmatrix()
       }
 
       try {
-         RT   rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( rs, 3UL, 1UL, 3UL, 2UL );
 
          std::ostringstream oss;
@@ -6689,7 +6677,7 @@ void SparseGeneralTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         RT   rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( rs, 0UL, 4UL, 3UL, 2UL );
 
          std::ostringstream oss;
@@ -6702,7 +6690,7 @@ void SparseGeneralTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         RT   rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( rs, 0UL, 1UL, 4UL, 2UL );
 
          std::ostringstream oss;
@@ -6715,7 +6703,7 @@ void SparseGeneralTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         RT   rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( rs, 0UL, 1UL, 3UL, 4UL );
 
          std::ostringstream oss;
@@ -6739,7 +6727,7 @@ void SparseGeneralTest::testSubmatrix()
       initialize();
 
       {
-         ORT  rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( rs, 0UL, 1UL, 3UL, 2UL );
 
          if( sm(0,0) !=  4 || sm(0,1) != 5 ||
@@ -6768,7 +6756,7 @@ void SparseGeneralTest::testSubmatrix()
       }
 
       try {
-         ORT  rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( rs, 3UL, 1UL, 3UL, 2UL );
 
          std::ostringstream oss;
@@ -6781,7 +6769,7 @@ void SparseGeneralTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         ORT  rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( rs, 0UL, 4UL, 3UL, 2UL );
 
          std::ostringstream oss;
@@ -6794,7 +6782,7 @@ void SparseGeneralTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         ORT  rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( rs, 0UL, 1UL, 4UL, 2UL );
 
          std::ostringstream oss;
@@ -6807,7 +6795,7 @@ void SparseGeneralTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         ORT  rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( rs, 0UL, 1UL, 3UL, 4UL );
 
          std::ostringstream oss;
@@ -6844,7 +6832,7 @@ void SparseGeneralTest::testRow()
       initialize();
 
       {
-         RT   rs   = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs   = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto row1 = row( rs, 1UL );
 
          if( row1[0] != 0 || row1[1] != 1 || row1[2] != 0 || row1[3] != 0 ) {
@@ -6869,7 +6857,7 @@ void SparseGeneralTest::testRow()
       }
 
       try {
-         RT   rs   = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs   = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto row3 = blaze::row( rs, 3UL );
 
          std::ostringstream oss;
@@ -6893,7 +6881,7 @@ void SparseGeneralTest::testRow()
       initialize();
 
       {
-         ORT  rs   = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs   = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto row1 = row( rs, 1UL );
 
          if( row1[0] != 0 || row1[1] != 1 || row1[2] != 0 || row1[3] != 0 ) {
@@ -6918,7 +6906,7 @@ void SparseGeneralTest::testRow()
       }
 
       try {
-         RT   rs   = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs   = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto row3 = blaze::row( rs, 3UL );
 
          std::ostringstream oss;
@@ -6955,8 +6943,8 @@ void SparseGeneralTest::testRows()
       initialize();
 
       {
-         RT rs1 = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
-         RT rs2 = blaze::rows( rs1, { 1UL, 0UL, 2UL } );
+         auto rs1 = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs2 = blaze::rows( rs1, { 1UL, 0UL, 2UL } );
 
          if( rs2(0,0) != 0 || rs2(0,1) !=  1 || rs2(0,2) != 0 || rs2(0,3) !=  0 ||
              rs2(1,0) != 0 || rs2(1,1) !=  4 || rs2(1,2) != 5 || rs2(1,3) != -6 ||
@@ -6982,8 +6970,8 @@ void SparseGeneralTest::testRows()
       }
 
       try {
-         RT rs1 = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
-         RT rs2 = blaze::rows( rs1, { 3UL } );
+         auto rs1 = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs2 = blaze::rows( rs1, { 3UL } );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -7006,8 +6994,8 @@ void SparseGeneralTest::testRows()
       initialize();
 
       {
-         ORT rs1 = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
-         ORT rs2 = blaze::rows( rs1, { 1UL, 0UL, 2UL } );
+         auto rs1 = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs2 = blaze::rows( rs1, { 1UL, 0UL, 2UL } );
 
          if( rs2(0,0) != 0 || rs2(0,1) !=  1 || rs2(0,2) != 0 || rs2(0,3) !=  0 ||
              rs2(1,0) != 0 || rs2(1,1) !=  4 || rs2(1,2) != 5 || rs2(1,3) != -6 ||
@@ -7033,8 +7021,8 @@ void SparseGeneralTest::testRows()
       }
 
       try {
-         ORT rs1 = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
-         ORT rs2 = blaze::rows( rs1, { 3UL } );
+         auto rs1 = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs2 = blaze::rows( rs1, { 3UL } );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -7070,7 +7058,7 @@ void SparseGeneralTest::testColumn()
       initialize();
 
       {
-         RT   rs   = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs   = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto col1 = blaze::column( rs, 1UL );
 
          if( col1[0] != 4 || col1[1] != 1 || col1[2] != -8 ) {
@@ -7095,7 +7083,7 @@ void SparseGeneralTest::testColumn()
       }
 
       try {
-         RT   rs   = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs   = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto col4 = blaze::column( rs, 4UL );
 
          std::ostringstream oss;
@@ -7119,7 +7107,7 @@ void SparseGeneralTest::testColumn()
       initialize();
 
       {
-         ORT  rs   = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs   = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto col1 = blaze::column( rs, 1UL );
 
          if( col1[0] != 4 || col1[1] != 1 || col1[2] != -8 ) {
@@ -7144,7 +7132,7 @@ void SparseGeneralTest::testColumn()
       }
 
       try {
-         ORT  rs   = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs   = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto col4 = blaze::column( rs, 4UL );
 
          std::ostringstream oss;
@@ -7181,7 +7169,7 @@ void SparseGeneralTest::testColumns()
       initialize();
 
       {
-         RT   rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto cs = blaze::columns( rs, { 1UL, 0UL, 2UL } );
 
          if( cs(0,0) !=  4 || cs(0,1) != 0 || cs(0,2) != 5 ||
@@ -7208,7 +7196,7 @@ void SparseGeneralTest::testColumns()
       }
 
       try {
-         RT   rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto cs = blaze::columns( rs, { 4UL } );
 
          std::ostringstream oss;
@@ -7232,7 +7220,7 @@ void SparseGeneralTest::testColumns()
       initialize();
 
       {
-         ORT  rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto cs = blaze::columns( rs, { 1UL, 0UL, 2UL } );
 
          if( cs(0,0) !=  4 || cs(0,1) != 0 || cs(0,2) != 5 ||
@@ -7259,7 +7247,7 @@ void SparseGeneralTest::testColumns()
       }
 
       try {
-         ORT  rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto cs = blaze::columns( rs, { 4UL } );
 
          std::ostringstream oss;
@@ -7296,7 +7284,7 @@ void SparseGeneralTest::testBand()
       initialize();
 
       {
-         RT   rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto b1 = blaze::band( rs, 1L );
 
          if( b1[0] != 4 || b1[1] != 0 || b1[2] != 10 ) {
@@ -7321,7 +7309,7 @@ void SparseGeneralTest::testBand()
       }
 
       try {
-         RT   rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto b4 = blaze::band( rs, 4L );
 
          std::ostringstream oss;
@@ -7334,7 +7322,7 @@ void SparseGeneralTest::testBand()
       catch( std::invalid_argument& ) {}
 
       try {
-         RT   rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( mat_, { 3UL, 1UL, 4UL } );
          auto b3 = blaze::band( rs, -3L );
 
          std::ostringstream oss;
@@ -7358,7 +7346,7 @@ void SparseGeneralTest::testBand()
       initialize();
 
       {
-         ORT  rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto b1 = blaze::band( rs, 1L );
 
          if( b1[0] != 4 || b1[1] != 0 || b1[2] != 10 ) {
@@ -7383,7 +7371,7 @@ void SparseGeneralTest::testBand()
       }
 
       try {
-         ORT  rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto b4 = blaze::band( rs, 4L );
 
          std::ostringstream oss;
@@ -7396,7 +7384,7 @@ void SparseGeneralTest::testBand()
       catch( std::invalid_argument& ) {}
 
       try {
-         ORT  rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
+         auto rs = blaze::rows( tmat_, { 3UL, 1UL, 4UL } );
          auto b3 = blaze::band( rs, -3L );
 
          std::ostringstream oss;
