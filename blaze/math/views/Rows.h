@@ -259,7 +259,7 @@ inline decltype(auto) rows( Matrix<MT,SO>&& matrix, RRAs... args )
    auto rows1 = rows( D, indices1.data(), indices1.size() );
 
    // Creating a view on the 4th and 2nd row of the sparse matrix S
-   const std::array<size_t,2uL> indices2{ 4UL, 2UL };
+   const std::array<size_t,2UL> indices2{ 4UL, 2UL };
    auto rows2 = rows( S, indices2.data(), indices2.size() );
    \endcode
 
@@ -313,7 +313,7 @@ inline decltype(auto) rows( Matrix<MT,SO>& matrix, const T* indices, size_t n, R
    auto rows1 = rows( D, indices1.data(), indices1.size() );
 
    // Creating a view on the 4th and 2nd row of the sparse matrix S
-   const std::array<size_t,2uL> indices2{ 4UL, 2UL };
+   const std::array<size_t,2UL> indices2{ 4UL, 2UL };
    auto rows2 = rows( S, indices2.data(), indices2.size() );
    \endcode
 
@@ -729,7 +729,7 @@ inline decltype(auto) rows( MT&& matrix, const std::vector<T>& indices, RRAs... 
    auto rows1 = rows( D, indices1 );
 
    // Creating a view on the 4th and 2nd row of the sparse matrix S
-   const std::vector<size_t,2UL> indices2{ 4UL, 2UL };
+   blaze::SmallArray<size_t,2UL> indices2{ 4UL, 2UL };
    auto rows2 = rows( S, indices2 );
    \endcode
 
