@@ -92,10 +92,28 @@
    \endcode
 
 // Note that it is possible to alias the columns of the underlying matrix in any order. Also note
-// that it is possible to use the same index multiple times. The \c columns() function returns an
-// expression representing the view on the selected columns. The type of this expression depends
-// on the given arguments, primarily the type of the matrix and the compile time arguments. If
-// the type is required, it can be determined via \c decltype specifier:
+// that it is possible to use the same index multiple times.
+//
+// Alternatively it is possible to pass a callable such as a lambda or functor that produces the
+// indices:
+
+   \code
+   blaze::DynamicMatrix<double,blaze::columnMajor> A( 18UL, 9UL );
+
+   // Selecting all even columns of the matrix, i.e. selecting the columns 0, 2, 4, 6, and 8
+   auto cs1 = columns( A, []( size_t i ){ return i*2UL; }, 5UL );
+
+   // Selecting all odd columns of the matrix, i.e. selecting the columns 1, 3, 5, and 7
+   auto cs2 = columns( x, []( size_t i ){ return i*2UL+1UL; }, 4UL );
+
+   // Reversing the columns of the matrix, i.e. selecting the columns 8, 7, 6, 5, 4, 3, 2, 1, and 0
+   auto cs3 = columns( v, [max=A.columns()-1UL]( size_t i ){ return max-i; }, 9UL );
+   \endcode
+
+// The \c columns() function returns an expression representing the view on the selected columns.
+// The type of this expression depends on the given arguments, primarily the type of the matrix
+// and the compile time arguments. If the type is required, it can be determined via the \c decltype
+// specifier:
 
    \code
    using MatrixType = blaze::DynamicMatrix<int>;

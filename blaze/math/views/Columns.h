@@ -93,6 +93,7 @@
 #include <blaze/util/SmallArray.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsPointer.h>
 #include <blaze/util/Unused.h>
 
 
@@ -258,7 +259,7 @@ inline decltype(auto) columns( Matrix<MT,SO>&& matrix, RCAs... args )
    auto columns1 = columns( D, indices1.data(), indices1.size() );
 
    // Creating a view on the 4th and 2nd column of the sparse matrix S
-   const std::array<size_t,2uL> indices2{ 4UL, 2UL };
+   const std::array<size_t,2UL> indices2{ 4UL, 2UL };
    auto columns2 = columns( S, indices2.data(), indices2.size() );
    \endcode
 
@@ -312,7 +313,7 @@ inline decltype(auto) columns( Matrix<MT,SO>& matrix, const T* indices, size_t n
    auto columns1 = columns( D, indices1.data(), indices1.size() );
 
    // Creating a view on the 4th and 2nd column of the sparse matrix S
-   const std::array<size_t,2uL> indices2{ 4UL, 2UL };
+   const std::array<size_t,2UL> indices2{ 4UL, 2UL };
    auto columns2 = columns( S, indices2.data(), indices2.size() );
    \endcode
 
@@ -365,6 +366,142 @@ inline decltype(auto) columns( Matrix<MT,SO>&& matrix, const T* indices, size_t 
 
    using ReturnType = Columns_<MT>;
    return ReturnType( ~matrix, indices, n, args... );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Creating a view on a selection of columns of the given matrix.
+// \ingroup columns
+//
+// \param matrix The matrix containing the columns.
+// \param p Callable producing the indices.
+// \param n The total number of indices.
+// \param args Optional arguments.
+// \return View on the specified columns of the matrix.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing a selection of columns of the given matrix.
+
+   \code
+   using blaze::columnMajor;
+
+   blaze::DynamicMatrix<double,columnMajor> D;
+   blaze::CompressedMatrix<double,columnMajor> S;
+   // ... Resizing and initialization
+
+   // Creating a view on the 1st and 3rd column of the dense matrix D
+   auto columns1 = columns( D, []( size_t i ){ return 2UL*i + 1UL; }, 2UL );
+
+   // Creating a view on the 4th and 2nd column of the sparse matrix S
+   auto columns2 = columns( S, []( size_t i ){ return 4UL - 2UL*i; }, 2UL );
+   \endcode
+
+// By default, the provided column indices are checked at runtime. In case any column is not
+// properly specified (i.e. if any specified index is greater than or equal to the total number
+// of columns in the given matrix) a \a std::invalid_argument exception is thrown. The checks
+// can be skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto columns1 = columns( D, []( size_t i ){ return 2UL*i + 1UL; }, 2UL, unchecked );
+   auto columns2 = columns( S, []( size_t i ){ return 4UL - 2UL*i; }, 2UL, unchecked );
+   \endcode
+*/
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , typename P        // Type of the index producer
+        , typename... RCAs  // Optional arguments
+        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
+inline decltype(auto) columns( Matrix<MT,SO>& matrix, P p, size_t n, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ReturnType = Columns_<MT,P>;
+   return ReturnType( ~matrix, p, n, args... );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Creating a view on a selection of columns of the given constant matrix.
+// \ingroup columns
+//
+// \param matrix The constant matrix containing the columns.
+// \param p Callable producing the indices.
+// \param n The total number of indices.
+// \param args Optional arguments.
+// \return View on the specified columns of the matrix.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing a selection of columns of the given constant
+// matrix.
+
+   \code
+   using blaze::columnMajor;
+
+   blaze::DynamicMatrix<double,columnMajor> D;
+   blaze::CompressedMatrix<double,columnMajor> S;
+   // ... Resizing and initialization
+
+   // Creating a view on the 1st and 3rd column of the dense matrix D
+   auto columns1 = columns( D, []( size_t i ){ return 2UL*i + 1UL; }, 2UL );
+
+   // Creating a view on the 4th and 2nd column of the sparse matrix S
+   const std::array<size_t,2UL> indices2{ 4UL, 2UL };
+   auto columns2 = columns( S, []( size_t i ){ return 4UL - 2UL*i; }, 2UL );
+   \endcode
+
+// By default, the provided column indices are checked at runtime. In case any column is not
+// properly specified (i.e. if any specified index is greater than or equal to the total number
+// of columns in the given matrix) a \a std::invalid_argument exception is thrown. The checks
+// can be skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto columns1 = columns( D, []( size_t i ){ return 2UL*i + 1UL; }, 2UL, unchecked );
+   auto columns2 = columns( S, []( size_t i ){ return 4UL - 2UL*i; }, 2UL, unchecked );
+   \endcode
+*/
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , typename P        // Type of the index producer
+        , typename... RCAs  // Optional arguments
+        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
+inline decltype(auto) columns( const Matrix<MT,SO>& matrix, P p, size_t n, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ReturnType = const Columns_<const MT,P>;
+   return ReturnType( ~matrix, p, n, args... );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Creating a view on a selection of columns of the given temporary matrix.
+// \ingroup columns
+//
+// \param matrix The temporary matrix containing the columns.
+// \param p Callable producing the indices.
+// \param n The total number of indices.
+// \param args Optional arguments.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing a selection of columns of the given temporary
+// matrix. In case any column is not properly specified (i.e. if any specified index is greater
+// than or equal to the total number of columns in the given matrix) a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , typename P        // Type of the index producer
+        , typename... RCAs  // Optional arguments
+        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
+inline decltype(auto) columns( Matrix<MT,SO>&& matrix, P p, size_t n, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ReturnType = Columns_<MT,P>;
+   return ReturnType( ~matrix, p, n, args... );
 }
 //*************************************************************************************************
 
@@ -1427,6 +1564,153 @@ inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>&& c, const T* indice
 
    for( size_t i=0UL; i<n; ++i ) {
       newIndices.pushBack( c.idx( indices[i] ) );
+   }
+
+   return columns( c.operand(), newIndices.data(), newIndices.size(), args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on specific columns of the given column selection.
+// \ingroup columns
+//
+// \param c The selection of columns containing the columns.
+// \param p Callable producing the indices.
+// \param n The total number of indices.
+// \param args The optional column arguments.
+// \return View on the specified columns of the column selection.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing the specified column of the given column
+// selection.
+*/
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , bool SF             // Symmetry flag
+        , typename... CCAs    // Compile time column arguments
+        , typename P          // Type of the index producer
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>& c, P p, size_t n, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+
+   if( isChecked ) {
+      for( size_t i=0UL; i<n; ++i ) {
+         if( c.columns() <= size_t( p(i) ) ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+         }
+      }
+   }
+
+   SmallArray<size_t,128UL> newIndices;
+   newIndices.reserve( n );
+
+   for( size_t i=0UL; i<n; ++i ) {
+      newIndices.pushBack( c.idx( p(i) ) );
+   }
+
+   return columns( c.operand(), newIndices.data(), newIndices.size(), args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on specific columns of the given constant column selection.
+// \ingroup columns
+//
+// \param c The constant selection of columns containing the columns.
+// \param p Callable producing the indices.
+// \param n The total number of indices.
+// \param args The optional column arguments.
+// \return View on the specified columns of the column selection.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing the specified column of the given constant
+// column selection.
+*/
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , bool SF             // Symmetry flag
+        , typename... CCAs    // Compile time column arguments
+        , typename P          // Type of the index producer
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) columns( const Columns<MT,SO,DF,SF,CCAs...>& c, P p, size_t n, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+
+   if( isChecked ) {
+      for( size_t i=0UL; i<n; ++i ) {
+         if( c.columns() <= size_t( p(i) ) ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+         }
+      }
+   }
+
+   SmallArray<size_t,128UL> newIndices;
+   newIndices.reserve( n );
+
+   for( size_t i=0UL; i<n; ++i ) {
+      newIndices.pushBack( c.idx( p(i) ) );
+   }
+
+   return columns( c.operand(), newIndices.data(), newIndices.size(), args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on specific columns of the given temporary column selection.
+// \ingroup columns
+//
+// \param c The temporary selection of columns containing the columns.
+// \param p Callable producing the indices.
+// \param n The total number of indices.
+// \param args The optional column arguments.
+// \return View on the specified columns of the column selection.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing the specified column of the given temporary
+// column selection.
+*/
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , bool SF             // Symmetry flag
+        , typename... CCAs    // Compile time column arguments
+        , typename P          // Type of the index producer
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>&& c, P p, size_t n, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+
+   if( isChecked ) {
+      for( size_t i=0UL; i<n; ++i ) {
+         if( c.columns() <= size_t( p(i) ) ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+         }
+      }
+   }
+
+   SmallArray<size_t,128UL> newIndices;
+   newIndices.reserve( n );
+
+   for( size_t i=0UL; i<n; ++i ) {
+      newIndices.pushBack( c.idx( p(i) ) );
    }
 
    return columns( c.operand(), newIndices.data(), newIndices.size(), args... );

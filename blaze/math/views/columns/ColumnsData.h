@@ -232,6 +232,146 @@ inline constexpr size_t ColumnsData< index_sequence<I,Is...> >::columns() noexce
 
 //=================================================================================================
 //
+//  CLASS TEMPLATE SPECIALIZATION FOR INDEX PRODUCING CALLABLES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the ColumnsData class template for index producing callables.
+// \ingroup columns
+//
+// This specialization of ColumnsData adapts the class template to the requirements of index
+// producing callables.
+*/
+template< typename P >  // Type of the index producer
+struct ColumnsData<P>
+{
+ protected:
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = 0UL;  //! Number of compile time indices.
+   //**********************************************************************************************
+
+ public:
+   //**Constructors********************************************************************************
+   /*!\name Constructors */
+   //@{
+   template< typename... RCAs >
+   explicit inline ColumnsData( P p, size_t n, RCAs... args ) noexcept;
+
+   ColumnsData( const ColumnsData& ) = default;
+   ColumnsData( ColumnsData&& ) = default;
+   //@}
+   //**********************************************************************************************
+
+   //**Destructor**********************************************************************************
+   /*!\name Destructor */
+   //@{
+   ~ColumnsData() = default;
+   //@}
+   //**********************************************************************************************
+
+   //**Assignment operators************************************************************************
+   /*!\name Assignment operators */
+   //@{
+   ColumnsData& operator=( const ColumnsData& ) = delete;
+   ColumnsData& operator=( ColumnsData&& ) = delete;
+   //@}
+   //**********************************************************************************************
+
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+   inline decltype(auto) idces  () const noexcept;
+   inline size_t         idx    ( size_t i ) const noexcept;
+   inline size_t         columns() const noexcept;
+   //@}
+   //**********************************************************************************************
+
+ private:
+   //**Member variables****************************************************************************
+   /*!\name Member variables */
+   //@{
+   P      p_;  //!< The callable producing the indices.
+   size_t n_;  //!< The total number of indices.
+   //@}
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The constructor for ColumnsData.
+//
+// \param p A callable producing the indices.
+// \param n The total number of indices.
+// \param args The optional column arguments.
+*/
+template< typename P >        // Type of the index producer
+template< typename... RCAs >  // Optional column arguments
+inline ColumnsData<P>::ColumnsData( P p, size_t n, RCAs... args ) noexcept
+   : p_( p )
+   , n_( n )
+{
+   UNUSED_PARAMETER( args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns a representation of the indices of the specified columns in the underlying matrix.
+//
+// \return A representation of the indices of the specified columns.
+*/
+template< typename P >  // Type of the index producer
+inline decltype(auto) ColumnsData<P>::idces() const noexcept
+{
+   return std::make_pair( p_, n_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the index of the specified column in the underlying matrix.
+//
+// \param i Access index for the column.
+// \return The index of the specified column.
+*/
+template< typename P >  // Type of the index producer
+inline size_t ColumnsData<P>::idx( size_t i ) const noexcept
+{
+   BLAZE_USER_ASSERT( i < columns(), "Invalid column access index" );
+   return p_(i);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the number of columns.
+//
+// \return The number of columns.
+*/
+template< typename P >  // Type of the index producer
+inline size_t ColumnsData<P>::columns() const noexcept
+{
+   return n_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  CLASS TEMPLATE SPECIALIZATION FOR ZERO COMPILE TIME COLUMN ARGUMENTS
 //
 //=================================================================================================
