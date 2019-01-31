@@ -125,7 +125,7 @@ void SparseGeneralTest::testScaling()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 2UL, 3UL } );
+      auto cs = blaze::columns( mat_, { 2UL, 3UL } );
 
       cs *= 3;
 
@@ -176,7 +176,7 @@ void SparseGeneralTest::testScaling()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 2UL, 3UL } );
+      auto cs = blaze::columns( mat_, { 2UL, 3UL } );
 
       cs = cs * 3;
 
@@ -227,7 +227,7 @@ void SparseGeneralTest::testScaling()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 2UL, 3UL } );
+      auto cs = blaze::columns( mat_, { 2UL, 3UL } );
 
       cs = 3 * cs;
 
@@ -278,7 +278,7 @@ void SparseGeneralTest::testScaling()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 2UL, 3UL } );
+      auto cs = blaze::columns( mat_, { 2UL, 3UL } );
 
       cs /= 0.5;
 
@@ -329,7 +329,7 @@ void SparseGeneralTest::testScaling()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 2UL, 3UL } );
+      auto cs = blaze::columns( mat_, { 2UL, 3UL } );
 
       cs = cs / 0.5;
 
@@ -381,7 +381,7 @@ void SparseGeneralTest::testScaling()
       initialize();
 
       // Initialization check
-      CT cs = blaze::columns( mat_, { 2UL, 3UL } );
+      auto cs = blaze::columns( mat_, { 2UL, 3UL } );
 
       checkRows    ( cs  ,  4UL );
       checkColumns ( cs  ,  2UL );
@@ -460,7 +460,7 @@ void SparseGeneralTest::testScaling()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 2UL, 3UL } );
+      auto cs = blaze::columns( tmat_, { 2UL, 3UL } );
 
       cs *= 3;
 
@@ -511,7 +511,7 @@ void SparseGeneralTest::testScaling()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 2UL, 3UL } );
+      auto cs = blaze::columns( tmat_, { 2UL, 3UL } );
 
       cs = cs * 3;
 
@@ -562,7 +562,7 @@ void SparseGeneralTest::testScaling()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 2UL, 3UL } );
+      auto cs = blaze::columns( tmat_, { 2UL, 3UL } );
 
       cs = 3 * cs;
 
@@ -613,7 +613,7 @@ void SparseGeneralTest::testScaling()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 2UL, 3UL } );
+      auto cs = blaze::columns( tmat_, { 2UL, 3UL } );
 
       cs /= 0.5;
 
@@ -664,7 +664,7 @@ void SparseGeneralTest::testScaling()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 2UL, 3UL } );
+      auto cs = blaze::columns( tmat_, { 2UL, 3UL } );
 
       cs = cs / 0.5;
 
@@ -716,7 +716,7 @@ void SparseGeneralTest::testScaling()
       initialize();
 
       // Initialization check
-      OCT cs = blaze::columns( tmat_, { 2UL, 3UL } );
+      auto cs = blaze::columns( tmat_, { 2UL, 3UL } );
 
       checkRows    ( cs   ,  4UL );
       checkColumns ( cs   ,  2UL );
@@ -809,7 +809,7 @@ void SparseGeneralTest::testFunctionCall()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 1UL, 2UL, 3UL } );
+      auto cs = blaze::columns( mat_, { 1UL, 2UL, 3UL } );
 
       // Assignment to the element (1,1)
       {
@@ -1130,7 +1130,7 @@ void SparseGeneralTest::testFunctionCall()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 1UL, 2UL, 3UL } );
+      auto cs = blaze::columns( tmat_, { 1UL, 2UL, 3UL } );
 
       // Assignment to the element (1,1)
       {
@@ -1494,8 +1494,8 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Row-major Iterator/ConstIterator conversion";
 
-         CT cs = blaze::columns( mat_, { 2UL } );
-         CT::ConstIterator it( begin( cs, 0UL ) );
+         auto cs = blaze::columns( mat_, { 2UL } );
+         auto it( begin( cs, 0UL ) );
 
          if( it == end( cs, 0UL ) || it->value() != -2 ) {
             std::ostringstream oss;
@@ -1509,7 +1509,7 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Row-major Iterator subtraction (end-begin)";
 
-         CT cs = blaze::columns( mat_, { 1UL } );
+         auto cs = blaze::columns( mat_, { 1UL } );
          const ptrdiff_t number( end( cs, 0UL ) - begin( cs, 0UL ) );
 
          if( number != 1L ) {
@@ -1527,7 +1527,7 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Row-major ConstIterator subtraction (end-begin)";
 
-         CT cs = blaze::columns( mat_, { 2UL } );
+         auto cs = blaze::columns( mat_, { 2UL } );
          const ptrdiff_t number( cend( cs, 0UL ) - cbegin( cs, 0UL ) );
 
          if( number != 2L ) {
@@ -1545,9 +1545,9 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Row-major read-only access via ConstIterator";
 
-         CT cs = blaze::columns( mat_, { 2UL } );
-         CT::ConstIterator it ( cbegin( cs, 0UL ) );
-         CT::ConstIterator end( cend( cs, 0UL ) );
+         auto cs = blaze::columns( mat_, { 2UL } );
+         auto it ( cbegin( cs, 0UL ) );
+         auto end( cend( cs, 0UL ) );
 
          if( it == end || it->value() != -2 ) {
             std::ostringstream oss;
@@ -1579,10 +1579,10 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Row-major assignment via Iterator";
 
-         CT cs = blaze::columns( mat_, { 2UL } );
+         auto cs = blaze::columns( mat_, { 2UL } );
          int value = 8;
 
-         for( CT::Iterator it=begin( cs, 0UL ); it!=end( cs, 0UL ); ++it ) {
+         for( auto it=begin( cs, 0UL ); it!=end( cs, 0UL ); ++it ) {
             *it = value++;
          }
 
@@ -1617,10 +1617,10 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Row-major addition assignment via Iterator";
 
-         CT cs = blaze::columns( mat_, { 2UL } );
+         auto cs = blaze::columns( mat_, { 2UL } );
          int value = 2;
 
-         for( CT::Iterator it=begin( cs, 0UL ); it!=end( cs, 0UL ); ++it ) {
+         for( auto it=begin( cs, 0UL ); it!=end( cs, 0UL ); ++it ) {
             *it += value++;
          }
 
@@ -1655,10 +1655,10 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Row-major subtraction assignment via Iterator";
 
-         CT cs = blaze::columns( mat_, { 2UL } );
+         auto cs = blaze::columns( mat_, { 2UL } );
          int value = 2;
 
-         for( CT::Iterator it=begin( cs, 0UL ); it!=end( cs, 0UL ); ++it ) {
+         for( auto it=begin( cs, 0UL ); it!=end( cs, 0UL ); ++it ) {
             *it -= value++;
          }
 
@@ -1693,10 +1693,10 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Row-major multiplication assignment via Iterator";
 
-         CT cs = blaze::columns( mat_, { 2UL } );
+         auto cs = blaze::columns( mat_, { 2UL } );
          int value = 1;
 
-         for( CT::Iterator it=begin( cs, 0UL ); it!=end( cs, 0UL ); ++it ) {
+         for( auto it=begin( cs, 0UL ); it!=end( cs, 0UL ); ++it ) {
             *it *= value++;
          }
 
@@ -1731,9 +1731,9 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Row-major division assignment via Iterator";
 
-         CT cs = blaze::columns( mat_, { 2UL } );
+         auto cs = blaze::columns( mat_, { 2UL } );
 
-         for( CT::Iterator it=begin( cs, 0UL ); it!=end( cs, 0UL ); ++it ) {
+         for( auto it=begin( cs, 0UL ); it!=end( cs, 0UL ); ++it ) {
             *it /= 2;
          }
 
@@ -1805,8 +1805,8 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Column-major Iterator/ConstIterator conversion";
 
-         OCT cs = blaze::columns( tmat_, { 2UL } );
-         OCT::ConstIterator it( begin( cs, 0UL ) );
+         auto cs = blaze::columns( tmat_, { 2UL } );
+         auto it( begin( cs, 0UL ) );
 
          if( it == end( cs, 0UL ) || it->value() != -2 ) {
             std::ostringstream oss;
@@ -1820,7 +1820,7 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Column-major Iterator subtraction (end-begin)";
 
-         OCT cs = blaze::columns( tmat_, { 1UL } );
+         auto cs = blaze::columns( tmat_, { 1UL } );
          const ptrdiff_t number( end( cs, 0UL ) - begin( cs, 0UL ) );
 
          if( number != 1L ) {
@@ -1838,7 +1838,7 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Column-major ConstIterator subtraction (end-begin)";
 
-         OCT cs = blaze::columns( tmat_, { 2UL } );
+         auto cs = blaze::columns( tmat_, { 2UL } );
          const ptrdiff_t number( cend( cs, 0UL ) - cbegin( cs, 0UL ) );
 
          if( number != 2L ) {
@@ -1856,9 +1856,9 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Column-major read-only access via ConstIterator";
 
-         OCT cs = blaze::columns( tmat_, { 2UL } );
-         OCT::ConstIterator it ( cbegin( cs, 0UL ) );
-         OCT::ConstIterator end( cend( cs, 0UL ) );
+         auto cs = blaze::columns( tmat_, { 2UL } );
+         auto it ( cbegin( cs, 0UL ) );
+         auto end( cend( cs, 0UL ) );
 
          if( it == end || it->value() != -2 ) {
             std::ostringstream oss;
@@ -1890,10 +1890,10 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Column-major assignment via Iterator";
 
-         OCT cs = blaze::columns( tmat_, { 2UL } );
+         auto cs = blaze::columns( tmat_, { 2UL } );
          int value = 8;
 
-         for( OCT::Iterator it=begin( cs, 0UL ); it!=end( cs, 0UL ); ++it ) {
+         for( auto it=begin( cs, 0UL ); it!=end( cs, 0UL ); ++it ) {
             *it = value++;
          }
 
@@ -1928,10 +1928,10 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Column-major addition assignment via Iterator";
 
-         OCT cs = blaze::columns( tmat_, { 2UL } );
+         auto cs = blaze::columns( tmat_, { 2UL } );
          int value = 2;
 
-         for( OCT::Iterator it=begin( cs, 0UL ); it!=end( cs, 0UL ); ++it ) {
+         for( auto it=begin( cs, 0UL ); it!=end( cs, 0UL ); ++it ) {
             *it += value++;
          }
 
@@ -1966,10 +1966,10 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Column-major subtraction assignment via Iterator";
 
-         OCT cs = blaze::columns( tmat_, { 2UL } );
+         auto cs = blaze::columns( tmat_, { 2UL } );
          int value = 2;
 
-         for( OCT::Iterator it=begin( cs, 0UL ); it!=end( cs, 0UL ); ++it ) {
+         for( auto it=begin( cs, 0UL ); it!=end( cs, 0UL ); ++it ) {
             *it -= value++;
          }
 
@@ -2004,10 +2004,10 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Column-major multiplication assignment via Iterator";
 
-         OCT cs = blaze::columns( tmat_, { 2UL } );
+         auto cs = blaze::columns( tmat_, { 2UL } );
          int value = 1;
 
-         for( OCT::Iterator it=begin( cs, 0UL ); it!=end( cs, 0UL ); ++it ) {
+         for( auto it=begin( cs, 0UL ); it!=end( cs, 0UL ); ++it ) {
             *it *= value++;
          }
 
@@ -2042,9 +2042,9 @@ void SparseGeneralTest::testIterator()
       {
          test_ = "Column-major division assignment via Iterator";
 
-         OCT cs = blaze::columns( tmat_, { 2UL } );
+         auto cs = blaze::columns( tmat_, { 2UL } );
 
-         for( OCT::Iterator it=begin( cs, 0UL ); it!=end( cs, 0UL ); ++it ) {
+         for( auto it=begin( cs, 0UL ); it!=end( cs, 0UL ); ++it ) {
             *it /= 2;
          }
 
@@ -2100,7 +2100,7 @@ void SparseGeneralTest::testNonZeros()
       initialize();
 
       // Initialization check
-      CT cs = blaze::columns( mat_, { 1UL, 2UL } );
+      auto cs = blaze::columns( mat_, { 1UL, 2UL } );
 
       checkRows    ( cs, 4UL );
       checkColumns ( cs, 2UL );
@@ -2177,7 +2177,7 @@ void SparseGeneralTest::testNonZeros()
       initialize();
 
       // Initialization check
-      OCT cs = blaze::columns( tmat_, { 1UL, 2UL } );
+      auto cs = blaze::columns( tmat_, { 1UL, 2UL } );
 
       checkRows    ( cs, 4UL );
       checkColumns ( cs, 2UL );
@@ -2269,7 +2269,7 @@ void SparseGeneralTest::testReset()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 1UL, 2UL, 3UL } );
+      auto cs = blaze::columns( mat_, { 1UL, 2UL, 3UL } );
 
       reset( cs(0,1) );
 
@@ -2317,7 +2317,7 @@ void SparseGeneralTest::testReset()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 1UL, 2UL, 3UL } );
+      auto cs = blaze::columns( mat_, { 1UL, 2UL, 3UL } );
 
       reset( cs );
 
@@ -2396,7 +2396,7 @@ void SparseGeneralTest::testReset()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 1UL, 2UL, 3UL } );
+      auto cs = blaze::columns( tmat_, { 1UL, 2UL, 3UL } );
 
       reset( cs(0,1) );
 
@@ -2444,7 +2444,7 @@ void SparseGeneralTest::testReset()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 1UL, 2UL, 3UL } );
+      auto cs = blaze::columns( tmat_, { 1UL, 2UL, 3UL } );
 
       reset( cs );
 
@@ -2536,7 +2536,7 @@ void SparseGeneralTest::testClear()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 1UL, 2UL, 3UL } );
+      auto cs = blaze::columns( mat_, { 1UL, 2UL, 3UL } );
 
       clear( cs(0,1) );
 
@@ -2584,7 +2584,7 @@ void SparseGeneralTest::testClear()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 1UL, 2UL, 3UL } );
+      auto cs = blaze::columns( mat_, { 1UL, 2UL, 3UL } );
 
       clear( cs );
 
@@ -2663,7 +2663,7 @@ void SparseGeneralTest::testClear()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 1UL, 2UL, 3UL } );
+      auto cs = blaze::columns( tmat_, { 1UL, 2UL, 3UL } );
 
       clear( cs(0,1) );
 
@@ -2711,7 +2711,7 @@ void SparseGeneralTest::testClear()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 1UL, 2UL, 3UL } );
+      auto cs = blaze::columns( tmat_, { 1UL, 2UL, 3UL } );
 
       clear( cs );
 
@@ -2800,7 +2800,7 @@ void SparseGeneralTest::testReserve()
 
       MT mat( 20UL, 3UL );
 
-      CT cs = blaze::columns( mat, { 1UL } );
+      auto cs = blaze::columns( mat, { 1UL } );
 
       // Increasing the capacity of the column selection
       cs.reserve( 10UL );
@@ -2824,7 +2824,7 @@ void SparseGeneralTest::testReserve()
 
       MT mat( 20UL, 3UL );
 
-      CT cs = blaze::columns( mat, { 1UL } );
+      auto cs = blaze::columns( mat, { 1UL } );
 
       // Increasing the capacity of a single column
       cs.reserve( 0UL, 10UL );
@@ -2853,7 +2853,7 @@ void SparseGeneralTest::testReserve()
 
       OMT mat( 20UL, 3UL );
 
-      OCT cs = blaze::columns( mat, { 1UL } );
+      auto cs = blaze::columns( mat, { 1UL } );
 
       // Increasing the capacity of the column selection
       cs.reserve( 10UL );
@@ -2877,7 +2877,7 @@ void SparseGeneralTest::testReserve()
 
       OMT mat( 20UL, 3UL );
 
-      OCT cs = blaze::columns( mat, { 1UL } );
+      auto cs = blaze::columns( mat, { 1UL } );
 
       // Increasing the capacity of a single column
       cs.reserve( 0UL, 10UL );
@@ -2926,7 +2926,7 @@ void SparseGeneralTest::testTrim()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 2UL, 3UL } );
+      auto cs = blaze::columns( tmat_, { 2UL, 3UL } );
 
       // Increasing the column capacity of the matrix
       cs.reserve( 0UL, 10UL );
@@ -2959,7 +2959,7 @@ void SparseGeneralTest::testTrim()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 2UL, 3UL } );
+      auto cs = blaze::columns( tmat_, { 2UL, 3UL } );
 
       // Increasing the column capacity of the matrix
       cs.reserve( 0UL, 10UL );
@@ -3022,7 +3022,7 @@ void SparseGeneralTest::testSet()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 0UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 0UL, 1UL } );
 
       // Setting a non-zero element at the end of the 0th column
       cs.set( 3UL, 0UL, 1 );
@@ -3127,7 +3127,7 @@ void SparseGeneralTest::testSet()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 0UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 0UL, 1UL } );
 
       // Setting a non-zero element at the end of the 0th column
       cs.set( 3UL, 0UL, 1 );
@@ -3245,7 +3245,7 @@ void SparseGeneralTest::testInsert()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 0UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 0UL, 1UL } );
 
       // Inserting a non-zero element at the end of the 0th column
       cs.insert( 3UL, 0UL, 1 );
@@ -3341,7 +3341,7 @@ void SparseGeneralTest::testInsert()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 0UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 0UL, 1UL } );
 
       // Inserting a non-zero element at the end of the 0th column
       cs.insert( 3UL, 0UL, 1 );
@@ -3453,7 +3453,7 @@ void SparseGeneralTest::testAppend()
          mat_.reset();
 
          // Initialization check
-         CT cs = blaze::columns( mat_, { 3UL, 2UL, 1UL, 0UL } );
+         auto cs = blaze::columns( mat_, { 3UL, 2UL, 1UL, 0UL } );
          cs.reserve( 0UL, 2UL );
          cs.reserve( 2UL, 1UL );
          cs.reserve( 3UL, 2UL );
@@ -3542,7 +3542,7 @@ void SparseGeneralTest::testAppend()
          mat_.reset();
 
          // Initialization check
-         CT cs = blaze::columns( mat_, { 3UL, 2UL, 1UL, 0UL } );
+         auto cs = blaze::columns( mat_, { 3UL, 2UL, 1UL, 0UL } );
          cs.reserve( 0UL, 2UL );
          cs.reserve( 2UL, 1UL );
          cs.reserve( 3UL, 2UL );
@@ -3635,7 +3635,7 @@ void SparseGeneralTest::testAppend()
          tmat_.reset();
 
          // Initialization check
-         OCT cs = blaze::columns( tmat_, { 3UL, 2UL, 1UL, 0UL } );
+         auto cs = blaze::columns( tmat_, { 3UL, 2UL, 1UL, 0UL } );
          cs.reserve( 0UL, 2UL );
          cs.reserve( 2UL, 1UL );
          cs.reserve( 3UL, 2UL );
@@ -3724,7 +3724,7 @@ void SparseGeneralTest::testAppend()
          tmat_.reset();
 
          // Initialization check
-         OCT cs = blaze::columns( tmat_, { 3UL, 2UL, 1UL, 0UL } );
+         auto cs = blaze::columns( tmat_, { 3UL, 2UL, 1UL, 0UL } );
          cs.reserve( 0UL, 2UL );
          cs.reserve( 2UL, 1UL );
          cs.reserve( 3UL, 2UL );
@@ -3827,7 +3827,7 @@ void SparseGeneralTest::testErase()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 4UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 4UL } );
 
       // Erasing the non-zero element at the end of the 1st column
       cs.erase( 3UL, 1UL );
@@ -3932,11 +3932,11 @@ void SparseGeneralTest::testErase()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 4UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 4UL } );
 
       // Erasing the non-zero element at the end of the 1st column
       {
-         CT::Iterator pos = cs.erase( 1UL, cs.find( 3UL, 1UL ) );
+         auto pos = cs.erase( 1UL, cs.find( 3UL, 1UL ) );
 
          checkRows    ( cs  , 4UL );
          checkColumns ( cs  , 2UL );
@@ -3970,7 +3970,7 @@ void SparseGeneralTest::testErase()
 
       // Erasing the non-zero element at the beginning of the 1st column
       {
-         CT::Iterator pos = cs.erase( 1UL, cs.find( 0UL, 1UL ) );
+         auto pos = cs.erase( 1UL, cs.find( 0UL, 1UL ) );
 
          checkRows    ( cs  , 4UL );
          checkColumns ( cs  , 2UL );
@@ -4007,7 +4007,7 @@ void SparseGeneralTest::testErase()
 
       // Erasing the non-zero element at the beginning of the 1st column
       {
-         CT::Iterator pos = cs.erase( 1UL, cs.find( 1UL, 1UL ) );
+         auto pos = cs.erase( 1UL, cs.find( 1UL, 1UL ) );
 
          checkRows    ( cs  , 4UL );
          checkColumns ( cs  , 2UL );
@@ -4044,7 +4044,7 @@ void SparseGeneralTest::testErase()
 
       // Trying to erase an already erased element
       {
-         CT::Iterator pos = cs.erase( 1UL, cs.find( 3UL, 1UL ) );
+         auto pos = cs.erase( 1UL, cs.find( 3UL, 1UL ) );
 
          checkRows    ( cs  , 4UL );
          checkColumns ( cs  , 2UL );
@@ -4087,11 +4087,11 @@ void SparseGeneralTest::testErase()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 4UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 4UL } );
 
       // Erasing the 0th column
       {
-         CT::Iterator pos = cs.erase( 0UL, cs.begin( 0UL ), cs.end( 0UL ) );
+         auto pos = cs.erase( 0UL, cs.begin( 0UL ), cs.end( 0UL ) );
 
          checkRows    ( cs  , 4UL );
          checkColumns ( cs  , 2UL );
@@ -4125,7 +4125,7 @@ void SparseGeneralTest::testErase()
 
       // Erasing the first half of the 1st column
       {
-         CT::Iterator pos = cs.erase( 1UL, cs.begin( 1UL ), cs.find( 2UL, 1UL ) );
+         auto pos = cs.erase( 1UL, cs.begin( 1UL ), cs.find( 2UL, 1UL ) );
 
          checkRows    ( cs  , 4UL );
          checkColumns ( cs  , 2UL );
@@ -4162,7 +4162,7 @@ void SparseGeneralTest::testErase()
 
       // Erasing the second half of the 1st column
       {
-         CT::Iterator pos = cs.erase( 1UL, cs.find( 2UL, 1UL ), cs.end( 1UL ) );
+         auto pos = cs.erase( 1UL, cs.find( 2UL, 1UL ), cs.end( 1UL ) );
 
          checkRows    ( cs  , 4UL );
          checkColumns ( cs  , 2UL );
@@ -4196,7 +4196,7 @@ void SparseGeneralTest::testErase()
 
       // Trying to erase an empty range
       {
-         CT::Iterator pos = cs.erase( 1UL, cs.begin( 1UL ), cs.begin( 1UL ) );
+         auto pos = cs.erase( 1UL, cs.begin( 1UL ), cs.begin( 1UL ) );
 
          checkRows    ( cs  , 4UL );
          checkColumns ( cs  , 2UL );
@@ -4239,7 +4239,7 @@ void SparseGeneralTest::testErase()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 4UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 4UL } );
 
       // Erasing a selection of elements
       cs.erase( []( int value ) { return value == 4 || value == 10; } );
@@ -4298,7 +4298,7 @@ void SparseGeneralTest::testErase()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 4UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 4UL } );
 
       // Erasing a selection of elements
       cs.erase( 0UL, cs.begin( 0UL ), cs.find( 3UL, 0UL ),
@@ -4358,7 +4358,7 @@ void SparseGeneralTest::testErase()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 4UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 4UL } );
 
       // Erasing the non-zero element at the end of the 1st column
       cs.erase( 3UL, 1UL );
@@ -4463,11 +4463,11 @@ void SparseGeneralTest::testErase()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 4UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 4UL } );
 
       // Erasing the non-zero element at the end of the 1st column
       {
-         OCT::Iterator pos = cs.erase( 1UL, cs.find( 3UL, 1UL ) );
+         auto pos = cs.erase( 1UL, cs.find( 3UL, 1UL ) );
 
          checkRows    ( cs   , 4UL );
          checkColumns ( cs   , 2UL );
@@ -4501,7 +4501,7 @@ void SparseGeneralTest::testErase()
 
       // Erasing the non-zero element at the beginning of the 1st column
       {
-         OCT::Iterator pos = cs.erase( 1UL, cs.find( 0UL, 1UL ) );
+         auto pos = cs.erase( 1UL, cs.find( 0UL, 1UL ) );
 
          checkRows    ( cs   , 4UL );
          checkColumns ( cs   , 2UL );
@@ -4538,7 +4538,7 @@ void SparseGeneralTest::testErase()
 
       // Erasing the non-zero element at the beginning of the 1st column
       {
-         OCT::Iterator pos = cs.erase( 1UL, cs.find( 1UL, 1UL ) );
+         auto pos = cs.erase( 1UL, cs.find( 1UL, 1UL ) );
 
          checkRows    ( cs   , 4UL );
          checkColumns ( cs   , 2UL );
@@ -4575,7 +4575,7 @@ void SparseGeneralTest::testErase()
 
       // Trying to erase an already erased element
       {
-         OCT::Iterator pos = cs.erase( 1UL, cs.find( 3UL, 1UL ) );
+         auto pos = cs.erase( 1UL, cs.find( 3UL, 1UL ) );
 
          checkRows    ( cs   , 4UL );
          checkColumns ( cs   , 2UL );
@@ -4618,11 +4618,11 @@ void SparseGeneralTest::testErase()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 4UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 4UL } );
 
       // Erasing the 0th column
       {
-         OCT::Iterator pos = cs.erase( 0UL, cs.begin( 0UL ), cs.end( 0UL ) );
+         auto pos = cs.erase( 0UL, cs.begin( 0UL ), cs.end( 0UL ) );
 
          checkRows    ( cs   , 4UL );
          checkColumns ( cs   , 2UL );
@@ -4656,7 +4656,7 @@ void SparseGeneralTest::testErase()
 
       // Erasing the first half of the 1st column
       {
-         OCT::Iterator pos = cs.erase( 1UL, cs.begin( 1UL ), cs.find( 2UL, 1UL ) );
+         auto pos = cs.erase( 1UL, cs.begin( 1UL ), cs.find( 2UL, 1UL ) );
 
          checkRows    ( cs   , 4UL );
          checkColumns ( cs   , 2UL );
@@ -4693,7 +4693,7 @@ void SparseGeneralTest::testErase()
 
       // Erasing the second half of the 1st column
       {
-         OCT::Iterator pos = cs.erase( 1UL, cs.find( 2UL, 1UL ), cs.end( 1UL ) );
+         auto pos = cs.erase( 1UL, cs.find( 2UL, 1UL ), cs.end( 1UL ) );
 
          checkRows    ( cs   , 4UL );
          checkColumns ( cs   , 2UL );
@@ -4727,7 +4727,7 @@ void SparseGeneralTest::testErase()
 
       // Trying to erase an empty range
       {
-         OCT::Iterator pos = cs.erase( 1UL, cs.begin( 1UL ), cs.begin( 1UL ) );
+         auto pos = cs.erase( 1UL, cs.begin( 1UL ), cs.begin( 1UL ) );
 
          checkRows    ( cs   , 4UL );
          checkColumns ( cs   , 2UL );
@@ -4770,7 +4770,7 @@ void SparseGeneralTest::testErase()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 4UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 4UL } );
 
       // Erasing a selection of elements
       cs.erase( []( int value ) { return value == 4 || value == 10; } );
@@ -4829,7 +4829,7 @@ void SparseGeneralTest::testErase()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 4UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 4UL } );
 
       // Erasing a selection of elements
       cs.erase( 0UL, cs.begin( 0UL ), cs.find( 3UL, 0UL ),
@@ -4900,11 +4900,9 @@ void SparseGeneralTest::testFind()
    {
       test_ = "Row-major Columns::find()";
 
-      using ConstIterator = CT::ConstIterator;
-
       initialize();
 
-      CT cs = blaze::columns( mat_, { 1UL, 2UL, 3UL } );
+      auto cs = blaze::columns( mat_, { 1UL, 2UL, 3UL } );
 
       checkRows    ( cs, 4UL );
       checkColumns ( cs, 3UL );
@@ -4915,7 +4913,7 @@ void SparseGeneralTest::testFind()
 
       // Searching for the first element
       {
-         ConstIterator pos( cs.find( 1UL, 0UL ) );
+         auto pos( cs.find( 1UL, 0UL ) );
 
          if( pos == cs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -4942,7 +4940,7 @@ void SparseGeneralTest::testFind()
 
       // Searching for the second element
       {
-         ConstIterator pos( cs.find( 2UL, 1UL ) );
+         auto pos( cs.find( 2UL, 1UL ) );
 
          if( pos == cs.end( 1UL ) ) {
             std::ostringstream oss;
@@ -4969,7 +4967,7 @@ void SparseGeneralTest::testFind()
 
       // Searching for a non-existing non-zero element
       {
-         ConstIterator pos( cs.find( 1UL, 1UL ) );
+         auto pos( cs.find( 1UL, 1UL ) );
 
          if( pos != cs.end( 1UL ) ) {
             std::ostringstream oss;
@@ -4994,11 +4992,9 @@ void SparseGeneralTest::testFind()
    {
       test_ = "Column-major Columns::find()";
 
-      using ConstIterator = OCT::ConstIterator;
-
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 1UL, 2UL, 3UL } );
+      auto cs = blaze::columns( tmat_, { 1UL, 2UL, 3UL } );
 
       checkRows    ( cs, 4UL );
       checkColumns ( cs, 3UL );
@@ -5009,7 +5005,7 @@ void SparseGeneralTest::testFind()
 
       // Searching for the first element
       {
-         ConstIterator pos( cs.find( 1UL, 0UL ) );
+         auto pos( cs.find( 1UL, 0UL ) );
 
          if( pos == cs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5036,7 +5032,7 @@ void SparseGeneralTest::testFind()
 
       // Searching for the second element
       {
-         ConstIterator pos( cs.find( 2UL, 1UL ) );
+         auto pos( cs.find( 2UL, 1UL ) );
 
          if( pos == cs.end( 1UL ) ) {
             std::ostringstream oss;
@@ -5063,7 +5059,7 @@ void SparseGeneralTest::testFind()
 
       // Searching for a non-existing non-zero element
       {
-         ConstIterator pos( cs.find( 1UL, 1UL ) );
+         auto pos( cs.find( 1UL, 1UL ) );
 
          if( pos != cs.end( 1UL ) ) {
             std::ostringstream oss;
@@ -5101,9 +5097,7 @@ void SparseGeneralTest::testLowerBound()
    {
       test_ = "Row-major Columns::lowerBound()";
 
-      using ConstIterator = CT::ConstIterator;
-
-      CT cs = blaze::columns( mat_, { 1UL } );
+      auto cs = blaze::columns( mat_, { 1UL } );
 
       checkRows    ( cs, 4UL );
       checkColumns ( cs, 1UL );
@@ -5112,7 +5106,7 @@ void SparseGeneralTest::testLowerBound()
 
       // Determining the lower bound for position (0,0)
       {
-         ConstIterator pos( cs.lowerBound( 0UL, 0UL ) );
+         auto pos( cs.lowerBound( 0UL, 0UL ) );
 
          if( pos == cs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5139,7 +5133,7 @@ void SparseGeneralTest::testLowerBound()
 
       // Determining the lower bound for position (1,0)
       {
-         ConstIterator pos( cs.lowerBound( 1UL, 0UL ) );
+         auto pos( cs.lowerBound( 1UL, 0UL ) );
 
          if( pos == cs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5166,7 +5160,7 @@ void SparseGeneralTest::testLowerBound()
 
       // Determining the lower bound for position (2,0)
       {
-         ConstIterator pos( cs.lowerBound( 2UL, 0UL ) );
+         auto pos( cs.lowerBound( 2UL, 0UL ) );
 
          if( pos != cs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5188,9 +5182,7 @@ void SparseGeneralTest::testLowerBound()
    {
       test_ = "Column-major Columns::lowerBound()";
 
-      using ConstIterator = OCT::ConstIterator;
-
-      OCT cs = blaze::columns( tmat_, { 1UL } );
+      auto cs = blaze::columns( tmat_, { 1UL } );
 
       checkRows    ( cs, 4UL );
       checkColumns ( cs, 1UL );
@@ -5199,7 +5191,7 @@ void SparseGeneralTest::testLowerBound()
 
       // Determining the lower bound for position (0,0)
       {
-         ConstIterator pos( cs.lowerBound( 0UL, 0UL ) );
+         auto pos( cs.lowerBound( 0UL, 0UL ) );
 
          if( pos == cs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5226,7 +5218,7 @@ void SparseGeneralTest::testLowerBound()
 
       // Determining the lower bound for position (1,0)
       {
-         ConstIterator pos( cs.lowerBound( 1UL, 0UL ) );
+         auto pos( cs.lowerBound( 1UL, 0UL ) );
 
          if( pos == cs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5253,7 +5245,7 @@ void SparseGeneralTest::testLowerBound()
 
       // Determining the lower bound for position (2,0)
       {
-         ConstIterator pos( cs.lowerBound( 2UL, 0UL ) );
+         auto pos( cs.lowerBound( 2UL, 0UL ) );
 
          if( pos != cs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5288,9 +5280,7 @@ void SparseGeneralTest::testUpperBound()
    {
       test_ = "Row-major Columns::upperBound()";
 
-      using ConstIterator = CT::ConstIterator;
-
-      CT cs = blaze::columns( mat_, { 1UL } );
+      auto cs = blaze::columns( mat_, { 1UL } );
 
       checkRows    ( cs, 4UL );
       checkColumns ( cs, 1UL );
@@ -5299,7 +5289,7 @@ void SparseGeneralTest::testUpperBound()
 
       // Determining the upper bound for position (0,0)
       {
-         ConstIterator pos( cs.upperBound( 0UL, 0UL ) );
+         auto pos( cs.upperBound( 0UL, 0UL ) );
 
          if( pos == cs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5326,7 +5316,7 @@ void SparseGeneralTest::testUpperBound()
 
       // Determining the upper bound for position (1,0)
       {
-         ConstIterator pos( cs.upperBound( 1UL, 0UL ) );
+         auto pos( cs.upperBound( 1UL, 0UL ) );
 
          if( pos != cs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5341,7 +5331,7 @@ void SparseGeneralTest::testUpperBound()
 
       // Determining the upper bound for position (2,0)
       {
-         ConstIterator pos( cs.upperBound( 2UL, 0UL ) );
+         auto pos( cs.upperBound( 2UL, 0UL ) );
 
          if( pos != cs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5363,9 +5353,7 @@ void SparseGeneralTest::testUpperBound()
    {
       test_ = "Column-major Columns::upperBound()";
 
-      using ConstIterator = OCT::ConstIterator;
-
-      OCT cs = blaze::columns( tmat_, { 1UL } );
+      auto cs = blaze::columns( tmat_, { 1UL } );
 
       checkRows    ( cs, 4UL );
       checkColumns ( cs, 1UL );
@@ -5374,7 +5362,7 @@ void SparseGeneralTest::testUpperBound()
 
       // Determining the upper bound for position (0,0)
       {
-         ConstIterator pos( cs.upperBound( 0UL, 0UL ) );
+         auto pos( cs.upperBound( 0UL, 0UL ) );
 
          if( pos == cs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5401,7 +5389,7 @@ void SparseGeneralTest::testUpperBound()
 
       // Determining the upper bound for position (1,0)
       {
-         ConstIterator pos( cs.upperBound( 1UL, 0UL ) );
+         auto pos( cs.upperBound( 1UL, 0UL ) );
 
          if( pos != cs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5416,7 +5404,7 @@ void SparseGeneralTest::testUpperBound()
 
       // Determining the upper bound for position (2,0)
       {
-         ConstIterator pos( cs.upperBound( 2UL, 0UL ) );
+         auto pos( cs.upperBound( 2UL, 0UL ) );
 
          if( pos != cs.end( 0UL ) ) {
             std::ostringstream oss;
@@ -5454,7 +5442,7 @@ void SparseGeneralTest::testTranspose()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 2UL, 1UL, 4UL } );
 
       transpose( cs );
 
@@ -5503,7 +5491,7 @@ void SparseGeneralTest::testTranspose()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 2UL, 1UL, 4UL } );
 
       cs = trans( cs );
 
@@ -5557,7 +5545,7 @@ void SparseGeneralTest::testTranspose()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 2UL, 1UL, 4UL } );
 
       transpose( cs );
 
@@ -5606,7 +5594,7 @@ void SparseGeneralTest::testTranspose()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 2UL, 1UL, 4UL } );
 
       cs = trans( cs );
 
@@ -5674,7 +5662,7 @@ void SparseGeneralTest::testCTranspose()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 2UL, 1UL, 4UL } );
 
       ctranspose( cs );
 
@@ -5723,7 +5711,7 @@ void SparseGeneralTest::testCTranspose()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 2UL, 1UL, 4UL } );
 
       cs = ctrans( cs );
 
@@ -5777,7 +5765,7 @@ void SparseGeneralTest::testCTranspose()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 2UL, 1UL, 4UL } );
 
       ctranspose( cs );
 
@@ -5826,7 +5814,7 @@ void SparseGeneralTest::testCTranspose()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 2UL, 1UL, 4UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 2UL, 1UL, 4UL } );
 
       cs = ctrans( cs );
 
@@ -5897,7 +5885,7 @@ void SparseGeneralTest::testIsDefault()
 
       // isDefault with default column selection
       {
-         CT cs = blaze::columns( mat_, { 0UL } );
+         auto cs = blaze::columns( mat_, { 0UL } );
 
          if( isDefault( cs(1,0) ) != true ) {
             std::ostringstream oss;
@@ -5920,7 +5908,7 @@ void SparseGeneralTest::testIsDefault()
 
       // isDefault with non-default column selection
       {
-         CT cs = blaze::columns( mat_, { 1UL } );
+         auto cs = blaze::columns( mat_, { 1UL } );
 
          if( isDefault( cs(1,0) ) != false ) {
             std::ostringstream oss;
@@ -5956,7 +5944,7 @@ void SparseGeneralTest::testIsDefault()
 
       // isDefault with default column selection
       {
-         OCT cs = blaze::columns( tmat_, { 0UL } );
+         auto cs = blaze::columns( tmat_, { 0UL } );
 
          if( isDefault( cs(1,0) ) != true ) {
             std::ostringstream oss;
@@ -5979,7 +5967,7 @@ void SparseGeneralTest::testIsDefault()
 
       // isDefault with non-default column selection
       {
-         OCT cs = blaze::columns( tmat_, { 1UL } );
+         auto cs = blaze::columns( tmat_, { 1UL } );
 
          if( isDefault( cs(1,0) ) != false ) {
             std::ostringstream oss;
@@ -6696,7 +6684,7 @@ void SparseGeneralTest::testSubmatrix()
       initialize();
 
       {
-         CT   cs = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( cs, 1UL, 0UL, 2UL, 3UL );
 
          if( sm(0,0) !=  4 || sm(0,1) != 1 || sm(0,2) != -8 ||
@@ -6723,7 +6711,7 @@ void SparseGeneralTest::testSubmatrix()
       }
 
       try {
-         CT   cs = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( cs, 4UL, 0UL, 2UL, 3UL );
 
          std::ostringstream oss;
@@ -6736,7 +6724,7 @@ void SparseGeneralTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         CT   cs = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( cs, 1UL, 3UL, 2UL, 3UL );
 
          std::ostringstream oss;
@@ -6749,7 +6737,7 @@ void SparseGeneralTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         CT   cs = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( cs, 1UL, 0UL, 4UL, 3UL );
 
          std::ostringstream oss;
@@ -6762,7 +6750,7 @@ void SparseGeneralTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         CT   cs = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( cs, 1UL, 0UL, 2UL, 4UL );
 
          std::ostringstream oss;
@@ -6786,7 +6774,7 @@ void SparseGeneralTest::testSubmatrix()
       initialize();
 
       {
-         OCT  cs = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( cs, 1UL, 0UL, 2UL, 3UL );
 
          if( sm(0,0) !=  4 || sm(0,1) != 1 || sm(0,2) != -8 ||
@@ -6813,7 +6801,7 @@ void SparseGeneralTest::testSubmatrix()
       }
 
       try {
-         OCT  cs = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( cs, 4UL, 0UL, 2UL, 3UL );
 
          std::ostringstream oss;
@@ -6826,7 +6814,7 @@ void SparseGeneralTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         OCT  cs = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( cs, 1UL, 3UL, 2UL, 3UL );
 
          std::ostringstream oss;
@@ -6839,7 +6827,7 @@ void SparseGeneralTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         OCT  cs = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( cs, 1UL, 0UL, 4UL, 3UL );
 
          std::ostringstream oss;
@@ -6852,7 +6840,7 @@ void SparseGeneralTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         OCT  cs = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
          auto sm = blaze::submatrix( cs, 1UL, 0UL, 2UL, 4UL );
 
          std::ostringstream oss;
@@ -6889,7 +6877,7 @@ void SparseGeneralTest::testRow()
       initialize();
 
       {
-         CT   cs   = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
+         auto cs   = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
          auto row1 = row( cs, 1UL );
 
          if( row1[0] != 4 || row1[1] != 1 || row1[2] != -8 ) {
@@ -6914,7 +6902,7 @@ void SparseGeneralTest::testRow()
       }
 
       try {
-         CT   cs   = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
+         auto cs   = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
          auto row4 = blaze::row( cs, 4UL );
 
          std::ostringstream oss;
@@ -6938,7 +6926,7 @@ void SparseGeneralTest::testRow()
       initialize();
 
       {
-         OCT  cs   = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
+         auto cs   = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
          auto row1 = row( cs, 1UL );
 
          if( row1[0] != 4 || row1[1] != 1 || row1[2] != -8 ) {
@@ -6963,7 +6951,7 @@ void SparseGeneralTest::testRow()
       }
 
       try {
-         OCT  cs   = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
+         auto cs   = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
          auto row4 = blaze::row( cs, 4UL );
 
          std::ostringstream oss;
@@ -7000,7 +6988,7 @@ void SparseGeneralTest::testRows()
       initialize();
 
       {
-         CT   cs = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
          auto rs = blaze::rows( cs, { 1UL, 0UL, 3UL } );
 
          if( rs(0,0) !=  4 || rs(0,1) != 1 || rs(0,2) != -8 ||
@@ -7027,7 +7015,7 @@ void SparseGeneralTest::testRows()
       }
 
       try {
-         CT   cs = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
          auto rs = blaze::rows( cs, { 4UL } );
 
          std::ostringstream oss;
@@ -7051,7 +7039,7 @@ void SparseGeneralTest::testRows()
       initialize();
 
       {
-         OCT  cs = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
          auto rs = blaze::rows( cs, { 1UL, 0UL, 3UL } );
 
          if( rs(0,0) !=  4 || rs(0,1) != 1 || rs(0,2) != -8 ||
@@ -7078,7 +7066,7 @@ void SparseGeneralTest::testRows()
       }
 
       try {
-         OCT  cs = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
          auto rs = blaze::rows( cs, { 4UL } );
 
          std::ostringstream oss;
@@ -7115,7 +7103,7 @@ void SparseGeneralTest::testColumn()
       initialize();
 
       {
-         CT   cs   = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
+         auto cs   = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
          auto col1 = blaze::column( cs, 1UL );
 
          if( col1[0] != 0 || col1[1] != 1 || col1[2] != 0 || col1[3] != 0 ) {
@@ -7140,7 +7128,7 @@ void SparseGeneralTest::testColumn()
       }
 
       try {
-         CT   cs   = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
+         auto cs   = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
          auto col3 = blaze::column( cs, 3UL );
 
          std::ostringstream oss;
@@ -7164,7 +7152,7 @@ void SparseGeneralTest::testColumn()
       initialize();
 
       {
-         OCT  cs   = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
+         auto cs   = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
          auto col1 = blaze::column( cs, 1UL );
 
          if( col1[0] != 0 || col1[1] != 1 || col1[2] != 0 || col1[3] != 0 ) {
@@ -7189,7 +7177,7 @@ void SparseGeneralTest::testColumn()
       }
 
       try {
-         OCT  cs   = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
+         auto cs   = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
          auto col3 = blaze::column( cs, 3UL );
 
          std::ostringstream oss;
@@ -7226,8 +7214,8 @@ void SparseGeneralTest::testColumns()
       initialize();
 
       {
-         CT cs1 = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
-         CT cs2 = blaze::columns( cs1, { 1UL, 0UL, 2UL } );
+         auto cs1 = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
+         auto cs2 = blaze::columns( cs1, { 1UL, 0UL, 2UL } );
 
          if( cs2(0,0) != 0 || cs2(0,1) !=  0 || cs2(0,2) !=  7 ||
              cs2(1,0) != 1 || cs2(1,1) !=  4 || cs2(1,2) != -8 ||
@@ -7254,8 +7242,8 @@ void SparseGeneralTest::testColumns()
       }
 
       try {
-         CT cs1 = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
-         CT cs2 = blaze::columns( cs1, { 3UL } );
+         auto cs1 = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
+         auto cs2 = blaze::columns( cs1, { 3UL } );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -7278,8 +7266,8 @@ void SparseGeneralTest::testColumns()
       initialize();
 
       {
-         OCT cs1 = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
-         OCT cs2 = blaze::columns( cs1, { 1UL, 0UL, 2UL } );
+         auto cs1 = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
+         auto cs2 = blaze::columns( cs1, { 1UL, 0UL, 2UL } );
 
          if( cs2(0,0) != 0 || cs2(0,1) !=  0 || cs2(0,2) !=  7 ||
              cs2(1,0) != 1 || cs2(1,1) !=  4 || cs2(1,2) != -8 ||
@@ -7306,8 +7294,8 @@ void SparseGeneralTest::testColumns()
       }
 
       try {
-         OCT cs1 = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
-         OCT cs2 = blaze::columns( cs1, { 3UL } );
+         auto cs1 = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
+         auto cs2 = blaze::columns( cs1, { 3UL } );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -7343,7 +7331,7 @@ void SparseGeneralTest::testBand()
       initialize();
 
       {
-         CT   cs = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
          auto b1 = blaze::band( cs, -1L );
 
          if( b1[0] != 4 || b1[1] != 0 || b1[2] != 10 ) {
@@ -7368,7 +7356,7 @@ void SparseGeneralTest::testBand()
       }
 
       try {
-         CT   cs = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
          auto b3 = blaze::band( cs, 3L );
 
          std::ostringstream oss;
@@ -7381,7 +7369,7 @@ void SparseGeneralTest::testBand()
       catch( std::invalid_argument& ) {}
 
       try {
-         CT   cs = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( mat_, { 3UL, 1UL, 4UL } );
          auto b4 = blaze::band( cs, -4L );
 
          std::ostringstream oss;
@@ -7405,7 +7393,7 @@ void SparseGeneralTest::testBand()
       initialize();
 
       {
-         OCT  cs = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
          auto b1 = blaze::band( cs, -1L );
 
          if( b1[0] != 4 || b1[1] != 0 || b1[2] != 10 ) {
@@ -7430,7 +7418,7 @@ void SparseGeneralTest::testBand()
       }
 
       try {
-         OCT  cs = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
          auto b3 = blaze::band( cs, 3L );
 
          std::ostringstream oss;
@@ -7443,7 +7431,7 @@ void SparseGeneralTest::testBand()
       catch( std::invalid_argument& ) {}
 
       try {
-         OCT  cs = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
+         auto cs = blaze::columns( tmat_, { 3UL, 1UL, 4UL } );
          auto b4 = blaze::band( cs, -4L );
 
          std::ostringstream oss;

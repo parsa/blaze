@@ -98,19 +98,123 @@ SparseGeneralTest::SparseGeneralTest()
 */
 void SparseGeneralTest::testConstructors()
 {
+   using blaze::index_sequence;
+   using blaze::initializer_list;
+
+
    //=====================================================================================
-   // Row-major matrix tests
+   // Row-major setup via index_sequence
    //=====================================================================================
 
    {
-      test_ = "Row-major Columns constructor";
+      test_ = "Row-major Columns constructor (index_sequence)";
+
+      initialize();
+
+      // Setup of a regular column selection
+      {
+         auto cs = blaze::columns( mat_, index_sequence<0,4,2>() );
+
+         if( cs.rows() != mat_.rows() || cs.columns() != 3UL ||
+             cs(0,0) != mat_(0,0) || cs(0,1) != mat_(0,4) || cs(0,2) != mat_(0,2) ||
+             cs(1,0) != mat_(1,0) || cs(1,1) != mat_(1,4) || cs(1,2) != mat_(1,2) ||
+             cs(2,0) != mat_(2,0) || cs(2,1) != mat_(2,4) || cs(2,2) != mat_(2,2) ||
+             cs(3,0) != mat_(3,0) || cs(3,1) != mat_(3,4) || cs(3,2) != mat_(3,2) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds column selection
+      try {
+         auto cs = blaze::columns( mat_, index_sequence<5>() );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds column selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << cs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of a column selection on a compile-time column selection
+      {
+         auto cs1 = blaze::columns( mat_, index_sequence<0,4,2>() );
+         auto cs2 = blaze::columns( cs1, index_sequence<2,1>() );
+
+         if( cs2.rows() != mat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != mat_(0,2) || cs2(0,1) != mat_(0,4) ||
+             cs2(1,0) != mat_(1,2) || cs2(1,1) != mat_(1,4) ||
+             cs2(2,0) != mat_(2,2) || cs2(2,1) != mat_(2,4) ||
+             cs2(3,0) != mat_(3,2) || cs2(3,1) != mat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a column selection on an explicit column selection
+      {
+         auto cs1 = blaze::columns( mat_, { 0, 4, 2 } );
+         auto cs2 = blaze::columns( cs1, index_sequence<2,1>() );
+
+         if( cs2.rows() != mat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != mat_(0,2) || cs2(0,1) != mat_(0,4) ||
+             cs2(1,0) != mat_(1,2) || cs2(1,1) != mat_(1,4) ||
+             cs2(2,0) != mat_(2,2) || cs2(2,1) != mat_(2,4) ||
+             cs2(3,0) != mat_(3,2) || cs2(3,1) != mat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a column selection on an implicit column selection
+      {
+         const std::array<size_t,3UL> indices{ 0, 4, 2 };
+         auto cs1 = blaze::columns( mat_, [indices]( size_t i ){ return indices[i]; }, 3UL );
+         auto cs2 = blaze::columns( cs1, index_sequence<2,1>() );
+
+         if( cs2.rows() != mat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != mat_(0,2) || cs2(0,1) != mat_(0,4) ||
+             cs2(1,0) != mat_(1,2) || cs2(1,1) != mat_(1,4) ||
+             cs2(2,0) != mat_(2,2) || cs2(2,1) != mat_(2,4) ||
+             cs2(3,0) != mat_(3,2) || cs2(3,1) != mat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major setup via initializer_list
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Columns constructor (initializer_list)";
 
       initialize();
 
       // Setup of empty column selection
       {
-         std::vector<size_t> indices;
-         CT cs = blaze::columns( mat_, indices.data(), 0UL );
+         std::initializer_list<size_t> indices{};
+         auto cs = blaze::columns( mat_, indices );
 
          if( cs.rows() != mat_.rows() || cs.columns() != 0UL ) {
             std::ostringstream oss;
@@ -122,12 +226,463 @@ void SparseGeneralTest::testConstructors()
          }
       }
 
-      // Setup of random in-bounds column selection
+      // Setup of a regular column selection
+      {
+         auto cs = blaze::columns( mat_, { 0, 4, 2 } );
+
+         if( cs.rows() != mat_.rows() || cs.columns() != 3UL ||
+             cs(0,0) != mat_(0,0) || cs(0,1) != mat_(0,4) || cs(0,2) != mat_(0,2) ||
+             cs(1,0) != mat_(1,0) || cs(1,1) != mat_(1,4) || cs(1,2) != mat_(1,2) ||
+             cs(2,0) != mat_(2,0) || cs(2,1) != mat_(2,4) || cs(2,2) != mat_(2,2) ||
+             cs(3,0) != mat_(3,0) || cs(3,1) != mat_(3,4) || cs(3,2) != mat_(3,2) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds column selection
+      try {
+         auto cs = blaze::columns( mat_, { 5 } );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds column selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << cs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of a column selection on a compile-time column selection
+      {
+         auto cs1 = blaze::columns( mat_, index_sequence<0,4,2>() );
+         auto cs2 = blaze::columns( cs1, { 2, 1 } );
+
+         if( cs2.rows() != mat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != mat_(0,2) || cs2(0,1) != mat_(0,4) ||
+             cs2(1,0) != mat_(1,2) || cs2(1,1) != mat_(1,4) ||
+             cs2(2,0) != mat_(2,2) || cs2(2,1) != mat_(2,4) ||
+             cs2(3,0) != mat_(3,2) || cs2(3,1) != mat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a column selection on an explicit column selection
+      {
+         auto cs1 = blaze::columns( mat_, { 0, 4, 2 } );
+         auto cs2 = blaze::columns( cs1, { 2, 1 } );
+
+         if( cs2.rows() != mat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != mat_(0,2) || cs2(0,1) != mat_(0,4) ||
+             cs2(1,0) != mat_(1,2) || cs2(1,1) != mat_(1,4) ||
+             cs2(2,0) != mat_(2,2) || cs2(2,1) != mat_(2,4) ||
+             cs2(3,0) != mat_(3,2) || cs2(3,1) != mat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a column selection on an implicit column selection
+      {
+         const std::array<size_t,3UL> indices{ 0, 4, 2 };
+         auto cs1 = blaze::columns( mat_, [indices]( size_t i ){ return indices[i]; }, 3UL );
+         auto cs2 = blaze::columns( cs1, { 2, 1 } );
+
+         if( cs2.rows() != mat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != mat_(0,2) || cs2(0,1) != mat_(0,4) ||
+             cs2(1,0) != mat_(1,2) || cs2(1,1) != mat_(1,4) ||
+             cs2(2,0) != mat_(2,2) || cs2(2,1) != mat_(2,4) ||
+             cs2(3,0) != mat_(3,2) || cs2(3,1) != mat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major setup via std::vector
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Columns constructor (std::vector)";
+
+      initialize();
+
+      // Setup of empty column selection
+      {
+         std::vector<size_t> indices;
+         auto cs = blaze::columns( mat_, indices );
+
+         if( cs.rows() != mat_.rows() || cs.columns() != 0UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of empty column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a regular column selection
+      {
+         const std::vector<size_t> indices{ 0, 4, 2 };
+         auto cs = blaze::columns( mat_, indices );
+
+         if( cs.rows() != mat_.rows() || cs.columns() != 3UL ||
+             cs(0,0) != mat_(0,0) || cs(0,1) != mat_(0,4) || cs(0,2) != mat_(0,2) ||
+             cs(1,0) != mat_(1,0) || cs(1,1) != mat_(1,4) || cs(1,2) != mat_(1,2) ||
+             cs(2,0) != mat_(2,0) || cs(2,1) != mat_(2,4) || cs(2,2) != mat_(2,2) ||
+             cs(3,0) != mat_(3,0) || cs(3,1) != mat_(3,4) || cs(3,2) != mat_(3,2) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds column selection
+      try {
+         std::vector<size_t> indices{ 5 };
+         auto cs = blaze::columns( mat_, indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds column selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << cs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of a column selection on a compile-time column selection
+      {
+         auto cs1 = blaze::columns( mat_, index_sequence<0,4,2>() );
+
+         const std::vector<size_t> indices{ 2, 1 };
+         auto cs2 = blaze::columns( cs1, indices );
+
+         if( cs2.rows() != mat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != mat_(0,2) || cs2(0,1) != mat_(0,4) ||
+             cs2(1,0) != mat_(1,2) || cs2(1,1) != mat_(1,4) ||
+             cs2(2,0) != mat_(2,2) || cs2(2,1) != mat_(2,4) ||
+             cs2(3,0) != mat_(3,2) || cs2(3,1) != mat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a column selection on an explicit column selection
+      {
+         auto cs1 = blaze::columns( mat_, { 0, 4, 2 } );
+
+         const std::vector<size_t> indices{ 2, 1 };
+         auto cs2 = blaze::columns( cs1, indices );
+
+         if( cs2.rows() != mat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != mat_(0,2) || cs2(0,1) != mat_(0,4) ||
+             cs2(1,0) != mat_(1,2) || cs2(1,1) != mat_(1,4) ||
+             cs2(2,0) != mat_(2,2) || cs2(2,1) != mat_(2,4) ||
+             cs2(3,0) != mat_(3,2) || cs2(3,1) != mat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a column selection on an implicit column selection
+      {
+         const std::array<size_t,3UL> indices1{ 0, 4, 2 };
+         auto cs1 = blaze::columns( mat_, [indices1]( size_t i ){ return indices1[i]; }, 3UL );
+
+         const std::vector<size_t> indices2{ 2, 1 };
+         auto cs2 = blaze::columns( cs1, indices2 );
+
+         if( cs2.rows() != mat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != mat_(0,2) || cs2(0,1) != mat_(0,4) ||
+             cs2(1,0) != mat_(1,2) || cs2(1,1) != mat_(1,4) ||
+             cs2(2,0) != mat_(2,2) || cs2(2,1) != mat_(2,4) ||
+             cs2(3,0) != mat_(3,2) || cs2(3,1) != mat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major setup via std::array
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Columns constructor (std::array)";
+
+      initialize();
+
+      // Setup of a regular column selection
+      {
+         const std::array<size_t,3UL> indices{ 0, 4, 2 };
+         auto cs = blaze::columns( mat_, indices );
+
+         if( cs.rows() != mat_.rows() || cs.columns() != 3UL ||
+             cs(0,0) != mat_(0,0) || cs(0,1) != mat_(0,4) || cs(0,2) != mat_(0,2) ||
+             cs(1,0) != mat_(1,0) || cs(1,1) != mat_(1,4) || cs(1,2) != mat_(1,2) ||
+             cs(2,0) != mat_(2,0) || cs(2,1) != mat_(2,4) || cs(2,2) != mat_(2,2) ||
+             cs(3,0) != mat_(3,0) || cs(3,1) != mat_(3,4) || cs(3,2) != mat_(3,2) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds column selection
+      try {
+         std::array<size_t,1UL> indices{ 5 };
+         auto cs = blaze::columns( mat_, indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds column selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << cs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of a column selection on a compile-time column selection
+      {
+         auto cs1 = blaze::columns( mat_, index_sequence<0,4,2>() );
+
+         const std::array<size_t,2UL> indices{ 2, 1 };
+         auto cs2 = blaze::columns( cs1, indices );
+
+         if( cs2.rows() != mat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != mat_(0,2) || cs2(0,1) != mat_(0,4) ||
+             cs2(1,0) != mat_(1,2) || cs2(1,1) != mat_(1,4) ||
+             cs2(2,0) != mat_(2,2) || cs2(2,1) != mat_(2,4) ||
+             cs2(3,0) != mat_(3,2) || cs2(3,1) != mat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a column selection on an explicit column selection
+      {
+         auto cs1 = blaze::columns( mat_, { 0, 4, 2 } );
+
+         const std::array<size_t,2UL> indices{ 2, 1 };
+         auto cs2 = blaze::columns( cs1, indices );
+
+         if( cs2.rows() != mat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != mat_(0,2) || cs2(0,1) != mat_(0,4) ||
+             cs2(1,0) != mat_(1,2) || cs2(1,1) != mat_(1,4) ||
+             cs2(2,0) != mat_(2,2) || cs2(2,1) != mat_(2,4) ||
+             cs2(3,0) != mat_(3,2) || cs2(3,1) != mat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a column selection on an implicit column selection
+      {
+         const std::array<size_t,3UL> indices1{ 0, 4, 2 };
+         auto cs1 = blaze::columns( mat_, [indices1]( size_t i ){ return indices1[i]; }, 3UL );
+
+         const std::array<size_t,2UL> indices{ 2, 1 };
+         auto cs2 = blaze::columns( cs1, indices );
+
+         if( cs2.rows() != mat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != mat_(0,2) || cs2(0,1) != mat_(0,4) ||
+             cs2(1,0) != mat_(1,2) || cs2(1,1) != mat_(1,4) ||
+             cs2(2,0) != mat_(2,2) || cs2(2,1) != mat_(2,4) ||
+             cs2(3,0) != mat_(3,2) || cs2(3,1) != mat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major setup via lambda expression
+   //=====================================================================================
+
+   {
+      test_ = "Row-major Columns constructor (lambda expression)";
+
+      initialize();
+
+      // Setup of empty column selection
+      {
+         auto cs = blaze::columns( mat_, []( size_t ){ return 0UL; }, 0UL );
+
+         if( cs.rows() != mat_.rows() || cs.columns() != 0UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of empty column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a regular column selection
+      {
+         const std::array<size_t,3UL> indices{ 0, 4, 2 };
+         auto cs = blaze::columns( mat_, [indices]( size_t i ){ return indices[i]; }, 3UL );
+
+         if( cs.rows() != mat_.rows() || cs.columns() != 3UL ||
+             cs(0,0) != mat_(0,0) || cs(0,1) != mat_(0,4) || cs(0,2) != mat_(0,2) ||
+             cs(1,0) != mat_(1,0) || cs(1,1) != mat_(1,4) || cs(1,2) != mat_(1,2) ||
+             cs(2,0) != mat_(2,0) || cs(2,1) != mat_(2,4) || cs(2,2) != mat_(2,2) ||
+             cs(3,0) != mat_(3,0) || cs(3,1) != mat_(3,4) || cs(3,2) != mat_(3,2) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds column selection
+      try {
+         auto cs = blaze::columns( mat_, []( size_t ){ return 5UL; }, 1UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds column selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << cs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of a column selection on a compile-time column selection
+      {
+         auto cs1 = blaze::columns( mat_, index_sequence<0,4,2>() );
+
+         const std::array<size_t,2UL> indices{ 2, 1 };
+         auto cs2 = blaze::columns( cs1, [indices]( size_t i ){ return indices[i]; }, 2UL );
+
+         if( cs2.rows() != mat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != mat_(0,2) || cs2(0,1) != mat_(0,4) ||
+             cs2(1,0) != mat_(1,2) || cs2(1,1) != mat_(1,4) ||
+             cs2(2,0) != mat_(2,2) || cs2(2,1) != mat_(2,4) ||
+             cs2(3,0) != mat_(3,2) || cs2(3,1) != mat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a column selection on an explicit column selection
+      {
+         auto cs1 = blaze::columns( mat_, { 0, 4, 2 } );
+
+         const std::array<size_t,2UL> indices{ 2, 1 };
+         auto cs2 = blaze::columns( cs1, [indices]( size_t i ){ return indices[i]; }, 2UL );
+
+         if( cs2.rows() != mat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != mat_(0,2) || cs2(0,1) != mat_(0,4) ||
+             cs2(1,0) != mat_(1,2) || cs2(1,1) != mat_(1,4) ||
+             cs2(2,0) != mat_(2,2) || cs2(2,1) != mat_(2,4) ||
+             cs2(3,0) != mat_(3,2) || cs2(3,1) != mat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a column selection on an implicit column selection
+      {
+         const std::array<size_t,3UL> indices1{ 0, 4, 2 };
+         auto cs1 = blaze::columns( mat_, [indices1]( size_t i ){ return indices1[i]; }, 3UL );
+
+         const std::array<size_t,2UL> indices2{ 2, 1 };
+         auto cs2 = blaze::columns( cs1, [indices2]( size_t i ){ return indices2[i]; }, 2UL );
+
+         if( cs2.rows() != mat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != mat_(0,2) || cs2(0,1) != mat_(0,4) ||
+             cs2(1,0) != mat_(1,2) || cs2(1,1) != mat_(1,4) ||
+             cs2(2,0) != mat_(2,2) || cs2(2,1) != mat_(2,4) ||
+             cs2(3,0) != mat_(3,2) || cs2(3,1) != mat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major setup of random in-bounds element selection
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Columns constructor (stress test)";
+
+      initialize();
+
       for( size_t rep=0UL; rep<100UL; ++rep )
       {
          blaze::DynamicVector<size_t> indices( blaze::rand<size_t>( 1UL, 20UL ) );
          randomize( indices, 0UL, mat_.rows()-1UL );
-         CT cs = blaze::columns( mat_, indices.data(), indices.size() );
+         auto cs = blaze::columns( mat_, indices.data(), indices.size() );
 
          for( size_t i=0UL; i<cs.rows(); ++i ) {
             for( size_t j=0UL; j<cs.columns(); ++j ) {
@@ -144,10 +699,39 @@ void SparseGeneralTest::testConstructors()
             }
          }
       }
+   }
+
+
+   //=====================================================================================
+   // Column-major setup via index_sequence
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Columns constructor (index_sequence)";
+
+      initialize();
+
+      // Setup of a regular column selection
+      {
+         auto cs = blaze::columns( tmat_, index_sequence<0,4,2>() );
+
+         if( cs.rows() != tmat_.rows() || cs.columns() != 3UL ||
+             cs(0,0) != tmat_(0,0) || cs(0,1) != tmat_(0,4) || cs(0,2) != tmat_(0,2) ||
+             cs(1,0) != tmat_(1,0) || cs(1,1) != tmat_(1,4) || cs(1,2) != tmat_(1,2) ||
+             cs(2,0) != tmat_(2,0) || cs(2,1) != tmat_(2,4) || cs(2,2) != tmat_(2,2) ||
+             cs(3,0) != tmat_(3,0) || cs(3,1) != tmat_(3,4) || cs(3,2) != tmat_(3,2) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
 
       // Trying to setup an out-of-bounds column selection
       try {
-         CT cs = blaze::columns( mat_, { 5 } );
+         auto cs = blaze::columns( tmat_, index_sequence<5>() );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -157,22 +741,80 @@ void SparseGeneralTest::testConstructors()
          throw std::runtime_error( oss.str() );
       }
       catch( std::invalid_argument& ) {}
+
+      // Setup of a column selection on a compile-time column selection
+      {
+         auto cs1 = blaze::columns( tmat_, index_sequence<0,4,2>() );
+         auto cs2 = blaze::columns( cs1, index_sequence<2,1>() );
+
+         if( cs2.rows() != tmat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != tmat_(0,2) || cs2(0,1) != tmat_(0,4) ||
+             cs2(1,0) != tmat_(1,2) || cs2(1,1) != tmat_(1,4) ||
+             cs2(2,0) != tmat_(2,2) || cs2(2,1) != tmat_(2,4) ||
+             cs2(3,0) != tmat_(3,2) || cs2(3,1) != tmat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a column selection on an explicit column selection
+      {
+         auto cs1 = blaze::columns( tmat_, { 0, 4, 2 } );
+         auto cs2 = blaze::columns( cs1, index_sequence<2,1>() );
+
+         if( cs2.rows() != tmat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != tmat_(0,2) || cs2(0,1) != tmat_(0,4) ||
+             cs2(1,0) != tmat_(1,2) || cs2(1,1) != tmat_(1,4) ||
+             cs2(2,0) != tmat_(2,2) || cs2(2,1) != tmat_(2,4) ||
+             cs2(3,0) != tmat_(3,2) || cs2(3,1) != tmat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a column selection on an implicit column selection
+      {
+         const std::array<size_t,3UL> indices{ 0, 4, 2 };
+         auto cs1 = blaze::columns( tmat_, [indices]( size_t i ){ return indices[i]; }, 3UL );
+         auto cs2 = blaze::columns( cs1, index_sequence<2,1>() );
+
+         if( cs2.rows() != tmat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != tmat_(0,2) || cs2(0,1) != tmat_(0,4) ||
+             cs2(1,0) != tmat_(1,2) || cs2(1,1) != tmat_(1,4) ||
+             cs2(2,0) != tmat_(2,2) || cs2(2,1) != tmat_(2,4) ||
+             cs2(3,0) != tmat_(3,2) || cs2(3,1) != tmat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
    }
 
 
    //=====================================================================================
-   // Column-major matrix tests
+   // Column-major setup via initializer_list
    //=====================================================================================
 
    {
-      test_ = "Column-major Columns constructor";
+      test_ = "Column-major Columns constructor (initializer_list)";
 
       initialize();
 
       // Setup of empty column selection
       {
-         std::vector<size_t> indices;
-         OCT cs = blaze::columns( tmat_, indices.data(), 0UL );
+         std::initializer_list<size_t> indices{};
+         auto cs = blaze::columns( tmat_, indices );
 
          if( cs.rows() != tmat_.rows() || cs.columns() != 0UL ) {
             std::ostringstream oss;
@@ -184,12 +826,463 @@ void SparseGeneralTest::testConstructors()
          }
       }
 
-      // Setup of random in-bounds column selection
+      // Setup of a regular column selection
+      {
+         auto cs = blaze::columns( tmat_, { 0, 4, 2 } );
+
+         if( cs.rows() != tmat_.rows() || cs.columns() != 3UL ||
+             cs(0,0) != tmat_(0,0) || cs(0,1) != tmat_(0,4) || cs(0,2) != tmat_(0,2) ||
+             cs(1,0) != tmat_(1,0) || cs(1,1) != tmat_(1,4) || cs(1,2) != tmat_(1,2) ||
+             cs(2,0) != tmat_(2,0) || cs(2,1) != tmat_(2,4) || cs(2,2) != tmat_(2,2) ||
+             cs(3,0) != tmat_(3,0) || cs(3,1) != tmat_(3,4) || cs(3,2) != tmat_(3,2) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds column selection
+      try {
+         auto cs = blaze::columns( tmat_, { 5 } );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds column selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << cs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of a column selection on a compile-time column selection
+      {
+         auto cs1 = blaze::columns( tmat_, index_sequence<0,4,2>() );
+         auto cs2 = blaze::columns( cs1, { 2, 1 } );
+
+         if( cs2.rows() != tmat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != tmat_(0,2) || cs2(0,1) != tmat_(0,4) ||
+             cs2(1,0) != tmat_(1,2) || cs2(1,1) != tmat_(1,4) ||
+             cs2(2,0) != tmat_(2,2) || cs2(2,1) != tmat_(2,4) ||
+             cs2(3,0) != tmat_(3,2) || cs2(3,1) != tmat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a column selection on an explicit column selection
+      {
+         auto cs1 = blaze::columns( tmat_, { 0, 4, 2 } );
+         auto cs2 = blaze::columns( cs1, { 2, 1 } );
+
+         if( cs2.rows() != tmat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != tmat_(0,2) || cs2(0,1) != tmat_(0,4) ||
+             cs2(1,0) != tmat_(1,2) || cs2(1,1) != tmat_(1,4) ||
+             cs2(2,0) != tmat_(2,2) || cs2(2,1) != tmat_(2,4) ||
+             cs2(3,0) != tmat_(3,2) || cs2(3,1) != tmat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a column selection on an implicit column selection
+      {
+         const std::array<size_t,3UL> indices{ 0, 4, 2 };
+         auto cs1 = blaze::columns( tmat_, [indices]( size_t i ){ return indices[i]; }, 3UL );
+         auto cs2 = blaze::columns( cs1, { 2, 1 } );
+
+         if( cs2.rows() != tmat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != tmat_(0,2) || cs2(0,1) != tmat_(0,4) ||
+             cs2(1,0) != tmat_(1,2) || cs2(1,1) != tmat_(1,4) ||
+             cs2(2,0) != tmat_(2,2) || cs2(2,1) != tmat_(2,4) ||
+             cs2(3,0) != tmat_(3,2) || cs2(3,1) != tmat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major setup via std::vector
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Columns constructor (std::vector)";
+
+      initialize();
+
+      // Setup of empty column selection
+      {
+         std::vector<size_t> indices;
+         auto cs = blaze::columns( tmat_, indices );
+
+         if( cs.rows() != tmat_.rows() || cs.columns() != 0UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of empty column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a regular column selection
+      {
+         const std::vector<size_t> indices{ 0, 4, 2 };
+         auto cs = blaze::columns( tmat_, indices );
+
+         if( cs.rows() != tmat_.rows() || cs.columns() != 3UL ||
+             cs(0,0) != tmat_(0,0) || cs(0,1) != tmat_(0,4) || cs(0,2) != tmat_(0,2) ||
+             cs(1,0) != tmat_(1,0) || cs(1,1) != tmat_(1,4) || cs(1,2) != tmat_(1,2) ||
+             cs(2,0) != tmat_(2,0) || cs(2,1) != tmat_(2,4) || cs(2,2) != tmat_(2,2) ||
+             cs(3,0) != tmat_(3,0) || cs(3,1) != tmat_(3,4) || cs(3,2) != tmat_(3,2) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds column selection
+      try {
+         std::vector<size_t> indices{ 5 };
+         auto cs = blaze::columns( tmat_, indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds column selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << cs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of a column selection on a compile-time column selection
+      {
+         auto cs1 = blaze::columns( tmat_, index_sequence<0,4,2>() );
+
+         const std::vector<size_t> indices{ 2, 1 };
+         auto cs2 = blaze::columns( cs1, indices );
+
+         if( cs2.rows() != tmat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != tmat_(0,2) || cs2(0,1) != tmat_(0,4) ||
+             cs2(1,0) != tmat_(1,2) || cs2(1,1) != tmat_(1,4) ||
+             cs2(2,0) != tmat_(2,2) || cs2(2,1) != tmat_(2,4) ||
+             cs2(3,0) != tmat_(3,2) || cs2(3,1) != tmat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a column selection on an explicit column selection
+      {
+         auto cs1 = blaze::columns( tmat_, { 0, 4, 2 } );
+
+         const std::vector<size_t> indices{ 2, 1 };
+         auto cs2 = blaze::columns( cs1, indices );
+
+         if( cs2.rows() != tmat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != tmat_(0,2) || cs2(0,1) != tmat_(0,4) ||
+             cs2(1,0) != tmat_(1,2) || cs2(1,1) != tmat_(1,4) ||
+             cs2(2,0) != tmat_(2,2) || cs2(2,1) != tmat_(2,4) ||
+             cs2(3,0) != tmat_(3,2) || cs2(3,1) != tmat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a column selection on an implicit column selection
+      {
+         const std::array<size_t,3UL> indices1{ 0, 4, 2 };
+         auto cs1 = blaze::columns( tmat_, [indices1]( size_t i ){ return indices1[i]; }, 3UL );
+
+         const std::vector<size_t> indices2{ 2, 1 };
+         auto cs2 = blaze::columns( cs1, indices2 );
+
+         if( cs2.rows() != tmat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != tmat_(0,2) || cs2(0,1) != tmat_(0,4) ||
+             cs2(1,0) != tmat_(1,2) || cs2(1,1) != tmat_(1,4) ||
+             cs2(2,0) != tmat_(2,2) || cs2(2,1) != tmat_(2,4) ||
+             cs2(3,0) != tmat_(3,2) || cs2(3,1) != tmat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major setup via std::array
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Columns constructor (std::array)";
+
+      initialize();
+
+      // Setup of a regular column selection
+      {
+         const std::array<size_t,3UL> indices{ 0, 4, 2 };
+         auto cs = blaze::columns( tmat_, indices );
+
+         if( cs.rows() != tmat_.rows() || cs.columns() != 3UL ||
+             cs(0,0) != tmat_(0,0) || cs(0,1) != tmat_(0,4) || cs(0,2) != tmat_(0,2) ||
+             cs(1,0) != tmat_(1,0) || cs(1,1) != tmat_(1,4) || cs(1,2) != tmat_(1,2) ||
+             cs(2,0) != tmat_(2,0) || cs(2,1) != tmat_(2,4) || cs(2,2) != tmat_(2,2) ||
+             cs(3,0) != tmat_(3,0) || cs(3,1) != tmat_(3,4) || cs(3,2) != tmat_(3,2) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds column selection
+      try {
+         std::array<size_t,1UL> indices{ 5 };
+         auto cs = blaze::columns( tmat_, indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds column selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << cs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of a column selection on a compile-time column selection
+      {
+         auto cs1 = blaze::columns( tmat_, index_sequence<0,4,2>() );
+
+         const std::array<size_t,2UL> indices{ 2, 1 };
+         auto cs2 = blaze::columns( cs1, indices );
+
+         if( cs2.rows() != tmat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != tmat_(0,2) || cs2(0,1) != tmat_(0,4) ||
+             cs2(1,0) != tmat_(1,2) || cs2(1,1) != tmat_(1,4) ||
+             cs2(2,0) != tmat_(2,2) || cs2(2,1) != tmat_(2,4) ||
+             cs2(3,0) != tmat_(3,2) || cs2(3,1) != tmat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a column selection on an explicit column selection
+      {
+         auto cs1 = blaze::columns( tmat_, { 0, 4, 2 } );
+
+         const std::array<size_t,2UL> indices{ 2, 1 };
+         auto cs2 = blaze::columns( cs1, indices );
+
+         if( cs2.rows() != tmat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != tmat_(0,2) || cs2(0,1) != tmat_(0,4) ||
+             cs2(1,0) != tmat_(1,2) || cs2(1,1) != tmat_(1,4) ||
+             cs2(2,0) != tmat_(2,2) || cs2(2,1) != tmat_(2,4) ||
+             cs2(3,0) != tmat_(3,2) || cs2(3,1) != tmat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a column selection on an implicit column selection
+      {
+         const std::array<size_t,3UL> indices1{ 0, 4, 2 };
+         auto cs1 = blaze::columns( tmat_, [indices1]( size_t i ){ return indices1[i]; }, 3UL );
+
+         const std::array<size_t,2UL> indices{ 2, 1 };
+         auto cs2 = blaze::columns( cs1, indices );
+
+         if( cs2.rows() != tmat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != tmat_(0,2) || cs2(0,1) != tmat_(0,4) ||
+             cs2(1,0) != tmat_(1,2) || cs2(1,1) != tmat_(1,4) ||
+             cs2(2,0) != tmat_(2,2) || cs2(2,1) != tmat_(2,4) ||
+             cs2(3,0) != tmat_(3,2) || cs2(3,1) != tmat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major setup via lambda expression
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Columns constructor (lambda expression)";
+
+      initialize();
+
+      // Setup of empty column selection
+      {
+         auto cs = blaze::columns( tmat_, []( size_t ){ return 0UL; }, 0UL );
+
+         if( cs.rows() != tmat_.rows() || cs.columns() != 0UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of empty column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a regular column selection
+      {
+         const std::array<size_t,3UL> indices{ 0, 4, 2 };
+         auto cs = blaze::columns( tmat_, [indices]( size_t i ){ return indices[i]; }, 3UL );
+
+         if( cs.rows() != tmat_.rows() || cs.columns() != 3UL ||
+             cs(0,0) != tmat_(0,0) || cs(0,1) != tmat_(0,4) || cs(0,2) != tmat_(0,2) ||
+             cs(1,0) != tmat_(1,0) || cs(1,1) != tmat_(1,4) || cs(1,2) != tmat_(1,2) ||
+             cs(2,0) != tmat_(2,0) || cs(2,1) != tmat_(2,4) || cs(2,2) != tmat_(2,2) ||
+             cs(3,0) != tmat_(3,0) || cs(3,1) != tmat_(3,4) || cs(3,2) != tmat_(3,2) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Trying to setup an out-of-bounds column selection
+      try {
+         auto cs = blaze::columns( tmat_, []( size_t ){ return 5UL; }, 1UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds column selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << cs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      // Setup of a column selection on a compile-time column selection
+      {
+         auto cs1 = blaze::columns( tmat_, index_sequence<0,4,2>() );
+
+         const std::array<size_t,2UL> indices{ 2, 1 };
+         auto cs2 = blaze::columns( cs1, [indices]( size_t i ){ return indices[i]; }, 2UL );
+
+         if( cs2.rows() != tmat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != tmat_(0,2) || cs2(0,1) != tmat_(0,4) ||
+             cs2(1,0) != tmat_(1,2) || cs2(1,1) != tmat_(1,4) ||
+             cs2(2,0) != tmat_(2,2) || cs2(2,1) != tmat_(2,4) ||
+             cs2(3,0) != tmat_(3,2) || cs2(3,1) != tmat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a column selection on an explicit column selection
+      {
+         auto cs1 = blaze::columns( tmat_, { 0, 4, 2 } );
+
+         const std::array<size_t,2UL> indices{ 2, 1 };
+         auto cs2 = blaze::columns( cs1, [indices]( size_t i ){ return indices[i]; }, 2UL );
+
+         if( cs2.rows() != tmat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != tmat_(0,2) || cs2(0,1) != tmat_(0,4) ||
+             cs2(1,0) != tmat_(1,2) || cs2(1,1) != tmat_(1,4) ||
+             cs2(2,0) != tmat_(2,2) || cs2(2,1) != tmat_(2,4) ||
+             cs2(3,0) != tmat_(3,2) || cs2(3,1) != tmat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Setup of a column selection on an implicit column selection
+      {
+         const std::array<size_t,3UL> indices1{ 0, 4, 2 };
+         auto cs1 = blaze::columns( tmat_, [indices1]( size_t i ){ return indices1[i]; }, 3UL );
+
+         const std::array<size_t,2UL> indices2{ 2, 1 };
+         auto cs2 = blaze::columns( cs1, [indices2]( size_t i ){ return indices2[i]; }, 2UL );
+
+         if( cs2.rows() != tmat_.rows() || cs2.columns() != 2UL ||
+             cs2(0,0) != tmat_(0,2) || cs2(0,1) != tmat_(0,4) ||
+             cs2(1,0) != tmat_(1,2) || cs2(1,1) != tmat_(1,4) ||
+             cs2(2,0) != tmat_(2,2) || cs2(2,1) != tmat_(2,4) ||
+             cs2(3,0) != tmat_(3,2) || cs2(3,1) != tmat_(3,4) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of column selection failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major setup of random in-bounds element selection
+   //=====================================================================================
+
+   {
+      test_ = "Column-major Columns constructor (stress test)";
+
+      initialize();
+
       for( size_t rep=0UL; rep<100UL; ++rep )
       {
          blaze::DynamicVector<size_t> indices( blaze::rand<size_t>( 1UL, 20UL ) );
          randomize( indices, 0UL, tmat_.rows()-1UL );
-         OCT cs = blaze::columns( tmat_, indices.data(), indices.size() );
+         auto cs = blaze::columns( tmat_, indices.data(), indices.size() );
 
          for( size_t i=0UL; i<cs.rows(); ++i ) {
             for( size_t j=0UL; j<cs.columns(); ++j ) {
@@ -206,19 +1299,6 @@ void SparseGeneralTest::testConstructors()
             }
          }
       }
-
-      // Trying to setup an out-of-bounds column selection
-      try {
-         OCT cs = blaze::columns( tmat_, { 5 } );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Setup of out-of-bounds column selection succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << cs << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************
@@ -244,7 +1324,7 @@ void SparseGeneralTest::testAssignment()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 1UL } );
       cs = { { 11, 0 }, { 0, 13 }, { 0, 14 }, { 12, 0 } };
 
       checkRows    ( cs  ,  4UL );
@@ -289,7 +1369,7 @@ void SparseGeneralTest::testAssignment()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 1UL } );
       cs = { { 11 }, { 0, 13 }, { 0, 14 }, { 12 } };
 
       checkRows    ( cs  ,  4UL );
@@ -344,7 +1424,7 @@ void SparseGeneralTest::testAssignment()
               { 0, 12, 0, 15, 0 },
               { 0,  0, 0, 16, 0 } };
 
-      CT cs = blaze::columns( mat, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat, { 3UL, 1UL } );
       cs = blaze::columns( mat_, { 3UL, 1UL } );
 
       checkRows    ( cs , 4UL );
@@ -389,7 +1469,7 @@ void SparseGeneralTest::testAssignment()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 4UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 4UL } );
       cs = blaze::columns( mat_, { 2UL, 3UL } );
 
       checkRows    ( cs  , 4UL );
@@ -439,7 +1519,7 @@ void SparseGeneralTest::testAssignment()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 1UL } );
 
       const blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 11,  0 },
                                                          {  0, 13 },
@@ -490,7 +1570,7 @@ void SparseGeneralTest::testAssignment()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 1UL } );
 
       const blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { 11,  0 },
                                                               {  0, 13 },
@@ -546,7 +1626,7 @@ void SparseGeneralTest::testAssignment()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 1UL } );
 
       const blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 11,  0 },
                                                               {  0, 13 },
@@ -597,7 +1677,7 @@ void SparseGeneralTest::testAssignment()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 1UL } );
 
       const blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 11,  0 },
                                                                  {  0, 13 },
@@ -653,7 +1733,7 @@ void SparseGeneralTest::testAssignment()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 1UL } );
       cs = { { 11, 0 }, { 0, 13 }, { 0, 14 }, { 12, 0 } };
 
       checkRows    ( cs  ,  4UL );
@@ -698,7 +1778,7 @@ void SparseGeneralTest::testAssignment()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 1UL } );
       cs = { { 11 }, { 0, 13 }, { 0, 14 }, { 12 } };
 
       checkRows    ( cs   ,  4UL );
@@ -753,7 +1833,7 @@ void SparseGeneralTest::testAssignment()
                { 0, 12, 0, 15, 0 },
                { 0,  0, 0, 16, 0 } };
 
-      OCT cs = blaze::columns( mat, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat, { 3UL, 1UL } );
       cs = blaze::columns( tmat_, { 3UL, 1UL } );
 
       checkRows    ( cs , 4UL );
@@ -798,7 +1878,7 @@ void SparseGeneralTest::testAssignment()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 4UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 4UL } );
       cs = blaze::columns( tmat_, { 2UL, 3UL } );
 
       checkRows    ( cs   , 4UL );
@@ -848,7 +1928,7 @@ void SparseGeneralTest::testAssignment()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 1UL } );
 
       const blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 11,  0 },
                                                            {  0, 13 },
@@ -899,7 +1979,7 @@ void SparseGeneralTest::testAssignment()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 1UL } );
 
       const blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { 11,  0 },
                                                               {  0, 13 },
@@ -955,7 +2035,7 @@ void SparseGeneralTest::testAssignment()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 1UL } );
 
       const blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 11,  0 },
                                                               {  0, 13 },
@@ -1006,7 +2086,7 @@ void SparseGeneralTest::testAssignment()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 1UL } );
 
       const blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 11,  0 },
                                                                  {  0, 13 },
@@ -1080,7 +2160,7 @@ void SparseGeneralTest::testAddAssign()
               { 0, 12, 0, 15, 0 },
               { 0,  0, 0, 16, 0 } };
 
-      CT cs = blaze::columns( mat, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat, { 3UL, 1UL } );
       cs += blaze::columns( mat_, { 3UL, 1UL } );
 
       checkRows    ( cs , 4UL );
@@ -1125,7 +2205,7 @@ void SparseGeneralTest::testAddAssign()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 4UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 4UL } );
       cs += blaze::columns( mat_, { 2UL, 3UL } );
 
       checkRows    ( cs  ,  4UL );
@@ -1175,7 +2255,7 @@ void SparseGeneralTest::testAddAssign()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 1UL } );
 
       const blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 11,  0 },
                                                            {  0, 13 },
@@ -1226,7 +2306,7 @@ void SparseGeneralTest::testAddAssign()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 1UL } );
 
       const blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { 11,  0 },
                                                               {  0, 13 },
@@ -1282,7 +2362,7 @@ void SparseGeneralTest::testAddAssign()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 1UL } );
 
       const blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 11,  0 },
                                                               {  0, 13 },
@@ -1333,7 +2413,7 @@ void SparseGeneralTest::testAddAssign()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 1UL } );
 
       const blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 11,  0 },
                                                                  {  0, 13 },
@@ -1394,7 +2474,7 @@ void SparseGeneralTest::testAddAssign()
                { 0, 12, 0, 15, 0 },
                { 0,  0, 0, 16, 0 } };
 
-      OCT cs = blaze::columns( mat, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat, { 3UL, 1UL } );
       cs += blaze::columns( tmat_, { 3UL, 1UL } );
 
       checkRows    ( cs , 4UL );
@@ -1439,7 +2519,7 @@ void SparseGeneralTest::testAddAssign()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 4UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 4UL } );
       cs += blaze::columns( tmat_, { 2UL, 3UL } );
 
       checkRows    ( cs   ,  4UL );
@@ -1489,7 +2569,7 @@ void SparseGeneralTest::testAddAssign()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 1UL } );
 
       const blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 11,  0 },
                                                            {  0, 13 },
@@ -1540,7 +2620,7 @@ void SparseGeneralTest::testAddAssign()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 1UL } );
 
       const blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { 11,  0 },
                                                               {  0, 13 },
@@ -1596,7 +2676,7 @@ void SparseGeneralTest::testAddAssign()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 1UL } );
 
       const blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 11,  0 },
                                                               {  0, 13 },
@@ -1647,7 +2727,7 @@ void SparseGeneralTest::testAddAssign()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 1UL } );
 
       const blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 11,  0 },
                                                                  {  0, 13 },
@@ -1721,7 +2801,7 @@ void SparseGeneralTest::testSubAssign()
               { 0, 12, 0, 15, 0 },
               { 0,  0, 0, 16, 0 } };
 
-      CT cs = blaze::columns( mat, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat, { 3UL, 1UL } );
       cs -= blaze::columns( mat_, { 3UL, 1UL } );
 
       checkRows    ( cs , 4UL );
@@ -1766,7 +2846,7 @@ void SparseGeneralTest::testSubAssign()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 4UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 4UL } );
       cs -= blaze::columns( mat_, { 2UL, 3UL } );
 
       checkRows    ( cs  , 4UL );
@@ -1816,7 +2896,7 @@ void SparseGeneralTest::testSubAssign()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 1UL } );
 
       const blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 11,  0 },
                                                            {  0, 13 },
@@ -1867,7 +2947,7 @@ void SparseGeneralTest::testSubAssign()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 1UL } );
 
       const blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { 11,  0 },
                                                               {  0, 13 },
@@ -1923,7 +3003,7 @@ void SparseGeneralTest::testSubAssign()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 1UL } );
 
       const blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 11,  0 },
                                                               {  0, 13 },
@@ -1974,7 +3054,7 @@ void SparseGeneralTest::testSubAssign()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 1UL } );
 
       const blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 11,  0 },
                                                                  {  0, 13 },
@@ -2035,7 +3115,7 @@ void SparseGeneralTest::testSubAssign()
                { 0, 12, 0, 15, 0 },
                { 0,  0, 0, 16, 0 } };
 
-      OCT cs = blaze::columns( mat, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat, { 3UL, 1UL } );
       cs -= blaze::columns( mat_, { 3UL, 1UL } );
 
       checkRows    ( cs , 4UL );
@@ -2080,7 +3160,7 @@ void SparseGeneralTest::testSubAssign()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 4UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 4UL } );
       cs -= blaze::columns( tmat_, { 2UL, 3UL } );
 
       checkRows    ( cs   , 4UL );
@@ -2130,7 +3210,7 @@ void SparseGeneralTest::testSubAssign()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 1UL } );
 
       const blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 11,  0 },
                                                            {  0, 13 },
@@ -2181,7 +3261,7 @@ void SparseGeneralTest::testSubAssign()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 1UL } );
 
       const blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { 11,  0 },
                                                               {  0, 13 },
@@ -2237,7 +3317,7 @@ void SparseGeneralTest::testSubAssign()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 1UL } );
 
       const blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 11,  0 },
                                                               {  0, 13 },
@@ -2288,7 +3368,7 @@ void SparseGeneralTest::testSubAssign()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 1UL } );
 
       const blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 11,  0 },
                                                                  {  0, 13 },
@@ -2362,7 +3442,7 @@ void SparseGeneralTest::testSchurAssign()
               { 0, 3, 0, 2, 0 },
               { 0, 0, 0, 1, 0 } };
 
-      CT cs = blaze::columns( mat, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat, { 3UL, 1UL } );
       cs %= blaze::columns( mat_, { 3UL, 1UL } );
 
       checkRows    ( cs , 4UL );
@@ -2407,7 +3487,7 @@ void SparseGeneralTest::testSchurAssign()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 4UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 4UL } );
       cs %= blaze::columns( mat_, { 2UL, 3UL } );
 
       checkRows    ( cs  , 4UL );
@@ -2457,7 +3537,7 @@ void SparseGeneralTest::testSchurAssign()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 1UL } );
 
       const blaze::DynamicMatrix<int,blaze::rowMajor> mat{ {  0, 0 },
                                                            { -1, 2 },
@@ -2508,7 +3588,7 @@ void SparseGeneralTest::testSchurAssign()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 1UL } );
 
       const blaze::DynamicMatrix<int,blaze::columnMajor> mat{ {  0, 0 },
                                                               { -1, 2 },
@@ -2564,7 +3644,7 @@ void SparseGeneralTest::testSchurAssign()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 1UL } );
 
       const blaze::CompressedMatrix<int,blaze::rowMajor> mat{ {  0, 0 },
                                                               { -1, 2 },
@@ -2615,7 +3695,7 @@ void SparseGeneralTest::testSchurAssign()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 3UL, 1UL } );
 
       const blaze::CompressedMatrix<int,blaze::columnMajor> mat{ {  0, 0 },
                                                                  { -1, 2 },
@@ -2676,7 +3756,7 @@ void SparseGeneralTest::testSchurAssign()
                { 0, 3, 0, 2, 0 },
                { 0, 0, 0, 1, 0 } };
 
-      OCT cs = blaze::columns( mat, { 3UL, 1UL } );
+      auto cs = blaze::columns( mat, { 3UL, 1UL } );
       cs %= blaze::columns( tmat_, { 3UL, 1UL } );
 
       checkRows    ( cs , 4UL );
@@ -2721,7 +3801,7 @@ void SparseGeneralTest::testSchurAssign()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 4UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 4UL } );
       cs %= blaze::columns( tmat_, { 2UL, 3UL } );
 
       checkRows    ( cs   , 4UL );
@@ -2771,7 +3851,7 @@ void SparseGeneralTest::testSchurAssign()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 1UL } );
 
       const blaze::DynamicMatrix<int,blaze::rowMajor> mat{ {  0, 0 },
                                                            { -1, 2 },
@@ -2822,7 +3902,7 @@ void SparseGeneralTest::testSchurAssign()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 1UL } );
 
       const blaze::DynamicMatrix<int,blaze::columnMajor> mat{ {  0, 0 },
                                                               { -1, 2 },
@@ -2878,7 +3958,7 @@ void SparseGeneralTest::testSchurAssign()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 1UL } );
 
       const blaze::CompressedMatrix<int,blaze::rowMajor> mat{ {  0, 0 },
                                                               { -1, 2 },
@@ -2929,7 +4009,7 @@ void SparseGeneralTest::testSchurAssign()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 3UL, 1UL } );
 
       const blaze::CompressedMatrix<int,blaze::columnMajor> mat{ {  0, 0 },
                                                                  { -1, 2 },
@@ -3003,7 +4083,7 @@ void SparseGeneralTest::testMultAssign()
               { 0,  0, -3,  5,  9 },
               { 0,  0,  0, -6, 10 } };
 
-      CT cs = blaze::columns( mat, { 2UL, 0UL, 3UL, 1UL } );
+      auto cs = blaze::columns( mat, { 2UL, 0UL, 3UL, 1UL } );
       cs *= blaze::columns( mat_, { 1UL, 2UL, 2UL, 1UL } );
 
       checkRows    ( cs ,  4UL );
@@ -3051,7 +4131,7 @@ void SparseGeneralTest::testMultAssign()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 2UL, 0UL, 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 2UL, 0UL, 3UL, 1UL } );
       cs *= blaze::columns( mat_, { 1UL, 2UL, 2UL, 1UL } );
 
       checkRows    ( cs  ,  4UL );
@@ -3104,7 +4184,7 @@ void SparseGeneralTest::testMultAssign()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 2UL, 0UL, 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 2UL, 0UL, 3UL, 1UL } );
 
       const blaze::DynamicMatrix<int,blaze::rowMajor> mat{ {  0,  1,  0,  0 },
                                                            { -2,  0, -3,  0 },
@@ -3158,7 +4238,7 @@ void SparseGeneralTest::testMultAssign()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 2UL, 0UL, 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 2UL, 0UL, 3UL, 1UL } );
 
       const blaze::DynamicMatrix<int,blaze::columnMajor> mat{ {  0,  1,  0,  0 },
                                                               { -2,  0, -3,  0 },
@@ -3217,7 +4297,7 @@ void SparseGeneralTest::testMultAssign()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 2UL, 0UL, 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 2UL, 0UL, 3UL, 1UL } );
 
       const blaze::CompressedMatrix<int,blaze::rowMajor> mat{ {  0,  1,  0,  0 },
                                                               { -2,  0, -3,  0 },
@@ -3271,7 +4351,7 @@ void SparseGeneralTest::testMultAssign()
 
       initialize();
 
-      CT cs = blaze::columns( mat_, { 2UL, 0UL, 3UL, 1UL } );
+      auto cs = blaze::columns( mat_, { 2UL, 0UL, 3UL, 1UL } );
 
       const blaze::CompressedMatrix<int,blaze::columnMajor> mat{ {  0,  1,  0,  0 },
                                                                  { -2,  0, -3,  0 },
@@ -3335,7 +4415,7 @@ void SparseGeneralTest::testMultAssign()
                { 0,  0, -3,  5,  9 },
                { 0,  0,  0, -6, 10 } };
 
-      OCT cs = blaze::columns( mat, { 2UL, 0UL, 3UL, 1UL } );
+      auto cs = blaze::columns( mat, { 2UL, 0UL, 3UL, 1UL } );
       cs *= blaze::columns( tmat_, { 1UL, 2UL, 2UL, 1UL } );
 
       checkRows    ( cs ,  4UL );
@@ -3383,7 +4463,7 @@ void SparseGeneralTest::testMultAssign()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 2UL, 0UL, 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 2UL, 0UL, 3UL, 1UL } );
       cs *= blaze::columns( tmat_, { 1UL, 2UL, 2UL, 1UL } );
 
       checkRows    ( cs   ,  4UL );
@@ -3436,7 +4516,7 @@ void SparseGeneralTest::testMultAssign()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 2UL, 0UL, 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 2UL, 0UL, 3UL, 1UL } );
 
       const blaze::DynamicMatrix<int,blaze::rowMajor> mat{ {  0,  1,  0,  0 },
                                                            { -2,  0, -3,  0 },
@@ -3490,7 +4570,7 @@ void SparseGeneralTest::testMultAssign()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 2UL, 0UL, 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 2UL, 0UL, 3UL, 1UL } );
 
       const blaze::DynamicMatrix<int,blaze::columnMajor> mat{ {  0,  1,  0,  0 },
                                                               { -2,  0, -3,  0 },
@@ -3549,7 +4629,7 @@ void SparseGeneralTest::testMultAssign()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 2UL, 0UL, 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 2UL, 0UL, 3UL, 1UL } );
 
       const blaze::CompressedMatrix<int,blaze::rowMajor> mat{ {  0,  1,  0,  0 },
                                                               { -2,  0, -3,  0 },
@@ -3603,7 +4683,7 @@ void SparseGeneralTest::testMultAssign()
 
       initialize();
 
-      OCT cs = blaze::columns( tmat_, { 2UL, 0UL, 3UL, 1UL } );
+      auto cs = blaze::columns( tmat_, { 2UL, 0UL, 3UL, 1UL } );
 
       const blaze::CompressedMatrix<int,blaze::columnMajor> mat{ {  0,  1,  0,  0 },
                                                                  { -2,  0, -3,  0 },
