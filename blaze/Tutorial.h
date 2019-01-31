@@ -9639,10 +9639,28 @@
    \endcode
 
 // Note that it is possible to alias the rows of the underlying matrix in any order. Also note
-// that it is possible to use the same index multiple times. The \c rows() function returns an
-// expression representing the view on the selected rows. The type of this expression depends
-// on the given arguments, primarily the type of the matrix and the compile time arguments. If
-// the type is required, it can be determined via the \c decltype specifier:
+// that it is possible to use the same index multiple times.
+//
+// Alternatively it is possible to pass a callable such as a lambda or functor that produces the
+// indices:
+
+   \code
+   blaze::DynamicMatrix<double,blaze::rowMajor> A( 9UL, 18UL );
+
+   // Selecting all even rows of the matrix, i.e. selecting the rows 0, 2, 4, 6, and 8
+   auto rs1 = rows( A, []( size_t i ){ return i*2UL; }, 5UL );
+
+   // Selecting all odd rows of the matrix, i.e. selecting the rows 1, 3, 5, and 7
+   auto rs2 = rows( x, []( size_t i ){ return i*2UL+1UL; }, 4UL );
+
+   // Reversing the rows of the matrix, i.e. selecting the rows 8, 7, 6, 5, 4, 3, 2, 1, and 0
+   auto rs3 = rows( v, [max=A.rows()-1UL]( size_t i ){ return max-i; }, 9UL );
+   \endcode
+
+// The \c rows() function returns an expression representing the view on the selected rows. The
+// type of this expression depends on the given arguments, primarily the type of the matrix and
+// the compile time arguments. If the type is required, it can be determined via the \c decltype
+// specifier:
 
    \code
    using MatrixType = blaze::DynamicMatrix<int>;
