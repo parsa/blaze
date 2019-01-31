@@ -46,6 +46,7 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/RelaxationFlag.h>
+#include <blaze/math/views/Elements.h>
 
 
 namespace blaze {
@@ -94,6 +95,9 @@ bool isIdentity( const Matrix<MT,SO>& m );
 
 template< typename MT, bool SO >
 auto trace( const Matrix<MT,SO>& m );
+
+template< bool RF, typename MT, bool SO >
+decltype(auto) reverse( const Matrix<MT,SO>& m );
 //@}
 //*************************************************************************************************
 
@@ -666,6 +670,91 @@ inline auto trace( const Matrix<MT,SO>& m )
    }
 
    return sum( diagonal( ~m ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c reverse() function for reversing the rows.
+// \ingroup matrix
+//
+// \param m The matrix to be reversed.
+// \return The reversed matrix.
+*/
+template< bool RF
+        , typename MT
+        , bool SO
+        , EnableIf_t< RF == rowwise >* = nullptr >
+inline decltype(auto) reverse_backend( const Matrix<MT,SO>& m )
+{
+   return rows( ~m, [max=(~m).rows()-1UL]( size_t i ){ return max - i; }, (~m).rows() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c reverse() function for reversing the columns.
+// \ingroup matrix
+//
+// \param m The matrix to be reversed.
+// \return The reversed matrix.
+*/
+template< bool RF
+        , typename MT
+        , bool SO
+        , EnableIf_t< RF == columnwise >* = nullptr >
+inline decltype(auto) reverse_backend( const Matrix<MT,SO>& m )
+{
+   return columns( ~m, [max=(~m).columns()-1UL]( size_t i ){ return max - i; }, (~m).columns() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Reverse the rows or columns of a matrix.
+// \ingroup matrix
+//
+// \param m The matrix to be reversed.
+// \return The reversed matrix.
+//
+// This function reverses the rows or matrices of a dense or sparse matrix. In case the compile
+// time flag \a RF is set to \a blaze::rowwise, the rows of the matrix are reversed, in case \a RF
+// is set to \a blaze::columnwise, the columns of the matrix are reversed. The following examples
+// gives an impression of both alternatives:
+
+   \code
+   blaze::DynamicMatrix<int,rowMajor> A{ { 1, 0, 2, 3 },
+                                         { 2, 4, 0, 1 },
+                                         { 0, 3, 1, 0 } };
+   blaze::DynamicMatrix<int> B;
+
+   // Reversing the rows result in the matrix
+   //
+   //    ( 0 3 1 0 )
+   //    ( 2 4 0 1 )
+   //    ( 1 0 2 3 )
+   //
+   B = reverse<rowwise>( A );
+
+   // Reversing the columns result in the matrix
+   //
+   //    ( 3 2 0 1 )
+   //    ( 1 0 4 2 )
+   //    ( 0 1 3 0 )
+   //
+   B = reverse<columnwise>( A );
+   \endcode
+*/
+template< bool RF      // Reverse flag
+        , typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+inline decltype(auto) reverse( const Matrix<MT,SO>& m )
+{
+   return reverse_backend<RF>( ~m );
 }
 //*************************************************************************************************
 
