@@ -68,10 +68,10 @@ namespace blaze {
 //
 // This specialization of the Rand class randomizes dense column selections.
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 class Rand< Columns<MT,SO,true,SF,CCAs...> >
 {
  public:
@@ -97,11 +97,11 @@ class Rand< Columns<MT,SO,true,SF,CCAs...> >
 // \param columns The column selection to be randomized.
 // \return void
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename CT >     // Type of the column selection
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename CT >       // Type of the column selection
 inline void Rand< Columns<MT,SO,true,SF,CCAs...> >::randomize( CT&& columns ) const
 {
    using blaze::randomize;
@@ -139,12 +139,12 @@ inline void Rand< Columns<MT,SO,true,SF,CCAs...> >::randomize( CT&& columns ) co
 // \param max The largest possible value for a matrix element.
 // \return void
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename CT       // Type of the column selection
-        , typename Arg >    // Min/max argument type
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename CT         // Type of the column selection
+        , typename Arg >      // Min/max argument type
 inline void Rand< Columns<MT,SO,true,SF,CCAs...> >::randomize( CT&& columns,
                                                                const Arg& min, const Arg& max ) const
 {
@@ -189,10 +189,10 @@ inline void Rand< Columns<MT,SO,true,SF,CCAs...> >::randomize( CT&& columns,
 //
 // This specialization of the Rand class randomizes sparse column selections.
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 class Rand< Columns<MT,SO,false,SF,CCAs...> >
 {
  public:
@@ -224,11 +224,11 @@ class Rand< Columns<MT,SO,false,SF,CCAs...> >
 // \param columns The column selection to be randomized.
 // \return void
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename CT >     // Type of the column selection
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename CT >       // Type of the column selection
 inline void Rand< Columns<MT,SO,false,SF,CCAs...> >::randomize( CT&& columns ) const
 {
    using ColumnsType = RemoveReference_t<CT>;
@@ -264,11 +264,11 @@ inline void Rand< Columns<MT,SO,false,SF,CCAs...> >::randomize( CT&& columns ) c
 // \return void
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename CT >     // Type of the column selection
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename CT >       // Type of the column selection
 inline void Rand< Columns<MT,SO,false,SF,CCAs...> >::randomize( CT&& columns, size_t nonzeros ) const
 {
    using ColumnsType = RemoveReference_t<CT>;
@@ -306,12 +306,12 @@ inline void Rand< Columns<MT,SO,false,SF,CCAs...> >::randomize( CT&& columns, si
 // \param max The largest possible value for a matrix element.
 // \return void
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename CT       // Type of the column selection
-        , typename Arg >    // Min/max argument type
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename CT         // Type of the column selection
+        , typename Arg >      // Min/max argument type
 inline void Rand< Columns<MT,SO,false,SF,CCAs...> >::randomize( CT&& columns,
                                                                 const Arg& min, const Arg& max ) const
 {
@@ -350,12 +350,12 @@ inline void Rand< Columns<MT,SO,false,SF,CCAs...> >::randomize( CT&& columns,
 // \return void
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
-template< typename CT       // Type of the column selection
-        , typename Arg >    // Min/max argument type
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+template< typename CT         // Type of the column selection
+        , typename Arg >      // Min/max argument type
 inline void Rand< Columns<MT,SO,false,SF,CCAs...> >::randomize( CT&& columns, size_t nonzeros,
                                                                 const Arg& min, const Arg& max ) const
 {

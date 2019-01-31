@@ -98,7 +98,7 @@ struct IsColumns
 /*!\brief Specialization of the IsColumns type trait for 'Columns'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool SO, bool DF, bool SF, size_t... CRAs >
+template< typename MT, bool SO, bool DF, bool SF, typename... CRAs >
 struct IsColumns< Columns<MT,SO,DF,SF,CRAs...> >
    : public TrueType
 {};
@@ -111,7 +111,7 @@ struct IsColumns< Columns<MT,SO,DF,SF,CRAs...> >
 /*!\brief Specialization of the IsColumns type trait for 'const Columns'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool SO, bool DF, bool SF, size_t... CRAs >
+template< typename MT, bool SO, bool DF, bool SF, typename... CRAs >
 struct IsColumns< const Columns<MT,SO,DF,SF,CRAs...> >
    : public TrueType
 {};
@@ -124,7 +124,7 @@ struct IsColumns< const Columns<MT,SO,DF,SF,CRAs...> >
 /*!\brief Specialization of the IsColumns type trait for 'volatile Columns'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool SO, bool DF, bool SF, size_t... CRAs >
+template< typename MT, bool SO, bool DF, bool SF, typename... CRAs >
 struct IsColumns< volatile Columns<MT,SO,DF,SF,CRAs...> >
    : public TrueType
 {};
@@ -137,7 +137,7 @@ struct IsColumns< volatile Columns<MT,SO,DF,SF,CRAs...> >
 /*!\brief Specialization of the IsColumns type trait for 'const volatile Columns'.
 // \ingroup math_type_traits
 */
-template< typename MT, bool SO, bool DF, bool SF, size_t... CRAs >
+template< typename MT, bool SO, bool DF, bool SF, typename... CRAs >
 struct IsColumns< const volatile Columns<MT,SO,DF,SF,CRAs...> >
    : public TrueType
 {};

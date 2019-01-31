@@ -66,9 +66,38 @@ namespace blaze {
 // of compile time column arguments. The basic implementation of ColumnsData adapts the class
 // template to the requirements of multiple compile time column arguments.
 */
-template< size_t... CCAs >  // Compile time column arguments
+template< typename... CCAs >  // Compile time column arguments
 struct ColumnsData
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  CLASS TEMPLATE SPECIALIZATION FOR INDEX SEQUENCES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the ColumnsData class template for index sequences.
+// \ingroup columns
+//
+// This specialization of ColumnsData adapts the class template to the requirements of a non-zero
+// number of compile time indices.
+*/
+template< size_t I        // First column index
+        , size_t... Is >  // Remaining column indices
+struct ColumnsData< index_sequence<I,Is...> >
 {
+ protected:
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = sizeof...( Is ) + 1UL;  //! Number of compile time indices.
+   //**********************************************************************************************
+
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
@@ -105,13 +134,13 @@ struct ColumnsData
 
  private:
    //**Type definitions****************************************************************************
-   using Indices = std::array<size_t,sizeof...(CCAs)>;  //!< Type of the container for column indices.
+   using Indices = std::array<size_t,N>;  //!< Type of the container for column indices.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   static constexpr Indices indices_{ { CCAs... } };  //!< The indices of the columns in the matrix.
+   static constexpr Indices indices_{ { I, Is... } };  //!< The indices of the columns in the matrix.
    //@}
    //**********************************************************************************************
 };
@@ -123,8 +152,10 @@ struct ColumnsData
 /*! \cond BLAZE_INTERNAL */
 #if BLAZE_CPP14_MODE
 // Definition and initialization of the static member variables
-template< size_t... CCAs >  // Compile time column arguments
-constexpr typename ColumnsData<CCAs...>::Indices ColumnsData<CCAs...>::indices_;
+template< size_t I        // First column index
+        , size_t... Is >  // Remaining column indices
+constexpr typename ColumnsData< index_sequence<I,Is...> >::Indices
+   ColumnsData< index_sequence<I,Is...> >::indices_;
 #endif
 /*! \endcond */
 //*************************************************************************************************
@@ -136,9 +167,10 @@ constexpr typename ColumnsData<CCAs...>::Indices ColumnsData<CCAs...>::indices_;
 //
 // \param args The optional column arguments.
 */
-template< size_t... CCAs >    // Compile time column arguments
+template< size_t I            // First column index
+        , size_t... Is >      // Remaining column indices
 template< typename... RCAs >  // Optional column arguments
-inline ColumnsData<CCAs...>::ColumnsData( RCAs... args ) noexcept
+inline ColumnsData< index_sequence<I,Is...> >::ColumnsData( RCAs... args ) noexcept
 {
    UNUSED_PARAMETER( args... );
 }
@@ -152,10 +184,11 @@ inline ColumnsData<CCAs...>::ColumnsData( RCAs... args ) noexcept
 //
 // \return A representation of the indices of the specified columns.
 */
-template< size_t... CCAs >  // Compile time column arguments
-inline constexpr decltype(auto) ColumnsData<CCAs...>::idces() noexcept
+template< size_t I        // First column index
+        , size_t... Is >  // Remaining column indices
+inline constexpr decltype(auto) ColumnsData< index_sequence<I,Is...> >::idces() noexcept
 {
-   return index_sequence<CCAs...>();
+   return index_sequence<I,Is...>();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -168,8 +201,9 @@ inline constexpr decltype(auto) ColumnsData<CCAs...>::idces() noexcept
 // \param i Access index for the column.
 // \return The index of the specified column.
 */
-template< size_t... CCAs >  // Compile time column arguments
-inline constexpr size_t ColumnsData<CCAs...>::idx( size_t i ) noexcept
+template< size_t I        // First column index
+        , size_t... Is >  // Remaining column indices
+inline constexpr size_t ColumnsData< index_sequence<I,Is...> >::idx( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < columns(), "Invalid column access index" );
    return indices_[i];
@@ -184,10 +218,11 @@ inline constexpr size_t ColumnsData<CCAs...>::idx( size_t i ) noexcept
 //
 // \return The number of columns.
 */
-template< size_t... CCAs >  // Compile time column arguments
-inline constexpr size_t ColumnsData<CCAs...>::columns() noexcept
+template< size_t I        // First column index
+        , size_t... Is >  // Remaining column indices
+inline constexpr size_t ColumnsData< index_sequence<I,Is...> >::columns() noexcept
 {
-   return sizeof...( CCAs );
+   return N;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -212,6 +247,11 @@ inline constexpr size_t ColumnsData<CCAs...>::columns() noexcept
 template<>
 struct ColumnsData<>
 {
+ protected:
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = 0UL;  //! Number of compile time indices.
+   //**********************************************************************************************
+
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
@@ -345,7 +385,7 @@ inline size_t ColumnsData<>::columns() const noexcept
 // \param rhs The right-hand side instance for the comparison.
 // \return \a true if the indices of both instances are equal, \a false if not.
 */
-template< size_t... CRAs1, size_t... CRAs2 >
+template< typename... CRAs1, typename... CRAs2 >
 inline constexpr bool
    compareIndices( const ColumnsData<CRAs1...>& lhs, const ColumnsData<CRAs2...>& rhs ) noexcept
 {

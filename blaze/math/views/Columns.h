@@ -148,7 +148,7 @@ inline decltype(auto) columns( Matrix<MT,SO>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = Columns_<MT,I,Is...>;
+   using ReturnType = Columns_< MT, index_sequence<I,Is...> >;
    return ReturnType( ~matrix, args... );
 }
 //*************************************************************************************************
@@ -198,7 +198,7 @@ inline decltype(auto) columns( const Matrix<MT,SO>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const Columns_<const MT,I,Is...>;
+   using ReturnType = const Columns_< const MT, index_sequence<I,Is...> >;
    return ReturnType( ~matrix, args... );
 }
 //*************************************************************************************************
@@ -227,7 +227,7 @@ inline decltype(auto) columns( Matrix<MT,SO>&& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = Columns_<MT,I,Is...>;
+   using ReturnType = Columns_< MT, index_sequence<I,Is...> >;
    return ReturnType( ~matrix, args... );
 }
 //*************************************************************************************************
@@ -370,7 +370,6 @@ inline decltype(auto) columns( Matrix<MT,SO>&& matrix, const T* indices, size_t 
 
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a selection of columns of the given matrix.
 // \ingroup columns
 //
@@ -381,9 +380,31 @@ inline decltype(auto) columns( Matrix<MT,SO>&& matrix, const T* indices, size_t 
 // \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing a selection of columns of the given matrix.
-// In case any column is not properly specified (i.e. if any specified index is greater than or
-// equal to the total number of columns in the given matrix) a \a std::invalid_argument exception
-// is thrown.
+
+   \code
+   using blaze::columnMajor;
+   using blaze::index_sequence;
+
+   blaze::DynamicMatrix<double,columnMajor> D;
+   blaze::CompressedMatrix<double,columnMajor> S;
+   // ... Resizing and initialization
+
+   // Creating a view on the 1st and 3rd column of the dense matrix D
+   auto columns1 = columns( D, index_sequence<1UL,3UL>() );
+
+   // Creating a view on the 4th and 2nd column of the sparse matrix S
+   auto columns2 = columns( S, index_sequence<4UL,2UL>() );
+   \endcode
+
+// By default, the provided column indices are checked at runtime. In case any column is not
+// properly specified (i.e. if any specified index is greater than or equal to the total number
+// of columns in the given matrix) a \a std::invalid_argument exception is thrown. The checks
+// can be skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto columns1 = columns( D, index_sequence<1UL,3UL>(), unchecked );
+   auto columns2 = columns( S, index_sequence<4UL,2UL>(), unchecked );
+   \endcode
 */
 template< typename MT         // Type of the matrix
         , size_t... Is        // Column indices
@@ -396,12 +417,10 @@ inline decltype(auto) columns( MT&& matrix, index_sequence<Is...> indices, RCAs.
 
    return columns<Is...>( std::forward<MT>( matrix ), args... );
 }
-/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a selection of columns of the given matrix.
 // \ingroup columns
 //
@@ -412,9 +431,30 @@ inline decltype(auto) columns( MT&& matrix, index_sequence<Is...> indices, RCAs.
 // \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing a selection of columns of the given matrix.
-// In case any column is not properly specified (i.e. if any specified index is greater than or
-// equal to the total number of columns in the given matrix) a \a std::invalid_argument exception
-// is thrown.
+
+   \code
+   using blaze::columnMajor;
+
+   blaze::DynamicMatrix<double,columnMajor> D;
+   blaze::CompressedMatrix<double,columnMajor> S;
+   // ... Resizing and initialization
+
+   // Creating a view on the 1st and 3rd column of the dense matrix D
+   auto columns1 = columns( D, { 1UL, 3UL } );
+
+   // Creating a view on the 4th and 2nd column of the sparse matrix S
+   auto columns2 = columns( S, { 4UL, 2UL } );
+   \endcode
+
+// By default, the provided column indices are checked at runtime. In case any column is not
+// properly specified (i.e. if any specified index is greater than or equal to the total number
+// of columns in the given matrix) a \a std::invalid_argument exception is thrown. The checks
+// can be skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto columns1 = columns( D, { 1UL, 3UL }, unchecked );
+   auto columns2 = columns( S, { 4UL, 2UL }, unchecked );
+   \endcode
 */
 template< typename MT         // Type of the matrix
         , typename T          // Type of the column indices
@@ -425,12 +465,10 @@ inline decltype(auto) columns( MT&& matrix, initializer_list<T> indices, RCAs...
 
    return columns( std::forward<MT>( matrix ), indices.begin(), indices.size(), args... );
 }
-/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a selection of columns of the given matrix.
 // \ingroup columns
 //
@@ -441,9 +479,32 @@ inline decltype(auto) columns( MT&& matrix, initializer_list<T> indices, RCAs...
 // \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing a selection of columns of the given matrix.
-// In case any column is not properly specified (i.e. if any specified index is greater than or
-// equal to the total number of columns in the given matrix) a \a std::invalid_argument exception
-// is thrown.
+
+   \code
+   using blaze::columnMajor;
+
+   blaze::DynamicMatrix<double,columnMajor> D;
+   blaze::CompressedMatrix<double,columnMajor> S;
+   // ... Resizing and initialization
+
+   // Creating a view on the 1st and 3rd column of the dense matrix D
+   const std::array<size_t,2UL> indices1{ 1UL, 3UL };
+   auto columns1 = columns( D, indices1 );
+
+   // Creating a view on the 4th and 2nd column of the sparse matrix S
+   const std::array<size_t,2UL> indices2{ 4UL, 2UL };
+   auto columns2 = columns( S, indices2 );
+   \endcode
+
+// By default, the provided column indices are checked at runtime. In case any column is not
+// properly specified (i.e. if any specified index is greater than or equal to the total number
+// of columns in the given matrix) a \a std::invalid_argument exception is thrown. The checks
+// can be skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto columns1 = columns( D, indices1, unchecked );
+   auto columns2 = columns( S, indices2, unchecked );
+   \endcode
 */
 template< typename MT         // Type of the matrix
         , typename T          // Type of the column indices
@@ -455,12 +516,10 @@ inline decltype(auto) columns( MT&& matrix, const std::array<T,N>& indices, RCAs
 
    return columns( std::forward<MT>( matrix ), indices.data(), N, args... );
 }
-/*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a selection of columns of the given matrix.
 // \ingroup columns
 //
@@ -471,9 +530,32 @@ inline decltype(auto) columns( MT&& matrix, const std::array<T,N>& indices, RCAs
 // \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing a selection of columns of the given matrix.
-// In case any column is not properly specified (i.e. if any specified index is greater than or
-// equal to the total number of columns in the given matrix) a \a std::invalid_argument exception
-// is thrown.
+
+   \code
+   using blaze::columnMajor;
+
+   blaze::DynamicMatrix<double,columnMajor> D;
+   blaze::CompressedMatrix<double,columnMajor> S;
+   // ... Resizing and initialization
+
+   // Creating a view on the 1st and 3rd column of the dense matrix D
+   const std::vector<size_t> indices1{ 1UL, 3UL };
+   auto columns1 = columns( D, indices1 );
+
+   // Creating a view on the 4th and 2nd column of the sparse matrix S
+   const std::vector<size_t> indices2{ 4UL, 2UL };
+   auto columns2 = columns( S, indices2 );
+   \endcode
+
+// By default, the provided column indices are checked at runtime. In case any column is not
+// properly specified (i.e. if any specified index is greater than or equal to the total number
+// of columns in the given matrix) a \a std::invalid_argument exception is thrown. The checks
+// can be skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto columns1 = columns( D, indices1, unchecked );
+   auto columns2 = columns( S, indices2, unchecked );
+   \endcode
 */
 template< typename MT         // Type of the matrix
         , typename T          // Type of the column indices
@@ -484,7 +566,6 @@ inline decltype(auto) columns( MT&& matrix, const std::vector<T>& indices, RCAs.
 
    return columns( std::forward<MT>( matrix ), indices.data(), indices.size(), args... );
 }
-/*! \endcond */
 //*************************************************************************************************
 
 
@@ -500,9 +581,32 @@ inline decltype(auto) columns( MT&& matrix, const std::vector<T>& indices, RCAs.
 // \exception std::invalid_argument Invalid column access index.
 //
 // This function returns an expression representing a selection of columns of the given matrix.
-// In case any column is not properly specified (i.e. if any specified index is greater than or
-// equal to the total number of columns in the given matrix) a \a std::invalid_argument exception
-// is thrown.
+
+   \code
+   using blaze::columnMajor;
+
+   blaze::DynamicMatrix<double,columnMajor> D;
+   blaze::CompressedMatrix<double,columnMajor> S;
+   // ... Resizing and initialization
+
+   // Creating a view on the 1st and 3rd column of the dense matrix D
+   blaze::SmallArray<size_t,2UL> indices1{ 1UL, 3UL };
+   auto columns1 = columns( D, indices1 );
+
+   // Creating a view on the 4th and 2nd column of the sparse matrix S
+   blaze::SmallArray<size_t,2UL> indices2{ 4UL, 2UL };
+   auto columns2 = columns( S, indices2 );
+   \endcode
+
+// By default, the provided column indices are checked at runtime. In case any column is not
+// properly specified (i.e. if any specified index is greater than or equal to the total number
+// of columns in the given matrix) a \a std::invalid_argument exception is thrown. The checks
+// can be skipped by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto columns1 = columns( D, indices1, unchecked );
+   auto columns2 = columns( S, indices2, unchecked );
+   \endcode
 */
 template< typename MT         // Type of the matrix
         , typename T          // Type of the column indices
@@ -538,7 +642,7 @@ inline decltype(auto) columns( MT&& matrix, const SmallArray<T,N>& indices, RCAs
 // This function returns an expression representing the specified selection of columns on the
 // given matrix/matrix addition.
 */
-template< size_t... CCAs    // Compile time column arguments
+template< typename... CCAs  // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -565,7 +669,7 @@ inline decltype(auto) columns( const MatMatAddExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given matrix/matrix subtraction.
 */
-template< size_t... CCAs    // Compile time column arguments
+template< typename... CCAs  // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -592,7 +696,7 @@ inline decltype(auto) columns( const MatMatSubExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given Schur product.
 */
-template< size_t... CCAs    // Compile time column arguments
+template< typename... CCAs  // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -619,7 +723,7 @@ inline decltype(auto) columns( const SchurExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given matrix/matrix multiplication.
 */
-template< size_t... CCAs    // Compile time column arguments
+template< typename... CCAs  // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -645,7 +749,7 @@ inline decltype(auto) columns( const MatMatMultExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given outer product.
 */
-template< size_t... CCAs    // Compile time column arguments
+template< typename... CCAs  // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -671,7 +775,7 @@ inline decltype(auto) columns( const VecTVecMultExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given matrix/scalar multiplication.
 */
-template< size_t... CCAs    // Compile time column arguments
+template< typename... CCAs  // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -697,7 +801,7 @@ inline decltype(auto) columns( const MatScalarMultExpr<MT>& matrix, RCAs... args
 // This function returns an expression representing the specified selection of columns on the
 // given matrix/scalar division.
 */
-template< size_t... CCAs    // Compile time column arguments
+template< typename... CCAs  // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -723,7 +827,7 @@ inline decltype(auto) columns( const MatScalarDivExpr<MT>& matrix, RCAs... args 
 // This function returns an expression representing the specified selection of columns on the
 // given unary matrix map operation.
 */
-template< size_t... CCAs    // Compile time column arguments
+template< typename... CCAs  // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -749,7 +853,7 @@ inline decltype(auto) columns( const MatMapExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given binary matrix map operation.
 */
-template< size_t... CCAs    // Compile time column arguments
+template< typename... CCAs  // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -777,7 +881,7 @@ inline decltype(auto) columns( const MatMatMapExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given matrix evaluation operation.
 */
-template< size_t... CCAs    // Compile time column arguments
+template< typename... CCAs  // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -803,7 +907,7 @@ inline decltype(auto) columns( const MatEvalExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given matrix serialization operation.
 */
-template< size_t... CCAs    // Compile time column arguments
+template< typename... CCAs  // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -829,7 +933,7 @@ inline decltype(auto) columns( const MatSerialExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given matrix declaration operation.
 */
-template< size_t... CCAs    // Compile time column arguments
+template< typename... CCAs  // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -855,7 +959,7 @@ inline decltype(auto) columns( const DeclExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given matrix transpose operation.
 */
-template< size_t... CCAs    // Compile time column arguments
+template< typename... CCAs  // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -882,7 +986,7 @@ inline decltype(auto) columns( const MatTransExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns of the
 // given column-major vector expansion operation.
 */
-template< size_t... CCAs    // Compile time column arguments
+template< typename... CCAs  // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , size_t... CEAs    // Compile time expansion arguments
         , typename... RCAs  // Runtime column arguments
@@ -913,7 +1017,7 @@ inline decltype(auto) columns( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... 
 // This function returns an expression representing the specified selection of columns of the
 // given column-major vector expansion operation.
 */
-template< size_t... CCAs    // Compile time column arguments
+template< typename... CCAs  // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , size_t... CEAs    // Compile time expansion arguments
         , typename... RCAs  // Runtime column arguments
@@ -943,7 +1047,7 @@ inline decltype(auto) columns( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... 
 // This function returns an expression representing the specified selection of columns of the
 // given row-major vector expansion operation.
 */
-template< size_t... CCAs    // Compile time column arguments
+template< typename... CCAs  // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , size_t... CEAs    // Compile time expansion arguments
         , typename... RCAs  // Runtime column arguments
@@ -979,12 +1083,14 @@ template< size_t I1           // First required column index
         , bool SF             // Symmetry flag
         , size_t I2           // First present column index
         , size_t... Is2       // Remaining present column indices
+        , typename... CCAs    // Compile time column arguments
         , typename... RCAs >  // Optional column arguments
-inline decltype(auto) columns( Columns<MT,SO,DF,SF,I2,Is2...>& c, RCAs... args )
+inline decltype(auto) columns( Columns<MT,SO,DF,SF,index_sequence<I2,Is2...>,CCAs...>& c, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return columns< c.idx(I1), c.idx(Is1)... >( c.operand(), args... );
+   static constexpr size_t indices[] = { I2, Is2... };
+   return columns< indices[I1], indices[Is1]... >( c.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1010,12 +1116,14 @@ template< size_t I1           // First required column index
         , bool SF             // Symmetry flag
         , size_t I2           // First present column index
         , size_t... Is2       // Remaining present column indices
+        , typename... CCAs    // Compile time column arguments
         , typename... RCAs >  // Optional column arguments
-inline decltype(auto) columns( const Columns<MT,SO,DF,SF,I2,Is2...>& c, RCAs... args )
+inline decltype(auto) columns( const Columns<MT,SO,DF,SF,index_sequence<I2,Is2...>,CCAs...>& c, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return columns< c.idx(I1), c.idx(Is1)... >( c.operand(), args... );
+   static constexpr size_t indices[] = { I2, Is2... };
+   return columns< indices[I1], indices[Is1]... >( c.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1041,12 +1149,14 @@ template< size_t I1           // First required column index
         , bool SF             // Symmetry flag
         , size_t I2           // First present column index
         , size_t... Is2       // Remaining present column indices
+        , typename... CCAs    // Compile time column arguments
         , typename... RCAs >  // Optional column arguments
-inline decltype(auto) columns( Columns<MT,SO,DF,SF,I2,Is2...>&& c, RCAs... args )
+inline decltype(auto) columns( Columns<MT,SO,DF,SF,index_sequence<I2,Is2...>,CCAs...>&& c, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return columns< c.idx(I1), c.idx(Is1)... >( c.operand(), args... );
+   static constexpr size_t indices[] = { I2, Is2... };
+   return columns< indices[I1], indices[Is1]... >( c.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1071,7 +1181,7 @@ template< size_t I            // First required column index
         , bool SO             // Storage order
         , bool DF             // Density flag
         , bool SF             // Symmetry flag
-        , size_t... CCAs      // Compile time column arguments
+        , typename... CCAs    // Compile time column arguments
         , typename... RCAs >  // Optional column arguments
 inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>& c, RCAs... args )
 {
@@ -1113,7 +1223,7 @@ template< size_t I            // First required column index
         , bool SO             // Storage order
         , bool DF             // Density flag
         , bool SF             // Symmetry flag
-        , size_t... CCAs      // Compile time column arguments
+        , typename... CCAs    // Compile time column arguments
         , typename... RCAs >  // Optional column arguments
 inline decltype(auto) columns( const Columns<MT,SO,DF,SF,CCAs...>& c, RCAs... args )
 {
@@ -1155,7 +1265,7 @@ template< size_t I            // First required column index
         , bool SO             // Storage order
         , bool DF             // Density flag
         , bool SF             // Symmetry flag
-        , size_t... CCAs      // Compile time column arguments
+        , typename... CCAs    // Compile time column arguments
         , typename... RCAs >  // Optional column arguments
 inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>&& c, RCAs... args )
 {
@@ -1197,7 +1307,7 @@ template< typename MT         // Type of the matrix
         , bool SO             // Storage order
         , bool DF             // Density flag
         , bool SF             // Symmetry flag
-        , size_t... CCAs      // Compile time column arguments
+        , typename... CCAs    // Compile time column arguments
         , typename T          // Type of the column indices
         , typename... RCAs >  // Optional column arguments
 inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>& c, const T* indices, size_t n, RCAs... args )
@@ -1246,7 +1356,7 @@ template< typename MT         // Type of the matrix
         , bool SO             // Storage order
         , bool DF             // Density flag
         , bool SF             // Symmetry flag
-        , size_t... CCAs      // Compile time column arguments
+        , typename... CCAs    // Compile time column arguments
         , typename T          // Type of the column indices
         , typename... RCAs >  // Optional column arguments
 inline decltype(auto) columns( const Columns<MT,SO,DF,SF,CCAs...>& c, const T* indices, size_t n, RCAs... args )
@@ -1295,7 +1405,7 @@ template< typename MT         // Type of the matrix
         , bool SO             // Storage order
         , bool DF             // Density flag
         , bool SF             // Symmetry flag
-        , size_t... CCAs      // Compile time column arguments
+        , typename... CCAs    // Compile time column arguments
         , typename T          // Type of the column indices
         , typename... RCAs >  // Optional column arguments
 inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>&& c, const T* indices, size_t n, RCAs... args )
@@ -1410,8 +1520,9 @@ template< size_t... CRAs      // Compile time row arguments
         , bool SF             // Symmetry flag
         , size_t I            // First column index
         , size_t... Is        // Remaining column indices
+        , typename... CCAs    // Compile time column arguments
         , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( Columns<MT,SO,DF,SF,I,Is...>& columns, RRAs... args )
+inline decltype(auto) row( Columns<MT,SO,DF,SF,index_sequence<I,Is...>,CCAs...>& columns, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1440,8 +1551,9 @@ template< size_t... CRAs      // Compile time row arguments
         , bool SF             // Symmetry flag
         , size_t I            // First column index
         , size_t... Is        // Remaining column indices
+        , typename... CCAs    // Compile time column arguments
         , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( const Columns<MT,SO,DF,SF,I,Is...>& columns, RRAs... args )
+inline decltype(auto) row( const Columns<MT,SO,DF,SF,index_sequence<I,Is...>,CCAs...>& columns, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1470,8 +1582,9 @@ template< size_t... CRAs      // Compile time row arguments
         , bool SF             // Symmetry flag
         , size_t I            // First column index
         , size_t... Is        // Remaining column indices
+        , typename... CCAs    // Compile time column arguments
         , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( Columns<MT,SO,DF,SF,I,Is...>&& columns, RRAs... args )
+inline decltype(auto) row( Columns<MT,SO,DF,SF,index_sequence<I,Is...>,CCAs...>&& columns, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1497,8 +1610,9 @@ template< size_t... CRAs      // Compile time row arguments
         , bool SO             // Storage order
         , bool DF             // Density flag
         , bool SF             // Symmetry flag
+        , typename... CCAs    // Compile time column arguments
         , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( Columns<MT,SO,DF,SF>& columns, RRAs... args )
+inline decltype(auto) row( Columns<MT,SO,DF,SF,CCAs...>& columns, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1525,8 +1639,9 @@ template< size_t... CRAs      // Compile time row arguments
         , bool SO             // Storage order
         , bool DF             // Density flag
         , bool SF             // Symmetry flag
+        , typename... CCAs    // Compile time column arguments
         , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( const Columns<MT,SO,DF,SF>& columns, RRAs... args )
+inline decltype(auto) row( const Columns<MT,SO,DF,SF,CCAs...>& columns, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1553,8 +1668,9 @@ template< size_t... CRAs      // Compile time row arguments
         , bool SO             // Storage order
         , bool DF             // Density flag
         , bool SF             // Symmetry flag
+        , typename... CCAs    // Compile time column arguments
         , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( Columns<MT,SO,DF,SF>&& columns, RRAs... args )
+inline decltype(auto) row( Columns<MT,SO,DF,SF,CCAs...>&& columns, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1591,8 +1707,9 @@ template< size_t I1           // Column index
         , bool SF             // Symmetry flag
         , size_t I2           // First column index
         , size_t... Is        // Remaining column indices
+        , typename... CCAs    // Compile time column arguments
         , typename... RCAs >  // Optional column arguments
-inline decltype(auto) column( Columns<MT,SO,DF,SF,I2,Is...>& columns, RCAs... args )
+inline decltype(auto) column( Columns<MT,SO,DF,SF,index_sequence<I2,Is...>,CCAs...>& columns, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1622,8 +1739,9 @@ template< size_t I1           // Column index
         , bool SF             // Symmetry flag
         , size_t I2           // First column index
         , size_t... Is        // Remaining column indices
+        , typename... CCAs    // Compile time column arguments
         , typename... RCAs >  // Optional column arguments
-inline decltype(auto) column( const Columns<MT,SO,DF,SF,I2,Is...>& columns, RCAs... args )
+inline decltype(auto) column( const Columns<MT,SO,DF,SF,index_sequence<I2,Is...>,CCAs...>& columns, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1653,8 +1771,9 @@ template< size_t I1           // Column index
         , bool SF             // Symmetry flag
         , size_t I2           // First column index
         , size_t... Is        // Remaining column indices
+        , typename... CCAs    // Compile time column arguments
         , typename... RCAs >  // Optional column arguments
-inline decltype(auto) column( Columns<MT,SO,DF,SF,I2,Is...>&& columns, RCAs... args )
+inline decltype(auto) column( Columns<MT,SO,DF,SF,index_sequence<I2,Is...>,CCAs...>&& columns, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1683,7 +1802,7 @@ template< size_t... CCAs1     // Compile time column arguments
         , bool SO             // Storage order
         , bool DF             // Density flag
         , bool SF             // Symmetry flag
-        , size_t... CCAs2     // Compile time column arguments
+        , typename... CCAs2   // Compile time column arguments
         , typename... RCAs >  // Runtime column arguments
 inline decltype(auto) column( Columns<MT,SO,DF,SF,CCAs2...>& columns, RCAs... args )
 {
@@ -1723,7 +1842,7 @@ template< size_t... CCAs1     // Compile time column arguments
         , bool SO             // Storage order
         , bool DF             // Density flag
         , bool SF             // Symmetry flag
-        , size_t... CCAs2     // Compile time column arguments
+        , typename... CCAs2   // Compile time column arguments
         , typename... RCAs >  // Runtime column arguments
 inline decltype(auto) column( const Columns<MT,SO,DF,SF,CCAs2...>& columns, RCAs... args )
 {
@@ -1763,7 +1882,7 @@ template< size_t... CCAs1     // Compile time column arguments
         , bool SO             // Storage order
         , bool DF             // Density flag
         , bool SF             // Symmetry flag
-        , size_t... CCAs2     // Compile time column arguments
+        , typename... CCAs2   // Compile time column arguments
         , typename... RCAs >  // Runtime column arguments
 inline decltype(auto) column( Columns<MT,SO,DF,SF,CCAs2...>&& columns, RCAs... args )
 {
@@ -1801,11 +1920,11 @@ inline decltype(auto) column( Columns<MT,SO,DF,SF,CCAs2...>&& columns, RCAs... a
 // \param columns The column selection to be resetted.
 // \return void
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline void reset( Columns<MT,SO,DF,SF,CCAs...>& columns )
 {
    columns.reset();
@@ -1822,11 +1941,11 @@ inline void reset( Columns<MT,SO,DF,SF,CCAs...>& columns )
 // \param columns The temporary column selection to be resetted.
 // \return void
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline void reset( Columns<MT,SO,DF,SF,CCAs...>&& columns )
 {
    columns.reset();
@@ -1847,11 +1966,11 @@ inline void reset( Columns<MT,SO,DF,SF,CCAs...>&& columns )
 // This function resets the values in the specified column of the given column selection to their
 // default value. Note that the capacity of the column remains unchanged.
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline void reset( Columns<MT,SO,DF,SF,CCAs...>& columns, size_t i )
 {
    columns.reset( i );
@@ -1870,11 +1989,11 @@ inline void reset( Columns<MT,SO,DF,SF,CCAs...>& columns, size_t i )
 //
 // Clearing a column selection is equivalent to resetting it via the reset() function.
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline void clear( Columns<MT,SO,DF,SF,CCAs...>& columns )
 {
    columns.reset();
@@ -1893,11 +2012,11 @@ inline void clear( Columns<MT,SO,DF,SF,CCAs...>& columns )
 //
 // Clearing a column selection is equivalent to resetting it via the reset() function.
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline void clear( Columns<MT,SO,DF,SF,CCAs...>&& columns )
 {
    columns.reset();
@@ -1932,11 +2051,11 @@ inline void clear( Columns<MT,SO,DF,SF,CCAs...>&& columns )
    if( isDefault<relaxed>( columns( A, { 2UL, 4UL, 6UL, 8UL } ) ) ) { ... }
    \endcode
 */
-template< bool RF           // Relaxation flag
-        , typename MT       // Type of the dense matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< bool RF             // Relaxation flag
+        , typename MT         // Type of the dense matrix
+        , bool SO             // Storage order
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline bool isDefault( const Columns<MT,SO,true,SF,CCAs...>& columns )
 {
    using blaze::isDefault;
@@ -1986,11 +2105,11 @@ inline bool isDefault( const Columns<MT,SO,true,SF,CCAs...>& columns )
    if( isDefault<relaxed>( columns( A, { 2UL, 4UL, 6UL, 8UL } ) ) ) { ... }
    \endcode
 */
-template< bool RF           // Relaxation flag
-        , typename MT       // Type of the dense matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< bool RF             // Relaxation flag
+        , typename MT         // Type of the dense matrix
+        , bool SO             // Storage order
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline bool isDefault( const Columns<MT,SO,false,SF,CCAs...>& columns )
 {
    using blaze::isDefault;
@@ -2024,11 +2143,11 @@ inline bool isDefault( const Columns<MT,SO,false,SF,CCAs...>& columns )
    if( isIntact( columns( A, { 2UL, 4UL, 6UL, 8UL } ) ) ) { ... }
    \endcode
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline bool isIntact( const Columns<MT,SO,DF,SF,CCAs...>& columns ) noexcept
 {
    return ( columns.rows() == columns.operand().rows() &&
@@ -2052,12 +2171,12 @@ inline bool isIntact( const Columns<MT,SO,DF,SF,CCAs...>& columns ) noexcept
 // of the given matrix in ascending and consecutive order and by that represents the same observable
 // state. In this case, the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT     // Type of the matrix
-        , bool SO1        // Storage order of the left-hand side column selection
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , bool SO2 >      // Storage order of the right-hand side matrix
+template< typename MT       // Type of the matrix
+        , bool SO1          // Storage order of the left-hand side column selection
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , bool SO2 >        // Storage order of the right-hand side matrix
 inline bool isSame( const Columns<MT,SO1,DF,SF,CCAs...>& a, const Matrix<MT,SO2>& b ) noexcept
 {
    if( !isSame( a.operand(), ~b ) || ( a.rows() != (~b).rows() ) || ( a.columns() != (~b).columns() ) )
@@ -2091,7 +2210,7 @@ template< typename MT       // Type of the matrix
         , bool SO1          // Storage order of the left-hand side matrix
         , bool DF           // Density flag
         , bool SF           // Symmetry flag
-        , size_t... CCAs    // Compile time column arguments
+        , typename... CCAs  // Compile time column arguments
         , bool SO2 >        // Storage order of the right-hand side column selection
 inline bool isSame( const Matrix<MT,SO1>& a, const Columns<MT,SO2,DF,SF,CCAs...>& b ) noexcept
 {
@@ -2118,7 +2237,7 @@ template< typename MT       // Type of the matrix
         , bool SO1          // Storage order of the left-hand side column selection
         , bool DF           // Density flag
         , bool SF           // Symmetry flag
-        , size_t... CCAs    // Compile time column arguments
+        , typename... CCAs  // Compile time column arguments
         , AlignmentFlag AF  // Alignment flag
         , bool SO2          // Storage order of the right-hand side submatrix
         , size_t... CSAs >  // Compile time submatrix arguments
@@ -2151,14 +2270,14 @@ inline bool isSame( const Columns<MT,SO1,DF,SF,CCAs...>& a, const Submatrix<MT,A
 // as the given submatrix in ascending and consecutive order and by that represents the same
 // observable state. In this case, the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT       // Type of the matrix
-        , AlignmentFlag AF  // Alignment flag
-        , bool SO1          // Storage order of the left-hand side submatrix
-        , bool DF           // Density flag
-        , size_t... CSAs    // Compile time submatrix arguments
-        , bool SO2          // Storage order of the right-hand side column selection
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< typename MT         // Type of the matrix
+        , AlignmentFlag AF    // Alignment flag
+        , bool SO1            // Storage order of the left-hand side submatrix
+        , bool DF             // Density flag
+        , size_t... CSAs      // Compile time submatrix arguments
+        , bool SO2            // Storage order of the right-hand side column selection
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline bool isSame( const Submatrix<MT,AF,SO1,DF,CSAs...>& a, const Columns<MT,SO2,DF,SF,CCAs...>& b ) noexcept
 {
    return isSame( b, a );
@@ -2180,12 +2299,12 @@ inline bool isSame( const Submatrix<MT,AF,SO1,DF,CSAs...>& a, const Columns<MT,S
 // the same range of the same matrix. In case both selections represent the same observable
 // state, the function returns \a true, otherwise it returns \a false.
 */
-template< typename MT        // Type of the matrix
-        , bool SO            // Storage order
-        , bool DF            // Density flag
-        , bool SF            // Symmetry flag
-        , size_t... CCAs1    // Compile time column arguments of the left-hand side column selection
-        , size_t... CCAs2 >  // Compile time column arguments of the right-hand side column selection
+template< typename MT          // Type of the matrix
+        , bool SO              // Storage order
+        , bool DF              // Density flag
+        , bool SF              // Symmetry flag
+        , typename... CCAs1    // Compile time column arguments of the left-hand side column selection
+        , typename... CCAs2 >  // Compile time column arguments of the right-hand side column selection
 inline bool isSame( const Columns<MT,SO,DF,SF,CCAs1...>& a,
                     const Columns<MT,SO,DF,SF,CCAs2...>& b ) noexcept
 {
@@ -2242,11 +2361,11 @@ inline bool isSame( const Columns<MT,SO,DF,SF,CCAs1...>& a,
 // \note This function does only provide the basic exception safety guarantee, i.e. in case of an
 // exception \a c may already have been modified.
 */
-template< InversionFlag IF  // Inversion algorithm
-        , typename MT       // Type of the dense matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CCAs >  // Compile time column arguments
+template< InversionFlag IF    // Inversion algorithm
+        , typename MT         // Type of the dense matrix
+        , bool SO             // Storage order
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
 inline auto invert( Columns<MT,SO,true,SF,CCAs...>& c )
    -> DisableIf_t< HasMutableDataAccess_v<MT> >
 {
@@ -2279,12 +2398,12 @@ inline auto invert( Columns<MT,SO,true,SF,CCAs...>& c )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename ET >   // Type of the element
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename ET >     // Type of the element
 inline bool trySet( const Columns<MT,SO,DF,SF,CCAs...>& c, size_t i, size_t j, const ET& value )
 {
    BLAZE_INTERNAL_ASSERT( i < c.rows(), "Invalid row access index" );
@@ -2312,12 +2431,12 @@ inline bool trySet( const Columns<MT,SO,DF,SF,CCAs...>& c, size_t i, size_t j, c
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename ET >   // Type of the element
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename ET >     // Type of the element
 inline bool tryAdd( const Columns<MT,SO,DF,SF,CCAs...>& c, size_t i, size_t j, const ET& value )
 {
    BLAZE_INTERNAL_ASSERT( i < c.rows(), "Invalid row access index" );
@@ -2345,12 +2464,12 @@ inline bool tryAdd( const Columns<MT,SO,DF,SF,CCAs...>& c, size_t i, size_t j, c
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename ET >   // Type of the element
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename ET >     // Type of the element
 inline bool trySub( const Columns<MT,SO,DF,SF,CCAs...>& c, size_t i, size_t j, const ET& value )
 {
    BLAZE_INTERNAL_ASSERT( i < c.rows(), "Invalid row access index" );
@@ -2378,12 +2497,12 @@ inline bool trySub( const Columns<MT,SO,DF,SF,CCAs...>& c, size_t i, size_t j, c
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename ET >   // Type of the element
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename ET >     // Type of the element
 inline bool tryMult( const Columns<MT,SO,DF,SF,CCAs...>& c, size_t i, size_t j, const ET& value )
 {
    BLAZE_INTERNAL_ASSERT( i < c.rows(), "Invalid row access index" );
@@ -2413,12 +2532,12 @@ inline bool tryMult( const Columns<MT,SO,DF,SF,CCAs...>& c, size_t i, size_t j, 
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename ET >   // Type of the element
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename ET >     // Type of the element
 BLAZE_ALWAYS_INLINE bool
    tryMult( const Columns<MT,SO,DF,SF,CCAs...>& c, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
@@ -2456,12 +2575,12 @@ BLAZE_ALWAYS_INLINE bool
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename ET >   // Type of the element
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename ET >     // Type of the element
 inline bool tryDiv( const Columns<MT,SO,DF,SF,CCAs...>& c, size_t i, size_t j, const ET& value )
 {
    BLAZE_INTERNAL_ASSERT( i < c.rows(), "Invalid row access index" );
@@ -2491,12 +2610,12 @@ inline bool tryDiv( const Columns<MT,SO,DF,SF,CCAs...>& c, size_t i, size_t j, c
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename ET >   // Type of the element
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename ET >     // Type of the element
 BLAZE_ALWAYS_INLINE bool
    tryDiv( const Columns<MT,SO,DF,SF,CCAs...>& c, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
@@ -2534,12 +2653,12 @@ BLAZE_ALWAYS_INLINE bool
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename VT >   // Type of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename VT >     // Type of the right-hand side vector
 inline bool tryAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
                        const Vector<VT,false>& rhs, size_t row, size_t column )
 {
@@ -2569,12 +2688,12 @@ inline bool tryAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename VT >   // Type of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename VT >     // Type of the right-hand side vector
 inline bool tryAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
                        const Vector<VT,true>& rhs, size_t row, size_t column )
 {
@@ -2611,13 +2730,13 @@ inline bool tryAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename VT     // Type of the right-hand side vector
-        , bool TF >       // Transpose flag of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename VT       // Type of the right-hand side vector
+        , bool TF >         // Transpose flag of the right-hand side vector
 inline bool tryAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
                        const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
 {
@@ -2655,13 +2774,13 @@ inline bool tryAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT1    // Type of the matrix
-        , bool SO1        // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename MT2    // Type of the right-hand side matrix
-        , bool SO2 >      // Storage order of the right-hand side matrix
+template< typename MT1      // Type of the matrix
+        , bool SO1          // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename MT2      // Type of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
 inline bool tryAssign( const Columns<MT1,SO1,DF,SF,CCAs...>& lhs,
                        const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
@@ -2698,12 +2817,12 @@ inline bool tryAssign( const Columns<MT1,SO1,DF,SF,CCAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename VT >   // Type of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename VT >     // Type of the right-hand side vector
 inline bool tryAddAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
                           const Vector<VT,false>& rhs, size_t row, size_t column )
 {
@@ -2734,12 +2853,12 @@ inline bool tryAddAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename VT >   // Type of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename VT >     // Type of the right-hand side vector
 inline bool tryAddAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
                           const Vector<VT,true>& rhs, size_t row, size_t column )
 {
@@ -2776,13 +2895,13 @@ inline bool tryAddAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename VT     // Type of the right-hand side vector
-        , bool TF >       // Transpose flag of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename VT       // Type of the right-hand side vector
+        , bool TF >         // Transpose flag of the right-hand side vector
 inline bool tryAddAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
                           const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
 {
@@ -2820,13 +2939,13 @@ inline bool tryAddAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT1    // Type of the matrix
-        , bool SO1        // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename MT2    // Type of the right-hand side matrix
-        , bool SO2 >      // Storage order of the right-hand side matrix
+template< typename MT1      // Type of the matrix
+        , bool SO1          // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename MT2      // Type of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
 inline bool tryAddAssign( const Columns<MT1,SO1,DF,SF,CCAs...>& lhs,
                           const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
@@ -2863,12 +2982,12 @@ inline bool tryAddAssign( const Columns<MT1,SO1,DF,SF,CCAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename VT >   // Type of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename VT >     // Type of the right-hand side vector
 inline bool trySubAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
                           const Vector<VT,false>& rhs, size_t row, size_t column )
 {
@@ -2899,12 +3018,12 @@ inline bool trySubAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename VT >   // Type of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename VT >     // Type of the right-hand side vector
 inline bool trySubAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
                           const Vector<VT,true>& rhs, size_t row, size_t column )
 {
@@ -2941,13 +3060,13 @@ inline bool trySubAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename VT     // Type of the right-hand side vector
-        , bool TF >       // Transpose flag of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename VT       // Type of the right-hand side vector
+        , bool TF >         // Transpose flag of the right-hand side vector
 inline bool trySubAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
                           const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
 {
@@ -2986,13 +3105,13 @@ inline bool trySubAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT1    // Type of the matrix
-        , bool SO1        // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename MT2    // Type of the right-hand side matrix
-        , bool SO2 >      // Storage order of the right-hand side matrix
+template< typename MT1      // Type of the matrix
+        , bool SO1          // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename MT2      // Type of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
 inline bool trySubAssign( const Columns<MT1,SO1,DF,SF,CCAs...>& lhs,
                           const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
@@ -3029,12 +3148,12 @@ inline bool trySubAssign( const Columns<MT1,SO1,DF,SF,CCAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename VT >   // Type of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename VT >     // Type of the right-hand side vector
 inline bool tryMultAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
                            const Vector<VT,false>& rhs, size_t row, size_t column )
 {
@@ -3065,12 +3184,12 @@ inline bool tryMultAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename VT >   // Type of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename VT >     // Type of the right-hand side vector
 inline bool tryMultAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
                            const Vector<VT,true>& rhs, size_t row, size_t column )
 {
@@ -3107,13 +3226,13 @@ inline bool tryMultAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename VT     // Type of the right-hand side vector
-        , bool TF >       // Transpose flag of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename VT       // Type of the right-hand side vector
+        , bool TF >         // Transpose flag of the right-hand side vector
 inline bool tryMultAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
                            const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
 {
@@ -3152,13 +3271,13 @@ inline bool tryMultAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT1    // Type of the matrix
-        , bool SO1        // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename MT2    // Type of the right-hand side matrix
-        , bool SO2 >      // Storage order of the right-hand side matrix
+template< typename MT1      // Type of the matrix
+        , bool SO1          // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename MT2      // Type of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
 inline bool trySchurAssign( const Columns<MT1,SO1,DF,SF,CCAs...>& lhs,
                             const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
 {
@@ -3195,12 +3314,12 @@ inline bool trySchurAssign( const Columns<MT1,SO1,DF,SF,CCAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename VT >   // Type of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename VT >     // Type of the right-hand side vector
 inline bool tryDivAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
                           const Vector<VT,false>& rhs, size_t row, size_t column )
 {
@@ -3231,12 +3350,12 @@ inline bool tryDivAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename VT >   // Type of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename VT >     // Type of the right-hand side vector
 inline bool tryDivAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
                           const Vector<VT,true>& rhs, size_t row, size_t column )
 {
@@ -3273,13 +3392,13 @@ inline bool tryDivAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t... CCAs  // Compile time column arguments
-        , typename VT     // Type of the right-hand side vector
-        , bool TF >       // Transpose flag of the right-hand side vector
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename VT       // Type of the right-hand side vector
+        , bool TF >         // Transpose flag of the right-hand side vector
 inline bool tryDivAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
                           const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
 {
@@ -3316,69 +3435,12 @@ inline bool tryDivAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t I        // First element index
-        , size_t... Is >  // Remaining element indices
-inline decltype(auto) derestrict( Columns<MT,SO,DF,SF,I,Is...>& c )
-{
-   return columns<I,Is...>( derestrict( c.operand() ), unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Removal of all restrictions on the data access to the given temporary column selection.
-// \ingroup columns
-//
-// \param c The temporary column selection to be derestricted.
-// \return Column selection without access restrictions.
-//
-// This function removes all restrictions on the data access to the given temporary column
-// selection. It returns a column selection that does provide the same interface but does not
-// have any restrictions on the data access.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in the violation of invariants, erroneous results and/or in compilation errors.
-*/
-template< typename MT     // Type of the matrix
-        , bool SO         // Storage order
-        , bool DF         // Density flag
-        , bool SF         // Symmetry flag
-        , size_t I        // First element index
-        , size_t... Is >  // Remaining element indices
-inline decltype(auto) derestrict( Columns<MT,SO,DF,SF,I,Is...>&& c )
-{
-   return columns<I,Is...>( derestrict( c.operand() ), unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Removal of all restrictions on the data access to the given column selection.
-// \ingroup columns
-//
-// \param c The column selection to be derestricted.
-// \return Column selection without access restrictions.
-//
-// This function removes all restrictions on the data access to the given column selection.
-// It returns a column selection that does provide the same interface but does not have any
-// restrictions on the data access.\n
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in the violation of invariants, erroneous results and/or in compilation errors.
-*/
-template< typename MT  // Type of the matrix
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , bool SF >    // Symmetry flag
-inline decltype(auto) derestrict( Columns<MT,SO,DF,SF>& c )
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+inline decltype(auto) derestrict( Columns<MT,SO,DF,SF,CCAs...>& c )
 {
    return columns( derestrict( c.operand() ), c.idces(), unchecked );
 }
@@ -3401,11 +3463,12 @@ inline decltype(auto) derestrict( Columns<MT,SO,DF,SF>& c )
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename MT  // Type of the matrix
-        , bool SO      // Storage order
-        , bool DF      // Density flag
-        , bool SF >    // Symmetry flag
-inline decltype(auto) derestrict( Columns<MT,SO,DF,SF>&& c )
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , bool SF             // Symmetry flag
+        , typename... CCAs >  // Compile time column arguments
+inline decltype(auto) derestrict( Columns<MT,SO,DF,SF,CCAs...>&& c )
 {
    return columns( derestrict( c.operand() ), c.idces(), unchecked );
 }
@@ -3423,13 +3486,13 @@ inline decltype(auto) derestrict( Columns<MT,SO,DF,SF>&& c )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs >
+template< typename MT, bool SO, bool DF, bool SF, typename... CCAs >
 struct Size< Columns<MT,SO,DF,SF,CCAs...>, 0UL >
    : public Size<MT,0UL>
 {};
 
-template< typename MT, bool SO, bool DF, bool SF, size_t I, size_t... Is >
-struct Size< Columns<MT,SO,DF,SF,I,Is...>, 1UL >
+template< typename MT, bool SO, bool DF, bool SF, size_t I, size_t... Is, typename... CCAs >
+struct Size< Columns<MT,SO,DF,SF,index_sequence<I,Is...>,CCAs...>, 1UL >
    : public PtrdiffT<1UL+sizeof...(Is)>
 {};
 /*! \endcond */
@@ -3446,13 +3509,13 @@ struct Size< Columns<MT,SO,DF,SF,I,Is...>, 1UL >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs >
+template< typename MT, bool SO, bool DF, bool SF, typename... CCAs >
 struct MaxSize< Columns<MT,SO,DF,SF,CCAs...>, 0UL >
    : public MaxSize<MT,0UL>
 {};
 
-template< typename MT, bool SO, bool DF, bool SF, size_t I, size_t... Is >
-struct MaxSize< Columns<MT,SO,DF,SF,I,Is...>, 1UL >
+template< typename MT, bool SO, bool DF, bool SF, size_t I, size_t... Is, typename... CCAs >
+struct MaxSize< Columns<MT,SO,DF,SF,index_sequence<I,Is...>,CCAs...>, 1UL >
    : public PtrdiffT<1UL+sizeof...(Is)>
 {};
 /*! \endcond */
@@ -3469,7 +3532,7 @@ struct MaxSize< Columns<MT,SO,DF,SF,I,Is...>, 1UL >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool DF, bool SF, size_t... CCAs >
+template< typename MT, bool SO, bool DF, bool SF, typename... CCAs >
 struct IsRestricted< Columns<MT,SO,DF,SF,CCAs...> >
    : public IsRestricted<MT>
 {};
@@ -3487,7 +3550,7 @@ struct IsRestricted< Columns<MT,SO,DF,SF,CCAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF, size_t... CCAs >
+template< typename MT, bool SO, bool SF, typename... CCAs >
 struct HasConstDataAccess< Columns<MT,SO,true,SF,CCAs...> >
    : public HasConstDataAccess<MT>
 {};
@@ -3505,7 +3568,7 @@ struct HasConstDataAccess< Columns<MT,SO,true,SF,CCAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF, size_t... CCAs >
+template< typename MT, bool SO, bool SF, typename... CCAs >
 struct HasMutableDataAccess< Columns<MT,SO,true,SF,CCAs...> >
    : public HasMutableDataAccess<MT>
 {};
@@ -3523,7 +3586,7 @@ struct HasMutableDataAccess< Columns<MT,SO,true,SF,CCAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, bool SO, bool SF, size_t... CCAs >
+template< typename MT, bool SO, bool SF, typename... CCAs >
 struct IsAligned< Columns<MT,SO,true,SF,CCAs...> >
    : public IsAligned<MT>
 {};
