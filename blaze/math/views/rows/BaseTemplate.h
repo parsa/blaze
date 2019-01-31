@@ -63,7 +63,7 @@ template< typename MT                       // Type of the matrix
         , bool SO = IsRowMajorMatrix_v<MT>  // Storage order
         , bool DF = IsDenseMatrix_v<MT>     // Density flag
         , bool SF = IsSymmetric_v<MT>       // Symmetry flag
-        , size_t... CRAs >                  // Compile time row arguments
+        , typename... CRAs >                // Compile time row arguments
 class Rows
 {};
 /*! \endcond */
@@ -86,8 +86,8 @@ class Rows
 // The Rows_ alias declaration represents a convenient shortcut for the specification of the
 // non-derived template arguments of the Rows class template.
 */
-template< typename MT       // Type of the matrix
-        , size_t... CRAs >  // Compile time row arguments
+template< typename MT         // Type of the matrix
+        , typename... CRAs >  // Compile time row arguments
 using Rows_ = Rows< MT
                   , IsRowMajorMatrix_v<MT>
                   , IsDenseMatrix_v<MT>

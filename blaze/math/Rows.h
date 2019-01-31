@@ -68,10 +68,10 @@ namespace blaze {
 //
 // This specialization of the Rand class randomizes dense row selections.
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool SF             // Symmetry flag
+        , typename... CRAs >  // Compile time row arguments
 class Rand< Rows<MT,SO,true,SF,CRAs...> >
 {
  public:
@@ -97,11 +97,11 @@ class Rand< Rows<MT,SO,true,SF,CRAs...> >
 // \param rows The row selection to be randomized.
 // \return void
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
-template< typename RT >     // Type of the row selection
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool SF             // Symmetry flag
+        , typename... CRAs >  // Compile time row arguments
+template< typename RT >       // Type of the row selection
 inline void Rand< Rows<MT,SO,true,SF,CRAs...> >::randomize( RT&& rows ) const
 {
    using blaze::randomize;
@@ -139,12 +139,12 @@ inline void Rand< Rows<MT,SO,true,SF,CRAs...> >::randomize( RT&& rows ) const
 // \param max The largest possible value for a matrix element.
 // \return void
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
-template< typename RT       // Type of the row selection
-        , typename Arg >    // Min/max argument type
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool SF             // Symmetry flag
+        , typename... CRAs >  // Compile time row arguments
+template< typename RT         // Type of the row selection
+        , typename Arg >      // Min/max argument type
 inline void Rand< Rows<MT,SO,true,SF,CRAs...> >::randomize( RT&& rows,
                                                             const Arg& min, const Arg& max ) const
 {
@@ -189,10 +189,10 @@ inline void Rand< Rows<MT,SO,true,SF,CRAs...> >::randomize( RT&& rows,
 //
 // This specialization of the Rand class randomizes sparse row selections.
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool SF             // Symmetry flag
+        , typename... CRAs >  // Compile time row arguments
 class Rand< Rows<MT,SO,false,SF,CRAs...> >
 {
  public:
@@ -224,11 +224,11 @@ class Rand< Rows<MT,SO,false,SF,CRAs...> >
 // \param rows The row selection to be randomized.
 // \return void
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
-template< typename RT >     // Type of the row selection
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool SF             // Symmetry flag
+        , typename... CRAs >  // Compile time row arguments
+template< typename RT >       // Type of the row selection
 inline void Rand< Rows<MT,SO,false,SF,CRAs...> >::randomize( RT&& rows ) const
 {
    using RowsType    = RemoveReference_t<RT>;
@@ -264,11 +264,11 @@ inline void Rand< Rows<MT,SO,false,SF,CRAs...> >::randomize( RT&& rows ) const
 // \return void
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
-template< typename RT >     // Type of the row selection
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool SF             // Symmetry flag
+        , typename... CRAs >  // Compile time row arguments
+template< typename RT >       // Type of the row selection
 inline void Rand< Rows<MT,SO,false,SF,CRAs...> >::randomize( RT&& rows, size_t nonzeros ) const
 {
    using RowsType    = RemoveReference_t<RT>;
@@ -306,12 +306,12 @@ inline void Rand< Rows<MT,SO,false,SF,CRAs...> >::randomize( RT&& rows, size_t n
 // \param max The largest possible value for a matrix element.
 // \return void
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
-template< typename RT       // Type of the row selection
-        , typename Arg >    // Min/max argument type
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool SF             // Symmetry flag
+        , typename... CRAs >  // Compile time row arguments
+template< typename RT         // Type of the row selection
+        , typename Arg >      // Min/max argument type
 inline void Rand< Rows<MT,SO,false,SF,CRAs...> >::randomize( RT&& rows,
                                                              const Arg& min, const Arg& max ) const
 {
@@ -350,12 +350,12 @@ inline void Rand< Rows<MT,SO,false,SF,CRAs...> >::randomize( RT&& rows,
 // \return void
 // \exception std::invalid_argument Invalid number of non-zero elements.
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , bool SF           // Symmetry flag
-        , size_t... CRAs >  // Compile time row arguments
-template< typename RT       // Type of the row selection
-        , typename Arg >    // Min/max argument type
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool SF             // Symmetry flag
+        , typename... CRAs >  // Compile time row arguments
+template< typename RT         // Type of the row selection
+        , typename Arg >      // Min/max argument type
 inline void Rand< Rows<MT,SO,false,SF,CRAs...> >::randomize( RT&& rows, size_t nonzeros,
                                                              const Arg& min, const Arg& max ) const
 {
