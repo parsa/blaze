@@ -231,6 +231,146 @@ inline constexpr size_t RowsData< index_sequence<I,Is...> >::rows() noexcept
 
 //=================================================================================================
 //
+//  CLASS TEMPLATE SPECIALIZATION FOR INDEX PRODUCING CALLABLES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the RowsData class template for index producing callables.
+// \ingroup rows
+//
+// This specialization of RowsData adapts the class template to the requirements of index
+// producing callables.
+*/
+template< typename P >  // Type of the index producer
+struct RowsData<P>
+{
+ protected:
+   //**Compile time flags**************************************************************************
+   static constexpr size_t N = 0UL;  //! Number of compile time indices.
+   //**********************************************************************************************
+
+ public:
+   //**Constructors********************************************************************************
+   /*!\name Constructors */
+   //@{
+   template< typename... RRAs >
+   explicit inline RowsData( P p, size_t n, RRAs... args ) noexcept;
+
+   RowsData( const RowsData& ) = default;
+   RowsData( RowsData&& ) = default;
+   //@}
+   //**********************************************************************************************
+
+   //**Destructor**********************************************************************************
+   /*!\name Destructor */
+   //@{
+   ~RowsData() = default;
+   //@}
+   //**********************************************************************************************
+
+   //**Assignment operators************************************************************************
+   /*!\name Assignment operators */
+   //@{
+   RowsData& operator=( const RowsData& ) = delete;
+   RowsData& operator=( RowsData&& ) = delete;
+   //@}
+   //**********************************************************************************************
+
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+   inline decltype(auto) idces() const noexcept;
+   inline size_t         idx  ( size_t i ) const noexcept;
+   inline size_t         rows () const noexcept;
+   //@}
+   //**********************************************************************************************
+
+ private:
+   //**Member variables****************************************************************************
+   /*!\name Member variables */
+   //@{
+   P      p_;  //!< The callable producing the indices.
+   size_t n_;  //!< The total number of indices.
+   //@}
+   //**********************************************************************************************
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The constructor for RowsData.
+//
+// \param p A callable producing the indices.
+// \param n The total number of indices.
+// \param args The optional row arguments.
+*/
+template< typename P >        // Type of the index producer
+template< typename... RRAs >  // Optional row arguments
+inline RowsData<P>::RowsData( P p, size_t n, RRAs... args ) noexcept
+   : p_( p )
+   , n_( n )
+{
+   UNUSED_PARAMETER( args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns a representation of the indices of the specified rows in the underlying matrix.
+//
+// \return A representation of the indices of the specified rows.
+*/
+template< typename P >  // Type of the index producer
+inline decltype(auto) RowsData<P>::idces() const noexcept
+{
+   return std::make_pair( p_, n_ );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the index of the specified row in the underlying matrix.
+//
+// \param i Access index for the row.
+// \return The index of the specified row.
+*/
+template< typename P >  // Type of the index producer
+inline size_t RowsData<P>::idx( size_t i ) const noexcept
+{
+   BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
+   return p_(i);
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the number of rows.
+//
+// \return The number of rows.
+*/
+template< typename P >  // Type of the index producer
+inline size_t RowsData<P>::rows() const noexcept
+{
+   return n_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  CLASS TEMPLATE SPECIALIZATION FOR ZERO COMPILE TIME ROW ARGUMENTS
 //
 //=================================================================================================

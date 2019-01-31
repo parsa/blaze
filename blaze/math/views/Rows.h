@@ -93,6 +93,7 @@
 #include <blaze/util/SmallArray.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsPointer.h>
 #include <blaze/util/Unused.h>
 
 
@@ -374,6 +375,141 @@ inline decltype(auto) rows( Matrix<MT,SO>&& matrix, const T* indices, size_t n, 
 // \ingroup rows
 //
 // \param matrix The matrix containing the rows.
+// \param p Callable producing the indices.
+// \param n The total number of indices.
+// \param args Optional arguments.
+// \return View on the specified rows of the matrix.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing a selection of rows of the given matrix.
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::DynamicMatrix<double,rowMajor> D;
+   blaze::CompressedMatrix<double,rowMajor> S;
+   // ... Resizing and initialization
+
+   // Creating a view on the 1st and 3rd row of the dense matrix D
+   auto rows1 = rows( D, []( size_t i ){ return 2UL*i + 1UL; }, 2UL );
+
+   // Creating a view on the 4th and 2nd row of the sparse matrix S
+   auto rows2 = rows( S, []( size_t i ){ return 4UL - 2UL*i; }, 2UL );
+   \endcode
+
+// By default, the provided row indices are checked at runtime. In case any row is not properly
+// specified (i.e. if any specified index is greater than or equal to the total number of rows
+// in the given matrix) a \a std::invalid_argument exception is thrown. The checks can be skipped
+// by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto rows1 = rows( D, []( size_t i ){ return 2UL*i + 1UL; }, 2UL, unchecked );
+   auto rows2 = rows( S, []( size_t i ){ return 4UL - 2UL*i; }, 2UL, unchecked );
+   \endcode
+*/
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , typename P        // Type of the index producer
+        , typename... RRAs  // Optional arguments
+        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
+inline decltype(auto) rows( Matrix<MT,SO>& matrix, P p, size_t n, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ReturnType = Rows_<MT,P>;
+   return ReturnType( ~matrix, p, n, args... );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Creating a view on a selection of rows of the given constant matrix.
+// \ingroup rows
+//
+// \param matrix The constant matrix containing the rows.
+// \param p Callable producing the indices.
+// \param n The total number of indices.
+// \param args Optional arguments.
+// \return View on the specified rows of the matrix.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing a selection of rows of the given constant
+// matrix.
+
+   \code
+   using blaze::rowMajor;
+
+   const blaze::DynamicMatrix<double,rowMajor> D;
+   const blaze::CompressedMatrix<double,rowMajor> S;
+   // ... Resizing and initialization
+
+   // Creating a view on the 1st and 3rd row of the dense matrix D
+   auto rows1 = rows( D, []( size_t i ){ return 2UL*i + 1UL; }, 2UL );
+
+   // Creating a view on the 4th and 2nd row of the sparse matrix S
+   auto rows2 = rows( S, []( size_t i ){ return 4UL - 2UL*i; }, 2UL );
+   \endcode
+
+// By default, the provided row indices are checked at runtime. In case any row is not properly
+// specified (i.e. if any specified index is greater than or equal to the total number of rows
+// in the given matrix) a \a std::invalid_argument exception is thrown. The checks can be skipped
+// by providing the optional \a blaze::unchecked argument.
+
+   \code
+   auto rows1 = rows( D, []( size_t i ){ return 2UL*i + 1UL; }, 2UL, unchecked );
+   auto rows2 = rows( S, []( size_t i ){ return 4UL - 2UL*i; }, 2UL, unchecked );
+   \endcode
+*/
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , typename P        // Type of the index producer
+        , typename... RRAs  // Optional arguments
+        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
+inline decltype(auto) rows( const Matrix<MT,SO>& matrix, P p, size_t n, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ReturnType = const Rows_<const MT,P>;
+   return ReturnType( ~matrix, p, n, args... );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Creating a view on a selection of rows of the given temporary matrix.
+// \ingroup rows
+//
+// \param matrix The temporary matrix containing the rows.
+// \param p Callable producing the indices.
+// \param n The total number of indices.
+// \param args Optional arguments.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing a selection of rows of the given temporary
+// matrix. In case any row is not properly specified (i.e. if any specified index is greater
+// than or equal to the total number of rows in the given matrix) a \a std::invalid_argument
+// exception is thrown.
+*/
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , typename P        // Type of the index producer
+        , typename... RRAs  // Optional arguments
+        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
+inline decltype(auto) rows( Matrix<MT,SO>&& matrix, P p, size_t n, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ReturnType = Rows_<MT,P>;
+   return ReturnType( ~matrix, p, n, args... );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Creating a view on a selection of rows of the given matrix.
+// \ingroup rows
+//
+// \param matrix The matrix containing the rows.
 // \param indices The sequence of row indices.
 // \param args Optional arguments.
 // \return View on the specified rows of the matrix.
@@ -617,6 +753,36 @@ inline decltype(auto) rows( MT&& matrix, const SmallArray<T,N>& indices, RRAs...
 
    return rows( std::forward<MT>( matrix ), indices.data(), indices.size(), args... );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of rows of the given matrix.
+// \ingroup rows
+//
+// \param matrix The matrix containing the rows.
+// \param pair The pair of arguments for the element selection.
+// \param args Optional arguments.
+// \return View on the specified rows of the matrix.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing a selection of rows of the given matrix. In
+// case any row is not properly specified (i.e. if any specified index is greater than or equal
+// to the total number of rows in the given matrix) a \a std::invalid_argument exception is
+// thrown.
+*/
+template< typename MT         // Type of the matrix
+        , typename T1         // First type of the pair of arguments
+        , typename T2         // Second type of the pair of arguments
+        , typename... RRAs >  // Optional arguments
+inline decltype(auto) rows( MT&& matrix, const std::pair<T1,T2>& pair, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return rows( std::forward<MT>( matrix ), pair.first, pair.second, args... );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -1420,6 +1586,152 @@ inline decltype(auto) rows( Rows<MT,SO,DF,SF,CRAs...>&& r, const T* indices, siz
 
    for( size_t i=0UL; i<n; ++i ) {
       newIndices.pushBack( r.idx( indices[i] ) );
+   }
+
+   return rows( r.operand(), newIndices.data(), newIndices.size(), args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on specific rows of the given row selection.
+// \ingroup rows
+//
+// \param r The selection of rows containing the rows.
+// \param p Callable producing the indices.
+// \param n The total number of indices.
+// \param args The optional row arguments.
+// \return View on the specified rows of the row selection.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing the specified row of the given row selection.
+*/
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , bool SF             // Symmetry flag
+        , typename... CRAs    // Compile time row arguments
+        , typename P          // Type of the index producer
+        , typename... RRAs >  // Optional row arguments
+inline decltype(auto) rows( Rows<MT,SO,DF,SF,CRAs...>& r, P p, size_t n, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+
+   if( isChecked ) {
+      for( size_t i=0UL; i<n; ++i ) {
+         if( r.rows() <= size_t( p(i) ) ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+         }
+      }
+   }
+
+   SmallArray<size_t,128UL> newIndices;
+   newIndices.reserve( n );
+
+   for( size_t i=0UL; i<n; ++i ) {
+      newIndices.pushBack( r.idx( p(i) ) );
+   }
+
+   return rows( r.operand(), newIndices.data(), newIndices.size(), args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on specific rows of the given constant row selection.
+// \ingroup rows
+//
+// \param r The constant selection of rows containing the rows.
+// \param p Callable producing the indices.
+// \param n The total number of indices.
+// \param args The optional row arguments.
+// \return View on the specified rows of the row selection.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing the specified row of the given constant row
+// selection.
+*/
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , bool SF             // Symmetry flag
+        , typename... CRAs    // Compile time row arguments
+        , typename P          // Type of the index producer
+        , typename... RRAs >  // Optional row arguments
+inline decltype(auto) rows( const Rows<MT,SO,DF,SF,CRAs...>& r, P p, size_t n, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+
+   if( isChecked ) {
+      for( size_t i=0UL; i<n; ++i ) {
+         if( r.rows() <= size_t( p(i) ) ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+         }
+      }
+   }
+
+   SmallArray<size_t,128UL> newIndices;
+   newIndices.reserve( n );
+
+   for( size_t i=0UL; i<n; ++i ) {
+      newIndices.pushBack( r.idx( p(i) ) );
+   }
+
+   return rows( r.operand(), newIndices.data(), newIndices.size(), args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on specific rows of the given temporary row selection.
+// \ingroup rows
+//
+// \param r The temporary selection of rows containing the rows.
+// \param p Callable producing the indices.
+// \param n The total number of indices.
+// \param args The optional row arguments.
+// \return View on the specified rows of the row selection.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing the specified row of the given temporary row
+// selection.
+*/
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , bool SF             // Symmetry flag
+        , typename... CRAs    // Compile time row arguments
+        , typename P          // Type of the index producer
+        , typename... RRAs >  // Optional row arguments
+inline decltype(auto) rows( Rows<MT,SO,DF,SF,CRAs...>&& r, P p, size_t n, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+
+   if( isChecked ) {
+      for( size_t i=0UL; i<n; ++i ) {
+         if( r.rows() <= size_t( p(i) ) ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+         }
+      }
+   }
+
+   SmallArray<size_t,128UL> newIndices;
+   newIndices.reserve( n );
+
+   for( size_t i=0UL; i<n; ++i ) {
+      newIndices.pushBack( r.idx( p(i) ) );
    }
 
    return rows( r.operand(), newIndices.data(), newIndices.size(), args... );
