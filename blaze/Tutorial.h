@@ -12625,7 +12625,28 @@
 // The \c simdEnabled() function must be a \c static, \c constexpr function and must return whether
 // or not vectorization is available for the given data type \c T. In case the function returns
 // \c true, the \c load() function is used for a vectorized evaluation, in case the function
-// returns \c false, \c load() is not called.
+// returns \c false, \c load() is neither called nor instantiated.
+//
+// By default the \c map() function uses peel-off and remainder loops if the number of elements is
+// not a multiple of the width of the packed SIMD type. However, all dense vector and matrix types
+// in **Blaze** provide padding as an optimization. In case the custom operation preserves the
+// value zero of the padding elements, it is possible to omit the peel-off and remainder loops,
+// include the padding elements in the computation and by that increase performance. For that
+// purpose the \c paddingEnabled() function can be added to the functor:
+
+   \code
+   struct Sqrt
+   {
+      // ...
+
+      static constexpr bool paddingEnabled() { return true; }
+   };
+   \endcode
+
+// Also the \c paddingEnabled() function must be a \c static, \c constexpr function and must
+// return whether padding elements can be used in the custom operation. In case the function
+// returns \c true, the padding elements are used during a vectorized operation, in case the
+// function returns \c false, the padding elements are not used.
 //
 // Note that this is a simplified example that is only working when used for dense vectors and
 // matrices with double precision floating point elements. The following code shows the complete
@@ -12645,6 +12666,8 @@
 
       template< typename T >
       static constexpr bool simdEnabled() { return HasSIMDSqrt<T>::value; }
+
+      static constexpr bool paddingEnabled() { return true; }
 
       template< typename T >
       BLAZE_ALWAYS_INLINE auto load( const T& a ) const
@@ -12675,6 +12698,8 @@
 
       template< typename T1, typename T2 >
       static constexpr bool simdEnabled() { return HasSIMDMin<T1,T2>::value; }
+
+      static constexpr bool paddingEnabled() { return true; }
 
       template< typename T1, typename T2 >
       BLAZE_ALWAYS_INLINE decltype(auto) load( const T1& a, const T2& b ) const
