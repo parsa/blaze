@@ -63,6 +63,7 @@
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsPaddingEnabled.h>
 #include <blaze/math/typetraits/IsSIMDEnabled.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/system/Inline.h>
@@ -1279,7 +1280,7 @@ struct IsAligned< DVecDVecMapExpr<VT1,VT2,OP,TF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT1, typename VT2, typename OP, bool TF >
 struct IsPadded< DVecDVecMapExpr<VT1,VT2,OP,TF> >
-   : public BoolConstant< IsPadded_v<VT1> && IsPadded_v<VT2> >
+   : public BoolConstant< IsPadded_v<VT1> && IsPadded_v<VT2> && IsPaddingEnabled_v<OP> >
 {};
 /*! \endcond */
 //*************************************************************************************************
