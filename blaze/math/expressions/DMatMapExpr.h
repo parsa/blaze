@@ -60,6 +60,7 @@
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsPaddingEnabled.h>
 #include <blaze/math/typetraits/IsSIMDEnabled.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
@@ -68,6 +69,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasMember.h>
@@ -2483,7 +2485,7 @@ struct IsAligned< DMatMapExpr<MT,OP,SO> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, typename OP, bool SO >
 struct IsPadded< DMatMapExpr<MT,OP,SO> >
-   : public IsPadded<MT>
+   : public BoolConstant< IsPadded_v<MT> && IsPaddingEnabled_v<OP> >
 {};
 /*! \endcond */
 //*************************************************************************************************
