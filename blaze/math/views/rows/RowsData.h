@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/IntegerSequence.h>
+#include <blaze/system/Standard.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/SmallArray.h>
 #include <blaze/util/Types.h>

@@ -79,7 +79,6 @@
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
-#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/system/StorageOrder.h>

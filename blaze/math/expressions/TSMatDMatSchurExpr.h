@@ -58,12 +58,15 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/sparse/Forward.h>
 #include <blaze/math/sparse/ValueIndexPair.h>
-#include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/util/Assert.h>

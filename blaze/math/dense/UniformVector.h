@@ -67,7 +67,6 @@
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
-#include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/math/typetraits/IsZero.h>
