@@ -596,7 +596,6 @@ inline constexpr void ZeroVector<Type,TF>::clear() noexcept
 /*!\brief Changing the size of the zero vector.
 //
 // \param n The new size of the zero vector.
-// \param preserve \a true if the old values of the vector should be preserved, \a false if not.
 // \return void
 //
 // This function resizes the zero vector using the given size to \a n. Note that this function
