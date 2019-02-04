@@ -51,6 +51,7 @@
 #include <blaze/math/constraints/Matrix.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/RowVector.h>
+#include <blaze/math/constraints/SIMDEnabled.h>
 #include <blaze/math/constraints/StrictlyLower.h>
 #include <blaze/math/constraints/StrictlyUpper.h>
 #include <blaze/math/constraints/Symmetric.h>
@@ -80,6 +81,7 @@
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsRowVector.h>
+#include <blaze/math/typetraits/IsSIMDEnabled.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
@@ -129,6 +131,7 @@ OperationTest::OperationTest()
    testIsLower();
    testIsMatrix();
    testIsRowVector();
+   testIsSIMDEnabled();
    testIsStrictlyLower();
    testIsStrictlyUpper();
    testIsSymmetric();
@@ -539,6 +542,28 @@ void OperationTest::testIsRowMajorMatrix()
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type4 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type5 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_MATRIX_TYPE( Type6 );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the mathematical 'IsSIMDEnabled' type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the mathematical 'IsSIMDEnabled' type trait.
+// In case an error is detected, a compilation error is created.
+*/
+void OperationTest::testIsSIMDEnabled()
+{
+   struct A {};
+   struct B { static constexpr bool simdEnabled() { return false; } };
+   struct C { static constexpr bool simdEnabled() { return true; } };
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SIMD_ENABLED( A );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SIMD_ENABLED( B );
+   BLAZE_CONSTRAINT_MUST_BE_SIMD_ENABLED    ( C );
 }
 //*************************************************************************************************
 
