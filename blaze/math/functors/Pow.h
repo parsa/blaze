@@ -93,6 +93,14 @@ struct Pow
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*!\brief Returns whether the operation supports padding, i.e. whether it can deal with zeros.
+   //
+   // \return \a true in case padding is supported, \a false if not.
+   */
+   static constexpr bool paddingEnabled() { return false; }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the pow() function for the given SIMD vector.
    //
    // \param a The left-hand side SIMD vector.

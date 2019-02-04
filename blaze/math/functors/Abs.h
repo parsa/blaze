@@ -111,6 +111,14 @@ struct Abs
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*!\brief Returns whether the operation supports padding, i.e. whether it can deal with zeros.
+   //
+   // \return \a true in case padding is supported, \a false if not.
+   */
+   static constexpr bool paddingEnabled() { return true; }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the abs() function for the given SIMD vector.
    //
    // \param a The given SIMD vector.

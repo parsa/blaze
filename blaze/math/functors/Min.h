@@ -109,6 +109,14 @@ struct Min
    //**********************************************************************************************
 
    //**********************************************************************************************
+   /*!\brief Returns whether the operation supports padding, i.e. whether it can deal with zeros.
+   //
+   // \return \a true in case padding is supported, \a false if not.
+   */
+   static constexpr bool paddingEnabled() { return true; }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
    /*!\brief Returns the result of the min() function for the given SIMD vectors.
    //
    // \param a The left-hand side SIMD vector.
