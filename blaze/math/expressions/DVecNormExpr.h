@@ -62,8 +62,10 @@
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/typetraits/HasLoad.h>
 #include <blaze/math/typetraits/HasSIMDAdd.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsSIMDEnabled.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/util/algorithms/Min.h>
@@ -74,7 +76,6 @@
 #include <blaze/util/mpl/Bool.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/Template.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
@@ -108,29 +109,12 @@ struct DVecNormHelper
    using CT = RemoveReference_t< CompositeType_t<VT> >;
    //**********************************************************************************************
 
-   //**SIMD support detection**********************************************************************
-   //! Definition of the HasSIMDEnabled type trait.
-   BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasSIMDEnabled, simdEnabled );
-
-   //! Definition of the HasLoad type trait.
-   BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasLoad, load );
-
-   //! Helper structure for the detection of the SIMD capabilities of the given custom operation.
-   struct UseSIMDEnabledFlag {
-      static constexpr bool test( bool (*fnc)() ) { return fnc(); }
-      static constexpr bool test( bool b ) { return b; }
-      static constexpr bool value =
-         test( Abs::BLAZE_TEMPLATE simdEnabled<ET> ) &&
-         test( Power::BLAZE_TEMPLATE simdEnabled<ET> );
-   };
-   //**********************************************************************************************
-
    //**********************************************************************************************
    static constexpr bool value =
       ( useOptimizedKernels &&
         CT::simdEnabled &&
         If_t< HasSIMDEnabled_v<Abs> && HasSIMDEnabled_v<Power>
-            , UseSIMDEnabledFlag
+            , And< GetSIMDEnabled<Abs,ET>, GetSIMDEnabled<Power,ET> >
             , And< HasLoad<Abs>, HasLoad<Power> > >::value &&
         HasSIMDAdd_v< ElementType_t<CT>, ElementType_t<CT> > );
    //**********************************************************************************************
