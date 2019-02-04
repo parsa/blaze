@@ -49,6 +49,7 @@
 #include <blaze/math/constraints/Identity.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/Matrix.h>
+#include <blaze/math/constraints/PaddingEnabled.h>
 #include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/constraints/RowVector.h>
 #include <blaze/math/constraints/SIMDEnabled.h>
@@ -79,6 +80,7 @@
 #include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatrix.h>
+#include <blaze/math/typetraits/IsPaddingEnabled.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSIMDEnabled.h>
@@ -130,6 +132,7 @@ OperationTest::OperationTest()
    testIsIdentity();
    testIsLower();
    testIsMatrix();
+   testIsPaddingEnabled();
    testIsRowVector();
    testIsSIMDEnabled();
    testIsStrictlyLower();
@@ -511,6 +514,28 @@ void OperationTest::testIsMatrix()
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type4 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type5 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_MATRIX_TYPE( Type6 );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the mathematical 'IsPaddingEnabled' type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the mathematical 'IsPaddingEnabled' type trait.
+// In case an error is detected, a compilation error is created.
+*/
+void OperationTest::testIsPaddingEnabled()
+{
+   struct A {};
+   struct B { static constexpr bool paddingEnabled() { return false; } };
+   struct C { static constexpr bool paddingEnabled() { return true; } };
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_PADDING_ENABLED( A );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_PADDING_ENABLED( B );
+   BLAZE_CONSTRAINT_MUST_BE_PADDING_ENABLED    ( C );
 }
 //*************************************************************************************************
 

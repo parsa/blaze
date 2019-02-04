@@ -81,6 +81,7 @@ class OperationTest
    void testIsIdentity();
    void testIsLower();
    void testIsMatrix();
+   void testIsPaddingEnabled();
    void testIsRowMajorMatrix();
    void testIsRowVector();
    void testIsSIMDEnabled();
