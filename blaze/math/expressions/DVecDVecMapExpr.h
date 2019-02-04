@@ -59,9 +59,11 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/MapTrait.h>
+#include <blaze/math/typetraits/HasLoad.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsSIMDEnabled.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
@@ -69,9 +71,7 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/Template.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/HasMember.h>
 
 
 namespace blaze {
@@ -107,12 +107,6 @@ class DVecDVecMapExpr
    using RN2 = ReturnType_t<VT2>;     //!< Return type of the right-hand side dense vector expression.
    using CT1 = CompositeType_t<VT1>;  //!< Composite type of the left-hand side dense vector expression.
    using CT2 = CompositeType_t<VT2>;  //!< Composite type of the right-hand side dense vector expression.
-
-   //! Definition of the HasSIMDEnabled type trait.
-   BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasSIMDEnabled, simdEnabled );
-
-   //! Definition of the HasLoad type trait.
-   BLAZE_CREATE_HAS_DATA_OR_FUNCTION_MEMBER_TYPE_TRAIT( HasLoad, load );
    //**********************************************************************************************
 
    //**Serial evaluation strategy******************************************************************
@@ -143,17 +137,6 @@ class DVecDVecMapExpr
    template< typename VT >
    static constexpr bool UseSMPAssign_v =
       ( ( !VT1::smpAssignable || !VT2::smpAssignable ) && useAssign );
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**SIMD support detection**********************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the detection of the SIMD capabilities of the given custom operation.
-   struct UseSIMDEnabledFlag {
-      static constexpr bool test( bool (*fnc)() ) { return fnc(); }
-      static constexpr bool test( bool b ) { return b; }
-      static constexpr bool value = test( OP::BLAZE_TEMPLATE simdEnabled<ET1,ET2> );
-   };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -444,7 +427,7 @@ class DVecDVecMapExpr
    //! Compilation switch for the expression template evaluation strategy.
    static constexpr bool simdEnabled =
       ( VT1::simdEnabled && VT2::simdEnabled &&
-        If_t< HasSIMDEnabled_v<OP>, UseSIMDEnabledFlag, HasLoad<OP> >::value );
+        If_t< HasSIMDEnabled_v<OP>, GetSIMDEnabled<OP,ET1,ET2>, HasLoad<OP> >::value );
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = ( VT1::smpAssignable && VT2::smpAssignable );
