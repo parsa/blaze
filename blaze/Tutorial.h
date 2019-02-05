@@ -4487,10 +4487,33 @@
    blaze::StaticMatrix<double,3UL,3UL> B;
 
    // Evaluating the softmax function
-   B = softmax( A );     // Results in ( 0.0157764 0.0428847 0.116573  )
-                         //            ( 0.316878  0.0157764 0.0428847 )
-                         //            ( 0.116573  0.316878  0.0157764 )
-   double s = sum( B );  // Results in 1
+   B = softmax( A );  // Results in ( 0.0157764  0.0428847  0.116573  )
+                      //            ( 0.316878   0.0157764  0.0428847 )
+                      //            ( 0.116573   0.316878   0.0157764 )
+
+   double b = sum( B );  // Results in 1
+   \endcode
+
+// Alternatively it is possible to compute a row- or columnwise softmax function. The resulting
+// dense matrix consists of real values in the range (0..1], which add up to the number of rows
+// or columns, respectively.
+
+   \code
+   blaze::StaticMatrix<double,3UL,3UL> C, D;
+
+   // Evaluating the rowwise softmax function
+   C = softmax<rowwise>( A );  // Results in ( 0.0900306  0.244728   0.665241 )
+                               //            ( 0.843795   0.0420101  0.114195 )
+                               //            ( 0.259496   0.705385   0.035119 )
+
+   double c = sum( C );  // Results in 3 (the number of rows of A)
+
+   // Evaluating the columnwise softmax function
+   D = softmax<columnwise>( A );  // Results in ( 0.035119  0.114195   0.665241  )
+                                  //            ( 0.705385  0.0420101  0.244728  )
+                                  //            ( 0.259496  0.843795   0.0900306 )
+
+   double d = sum( D );  // Results in 3 (the number of columns of A)
    \endcode
 
 // \n \subsection matrix_operators_trace trace()
