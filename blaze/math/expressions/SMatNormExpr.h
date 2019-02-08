@@ -152,7 +152,7 @@ decltype(auto) norm( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~sm, Noop(), Pow2(), Sqrt() );
+   return norm_backend( ~sm, Abs(), Pow2(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -178,7 +178,7 @@ decltype(auto) sqrNorm( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~sm, Noop(), Pow2(), Noop() );
+   return norm_backend( ~sm, Abs(), Pow2(), Noop() );
 }
 //*************************************************************************************************
 
@@ -230,7 +230,7 @@ decltype(auto) l2Norm( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~sm, Noop(), Pow2(), Sqrt() );
+   return norm_backend( ~sm, Abs(), Pow2(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -282,7 +282,7 @@ decltype(auto) l4Norm( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~sm, Noop(), Pow4(), Qdrt() );
+   return norm_backend( ~sm, Abs(), Pow4(), Qdrt() );
 }
 //*************************************************************************************************
 

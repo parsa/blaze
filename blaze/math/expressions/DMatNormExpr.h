@@ -471,7 +471,7 @@ decltype(auto) norm( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, Noop(), Pow2(), Sqrt() );
+   return norm_backend( ~dm, Abs(), Pow2(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -497,7 +497,7 @@ decltype(auto) sqrNorm( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, Noop(), Pow2(), Noop() );
+   return norm_backend( ~dm, Abs(), Pow2(), Noop() );
 }
 //*************************************************************************************************
 
@@ -549,7 +549,7 @@ decltype(auto) l2Norm( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, Noop(), Pow2(), Sqrt() );
+   return norm_backend( ~dm, Abs(), Pow2(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -601,7 +601,7 @@ decltype(auto) l4Norm( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, Noop(), Pow4(), Qdrt() );
+   return norm_backend( ~dm, Abs(), Pow4(), Qdrt() );
 }
 //*************************************************************************************************
 

@@ -306,7 +306,7 @@ decltype(auto) norm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dv, Noop(), Pow2(), Sqrt() );
+   return norm_backend( ~dv, Abs(), Pow2(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -332,7 +332,7 @@ decltype(auto) sqrNorm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dv, Noop(), Pow2(), Noop() );
+   return norm_backend( ~dv, Abs(), Pow2(), Noop() );
 }
 //*************************************************************************************************
 
@@ -384,7 +384,7 @@ decltype(auto) l2Norm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dv, Noop(), Pow2(), Sqrt() );
+   return norm_backend( ~dv, Abs(), Pow2(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -436,7 +436,7 @@ decltype(auto) l4Norm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dv, Noop(), Pow4(), Qdrt() );
+   return norm_backend( ~dv, Abs(), Pow4(), Qdrt() );
 }
 //*************************************************************************************************
 
