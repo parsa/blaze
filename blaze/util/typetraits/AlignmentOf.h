@@ -141,50 +141,15 @@ struct AlignmentOfHelper<double>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of \c AlignmentOfHelper for 'complex<float>'.
+/*!\brief Specialization of \c AlignmentOfHelper for 'complex<T>'.
 // \ingroup type_traits
 */
-template<>
-struct AlignmentOfHelper< complex<float> >
+template< typename T >
+struct AlignmentOfHelper< complex<T> >
 {
  public:
    //**********************************************************************************************
-   static constexpr size_t value =
-#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-      64UL;
-#elif BLAZE_AVX_MODE
-      32UL;
-#elif BLAZE_SSE_MODE
-      16UL;
-#else
-      std::alignment_of< complex<float> >::value;
-#endif
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of \c AlignmentOfHelper for 'complex<double>'.
-// \ingroup type_traits
-*/
-template<>
-struct AlignmentOfHelper< complex<double> >
-{
- public:
-   //**********************************************************************************************
-   static constexpr size_t value =
-#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
-      64UL;
-#elif BLAZE_AVX_MODE
-      32UL;
-#elif BLAZE_SSE2_MODE
-      16UL;
-#else
-      std::alignment_of< complex<double> >::value;
-#endif
+   static constexpr size_t value = AlignmentOfHelper<T>::value;
    //**********************************************************************************************
 };
 /*! \endcond */
