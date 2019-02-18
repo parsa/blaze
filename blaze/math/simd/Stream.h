@@ -170,7 +170,7 @@ BLAZE_ALWAYS_INLINE EnableIf_t< IsIntegral_v<T1> && HasSize_v<T1,2UL> >
    BLAZE_INTERNAL_ASSERT( checkAlignment( address ), "Invalid alignment detected" );
 
 #if BLAZE_AVX512BW_MODE
-   _mm512_stream_si512( reinterpret_cast<__m523i*>( address ), (~value).value );
+   _mm512_stream_si512( reinterpret_cast<__m512i*>( address ), (~value).value );
 #elif BLAZE_AVX2_MODE
    _mm256_stream_si256( reinterpret_cast<__m256i*>( address ), (~value).value );
 #elif BLAZE_SSE2_MODE
