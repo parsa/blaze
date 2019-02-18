@@ -514,9 +514,9 @@ BLAZE_ALWAYS_INLINE const T
    operator*( const SIMDci32<T>& a, const SIMDci32<T>& b ) noexcept
 #if BLAZE_AVX512F_MODE
 {
-   const __m512i a_ii = _mm512_shuffle_epi32( (~a).value, 0b11'11'01'01 );
-   const __m512i b_ri = _mm512_shuffle_epi32( (~b).value, 0b10'11'00'01 );
-   const __m512i a_rr = _mm512_shuffle_epi32( (~a).value, 0b10'10'00'00 );
+   const __m512i a_ii = _mm512_shuffle_epi32( (~a).value, _MM_PERM_DDBB );
+   const __m512i b_ri = _mm512_shuffle_epi32( (~b).value, _MM_PERM_CDAB );
+   const __m512i a_rr = _mm512_shuffle_epi32( (~a).value, _MM_PERM_CCAA );
 
    const __m512i a_rr_b = _mm512_mullo_epi32( a_rr, (~b).value );
    const __m512i a_ii_b_ri = _mm512_mullo_epi32( a_ii, b_ri );
