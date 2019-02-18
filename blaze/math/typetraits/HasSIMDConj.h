@@ -78,7 +78,7 @@ struct HasSIMDConjHelper< complex<T> >
    : public BoolConstant< IsNumeric_v<T> && IsSigned_v<T> &&
                           ( ( !bool( BLAZE_AVX512F_MODE  ) && HasSIMDMult_v<T,T> && ( IsFloatingPoint_v<T> || sizeof(T) <= 4UL ) ) ||
                             (  bool( BLAZE_AVX512F_MODE  ) && IsFloatingPoint_v<T> ) ||
-                            (  bool( BLAZE_AVX512BW_MODE ) && sizeof(T) <= 2UL ) ||
+                            (  bool( BLAZE_AVX512BW_MODE ) && sizeof(T) == 2UL ) ||
                             (  bool( BLAZE_AVX512F_MODE  ) && sizeof(T) >= 4UL ) ) >
 {};
 /*! \endcond */
