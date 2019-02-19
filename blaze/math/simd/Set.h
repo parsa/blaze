@@ -235,11 +235,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,4UL>
                                     , If_t< IsSigned_v<T>, SIMDcint32, SIMDcuint32 > >
    set( complex<T> value ) noexcept
 {
-#if BLAZE_AVX512F_MODE
-   __m512i dst( _mm512_maskz_set1_epi32( 0xAA, value.imag() ) );
-   dst = _mm512_maskz_set1_epi32( 0x55, value.real() );
-   return dst;
-#elif BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return _mm512_set_epi32( value.imag(), value.real(), value.imag(), value.real(),
                             value.imag(), value.real(), value.imag(), value.real(),
                             value.imag(), value.real(), value.imag(), value.real(),
@@ -302,11 +298,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,8UL>
                                     , If_t< IsSigned_v<T>, SIMDcint64, SIMDcuint64 > >
    set( complex<T> value ) noexcept
 {
-#if BLAZE_AVX512F_MODE
-   __m512i dst( _mm512_maskz_set1_epi64( 0xA, value.imag() ) );
-   dst = _mm512_maskz_set1_epi32( 0x5, value.real() );
-   return dst;
-#elif BLAZE_MIC_MODE
+#if BLAZE_AVX512F_MODE || BLAZE_MIC_MODE
    return _mm512_set_epi64( value.imag(), value.real(), value.imag(), value.real(),
                             value.imag(), value.real(), value.imag(), value.real() );
 #elif BLAZE_AVX2_MODE
