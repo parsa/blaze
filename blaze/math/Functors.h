@@ -107,6 +107,7 @@
 #include <blaze/math/functors/Sign.h>
 #include <blaze/math/functors/Sin.h>
 #include <blaze/math/functors/Sinh.h>
+#include <blaze/math/functors/SqrAbs.h>
 #include <blaze/math/functors/Sqrt.h>
 #include <blaze/math/functors/Sub.h>
 #include <blaze/math/functors/SubAssign.h>

@@ -118,6 +118,7 @@ struct Serial;
 struct Sign;
 struct Sin;
 struct Sinh;
+struct SqrAbs;
 struct Sqrt;
 struct Sub;
 struct SubAssign;
