@@ -53,8 +53,8 @@
 #include <blaze/math/functors/Noop.h>
 #include <blaze/math/functors/Pow2.h>
 #include <blaze/math/functors/Pow3.h>
-#include <blaze/math/functors/Pow4.h>
 #include <blaze/math/functors/Qdrt.h>
+#include <blaze/math/functors/SqrAbs.h>
 #include <blaze/math/functors/Sqrt.h>
 #include <blaze/math/functors/UnaryPow.h>
 #include <blaze/math/shims/Evaluate.h>
@@ -306,7 +306,7 @@ decltype(auto) norm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dv, Abs(), Pow2(), Sqrt() );
+   return norm_backend( ~dv, SqrAbs(), Noop(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -332,7 +332,7 @@ decltype(auto) sqrNorm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dv, Abs(), Pow2(), Noop() );
+   return norm_backend( ~dv, SqrAbs(), Noop(), Noop() );
 }
 //*************************************************************************************************
 
@@ -384,7 +384,7 @@ decltype(auto) l2Norm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dv, Abs(), Pow2(), Sqrt() );
+   return norm_backend( ~dv, SqrAbs(), Noop(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -436,7 +436,7 @@ decltype(auto) l4Norm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dv, Abs(), Pow4(), Qdrt() );
+   return norm_backend( ~dv, SqrAbs(), Pow2(), Qdrt() );
 }
 //*************************************************************************************************
 
