@@ -652,11 +652,9 @@ inline bool tryAssign( const DiagonalMatrix<MT,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   using RhsIterator = typename VT::ConstIterator;
-
    const size_t index( column - row );
 
-   for( RhsIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
       if( element->index() != index && !isDefault( element->value() ) )
          return false;
    }
@@ -698,11 +696,9 @@ inline bool tryAssign( const DiagonalMatrix<MT,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   using RhsIterator = typename VT::ConstIterator;
-
    const size_t index( row - column );
 
-   for( RhsIterator element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
       if( element->index() != index && !isDefault( element->value() ) )
          return false;
    }
@@ -888,12 +884,10 @@ inline bool tryAssign( const DiagonalMatrix<MT1,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   using RhsIterator = typename MT2::ConstIterator;
-
    const size_t M( (~rhs).rows() );
 
    for( size_t i=0UL; i<M; ++i ) {
-      for( RhsIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
+      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element ) {
          if( ( row + i != column + element->index() ) && !isDefault( element->value() ) )
             return false;
       }
@@ -937,12 +931,10 @@ inline bool tryAssign( const DiagonalMatrix<MT1,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   using RhsIterator = typename MT2::ConstIterator;
-
    const size_t N( (~rhs).columns() );
 
    for( size_t j=0UL; j<N; ++j ) {
-      for( RhsIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element ) {
          if( ( column + j != row + element->index() ) && !isDefault( element->value() ) )
             return false;
       }

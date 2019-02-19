@@ -2228,7 +2228,7 @@ inline void CustomVector<Type,AF,PF,TF,RT>::assign( const SparseVector<VT,TF>& r
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -2340,7 +2340,7 @@ inline void CustomVector<Type,AF,PF,TF,RT>::addAssign( const SparseVector<VT,TF>
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -2452,7 +2452,7 @@ inline void CustomVector<Type,AF,PF,TF,RT>::subAssign( const SparseVector<VT,TF>
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -2568,7 +2568,7 @@ inline void CustomVector<Type,AF,PF,TF,RT>::multAssign( const SparseVector<VT,TF
 
    reset();
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = tmp[element->index()] * element->value();
 }
 //*************************************************************************************************
@@ -4507,7 +4507,7 @@ inline void CustomVector<Type,AF,padded,TF,RT>::assign( const SparseVector<VT,TF
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = element->value();
 }
 /*! \endcond */
@@ -4624,7 +4624,7 @@ inline void CustomVector<Type,AF,padded,TF,RT>::addAssign( const SparseVector<VT
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] += element->value();
 }
 /*! \endcond */
@@ -4741,7 +4741,7 @@ inline void CustomVector<Type,AF,padded,TF,RT>::subAssign( const SparseVector<VT
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] -= element->value();
 }
 /*! \endcond */
@@ -4862,7 +4862,7 @@ inline void CustomVector<Type,AF,padded,TF,RT>::multAssign( const SparseVector<V
 
    reset();
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = tmp[element->index()] * element->value();
 }
 /*! \endcond */

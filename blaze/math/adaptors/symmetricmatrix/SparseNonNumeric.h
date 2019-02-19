@@ -1558,8 +1558,8 @@ inline auto SymmetricMatrix<MT,SO,false,false>::operator*=( ST rhs )
    -> EnableIf_t< IsNumeric_v<ST>, SymmetricMatrix& >
 {
    for( size_t i=0UL; i<rows(); ++i ) {
-      const Iterator_t<MatrixType> last( matrix_.upperBound(i,i) );
-      for( Iterator_t<MatrixType> element=matrix_.begin(i); element!=last; ++element )
+      const auto last( matrix_.upperBound(i,i) );
+      for( auto element=matrix_.begin(i); element!=last; ++element )
          *element->value() *= rhs;
    }
 
@@ -1586,8 +1586,8 @@ inline auto SymmetricMatrix<MT,SO,false,false>::operator/=( ST rhs )
    BLAZE_USER_ASSERT( !isZero( rhs ), "Division by zero detected" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      const Iterator_t<MatrixType> last( matrix_.upperBound(i,i) );
-      for( Iterator_t<MatrixType> element=matrix_.begin(i); element!=last; ++element )
+      const auto last( matrix_.upperBound(i,i) );
+      for( auto element=matrix_.begin(i); element!=last; ++element )
          *element->value() /= rhs;
    }
 
@@ -1774,7 +1774,7 @@ inline void SymmetricMatrix<MT,SO,false,false>::reset( size_t i )
 {
    using blaze::erase;
 
-   for( Iterator_t<MatrixType> it=matrix_.begin(i); it!=matrix_.end(i); ++it )
+   for( auto it=matrix_.begin(i); it!=matrix_.end(i); ++it )
    {
       const size_t j( it->index() );
 
@@ -2234,7 +2234,7 @@ inline typename SymmetricMatrix<MT,SO,false,false>::Iterator
 {
    using blaze::erase;
 
-   for( Iterator it=first; it!=last; ++it )
+   for( auto it=first; it!=last; ++it )
    {
       const size_t j( it->index() );
 
@@ -2315,7 +2315,7 @@ inline void
 {
    using blaze::erase;
 
-   for( Iterator it=first; it!=last; ++it ) {
+   for( auto it=first; it!=last; ++it ) {
       const size_t j( it->index() );
       if( i != j && predicate( it->value() ) ) {
          if( SO )
@@ -2541,8 +2541,8 @@ template< typename MT  // Type of the adapted sparse matrix
 inline SymmetricMatrix<MT,SO,false,false>& SymmetricMatrix<MT,SO,false,false>::ctranspose()
 {
    for( size_t i=0UL; i<rows(); ++i ) {
-      const Iterator_t<MatrixType> last( matrix_.upperBound(i,i) );
-      for( Iterator_t<MatrixType> element=matrix_.begin(i); element!=last; ++element )
+      const auto last( matrix_.upperBound(i,i) );
+      for( auto element=matrix_.begin(i); element!=last; ++element )
          conjugate( *element->value() );
    }
 
@@ -2577,8 +2577,8 @@ inline SymmetricMatrix<MT,SO,false,false>&
    SymmetricMatrix<MT,SO,false,false>::scale( const Other& scalar )
 {
    for( size_t i=0UL; i<rows(); ++i ) {
-      const Iterator_t<MatrixType> last( matrix_.upperBound(i,i) );
-      for( Iterator_t<MatrixType> element=matrix_.begin(i); element!=last; ++element )
+      const auto last( matrix_.upperBound(i,i) );
+      for( auto element=matrix_.begin(i); element!=last; ++element )
          ( *element->value() ).scale( scalar );
    }
 
@@ -2828,7 +2828,7 @@ void SymmetricMatrix<MT,SO,false,false>::assign( SparseMatrix<MT2,SO>& rhs )
    }
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      for( Iterator_t<MT2> it=(~rhs).lowerBound(i,i); it!=(~rhs).end(i); ++it ) {
+      for( auto it=(~rhs).lowerBound(i,i); it!=(~rhs).end(i); ++it ) {
          if( !isDefault( it->value() ) ) {
             SharedValue<ET> shared;
             *shared = std::move( it->value() );
@@ -2879,7 +2879,7 @@ void SymmetricMatrix<MT,SO,false,false>::assign( const SparseMatrix<MT2,SO>& rhs
    }
 
    for( size_t i=0UL; i<rows(); ++i ) {
-      for( ConstIterator_t<MT2> it=(~rhs).lowerBound(i,i); it!=(~rhs).end(i); ++it ) {
+      for( auto it=(~rhs).lowerBound(i,i); it!=(~rhs).end(i); ++it ) {
          if( !isDefault( it->value() ) ) {
             const SharedValue<ET> shared( it->value() );
             matrix_.append( i, it->index(), shared, false );

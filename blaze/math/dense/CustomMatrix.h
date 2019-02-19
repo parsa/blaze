@@ -2575,7 +2575,7 @@ inline void CustomMatrix<Type,AF,PF,SO,RT>::assign( const SparseMatrix<MT,SO>& r
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*nn_+element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -2606,7 +2606,7 @@ inline void CustomMatrix<Type,AF,PF,SO,RT>::assign( const SparseMatrix<MT,!SO>& 
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*nn_+j] = element->value();
 }
 //*************************************************************************************************
@@ -2804,7 +2804,7 @@ inline void CustomMatrix<Type,AF,PF,SO,RT>::addAssign( const SparseMatrix<MT,SO>
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*nn_+element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -2835,7 +2835,7 @@ inline void CustomMatrix<Type,AF,PF,SO,RT>::addAssign( const SparseMatrix<MT,!SO
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*nn_+j] += element->value();
 }
 //*************************************************************************************************
@@ -3033,7 +3033,7 @@ inline void CustomMatrix<Type,AF,PF,SO,RT>::subAssign( const SparseMatrix<MT,SO>
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<m_; ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*nn_+element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -3064,7 +3064,7 @@ inline void CustomMatrix<Type,AF,PF,SO,RT>::subAssign( const SparseMatrix<MT,!SO
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<n_; ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*nn_+j] -= element->value();
 }
 //*************************************************************************************************
@@ -3230,7 +3230,7 @@ inline void CustomMatrix<Type,AF,PF,SO,RT>::schurAssign( const SparseMatrix<MT,S
    reset();
 
    for( size_t i=0UL; i<m_; ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*nn_+element->index()] = tmp(i,element->index()) * element->value();
 }
 //*************************************************************************************************
@@ -3265,7 +3265,7 @@ inline void CustomMatrix<Type,AF,PF,SO,RT>::schurAssign( const SparseMatrix<MT,!
    reset();
 
    for( size_t j=0UL; j<n_; ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*nn_+j] = tmp(element->index(),j) * element->value();
 }
 //*************************************************************************************************
@@ -5465,7 +5465,7 @@ inline void CustomMatrix<Type,AF,PF,true,RT>::assign( const SparseMatrix<MT,true
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<(~rhs).columns(); ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*mm_] = element->value();
 }
 /*! \endcond */
@@ -5497,7 +5497,7 @@ inline void CustomMatrix<Type,AF,PF,true,RT>::assign( const SparseMatrix<MT,fals
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*mm_] = element->value();
 }
 /*! \endcond */
@@ -5699,7 +5699,7 @@ inline void CustomMatrix<Type,AF,PF,true,RT>::addAssign( const SparseMatrix<MT,t
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<(~rhs).columns(); ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*mm_] += element->value();
 }
 /*! \endcond */
@@ -5731,7 +5731,7 @@ inline void CustomMatrix<Type,AF,PF,true,RT>::addAssign( const SparseMatrix<MT,f
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*mm_] += element->value();
 }
 /*! \endcond */
@@ -5934,7 +5934,7 @@ inline void CustomMatrix<Type,AF,PF,true,RT>::subAssign( const SparseMatrix<MT,t
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t j=0UL; j<(~rhs).columns(); ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*mm_] -= element->value();
 }
 /*! \endcond */
@@ -5966,7 +5966,7 @@ inline void CustomMatrix<Type,AF,PF,true,RT>::subAssign( const SparseMatrix<MT,f
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*mm_] -= element->value();
 }
 /*! \endcond */
@@ -6137,7 +6137,7 @@ inline void CustomMatrix<Type,AF,PF,true,RT>::schurAssign( const SparseMatrix<MT
    reset();
 
    for( size_t j=0UL; j<(~rhs).columns(); ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*mm_] = tmp(element->index(),j) * element->value();
 }
 /*! \endcond */
@@ -6173,7 +6173,7 @@ inline void CustomMatrix<Type,AF,PF,true,RT>::schurAssign( const SparseMatrix<MT
    reset();
 
    for( size_t i=0UL; i<(~rhs).rows(); ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*mm_] = tmp(i,element->index()) * element->value();
 }
 /*! \endcond */

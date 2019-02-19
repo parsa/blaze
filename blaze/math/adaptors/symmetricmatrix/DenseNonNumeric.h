@@ -2091,7 +2091,7 @@ inline void SymmetricMatrix<MT,SO,true,false>::reset( size_t i )
 {
    using blaze::clear;
 
-   for( Iterator element=begin(i); element!=end(i); ++element )
+   for( auto element=begin(i); element!=end(i); ++element )
       clear( *element );
 }
 /*! \endcond */
@@ -2554,19 +2554,17 @@ inline void SymmetricMatrix<MT,SO,true,false>::assign( const SparseMatrix<MT2,SO
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   using RhsIterator = ConstIterator_t<MT2>;
-
    if( SO ) {
       for( size_t j=0UL; j<columns(); ++j ) {
-         const RhsIterator last( (~rhs).upperBound(j,j) );
-         for( RhsIterator element=(~rhs).begin(j); element!=last; ++element )
+         const auto last( (~rhs).upperBound(j,j) );
+         for( auto element=(~rhs).begin(j); element!=last; ++element )
             matrix_(element->index(),j) = element->value();
       }
    }
    else {
       for( size_t i=0UL; i<rows(); ++i ) {
-         const RhsIterator last( (~rhs).upperBound(i,i) );
-         for( RhsIterator element=(~rhs).begin(i); element!=last; ++element )
+         const auto last( (~rhs).upperBound(i,i) );
+         for( auto element=(~rhs).begin(i); element!=last; ++element )
             matrix_(i,element->index()) = element->value();
       }
    }
@@ -2630,19 +2628,17 @@ inline void SymmetricMatrix<MT,SO,true,false>::addAssign( const SparseMatrix<MT2
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   using RhsIterator = ConstIterator_t<MT2>;
-
    if( SO ) {
       for( size_t j=0UL; j<columns(); ++j ) {
-         const RhsIterator last( (~rhs).upperBound(j,j) );
-         for( RhsIterator element=(~rhs).begin(j); element!=last; ++element )
+         const auto last( (~rhs).upperBound(j,j) );
+         for( auto element=(~rhs).begin(j); element!=last; ++element )
             matrix_(element->index(),j) += element->value();
       }
    }
    else {
       for( size_t i=0UL; i<rows(); ++i ) {
-         const RhsIterator last( (~rhs).upperBound(i,i) );
-         for( RhsIterator element=(~rhs).begin(i); element!=last; ++element )
+         const auto last( (~rhs).upperBound(i,i) );
+         for( auto element=(~rhs).begin(i); element!=last; ++element )
             matrix_(i,element->index()) += element->value();
       }
    }
@@ -2706,19 +2702,17 @@ inline void SymmetricMatrix<MT,SO,true,false>::subAssign( const SparseMatrix<MT2
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   using RhsIterator = ConstIterator_t<MT2>;
-
    if( SO ) {
       for( size_t j=0UL; j<columns(); ++j ) {
-         const RhsIterator last( (~rhs).upperBound(j,j) );
-         for( RhsIterator element=(~rhs).begin(j); element!=last; ++element )
+         const auto last( (~rhs).upperBound(j,j) );
+         for( auto element=(~rhs).begin(j); element!=last; ++element )
             matrix_(element->index(),j) -= element->value();
       }
    }
    else {
       for( size_t i=0UL; i<rows(); ++i ) {
-         const RhsIterator last( (~rhs).upperBound(i,i) );
-         for( RhsIterator element=(~rhs).begin(i); element!=last; ++element )
+         const auto last( (~rhs).upperBound(i,i) );
+         for( auto element=(~rhs).begin(i); element!=last; ++element )
             matrix_(i,element->index()) -= element->value();
       }
    }
@@ -2782,15 +2776,13 @@ inline void SymmetricMatrix<MT,SO,true,false>::schurAssign( const SparseMatrix<M
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   using RhsIterator = ConstIterator_t<MT2>;
-
    if( SO ) {
       for( size_t j=0UL; j<columns(); ++j )
       {
          size_t i( 0UL );
 
-         const RhsIterator last( (~rhs).upperBound(j,j) );
-         for( RhsIterator element=(~rhs).begin(j); element!=last; ++element ) {
+         const auto last( (~rhs).upperBound(j,j) );
+         for( auto element=(~rhs).begin(j); element!=last; ++element ) {
             for( ; i<element->index(); ++i )
                reset( matrix_(i,j) );
             matrix_(i,j) *= element->value();
@@ -2807,8 +2799,8 @@ inline void SymmetricMatrix<MT,SO,true,false>::schurAssign( const SparseMatrix<M
       {
          size_t j( 0UL );
 
-         const RhsIterator last( (~rhs).upperBound(i,i) );
-         for( RhsIterator element=(~rhs).begin(i); element!=last; ++element ) {
+         const auto last( (~rhs).upperBound(i,i) );
+         for( auto element=(~rhs).begin(i); element!=last; ++element ) {
             for( ; j<element->index(); ++j )
                reset( matrix_(i,j) );
             matrix_(i,j) *= element->value();

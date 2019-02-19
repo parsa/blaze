@@ -1761,7 +1761,7 @@ inline void HermitianMatrix<MT,SO,false>::reset( size_t i )
 {
    using blaze::erase;
 
-   for( Iterator_t<MT> it=matrix_.begin(i); it!=matrix_.end(i); ++it )
+   for( auto it=matrix_.begin(i); it!=matrix_.end(i); ++it )
    {
       const size_t j( it->index() );
 
@@ -2241,7 +2241,7 @@ inline typename HermitianMatrix<MT,SO,false>::Iterator
 {
    using blaze::erase;
 
-   for( Iterator_t<MT> it=first.base(); it!=last.base(); ++it )
+   for( auto it=first.base(); it!=last.base(); ++it )
    {
       const size_t j( it->index() );
 
@@ -2339,7 +2339,7 @@ inline void
 {
    using blaze::erase;
 
-   for( Iterator it=first; it!=last; ++it ) {
+   for( auto it=first; it!=last; ++it ) {
       const size_t j( it->index() );
       if( i != j && predicate( it->value() ) ) {
          if( SO )

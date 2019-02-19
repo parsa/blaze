@@ -2408,12 +2408,10 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::assign( const SparseMatrix<MT2
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   using RhsIterator = ConstIterator_t<MT2>;
-
    // Counting the number of elements per row
    std::vector<size_t> rowLengths( rows(), 0UL );
    for( size_t j=0UL; j<columns(); ++j ) {
-      for( RhsIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          ++rowLengths[element->index()];
    }
 
@@ -2424,7 +2422,7 @@ inline void Submatrix<MT,AF,false,false,CSAs...>::assign( const SparseMatrix<MT2
 
    // Appending the elements to the rows of the sparse submatrix
    for( size_t j=0UL; j<columns(); ++j ) {
-      for( RhsIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          if( IsSymmetric_v<MT> || IsHermitian_v<MT> ) {
             const ElementType& value( element->value() );
             if( !isDefault<strict>( value ) )
@@ -4800,12 +4798,10 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::assign( const SparseMatrix<MT2,
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   using RhsIterator = ConstIterator_t<MT2>;
-
    // Counting the number of elements per column
    std::vector<size_t> columnLengths( columns(), 0UL );
    for( size_t i=0UL; i<rows(); ++i ) {
-      for( RhsIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          ++columnLengths[element->index()];
    }
 
@@ -4816,7 +4812,7 @@ inline void Submatrix<MT,AF,true,false,CSAs...>::assign( const SparseMatrix<MT2,
 
    // Appending the elements to the columns of the sparse matrix
    for( size_t i=0UL; i<rows(); ++i ) {
-      for( RhsIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          if( IsSymmetric_v<MT> || IsHermitian_v<MT> ) {
             const ElementType& value( element->value() );
             if( !isDefault<strict>( value ) )

@@ -2070,7 +2070,7 @@ inline void DynamicVector<Type,TF>::assign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -2172,7 +2172,7 @@ inline void DynamicVector<Type,TF>::addAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -2274,7 +2274,7 @@ inline void DynamicVector<Type,TF>::subAssign( const SparseVector<VT,TF>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size_ == (~rhs).size(), "Invalid vector sizes" );
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -2380,7 +2380,7 @@ inline void DynamicVector<Type,TF>::multAssign( const SparseVector<VT,TF>& rhs )
 
    reset();
 
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       v_[element->index()] = tmp[element->index()] * element->value();
 }
 //*************************************************************************************************

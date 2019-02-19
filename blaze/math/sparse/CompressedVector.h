@@ -1993,7 +1993,7 @@ template< typename Type     // Data type of the vector
 template< typename Other >  // Data type of the scalar value
 inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::scale( const Other& scalar )
 {
-   for( Iterator element=begin_; element!=end_; ++element )
+   for( auto element=begin_; element!=end_; ++element )
       element->value_ *= scalar;
    return *this;
 }
@@ -2130,7 +2130,7 @@ inline void CompressedVector<Type,TF>::assign( const SparseVector<VT,TF>& rhs )
    //
    // results in much less requirements on the ConstIterator type provided from the right-hand
    // sparse vector type
-   for( ConstIterator_t<VT> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+   for( auto element=(~rhs).begin(); element!=(~rhs).end(); ++element )
       append( element->index(), element->value() );
 }
 //*************************************************************************************************
@@ -2266,7 +2266,7 @@ inline void CompressedVector<Type,TF>::multAssign( const DenseVector<VT,TF>& rhs
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
 
-   for( Iterator element=begin_; element!=end_; ++element ) {
+   for( auto element=begin_; element!=end_; ++element ) {
       element->value_ *= (~rhs)[element->index_];
    }
 }
@@ -2293,7 +2293,7 @@ inline void CompressedVector<Type,TF>::divAssign( const DenseVector<VT,TF>& rhs 
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( VT );
 
-   for( Iterator element=begin_; element!=end_; ++element ) {
+   for( auto element=begin_; element!=end_; ++element ) {
       element->value_ /= (~rhs)[element->index_];
    }
 }

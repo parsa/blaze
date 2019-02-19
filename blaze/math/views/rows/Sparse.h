@@ -2094,12 +2094,10 @@ inline void Rows<MT,true,false,SF,CRAs...>::assign( const SparseMatrix<MT2,true>
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
 
-   using RhsIterator = ConstIterator_t<MT2>;
-
    // Counting the number of elements per row
    std::vector<size_t> rowLengths( rows(), 0UL );
    for( size_t j=0UL; j<columns(); ++j ) {
-      for( RhsIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          ++rowLengths[element->index()];
    }
 
@@ -2110,7 +2108,7 @@ inline void Rows<MT,true,false,SF,CRAs...>::assign( const SparseMatrix<MT2,true>
 
    // Appending the elements to the rows of the sparse row selection
    for( size_t j=0UL; j<columns(); ++j ) {
-      for( RhsIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          append( element->index(), j, element->value(), true );
    }
 }

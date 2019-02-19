@@ -643,7 +643,7 @@ CompressedMatrix<Type,SO>::CompressedMatrix( size_t m, size_t n, const std::vect
    BLAZE_USER_ASSERT( nonzeros.size() == m, "Size of capacity vector and number of rows don't match" );
 
    size_t newCapacity( 0UL );
-   for( std::vector<size_t>::const_iterator it=nonzeros.begin(); it!=nonzeros.end(); ++it )
+   for( auto it=nonzeros.begin(); it!=nonzeros.end(); ++it )
       newCapacity += *it;
 
    begin_[0UL] = end_[0UL] = allocate<Element>( newCapacity );
@@ -2613,7 +2613,7 @@ template< typename Other >  // Data type of the scalar value
 inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::scale( const Other& scalar )
 {
    for( size_t i=0UL; i<m_; ++i )
-      for( Iterator element=begin_[i]; element!=end_[i]; ++element )
+      for( auto element=begin_[i]; element!=end_[i]; ++element )
          element->value_ *= scalar;
 
    return *this;
@@ -2805,12 +2805,10 @@ inline void CompressedMatrix<Type,SO>::assign( const SparseMatrix<MT,!SO>& rhs )
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
    BLAZE_INTERNAL_ASSERT( capacity() >= (~rhs).nonZeros(), "Invalid capacity detected" );
 
-   using RhsIterator = ConstIterator_t<MT>;
-
    // Counting the number of elements per row
    std::vector<size_t> rowLengths( m_, 0UL );
    for( size_t j=0UL; j<n_; ++j ) {
-      for( RhsIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          ++rowLengths[element->index()];
    }
 
@@ -2821,7 +2819,7 @@ inline void CompressedMatrix<Type,SO>::assign( const SparseMatrix<MT,!SO>& rhs )
 
    // Appending the elements to the rows of the compressed matrix
    for( size_t j=0UL; j<n_; ++j ) {
-      for( RhsIterator element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          append( element->index(), j, element->value() );
    }
 }
@@ -2956,7 +2954,7 @@ inline void CompressedMatrix<Type,SO>::schurAssign( const DenseMatrix<MT,SO2>& r
 
    for( size_t i=0UL; i<m_; ++i ) {
       const Iterator last( end(i) );
-      for( Iterator element=begin(i); element!=last; ++element )
+      for( auto element=begin(i); element!=last; ++element )
          element->value_ *= (~rhs)(i,element->index_);
    }
 }
@@ -3409,7 +3407,7 @@ CompressedMatrix<Type,true>::CompressedMatrix( size_t m, size_t n, const std::ve
    BLAZE_USER_ASSERT( nonzeros.size() == n, "Size of capacity vector and number of columns don't match" );
 
    size_t newCapacity( 0UL );
-   for( std::vector<size_t>::const_iterator it=nonzeros.begin(); it!=nonzeros.end(); ++it )
+   for( auto it=nonzeros.begin(); it!=nonzeros.end(); ++it )
       newCapacity += *it;
 
    begin_[0UL] = end_[0UL] = allocate<Element>( newCapacity );
@@ -5384,7 +5382,7 @@ template< typename Other >  // Data type of the scalar value
 inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::scale( const Other& scalar )
 {
    for( size_t j=0UL; j<n_; ++j )
-      for( Iterator element=begin_[j]; element!=end_[j]; ++element )
+      for( auto element=begin_[j]; element!=end_[j]; ++element )
          element->value_ *= scalar;
 
    return *this;
@@ -5582,12 +5580,10 @@ inline void CompressedMatrix<Type,true>::assign( const SparseMatrix<MT,false>& r
    BLAZE_INTERNAL_ASSERT( nonZeros() == 0UL, "Invalid non-zero elements detected" );
    BLAZE_INTERNAL_ASSERT( capacity() >= (~rhs).nonZeros(), "Invalid capacity detected" );
 
-   using RhsIterator = ConstIterator_t<MT>;
-
    // Counting the number of elements per column
    std::vector<size_t> columnLengths( n_, 0UL );
    for( size_t i=0UL; i<m_; ++i ) {
-      for( RhsIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          ++columnLengths[element->index()];
    }
 
@@ -5598,7 +5594,7 @@ inline void CompressedMatrix<Type,true>::assign( const SparseMatrix<MT,false>& r
 
    // Appending the elements to the columns of the compressed matrix
    for( size_t i=0UL; i<m_; ++i ) {
-      for( RhsIterator element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          append( i, element->index(), element->value() );
    }
 }
@@ -5738,7 +5734,7 @@ inline void CompressedMatrix<Type,true>::schurAssign( const DenseMatrix<MT,SO>& 
 
    for( size_t j=0UL; j<n_; ++j ) {
       const Iterator last( end(j) );
-      for( Iterator element=begin(j); element!=last; ++element )
+      for( auto element=begin(j); element!=last; ++element )
          element->value_ *= (~rhs)(element->index_,j);
    }
 }

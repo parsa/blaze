@@ -651,10 +651,8 @@ inline bool tryAssign( const UpperMatrix<MT,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   using RhsIterator = typename VT::ConstIterator;
-
-   const RhsIterator last( (~rhs).end() );
-   RhsIterator element( (~rhs).lowerBound( ( column < row )?( 0UL ):( column - row + 1UL ) ) );
+   const auto last( (~rhs).end() );
+   auto element( (~rhs).lowerBound( ( column < row )?( 0UL ):( column - row + 1UL ) ) );
 
    for( ; element!=last; ++element ) {
       if( !isDefault( element->value() ) )
@@ -698,14 +696,12 @@ inline bool tryAssign( const UpperMatrix<MT,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   using RhsIterator = typename VT::ConstIterator;
-
    if( row <= column )
       return true;
 
-   const RhsIterator last( (~rhs).lowerBound( row - column ) );
+   const auto last( (~rhs).lowerBound( row - column ) );
 
-   for( RhsIterator element=(~rhs).begin(); element!=last; ++element ) {
+   for( auto element=(~rhs).begin(); element!=last; ++element ) {
       if( !isDefault( element->value() ) )
          return false;
    }
@@ -909,8 +905,6 @@ inline bool tryAssign( const UpperMatrix<MT1,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   using RhsIterator = typename MT2::ConstIterator;
-
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
@@ -922,9 +916,9 @@ inline bool tryAssign( const UpperMatrix<MT1,SO,DF>& lhs,
    for( size_t i=ibegin; i<M; ++i )
    {
       const size_t index( row + i - column );
-      const RhsIterator last( (~rhs).lowerBound( i, min( index, N ) ) );
+      const auto last( (~rhs).lowerBound( i, min( index, N ) ) );
 
-      for( RhsIterator element=(~rhs).begin(i); element!=last; ++element ) {
+      for( auto element=(~rhs).begin(i); element!=last; ++element ) {
          if( !isDefault( element->value() ) )
             return false;
       }
@@ -968,8 +962,6 @@ inline bool tryAssign( const UpperMatrix<MT1,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   using RhsIterator = typename MT2::ConstIterator;
-
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
@@ -983,8 +975,8 @@ inline bool tryAssign( const UpperMatrix<MT1,SO,DF>& lhs,
       const bool containsDiagonal( column + j >= row );
       const size_t index( ( containsDiagonal )?( column + j - row + 1UL ):( 0UL ) );
 
-      const RhsIterator last( (~rhs).end(j) );
-      RhsIterator element( (~rhs).lowerBound( index, j ) );
+      const auto last( (~rhs).end(j) );
+      auto element( (~rhs).lowerBound( index, j ) );
 
       for( ; element!=last; ++element ) {
          if( !isDefault( element->value() ) )

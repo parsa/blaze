@@ -850,21 +850,19 @@ inline bool tryAssign( const UniLowerMatrix<MT,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   using RhsIterator = typename VT::ConstIterator;
-
    if( column < row )
       return true;
 
    const bool containsDiagonal( column < row + (~rhs).size() );
    const size_t index( column - row );
-   const RhsIterator last( (~rhs).lowerBound( index ) );
+   const auto last( (~rhs).lowerBound( index ) );
 
    if( containsDiagonal ) {
       if( last == (~rhs).end() || last->index() != index || !isOne( last->value() ) )
          return false;
    }
 
-   for( RhsIterator element=(~rhs).begin(); element!=last; ++element ) {
+   for( auto element=(~rhs).begin(); element!=last; ++element ) {
       if( !isDefault( element->value() ) )
          return false;
    }
@@ -906,15 +904,13 @@ inline bool tryAssign( const UniLowerMatrix<MT,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   using RhsIterator = typename VT::ConstIterator;
-
    if( row >= column + (~rhs).size() )
       return true;
 
    const bool containsDiagonal( row >= column );
    const size_t index( ( containsDiagonal )?( row - column ):( 0UL ) );
-   const RhsIterator last( (~rhs).end() );
-   RhsIterator element( (~rhs).lowerBound( index ) );
+   const auto last( (~rhs).end() );
+   auto element( (~rhs).lowerBound( index ) );
 
    if( containsDiagonal ) {
       if( element == last || element->index() != index || !isOne( element->value() ) )
@@ -1143,8 +1139,6 @@ inline bool tryAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   using RhsIterator = typename MT2::ConstIterator;
-
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
@@ -1158,8 +1152,8 @@ inline bool tryAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
       const bool containsDiagonal( row + i >= column );
       const size_t index( ( containsDiagonal )?( row + i - column ):( 0UL ) );
 
-      const RhsIterator last( (~rhs).end(i) );
-      RhsIterator element( (~rhs).lowerBound( i, index ) );
+      const auto last( (~rhs).end(i) );
+      auto element( (~rhs).lowerBound( i, index ) );
 
       if( containsDiagonal ) {
          if( element == last || ( element->index() != index ) || !isOne( element->value() ) )
@@ -1211,8 +1205,6 @@ inline bool tryAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   using RhsIterator = typename MT2::ConstIterator;
-
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
@@ -1226,14 +1218,14 @@ inline bool tryAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
       const bool containsDiagonal( column + j < row + M );
 
       const size_t index( column + j - row );
-      const RhsIterator last( (~rhs).lowerBound( min( index, M ), j ) );
+      const auto last( (~rhs).lowerBound( min( index, M ), j ) );
 
       if( containsDiagonal ) {
          if( last == (~rhs).end(j) || ( last->index() != index ) || !isOne( last->value() ) )
             return false;
       }
 
-      for( RhsIterator element=(~rhs).begin(j); element!=last; ++element ) {
+      for( auto element=(~rhs).begin(j); element!=last; ++element ) {
          if( !isDefault( element->value() ) )
             return false;
       }
@@ -1417,14 +1409,12 @@ inline bool tryAddAssign( const UniLowerMatrix<MT,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   using RhsIterator = typename VT::ConstIterator;
-
    if( column < row )
       return true;
 
-   const RhsIterator last( (~rhs).lowerBound( column - row + 1UL ) );
+   const auto last( (~rhs).lowerBound( column - row + 1UL ) );
 
-   for( RhsIterator element=(~rhs).begin(); element!=last; ++element ) {
+   for( auto element=(~rhs).begin(); element!=last; ++element ) {
       if( !isDefault( element->value() ) )
          return false;
    }
@@ -1467,10 +1457,8 @@ inline bool tryAddAssign( const UniLowerMatrix<MT,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   using RhsIterator = typename VT::ConstIterator;
-
-   const RhsIterator last( (~rhs).end() );
-   RhsIterator element( (~rhs).lowerBound( ( row <= column )?( 0UL ):( row - column ) ) );
+   const auto last( (~rhs).end() );
+   auto element( (~rhs).lowerBound( ( row <= column )?( 0UL ):( row - column ) ) );
 
    for( ; element!=last; ++element ) {
       if( !isDefault( element->value() ) )
@@ -1678,8 +1666,6 @@ inline bool tryAddAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   using RhsIterator = typename MT2::ConstIterator;
-
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
@@ -1693,8 +1679,8 @@ inline bool tryAddAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
       const bool containsDiagonal( row + i >= column );
       const size_t index( ( containsDiagonal )?( row + i - column ):( 0UL ) );
 
-      const RhsIterator last( (~rhs).end(i) );
-      RhsIterator element( (~rhs).lowerBound( i, index ) );
+      const auto last( (~rhs).end(i) );
+      auto element( (~rhs).lowerBound( i, index ) );
 
       for( ; element!=last; ++element ) {
          if( !isDefault( element->value() ) )
@@ -1741,8 +1727,6 @@ inline bool tryAddAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
 
    UNUSED_PARAMETER( lhs );
 
-   using RhsIterator = typename MT2::ConstIterator;
-
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
@@ -1754,9 +1738,9 @@ inline bool tryAddAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
    for( size_t j=jbegin; j<N; ++j )
    {
       const size_t index( column + j - row + 1UL );
-      const RhsIterator last( (~rhs).lowerBound( min( index, M ), j ) );
+      const auto last( (~rhs).lowerBound( min( index, M ), j ) );
 
-      for( RhsIterator element=(~rhs).begin(j); element!=last; ++element ) {
+      for( auto element=(~rhs).begin(j); element!=last; ++element ) {
          if( !isDefault( element->value() ) )
             return false;
       }

@@ -2622,7 +2622,7 @@ inline void StaticMatrix<Type,M,N,SO>::assign( const SparseMatrix<MT,SO>& rhs )
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*NN+element->index()] = element->value();
 }
 //*************************************************************************************************
@@ -2651,7 +2651,7 @@ inline void StaticMatrix<Type,M,N,SO>::assign( const SparseMatrix<MT,!SO>& rhs )
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*NN+j] = element->value();
 }
 //*************************************************************************************************
@@ -2778,7 +2778,7 @@ inline void StaticMatrix<Type,M,N,SO>::addAssign( const SparseMatrix<MT,SO>& rhs
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*NN+element->index()] += element->value();
 }
 //*************************************************************************************************
@@ -2807,7 +2807,7 @@ inline void StaticMatrix<Type,M,N,SO>::addAssign( const SparseMatrix<MT,!SO>& rh
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*NN+j] += element->value();
 }
 //*************************************************************************************************
@@ -2934,7 +2934,7 @@ inline void StaticMatrix<Type,M,N,SO>::subAssign( const SparseMatrix<MT,SO>& rhs
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*NN+element->index()] -= element->value();
 }
 //*************************************************************************************************
@@ -2963,7 +2963,7 @@ inline void StaticMatrix<Type,M,N,SO>::subAssign( const SparseMatrix<MT,!SO>& rh
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*NN+j] -= element->value();
 }
 //*************************************************************************************************
@@ -3069,7 +3069,7 @@ inline void StaticMatrix<Type,M,N,SO>::schurAssign( const SparseMatrix<MT,SO>& r
    reset();
 
    for( size_t i=0UL; i<M; ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i*NN+element->index()] = tmp.v_[i*NN+element->index()] * element->value();
 }
 //*************************************************************************************************
@@ -3102,7 +3102,7 @@ inline void StaticMatrix<Type,M,N,SO>::schurAssign( const SparseMatrix<MT,!SO>& 
    reset();
 
    for( size_t j=0UL; j<N; ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()*NN+j] = tmp.v_[element->index()*NN+j] * element->value();
 }
 //*************************************************************************************************
@@ -5522,7 +5522,7 @@ inline void StaticMatrix<Type,M,N,true>::assign( const SparseMatrix<MT,true>& rh
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*MM] = element->value();
 }
 /*! \endcond */
@@ -5552,7 +5552,7 @@ inline void StaticMatrix<Type,M,N,true>::assign( const SparseMatrix<MT,false>& r
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*MM] = element->value();
 }
 /*! \endcond */
@@ -5682,7 +5682,7 @@ inline void StaticMatrix<Type,M,N,true>::addAssign( const SparseMatrix<MT,true>&
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*MM] += element->value();
 }
 /*! \endcond */
@@ -5712,7 +5712,7 @@ inline void StaticMatrix<Type,M,N,true>::addAssign( const SparseMatrix<MT,false>
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*MM] += element->value();
 }
 /*! \endcond */
@@ -5842,7 +5842,7 @@ inline void StaticMatrix<Type,M,N,true>::subAssign( const SparseMatrix<MT,true>&
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t j=0UL; j<N; ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*MM] -= element->value();
 }
 /*! \endcond */
@@ -5872,7 +5872,7 @@ inline void StaticMatrix<Type,M,N,true>::subAssign( const SparseMatrix<MT,false>
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid matrix size" );
 
    for( size_t i=0UL; i<M; ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*MM] -= element->value();
 }
 /*! \endcond */
@@ -5981,7 +5981,7 @@ inline void StaticMatrix<Type,M,N,true>::schurAssign( const SparseMatrix<MT,true
    reset();
 
    for( size_t j=0UL; j<N; ++j )
-      for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+      for( auto element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
          v_[element->index()+j*MM] = tmp.v_[element->index()+j*MM] * element->value();
 }
 /*! \endcond */
@@ -6015,7 +6015,7 @@ inline void StaticMatrix<Type,M,N,true>::schurAssign( const SparseMatrix<MT,fals
    reset();
 
    for( size_t i=0UL; i<M; ++i )
-      for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+      for( auto element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
          v_[i+element->index()*MM] = tmp.v_[i+element->index()*MM] * element->value();
 }
 /*! \endcond */

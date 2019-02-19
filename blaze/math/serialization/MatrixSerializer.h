@@ -453,7 +453,7 @@ void MatrixSerializer::serializeMatrix( Archive& archive, const SparseMatrix<MT,
    if( IsRowMajorMatrix_v<MT> ) {
       for( size_t i=0UL; i<(~mat).rows(); ++i ) {
          archive << uint64_t( (~mat).nonZeros( i ) );
-         for( ConstIterator element=(~mat).begin(i); element!=(~mat).end(i); ++element ) {
+         for( auto element=(~mat).begin(i); element!=(~mat).end(i); ++element ) {
             archive << element->index() << element->value();
          }
       }
@@ -461,7 +461,7 @@ void MatrixSerializer::serializeMatrix( Archive& archive, const SparseMatrix<MT,
    else {
       for( size_t j=0UL; j<(~mat).columns(); ++j ) {
          archive << uint64_t( (~mat).nonZeros( j ) );
-         for( ConstIterator element=(~mat).begin(j); element!=(~mat).end(j); ++element ) {
+         for( auto element=(~mat).begin(j); element!=(~mat).end(j); ++element ) {
             archive << element->index() << element->value();
          }
       }
