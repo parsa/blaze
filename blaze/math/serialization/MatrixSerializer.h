@@ -448,8 +448,6 @@ template< typename Archive  // Type of the archive
         , bool SO >         // Storage order
 void MatrixSerializer::serializeMatrix( Archive& archive, const SparseMatrix<MT,SO>& mat )
 {
-   using ConstIterator = ConstIterator_t<MT>;
-
    if( IsRowMajorMatrix_v<MT> ) {
       for( size_t i=0UL; i<(~mat).rows(); ++i ) {
          archive << uint64_t( (~mat).nonZeros( i ) );
