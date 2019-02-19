@@ -153,8 +153,8 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      ASMT sm1 = submatrix<aligned>  ( mat1_, 16UL, 8UL, 16UL, 8UL );
-      USMT sm2 = submatrix<unaligned>( mat2_, 16UL, 8UL, 16UL, 8UL );
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 16UL, 8UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 16UL, 8UL );
 
       sm1 *= 3;
       sm2 *= 3;
@@ -212,8 +212,8 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      ASMT sm1 = submatrix<aligned>  ( mat1_, 16UL, 8UL, 16UL, 8UL );
-      USMT sm2 = submatrix<unaligned>( mat2_, 16UL, 8UL, 16UL, 8UL );
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 16UL, 8UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 16UL, 8UL );
 
       sm1 = sm1 * 3;
       sm2 = sm2 * 3;
@@ -271,8 +271,8 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      ASMT sm1 = submatrix<aligned>  ( mat1_, 16UL, 8UL, 16UL, 8UL );
-      USMT sm2 = submatrix<unaligned>( mat2_, 16UL, 8UL, 16UL, 8UL );
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 16UL, 8UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 16UL, 8UL );
 
       sm1 = 3 * sm1;
       sm2 = 3 * sm2;
@@ -330,8 +330,8 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      ASMT sm1 = submatrix<aligned>  ( mat1_, 16UL, 8UL, 16UL, 8UL );
-      USMT sm2 = submatrix<unaligned>( mat2_, 16UL, 8UL, 16UL, 8UL );
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 16UL, 8UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 16UL, 8UL );
 
       sm1 /= 0.5;
       sm2 /= 0.5;
@@ -389,8 +389,8 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      ASMT sm1 = submatrix<aligned>  ( mat1_, 16UL, 8UL, 16UL, 8UL );
-      USMT sm2 = submatrix<unaligned>( mat2_, 16UL, 8UL, 16UL, 8UL );
+      ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 16UL, 8UL );
+      USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 16UL, 8UL );
 
       sm1 = sm1 / 0.5;
       sm2 = sm2 / 0.5;
@@ -479,8 +479,8 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      AOSMT sm1 = submatrix<aligned>  ( tmat1_, 8UL, 16UL, 8UL, 16UL );
-      UOSMT sm2 = submatrix<unaligned>( tmat2_, 8UL, 16UL, 8UL, 16UL );
+      AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 8UL, 16UL );
+      UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 8UL, 16UL );
 
       sm1 *= 3;
       sm2 *= 3;
@@ -538,8 +538,8 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      AOSMT sm1 = submatrix<aligned>  ( tmat1_, 8UL, 16UL, 8UL, 16UL );
-      UOSMT sm2 = submatrix<unaligned>( tmat2_, 8UL, 16UL, 8UL, 16UL );
+      AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 8UL, 16UL );
+      UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 8UL, 16UL );
 
       sm1 = sm1 * 3;
       sm2 = sm2 * 3;
@@ -597,8 +597,8 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      AOSMT sm1 = submatrix<aligned>  ( tmat1_, 8UL, 16UL, 8UL, 16UL );
-      UOSMT sm2 = submatrix<unaligned>( tmat2_, 8UL, 16UL, 8UL, 16UL );
+      AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 8UL, 16UL );
+      UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 8UL, 16UL );
 
       sm1 = 3 * sm1;
       sm2 = 3 * sm2;
@@ -656,8 +656,8 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      AOSMT sm1 = submatrix<aligned>  ( tmat1_, 8UL, 16UL, 8UL, 16UL );
-      UOSMT sm2 = submatrix<unaligned>( tmat2_, 8UL, 16UL, 8UL, 16UL );
+      AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 8UL, 16UL );
+      UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 8UL, 16UL );
 
       sm1 /= 0.5;
       sm2 /= 0.5;
@@ -715,8 +715,8 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      AOSMT sm1 = submatrix<aligned>  ( tmat1_, 8UL, 16UL, 8UL, 16UL );
-      UOSMT sm2 = submatrix<unaligned>( tmat2_, 8UL, 16UL, 8UL, 16UL );
+      AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 8UL, 16UL );
+      UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 8UL, 16UL );
 
       sm1 = sm1 / 0.5;
       sm2 = sm2 / 0.5;
@@ -1272,7 +1272,7 @@ void DenseAlignedTest::testIterator()
       {
          test_ = "Row-major ConstIterator subtraction (end-begin)";
 
-         ASMT sm = submatrix<aligned>( mat1_, 16UL, 8UL, 16UL, 8UL );
+         ASMT sm = submatrix<aligned>( mat1_, 8UL, 16UL, 16UL, 8UL );
          const ptrdiff_t number( cend( sm, 15UL ) - cbegin( sm, 15UL ) );
 
          if( number != 8L ) {
@@ -1290,7 +1290,7 @@ void DenseAlignedTest::testIterator()
       {
          test_ = "Row-major ConstIterator subtraction (begin-end)";
 
-         ASMT sm = submatrix<aligned>( mat1_, 16UL, 8UL, 16UL, 8UL );
+         ASMT sm = submatrix<aligned>( mat1_, 8UL, 16UL, 16UL, 8UL );
          const ptrdiff_t number( cbegin( sm, 15UL ) - cend( sm, 15UL ) );
 
          if( number != -8L ) {
@@ -1580,7 +1580,7 @@ void DenseAlignedTest::testIterator()
       {
          test_ = "Column-major Iterator/ConstIterator conversion";
 
-         AOSMT sm = submatrix<aligned>( tmat1_, 8UL, 16UL, 8UL, 16UL );
+         AOSMT sm = submatrix<aligned>( tmat1_, 16UL, 8UL, 8UL, 16UL );
          AOSMT::ConstIterator it( begin( sm, 2UL ) );
 
          if( it == end( sm, 2UL ) || *it != sm(0,2) ) {
@@ -1631,7 +1631,7 @@ void DenseAlignedTest::testIterator()
       {
          test_ = "Column-major ConstIterator subtraction (end-begin)";
 
-         AOSMT sm = submatrix<aligned>( tmat1_, 8UL, 16UL, 8UL, 16UL );
+         AOSMT sm = submatrix<aligned>( tmat1_, 16UL, 8UL, 8UL, 16UL );
          const ptrdiff_t number( cend( sm, 15UL ) - cbegin( sm, 15UL ) );
 
          if( number != 8L ) {
@@ -1649,7 +1649,7 @@ void DenseAlignedTest::testIterator()
       {
          test_ = "Column-major ConstIterator subtraction (begin-end)";
 
-         AOSMT sm = submatrix<aligned>( tmat1_, 8UL, 16UL, 8UL, 16UL );
+         AOSMT sm = submatrix<aligned>( tmat1_, 16UL, 8UL, 8UL, 16UL );
          const ptrdiff_t number( cbegin( sm, 15UL ) - cend( sm, 15UL ) );
 
          if( number != -8L ) {
@@ -4199,10 +4199,10 @@ void DenseAlignedTest::testSubmatrix()
       initialize();
 
       {
-         ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 8UL, 16UL, 32UL );
-         ASMT sm2 = submatrix<aligned>  ( sm1  , 8UL, 8UL,  8UL, 16UL );
-         USMT sm3 = submatrix<unaligned>( mat2_, 8UL, 8UL, 16UL, 32UL );
-         USMT sm4 = submatrix<unaligned>( sm3  , 8UL, 8UL,  8UL, 16UL );
+         ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 16UL, 32UL );
+         ASMT sm2 = submatrix<aligned>  ( sm1  , 8UL,  0UL,  8UL, 16UL );
+         USMT sm3 = submatrix<unaligned>( mat2_, 8UL, 16UL, 16UL, 32UL );
+         USMT sm4 = submatrix<unaligned>( sm3  , 8UL,  0UL,  8UL, 16UL );
 
          if( sm2 != sm4 || mat1_ != mat2_ ) {
             std::ostringstream oss;
@@ -4236,8 +4236,8 @@ void DenseAlignedTest::testSubmatrix()
       }
 
       try {
-         ASMT sm1 = submatrix<aligned>( mat1_,  8UL, 8UL, 16UL, 32UL );
-         ASMT sm2 = submatrix<aligned>( sm1  , 16UL, 8UL,  8UL,  8UL );
+         ASMT sm1 = submatrix<aligned>( mat1_,  8UL, 16UL, 16UL, 32UL );
+         ASMT sm2 = submatrix<aligned>( sm1  , 16UL,  0UL,  8UL,  8UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -4249,7 +4249,7 @@ void DenseAlignedTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         ASMT sm1 = submatrix<aligned>( mat1_, 8UL,  8UL, 16UL, 32UL );
+         ASMT sm1 = submatrix<aligned>( mat1_, 8UL, 16UL, 16UL, 32UL );
          ASMT sm2 = submatrix<aligned>( sm1  , 8UL, 32UL,  8UL,  8UL );
 
          std::ostringstream oss;
@@ -4262,8 +4262,8 @@ void DenseAlignedTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         ASMT sm1 = submatrix<aligned>( mat1_, 8UL, 8UL, 16UL, 32UL );
-         ASMT sm2 = submatrix<aligned>( sm1  , 8UL, 8UL, 16UL, 24UL );
+         ASMT sm1 = submatrix<aligned>( mat1_, 8UL, 16UL, 16UL, 32UL );
+         ASMT sm2 = submatrix<aligned>( sm1  , 8UL,  0UL, 16UL, 24UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -4275,8 +4275,8 @@ void DenseAlignedTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         ASMT sm1 = submatrix<aligned>( mat1_, 8UL, 8UL, 16UL, 32UL );
-         ASMT sm2 = submatrix<aligned>( sm1  , 8UL, 8UL,  8UL, 32UL );
+         ASMT sm1 = submatrix<aligned>( mat1_, 8UL, 16UL, 16UL, 32UL );
+         ASMT sm2 = submatrix<aligned>( sm1  , 8UL,  0UL,  8UL, 40UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -4299,10 +4299,10 @@ void DenseAlignedTest::testSubmatrix()
       initialize();
 
       {
-         AOSMT sm1 = submatrix<aligned>  ( tmat1_, 8UL, 8UL, 32UL, 16UL );
-         AOSMT sm2 = submatrix<aligned>  ( sm1   , 8UL, 8UL, 16UL,  8UL );
-         UOSMT sm3 = submatrix<unaligned>( tmat2_, 8UL, 8UL, 32UL, 16UL );
-         UOSMT sm4 = submatrix<unaligned>( sm3   , 8UL, 8UL, 16UL,  8UL );
+         AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 32UL, 16UL );
+         AOSMT sm2 = submatrix<aligned>  ( sm1   ,  0UL, 8UL, 16UL,  8UL );
+         UOSMT sm3 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 32UL, 16UL );
+         UOSMT sm4 = submatrix<unaligned>( sm3   ,  0UL, 8UL, 16UL,  8UL );
 
          if( sm2 != sm4 || mat1_ != mat2_ ) {
             std::ostringstream oss;
@@ -4336,7 +4336,7 @@ void DenseAlignedTest::testSubmatrix()
       }
 
       try {
-         ASMT sm1 = submatrix<aligned>( mat1_,  8UL, 8UL, 32UL, 16UL );
+         ASMT sm1 = submatrix<aligned>( mat1_, 16UL, 8UL, 32UL, 16UL );
          ASMT sm2 = submatrix<aligned>( sm1  , 32UL, 8UL,  8UL,  8UL );
 
          std::ostringstream oss;
@@ -4349,8 +4349,8 @@ void DenseAlignedTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         ASMT sm1 = submatrix<aligned>( mat1_, 8UL,  8UL, 32UL, 16UL );
-         ASMT sm2 = submatrix<aligned>( sm1  , 8UL, 16UL,  8UL,  8UL );
+         ASMT sm1 = submatrix<aligned>( mat1_, 16UL,  8UL, 32UL, 16UL );
+         ASMT sm2 = submatrix<aligned>( sm1  ,  0UL, 16UL,  8UL,  8UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -4362,8 +4362,8 @@ void DenseAlignedTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         ASMT sm1 = submatrix<aligned>( mat1_, 8UL, 8UL, 32UL, 16UL );
-         ASMT sm2 = submatrix<aligned>( sm1  , 8UL, 8UL, 32UL,  8UL );
+         ASMT sm1 = submatrix<aligned>( mat1_, 16UL, 8UL, 32UL, 16UL );
+         ASMT sm2 = submatrix<aligned>( sm1  ,  0UL, 8UL, 40UL,  8UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -4375,8 +4375,8 @@ void DenseAlignedTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         ASMT sm1 = submatrix<aligned>( mat1_, 8UL, 8UL, 32UL, 16UL );
-         ASMT sm2 = submatrix<aligned>( sm1  , 8UL, 8UL, 24UL, 16UL );
+         ASMT sm1 = submatrix<aligned>( mat1_, 16UL, 8UL, 32UL, 16UL );
+         ASMT sm2 = submatrix<aligned>( sm1  ,  0UL, 8UL, 24UL, 16UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"

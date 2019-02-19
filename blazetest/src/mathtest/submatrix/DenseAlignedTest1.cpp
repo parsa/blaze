@@ -157,7 +157,7 @@ void DenseAlignedTest::testConstructors()
       }
 
       try {
-         ASMT sm = submatrix<aligned>( mat1_, 0UL, 8UL, 64UL, 64UL );
+         ASMT sm = submatrix<aligned>( mat1_, 0UL, 16UL, 64UL, 49UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -169,7 +169,7 @@ void DenseAlignedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       try {
-         ASMT sm = submatrix<aligned>( mat1_, 8UL, 0UL, 64UL, 64UL );
+         ASMT sm = submatrix<aligned>( mat1_, 16UL, 0UL, 49UL, 64UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -181,7 +181,7 @@ void DenseAlignedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       try {
-         ASMT sm = submatrix<aligned>( mat1_, 72UL, 0UL, 8UL, 8UL );
+         ASMT sm = submatrix<aligned>( mat1_, 80UL, 0UL, 8UL, 8UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -193,7 +193,7 @@ void DenseAlignedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       try {
-         ASMT sm = submatrix<aligned>( mat1_, 0UL, 72UL, 8UL, 8UL );
+         ASMT sm = submatrix<aligned>( mat1_, 0UL, 80UL, 8UL, 8UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -266,7 +266,7 @@ void DenseAlignedTest::testConstructors()
       }
 
       try {
-         AOSMT sm = submatrix<aligned>( tmat1_, 0UL, 8UL, 64UL, 64UL );
+         AOSMT sm = submatrix<aligned>( tmat1_, 0UL, 16UL, 64UL, 49UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -278,7 +278,7 @@ void DenseAlignedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       try {
-         AOSMT sm = submatrix<aligned>( tmat1_, 8UL, 0UL, 64UL, 64UL );
+         AOSMT sm = submatrix<aligned>( tmat1_, 16UL, 0UL, 49UL, 64UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -290,7 +290,7 @@ void DenseAlignedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       try {
-         AOSMT sm = submatrix<aligned>( tmat1_, 72UL, 0UL, 8UL, 8UL );
+         AOSMT sm = submatrix<aligned>( tmat1_, 80UL, 0UL, 8UL, 8UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -302,7 +302,7 @@ void DenseAlignedTest::testConstructors()
       catch( std::invalid_argument& ) {}
 
       try {
-         AOSMT sm = submatrix<aligned>( tmat1_, 0UL, 72UL, 8UL, 8UL );
+         AOSMT sm = submatrix<aligned>( tmat1_, 0UL, 80UL, 8UL, 8UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -387,8 +387,8 @@ void DenseAlignedTest::testAssignment()
 
       // Assigning to a 16x8 submatrix
       {
-         ASMT sm1 = submatrix<aligned>  ( mat1_, 16UL, 8UL, 16UL, 8UL );
-         USMT sm2 = submatrix<unaligned>( mat2_, 16UL, 8UL, 16UL, 8UL );
+         ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 16UL, 8UL );
+         USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 16UL, 8UL );
          sm1 = 15;
          sm2 = 15;
 
@@ -531,8 +531,8 @@ void DenseAlignedTest::testAssignment()
 
       ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
-      sm1 = submatrix<aligned>  ( mat1_, 24UL, 24UL, 8UL, 16UL );
-      sm2 = submatrix<unaligned>( mat2_, 24UL, 24UL, 8UL, 16UL );
+      sm1 = submatrix<aligned>  ( mat1_, 12UL, 16UL, 8UL, 16UL );
+      sm2 = submatrix<unaligned>( mat2_, 12UL, 16UL, 8UL, 16UL );
 
       checkRows   ( sm1,  8UL );
       checkColumns( sm1, 16UL );
@@ -820,8 +820,8 @@ void DenseAlignedTest::testAssignment()
 
       // Assigning to a 8x16 submatrix
       {
-         AOSMT sm1 = submatrix<aligned>  ( tmat1_, 8UL, 16UL, 8UL, 16UL );
-         UOSMT sm2 = submatrix<unaligned>( tmat2_, 8UL, 16UL, 8UL, 16UL );
+         AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 8UL, 16UL );
+         UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 8UL, 16UL );
          sm1 = 12;
          sm2 = 12;
 
@@ -1003,8 +1003,8 @@ void DenseAlignedTest::testAssignment()
 
       AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
       UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
-      sm1 = submatrix<aligned>  ( tmat1_, 24UL, 24UL, 16UL, 8UL );
-      sm2 = submatrix<unaligned>( tmat2_, 24UL, 24UL, 16UL, 8UL );
+      sm1 = submatrix<aligned>  ( tmat1_, 16UL, 12UL, 16UL, 8UL );
+      sm2 = submatrix<unaligned>( tmat2_, 16UL, 12UL, 16UL, 8UL );
 
       checkRows   ( sm1, 16UL );
       checkColumns( sm1,  8UL );
@@ -1345,8 +1345,8 @@ void DenseAlignedTest::testAddAssign()
 
       ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
-      sm1 += submatrix<aligned>  ( mat1_, 24UL, 24UL, 8UL, 16UL );
-      sm2 += submatrix<unaligned>( mat2_, 24UL, 24UL, 8UL, 16UL );
+      sm1 += submatrix<aligned>  ( mat1_, 12UL, 16UL, 8UL, 16UL );
+      sm2 += submatrix<unaligned>( mat2_, 12UL, 16UL, 8UL, 16UL );
 
       checkRows   ( sm1,  8UL );
       checkColumns( sm1, 16UL );
@@ -1665,8 +1665,8 @@ void DenseAlignedTest::testAddAssign()
 
       AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
       UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
-      sm1 += submatrix<aligned>  ( tmat1_, 24UL, 24UL, 16UL, 8UL );
-      sm2 += submatrix<unaligned>( tmat2_, 24UL, 24UL, 16UL, 8UL );
+      sm1 += submatrix<aligned>  ( tmat1_, 16UL, 12UL, 16UL, 8UL );
+      sm2 += submatrix<unaligned>( tmat2_, 16UL, 12UL, 16UL, 8UL );
 
       checkRows   ( sm1, 16UL );
       checkColumns( sm1,  8UL );
@@ -2007,8 +2007,8 @@ void DenseAlignedTest::testSubAssign()
 
       ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
-      sm1 -= submatrix<aligned>  ( mat1_, 24UL, 24UL, 8UL, 16UL );
-      sm2 -= submatrix<unaligned>( mat2_, 24UL, 24UL, 8UL, 16UL );
+      sm1 -= submatrix<aligned>  ( mat1_, 12UL, 16UL, 8UL, 16UL );
+      sm2 -= submatrix<unaligned>( mat2_, 12UL, 16UL, 8UL, 16UL );
 
       checkRows   ( sm1,  8UL );
       checkColumns( sm1, 16UL );
@@ -2327,8 +2327,8 @@ void DenseAlignedTest::testSubAssign()
 
       AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
       UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
-      sm1 -= submatrix<aligned>  ( tmat1_, 24UL, 24UL, 16UL, 8UL );
-      sm2 -= submatrix<unaligned>( tmat2_, 24UL, 24UL, 16UL, 8UL );
+      sm1 -= submatrix<aligned>  ( tmat1_, 16UL, 12UL, 16UL, 8UL );
+      sm2 -= submatrix<unaligned>( tmat2_, 16UL, 12UL, 16UL, 8UL );
 
       checkRows   ( sm1, 16UL );
       checkColumns( sm1,  8UL );
@@ -2669,8 +2669,8 @@ void DenseAlignedTest::testSchurAssign()
 
       ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
       USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
-      sm1 %= submatrix<aligned>  ( mat1_, 24UL, 24UL, 8UL, 16UL );
-      sm2 %= submatrix<unaligned>( mat2_, 24UL, 24UL, 8UL, 16UL );
+      sm1 %= submatrix<aligned>  ( mat1_, 12UL, 16UL, 8UL, 16UL );
+      sm2 %= submatrix<unaligned>( mat2_, 12UL, 16UL, 8UL, 16UL );
 
       checkRows   ( sm1,  8UL );
       checkColumns( sm1, 16UL );
@@ -2989,8 +2989,8 @@ void DenseAlignedTest::testSchurAssign()
 
       AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
       UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
-      sm1 %= submatrix<aligned>  ( tmat1_, 24UL, 24UL, 16UL, 8UL );
-      sm2 %= submatrix<unaligned>( tmat2_, 24UL, 24UL, 16UL, 8UL );
+      sm1 %= submatrix<aligned>  ( tmat1_, 16UL, 12UL, 16UL, 8UL );
+      sm2 %= submatrix<unaligned>( tmat2_, 16UL, 12UL, 16UL, 8UL );
 
       checkRows   ( sm1, 16UL );
       checkColumns( sm1,  8UL );
@@ -3331,8 +3331,8 @@ void DenseAlignedTest::testMultAssign()
 
       ASMT sm1 = submatrix<aligned>  ( mat1_, 16UL, 16UL, 8UL, 8UL );
       USMT sm2 = submatrix<unaligned>( mat2_, 16UL, 16UL, 8UL, 8UL );
-      sm1 *= submatrix<aligned>  ( mat1_, 24UL, 24UL, 8UL, 8UL );
-      sm2 *= submatrix<unaligned>( mat2_, 24UL, 24UL, 8UL, 8UL );
+      sm1 *= submatrix<aligned>  ( mat1_, 24UL, 16UL, 8UL, 8UL );
+      sm2 *= submatrix<unaligned>( mat2_, 24UL, 16UL, 8UL, 8UL );
 
       checkRows   ( sm1, 8UL );
       checkColumns( sm1, 8UL );
@@ -3651,8 +3651,8 @@ void DenseAlignedTest::testMultAssign()
 
       AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 16UL, 8UL, 8UL );
       UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 16UL, 8UL, 8UL );
-      sm1 *= submatrix<aligned>  ( tmat1_, 24UL, 24UL, 8UL, 8UL );
-      sm2 *= submatrix<unaligned>( tmat2_, 24UL, 24UL, 8UL, 8UL );
+      sm1 *= submatrix<aligned>  ( tmat1_, 16UL, 24UL, 8UL, 8UL );
+      sm2 *= submatrix<unaligned>( tmat2_, 16UL, 24UL, 8UL, 8UL );
 
       checkRows   ( sm1, 8UL );
       checkColumns( sm1, 8UL );
