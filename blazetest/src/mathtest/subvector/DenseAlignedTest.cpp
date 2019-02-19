@@ -152,7 +152,7 @@ void DenseAlignedTest::testConstructors()
    }
 
    try {
-      ASVT sv = subvector<aligned>( vec1_, 8UL, 64UL );
+      ASVT sv = subvector<aligned>( vec1_, 16UL, 49UL );
 
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
@@ -221,13 +221,13 @@ void DenseAlignedTest::testAssignment()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
       sv1 = 12;
       sv2 = 12;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -250,11 +250,11 @@ void DenseAlignedTest::testAssignment()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
-      sv1 = { 1, 2, 3, 4, 5, 6, 7, 8 };
-      sv2 = { 1, 2, 3, 4, 5, 6, 7, 8 };
+      sv1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
+      sv2 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -272,8 +272,8 @@ void DenseAlignedTest::testAssignment()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
       sv1 = { 1, 2, 3 };
       sv2 = { 1, 2, 3 };
@@ -304,13 +304,13 @@ void DenseAlignedTest::testAssignment()
       randomize( vec1, int(randmin), int(randmax) );
       vec2 = vec1;
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
-      sv1 = subvector<aligned>  ( vec1, 8UL, 16UL );
-      sv2 = subvector<unaligned>( vec2, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
+      sv1 = subvector<aligned>  ( vec1, 16UL, 21UL );
+      sv2 = subvector<unaligned>( vec2, 16UL, 21UL );
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -328,13 +328,13 @@ void DenseAlignedTest::testAssignment()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
-      sv1 = blaze::subvector( vec1_, 24UL, 16UL );
-      sv2 = blaze::subvector( vec2_, 24UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
+      sv1 = blaze::subvector( vec1_, 32UL, 21UL );
+      sv2 = blaze::subvector( vec2_, 32UL, 21UL );
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -357,17 +357,17 @@ void DenseAlignedTest::testAssignment()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
-      blaze::DynamicVector<short,rowVector> vec( 16UL );
+      blaze::DynamicVector<short,rowVector> vec( 21UL );
       randomize( vec, short(randmin), short(randmax) );
 
       sv1 = vec;
       sv2 = vec;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -385,19 +385,19 @@ void DenseAlignedTest::testAssignment()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
       using AlignedPadded = blaze::CustomVector<int,aligned,padded,rowVector>;
-      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
-      AlignedPadded vec( memory.get(), 16UL, 16UL );
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
+      AlignedPadded vec( memory.get(), 21UL, 32UL );
       randomize( vec, int(randmin), int(randmax) );
 
       sv1 = vec;
       sv2 = vec;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -415,19 +415,19 @@ void DenseAlignedTest::testAssignment()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
       using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,rowVector>;
-      std::unique_ptr<int[]> memory( new int[17] );
-      UnalignedUnpadded vec( memory.get()+1UL, 16UL );
+      std::unique_ptr<int[]> memory( new int[22] );
+      UnalignedUnpadded vec( memory.get()+1UL, 21UL );
       randomize( vec, int(randmin), int(randmax) );
 
       sv1 = vec;
       sv2 = vec;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -450,17 +450,17 @@ void DenseAlignedTest::testAssignment()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
-      blaze::CompressedVector<int,rowVector> vec( 16UL );
+      blaze::CompressedVector<int,rowVector> vec( 21UL );
       randomize( vec, 6UL, int(randmin), int(randmax) );
 
       sv1 = vec;
       sv2 = vec;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -509,13 +509,13 @@ void DenseAlignedTest::testAddAssign()
       randomize( vec1, int(randmin), int(randmax) );
       vec2 = vec1;
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
-      sv1 += subvector<aligned>  ( vec1, 8UL, 16UL );
-      sv2 += subvector<unaligned>( vec2, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
+      sv1 += subvector<aligned>  ( vec1, 16UL, 21UL );
+      sv2 += subvector<unaligned>( vec2, 16UL, 21UL );
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -533,13 +533,13 @@ void DenseAlignedTest::testAddAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
-      sv1 += subvector<aligned>  ( vec1_, 24UL, 16UL );
-      sv2 += subvector<unaligned>( vec2_, 24UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
+      sv1 += subvector<aligned>  ( vec1_, 32UL, 21UL );
+      sv2 += subvector<unaligned>( vec2_, 32UL, 21UL );
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -562,17 +562,17 @@ void DenseAlignedTest::testAddAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
-      blaze::DynamicVector<short,rowVector> vec( 16UL );
+      blaze::DynamicVector<short,rowVector> vec( 21UL );
       randomize( vec, short(randmin), short(randmax) );
 
       sv1 += vec;
       sv2 += vec;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -590,19 +590,19 @@ void DenseAlignedTest::testAddAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
       using AlignedPadded = blaze::CustomVector<int,aligned,padded,rowVector>;
-      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
-      AlignedPadded vec( memory.get(), 16UL, 16UL );
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
+      AlignedPadded vec( memory.get(), 21UL, 32UL );
       randomize( vec, int(randmin), int(randmax) );
 
       sv1 += vec;
       sv2 += vec;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -620,19 +620,19 @@ void DenseAlignedTest::testAddAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
       using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,rowVector>;
-      std::unique_ptr<int[]> memory( new int[17] );
-      UnalignedUnpadded vec( memory.get()+1UL, 16UL );
+      std::unique_ptr<int[]> memory( new int[22] );
+      UnalignedUnpadded vec( memory.get()+1UL, 21UL );
       randomize( vec, int(randmin), int(randmax) );
 
       sv1 += vec;
       sv2 += vec;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -655,17 +655,17 @@ void DenseAlignedTest::testAddAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
-      blaze::CompressedVector<int,rowVector> vec( 16UL );
+      blaze::CompressedVector<int,rowVector> vec( 21UL );
       randomize( vec, 6UL, int(randmin), int(randmax) );
 
       sv1 += vec;
       sv2 += vec;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -714,13 +714,13 @@ void DenseAlignedTest::testSubAssign()
       randomize( vec1, int(randmin), int(randmax) );
       vec2 = vec1;
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
-      sv1 -= subvector<aligned>  ( vec1, 24UL, 16UL );
-      sv2 -= subvector<unaligned>( vec2, 24UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
+      sv1 -= subvector<aligned>  ( vec1, 32UL, 21UL );
+      sv2 -= subvector<unaligned>( vec2, 32UL, 21UL );
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -738,13 +738,13 @@ void DenseAlignedTest::testSubAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
-      sv1 -= subvector<aligned>  ( vec1_, 24UL, 16UL );
-      sv2 -= subvector<unaligned>( vec2_, 24UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
+      sv1 -= subvector<aligned>  ( vec1_, 32UL, 21UL );
+      sv2 -= subvector<unaligned>( vec2_, 32UL, 21UL );
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -767,17 +767,17 @@ void DenseAlignedTest::testSubAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
-      blaze::DynamicVector<short,rowVector> vec( 16UL );
+      blaze::DynamicVector<short,rowVector> vec( 21UL );
       randomize( vec, short(randmin), short(randmax) );
 
       sv1 -= vec;
       sv2 -= vec;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -795,19 +795,19 @@ void DenseAlignedTest::testSubAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
       using AlignedPadded = blaze::CustomVector<int,aligned,padded,rowVector>;
-      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
-      AlignedPadded vec( memory.get(), 16UL, 16UL );
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
+      AlignedPadded vec( memory.get(), 21UL, 32UL );
       randomize( vec, int(randmin), int(randmax) );
 
       sv1 -= vec;
       sv2 -= vec;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -825,19 +825,19 @@ void DenseAlignedTest::testSubAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
       using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,rowVector>;
-      std::unique_ptr<int[]> memory( new int[17] );
-      UnalignedUnpadded vec( memory.get()+1UL, 16UL );
+      std::unique_ptr<int[]> memory( new int[22] );
+      UnalignedUnpadded vec( memory.get()+1UL, 21UL );
       randomize( vec, int(randmin), int(randmax) );
 
       sv1 -= vec;
       sv2 -= vec;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -860,17 +860,17 @@ void DenseAlignedTest::testSubAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
-      blaze::CompressedVector<int,rowVector> vec( 16UL );
+      blaze::CompressedVector<int,rowVector> vec( 21UL );
       randomize( vec, 6UL, int(randmin), int(randmax) );
 
       sv1 -= vec;
       sv2 -= vec;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -919,13 +919,13 @@ void DenseAlignedTest::testMultAssign()
       randomize( vec1, int(randmin), int(randmax) );
       vec2 = vec1;
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
-      sv1 *= subvector<aligned>  ( vec1, 24UL, 16UL );
-      sv2 *= subvector<unaligned>( vec2, 24UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
+      sv1 *= subvector<aligned>  ( vec1, 32UL, 21UL );
+      sv2 *= subvector<unaligned>( vec2, 32UL, 21UL );
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -943,13 +943,13 @@ void DenseAlignedTest::testMultAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
-      sv1 *= subvector<aligned>  ( vec1_, 24UL, 16UL );
-      sv2 *= subvector<unaligned>( vec2_, 24UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
+      sv1 *= subvector<aligned>  ( vec1_, 32UL, 21UL );
+      sv2 *= subvector<unaligned>( vec2_, 32UL, 21UL );
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -972,17 +972,17 @@ void DenseAlignedTest::testMultAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
-      blaze::DynamicVector<short,rowVector> vec( 16UL );
+      blaze::DynamicVector<short,rowVector> vec( 21UL );
       randomize( vec, short(randmin), short(randmax) );
 
       sv1 *= vec;
       sv2 *= vec;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -1000,19 +1000,19 @@ void DenseAlignedTest::testMultAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
       using AlignedPadded = blaze::CustomVector<int,aligned,padded,rowVector>;
-      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
-      AlignedPadded vec( memory.get(), 16UL, 16UL );
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
+      AlignedPadded vec( memory.get(), 21UL, 32UL );
       randomize( vec, int(randmin), int(randmax) );
 
       sv1 *= vec;
       sv2 *= vec;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -1030,19 +1030,19 @@ void DenseAlignedTest::testMultAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
       using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,rowVector>;
-      std::unique_ptr<int[]> memory( new int[17] );
-      UnalignedUnpadded vec( memory.get()+1UL, 16UL );
+      std::unique_ptr<int[]> memory( new int[22] );
+      UnalignedUnpadded vec( memory.get()+1UL, 21UL );
       randomize( vec, int(randmin), int(randmax) );
 
       sv1 *= vec;
       sv2 *= vec;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -1065,17 +1065,17 @@ void DenseAlignedTest::testMultAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
-      blaze::CompressedVector<int,rowVector> vec( 16UL );
+      blaze::CompressedVector<int,rowVector> vec( 21UL );
       randomize( vec, 6UL, int(randmin), int(randmax) );
 
       sv1 -= vec;
       sv2 -= vec;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -1124,13 +1124,13 @@ void DenseAlignedTest::testDivAssign()
       randomize( vec1, 1, int(randmax) );
       vec2 = vec1;
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
-      sv1 /= subvector<aligned>  ( vec1, 24UL, 16UL );
-      sv2 /= subvector<unaligned>( vec2, 24UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
+      sv1 /= subvector<aligned>  ( vec1, 32UL, 21UL );
+      sv2 /= subvector<unaligned>( vec2, 32UL, 21UL );
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -1149,13 +1149,13 @@ void DenseAlignedTest::testDivAssign()
       randomize( vec1_, 1, int(randmax) );
       vec2_ = vec1_;
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
-      sv1 /= subvector<aligned>  ( vec1_, 24UL, 16UL );
-      sv2 /= subvector<unaligned>( vec2_, 24UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
+      sv1 /= subvector<aligned>  ( vec1_, 32UL, 21UL );
+      sv2 /= subvector<unaligned>( vec2_, 32UL, 21UL );
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -1178,17 +1178,17 @@ void DenseAlignedTest::testDivAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
-      blaze::DynamicVector<short,rowVector> vec( 16UL );
+      blaze::DynamicVector<short,rowVector> vec( 21UL );
       randomize( vec, short(1), short(randmax) );
 
       sv1 /= vec;
       sv2 /= vec;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -1206,19 +1206,19 @@ void DenseAlignedTest::testDivAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
       using AlignedPadded = blaze::CustomVector<int,aligned,padded,rowVector>;
-      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
-      AlignedPadded vec( memory.get(), 16UL, 16UL );
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
+      AlignedPadded vec( memory.get(), 21UL, 32UL );
       randomize( vec, 1, int(randmax) );
 
       sv1 /= vec;
       sv2 /= vec;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -1236,19 +1236,19 @@ void DenseAlignedTest::testDivAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
       using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,rowVector>;
-      std::unique_ptr<int[]> memory( new int[17] );
-      UnalignedUnpadded vec( memory.get()+1UL, 16UL );
+      std::unique_ptr<int[]> memory( new int[22] );
+      UnalignedUnpadded vec( memory.get()+1UL, 21UL );
       randomize( vec, 1, int(randmax) );
 
       sv1 /= vec;
       sv2 /= vec;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -1297,10 +1297,10 @@ void DenseAlignedTest::testCrossAssign()
       randomize( vec1, int(randmin), int(randmax) );
       vec2 = vec1;
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 3UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 3UL );
-      sv1 %= subvector<aligned>  ( vec1, 24UL, 3UL );
-      sv2 %= subvector<unaligned>( vec2, 24UL, 3UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 3UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 3UL );
+      sv1 %= subvector<aligned>  ( vec1, 32UL, 3UL );
+      sv2 %= subvector<unaligned>( vec2, 32UL, 3UL );
 
       checkSize( sv1, 3UL );
       checkSize( sv2, 3UL );
@@ -1321,10 +1321,10 @@ void DenseAlignedTest::testCrossAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 3UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 3UL );
-      sv1 %= subvector<aligned>  ( vec1_, 24UL, 3UL );
-      sv2 %= subvector<unaligned>( vec2_, 24UL, 3UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 3UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 3UL );
+      sv1 %= subvector<aligned>  ( vec1_, 32UL, 3UL );
+      sv2 %= subvector<unaligned>( vec2_, 32UL, 3UL );
 
       checkSize( sv1, 3UL );
       checkSize( sv2, 3UL );
@@ -1350,8 +1350,8 @@ void DenseAlignedTest::testCrossAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 3UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 3UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 3UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 3UL );
 
       blaze::DynamicVector<short,rowVector> vec( 3UL );
       randomize( vec, short(randmin), short(randmax) );
@@ -1378,8 +1378,8 @@ void DenseAlignedTest::testCrossAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 3UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 3UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 3UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 3UL );
 
       using AlignedPadded = blaze::CustomVector<int,aligned,padded,rowVector>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 16UL ) );
@@ -1408,8 +1408,8 @@ void DenseAlignedTest::testCrossAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 3UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 3UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 3UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 3UL );
 
       using UnalignedUnpadded = blaze::CustomVector<int,unaligned,unpadded,rowVector>;
       std::unique_ptr<int[]> memory( new int[4] );
@@ -1443,8 +1443,8 @@ void DenseAlignedTest::testCrossAssign()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 3UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 3UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 3UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 3UL );
 
       blaze::CompressedVector<int,rowVector> vec( 3UL );
       randomize( vec, 2UL, int(randmin), int(randmax) );
@@ -1494,14 +1494,14 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
       sv1 *= 3;
       sv2 *= 3;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -1524,14 +1524,14 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
       sv1 = sv1 * 3;
       sv2 = sv2 * 3;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -1554,14 +1554,14 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
       sv1 = 3 * sv1;
       sv2 = 3 * sv2;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -1584,14 +1584,14 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
       sv1 /= 0.5;
       sv2 /= 0.5;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -1614,14 +1614,14 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
       sv1 = sv1 / 0.5;
       sv2 = sv2 / 0.5;
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -1644,15 +1644,15 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
       // Integral scaling of the subvector in the range [8,23]
       sv1.scale( 3 );
       sv2.scale( 3 );
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -1668,8 +1668,8 @@ void DenseAlignedTest::testScaling()
       sv1.scale( 0.5 );
       sv2.scale( 0.5 );
 
-      checkSize( sv1, 16UL );
-      checkSize( sv2, 16UL );
+      checkSize( sv1, 21UL );
+      checkSize( sv2, 21UL );
 
       if( sv1 != sv2 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -1706,15 +1706,15 @@ void DenseAlignedTest::testSubscript()
 
    initialize();
 
-   ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-   USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+   ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+   USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
    // Assignment to the element at index 1
    sv1[1] = 9;
    sv2[1] = 9;
 
-   checkSize( sv1, 16UL );
-   checkSize( sv2, 16UL );
+   checkSize( sv1, 21UL );
+   checkSize( sv2, 21UL );
 
    if( sv1 != sv2 || vec1_ != vec2_ ) {
       std::ostringstream oss;
@@ -1730,8 +1730,8 @@ void DenseAlignedTest::testSubscript()
    sv1[2] = 0;
    sv2[2] = 0;
 
-   checkSize( sv1, 16UL );
-   checkSize( sv2, 16UL );
+   checkSize( sv1, 21UL );
+   checkSize( sv2, 21UL );
 
    if( sv1 != sv2 || vec1_ != vec2_ ) {
       std::ostringstream oss;
@@ -1747,8 +1747,8 @@ void DenseAlignedTest::testSubscript()
    sv1[3] = -8;
    sv2[3] = -8;
 
-   checkSize( sv1, 16UL );
-   checkSize( sv2, 16UL );
+   checkSize( sv1, 21UL );
+   checkSize( sv2, 21UL );
 
    if( sv1 != sv2 || vec1_ != vec2_ ) {
       std::ostringstream oss;
@@ -1764,8 +1764,8 @@ void DenseAlignedTest::testSubscript()
    sv1[0] += -3;
    sv2[0] += -3;
 
-   checkSize( sv1, 16UL );
-   checkSize( sv2, 16UL );
+   checkSize( sv1, 21UL );
+   checkSize( sv2, 21UL );
 
    if( sv1 != sv2 || vec1_ != vec2_ ) {
       std::ostringstream oss;
@@ -1781,8 +1781,8 @@ void DenseAlignedTest::testSubscript()
    sv1[1] -= 6;
    sv2[1] -= 6;
 
-   checkSize( sv1, 16UL );
-   checkSize( sv2, 16UL );
+   checkSize( sv1, 21UL );
+   checkSize( sv2, 21UL );
 
    if( sv1 != sv2 || vec1_ != vec2_ ) {
       std::ostringstream oss;
@@ -1798,8 +1798,8 @@ void DenseAlignedTest::testSubscript()
    sv1[1] *= 3;
    sv2[1] *= 3;
 
-   checkSize( sv1, 16UL );
-   checkSize( sv2, 16UL );
+   checkSize( sv1, 21UL );
+   checkSize( sv2, 21UL );
 
    if( sv1 != sv2 || vec1_ != vec2_ ) {
       std::ostringstream oss;
@@ -1815,8 +1815,8 @@ void DenseAlignedTest::testSubscript()
    sv1[3] /= 2;
    sv2[3] /= 2;
 
-   checkSize( sv1, 16UL );
-   checkSize( sv2, 16UL );
+   checkSize( sv1, 21UL );
+   checkSize( sv2, 21UL );
 
    if( sv1 != sv2 || vec1_ != vec2_ ) {
       std::ostringstream oss;
@@ -1968,7 +1968,7 @@ void DenseAlignedTest::testIterator()
    {
       test_ = "Read-only access via ConstIterator";
 
-      ASVT sv = subvector<aligned>( vec1_, 8UL, 8UL );
+      ASVT sv = subvector<aligned>( vec1_, 16UL, 8UL );
       ASVT::ConstIterator it ( cbegin( sv ) );
       ASVT::ConstIterator end( cend( sv ) );
 
@@ -2065,8 +2065,8 @@ void DenseAlignedTest::testIterator()
    {
       test_ = "Assignment via Iterator";
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
       int value = 6;
 
       ASVT::Iterator it1( begin( sv1 ) );
@@ -2093,8 +2093,8 @@ void DenseAlignedTest::testIterator()
    {
       test_ = "Addition assignment via Iterator";
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
       int value = 6;
 
       ASVT::Iterator it1( begin( sv1 ) );
@@ -2121,8 +2121,8 @@ void DenseAlignedTest::testIterator()
    {
       test_ = "Subtraction assignment via Iterator";
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
       int value = 6;
 
       ASVT::Iterator it1( begin( sv1 ) );
@@ -2149,8 +2149,8 @@ void DenseAlignedTest::testIterator()
    {
       test_ = "Multiplication assignment via Iterator";
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
       int value = 1;
 
       ASVT::Iterator it1( begin( sv1 ) );
@@ -2177,8 +2177,8 @@ void DenseAlignedTest::testIterator()
    {
       test_ = "Division assignment via Iterator";
 
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
       ASVT::Iterator it1( begin( sv1 ) );
       USVT::Iterator it2( begin( sv2 ) );
@@ -2223,11 +2223,11 @@ void DenseAlignedTest::testNonZeros()
    initialize();
 
    // Initialization check
-   ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 16UL );
-   USVT sv2 = subvector<unaligned>( vec2_, 8UL, 16UL );
+   ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 21UL );
+   USVT sv2 = subvector<unaligned>( vec2_, 16UL, 21UL );
 
-   checkSize( sv1, 16UL );
-   checkSize( sv2, 16UL );
+   checkSize( sv1, 21UL );
+   checkSize( sv2, 21UL );
 
    if( sv1.nonZeros() != sv2.nonZeros() ) {
       std::ostringstream oss;
@@ -2243,8 +2243,8 @@ void DenseAlignedTest::testNonZeros()
    sv1[3] = 0;
    sv2[3] = 0;
 
-   checkSize( sv1, 16UL );
-   checkSize( sv2, 16UL );
+   checkSize( sv1, 21UL );
+   checkSize( sv2, 21UL );
 
    if( sv1.nonZeros() != sv2.nonZeros() ) {
       std::ostringstream oss;
@@ -2260,8 +2260,8 @@ void DenseAlignedTest::testNonZeros()
    vec1_[9UL] = 5;
    vec2_[9UL] = 5;
 
-   checkSize( sv1, 16UL );
-   checkSize( sv2, 16UL );
+   checkSize( sv1, 21UL );
+   checkSize( sv2, 21UL );
 
    if( sv1.nonZeros() != sv2.nonZeros() ) {
       std::ostringstream oss;
@@ -2471,7 +2471,7 @@ void DenseAlignedTest::testIsDefault()
    // isDefault with default vector
    {
       VT vec( 64UL, 0 );
-      ASVT sv = subvector<aligned>( vec, 8UL, 16UL );
+      ASVT sv = subvector<aligned>( vec, 16UL, 21UL );
 
       if( isDefault( sv[1] ) != true ) {
          std::ostringstream oss;
@@ -2494,7 +2494,7 @@ void DenseAlignedTest::testIsDefault()
 
    // isDefault with non-default vector
    {
-      ASVT sv = subvector<aligned>( vec1_, 8UL, 16UL );
+      ASVT sv = subvector<aligned>( vec1_, 16UL, 21UL );
 
       if( isDefault( sv ) != false ) {
          std::ostringstream oss;
@@ -2961,10 +2961,10 @@ void DenseAlignedTest::testSubvector()
    initialize();
 
    {
-      ASVT sv1 = subvector<aligned>  ( vec1_, 8UL, 32UL );
-      ASVT sv2 = subvector<aligned>  ( sv1  , 8UL, 16UL );
-      USVT sv3 = subvector<unaligned>( vec2_, 8UL, 32UL );
-      USVT sv4 = subvector<unaligned>( sv3  , 8UL, 16UL );
+      ASVT sv1 = subvector<aligned>  ( vec1_, 16UL, 32UL );
+      ASVT sv2 = subvector<aligned>  ( sv1  , 16UL, 16UL );
+      USVT sv3 = subvector<unaligned>( vec2_, 16UL, 32UL );
+      USVT sv4 = subvector<unaligned>( sv3  , 16UL, 16UL );
 
       if( sv2 != sv4 || vec1_ != vec2_ ) {
          std::ostringstream oss;
@@ -2998,7 +2998,7 @@ void DenseAlignedTest::testSubvector()
    }
 
    try {
-      ASVT sv1 = subvector<aligned>( vec1_,  8UL, 32UL );
+      ASVT sv1 = subvector<aligned>( vec1_, 16UL, 32UL );
       ASVT sv2 = subvector<aligned>( sv1  , 32UL,  8UL );
 
       std::ostringstream oss;
@@ -3011,8 +3011,8 @@ void DenseAlignedTest::testSubvector()
    catch( std::invalid_argument& ) {}
 
    try {
-      ASVT sv1 = subvector<aligned>( vec1_, 8UL, 32UL );
-      ASVT sv2 = subvector<aligned>( sv1  , 8UL, 32UL );
+      ASVT sv1 = subvector<aligned>( vec1_, 16UL, 32UL );
+      ASVT sv2 = subvector<aligned>( sv1  , 16UL, 32UL );
 
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
@@ -3048,10 +3048,10 @@ void DenseAlignedTest::testElements()
    initialize();
 
    {
-      ASVT sv1 = subvector<aligned>( vec1_, 8UL, 32UL );
+      ASVT sv1 = subvector<aligned>( vec1_, 16UL, 32UL );
       auto e1 = elements( sv1, { 8UL, 16UL } );
 
-      USVT sv2 = subvector<unaligned>( vec2_, 8UL, 32UL );
+      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 32UL );
       auto e2 = elements( sv2, { 8UL, 16UL } );
 
       if( e1 != e2 || vec1_ != vec2_ ) {
@@ -3086,7 +3086,7 @@ void DenseAlignedTest::testElements()
    }
 
    try {
-      ASVT sv = subvector<aligned>( vec1_, 8UL, 32UL );
+      ASVT sv = subvector<aligned>( vec1_, 16UL, 32UL );
       auto e = elements( sv, { 8UL, 32UL } );
 
       std::ostringstream oss;
