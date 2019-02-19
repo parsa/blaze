@@ -126,8 +126,8 @@ void UnalignedPaddedTest::testSchurAssign()
       using blaze::rowMajor;
 
       using UnalignedPadded = blaze::CustomMatrix<short,unaligned,padded,rowMajor>;
-      std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 32UL ) );
-      UnalignedPadded mat1( memory1.get(), 2UL, 3UL, 16UL );
+      std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 64UL ) );
+      UnalignedPadded mat1( memory1.get(), 2UL, 3UL, 32UL );
       mat1 = 0;
       mat1(0,0) =  1;
       mat1(0,1) =  2;
@@ -258,8 +258,8 @@ void UnalignedPaddedTest::testSchurAssign()
       using blaze::columnMajor;
 
       using UnalignedPadded = blaze::CustomMatrix<short,unaligned,padded,columnMajor>;
-      std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 48UL ) );
-      UnalignedPadded mat1( memory1.get(), 2UL, 3UL, 16UL );
+      std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 96UL ) );
+      UnalignedPadded mat1( memory1.get(), 2UL, 3UL, 32UL );
       mat1 = 0;
       mat1(0,0) =  1;
       mat1(0,1) =  2;
@@ -750,8 +750,8 @@ void UnalignedPaddedTest::testSchurAssign()
       using blaze::rowMajor;
 
       using UnalignedPadded = blaze::CustomMatrix<short,unaligned,padded,rowMajor>;
-      std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 32UL ) );
-      UnalignedPadded mat1( memory1.get(), 2UL, 3UL, 16UL );
+      std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 64UL ) );
+      UnalignedPadded mat1( memory1.get(), 2UL, 3UL, 32UL );
       mat1 = 0;
       mat1(0,0) =  1;
       mat1(0,1) =  2;
@@ -885,8 +885,8 @@ void UnalignedPaddedTest::testSchurAssign()
       using blaze::columnMajor;
 
       using UnalignedPadded = blaze::CustomMatrix<short,unaligned,padded,columnMajor>;
-      std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 48UL ) );
-      UnalignedPadded mat1( memory1.get(), 2UL, 3UL, 16UL );
+      std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 96UL ) );
+      UnalignedPadded mat1( memory1.get(), 2UL, 3UL, 32UL );
       mat1 = 0;
       mat1(0,0) =  1;
       mat1(0,1) =  2;
@@ -1395,8 +1395,8 @@ void UnalignedPaddedTest::testMultAssign()
       using blaze::rowMajor;
 
       using UnalignedPadded = blaze::CustomMatrix<short,unaligned,padded,rowMajor>;
-      std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 48UL ) );
-      UnalignedPadded mat1( memory1.get(), 3UL, 3UL, 16UL );
+      std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 96UL ) );
+      UnalignedPadded mat1( memory1.get(), 3UL, 3UL, 32UL );
       mat1 = 0;
       mat1(0,1) = 2;
       mat1(1,0) = 1;
@@ -1539,8 +1539,8 @@ void UnalignedPaddedTest::testMultAssign()
       using blaze::columnMajor;
 
       using UnalignedPadded = blaze::CustomMatrix<short,unaligned,padded,columnMajor>;
-      std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 48UL ) );
-      UnalignedPadded mat1( memory1.get(), 3UL, 3UL, 16UL );
+      std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 96UL ) );
+      UnalignedPadded mat1( memory1.get(), 3UL, 3UL, 32UL );
       mat1 = 0;
       mat1(0,1) = 2;
       mat1(1,0) = 1;
@@ -1775,8 +1775,8 @@ void UnalignedPaddedTest::testMultAssign()
       using blaze::rowMajor;
 
       using UnalignedPadded = blaze::CustomMatrix<short,unaligned,padded,rowMajor>;
-      std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 48UL ) );
-      UnalignedPadded mat1( memory1.get(), 3UL, 3UL, 16UL );
+      std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 96UL ) );
+      UnalignedPadded mat1( memory1.get(), 3UL, 3UL, 32UL );
       mat1 = 0;
       mat1(0,1) = 2;
       mat1(1,0) = 1;
@@ -1919,8 +1919,8 @@ void UnalignedPaddedTest::testMultAssign()
       using blaze::columnMajor;
 
       using UnalignedPadded = blaze::CustomMatrix<short,unaligned,padded,columnMajor>;
-      std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 48UL ) );
-      UnalignedPadded mat1( memory1.get(), 3UL, 3UL, 16UL );
+      std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 96UL ) );
+      UnalignedPadded mat1( memory1.get(), 3UL, 3UL, 32UL );
       mat1 = 0;
       mat1(0,1) = 2;
       mat1(1,0) = 1;
