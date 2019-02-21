@@ -980,7 +980,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline bool ZeroMatrix<Type,SO>::canSMPAssign() const noexcept
 {
-   return true;
+   return false;
 }
 //*************************************************************************************************
 

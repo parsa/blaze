@@ -775,7 +775,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline bool ZeroVector<Type,TF>::canSMPAssign() const noexcept
 {
-   return true;
+   return false;
 }
 //*************************************************************************************************
 
