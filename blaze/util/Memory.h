@@ -87,6 +87,7 @@ inline byte_t* allocate_backend( size_t size, size_t alignment )
    raw = __mingw_aligned_malloc( size, alignment );
    if( raw == nullptr ) {
 #else
+   alignment = ( alignment < sizeof(void*) ? sizeof(void*) : alignment );
    if( posix_memalign( &raw, alignment, size ) ) {
 #endif
       BLAZE_THROW_BAD_ALLOC;
