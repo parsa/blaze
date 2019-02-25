@@ -189,7 +189,6 @@ class OperationTest
                           void testConjOperation     ();
                           void testRealOperation     ();
                           void testImagOperation     ();
-                          void testInvOperation      ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testDeclSymOperation  ( blaze::TrueType  );
@@ -400,7 +399,6 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testConjOperation();
    testRealOperation();
    testImagOperation();
-   testInvOperation();
    testEvalOperation();
    testSerialOperation();
    testDeclSymOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
@@ -4600,33 +4598,6 @@ void OperationTest<MT1,MT2>::testImagOperation()
        ( !blaze::IsHermitian<DRE>::value || blaze::isSymmetric( imag( lhs_ % rhs_ ) ) ) )
    {
       testCustomOperation( blaze::Imag(), "imag" );
-   }
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Testing the \a inv dense matrix/sparse matrix Schur product.
-//
-// \return void
-// \exception std::runtime_error Schur product error detected.
-//
-// This function tests the \a inv matrix Schur product with plain assignment, addition assignment,
-// subtraction assignment, and Schur product assignment. In case any error resulting from the Schur
-// product or the subsequent assignment is detected, a \a std::runtime_error exception is thrown.
-*/
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side sparse matrix
-void OperationTest<MT1,MT2>::testInvOperation()
-{
-#if BLAZETEST_MATHTEST_TEST_INV_OPERATION && BLAZETEST_MATHTEST_LAPACK_MODE
-   if( BLAZETEST_MATHTEST_TEST_INV_OPERATION > 1 )
-   {
-      if( !isSquare( lhs_ % rhs_ ) || blaze::isDefault( det( lhs_ % rhs_ ) ) )
-         return;
-
-      testCustomOperation( blaze::Inv(), "inv" );
    }
 #endif
 }

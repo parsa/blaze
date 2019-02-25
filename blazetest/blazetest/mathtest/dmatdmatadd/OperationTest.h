@@ -191,7 +191,8 @@ class OperationTest
                           void testConjOperation     ();
                           void testRealOperation     ();
                           void testImagOperation     ();
-                          void testInvOperation      ();
+                          void testInvOperation      ( blaze::TrueType  );
+                          void testInvOperation      ( blaze::FalseType );
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testDeclSymOperation  ( blaze::TrueType  );
@@ -406,7 +407,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testConjOperation();
    testRealOperation();
    testImagOperation();
-   testInvOperation();
+   testInvOperation( Not< IsUniform<DRE> >() );
    testEvalOperation();
    testSerialOperation();
    testDeclSymOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
@@ -4632,7 +4633,7 @@ void OperationTest<MT1,MT2>::testImagOperation()
 */
 template< typename MT1    // Type of the left-hand side dense matrix
         , typename MT2 >  // Type of the right-hand side dense matrix
-void OperationTest<MT1,MT2>::testInvOperation()
+void OperationTest<MT1,MT2>::testInvOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_INV_OPERATION && BLAZETEST_MATHTEST_LAPACK_MODE
    if( BLAZETEST_MATHTEST_TEST_INV_OPERATION > 1 )
@@ -4644,6 +4645,21 @@ void OperationTest<MT1,MT2>::testInvOperation()
    }
 #endif
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the \a inv dense matrix/dense matrix addition.
+//
+// \return void
+//
+// This function is called in case the \a inv matrix/matrix addition operation is not available
+// for the given matrix types \a MT1 and \a MT2.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testInvOperation( blaze::FalseType )
+{}
 //*************************************************************************************************
 
 
