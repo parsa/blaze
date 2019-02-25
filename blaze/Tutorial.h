@@ -8698,16 +8698,16 @@
 // indices:
 
    \code
-   blaze::DynamicVector<double,blaze::rowVector> x{ 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+   blaze::DynamicVector<double,blaze::rowVector> x{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 
-   // Selecting all even elements of the vector, i.e. selecting (1,3,5,7,9)
+   // Selecting all even elements of the vector, i.e. selecting (0,2,4,6,8)
    auto e1 = elements( x, []( size_t i ){ return i*2UL; }, 5UL );
 
-   // Selecting all odd elements of the vector, i.e. selecting (2,4,6,8)
+   // Selecting all odd elements of the vector, i.e. selecting (1,3,5,7)
    auto e2 = elements( x, []( size_t i ){ return i*2UL+1UL; }, 4UL );
 
-   // Reversing the elements of the vector, i.e. selecting (9,8,7,6,5,4,3,2,1)
-   auto e3 = elements( v, [max=v.size()-1UL]( size_t i ){ return max-i; }, 9UL );
+   // Reversing the elements of the vector, i.e. selecting (8,7,6,5,4,3,2,1,0)
+   auto e3 = elements( x, [max=v.size()-1UL]( size_t i ){ return max-i; }, 9UL );
    \endcode
 
 // The \c elements() function returns an expression representing the view on the selected elements.
@@ -9729,10 +9729,10 @@
    auto rs1 = rows( A, []( size_t i ){ return i*2UL; }, 5UL );
 
    // Selecting all odd rows of the matrix, i.e. selecting the rows 1, 3, 5, and 7
-   auto rs2 = rows( x, []( size_t i ){ return i*2UL+1UL; }, 4UL );
+   auto rs2 = rows( A, []( size_t i ){ return i*2UL+1UL; }, 4UL );
 
    // Reversing the rows of the matrix, i.e. selecting the rows 8, 7, 6, 5, 4, 3, 2, 1, and 0
-   auto rs3 = rows( v, [max=A.rows()-1UL]( size_t i ){ return max-i; }, 9UL );
+   auto rs3 = rows( A, [max=A.rows()-1UL]( size_t i ){ return max-i; }, 9UL );
    \endcode
 
 // The \c rows() function returns an expression representing the view on the selected rows. The
@@ -10375,10 +10375,10 @@
    auto cs1 = columns( A, []( size_t i ){ return i*2UL; }, 5UL );
 
    // Selecting all odd columns of the matrix, i.e. selecting the columns 1, 3, 5, and 7
-   auto cs2 = columns( x, []( size_t i ){ return i*2UL+1UL; }, 4UL );
+   auto cs2 = columns( A, []( size_t i ){ return i*2UL+1UL; }, 4UL );
 
    // Reversing the columns of the matrix, i.e. selecting the columns 8, 7, 6, 5, 4, 3, 2, 1, and 0
-   auto cs3 = columns( v, [max=A.columns()-1UL]( size_t i ){ return max-i; }, 9UL );
+   auto cs3 = columns( A, [max=A.columns()-1UL]( size_t i ){ return max-i; }, 9UL );
    \endcode
 
 // The \c columns() function returns an expression representing the view on the selected columns.
