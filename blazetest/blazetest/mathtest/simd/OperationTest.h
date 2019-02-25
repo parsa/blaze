@@ -75,6 +75,7 @@
 #include <blaze/math/shims/Pow2.h>
 #include <blaze/math/shims/Pow3.h>
 #include <blaze/math/shims/Pow4.h>
+#include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Round.h>
 #include <blaze/math/shims/Sign.h>
 #include <blaze/math/shims/Sin.h>
@@ -190,8 +191,9 @@ class OperationTest : private blaze::NonCopyable
    /*!\name Test functions */
    //@{
    void testStorea        ();
-   void testStream        ();
    void testStoreu        ( size_t offset );
+   void testStream        ();
+   void testSet           ();
 
    void testEquality      ( blaze::TrueType , blaze::TrueType  );
    void testEquality      ( blaze::TrueType , blaze::FalseType );
@@ -369,11 +371,13 @@ OperationTest<T>::OperationTest()
    , test_ ()                            // Label of the currently performed test
 {
    testStorea();
-   testStream();
 
    for( size_t offset=0UL; offset<SIMDSIZE; ++offset ) {
       testStoreu( offset );
    }
+
+   testStream        ();
+   testSet           ();
 
    testEquality      ( blaze::HasSIMDEqual<T,T>(), blaze::IsFloatingPoint<T>() );
    testInequality    ( blaze::HasSIMDEqual<T,T>(), blaze::IsFloatingPoint<T>() );
@@ -552,6 +556,41 @@ void OperationTest<T>::testStoreu( size_t offset )
    }
 
    compare( a_+offset, b_+offset );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the set operation.
+//
+// \return void
+// \exception std::runtime_error Set error detected.
+//
+// This function tests the set operation by comparing the results of a vectorized and a scalar
+// array assignment. In case any error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testSet()
+{
+   using blaze::set;
+   using blaze::storea;
+   using blaze::rand;
+
+   test_  = "set() operation";
+
+   initialize();
+
+   const T value( rand<T>() );
+
+   for( size_t i=0UL; i<N; ++i ) {
+      b_[i] = value;
+   }
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      storea( c_+i, set( value ) );
+   }
+
+   compare( b_, c_ );
 }
 //*************************************************************************************************
 
