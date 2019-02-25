@@ -302,7 +302,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,8UL>
    return _mm512_set_epi64( value.imag(), value.real(), value.imag(), value.real(),
                             value.imag(), value.real(), value.imag(), value.real() );
 #elif BLAZE_AVX2_MODE
-   return _mm256_set_epi64( value.imag(), value.real(), value.imag(), value.real() );
+   return _mm256_set_epi64x( value.imag(), value.real(), value.imag(), value.real() );
 #elif BLAZE_SSE2_MODE
    return _mm_set_epi64( value.imag(), value.real() );
 #else
