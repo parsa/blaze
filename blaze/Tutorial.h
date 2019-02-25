@@ -1223,7 +1223,13 @@
    v2 = { 2.1, 0.0, -1.7, 0.0, -7.2 };
    \endcode
 
-// In case of sparse vectors, only the non-zero elements are considered.
+// Dynamically sized vectors (such as e.g. \ref vector_types_hybrid_vector,
+// \ref vector_types_dynamic_vector or \ref vector_types_compressed_vector) are resized according
+// to the size of the initializer list and all their elements are (copy) assigned the values of
+// the list. For fixed size vectors (such as e.g. \ref vector_types_static_vector) missing values
+// are reset to their default value and in case the size of the initializer list exceeds the size
+// of the vector a \c std::invalid_argument exception is thrown. In case of sparse vectors, only
+// the non-zero elements are considered.
 //
 // \n \subsection vector_operations_copy_assignment Copy Assignment
 //
@@ -1657,7 +1663,7 @@
 //
 // \n \subsection vector_operations_isUniform isUniform()
 //
-// In order to check if all vector elements are identical, the \c isUniform function can be used:
+// In order to check if all vector elements are identical, the \c isUniform() function can be used:
 
    \code
    blaze::DynamicVector<int> a;
@@ -1670,7 +1676,7 @@
 //
 // \n \subsection vector_operations_isZero isZero()
 //
-// In order to check if all vector elements are zero, the \c isZero function can be used:
+// In order to check if all vector elements are zero, the \c isZero() function can be used:
 
    \code
    blaze::DynamicVector<int> a;
@@ -3292,8 +3298,14 @@
                                               { 0, 2 } };
    \endcode
 
-// In case of sparse matrices, only the non-zero elements are used to initialize the matrix.
-// Missing values are considered to be default values.
+// Dynamically sized matrices (such as e.g. \ref matrix_types_hybrid_matrix,
+// \ref matrix_types_dynamic_matrix or \ref matrix_types_compressed_matrix) are sized according
+// to the size of the initializer list and all their elements are (copy) assigned the values of
+// the list. For fixed size matrices (such as e.g. \ref matrix_types_static_matrix) missing values
+// are initialized as default and in case the size of the top-level initializer list does not
+// match the number of rows of the matrix or the size of any nested list exceeds the number of
+// columns, a \a std::invalid_argument exception is thrown. In case of sparse matrices, only
+// the non-zero elements are used to initialize the matrix.
 //
 // \n \subsection matrix_operations_copy_construction Copy Construction
 //
@@ -3384,12 +3396,12 @@
    \endcode
 
 // Dynamically sized matrices (such as e.g. \ref matrix_types_hybrid_matrix,
-// \ref matrix_types_dynamic_matrix or \ref matrix_types_compressed_matrix) are sized according
+// \ref matrix_types_dynamic_matrix or \ref matrix_types_compressed_matrix) are resized according
 // to the size of the initializer list and all their elements are (copy) assigned the values of
 // the list. For fixed size matrices (such as e.g. \ref matrix_types_static_matrix) missing values
-// are initialized as default and in case the size of the top-level initializer list does not
-// match the number of rows of the matrix or the size of any nested list exceeds the number of
-// columns, a \a std::invalid_argument exception is thrown. In case of sparse matrices, only
+// are reset to their default value and in case the size of the top-level initializer list does
+// not match the number of rows of the matrix or the size of any nested list exceeds the number
+// of columns, a \a std::invalid_argument exception is thrown. In case of sparse matrices, only
 // the non-zero elements are considered.
 //
 // \n \subsection matrix_operations_copy_assignment Copy Assignment
@@ -3993,7 +4005,7 @@
 //
 // \n \subsection matrix_operations_isUniform isUniform()
 //
-// In order to check if all matrix elements are identical, the \c isUniform function can be used:
+// In order to check if all matrix elements are identical, the \c isUniform() function can be used:
 
    \code
    blaze::DynamicMatrix<int> A;
@@ -4006,7 +4018,7 @@
 //
 // \n \subsection matrix_operations_isZero isZero()
 //
-// In order to check if all matrix elements are zero, the \c isZero function can be used:
+// In order to check if all matrix elements are zero, the \c isZero() function can be used:
 
    \code
    blaze::DynamicMatrix<int> A;
@@ -4494,11 +4506,14 @@
    double b = sum( B );  // Results in 1
    \endcode
 
-// Alternatively it is possible to compute a row- or columnwise softmax function. The resulting
-// dense matrix consists of real values in the range (0..1], which add up to the number of rows
-// or columns, respectively.
+// Alternatively it is possible to compute a row- or columnwise \c softmax() function. The
+// resulting dense matrix consists of real values in the range (0..1], which add up to the number
+// of rows or columns, respectively.
 
    \code
+   using blaze::rowwise;
+   using blaze::columnwise;
+
    blaze::StaticMatrix<double,3UL,3UL> C, D;
 
    // Evaluating the rowwise softmax function
@@ -12652,7 +12667,7 @@
 //
 // By default the \c map() function uses peel-off and remainder loops if the number of elements is
 // not a multiple of the width of the packed SIMD type. However, all dense vector and matrix types
-// in **Blaze** provide padding as an optimization. In case the custom operation preserves the
+// in \b Blaze provide padding as an optimization. In case the custom operation preserves the
 // value zero of the padding elements, it is possible to omit the peel-off and remainder loops,
 // include the padding elements in the computation and by that increase performance. For that
 // purpose the \c paddingEnabled() function can be added to the functor:
