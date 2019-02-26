@@ -19,9 +19,9 @@ Get an impression of the clear but powerful syntax of **Blaze** in the [Getting 
 ## Download ##
 
 ![white20x120.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/white20x120.jpg)
-[![blaze-3.4.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-3.4.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-3.4.tar.gz)
+[![blaze-3.5.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-3.5.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-3.5.tar.gz)
 ![white40x120.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/white40x120.jpg)
-[![blaze-docu-3.4.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-docu-3.4.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-docu-3.4.tar.gz)
+[![blaze-docu-3.5.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-docu-3.5.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-docu-3.5.tar.gz)
 
 Older releases of **Blaze** can be found in the [downloads](https://bitbucket.org/blaze-lib/blaze/downloads) section or in our [release archive](https://bitbucket.org/blaze-lib/blaze/wiki/Release Archive).
 
@@ -39,70 +39,67 @@ Older releases of **Blaze** can be found in the [downloads](https://bitbucket.or
 
 ## News ##
 
+**26.2.2019**: Today we present the next evolution of the **Blaze** library, **Blaze** 3.5. This new release
+introduces several new, requested features:
+
+* New vector and matrix types, specifically [```UniformVector```](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Types#!uniformvector), [```UniformMatrix```](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Types#!uniformmatrix), [```ZeroVector```](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Types#!zerovector), and [```ZeroMatrix```](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Types#!zeromatrix):
+
+```
+#!c++
+blaze::UniformVector<int> u( 5UL );          // Creating a 5D uniform vector
+blaze::UniformMatrix<double> U( 4UL, 6UL );  // Creating a 4x6 uniform matrix
+
+blaze::ZeroVector<float> z( 4UL );           // Creating a 4D zero vector
+blaze::ZeroMatrix<double> Z( 3UL, 7UL );     // Creating a 3x7 zero matrix
+```
+
+* More flexible element selections, row selections, and column selections:
+
+```
+#!c++
+blaze::DynamicVector<double,blaze::rowVector> x{ 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+blaze::DynamicMatrix<double,blaze::rowMajor> A( 9UL, 9UL );
+
+// Selecting all even elements of the vector, i.e. selecting (1,3,5,7,9)
+auto e = elements( x, []( size_t i ){ return i*2UL; }, 5UL );
+
+// Selecting all odd rows of the matrix, i.e. selecting the rows 1, 3, 5, and 7
+auto rs = rows( A, []( size_t i ){ return i*2UL+1UL; }, 4UL );
+
+// Reversing the columns of the matrix, i.e. selecting the columns 8, 7, 6, 5, 4, 3, 2, 1, and 0
+auto cs = columns( A, [max=A.columns()-1UL]( size_t i ){ return max-i; }, 9UL );
+```
+
+* Vector expansion via the [```expand()```](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Operations#!vector-expansion) function:
+
+```
+#!c++
+blaze::DynamicVector<int,columnVector> a{ 1, 2, 3 };
+blaze::CompressedVector<int,rowVector> b{ 1, 0, 3, 0, 5 };
+
+// Expand the dense column vector ( 1 2 3 ) into a dense 3x5 column-major matrix
+//
+//   ( 1 1 1 1 1 )
+//   ( 2 2 2 2 2 )
+//   ( 3 3 3 3 3 )
+//
+expand( a, 5 );  // Runtime parameter
+expand<5>( a );  // Compile time parameter
+
+// Expand the sparse row vector ( 1 0 3 0 5 ) into a sparse 3x5 row-major matrix
+//
+//   ( 1 0 3 0 5 )
+//   ( 1 0 3 0 5 )
+//   ( 1 0 3 0 5 )
+//
+expand( b, 3 );  // Runtime parameter
+expand<3>( b );  // Compile time parameter
+```
+
+With the release of **Blaze** 3.5 we also officially deprecate the **Blazemark**, which means that we will eventually remove it in an upcoming release. We hope that you enjoy this new release!
+
 **25.11.2018**: We are proud to announce a new **Blaze** project: [blaze_tensor](https://github.com/STEllAR-GROUP/blaze_tensor)
 provides an implementation of **Blaze**-style 3D tensors. A big thank you to the Stellar Group!
-
-**21.8.2018**: On time for [CppCon 2018](https://cppcon.org) and [SC18](https://sc18.supercomputing.org), we finally release **Blaze** 3.4! In **Blaze** 3.4 we have focused on internal improvements and refactorings, which will prove invaluable on our way forward. However, also this release comes with several useful new features. Most remarkable is the implementation of vector and matrix reduction operations. The ```sum()```, ```prod()```, ```min()``` and ```max()``` functions provide shortcuts to the most common reduction operations:
-
-```
-#!c++
-blaze::DynamicVector<double> a;
-blaze::CompressedVector<int> b;
-// ... Resizing and initialization
-
-const double totalsum  = sum ( a );
-const int    totalprod = prod( b );
-const double totalmin  = min ( a );
-const int    totalmax  = max ( b );
-```
-
-```
-#!c++
-blaze::DynamicMatrix<double> A;
-blaze::CompressedMatrix<int> B;
-// ... Resizing and initialization
-
-double totalsum( 0 );
-blaze::DynamicVector<int,columnVector> rowprod;
-blaze::DynamicVector<int,rowVector> colmin;
-int totalmax( 0 );
-
-totalsum = sum( A );
-rowprod  = prod<rowwise>( B );
-colmin   = min<columnwise>( A );
-totalmax = max( B );
-```
-
-Note that via the ```blaze::rowwise``` and ```blaze::columnwise``` flags it is possible to perform row-wise and column-wise matrix reduction operations, respectively. In addition, it is possible to formulate custom reduction operations:
-
-```
-#!c++
-blaze::DynamicVector<double> a;
-blaze::CompressedVector<int> b;
-// ... Resizing and initialization
-
-const double totalsum1 = reduce( a, blaze::Add() );
-const double totalsum2 = reduce( b, []( double a, double b ){ return a + b; } );
-```
-
-```
-#!c++
-blaze::DynamicMatrix<double> A;
-blaze::CompressedMatrix<int> B;
-// ... Resizing and initialization
-
-const double totalsum1 = reduce( A, blaze::Add() );
-const double totalsum2 = reduce( B, []( int a, int b ){ return a + b; } );
-
-blaze::DynamicVector<double,rowVector> colsum;
-blaze::DynamicVector<int,columnVector> rowsum;
-colsum = reduce<columnwise>( A, []( double a, double b ){ return a + b; } );
-rowsum = reduce<rowwise>( B, blaze::Add() );
-```
-
-Please note that in **Blaze** 3.4 we make unrestricted use of [variable templates](https://en.cppreference.com/w/cpp/language/variable_template). Unfortunately, compiler support for variable templates is not perfect yet and we have encountered various problems, especially with older compilers, which we supported up to **Blaze** 3.3. In order to being able to move forward and in order to benefit from variable templates, from as of today **Blaze** will no longer provide support for compilers without complete support for variable templates.
-
-We hope you enjoy this amazing new release of **Blaze**!
 
 ----
 
@@ -144,10 +141,10 @@ We hope you enjoy this amazing new release of **Blaze**!
         * [Schur Product](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Matrix Multiplication#!componentwise-multiplication-schur-product)
         * [Matrix Product](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Matrix Multiplication#!matrix-product)
 * [Shared-Memory Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/Shared Memory Parallelization)
-    * [OpenMP Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/OpenMP Parallelization)
+    * [HPX Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/HPX Parallelization)
     * [C++11 Thread Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/Cpp Thread Parallelization)
     * [Boost Thread Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/Boost Thread Parallelization)
-    * [HPX Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/HPX Parallelization)
+    * [OpenMP Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/OpenMP Parallelization)
     * [Serial Execution](https://bitbucket.org/blaze-lib/blaze/wiki/Serial Execution)
 * [Serialization](https://bitbucket.org/blaze-lib/blaze/wiki/Serialization)
     * [Vector Serialization](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Serialization)
@@ -185,7 +182,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 ## Compiler Compatibility ##
 
-**Blaze** supports the C++14 standard and is compatible with a wide range of C++ compilers. In fact, **Blaze** is constantly tested with the GNU compiler collection (version 6.0 through 7.2), the Clang compiler (version 5.0 through 6.0), and Visual C++ 2017 (Win64 only). Other compilers are not explicitly tested, but might work with a high probability.
+**Blaze** supports the C++14 standard and is compatible with a wide range of C++ compilers. In fact, **Blaze** is constantly tested with the GNU compiler collection (version 6.0 through 7.2), the Clang compiler (version 5.0 through 7.0), and Visual C++ 2017 (Win64 only). Other compilers are not explicitly tested, but might work with a high probability.
 
 If you are looking for a C++98 compatible math library you might consider using an older release of **Blaze**. Until the release 2.6 **Blaze** was written in C++-98 and constantly tested with the GNU compiler collection (version 4.5 through 5.0), the Intel C++ compiler (12.1, 13.1, 14.0, 15.0), the Clang compiler (version 3.4 through 3.7), and Visual C++ 2010, 2012, 2013, and 2015 (Win64 only).
 
