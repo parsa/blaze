@@ -3,7 +3,7 @@
 //  \file src/mathtest/dvecdvecadd/VDaVUb.cpp
 //  \brief Source file for the VDaVUb dense vector/dense vector addition math test
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary

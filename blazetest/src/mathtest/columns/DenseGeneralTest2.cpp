@@ -3,7 +3,7 @@
 //  \file src/mathtest/columns/DenseGeneralTest2.cpp
 //  \brief Source file for the Columns dense general test (part 2)
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary

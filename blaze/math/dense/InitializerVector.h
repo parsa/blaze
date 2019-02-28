@@ -3,7 +3,7 @@
 //  \file blaze/math/dense/InitializerVector.h
 //  \brief Header file for the implementation of a vector representation of an initializer list
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary

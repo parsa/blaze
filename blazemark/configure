@@ -3,7 +3,7 @@
 #
 #  Configuration script for the Blaze benchmark suite
 #
-#  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+#  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 #
 #  This file is part of the Blaze library. You can redistribute it and/or modify it under
 #  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -2183,7 +2183,7 @@ cat > Makefile <<EOF
 #
 #  Makefile for the Blaze benchmark suite
 #
-#  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+#  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 #
 #  This file is part of the Blaze library. You can redistribute it and/or modify it under
 #  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -9060,7 +9060,7 @@ cat > ./blazemark/system/BLAS.h <<EOF
 //  \file blazemark/system/BLAS.h
 //  \brief System settings for the BLAS performance benchmarks
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -9165,7 +9165,7 @@ cat > ./blazemark/system/Boost.h <<EOF
 //  \file blazemark/system/Boost.h
 //  \brief System settings for the Boost performance benchmarks
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -9245,7 +9245,7 @@ cat > ./blazemark/system/Blitz.h <<EOF
 //  \file blazemark/system/Blitz.h
 //  \brief System settings for the Blitz++ performance benchmarks
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -9325,7 +9325,7 @@ cat > ./blazemark/system/GMM.h <<EOF
 //  \file blazemark/system/GMM.h
 //  \brief System settings for the GMM++ performance benchmarks
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -9405,7 +9405,7 @@ cat > ./blazemark/system/Armadillo.h <<EOF
 //  \file blazemark/system/Armadillo.h
 //  \brief System settings for the Armadillo performance benchmarks
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -9485,7 +9485,7 @@ cat > ./blazemark/system/FLENS.h <<EOF
 //  \file blazemark/system/FLENS.h
 //  \brief System settings for the FLENS performance benchmarks
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -9565,7 +9565,7 @@ cat > ./blazemark/system/MTL.h <<EOF
 //  \file blazemark/system/MTL.h
 //  \brief System settings for the MTL performance benchmarks
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -9645,7 +9645,7 @@ cat > ./blazemark/system/Eigen.h <<EOF
 //  \file blazemark/system/Eigen.h
 //  \brief System settings for the Eigen performance benchmarks
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
