@@ -84,12 +84,12 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/DecltypeAuto.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -1427,7 +1427,7 @@ template< typename MT         // Type of the sparse matrix
         , typename... CCAs >  // Compile time column arguments
 inline void Columns<MT,true,false,SF,CCAs...>::finalize( size_t j )
 {
-   UNUSED_PARAMETER( j );
+   MAYBE_UNUSED( j );
 
    return;
 }
@@ -3497,7 +3497,7 @@ template< typename MT         // Type of the sparse matrix
         , typename... CCAs >  // Compile time column arguments
 inline size_t Columns<MT,false,false,false,CCAs...>::capacity( size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( j );
+   MAYBE_UNUSED( j );
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -3631,7 +3631,7 @@ template< typename MT         // Type of the sparse matrix
         , typename... CCAs >  // Compile time column arguments
 inline void Columns<MT,false,false,false,CCAs...>::reserve( size_t nonzeros )
 {
-   UNUSED_PARAMETER( nonzeros );
+   MAYBE_UNUSED( nonzeros );
 
    return;
 }
@@ -3656,7 +3656,7 @@ template< typename MT         // Type of the sparse matrix
         , typename... CCAs >  // Compile time column arguments
 void Columns<MT,false,false,false,CCAs...>::reserve( size_t j, size_t nonzeros )
 {
-   UNUSED_PARAMETER( j, nonzeros );
+   MAYBE_UNUSED( j, nonzeros );
 
    return;
 }
@@ -3699,7 +3699,7 @@ template< typename MT         // Type of the sparse matrix
         , typename... CCAs >  // Compile time column arguments
 void Columns<MT,false,false,false,CCAs...>::trim( size_t j )
 {
-   UNUSED_PARAMETER( j );
+   MAYBE_UNUSED( j );
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -3839,7 +3839,7 @@ template< typename MT         // Type of the sparse matrix
         , typename... CCAs >  // Compile time column arguments
 inline void Columns<MT,false,false,false,CCAs...>::finalize( size_t j )
 {
-   UNUSED_PARAMETER( j );
+   MAYBE_UNUSED( j );
 
    return;
 }
@@ -3921,7 +3921,7 @@ template< typename MT         // Type of the sparse matrix
 inline typename Columns<MT,false,false,false,CCAs...>::Iterator
    Columns<MT,false,false,false,CCAs...>::erase( size_t j, Iterator first, Iterator last )
 {
-   UNUSED_PARAMETER( j );
+   MAYBE_UNUSED( j );
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -4006,7 +4006,7 @@ template< typename MT         // Type of the sparse matrix
 template< typename Pred >     // Type of the unary predicate
 inline void Columns<MT,false,false,false,CCAs...>::erase( size_t j, Iterator first, Iterator last, Pred predicate )
 {
-   UNUSED_PARAMETER( j );
+   MAYBE_UNUSED( j );
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -5539,7 +5539,7 @@ template< typename MT         // Type of the sparse matrix
         , typename... CCAs >  // Compile time column arguments
 inline void Columns<MT,false,false,true,CCAs...>::finalize( size_t j )
 {
-   UNUSED_PARAMETER( j );
+   MAYBE_UNUSED( j );
 
    return;
 }

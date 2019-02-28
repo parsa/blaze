@@ -43,9 +43,9 @@
 #include <blaze/math/IntegerSequence.h>
 #include <blaze/system/Standard.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/SmallArray.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -172,7 +172,7 @@ template< size_t I            // First element index
 template< typename... REAs >  // Optional element arguments
 inline ElementsData< index_sequence<I,Is...> >::ElementsData( REAs... args ) noexcept
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -315,7 +315,7 @@ inline ElementsData<P>::ElementsData( P p, size_t n, REAs... args ) noexcept
    : p_( p )
    , n_( n )
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -456,7 +456,7 @@ template< typename T          // Type of the element indices
 inline ElementsData<>::ElementsData( const T* indices, size_t n, REAs... args )
    : indices_( indices, indices+n )  // The indices of the elements in the vector
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************

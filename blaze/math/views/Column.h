@@ -77,10 +77,10 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -474,7 +474,7 @@ inline decltype(auto) column( const VecTVecMultExpr<MT>& matrix, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 
    if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
       if( (~matrix).columns() <= I ) {
@@ -508,7 +508,7 @@ inline decltype(auto) column( const VecTVecMultExpr<MT>& matrix, size_t index, R
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 
    if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
       if( (~matrix).columns() <= index ) {
@@ -745,7 +745,7 @@ inline decltype(auto) column( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... a
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 
    return subvector( (~matrix).operand(), 0UL, (~matrix).rows() );
 }

@@ -95,6 +95,7 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Misalignment.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TrueType.h>
@@ -105,7 +106,6 @@
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/RemoveConst.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -1704,7 +1704,7 @@ template< typename Type  // Data type of the matrix
         , typename RT >  // Result type
 inline size_t CustomMatrix<Type,AF,PF,SO,RT>::capacity( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    return nn_;
 }
@@ -4582,7 +4582,7 @@ template< typename Type  // Data type of the matrix
         , typename RT >  // Result type
 inline size_t CustomMatrix<Type,AF,PF,true,RT>::capacity( size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( j );
+   MAYBE_UNUSED( j );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    return mm_;
 }

@@ -76,6 +76,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 
@@ -855,7 +856,7 @@ inline const VT&
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( mat );
+   MAYBE_UNUSED( mat );
 
    BLAZE_INTERNAL_ASSERT( (~mat).columns() == (~vec).size(), "Invalid matrix and vector sizes" );
 
@@ -886,7 +887,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( vec );
+   MAYBE_UNUSED( vec );
 
    BLAZE_INTERNAL_ASSERT( (~mat).columns() == (~vec).size(), "Invalid matrix and vector sizes" );
 

@@ -42,9 +42,9 @@
 
 #include <blaze/system/Inline.h>
 #include <blaze/system/SMP.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -96,7 +96,7 @@ BLAZE_ALWAYS_INLINE size_t getNumThreads()
 */
 BLAZE_ALWAYS_INLINE void setNumThreads( size_t number )
 {
-   UNUSED_PARAMETER( number );
+   MAYBE_UNUSED( number );
 }
 //*************************************************************************************************
 

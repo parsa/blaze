@@ -40,8 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -146,7 +146,7 @@ inline BandData<>::BandData( ptrdiff_t index, RBAs... args )
    , row_   ( index >= 0L ?   0UL : -index )  // The index of the row containing the first element of the band
    , column_( index >= 0L ? index :    0UL )  // The index of the column containing the first element of the band
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -261,7 +261,7 @@ template< ptrdiff_t I >       // Compile time band index
 template< typename... RBAs >  // Optional band arguments
 inline BandData<I>::BandData( RBAs... args )
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************

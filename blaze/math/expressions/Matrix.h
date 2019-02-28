@@ -53,9 +53,9 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsSame.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -632,7 +632,7 @@ template< typename MT  // Type of the matrix
 BLAZE_ALWAYS_INLINE auto resize_backend( Matrix<MT,SO>& matrix, size_t m, size_t n, bool preserve )
    -> DisableIf_t< IsResizable_v<MT> >
 {
-   UNUSED_PARAMETER( preserve );
+   MAYBE_UNUSED( preserve );
 
    if( (~matrix).rows() != m || (~matrix).columns() != n ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix cannot be resized" );
@@ -755,7 +755,7 @@ template< typename MT  // Type of the matrix
 BLAZE_ALWAYS_INLINE auto shrinkToFit_backend( Matrix<MT,SO>& matrix )
    -> DisableIf_t< IsShrinkable_v<MT> >
 {
-   UNUSED_PARAMETER( matrix );
+   MAYBE_UNUSED( matrix );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1486,7 +1486,7 @@ BLAZE_ALWAYS_INLINE bool trySet( const Matrix<MT,SO>& mat, size_t i, size_t j, c
    BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
 
-   UNUSED_PARAMETER( mat, i, j, value );
+   MAYBE_UNUSED( mat, i, j, value );
 
    return true;
 }
@@ -1518,7 +1518,7 @@ BLAZE_ALWAYS_INLINE bool tryAdd( const Matrix<MT,SO>& mat, size_t i, size_t j, c
    BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
 
-   UNUSED_PARAMETER( mat, i, j, value );
+   MAYBE_UNUSED( mat, i, j, value );
 
    return true;
 }
@@ -1550,7 +1550,7 @@ BLAZE_ALWAYS_INLINE bool trySub( const Matrix<MT,SO>& mat, size_t i, size_t j, c
    BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
 
-   UNUSED_PARAMETER( mat, i, j, value );
+   MAYBE_UNUSED( mat, i, j, value );
 
    return true;
 }
@@ -1582,7 +1582,7 @@ BLAZE_ALWAYS_INLINE bool tryMult( const Matrix<MT,SO>& mat, size_t i, size_t j, 
    BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
 
-   UNUSED_PARAMETER( mat, i, j, value );
+   MAYBE_UNUSED( mat, i, j, value );
 
    return true;
 }
@@ -1619,7 +1619,7 @@ BLAZE_ALWAYS_INLINE bool
    BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( mat, row, column, m, n, value );
+   MAYBE_UNUSED( mat, row, column, m, n, value );
 
    return true;
 }
@@ -1651,7 +1651,7 @@ BLAZE_ALWAYS_INLINE bool tryDiv( const Matrix<MT,SO>& mat, size_t i, size_t j, c
    BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
 
-   UNUSED_PARAMETER( mat, i, j, value );
+   MAYBE_UNUSED( mat, i, j, value );
 
    return true;
 }
@@ -1688,7 +1688,7 @@ BLAZE_ALWAYS_INLINE bool
    BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( mat, row, column, m, n, value );
+   MAYBE_UNUSED( mat, row, column, m, n, value );
 
    return true;
 }
@@ -1724,7 +1724,7 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF
    BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= (~lhs).rows() ), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= (~lhs).columns() ), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, rhs, row, column );
+   MAYBE_UNUSED( lhs, rhs, row, column );
 
    return true;
 }
@@ -1761,7 +1761,7 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const Matrix<MT,SO>& lhs, const Vector<VT,TF
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, rhs, band, row, column );
+   MAYBE_UNUSED( lhs, rhs, band, row, column );
 
    return true;
 }
@@ -1797,7 +1797,7 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const Matrix<MT1,SO1>& lhs, const Matrix<MT2
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= (~lhs).rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= (~lhs).columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, rhs, row, column );
+   MAYBE_UNUSED( lhs, rhs, row, column );
 
    return true;
 }
@@ -1833,7 +1833,7 @@ BLAZE_ALWAYS_INLINE bool tryAddAssign( const Matrix<MT,SO>& lhs, const Vector<VT
    BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= (~lhs).rows() ), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= (~lhs).columns() ), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, rhs, row, column );
+   MAYBE_UNUSED( lhs, rhs, row, column );
 
    return true;
 }
@@ -1870,7 +1870,7 @@ BLAZE_ALWAYS_INLINE bool tryAddAssign( const Matrix<MT,SO>& lhs, const Vector<VT
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, rhs, band, row, column );
+   MAYBE_UNUSED( lhs, rhs, band, row, column );
 
    return true;
 }
@@ -1906,7 +1906,7 @@ BLAZE_ALWAYS_INLINE bool tryAddAssign( const Matrix<MT1,SO1>& lhs, const Matrix<
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= (~lhs).rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= (~lhs).columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, rhs, row, column );
+   MAYBE_UNUSED( lhs, rhs, row, column );
 
    return true;
 }
@@ -1942,7 +1942,7 @@ BLAZE_ALWAYS_INLINE bool trySubAssign( const Matrix<MT,SO>& lhs, const Vector<VT
    BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= (~lhs).rows() ), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= (~lhs).columns() ), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, rhs, row, column );
+   MAYBE_UNUSED( lhs, rhs, row, column );
 
    return true;
 }
@@ -1980,7 +1980,7 @@ BLAZE_ALWAYS_INLINE bool trySubAssign( const Matrix<MT,SO>& lhs, const Vector<VT
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, rhs, band, row, column );
+   MAYBE_UNUSED( lhs, rhs, band, row, column );
 
    return true;
 }
@@ -2016,7 +2016,7 @@ BLAZE_ALWAYS_INLINE bool trySubAssign( const Matrix<MT1,SO1>& lhs, const Matrix<
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= (~lhs).rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= (~lhs).columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, rhs, row, column );
+   MAYBE_UNUSED( lhs, rhs, row, column );
 
    return true;
 }
@@ -2052,7 +2052,7 @@ BLAZE_ALWAYS_INLINE bool tryMultAssign( const Matrix<MT,SO>& lhs, const Vector<V
    BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= (~lhs).rows() ), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= (~lhs).columns() ), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, rhs, row, column );
+   MAYBE_UNUSED( lhs, rhs, row, column );
 
    return true;
 }
@@ -2090,7 +2090,7 @@ BLAZE_ALWAYS_INLINE bool tryMultAssign( const Matrix<MT,SO>& lhs, const Vector<V
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, rhs, band, row, column );
+   MAYBE_UNUSED( lhs, rhs, band, row, column );
 
    return true;
 }
@@ -2126,7 +2126,7 @@ BLAZE_ALWAYS_INLINE bool trySchurAssign( const Matrix<MT1,SO1>& lhs, const Matri
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= (~lhs).rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= (~lhs).columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, rhs, row, column );
+   MAYBE_UNUSED( lhs, rhs, row, column );
 
    return true;
 }
@@ -2162,7 +2162,7 @@ BLAZE_ALWAYS_INLINE bool tryDivAssign( const Matrix<MT,SO>& lhs, const Vector<VT
    BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= (~lhs).rows() ), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= (~lhs).columns() ), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, rhs, row, column );
+   MAYBE_UNUSED( lhs, rhs, row, column );
 
    return true;
 }
@@ -2200,7 +2200,7 @@ BLAZE_ALWAYS_INLINE bool tryDivAssign( const Matrix<MT,SO>& lhs, const Vector<VT
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, rhs, band, row, column );
+   MAYBE_UNUSED( lhs, rhs, band, row, column );
 
    return true;
 }

@@ -93,12 +93,12 @@
 #include <blaze/util/DecltypeAuto.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -1517,7 +1517,7 @@ template< typename MT         // Type of the dense matrix
         , typename... CCAs >  // Compile time column arguments
 inline size_t Columns<MT,true,true,SF,CCAs...>::capacity( size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( j );
+   MAYBE_UNUSED( j );
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -4723,7 +4723,7 @@ template< typename MT         // Type of the dense matrix
         , typename... CCAs >  // Compile time column arguments
 inline size_t Columns<MT,false,true,false,CCAs...>::capacity( size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( j );
+   MAYBE_UNUSED( j );
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -6523,7 +6523,7 @@ template< typename MT         // Type of the dense matrix
         , typename... CCAs >  // Compile time column arguments
 inline size_t Columns<MT,false,true,true,CCAs...>::capacity( size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( j );
+   MAYBE_UNUSED( j );
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 

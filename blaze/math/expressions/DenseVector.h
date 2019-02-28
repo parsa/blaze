@@ -46,7 +46,7 @@
 #include <blaze/system/Inline.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/Unused.h>
+#include <blaze/util/MaybeUnused.h>
 
 
 namespace blaze {
@@ -115,7 +115,7 @@ template< typename VT  // Type of the vector
 BLAZE_ALWAYS_INLINE auto data_backend( DenseVector<VT,TF>& dv ) noexcept
    -> DisableIf_t< HasMutableDataAccess_v<VT>, typename VT::ElementType* >
 {
-   UNUSED_PARAMETER( dv );
+   MAYBE_UNUSED( dv );
 
    return nullptr;
 }
@@ -182,7 +182,7 @@ template< typename VT  // Type of the vector
 BLAZE_ALWAYS_INLINE auto data_backend( const DenseVector<VT,TF>& dv ) noexcept
    -> DisableIf_t< HasConstDataAccess_v<VT>, const typename VT::ElementType* >
 {
-   UNUSED_PARAMETER( dv );
+   MAYBE_UNUSED( dv );
 
    return nullptr;
 }

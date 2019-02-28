@@ -72,6 +72,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
@@ -865,7 +866,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( scalar );
+   MAYBE_UNUSED( scalar );
 
    using ReturnType = const DivTrait_t< ResultType_t<VT>, ST >;
 

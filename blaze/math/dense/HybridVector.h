@@ -100,6 +100,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/StaticAssert.h>
@@ -109,7 +110,6 @@
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/RemoveConst.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -1561,7 +1561,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline void HybridVector<Type,N,TF>::resize( size_t n, bool preserve )
 {
-   UNUSED_PARAMETER( preserve );
+   MAYBE_UNUSED( preserve );
 
    if( n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid size for hybrid vector" );
@@ -1596,7 +1596,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline void HybridVector<Type,N,TF>::extend( size_t n, bool preserve )
 {
-   UNUSED_PARAMETER( preserve );
+   MAYBE_UNUSED( preserve );
    resize( size_+n );
 }
 //*************************************************************************************************
@@ -1684,7 +1684,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline void* HybridVector<Type,N,TF>::operator new( std::size_t size )
 {
-   UNUSED_PARAMETER( size );
+   MAYBE_UNUSED( size );
 
    BLAZE_INTERNAL_ASSERT( size == sizeof( HybridVector ), "Invalid number of bytes detected" );
 
@@ -1731,7 +1731,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline void* HybridVector<Type,N,TF>::operator new( std::size_t size, const std::nothrow_t& )
 {
-   UNUSED_PARAMETER( size );
+   MAYBE_UNUSED( size );
 
    BLAZE_INTERNAL_ASSERT( size == sizeof( HybridVector ), "Invalid number of bytes detected" );
 

@@ -101,11 +101,11 @@
 #include <blaze/math/typetraits/YieldsZero.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -412,7 +412,7 @@ inline bool trySet( const DiagonalMatrix<MT,SO,DF>& mat, size_t i, size_t j, con
    BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
 
-   UNUSED_PARAMETER( mat );
+   MAYBE_UNUSED( mat );
 
    return ( i == j || isDefault( value ) );
 }
@@ -505,7 +505,7 @@ inline bool tryAssign( const DiagonalMatrix<MT,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t index( ( column <= row )?( 0UL ):( column - row ) );
 
@@ -554,7 +554,7 @@ inline bool tryAssign( const DiagonalMatrix<MT,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t index( ( row <= column )?( 0UL ):( row - column ) );
 
@@ -606,7 +606,7 @@ inline bool tryAssign( const DiagonalMatrix<MT,SO,DF>& lhs, const DenseVector<VT
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, row, column );
+   MAYBE_UNUSED( lhs, row, column );
 
    if( band != 0L ) {
       for( size_t i=0UL; i<(~rhs).size(); ++i ) {
@@ -650,7 +650,7 @@ inline bool tryAssign( const DiagonalMatrix<MT,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t index( column - row );
 
@@ -694,7 +694,7 @@ inline bool tryAssign( const DiagonalMatrix<MT,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t index( row - column );
 
@@ -741,7 +741,7 @@ inline bool tryAssign( const DiagonalMatrix<MT,SO,DF>& lhs, const SparseVector<V
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, row, column );
+   MAYBE_UNUSED( lhs, row, column );
 
    if( band != 0L ) {
       for( const auto& element : ~rhs ) {
@@ -786,7 +786,7 @@ inline bool tryAssign( const DiagonalMatrix<MT1,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
@@ -834,7 +834,7 @@ inline bool tryAssign( const DiagonalMatrix<MT1,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
@@ -882,7 +882,7 @@ inline bool tryAssign( const DiagonalMatrix<MT1,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t M( (~rhs).rows() );
 
@@ -929,7 +929,7 @@ inline bool tryAssign( const DiagonalMatrix<MT1,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t N( (~rhs).columns() );
 

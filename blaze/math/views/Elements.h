@@ -75,13 +75,13 @@
 #include <blaze/math/views/elements/Sparse.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/SmallArray.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsPointer.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -538,7 +538,7 @@ inline decltype(auto) elements( VT&& vector, index_sequence<Is...> indices, REAs
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( indices );
+   MAYBE_UNUSED( indices );
 
    return elements<Is...>( std::forward<VT>( vector ), args... );
 }

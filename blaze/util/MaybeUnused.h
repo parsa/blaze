@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/Unused.h
-//  \brief Header file for the UNUSED_PARAMETER function template
+//  \file blaze/util/MaybeUnused.h
+//  \brief Header file for the MAYBE_UNUSED function template
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //
@@ -32,15 +32,15 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_UNUSED_H_
-#define _BLAZE_UTIL_UNUSED_H_
+#ifndef _BLAZE_UTIL_MAYBEUNUSED_H_
+#define _BLAZE_UTIL_MAYBEUNUSED_H_
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  UNUSED_PARAMETER FUNCTION
+//  MAYBE_UNUSED FUNCTION
 //
 //=================================================================================================
 
@@ -50,7 +50,7 @@ namespace blaze {
 //
 // \return void
 //
-// The UNUSED_PARAMETER function provides the functionality to suppress warnings about any number
+// The MAYBE_UNUSED function provides the functionality to suppress warnings about any number
 // of unused parameters. Usually this problem occurs in case a parameter is given a name but is
 // not used within the function:
 
@@ -67,18 +67,18 @@ namespace blaze {
    \endcode
 
 // However, there are situations where is approach is not possible, as for instance in case the
-// variable must be documented via Doxygen. For these cases, the UNUSED_PARAMETER class can be
-// used to suppress the warnings:
+// variable must be documented via Doxygen. For these cases, the MAYBE_UNUSED class can be used
+// to suppress the warnings:
 
    \code
    void f( int x )
    {
-      UNUSED_PARAMETER( x );  // Suppresses the unused parameter warnings
+      MAYBE_UNUSED( x );  // Suppresses the unused parameter warnings
    }
    \endcode
 */
 template< typename... Args >
-inline constexpr void UNUSED_PARAMETER( const Args&... )
+inline constexpr void MAYBE_UNUSED( const Args&... )
 {}
 //*************************************************************************************************
 

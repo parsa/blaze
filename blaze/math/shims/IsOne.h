@@ -45,8 +45,8 @@
 #include <blaze/system/Inline.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -122,7 +122,7 @@ template< bool RF          // Relaxation flag
         , typename Type >  // Type of the given value/object
 BLAZE_ALWAYS_INLINE DisableIf_t< IsNumeric_v<Type>, bool > isOne( const Type& v ) noexcept
 {
-   UNUSED_PARAMETER( v );
+   MAYBE_UNUSED( v );
 
    return false;
 }

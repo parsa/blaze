@@ -97,10 +97,10 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -2086,7 +2086,7 @@ inline const MT1&
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( rhs );
+   MAYBE_UNUSED( rhs );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).rows(), "Invalid matrix sizes" );
 

@@ -82,6 +82,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FalseType.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
@@ -90,7 +91,6 @@
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -2225,7 +2225,7 @@ void DiagonalMatrix<MT,SO,true>::resize( size_t n, bool preserve )
 {
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE( MT );
 
-   UNUSED_PARAMETER( preserve );
+   MAYBE_UNUSED( preserve );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square diagonal matrix detected" );
 
@@ -2262,7 +2262,7 @@ inline void DiagonalMatrix<MT,SO,true>::extend( size_t n, bool preserve )
 {
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE( MT );
 
-   UNUSED_PARAMETER( preserve );
+   MAYBE_UNUSED( preserve );
 
    resize( rows() + n, true );
 }

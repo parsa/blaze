@@ -40,8 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -140,7 +140,7 @@ template< typename... RCAs >  // Optional column arguments
 inline ColumnData<>::ColumnData( size_t index, RCAs... args )
    : column_( index )  // The index of the column in the matrix
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -225,7 +225,7 @@ template< size_t I >          // Compile time column index
 template< typename... RCAs >  // Optional column arguments
 inline ColumnData<I>::ColumnData( RCAs... args )
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************

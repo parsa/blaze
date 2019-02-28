@@ -69,11 +69,11 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVoid.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -889,7 +889,7 @@ inline const MT1&
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( rhs );
+   MAYBE_UNUSED( rhs );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -923,7 +923,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -955,7 +955,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( rhs );
+   MAYBE_UNUSED( rhs );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );

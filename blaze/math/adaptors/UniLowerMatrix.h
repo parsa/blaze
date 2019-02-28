@@ -94,9 +94,9 @@
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -449,7 +449,7 @@ inline bool trySet( const UniLowerMatrix<MT,SO,DF>& mat, size_t i, size_t j, con
    BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
 
-   UNUSED_PARAMETER( mat );
+   MAYBE_UNUSED( mat );
 
    if( i > j )
       return true;
@@ -487,7 +487,7 @@ inline bool tryAdd( const UniLowerMatrix<MT,SO,DF>& mat, size_t i, size_t j, con
    BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
 
-   UNUSED_PARAMETER( mat );
+   MAYBE_UNUSED( mat );
 
    if( i > j )
       return true;
@@ -551,7 +551,7 @@ inline bool tryMult( const UniLowerMatrix<MT,SO,DF>& mat, size_t i, size_t j, co
    BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
 
-   UNUSED_PARAMETER( mat );
+   MAYBE_UNUSED( mat );
 
    return ( i != j || IsOne( value ) );
 }
@@ -589,7 +589,7 @@ BLAZE_ALWAYS_INLINE bool
    BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( mat );
+   MAYBE_UNUSED( mat );
 
    return ( row >= column + n ) || ( column >= row + m ) || isOne( value );
 }
@@ -655,7 +655,7 @@ BLAZE_ALWAYS_INLINE bool
    BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( mat );
+   MAYBE_UNUSED( mat );
 
    return ( row >= column + n ) || ( column >= row + m ) || isOne( value );
 }
@@ -692,7 +692,7 @@ inline bool tryAssign( const UniLowerMatrix<MT,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    if( column < row )
       return true;
@@ -743,7 +743,7 @@ inline bool tryAssign( const UniLowerMatrix<MT,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    if( row >= column + (~rhs).size() )
       return true;
@@ -798,7 +798,7 @@ inline bool tryAssign( const UniLowerMatrix<MT,SO,DF>& lhs, const DenseVector<VT
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, row, column );
+   MAYBE_UNUSED( lhs, row, column );
 
    if( band == 0L ) {
       for( size_t i=0UL; i<(~rhs).size(); ++i ) {
@@ -848,7 +848,7 @@ inline bool tryAssign( const UniLowerMatrix<MT,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    if( column < row )
       return true;
@@ -902,7 +902,7 @@ inline bool tryAssign( const UniLowerMatrix<MT,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    if( row >= column + (~rhs).size() )
       return true;
@@ -962,7 +962,7 @@ inline bool tryAssign( const UniLowerMatrix<MT,SO,DF>& lhs, const SparseVector<V
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, row, column );
+   MAYBE_UNUSED( lhs, row, column );
 
    if( band == 0L ) {
       if( (~rhs).nonZeros() != (~rhs).size() )
@@ -1015,7 +1015,7 @@ inline bool tryAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
@@ -1076,7 +1076,7 @@ inline bool tryAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
@@ -1137,7 +1137,7 @@ inline bool tryAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
@@ -1203,7 +1203,7 @@ inline bool tryAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
@@ -1267,7 +1267,7 @@ inline bool tryAddAssign( const UniLowerMatrix<MT,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    if( column < row )
       return true;
@@ -1315,7 +1315,7 @@ inline bool tryAddAssign( const UniLowerMatrix<MT,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t ibegin( ( row <= column )?( 0UL ):( row - column ) );
 
@@ -1362,7 +1362,7 @@ inline bool tryAddAssign( const UniLowerMatrix<MT,SO,DF>& lhs, const DenseVector
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, row, column );
+   MAYBE_UNUSED( lhs, row, column );
 
    if( band >= 0L ) {
       for( size_t i=0UL; i<(~rhs).size(); ++i ) {
@@ -1407,7 +1407,7 @@ inline bool tryAddAssign( const UniLowerMatrix<MT,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    if( column < row )
       return true;
@@ -1455,7 +1455,7 @@ inline bool tryAddAssign( const UniLowerMatrix<MT,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const auto last( (~rhs).end() );
    auto element( (~rhs).lowerBound( ( row <= column )?( 0UL ):( row - column ) ) );
@@ -1503,7 +1503,7 @@ inline bool tryAddAssign( const UniLowerMatrix<MT,SO,DF>& lhs, const SparseVecto
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, row, column );
+   MAYBE_UNUSED( lhs, row, column );
 
    if( band >= 0L ) {
       for( const auto& element : ~rhs ) {
@@ -1549,7 +1549,7 @@ inline bool tryAddAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
@@ -1607,7 +1607,7 @@ inline bool tryAddAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
@@ -1664,7 +1664,7 @@ inline bool tryAddAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
@@ -1725,7 +1725,7 @@ inline bool tryAddAssign( const UniLowerMatrix<MT1,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
@@ -1876,7 +1876,7 @@ inline bool tryMultAssign( const UniLowerMatrix<MT,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    return ( column < row || (~rhs).size() <= column - row || isOne( (~rhs)[column-row] ) );
 }
@@ -1914,7 +1914,7 @@ inline bool tryMultAssign( const UniLowerMatrix<MT,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    return ( row < column || (~rhs).size() <= row - column || isOne( (~rhs)[row-column] ) );
 }
@@ -1954,7 +1954,7 @@ inline bool tryMultAssign( const UniLowerMatrix<MT,SO,DF>& lhs, const DenseVecto
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, row, column );
+   MAYBE_UNUSED( lhs, row, column );
 
    if( band == 0L ) {
       for( size_t i=0UL; i<(~rhs).size(); ++i ) {
@@ -2001,7 +2001,7 @@ inline bool tryMultAssign( const UniLowerMatrix<MT,SO,DF>& lhs, const SparseVect
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, row, column );
+   MAYBE_UNUSED( lhs, row, column );
 
    if( band == 0L ) {
       if( (~rhs).nonZeros() != (~rhs).size() )
@@ -2050,7 +2050,7 @@ inline bool trySchurAssign( const UniLowerMatrix<MT1,SO1,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );

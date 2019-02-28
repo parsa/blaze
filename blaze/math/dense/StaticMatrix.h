@@ -115,6 +115,7 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/StaticAssert.h>
@@ -125,7 +126,6 @@
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/RemoveConst.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -1669,7 +1669,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline size_t StaticMatrix<Type,M,N,SO>::capacity( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
@@ -2021,7 +2021,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline void* StaticMatrix<Type,M,N,SO>::operator new( std::size_t size )
 {
-   UNUSED_PARAMETER( size );
+   MAYBE_UNUSED( size );
 
    BLAZE_INTERNAL_ASSERT( size == sizeof( StaticMatrix ), "Invalid number of bytes detected" );
 
@@ -2070,7 +2070,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline void* StaticMatrix<Type,M,N,SO>::operator new( std::size_t size, const std::nothrow_t& )
 {
-   UNUSED_PARAMETER( size );
+   MAYBE_UNUSED( size );
 
    BLAZE_INTERNAL_ASSERT( size == sizeof( StaticMatrix ), "Invalid number of bytes detected" );
 
@@ -4556,7 +4556,7 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 inline size_t StaticMatrix<Type,M,N,true>::capacity( size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( j );
+   MAYBE_UNUSED( j );
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -4907,7 +4907,7 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 inline void* StaticMatrix<Type,M,N,true>::operator new( std::size_t size )
 {
-   UNUSED_PARAMETER( size );
+   MAYBE_UNUSED( size );
 
    BLAZE_INTERNAL_ASSERT( size == sizeof( StaticMatrix ), "Invalid number of bytes detected" );
 
@@ -4958,7 +4958,7 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 inline void* StaticMatrix<Type,M,N,true>::operator new( std::size_t size, const std::nothrow_t& )
 {
-   UNUSED_PARAMETER( size );
+   MAYBE_UNUSED( size );
 
    BLAZE_INTERNAL_ASSERT( size == sizeof( StaticMatrix ), "Invalid number of bytes detected" );
 

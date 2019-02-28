@@ -88,12 +88,12 @@
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/RemoveConst.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -476,7 +476,7 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename UniformMatrix<Type,SO>::ConstReference
    UniformMatrix<Type,SO>::operator()( size_t i, size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( i, j );
+   MAYBE_UNUSED( i, j );
 
    BLAZE_USER_ASSERT( i < m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < n_, "Invalid column access index" );
@@ -549,7 +549,7 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename UniformMatrix<Type,SO>::ConstPointer
    UniformMatrix<Type,SO>::data( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( SO  || i < m_, "Invalid dense matrix row access index" );
    BLAZE_USER_ASSERT( !SO || i < n_, "Invalid dense matrix row access index" );
@@ -575,7 +575,7 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename UniformMatrix<Type,SO>::ConstIterator
    UniformMatrix<Type,SO>::begin( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( SO  || i < m_, "Invalid dense matrix row access index" );
    BLAZE_USER_ASSERT( !SO || i < n_, "Invalid dense matrix row access index" );
@@ -601,7 +601,7 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename UniformMatrix<Type,SO>::ConstIterator
    UniformMatrix<Type,SO>::cbegin( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( SO  || i < m_, "Invalid dense matrix row access index" );
    BLAZE_USER_ASSERT( !SO || i < n_, "Invalid dense matrix row access index" );
@@ -627,7 +627,7 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename UniformMatrix<Type,SO>::ConstIterator
    UniformMatrix<Type,SO>::end( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( SO  || i < m_, "Invalid dense matrix row access index" );
    BLAZE_USER_ASSERT( !SO || i < n_, "Invalid dense matrix row access index" );
@@ -653,7 +653,7 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename UniformMatrix<Type,SO>::ConstIterator
    UniformMatrix<Type,SO>::cend( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( SO  || i < m_, "Invalid dense matrix row access index" );
    BLAZE_USER_ASSERT( !SO || i < n_, "Invalid dense matrix row access index" );
@@ -992,7 +992,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline constexpr size_t UniformMatrix<Type,SO>::capacity( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
    BLAZE_USER_ASSERT( SO  || i < m_, "Invalid dense matrix row access index" );
    BLAZE_USER_ASSERT( !SO || i < n_, "Invalid dense matrix row access index" );
    return SO ? m_ : n_;
@@ -1032,7 +1032,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline size_t UniformMatrix<Type,SO>::nonZeros( size_t i ) const
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( SO  || i < m_, "Invalid dense matrix row access index" );
    BLAZE_USER_ASSERT( !SO || i < n_, "Invalid dense matrix row access index" );
@@ -1097,7 +1097,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 void constexpr UniformMatrix<Type,SO>::resize( size_t m, size_t n, bool preserve )
 {
-   UNUSED_PARAMETER( preserve );
+   MAYBE_UNUSED( preserve );
 
    m_  = m;
    n_  = n;
@@ -1351,7 +1351,7 @@ template< typename Type  // Data type of the matrix
 BLAZE_ALWAYS_INLINE typename UniformMatrix<Type,SO>::SIMDType
    UniformMatrix<Type,SO>::loada( size_t i, size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( i, j );
+   MAYBE_UNUSED( i, j );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -1385,7 +1385,7 @@ template< typename Type  // Data type of the matrix
 BLAZE_ALWAYS_INLINE typename UniformMatrix<Type,SO>::SIMDType
    UniformMatrix<Type,SO>::loadu( size_t i, size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( i, j );
+   MAYBE_UNUSED( i, j );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -1521,7 +1521,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline constexpr bool isIntact( const UniformMatrix<Type,SO>& m ) noexcept
 {
-   UNUSED_PARAMETER( m );
+   MAYBE_UNUSED( m );
 
    return true;
 }

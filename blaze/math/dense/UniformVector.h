@@ -83,11 +83,11 @@
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/RemoveConst.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -441,7 +441,7 @@ template< typename Type  // Data type of the vector
 inline constexpr typename UniformVector<Type,TF>::ConstReference
    UniformVector<Type,TF>::operator[]( size_t index ) const noexcept
 {
-   UNUSED_PARAMETER( index );
+   MAYBE_UNUSED( index );
 
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
 
@@ -904,7 +904,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline constexpr void UniformVector<Type,TF>::resize( size_t n, bool preserve )
 {
-   UNUSED_PARAMETER( preserve );
+   MAYBE_UNUSED( preserve );
 
    size_ = n;
 }
@@ -1113,7 +1113,7 @@ template< typename Type  // Data type of the vector
 BLAZE_ALWAYS_INLINE typename UniformVector<Type,TF>::SIMDType
    UniformVector<Type,TF>::loada( size_t index ) const noexcept
 {
-   UNUSED_PARAMETER( index );
+   MAYBE_UNUSED( index );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -1144,7 +1144,7 @@ template< typename Type  // Data type of the vector
 BLAZE_ALWAYS_INLINE typename UniformVector<Type,TF>::SIMDType
    UniformVector<Type,TF>::loadu( size_t index ) const noexcept
 {
-   UNUSED_PARAMETER( index );
+   MAYBE_UNUSED( index );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -1273,7 +1273,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline constexpr bool isIntact( const UniformVector<Type,TF>& v ) noexcept
 {
-   UNUSED_PARAMETER( v );
+   MAYBE_UNUSED( v );
 
    return true;
 }

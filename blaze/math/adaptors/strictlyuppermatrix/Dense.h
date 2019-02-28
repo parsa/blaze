@@ -81,10 +81,10 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FalseType.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -2266,7 +2266,7 @@ void StrictlyUpperMatrix<MT,SO,true>::resize( size_t n, bool preserve )
 {
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE( MT );
 
-   UNUSED_PARAMETER( preserve );
+   MAYBE_UNUSED( preserve );
 
    BLAZE_INTERNAL_ASSERT( isSquare( matrix_ ), "Non-square strictly upper matrix detected" );
 
@@ -2303,7 +2303,7 @@ inline void StrictlyUpperMatrix<MT,SO,true>::extend( size_t n, bool preserve )
 {
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE( MT );
 
-   UNUSED_PARAMETER( preserve );
+   MAYBE_UNUSED( preserve );
 
    resize( rows() + n, true );
 }

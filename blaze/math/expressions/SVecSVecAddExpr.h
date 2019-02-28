@@ -65,10 +65,10 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsSame.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -690,7 +690,7 @@ inline const VT1&
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( rhs );
+   MAYBE_UNUSED( rhs );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -723,7 +723,7 @@ inline const VT2&
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 
@@ -754,7 +754,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( rhs );
+   MAYBE_UNUSED( rhs );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).size() == (~rhs).size(), "Invalid vector sizes" );
 

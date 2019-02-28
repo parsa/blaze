@@ -118,6 +118,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
@@ -125,7 +126,6 @@
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/RemoveConst.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -1531,7 +1531,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline size_t DynamicMatrix<Type,SO>::capacity( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    return nn_;
 }
@@ -4484,7 +4484,7 @@ inline size_t DynamicMatrix<Type,true>::capacity() const noexcept
 template< typename Type >  // Data type of the matrix
 inline size_t DynamicMatrix<Type,true>::capacity( size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( j );
+   MAYBE_UNUSED( j );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    return mm_;
 }

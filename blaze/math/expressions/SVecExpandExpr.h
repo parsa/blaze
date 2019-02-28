@@ -61,10 +61,10 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/InvalidType.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/GetMemberType.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -215,7 +215,7 @@ class SVecExpandExpr
    // \return Iterator to the first non-zero element of row/column \a i.
    */
    inline ConstIterator begin( size_t i ) const {
-      UNUSED_PARAMETER( i );
+      MAYBE_UNUSED( i );
       return sv_.begin();
    }
    //**********************************************************************************************
@@ -227,7 +227,7 @@ class SVecExpandExpr
    // \return Iterator just past the last non-zero element of row/column \a i.
    */
    inline ConstIterator end( size_t i ) const {
-      UNUSED_PARAMETER( i );
+      MAYBE_UNUSED( i );
       return sv_.end();
    }
    //**********************************************************************************************
@@ -269,7 +269,7 @@ class SVecExpandExpr
    // \return The number of non-zero elements of row/column \a i.
    */
    inline size_t nonZeros( size_t i ) const {
-      UNUSED_PARAMETER( i );
+      MAYBE_UNUSED( i );
       return sv_.nonZeros();
    }
    //**********************************************************************************************
@@ -833,7 +833,7 @@ template< size_t E     // Compile time expansion argument
         , bool TF >    // Transpose flag
 inline decltype(auto) expand( const SparseVector<VT,TF>& sv, size_t expansion )
 {
-   UNUSED_PARAMETER( expansion );
+   MAYBE_UNUSED( expansion );
 
    BLAZE_FUNCTION_TRACE;
 

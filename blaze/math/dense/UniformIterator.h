@@ -34,8 +34,8 @@
 #include <iterator>
 #include <blaze/math/SIMD.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -336,7 +336,7 @@ template< typename Type  // Type of the elements
 inline constexpr typename UniformIterator<Type,AF>::ReferenceType
    UniformIterator<Type,AF>::operator[]( size_t index ) const noexcept
 {
-   UNUSED_PARAMETER( index );
+   MAYBE_UNUSED( index );
 
    return *ptr_;
 }

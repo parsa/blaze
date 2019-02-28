@@ -82,12 +82,12 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/DisableIf.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsIntegral.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -1452,7 +1452,7 @@ template< typename MT          // Type of the sparse matrix
         , ptrdiff_t... CBAs >  // Compile time band arguments
 void Band<MT,TF,false,false,CBAs...>::reserve( size_t n )
 {
-   UNUSED_PARAMETER( n );
+   MAYBE_UNUSED( n );
 
    return;
 }

@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <utility>
+#include <blaze/util/MaybeUnused.h>
 
 
 namespace blaze {
@@ -106,7 +107,7 @@ using std::make_index_sequence;
 template< size_t... I1s, size_t... I2s >  //
 constexpr bool operator==( index_sequence<I1s...> lhs, index_sequence<I2s...> rhs ) noexcept
 {
-   UNUSED_PARAMETER( lhs, rhs );
+   MAYBE_UNUSED( lhs, rhs );
 
    return false;
 }
@@ -125,7 +126,7 @@ constexpr bool operator==( index_sequence<I1s...> lhs, index_sequence<I2s...> rh
 template< size_t... I1s >  //
 constexpr bool operator==( index_sequence<I1s...> lhs, index_sequence<I1s...> rhs ) noexcept
 {
-   UNUSED_PARAMETER( lhs, rhs );
+   MAYBE_UNUSED( lhs, rhs );
 
    return true;
 }
@@ -144,7 +145,7 @@ constexpr bool operator==( index_sequence<I1s...> lhs, index_sequence<I1s...> rh
 template< size_t... I1s, size_t... I2s >
 constexpr bool operator!=( index_sequence<I1s...> lhs, index_sequence<I2s...> rhs ) noexcept
 {
-   UNUSED_PARAMETER( lhs, rhs );
+   MAYBE_UNUSED( lhs, rhs );
 
    return !( lhs == rhs );
 }

@@ -40,8 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -75,7 +75,7 @@ namespace blaze {
 template< typename T, size_t N >
 inline constexpr size_t dimensionof( T(&a)[N] )
 {
-   UNUSED_PARAMETER( a );
+   MAYBE_UNUSED( a );
    return N;
 }
 //*************************************************************************************************

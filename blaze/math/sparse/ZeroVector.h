@@ -77,11 +77,11 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/RemoveConst.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -395,7 +395,7 @@ template< typename Type  // Data type of the vector
 inline constexpr typename ZeroVector<Type,TF>::ConstReference
    ZeroVector<Type,TF>::operator[]( size_t index ) const noexcept
 {
-   UNUSED_PARAMETER( index );
+   MAYBE_UNUSED( index );
 
    BLAZE_USER_ASSERT( index < size(), "Invalid zero vector access index" );
 
@@ -652,7 +652,7 @@ template< typename Type  // Data type of the vector
 inline typename ZeroVector<Type,TF>::ConstIterator
    ZeroVector<Type,TF>::find( size_t index ) const
 {
-   UNUSED_PARAMETER( index );
+   MAYBE_UNUSED( index );
 
    BLAZE_USER_ASSERT( index < size(), "Invalid zero vector access index" );
 
@@ -676,7 +676,7 @@ template< typename Type  // Data type of the vector
 inline typename ZeroVector<Type,TF>::ConstIterator
    ZeroVector<Type,TF>::lowerBound( size_t index ) const
 {
-   UNUSED_PARAMETER( index );
+   MAYBE_UNUSED( index );
 
    BLAZE_USER_ASSERT( index < size(), "Invalid zero vector access index" );
 
@@ -700,7 +700,7 @@ template< typename Type  // Data type of the vector
 inline typename ZeroVector<Type,TF>::ConstIterator
    ZeroVector<Type,TF>::upperBound( size_t index ) const
 {
-   UNUSED_PARAMETER( index );
+   MAYBE_UNUSED( index );
 
    BLAZE_USER_ASSERT( index < size(), "Invalid zero vector access index" );
 
@@ -732,7 +732,7 @@ template< typename Type     // Data type of the vector
 template< typename Other >  // Data type of the foreign expression
 inline bool ZeroVector<Type,TF>::canAlias( const Other* alias ) const noexcept
 {
-   UNUSED_PARAMETER( alias );
+   MAYBE_UNUSED( alias );
 
    return false;
 }
@@ -754,7 +754,7 @@ template< typename Type     // Data type of the vector
 template< typename Other >  // Data type of the foreign expression
 inline bool ZeroVector<Type,TF>::isAliased( const Other* alias ) const noexcept
 {
-   UNUSED_PARAMETER( alias );
+   MAYBE_UNUSED( alias );
 
    return false;
 }
@@ -824,7 +824,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline constexpr void reset( ZeroVector<Type,TF>& v ) noexcept
 {
-   UNUSED_PARAMETER( v );
+   MAYBE_UNUSED( v );
 }
 //*************************************************************************************************
 
@@ -900,7 +900,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline constexpr bool isIntact( const ZeroVector<Type,TF>& v ) noexcept
 {
-   UNUSED_PARAMETER( v );
+   MAYBE_UNUSED( v );
 
    return true;
 }
@@ -937,7 +937,7 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 inline void erase( ZeroVector<Type,TF>& v, size_t index )
 {
-   UNUSED_PARAMETER( v, index );
+   MAYBE_UNUSED( v, index );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -959,7 +959,7 @@ template< typename Type        // Data type of the vector
         , typename Iterator >  // Type of the vector iterator
 inline Iterator erase( ZeroVector<Type,TF>& v, Iterator pos )
 {
-   UNUSED_PARAMETER( v, pos );
+   MAYBE_UNUSED( v, pos );
 
    return nullptr;
 }
@@ -984,7 +984,7 @@ template< typename Type        // Data type of the vector
         , typename Iterator >  // Type of the vector iterator
 inline Iterator erase( ZeroVector<Type,TF>& m, Iterator first, Iterator last )
 {
-   UNUSED_PARAMETER( m, first, last );
+   MAYBE_UNUSED( m, first, last );
 
    return nullptr;
 }
@@ -1021,7 +1021,7 @@ template< typename Type    // Data type of the vector
         , typename Pred >  // Type of the unary predicate
 inline void erase( ZeroVector<Type,TF>& v, Pred predicate )
 {
-   UNUSED_PARAMETER( v, predicate );
+   MAYBE_UNUSED( v, predicate );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1059,7 +1059,7 @@ template< typename Type      // Data type of the vector
         , typename Pred >    // Type of the unary predicate
 inline void erase( ZeroVector<Type,TF>& m, Iterator first, Iterator last, Pred predicate )
 {
-   UNUSED_PARAMETER( m, first, last, predicate );
+   MAYBE_UNUSED( m, first, last, predicate );
 }
 /*! \endcond */
 //*************************************************************************************************

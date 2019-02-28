@@ -114,6 +114,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/StaticAssert.h>
@@ -124,7 +125,6 @@
 #include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/RemoveConst.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -1737,7 +1737,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline size_t HybridMatrix<Type,M,N,SO>::capacity( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
@@ -1906,7 +1906,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 void HybridMatrix<Type,M,N,SO>::resize( size_t m, size_t n, bool preserve )
 {
-   UNUSED_PARAMETER( preserve );
+   MAYBE_UNUSED( preserve );
 
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -1955,7 +1955,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline void HybridMatrix<Type,M,N,SO>::extend( size_t m, size_t n, bool preserve )
 {
-   UNUSED_PARAMETER( preserve );
+   MAYBE_UNUSED( preserve );
    resize( m_+m, n_+n );
 }
 //*************************************************************************************************
@@ -2166,7 +2166,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline void* HybridMatrix<Type,M,N,SO>::operator new( std::size_t size )
 {
-   UNUSED_PARAMETER( size );
+   MAYBE_UNUSED( size );
 
    BLAZE_INTERNAL_ASSERT( size == sizeof( HybridMatrix ), "Invalid number of bytes detected" );
 
@@ -2215,7 +2215,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline void* HybridMatrix<Type,M,N,SO>::operator new( std::size_t size, const std::nothrow_t& )
 {
-   UNUSED_PARAMETER( size );
+   MAYBE_UNUSED( size );
 
    BLAZE_INTERNAL_ASSERT( size == sizeof( HybridMatrix ), "Invalid number of bytes detected" );
 
@@ -4802,7 +4802,7 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 inline size_t HybridMatrix<Type,M,N,true>::capacity( size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( j );
+   MAYBE_UNUSED( j );
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -4970,7 +4970,7 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 void HybridMatrix<Type,M,N,true>::resize( size_t m, size_t n, bool preserve )
 {
-   UNUSED_PARAMETER( preserve );
+   MAYBE_UNUSED( preserve );
 
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
@@ -5020,7 +5020,7 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 inline void HybridMatrix<Type,M,N,true>::extend( size_t m, size_t n, bool preserve )
 {
-   UNUSED_PARAMETER( preserve );
+   MAYBE_UNUSED( preserve );
    resize( m_+m, n_+n );
 }
 /*! \endcond */
@@ -5237,7 +5237,7 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 inline void* HybridMatrix<Type,M,N,true>::operator new( std::size_t size )
 {
-   UNUSED_PARAMETER( size );
+   MAYBE_UNUSED( size );
 
    BLAZE_INTERNAL_ASSERT( size == sizeof( HybridMatrix ), "Invalid number of bytes detected" );
 
@@ -5288,7 +5288,7 @@ template< typename Type  // Data type of the matrix
         , size_t N >     // Number of columns
 inline void* HybridMatrix<Type,M,N,true>::operator new( std::size_t size, const std::nothrow_t& )
 {
-   UNUSED_PARAMETER( size );
+   MAYBE_UNUSED( size );
 
    BLAZE_INTERNAL_ASSERT( size == sizeof( HybridMatrix ), "Invalid number of bytes detected" );
 

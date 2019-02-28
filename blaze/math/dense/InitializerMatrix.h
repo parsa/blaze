@@ -56,9 +56,9 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Volatile.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -626,7 +626,7 @@ inline size_t InitializerMatrix<Type>::capacity() const noexcept
 template< typename Type >  // Data type of the matrix
 inline size_t InitializerMatrix<Type>::capacity( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    return n_;
 }
@@ -779,7 +779,7 @@ void swap( InitializerMatrix<Type>& a, InitializerMatrix<Type>& b ) noexcept;
 template< typename Type >
 inline bool isIntact( const InitializerMatrix<Type>& m ) noexcept
 {
-   UNUSED_PARAMETER( m );
+   MAYBE_UNUSED( m );
 
    return true;
 }

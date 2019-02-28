@@ -56,10 +56,10 @@
 #include <blaze/math/UniUpperMatrix.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/Indices.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -715,7 +715,7 @@ template< typename MT     // Type of the adapted matrix
         , typename Arg >  // Min/max argument type
 void makeSymmetric( UniLowerMatrix<MT,SO,DF>& matrix, const Arg& min, const Arg& max )
 {
-   UNUSED_PARAMETER( min, max );
+   MAYBE_UNUSED( min, max );
 
    makeSymmetric( matrix );
 }
@@ -758,7 +758,7 @@ template< typename MT     // Type of the adapted matrix
         , typename Arg >  // Min/max argument type
 void makeHermitian( UniLowerMatrix<MT,SO,DF>& matrix, const Arg& min, const Arg& max )
 {
-   UNUSED_PARAMETER( min, max );
+   MAYBE_UNUSED( min, max );
 
    makeHermitian( matrix );
 }

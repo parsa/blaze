@@ -52,8 +52,8 @@
 #include <blaze/system/Inline.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -961,7 +961,7 @@ template< typename PT    // Type of the proxy
 BLAZE_ALWAYS_INLINE DisableIf_t< IsResizable_v<MT> >
    resize_backend( const DenseMatrixProxy<PT,MT>& proxy, size_t m, size_t n, bool preserve )
 {
-   UNUSED_PARAMETER( preserve );
+   MAYBE_UNUSED( preserve );
 
    if( proxy.rows() != m || proxy.columns() != n ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix cannot be resized" );

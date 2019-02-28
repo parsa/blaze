@@ -51,8 +51,8 @@
 #include <blaze/system/Inline.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -665,7 +665,7 @@ template< typename PT    // Type of the proxy
 BLAZE_ALWAYS_INLINE DisableIf_t< IsResizable_v<VT> >
    resize_backend( const DenseVectorProxy<PT,VT>& proxy, size_t n, bool preserve )
 {
-   UNUSED_PARAMETER( preserve );
+   MAYBE_UNUSED( preserve );
 
    if( proxy.size() != n ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector cannot be resized" );

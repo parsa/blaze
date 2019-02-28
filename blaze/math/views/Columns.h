@@ -89,12 +89,12 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/SmallArray.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsPointer.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -550,7 +550,7 @@ inline decltype(auto) columns( MT&& matrix, index_sequence<Is...> indices, RCAs.
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( indices );
+   MAYBE_UNUSED( indices );
 
    return columns<Is...>( std::forward<MT>( matrix ), args... );
 }
@@ -1133,7 +1133,7 @@ inline decltype(auto) columns( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... 
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 
    return expand< sizeof...( CCAs ) >( (~matrix).operand() );
 }
@@ -3024,7 +3024,7 @@ template< typename MT       // Type of the matrix
 inline bool tryAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
                        const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
 {
-   UNUSED_PARAMETER( band );
+   MAYBE_UNUSED( band );
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
@@ -3189,7 +3189,7 @@ template< typename MT       // Type of the matrix
 inline bool tryAddAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
                           const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
 {
-   UNUSED_PARAMETER( band );
+   MAYBE_UNUSED( band );
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
@@ -3354,7 +3354,7 @@ template< typename MT       // Type of the matrix
 inline bool trySubAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
                           const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
 {
-   UNUSED_PARAMETER( band );
+   MAYBE_UNUSED( band );
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
@@ -3520,7 +3520,7 @@ template< typename MT       // Type of the matrix
 inline bool tryMultAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
                            const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
 {
-   UNUSED_PARAMETER( band );
+   MAYBE_UNUSED( band );
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
@@ -3686,7 +3686,7 @@ template< typename MT       // Type of the matrix
 inline bool tryDivAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
                           const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
 {
-   UNUSED_PARAMETER( band );
+   MAYBE_UNUSED( band );
 
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );

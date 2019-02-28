@@ -84,10 +84,10 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveConst.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -429,7 +429,7 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename ZeroMatrix<Type,SO>::ConstReference
    ZeroMatrix<Type,SO>::operator()( size_t i, size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( i, j );
+   MAYBE_UNUSED( i, j );
 
    BLAZE_USER_ASSERT( i < rows()   , "Invalid zero matrix row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid zero matrix column access index" );
@@ -483,7 +483,7 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename ZeroMatrix<Type,SO>::ConstIterator
    ZeroMatrix<Type,SO>::begin( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( i < ( SO ? n_ : m_ ), "Invalid zero matrix row/column access index" );
 
@@ -508,7 +508,7 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename ZeroMatrix<Type,SO>::ConstIterator
    ZeroMatrix<Type,SO>::cbegin( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( i < ( SO ? n_ : m_ ), "Invalid zero matrix row/column access index" );
 
@@ -533,7 +533,7 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename ZeroMatrix<Type,SO>::ConstIterator
    ZeroMatrix<Type,SO>::end( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( i < ( SO ? n_ : m_ ), "Invalid zero matrix row/column access index" );
 
@@ -558,7 +558,7 @@ template< typename Type  // Data type of the matrix
 inline constexpr typename ZeroMatrix<Type,SO>::ConstIterator
    ZeroMatrix<Type,SO>::cend( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( i < ( SO ? n_ : m_ ), "Invalid zero matrix row/column access index" );
 
@@ -672,7 +672,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline constexpr size_t ZeroMatrix<Type,SO>::capacity( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( i < ( SO ? n_ : m_ ), "Invalid zero matrix row/column access index" );
 
@@ -710,7 +710,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline constexpr size_t ZeroMatrix<Type,SO>::nonZeros( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( i < ( SO ? n_ : m_ ), "Invalid zero matrix row/column access index" );
 
@@ -804,7 +804,7 @@ template< typename Type  // Data type of the matrix
 inline typename ZeroMatrix<Type,SO>::ConstIterator
    ZeroMatrix<Type,SO>::find( size_t i, size_t j ) const
 {
-   UNUSED_PARAMETER( i, j );
+   MAYBE_UNUSED( i, j );
 
    BLAZE_USER_ASSERT( SO  || i < rows()   , "Invalid zero matrix row access index"    );
    BLAZE_USER_ASSERT( !SO || j < columns(), "Invalid zero matrix column access index" );
@@ -832,7 +832,7 @@ template< typename Type  // Data type of the matrix
 inline typename ZeroMatrix<Type,SO>::ConstIterator
    ZeroMatrix<Type,SO>::lowerBound( size_t i, size_t j ) const
 {
-   UNUSED_PARAMETER( i, j );
+   MAYBE_UNUSED( i, j );
 
    BLAZE_USER_ASSERT( SO  || i < rows()   , "Invalid zero matrix row access index"    );
    BLAZE_USER_ASSERT( !SO || j < columns(), "Invalid zero matrix column access index" );
@@ -860,7 +860,7 @@ template< typename Type  // Data type of the matrix
 inline typename ZeroMatrix<Type,SO>::ConstIterator
    ZeroMatrix<Type,SO>::upperBound( size_t i, size_t j ) const
 {
-   UNUSED_PARAMETER( i, j );
+   MAYBE_UNUSED( i, j );
 
    BLAZE_USER_ASSERT( SO  || i < rows()   , "Invalid zero matrix row access index"    );
    BLAZE_USER_ASSERT( !SO || j < columns(), "Invalid zero matrix column access index" );
@@ -937,7 +937,7 @@ template< typename Type     // Data type of the matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool ZeroMatrix<Type,SO>::canAlias( const Other* alias ) const noexcept
 {
-   UNUSED_PARAMETER( alias );
+   MAYBE_UNUSED( alias );
 
    return false;
 }
@@ -959,7 +959,7 @@ template< typename Type     // Data type of the matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool ZeroMatrix<Type,SO>::isAliased( const Other* alias ) const noexcept
 {
-   UNUSED_PARAMETER( alias );
+   MAYBE_UNUSED( alias );
 
    return false;
 }
@@ -1032,7 +1032,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline constexpr void reset( ZeroMatrix<Type,SO>& m ) noexcept
 {
-   UNUSED_PARAMETER( m );
+   MAYBE_UNUSED( m );
 }
 //*************************************************************************************************
 
@@ -1053,7 +1053,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline constexpr void reset( ZeroMatrix<Type,SO>& m, size_t i ) noexcept
 {
-   UNUSED_PARAMETER( m, i );
+   MAYBE_UNUSED( m, i );
 }
 //*************************************************************************************************
 
@@ -1130,7 +1130,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline constexpr bool isIntact( const ZeroMatrix<Type,SO>& m ) noexcept
 {
-   UNUSED_PARAMETER( m );
+   MAYBE_UNUSED( m );
 
    return true;
 }
@@ -1168,7 +1168,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline void erase( ZeroMatrix<Type,SO>& m, size_t i, size_t j )
 {
-   UNUSED_PARAMETER( m, i, j );
+   MAYBE_UNUSED( m, i, j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1193,7 +1193,7 @@ template< typename Type        // Data type of the matrix
         , typename Iterator >  // Type of the matrix iterator
 inline Iterator erase( ZeroMatrix<Type,SO>& m, size_t i, Iterator pos )
 {
-   UNUSED_PARAMETER( m, i, pos );
+   MAYBE_UNUSED( m, i, pos );
    return Iterator();
 }
 /*! \endcond */
@@ -1221,7 +1221,7 @@ template< typename Type        // Data type of the matrix
         , typename Iterator >  // Type of the matrix iterator
 inline Iterator erase( ZeroMatrix<Type,SO>& m, size_t i, Iterator first, Iterator last )
 {
-   UNUSED_PARAMETER( m, i, first, last );
+   MAYBE_UNUSED( m, i, first, last );
    return Iterator();
 }
 /*! \endcond */
@@ -1257,7 +1257,7 @@ template< typename Type    // Data type of the matrix
         , typename Pred >  // Type of the unary predicate
 inline void erase( ZeroMatrix<Type,SO>& m, Pred predicate )
 {
-   UNUSED_PARAMETER( m, predicate );
+   MAYBE_UNUSED( m, predicate );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1299,7 +1299,7 @@ template< typename Type      // Data type of the matrix
         , typename Pred >    // Type of the unary predicate
 inline void erase( ZeroMatrix<Type,SO>& m, size_t i, Iterator first, Iterator last, Pred predicate )
 {
-   UNUSED_PARAMETER( m, i, first, last, predicate );
+   MAYBE_UNUSED( m, i, first, last, predicate );
 }
 /*! \endcond */
 //*************************************************************************************************

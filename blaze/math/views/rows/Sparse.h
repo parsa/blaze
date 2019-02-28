@@ -84,12 +84,12 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/DecltypeAuto.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -1427,7 +1427,7 @@ template< typename MT         // Type of the sparse matrix
         , typename... CRAs >  // Compile time row arguments
 inline void Rows<MT,true,false,SF,CRAs...>::finalize( size_t i )
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    return;
 }
@@ -3505,7 +3505,7 @@ template< typename MT         // Type of the sparse matrix
         , typename... CRAs >  // Compile time row arguments
 inline size_t Rows<MT,false,false,false,CRAs...>::capacity( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
@@ -3639,7 +3639,7 @@ template< typename MT         // Type of the sparse matrix
         , typename... CRAs >  // Compile time row arguments
 inline void Rows<MT,false,false,false,CRAs...>::reserve( size_t nonzeros )
 {
-   UNUSED_PARAMETER( nonzeros );
+   MAYBE_UNUSED( nonzeros );
 
    return;
 }
@@ -3664,7 +3664,7 @@ template< typename MT         // Type of the sparse matrix
         , typename... CRAs >  // Compile time row arguments
 void Rows<MT,false,false,false,CRAs...>::reserve( size_t i, size_t nonzeros )
 {
-   UNUSED_PARAMETER( i, nonzeros );
+   MAYBE_UNUSED( i, nonzeros );
 
    return;
 }
@@ -3707,7 +3707,7 @@ template< typename MT         // Type of the sparse matrix
         , typename... CRAs >  // Compile time row arguments
 void Rows<MT,false,false,false,CRAs...>::trim( size_t i )
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
@@ -3847,7 +3847,7 @@ template< typename MT         // Type of the sparse matrix
         , typename... CRAs >  // Compile time row arguments
 inline void Rows<MT,false,false,false,CRAs...>::finalize( size_t i )
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    return;
 }
@@ -3929,7 +3929,7 @@ template< typename MT         // Type of the sparse matrix
 inline typename Rows<MT,false,false,false,CRAs...>::Iterator
    Rows<MT,false,false,false,CRAs...>::erase( size_t i, Iterator first, Iterator last )
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
@@ -4014,7 +4014,7 @@ template< typename MT         // Type of the sparse matrix
 template< typename Pred >     // Type of the unary predicate
 inline void Rows<MT,false,false,false,CRAs...>::erase( size_t i, Iterator first, Iterator last, Pred predicate )
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
@@ -5548,7 +5548,7 @@ template< typename MT         // Type of the sparse matrix
         , typename... CRAs >  // Compile time row arguments
 inline void Rows<MT,false,false,true,CRAs...>::finalize( size_t i )
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    return;
 }

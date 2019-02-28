@@ -81,9 +81,9 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -298,7 +298,7 @@ class TSMatSMatMultExpr
    // \return The number of non-zero elements of row \a i.
    */
    inline size_t nonZeros( size_t i ) const noexcept {
-      UNUSED_PARAMETER( i );
+      MAYBE_UNUSED( i );
       return 0UL;
    }
    //**********************************************************************************************
@@ -1304,7 +1304,7 @@ inline const MT1&
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( rhs );
+   MAYBE_UNUSED( rhs );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).rows(), "Invalid matrix sizes" );
 
@@ -1337,7 +1337,7 @@ inline const MT2&
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).rows(), "Invalid matrix sizes" );
 
@@ -1368,7 +1368,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( rhs );
+   MAYBE_UNUSED( rhs );
 
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).rows(), "Invalid matrix sizes" );
 

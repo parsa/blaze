@@ -44,8 +44,8 @@
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Complex.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -97,7 +97,7 @@ template< bool RF          // Relaxation flag
         , typename Type >  // Type of the given value
 BLAZE_ALWAYS_INLINE bool isReal( const Type& v ) noexcept
 {
-   UNUSED_PARAMETER( v );
+   MAYBE_UNUSED( v );
 
    return IsBuiltin_v<Type>;
 }

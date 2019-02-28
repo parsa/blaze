@@ -40,8 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -140,7 +140,7 @@ template< typename... RRAs >  // Optional row arguments
 inline RowData<>::RowData( size_t index, RRAs... args )
    : row_( index )  // The index of the row in the matrix
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -225,7 +225,7 @@ template< size_t Index >      // Compile time row index
 template< typename... RRAs >  // Optional row arguments
 inline RowData<Index>::RowData( RRAs... args )
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************

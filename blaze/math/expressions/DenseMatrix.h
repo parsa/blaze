@@ -50,7 +50,7 @@
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/Unused.h>
+#include <blaze/util/MaybeUnused.h>
 
 
 namespace blaze {
@@ -122,7 +122,7 @@ template< typename MT  // Type of the matrix
 BLAZE_ALWAYS_INLINE auto data_backend( DenseMatrix<MT,SO>& dm ) noexcept
    -> DisableIf_t< HasMutableDataAccess_v<MT>, typename MT::ElementType* >
 {
-   UNUSED_PARAMETER( dm );
+   MAYBE_UNUSED( dm );
 
    return nullptr;
 }
@@ -189,7 +189,7 @@ template< typename MT  // Type of the matrix
 BLAZE_ALWAYS_INLINE auto data_backend( const DenseMatrix<MT,SO>& dm ) noexcept
    -> DisableIf_t< HasConstDataAccess_v<MT>, typename MT::ElementType* >
 {
-   UNUSED_PARAMETER( dm );
+   MAYBE_UNUSED( dm );
 
    return nullptr;
 }
@@ -326,7 +326,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 inline auto resetLower_backend( DenseMatrix<MT,SO>& dm ) -> EnableIf_t< IsUpper_v<MT> >
 {
-   UNUSED_PARAMETER( dm );
+   MAYBE_UNUSED( dm );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -422,7 +422,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 inline auto resetUpper_backend( DenseMatrix<MT,SO>& dm ) -> EnableIf_t< IsLower_v<MT> >
 {
-   UNUSED_PARAMETER( dm );
+   MAYBE_UNUSED( dm );
 }
 /*! \endcond */
 //*************************************************************************************************

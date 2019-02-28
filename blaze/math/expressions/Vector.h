@@ -48,9 +48,9 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsSame.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -330,7 +330,7 @@ template< typename VT  // Type of the vector
 BLAZE_ALWAYS_INLINE auto resize_backend( Vector<VT,TF>& vector, size_t n, bool preserve )
    -> DisableIf_t< IsResizable_v<VT> >
 {
-   UNUSED_PARAMETER( preserve );
+   MAYBE_UNUSED( preserve );
 
    if( (~vector).size() != n ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector cannot be resized" );
@@ -413,7 +413,7 @@ template< typename VT  // Type of the vector
 BLAZE_ALWAYS_INLINE auto shrinkToFit_backend( Vector<VT,TF>& vector )
    -> DisableIf_t< IsShrinkable_v<VT> >
 {
-   UNUSED_PARAMETER( vector );
+   MAYBE_UNUSED( vector );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -753,7 +753,7 @@ BLAZE_ALWAYS_INLINE bool trySet( const Vector<VT,TF>& vec, size_t index, const E
 {
    BLAZE_INTERNAL_ASSERT( index < (~vec).size(), "Invalid vector access index" );
 
-   UNUSED_PARAMETER( vec, index, value );
+   MAYBE_UNUSED( vec, index, value );
 
    return true;
 }
@@ -783,7 +783,7 @@ BLAZE_ALWAYS_INLINE bool tryAdd( const Vector<VT,TF>& vec, size_t index, const E
 {
    BLAZE_INTERNAL_ASSERT( index < (~vec).size(), "Invalid vector access index" );
 
-   UNUSED_PARAMETER( vec, index, value );
+   MAYBE_UNUSED( vec, index, value );
 
    return true;
 }
@@ -813,7 +813,7 @@ BLAZE_ALWAYS_INLINE bool trySub( const Vector<VT,TF>& vec, size_t index, const E
 {
    BLAZE_INTERNAL_ASSERT( index < (~vec).size(), "Invalid vector access index" );
 
-   UNUSED_PARAMETER( vec, index, value );
+   MAYBE_UNUSED( vec, index, value );
 
    return true;
 }
@@ -843,7 +843,7 @@ BLAZE_ALWAYS_INLINE bool tryMult( const Vector<VT,TF>& vec, size_t index, const 
 {
    BLAZE_INTERNAL_ASSERT( index < (~vec).size(), "Invalid vector access index" );
 
-   UNUSED_PARAMETER( vec, index, value );
+   MAYBE_UNUSED( vec, index, value );
 
    return true;
 }
@@ -876,7 +876,7 @@ BLAZE_ALWAYS_INLINE bool
    BLAZE_INTERNAL_ASSERT( index <= (~vec).size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + size <= (~vec).size(), "Invalid range size" );
 
-   UNUSED_PARAMETER( vec, index, size, value );
+   MAYBE_UNUSED( vec, index, size, value );
 
    return true;
 }
@@ -906,7 +906,7 @@ BLAZE_ALWAYS_INLINE bool tryDiv( const Vector<VT,TF>& vec, size_t index, const E
 {
    BLAZE_INTERNAL_ASSERT( index < (~vec).size(), "Invalid vector access index" );
 
-   UNUSED_PARAMETER( vec, index, value );
+   MAYBE_UNUSED( vec, index, value );
 
    return true;
 }
@@ -939,7 +939,7 @@ BLAZE_ALWAYS_INLINE bool
    BLAZE_INTERNAL_ASSERT( index <= (~vec).size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + size <= (~vec).size(), "Invalid range size" );
 
-   UNUSED_PARAMETER( vec, index, size, value );
+   MAYBE_UNUSED( vec, index, size, value );
 
    return true;
 }
@@ -971,7 +971,7 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const Vector<VT1,TF1>& lhs, const Vector<VT2
    BLAZE_INTERNAL_ASSERT( index <= (~lhs).size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= (~lhs).size(), "Invalid vector size" );
 
-   UNUSED_PARAMETER( lhs, rhs, index );
+   MAYBE_UNUSED( lhs, rhs, index );
 
    return true;
 }
@@ -1003,7 +1003,7 @@ BLAZE_ALWAYS_INLINE bool tryAddAssign( const Vector<VT1,TF1>& lhs, const Vector<
    BLAZE_INTERNAL_ASSERT( index <= (~lhs).size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= (~lhs).size(), "Invalid vector size" );
 
-   UNUSED_PARAMETER( lhs, rhs, index );
+   MAYBE_UNUSED( lhs, rhs, index );
 
    return true;
 }
@@ -1035,7 +1035,7 @@ BLAZE_ALWAYS_INLINE bool trySubAssign( const Vector<VT1,TF1>& lhs, const Vector<
    BLAZE_INTERNAL_ASSERT( index <= (~lhs).size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= (~lhs).size(), "Invalid vector size" );
 
-   UNUSED_PARAMETER( lhs, rhs, index );
+   MAYBE_UNUSED( lhs, rhs, index );
 
    return true;
 }
@@ -1067,7 +1067,7 @@ BLAZE_ALWAYS_INLINE bool tryMultAssign( const Vector<VT1,TF1>& lhs, const Vector
    BLAZE_INTERNAL_ASSERT( index <= (~lhs).size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= (~lhs).size(), "Invalid vector size" );
 
-   UNUSED_PARAMETER( lhs, rhs, index );
+   MAYBE_UNUSED( lhs, rhs, index );
 
    return true;
 }
@@ -1099,7 +1099,7 @@ BLAZE_ALWAYS_INLINE bool tryDivAssign( const Vector<VT1,TF1>& lhs, const Vector<
    BLAZE_INTERNAL_ASSERT( index <= (~lhs).size(), "Invalid vector access index" );
    BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= (~lhs).size(), "Invalid vector size" );
 
-   UNUSED_PARAMETER( lhs, rhs, index );
+   MAYBE_UNUSED( lhs, rhs, index );
 
    return true;
 }

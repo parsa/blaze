@@ -90,9 +90,9 @@
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsNumeric.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -358,7 +358,7 @@ inline bool trySet( const StrictlyLowerMatrix<MT,SO,DF>& mat, size_t i, size_t j
    BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
 
-   UNUSED_PARAMETER( mat );
+   MAYBE_UNUSED( mat );
 
    return ( i > j || isDefault( value ) );
 }
@@ -452,7 +452,7 @@ inline bool tryAssign( const StrictlyLowerMatrix<MT,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    if( column < row )
       return true;
@@ -500,7 +500,7 @@ inline bool tryAssign( const StrictlyLowerMatrix<MT,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t ibegin( ( row <= column )?( 0UL ):( row - column ) );
 
@@ -548,7 +548,7 @@ inline bool tryAssign( const StrictlyLowerMatrix<MT,SO,DF>& lhs, const DenseVect
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, row, column );
+   MAYBE_UNUSED( lhs, row, column );
 
    if( band >= 0L ) {
       for( size_t i=0UL; i<(~rhs).size(); ++i ) {
@@ -593,7 +593,7 @@ inline bool tryAssign( const StrictlyLowerMatrix<MT,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    if( column < row )
       return true;
@@ -641,7 +641,7 @@ inline bool tryAssign( const StrictlyLowerMatrix<MT,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const auto last( (~rhs).end() );
    auto element( (~rhs).lowerBound( ( row <= column )?( 0UL ):( row - column ) ) );
@@ -690,7 +690,7 @@ inline bool tryAssign( const StrictlyLowerMatrix<MT,SO,DF>& lhs, const SparseVec
    BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs, row, column );
+   MAYBE_UNUSED( lhs, row, column );
 
    if( band >= 0L ) {
       for( const auto& element : ~rhs ) {
@@ -736,7 +736,7 @@ inline bool tryAssign( const StrictlyLowerMatrix<MT1,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
@@ -794,7 +794,7 @@ inline bool tryAssign( const StrictlyLowerMatrix<MT1,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
@@ -851,7 +851,7 @@ inline bool tryAssign( const StrictlyLowerMatrix<MT1,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
@@ -912,7 +912,7 @@ inline bool tryAssign( const StrictlyLowerMatrix<MT1,SO,DF>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   UNUSED_PARAMETER( lhs );
+   MAYBE_UNUSED( lhs );
 
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );

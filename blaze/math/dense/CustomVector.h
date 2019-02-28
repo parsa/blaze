@@ -89,13 +89,13 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/RemoveConst.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -784,7 +784,7 @@ inline CustomVector<Type,AF,PF,TF,RT>::CustomVector( Type* ptr, size_t n, size_t
 {
    BLAZE_STATIC_ASSERT( PF == padded );
 
-   UNUSED_PARAMETER( ptr, n, nn );
+   MAYBE_UNUSED( ptr, n, nn );
 }
 //*************************************************************************************************
 
@@ -1777,7 +1777,7 @@ inline void CustomVector<Type,AF,PF,TF,RT>::reset( Type* ptr, size_t n, size_t n
 {
    BLAZE_STATIC_ASSERT( PF == padded );
 
-   UNUSED_PARAMETER( ptr, n, nn );
+   MAYBE_UNUSED( ptr, n, nn );
 }
 //*************************************************************************************************
 

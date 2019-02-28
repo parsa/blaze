@@ -46,7 +46,7 @@
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/Unused.h>
+#include <blaze/util/MaybeUnused.h>
 
 
 namespace blaze {
@@ -151,7 +151,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 inline auto resetLower_backend( SparseMatrix<MT,SO>& dm ) -> EnableIf_t< IsUpper_v<MT> >
 {
-   UNUSED_PARAMETER( dm );
+   MAYBE_UNUSED( dm );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -241,7 +241,7 @@ template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 inline auto resetUpper_backend( SparseMatrix<MT,SO>& dm ) -> EnableIf_t< IsLower_v<MT> >
 {
-   UNUSED_PARAMETER( dm );
+   MAYBE_UNUSED( dm );
 }
 /*! \endcond */
 //*************************************************************************************************

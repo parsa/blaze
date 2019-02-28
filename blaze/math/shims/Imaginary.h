@@ -42,8 +42,8 @@
 
 #include <blaze/system/Inline.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -82,7 +82,7 @@ namespace blaze {
 template< typename T >
 BLAZE_ALWAYS_INLINE EnableIf_t< IsBuiltin_v<T>, T > imag( T a ) noexcept
 {
-   UNUSED_PARAMETER( a );
+   MAYBE_UNUSED( a );
 
    return T(0);
 }

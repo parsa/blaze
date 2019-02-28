@@ -104,12 +104,12 @@
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
 #include <blaze/util/typetraits/IsReference.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -1878,7 +1878,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline size_t Submatrix<MT,unaligned,false,true,CSAs...>::capacity( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
@@ -5132,7 +5132,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline size_t Submatrix<MT,unaligned,true,true,CSAs...>::capacity( size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( j );
+   MAYBE_UNUSED( j );
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 
@@ -7988,7 +7988,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline size_t Submatrix<MT,aligned,false,true,CSAs...>::capacity( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
 
@@ -10822,7 +10822,7 @@ template< typename MT       // Type of the dense matrix
         , size_t... CSAs >  // Compile time submatrix arguments
 inline size_t Submatrix<MT,aligned,true,true,CSAs...>::capacity( size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( j );
+   MAYBE_UNUSED( j );
 
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
 

@@ -40,8 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -153,7 +153,7 @@ inline SubmatrixData<>::SubmatrixData( size_t rindex, size_t cindex, size_t m, s
    , m_     ( m      )  // The number of rows of the submatrix
    , n_     ( n      )  // The number of columns of the submatrix
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -290,7 +290,7 @@ template< size_t I            // Index of the first row
 template< typename... RSAs >  // Optional submatrix arguments
 inline SubmatrixData<I,J,M,N>::SubmatrixData( RSAs... args )
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************

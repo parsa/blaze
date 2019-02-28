@@ -40,8 +40,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -145,7 +145,7 @@ inline SubvectorData<>::SubvectorData( size_t index, size_t n, RSAs... args )
    : offset_( index )  // The offset of the subvector within the vector
    , size_  ( n     )  // The size of the subvector
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -248,7 +248,7 @@ template< size_t I            // Index of the first element
 template< typename... RSAs >  // Optional subvector arguments
 inline SubvectorData<I,N>::SubvectorData( RSAs... args )
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************

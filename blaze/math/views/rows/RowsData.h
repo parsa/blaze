@@ -43,9 +43,9 @@
 #include <blaze/math/IntegerSequence.h>
 #include <blaze/system/Standard.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/SmallArray.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -172,7 +172,7 @@ template< size_t I            // First row index
 template< typename... RRAs >  // Optional row arguments
 inline RowsData< index_sequence<I,Is...> >::RowsData( RRAs... args ) noexcept
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -315,7 +315,7 @@ inline RowsData<P>::RowsData( P p, size_t n, RRAs... args ) noexcept
    : p_( p )
    , n_( n )
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -456,7 +456,7 @@ template< typename T          // Type of the row indices
 inline RowsData<>::RowsData( const T* indices, size_t n, RRAs... args )
    : indices_( indices, indices+n )  // The indices of the rows in the matrix
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************

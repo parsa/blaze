@@ -85,11 +85,11 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
-#include <blaze/util/Unused.h>
 
 
 namespace blaze {
@@ -785,7 +785,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline constexpr size_t IdentityMatrix<Type,SO>::capacity( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( i < n_, "Invalid identity matrix row/column access index" );
 
@@ -823,7 +823,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline constexpr size_t IdentityMatrix<Type,SO>::nonZeros( size_t i ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( i < n_, "Invalid identity matrix row/column access index" );
 
@@ -1038,7 +1038,7 @@ template< typename Type     // Data type of the matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool IdentityMatrix<Type,SO>::canAlias( const Other* alias ) const noexcept
 {
-   UNUSED_PARAMETER( alias );
+   MAYBE_UNUSED( alias );
 
    return false;
 }
@@ -1060,7 +1060,7 @@ template< typename Type     // Data type of the matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool IdentityMatrix<Type,SO>::isAliased( const Other* alias ) const noexcept
 {
-   UNUSED_PARAMETER( alias );
+   MAYBE_UNUSED( alias );
 
    return false;
 }
@@ -1133,7 +1133,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline constexpr void reset( IdentityMatrix<Type,SO>& m ) noexcept
 {
-   UNUSED_PARAMETER( m );
+   MAYBE_UNUSED( m );
 }
 //*************************************************************************************************
 
@@ -1155,7 +1155,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline constexpr void reset( IdentityMatrix<Type,SO>& m, size_t i ) noexcept
 {
-   UNUSED_PARAMETER( m, i );
+   MAYBE_UNUSED( m, i );
 }
 //*************************************************************************************************
 
@@ -1233,7 +1233,7 @@ template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
 inline constexpr bool isIntact( const IdentityMatrix<Type,SO>& m ) noexcept
 {
-   UNUSED_PARAMETER( m );
+   MAYBE_UNUSED( m );
 
    return true;
 }
