@@ -238,7 +238,7 @@ BLAZE_ALWAYS_INLINE SIMDfloat sign( const SIMDfloat& a ) noexcept
    const __m512    zero ( _mm512_setzero_ps() );
    const __mmask16 mask1( _mm512_cmplt_ps_mask( zero, a.value ) );
    const __mmask16 mask2( _mm512_cmplt_ps_mask( a.value, zero ) );
-   const __m512    xmm1 ( _mm512_mask_blend_ps( mask1, zero, _mm512_set1_ps( 1.0F ) ) );
+   const __m512    xmm1 ( _mm512_mask_blend_ps( mask1, a.value, _mm512_set1_ps( 1.0F ) ) );
    return _mm512_mask_blend_ps( mask2, xmm1, _mm512_set1_ps( -1.0F ) );
 }
 #elif BLAZE_AVX_MODE
@@ -246,7 +246,7 @@ BLAZE_ALWAYS_INLINE SIMDfloat sign( const SIMDfloat& a ) noexcept
    const __m256 zero ( _mm256_setzero_ps() );
    const __m256 mask1( _mm256_cmp_ps( zero, a.value, _CMP_LT_OQ ) );
    const __m256 mask2( _mm256_cmp_ps( a.value, zero, _CMP_LT_OQ ) );
-   const __m256 xmm1 ( _mm256_blendv_ps( zero, _mm256_set1_ps( 1.0F ), mask1 ) );
+   const __m256 xmm1 ( _mm256_blendv_ps( a.value, _mm256_set1_ps( 1.0F ), mask1 ) );
    return _mm256_blendv_ps( xmm1, _mm256_set1_ps( -1.0F ), mask2 );
 }
 #elif BLAZE_SSE4_MODE
@@ -254,7 +254,7 @@ BLAZE_ALWAYS_INLINE SIMDfloat sign( const SIMDfloat& a ) noexcept
    const __m128 zero ( _mm_setzero_ps() );
    const __m128 mask1( _mm_cmplt_ps( zero, a.value ) );
    const __m128 mask2( _mm_cmplt_ps( a.value, zero ) );
-   const __m128 xmm1 ( _mm_blendv_ps( zero, _mm_set1_ps( 1.0F ), mask1 ) );
+   const __m128 xmm1 ( _mm_blendv_ps( a.value, _mm_set1_ps( 1.0F ), mask1 ) );
    return _mm_blendv_ps( xmm1, _mm_set1_ps( -1.0F ), mask2 );
 }
 #else
@@ -291,7 +291,7 @@ BLAZE_ALWAYS_INLINE SIMDdouble sign( const SIMDdouble& a ) noexcept
    const __m512d  zero ( _mm512_setzero_pd() );
    const __mmask8 mask1( _mm512_cmplt_pd_mask( zero, a.value ) );
    const __mmask8 mask2( _mm512_cmplt_pd_mask( a.value, zero ) );
-   const __m512d  xmm1 ( _mm512_mask_blend_pd( mask1, zero, _mm512_set1_pd( 1.0 ) ) );
+   const __m512d  xmm1 ( _mm512_mask_blend_pd( mask1, a.value, _mm512_set1_pd( 1.0 ) ) );
    return _mm512_mask_blend_pd( mask2, xmm1, _mm512_set1_pd( -1.0 ) );
 }
 #elif BLAZE_AVX_MODE
@@ -299,7 +299,7 @@ BLAZE_ALWAYS_INLINE SIMDdouble sign( const SIMDdouble& a ) noexcept
    const __m256d zero ( _mm256_setzero_pd() );
    const __m256d mask1( _mm256_cmp_pd( zero, a.value, _CMP_LT_OQ ) );
    const __m256d mask2( _mm256_cmp_pd( a.value, zero, _CMP_LT_OQ ) );
-   const __m256d xmm1 ( _mm256_blendv_pd( zero, _mm256_set1_pd( 1.0 ), mask1 ) );
+   const __m256d xmm1 ( _mm256_blendv_pd( a.value, _mm256_set1_pd( 1.0 ), mask1 ) );
    return _mm256_blendv_pd( xmm1, _mm256_set1_pd( -1.0 ), mask2 );
 }
 #elif BLAZE_SSE4_MODE
@@ -307,7 +307,7 @@ BLAZE_ALWAYS_INLINE SIMDdouble sign( const SIMDdouble& a ) noexcept
    const __m128d zero ( _mm_setzero_pd() );
    const __m128d mask1( _mm_cmplt_pd( zero, a.value ) );
    const __m128d mask2( _mm_cmplt_pd( a.value, zero ) );
-   const __m128d xmm1 ( _mm_blendv_pd( zero, _mm_set1_pd( 1.0 ), mask1 ) );
+   const __m128d xmm1 ( _mm_blendv_pd( a.value, _mm_set1_pd( 1.0 ), mask1 ) );
    return _mm_blendv_pd( xmm1, _mm_set1_pd( -1.0 ), mask2 );
 }
 #else
