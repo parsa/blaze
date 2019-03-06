@@ -44,7 +44,6 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/Decay.h>
 
 
 namespace blaze {
