@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/Template.h>
 #include <blaze/util/typetraits/AlwaysFalse.h>
 #include <blaze/util/typetraits/HasMember.h>
 
@@ -73,7 +72,7 @@ template< typename T, typename... Args >
 struct GetSIMDEnabled {
    static constexpr bool test( bool (*fnc)() ) { return fnc(); }
    static constexpr bool test( bool b ) { return b; }
-   static constexpr bool value = test( T::BLAZE_TEMPLATE simdEnabled<Args...> );
+   static constexpr bool value = test( T::template simdEnabled<Args...> );
 };
 /*! \endcond */
 //*************************************************************************************************
