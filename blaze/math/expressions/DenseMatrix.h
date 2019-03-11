@@ -98,7 +98,7 @@ template< typename MT, bool SO >
 typename MT::ElementType* data( DenseMatrix<MT,SO>& dm ) noexcept;
 
 template< typename MT, bool SO >
-typename MT::ElementType* data( const DenseMatrix<MT,SO>& dm ) noexcept;
+const typename MT::ElementType* data( const DenseMatrix<MT,SO>& dm ) noexcept;
 
 template< typename MT, bool SO >
 size_t spacing( const DenseMatrix<MT,SO>& dm ) noexcept;
@@ -187,7 +187,7 @@ BLAZE_ALWAYS_INLINE typename MT::ElementType* data( DenseMatrix<MT,SO>& dm ) noe
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE auto data_backend( const DenseMatrix<MT,SO>& dm ) noexcept
-   -> DisableIf_t< HasConstDataAccess_v<MT>, typename MT::ElementType* >
+   -> DisableIf_t< HasConstDataAccess_v<MT>, const typename MT::ElementType* >
 {
    MAYBE_UNUSED( dm );
 
@@ -210,7 +210,7 @@ BLAZE_ALWAYS_INLINE auto data_backend( const DenseMatrix<MT,SO>& dm ) noexcept
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
 BLAZE_ALWAYS_INLINE auto data_backend( const DenseMatrix<MT,SO>& dm ) noexcept
-   -> EnableIf_t< HasConstDataAccess_v<MT>, typename MT::ElementType* >
+   -> EnableIf_t< HasConstDataAccess_v<MT>, const typename MT::ElementType* >
 {
    return (~dm).data();
 }
@@ -233,7 +233,7 @@ BLAZE_ALWAYS_INLINE auto data_backend( const DenseMatrix<MT,SO>& dm ) noexcept
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-BLAZE_ALWAYS_INLINE typename MT::ElementType* data( const DenseMatrix<MT,SO>& dm ) noexcept
+BLAZE_ALWAYS_INLINE const typename MT::ElementType* data( const DenseMatrix<MT,SO>& dm ) noexcept
 {
    return data_backend( ~dm );
 }
