@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) || defined(__MINGW64_VERSION_MAJOR) || defined(__MINGW32__)
 #  ifndef NOMINMAX
 #    define NOMINMAX
 #  endif
