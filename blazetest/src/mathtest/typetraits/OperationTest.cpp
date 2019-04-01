@@ -146,6 +146,7 @@ OperationTest::OperationTest()
    testIsZero();
    testRemoveAdaptor();
    testUnderlyingBuiltin();
+   testUnderlyingElement();
    testUnderlyingNumeric();
 }
 //*************************************************************************************************
@@ -1138,6 +1139,46 @@ void OperationTest::testUnderlyingBuiltin()
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<Type4>::Type, float );
 }
 //*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the mathematical 'UnderlyingElement' type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the mathematical 'UnderlyingElement' type trait.
+// In case an error is detected, a compilation error is created.
+*/
+void OperationTest::testUnderlyingElement()
+{
+   using blaze::complex;
+   using blaze::StaticVector;
+   using blaze::DynamicVector;
+   using blaze::CompressedVector;
+   using blaze::UnderlyingElement;
+
+   struct A {};
+   struct B { using ElementType = int; };
+   struct C { using value_type = complex<float>; };
+   struct D { using ElementType = double; using value_type = double; };
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<A>::Type, A );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<B>::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C>::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<D>::Type, double );
+
+   using Type1 = double;                                    // Built-in data type
+   using Type2 = complex<float>;                            // Complex data type
+   using Type3 = StaticVector<int,3UL>;                     // Vector with built-in element type
+   using Type4 = CompressedVector< DynamicVector<float> >;  // Vector with vector element type
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type1>::Type, double );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type2>::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type3>::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<Type4>::Type, DynamicVector<float> );
+}
+//*************************************************************************************************#
 
 
 //*************************************************************************************************

@@ -96,6 +96,7 @@ class OperationTest
    void testIsZero();
    void testRemoveAdaptor();
    void testUnderlyingBuiltin();
+   void testUnderlyingElement();
    void testUnderlyingNumeric();
    //@}
    //**********************************************************************************************
