@@ -40,9 +40,9 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/mpl/If.h>
-#include <blaze/util/typetraits/IsBuiltin.h>
-#include <blaze/util/typetraits/IsComplex.h>
+#include <blaze/util/Complex.h>
+#include <blaze/util/typetraits/RemoveCV.h>
+#include <blaze/util/typetraits/Void.h>
 
 
 namespace blaze {
@@ -54,52 +54,46 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename, typename = void > struct UnderlyingNumericHelper1;
+template< typename, typename = void > struct UnderlyingNumericHelper2;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Evaluation of the underlying numeric element type of a given data type.
 // \ingroup math_type_traits
 //
-// Via this type trait it is possible to evaluate the underlying numeric (fundamental or complex)
-// element type at the heart of a given data type. Examples:
+// This type trait evaluates the underlying numeric (fundamental or complex) element type at the
+// heart of the given data type \a T. For this purpose either a nested \a ElementType or a nested
+// \a value_type will be used. Examples:
 
    \code
    using Type1 = double;                                    // Built-in data type
    using Type2 = complex<float>;                            // Complex data type
-   using Type3 = StaticVector<int,3UL>;                     // Vector with built-in element type
-   using Type4 = CompressedVector< DynamicVector<float> >;  // Vector with vector element type
+   using Type3 = std::vector<short>;                        // std::vector with built-in element type
+   using Type4 = StaticVector<int,3UL>;                     // Vector with built-in element type
+   using Type5 = CompressedVector< DynamicVector<float> >;  // Vector with vector element type
 
    blaze::UnderlyingNumeric< Type1 >::Type  // corresponds to double
    blaze::UnderlyingNumeric< Type2 >::Type  // corresponds to complex<float>
-   blaze::UnderlyingNumeric< Type3 >::Type  // corresponds to int
-   blaze::UnderlyingNumeric< Type4 >::Type  // corresponds to float
+   blaze::UnderlyingNumeric< Type3 >::Type  // corresponds to short
+   blaze::UnderlyingNumeric< Type4 >::Type  // corresponds to int
+   blaze::UnderlyingNumeric< Type5 >::Type  // corresponds to float
    \endcode
 
-// Note that per default UnderlyingNumeric only supports fundamental/built-in data types, complex,
-// and data types with the nested type definition \a ElementType. Support for other data types can
-// be added by specializing the UnderlyingNumeric class template.
+// Note that it is possible to add support for other data types that have an underlying numeric
+// element type but do neither provide a nested \a ElementType nor \a value_type type by
+// specializing the UnderlyingNumeric class template.
 */
 template< typename T >
 struct UnderlyingNumeric
 {
- private:
-   //**struct BuiltinOrComplex*********************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   template< typename T2 >
-   struct BuiltinOrComplex { using Type = T2; };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**struct Other********************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   template< typename T2 >
-   struct Other { using Type = typename UnderlyingNumeric<typename T2::ElementType>::Type; };
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_t< IsBuiltin_v<T> || IsComplex_v<T>
-                             , BuiltinOrComplex<T>
-                             , Other<T> >::Type;
+   using Type = typename UnderlyingNumericHelper1< RemoveCV_t<T> >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -121,6 +115,52 @@ struct UnderlyingNumeric
 */
 template< typename T >
 using UnderlyingNumeric_t = typename UnderlyingNumeric<T>::Type;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief First auxiliary helper struct for the UnderlyingNumeric type trait.
+// \ingroup math_type_traits
+*/
+template< typename T, typename >
+struct UnderlyingNumericHelper1
+{
+   using Type = typename UnderlyingNumericHelper2<T>::Type;
+};
+
+template< typename T >
+struct UnderlyingNumericHelper1< complex<T>, void >
+{
+   using Type = complex<T>;
+};
+
+template< typename T >
+struct UnderlyingNumericHelper1< T, Void_t< typename T::ElementType > >
+{
+   using Type = typename UnderlyingNumericHelper1< typename T::ElementType >::Type;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Second auxiliary helper struct for the UnderlyingNumeric type trait.
+// \ingroup math_type_traits
+*/
+template< typename T, typename >
+struct UnderlyingNumericHelper2
+{
+   using Type = T;
+};
+
+template< typename T >
+struct UnderlyingNumericHelper2< T, Void_t< typename T::value_type > >
+{
+   using Type = typename UnderlyingNumericHelper1< typename T::value_type >::Type;
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
