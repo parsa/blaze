@@ -1117,6 +1117,16 @@ void OperationTest::testUnderlyingBuiltin()
    using blaze::CompressedVector;
    using blaze::UnderlyingBuiltin;
 
+   struct A {};
+   struct B { using ElementType = int; };
+   struct C { using value_type = complex<float>; };
+   struct D { using ElementType = double; using value_type = double; };
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<A>::Type, A );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<B>::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<C>::Type, float );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<D>::Type, double );
+
    using Type1 = double;                                    // Built-in data type
    using Type2 = complex<float>;                            // Complex data type
    using Type3 = StaticVector<int,3UL>;                     // Vector with built-in element type
@@ -1146,6 +1156,16 @@ void OperationTest::testUnderlyingNumeric()
    using blaze::DynamicVector;
    using blaze::CompressedVector;
    using blaze::UnderlyingNumeric;
+
+   struct A {};
+   struct B { using ElementType = int; };
+   struct C { using value_type = complex<float>; };
+   struct D { using ElementType = double; using value_type = double; };
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<A>::Type, A );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<B>::Type, int );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<C>::Type, complex<float> );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<D>::Type, double );
 
    using Type1 = double;                                    // Built-in data type
    using Type2 = complex<float>;                            // Complex data type
