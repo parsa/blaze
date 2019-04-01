@@ -40,9 +40,9 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/mpl/If.h>
-#include <blaze/util/typetraits/IsBuiltin.h>
-#include <blaze/util/typetraits/IsComplex.h>
+#include <blaze/util/Complex.h>
+#include <blaze/util/typetraits/RemoveCV.h>
+#include <blaze/util/typetraits/Void.h>
 
 
 namespace blaze {
@@ -54,61 +54,48 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename, typename = void > struct UnderlyingElementHelper1;
+template< typename, typename = void > struct UnderlyingElementHelper2;
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Evaluation of the element type of a given data type.
 // \ingroup math_type_traits
 //
-// Via this type trait it is possible to evaluate the element type of a given data type. Examples:
+// This type trait evaluates the underlying element type of the given data type \a T. If the given
+// type provides a nested type \a ElementType, this type is reported as underlying element type
+// type via the nested type \a Type. Else if the type provides a nested \a value_type, this type
+// is reported as underlying element type. Else the given type itself reported as the underlying
+// element type. Examples:
 
    \code
    using Type1 = double;                                    // Built-in data type
    using Type2 = complex<float>;                            // Complex data type
-   using Type3 = StaticVector<int,3UL>;                     // Vector with built-in element type
-   using Type4 = CompressedMatrix< DynamicVector<float> >;  // Matrix with vector element type
+   using Type3 = std::vector<short>;                        // std::vector with built-in element type
+   using Type4 = StaticVector<int,3UL>;                     // Vector with built-in element type
+   using Type5 = CompressedMatrix< DynamicVector<float> >;  // Matrix with vector element type
 
    blaze::UnderlyingElement< Type1 >::Type  // corresponds to double
    blaze::UnderlyingElement< Type2 >::Type  // corresponds to float
-   blaze::UnderlyingElement< Type3 >::Type  // corresponds to int
-   blaze::UnderlyingElement< Type4 >::Type  // corresponds to DynamicVector<float>
+   blaze::UnderlyingElement< Type3 >::Type  // corresponds to short
+   blaze::UnderlyingElement< Type4 >::Type  // corresponds to int
+   blaze::UnderlyingElement< Type5 >::Type  // corresponds to DynamicVector<float>
    \endcode
 
-// Note that per default UnderlyingElement only supports fundamental/built-in data types, complex,
-// and data types with the nested type definition \a ElementType. Support for other data types can
-// be added by specializing the UnderlyingElement class template.
+// Note that it is possible to add support for other data types that have an underlying element
+// type but do neither provide a nested \a ElementType nor \a value_type type by specializing
+// the UnderlyingElement class template.
 */
 template< typename T >
 struct UnderlyingElement
 {
- private:
-   //**struct Builtin******************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   template< typename T2 >
-   struct Builtin { using Type = T2; };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**struct Complex******************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   template< typename T2 >
-   struct Complex { using Type = typename T2::value_type; };
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**struct Other********************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   template< typename T2 >
-   struct Other { using Type = typename T2::ElementType; };
-   /*! \endcond */
-   //**********************************************************************************************
-
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   using Type = typename If_t< IsBuiltin_v<T>
-                             , Builtin<T>
-                             , If_t< IsComplex_v<T>
-                                   , Complex<T>
-                                   , Other<T> >
-                             >::Type;
+   using Type = typename UnderlyingElementHelper1< RemoveCV_t<T> >::Type;
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -130,6 +117,52 @@ struct UnderlyingElement
 */
 template< typename T >
 using UnderlyingElement_t = typename UnderlyingElement<T>::Type;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief First auxiliary helper struct for the UnderlyingElement type trait.
+// \ingroup math_type_traits
+*/
+template< typename T, typename >
+struct UnderlyingElementHelper1
+{
+   using Type = typename UnderlyingElementHelper2<T>::Type;
+};
+
+template< typename T >
+struct UnderlyingElementHelper1< complex<T> >
+{
+   using Type = T;
+};
+
+template< typename T >
+struct UnderlyingElementHelper1< T, Void_t< typename T::ElementType > >
+{
+   using Type = typename T::ElementType;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Second auxiliary helper struct for the UnderlyingElement type trait.
+// \ingroup math_type_traits
+*/
+template< typename T, typename >
+struct UnderlyingElementHelper2
+{
+   using Type = T;
+};
+
+template< typename T >
+struct UnderlyingElementHelper2< T, Void_t< typename T::value_type > >
+{
+   using Type = typename T::value_type;
+};
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
