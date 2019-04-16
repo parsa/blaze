@@ -36,6 +36,13 @@
 #define _BLAZETEST_MATHTEST_TYPETRAITS_OPERATIONTEST_H_
 
 
+//*************************************************************************************************
+// Includes
+//*************************************************************************************************
+
+#include <blaze/util/Complex.h>
+
+
 namespace blazetest {
 
 namespace mathtest {
@@ -99,6 +106,15 @@ class OperationTest
    void testUnderlyingElement();
    void testUnderlyingNumeric();
    //@}
+   //**********************************************************************************************
+
+   //**Test type setup*****************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   struct A {};
+   struct B { using ElementType = int; };
+   struct C { using value_type = blaze::complex<float>; };
+   struct D { using ElementType = double; using value_type = double; };
+   /*! \endcond */
    //**********************************************************************************************
 };
 //*************************************************************************************************

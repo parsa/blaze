@@ -95,12 +95,12 @@
 #include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/math/typetraits/UnderlyingElement.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/UniLowerMatrix.h>
 #include <blaze/math/UniUpperMatrix.h>
 #include <blaze/math/UpperMatrix.h>
 #include <blaze/math/ZeroMatrix.h>
-#include <blaze/util/Complex.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blazetest/mathtest/typetraits/OperationTest.h>
 
@@ -1118,11 +1118,6 @@ void OperationTest::testUnderlyingBuiltin()
    using blaze::CompressedVector;
    using blaze::UnderlyingBuiltin;
 
-   struct A {};
-   struct B { using ElementType = int; };
-   struct C { using value_type = complex<float>; };
-   struct D { using ElementType = double; using value_type = double; };
-
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<A>::Type, A );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<B>::Type, int );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingBuiltin<C>::Type, float );
@@ -1158,11 +1153,6 @@ void OperationTest::testUnderlyingElement()
    using blaze::CompressedVector;
    using blaze::UnderlyingElement;
 
-   struct A {};
-   struct B { using ElementType = int; };
-   struct C { using value_type = complex<float>; };
-   struct D { using ElementType = double; using value_type = double; };
-
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<A>::Type, A );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<B>::Type, int );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingElement<C>::Type, complex<float> );
@@ -1197,11 +1187,6 @@ void OperationTest::testUnderlyingNumeric()
    using blaze::DynamicVector;
    using blaze::CompressedVector;
    using blaze::UnderlyingNumeric;
-
-   struct A {};
-   struct B { using ElementType = int; };
-   struct C { using value_type = complex<float>; };
-   struct D { using ElementType = double; using value_type = double; };
 
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<A>::Type, A );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( UnderlyingNumeric<B>::Type, int );
