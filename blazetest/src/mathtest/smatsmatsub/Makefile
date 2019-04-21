@@ -33,8 +33,8 @@
 
 
 # Including the compiler and library settings
-ifneq ($(MAKECMDGOALS),clean)
 ifneq ($(MAKECMDGOALS),reset)
+ifneq ($(MAKECMDGOALS),clean)
 -include ../../Makeconfig
 endif
 endif
