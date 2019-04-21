@@ -467,7 +467,7 @@ class SVecSVecMultExpr
       auto l( x.begin()  );
       auto r( y.begin() );
 
-      size_t i( 0 );
+      size_t i( 0UL );
 
       for( ; l!=lend; ++l ) {
          while( r!=rend && r->index() < l->index() ) ++r;

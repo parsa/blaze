@@ -740,7 +740,7 @@ class SMatSMatSchurExpr
          auto l( A.begin(i) );
          auto r( B.begin(i) );
 
-         size_t j( 0 );
+         size_t j( 0UL );
 
          for( ; l!=lend; ++l ) {
             while( r!=rend && r->index() < l->index() ) ++r;
