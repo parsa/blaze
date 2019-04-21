@@ -889,8 +889,8 @@ class SMatDMatSchurExpr
 //        a row-major dense matrix (\f$ A=B \circ C \f$).
 // \ingroup sparse_matrix
 //
-// \param lhs The left-hand side dense matrix for the Schur product.
-// \param rhs The right-hand side sparse matrix for the Schur product.
+// \param lhs The left-hand side sparse matrix for the Schur product.
+// \param rhs The right-hand side dense matrix for the Schur product.
 // \return The Schur product of the two matrices.
 //
 // This function implements a performance optimized treatment of the Schur product between a
@@ -1051,8 +1051,8 @@ inline decltype(auto)
 //        a column-major dense matrix (\f$ A=B \circ C \f$).
 // \ingroup sparse_matrix
 //
-// \param lhs The left-hand side dense matrix for the Schur product.
-// \param rhs The right-hand side sparse matrix for the Schur product.
+// \param lhs The left-hand side sparse matrix for the Schur product.
+// \param rhs The right-hand side dense matrix for the Schur product.
 // \return The Schur product of the two matrices.
 //
 // This function implements a performance optimized treatment of the Schur product between a
