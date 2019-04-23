@@ -2719,7 +2719,7 @@ inline decltype(auto)
       }
    }
 
-   return submatrix( rows( sm.operand(), [p,offset=sm.row()]( size_t i ){ return p(i)+offset; }, n ),
+   return submatrix( rows( sm.operand(), [p,offset=sm.row()]( size_t i ){ return p(i)+offset; }, n, args... ),
                      0UL, sm.column(), n, sm.columns(), unchecked );
 }
 /*! \endcond */
@@ -2763,7 +2763,7 @@ inline decltype(auto)
       }
    }
 
-   return submatrix( rows( sm.operand(), [p,offset=sm.row()]( size_t i ){ return p(i)+offset; }, n ),
+   return submatrix( rows( sm.operand(), [p,offset=sm.row()]( size_t i ){ return p(i)+offset; }, n, args... ),
                      0UL, sm.column(), n, sm.columns(), unchecked );
 }
 /*! \endcond */
@@ -2807,7 +2807,7 @@ inline decltype(auto)
       }
    }
 
-   return submatrix( rows( sm.operand(), [p,offset=sm.row()]( size_t i ){ return p(i)+offset; }, n ),
+   return submatrix( rows( sm.operand(), [p,offset=sm.row()]( size_t i ){ return p(i)+offset; }, n, args... ),
                      0UL, sm.column(), n, sm.columns(), unchecked );
 }
 /*! \endcond */
@@ -3598,7 +3598,7 @@ inline decltype(auto)
       }
    }
 
-   return submatrix( columns( sm.operand(), [p,offset=sm.column()]( size_t i ){ return p(i)+offset; }, n ),
+   return submatrix( columns( sm.operand(), [p,offset=sm.column()]( size_t i ){ return p(i)+offset; }, n, args... ),
                      sm.row(), 0UL, sm.rows(), n, unchecked );
 }
 /*! \endcond */
@@ -3642,7 +3642,7 @@ inline decltype(auto)
       }
    }
 
-   return submatrix( columns( sm.operand(), [p,offset=sm.column()]( size_t i ){ return p(i)+offset; }, n ),
+   return submatrix( columns( sm.operand(), [p,offset=sm.column()]( size_t i ){ return p(i)+offset; }, n, args... ),
                      sm.row(), 0UL, sm.rows(), n, unchecked );
 }
 /*! \endcond */
@@ -3686,7 +3686,7 @@ inline decltype(auto)
       }
    }
 
-   return submatrix( columns( sm.operand(), [p,offset=sm.column()]( size_t i ){ return p(i)+offset; }, n ),
+   return submatrix( columns( sm.operand(), [p,offset=sm.column()]( size_t i ){ return p(i)+offset; }, n, args... ),
                      sm.row(), 0UL, sm.rows(), n, unchecked );
 }
 /*! \endcond */
