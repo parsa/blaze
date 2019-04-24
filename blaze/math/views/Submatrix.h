@@ -93,6 +93,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/DecltypeAuto.h>
 #include <blaze/util/DisableIf.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/MaybeUnused.h>
@@ -102,6 +103,7 @@
 #include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsPointer.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -2570,7 +2572,7 @@ inline decltype(auto)
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
-         if( sm.rows() <= indices[i] ) {
+         if( sm.rows() <= size_t( indices[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row specification" );
          }
       }
@@ -2618,7 +2620,7 @@ inline decltype(auto)
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
-         if( sm.rows() <= indices[i] ) {
+         if( sm.rows() <= size_t( indices[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row specification" );
          }
       }
@@ -2666,7 +2668,7 @@ inline decltype(auto)
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
-         if( sm.rows() <= indices[i] ) {
+         if( sm.rows() <= size_t( indices[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row specification" );
          }
       }
@@ -2697,13 +2699,14 @@ inline decltype(auto)
 //
 // This function returns an expression representing the specified rows of the given submatrix.
 */
-template< typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time submatrix arguments
-        , typename P          // Type of the index producer
-        , typename... RRAs >  // Optional row arguments
+template< typename MT       // Type of the sparse submatrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename P        // Type of the index producer
+        , typename... RRAs  // Optional row arguments
+        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
 inline decltype(auto)
    rows( Submatrix<MT,AF,SO,DF,CSAs...>& sm, P p, size_t n, RRAs... args )
 {
@@ -2713,7 +2716,7 @@ inline decltype(auto)
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
-         if( sm.rows() <= p(i) ) {
+         if( sm.rows() <= size_t( p(i) ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row specification" );
          }
       }
@@ -2741,13 +2744,14 @@ inline decltype(auto)
 // This function returns an expression representing the specified rows of the given constant
 // submatrix.
 */
-template< typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time submatrix arguments
-        , typename P          // Type of the index producer
-        , typename... RRAs >  // Optional row arguments
+template< typename MT       // Type of the sparse submatrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename P        // Type of the index producer
+        , typename... RRAs  // Optional row arguments
+        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
 inline decltype(auto)
    rows( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, P p, size_t n, RRAs... args )
 {
@@ -2757,7 +2761,7 @@ inline decltype(auto)
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
-         if( sm.rows() <= p(i) ) {
+         if( sm.rows() <= size_t( p(i) ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row specification" );
          }
       }
@@ -2785,13 +2789,14 @@ inline decltype(auto)
 // This function returns an expression representing the specified rows of the given temporary
 // submatrix.
 */
-template< typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time submatrix arguments
-        , typename P          // Type of the index producer
-        , typename... RRAs >  // Optional row arguments
+template< typename MT       // Type of the sparse submatrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename P        // Type of the index producer
+        , typename... RRAs  // Optional row arguments
+        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
 inline decltype(auto)
    rows( Submatrix<MT,AF,SO,DF,CSAs...>&& sm, P p, size_t n, RRAs... args )
 {
@@ -2801,7 +2806,7 @@ inline decltype(auto)
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
-         if( sm.rows() <= p(i) ) {
+         if( sm.rows() <= size_t( p(i) ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row specification" );
          }
       }
@@ -3449,7 +3454,7 @@ inline decltype(auto)
 
    if( isChecked ) {
       for( size_t j=0UL; j<n; ++j ) {
-         if( sm.columns() <= indices[j] ) {
+         if( sm.columns() <= size_t( indices[j] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column specification" );
          }
       }
@@ -3497,7 +3502,7 @@ inline decltype(auto)
 
    if( isChecked ) {
       for( size_t j=0UL; j<n; ++j ) {
-         if( sm.columns() <= indices[j] ) {
+         if( sm.columns() <= size_t( indices[j] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column specification" );
          }
       }
@@ -3545,7 +3550,7 @@ inline decltype(auto)
 
    if( isChecked ) {
       for( size_t j=0UL; j<n; ++j ) {
-         if( sm.columns() <= indices[j] ) {
+         if( sm.columns() <= size_t( indices[j] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column specification" );
          }
       }
@@ -3576,13 +3581,14 @@ inline decltype(auto)
 //
 // This function returns an expression representing the specified columns of the given submatrix.
 */
-template< typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time submatrix arguments
-        , typename P          // Type of the index producer
-        , typename... RCAs >  // Optional column arguments
+template< typename MT       // Type of the sparse submatrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename P        // Type of the index producer
+        , typename... RCAs  // Optional column arguments
+        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
 inline decltype(auto)
    columns( Submatrix<MT,AF,SO,DF,CSAs...>& sm, P p, size_t n, RCAs... args )
 {
@@ -3592,7 +3598,7 @@ inline decltype(auto)
 
    if( isChecked ) {
       for( size_t j=0UL; j<n; ++j ) {
-         if( sm.columns() <= p(j) ) {
+         if( sm.columns() <= size_t( p(j) ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column specification" );
          }
       }
@@ -3620,13 +3626,14 @@ inline decltype(auto)
 // This function returns an expression representing the specified columns of the given constant
 // submatrix.
 */
-template< typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time submatrix arguments
-        , typename P          // Type of the index producer
-        , typename... RCAs >  // Optional column arguments
+template< typename MT       // Type of the sparse submatrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename P        // Type of the index producer
+        , typename... RCAs  // Optional column arguments
+        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
 inline decltype(auto)
    columns( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, P p, size_t n, RCAs... args )
 {
@@ -3636,7 +3643,7 @@ inline decltype(auto)
 
    if( isChecked ) {
       for( size_t j=0UL; j<n; ++j ) {
-         if( sm.columns() <= p(j) ) {
+         if( sm.columns() <= size_t( p(j) ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column specification" );
          }
       }
@@ -3664,13 +3671,14 @@ inline decltype(auto)
 // This function returns an expression representing the specified columns of the given temporary
 // submatrix.
 */
-template< typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time submatrix arguments
-        , typename P          // Type of the index producer
-        , typename... RCAs >  // Optional column arguments
+template< typename MT       // Type of the sparse submatrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time submatrix arguments
+        , typename P        // Type of the index producer
+        , typename... RCAs  // Optional column arguments
+        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
 inline decltype(auto)
    columns( Submatrix<MT,AF,SO,DF,CSAs...>&& sm, P p, size_t n, RCAs... args )
 {
@@ -3680,7 +3688,7 @@ inline decltype(auto)
 
    if( isChecked ) {
       for( size_t j=0UL; j<n; ++j ) {
-         if( sm.columns() <= p(j) ) {
+         if( sm.columns() <= size_t( p(j) ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column specification" );
          }
       }

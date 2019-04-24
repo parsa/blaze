@@ -1587,13 +1587,14 @@ inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>&& c, const T* indice
 // This function returns an expression representing the specified column of the given column
 // selection.
 */
-template< typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , typename... CCAs    // Compile time column arguments
-        , typename P          // Type of the index producer
-        , typename... RCAs >  // Optional column arguments
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename P        // Type of the index producer
+        , typename... RCAs  // Optional column arguments
+        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
 inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>& c, P p, size_t n, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1636,13 +1637,14 @@ inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>& c, P p, size_t n, R
 // This function returns an expression representing the specified column of the given constant
 // column selection.
 */
-template< typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , typename... CCAs    // Compile time column arguments
-        , typename P          // Type of the index producer
-        , typename... RCAs >  // Optional column arguments
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename P        // Type of the index producer
+        , typename... RCAs  // Optional column arguments
+        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
 inline decltype(auto) columns( const Columns<MT,SO,DF,SF,CCAs...>& c, P p, size_t n, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1685,13 +1687,14 @@ inline decltype(auto) columns( const Columns<MT,SO,DF,SF,CCAs...>& c, P p, size_
 // This function returns an expression representing the specified column of the given temporary
 // column selection.
 */
-template< typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , typename... CCAs    // Compile time column arguments
-        , typename P          // Type of the index producer
-        , typename... RCAs >  // Optional column arguments
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename P        // Type of the index producer
+        , typename... RCAs  // Optional column arguments
+        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
 inline decltype(auto) columns( Columns<MT,SO,DF,SF,CCAs...>&& c, P p, size_t n, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;

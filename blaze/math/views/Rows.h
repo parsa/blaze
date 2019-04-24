@@ -1608,13 +1608,14 @@ inline decltype(auto) rows( Rows<MT,SO,DF,SF,CRAs...>&& r, const T* indices, siz
 //
 // This function returns an expression representing the specified row of the given row selection.
 */
-template< typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , typename... CRAs    // Compile time row arguments
-        , typename P          // Type of the index producer
-        , typename... RRAs >  // Optional row arguments
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CRAs  // Compile time row arguments
+        , typename P        // Type of the index producer
+        , typename... RRAs  // Optional row arguments
+        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
 inline decltype(auto) rows( Rows<MT,SO,DF,SF,CRAs...>& r, P p, size_t n, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1657,13 +1658,14 @@ inline decltype(auto) rows( Rows<MT,SO,DF,SF,CRAs...>& r, P p, size_t n, RRAs...
 // This function returns an expression representing the specified row of the given constant row
 // selection.
 */
-template< typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , typename... CRAs    // Compile time row arguments
-        , typename P          // Type of the index producer
-        , typename... RRAs >  // Optional row arguments
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CRAs  // Compile time row arguments
+        , typename P        // Type of the index producer
+        , typename... RRAs  // Optional row arguments
+        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
 inline decltype(auto) rows( const Rows<MT,SO,DF,SF,CRAs...>& r, P p, size_t n, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1706,13 +1708,14 @@ inline decltype(auto) rows( const Rows<MT,SO,DF,SF,CRAs...>& r, P p, size_t n, R
 // This function returns an expression representing the specified row of the given temporary row
 // selection.
 */
-template< typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , typename... CRAs    // Compile time row arguments
-        , typename P          // Type of the index producer
-        , typename... RRAs >  // Optional row arguments
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CRAs  // Compile time row arguments
+        , typename P        // Type of the index producer
+        , typename... RRAs  // Optional row arguments
+        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
 inline decltype(auto) rows( Rows<MT,SO,DF,SF,CRAs...>&& r, P p, size_t n, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
