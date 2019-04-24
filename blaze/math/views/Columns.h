@@ -759,6 +759,36 @@ inline decltype(auto) columns( MT&& matrix, const SmallArray<T,N>& indices, RCAs
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of columns of the given matrix.
+// \ingroup columns
+//
+// \param matrix The matrix containing the columns.
+// \param pair The pair of arguments for the element selection.
+// \param args Optional arguments.
+// \return View on the specified columns of the matrix.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing a selection of columns of the given matrix.
+// In case any column is not properly specified (i.e. if any specified index is greater than or
+// equal to the total number of columns in the given matrix) a \a std::invalid_argument exception
+// is thrown.
+*/
+template< typename MT         // Type of the matrix
+        , typename T1         // First type of the pair of arguments
+        , typename T2         // Second type of the pair of arguments
+        , typename... RRAs >  // Optional arguments
+inline decltype(auto) columns( MT&& matrix, const std::pair<T1,T2>& pair, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return columns( std::forward<MT>( matrix ), pair.first, pair.second, args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
