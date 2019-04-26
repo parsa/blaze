@@ -60,6 +60,7 @@
 #include <blaze/math/typetraits/YieldsUniUpper.h>
 #include <blaze/math/typetraits/YieldsUpper.h>
 #include <blaze/math/typetraits/YieldsZero.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -86,7 +87,7 @@ struct Mult
    // \return The result of the multiplication operator for the given objects/values.
    */
    template< typename T1, typename T2 >
-   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T1& a, const T2& b ) const
+   BLAZE_ALWAYS_INLINE BLAZE_HOST_DEVICE decltype(auto) operator()( const T1& a, const T2& b ) const
    {
       return a * b;
    }

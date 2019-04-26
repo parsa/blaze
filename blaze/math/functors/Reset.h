@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/shims/Reset.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 
 

@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 
 

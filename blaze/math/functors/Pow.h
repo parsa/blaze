@@ -44,6 +44,7 @@
 #include <blaze/math/shims/Pow.h>
 #include <blaze/math/simd/Pow.h>
 #include <blaze/math/typetraits/HasSIMDPow.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 
 
@@ -69,7 +70,7 @@ struct Pow
    // \return The result of the pow() function for the given objects/values.
    */
    template< typename T1, typename T2 >
-   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T1& a, const T2& b ) const
+   BLAZE_ALWAYS_INLINE BLAZE_HOST_DEVICE decltype(auto) operator()( const T1& a, const T2& b ) const
    {
       return pow( a, b );
    }
