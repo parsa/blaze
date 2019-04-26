@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 
 
@@ -64,7 +65,7 @@ struct DeclLow
    // \return The result of the decllow() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_HOST_DEVICE decltype(auto) operator()( const T& a ) const
    {
       return decllow( a );
    }
