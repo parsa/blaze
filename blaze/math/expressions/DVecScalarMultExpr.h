@@ -67,6 +67,7 @@
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
@@ -205,7 +206,7 @@ class DVecScalarMultExpr
       // \param iterator Iterator to the initial element.
       // \param scalar Scalar of the multiplication expression.
       */
-      explicit inline ConstIterator( IteratorType iterator, RightOperand scalar )
+      explicit inline BLAZE_HOST_DEVICE ConstIterator( IteratorType iterator, RightOperand scalar )
          : iterator_( iterator )  // Iterator to the current element
          , scalar_  ( scalar   )  // Scalar of the multiplication expression
       {}
@@ -282,7 +283,7 @@ class DVecScalarMultExpr
       //
       // \return The resulting value.
       */
-      inline ReturnType operator*() const {
+      inline BLAZE_HOST_DEVICE ReturnType operator*() const {
          return *iterator_ * scalar_;
       }
       //*******************************************************************************************
@@ -303,7 +304,7 @@ class DVecScalarMultExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
-      inline bool operator==( const ConstIterator& rhs ) const {
+      inline BLAZE_HOST_DEVICE bool operator==( const ConstIterator& rhs ) const {
          return iterator_ == rhs.iterator_;
       }
       //*******************************************************************************************
@@ -314,7 +315,7 @@ class DVecScalarMultExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
-      inline bool operator!=( const ConstIterator& rhs ) const {
+      inline BLAZE_HOST_DEVICE bool operator!=( const ConstIterator& rhs ) const {
          return iterator_ != rhs.iterator_;
       }
       //*******************************************************************************************
@@ -325,7 +326,7 @@ class DVecScalarMultExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is smaller, \a false if not.
       */
-      inline bool operator<( const ConstIterator& rhs ) const {
+      inline BLAZE_HOST_DEVICE bool operator<( const ConstIterator& rhs ) const {
          return iterator_ < rhs.iterator_;
       }
       //*******************************************************************************************
@@ -336,7 +337,7 @@ class DVecScalarMultExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is greater, \a false if not.
       */
-      inline bool operator>( const ConstIterator& rhs ) const {
+      inline BLAZE_HOST_DEVICE bool operator>( const ConstIterator& rhs ) const {
          return iterator_ > rhs.iterator_;
       }
       //*******************************************************************************************
@@ -347,7 +348,7 @@ class DVecScalarMultExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
       */
-      inline bool operator<=( const ConstIterator& rhs ) const {
+      inline BLAZE_HOST_DEVICE bool operator<=( const ConstIterator& rhs ) const {
          return iterator_ <= rhs.iterator_;
       }
       //*******************************************************************************************
@@ -358,7 +359,7 @@ class DVecScalarMultExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
       */
-      inline bool operator>=( const ConstIterator& rhs ) const {
+      inline BLAZE_HOST_DEVICE bool operator>=( const ConstIterator& rhs ) const {
          return iterator_ >= rhs.iterator_;
       }
       //*******************************************************************************************
@@ -369,7 +370,7 @@ class DVecScalarMultExpr
       // \param rhs The right-hand side iterator.
       // \return The number of elements between the two iterators.
       */
-      inline DifferenceType operator-( const ConstIterator& rhs ) const {
+      inline BLAZE_HOST_DEVICE DifferenceType operator-( const ConstIterator& rhs ) const {
          return iterator_ - rhs.iterator_;
       }
       //*******************************************************************************************
@@ -381,7 +382,7 @@ class DVecScalarMultExpr
       // \param inc The number of elements the iterator is incremented.
       // \return The incremented iterator.
       */
-      friend inline const ConstIterator operator+( const ConstIterator& it, size_t inc ) {
+      friend inline BLAZE_HOST_DEVICE const ConstIterator operator+( const ConstIterator& it, size_t inc ) {
          return ConstIterator( it.iterator_ + inc, it.scalar_ );
       }
       //*******************************************************************************************
@@ -393,7 +394,7 @@ class DVecScalarMultExpr
       // \param it The iterator to be incremented.
       // \return The incremented iterator.
       */
-      friend inline const ConstIterator operator+( size_t inc, const ConstIterator& it ) {
+      friend inline BLAZE_HOST_DEVICE const ConstIterator operator+( size_t inc, const ConstIterator& it ) {
          return ConstIterator( it.iterator_ + inc, it.scalar_ );
       }
       //*******************************************************************************************
@@ -405,7 +406,7 @@ class DVecScalarMultExpr
       // \param dec The number of elements the iterator is decremented.
       // \return The decremented iterator.
       */
-      friend inline const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
+      friend inline BLAZE_HOST_DEVICE const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
          return ConstIterator( it.iterator_ - dec, it.scalar_ );
       }
       //*******************************************************************************************
