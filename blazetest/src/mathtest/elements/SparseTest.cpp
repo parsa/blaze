@@ -4692,72 +4692,232 @@ void SparseTest::testSubvector()
 */
 void SparseTest::testElements()
 {
-   test_ = "elements() function";
-
-   initialize();
-
-   {
-      auto e1 = blaze::elements( vec_, { 1UL, 3UL, 5UL, 2UL, 4UL, 6UL } );
-      auto e2 = blaze::elements( e1  , { 1UL, 2UL, 3UL, 4UL } );
-
-      if( e2[0] != -2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator access failed\n"
-             << " Details:\n"
-             << "   Result: " << e2[0] << "\n"
-             << "   Expected result: -2\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      if( e2.begin()->value() != -2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Iterator access failed\n"
-             << " Details:\n"
-             << "   Result: " << e2.begin()->value() << "\n"
-             << "   Expected result: -2\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
+   //=====================================================================================
+   // Setup via index_sequence
+   //=====================================================================================
 
    {
-      auto e1 = blaze::elements( vec_, { 3UL, 6UL } );
-      auto e2 = blaze::elements( e1  , { 1UL, 1UL, 1UL } );
+      test_ = "elements() function (index_sequence)";
 
-      if( e2[0] != 4 || e2[1] != 4 || e2[2] != 4 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator access failed\n"
-             << " Details:\n"
-             << "   Result: " << e2[0] << "\n"
-             << "   Expected result: 4\n";
-         throw std::runtime_error( oss.str() );
+      initialize();
+
+      {
+         auto e1 = blaze::elements( vec_, { 1UL, 3UL, 5UL, 2UL, 4UL, 6UL } );
+         auto e2 = blaze::elements( e1  , { 1UL, 2UL, 3UL, 4UL } );
+
+         if( e2[0] != -2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e2[0] << "\n"
+                << "   Expected result: -2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( e2.begin()->value() != -2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e2.begin()->value() << "\n"
+                << "   Expected result: -2\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
-      if( e2.begin()->value() != 4 ) {
+      {
+         auto e1 = blaze::elements( vec_, { 3UL, 6UL } );
+         auto e2 = blaze::elements( e1  , { 1UL, 1UL, 1UL } );
+
+         if( e2[0] != 4 || e2[1] != 4 || e2[2] != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e2[0] << "\n"
+                << "   Expected result: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( e2.begin()->value() != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e2.begin()->value() << "\n"
+                << "   Expected result: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         auto e1 = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL, 5UL, 6UL } );
+         auto e2 = blaze::elements( e1  , { 6UL } );
+
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Iterator access failed\n"
+             << " Error: Setup of out-of-bounds elements succeeded\n"
              << " Details:\n"
-             << "   Result: " << e2.begin()->value() << "\n"
-             << "   Expected result: 4\n";
+             << "   Result:\n" << e2 << "\n";
          throw std::runtime_error( oss.str() );
       }
+      catch( std::invalid_argument& ) {}
    }
 
-   try {
-      auto e1 = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL, 5UL, 6UL } );
-      auto e2 = blaze::elements( e1  , { 6UL } );
 
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Setup of out-of-bounds elements succeeded\n"
-          << " Details:\n"
-          << "   Result:\n" << e2 << "\n";
-      throw std::runtime_error( oss.str() );
+   //=====================================================================================
+   // Setup via std::array
+   //=====================================================================================
+
+   {
+      test_ = "elements() function (std::array)";
+
+      initialize();
+
+      {
+         std::array<int,4UL> indices{ 1UL, 2UL, 3UL, 4UL };
+
+         auto e1 = blaze::elements( vec_, { 1UL, 3UL, 5UL, 2UL, 4UL, 6UL } );
+         auto e2 = blaze::elements( e1  , indices );
+
+         if( e2[0] != -2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e2[0] << "\n"
+                << "   Expected result: -2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( e2.begin()->value() != -2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e2.begin()->value() << "\n"
+                << "   Expected result: -2\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         std::array<int,4UL> indices{ 1UL, 1UL, 1UL };
+
+         auto e1 = blaze::elements( vec_, { 3UL, 6UL } );
+         auto e2 = blaze::elements( e1  , indices );
+
+         if( e2[0] != 4 || e2[1] != 4 || e2[2] != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e2[0] << "\n"
+                << "   Expected result: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( e2.begin()->value() != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e2.begin()->value() << "\n"
+                << "   Expected result: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         std::array<int,1UL> indices{ 6UL };
+
+         auto e1 = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL, 5UL, 6UL } );
+         auto e2 = blaze::elements( e1  , indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds elements succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << e2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
-   catch( std::invalid_argument& ) {}
+
+
+   //=====================================================================================
+   // Setup via lambda expression
+   //=====================================================================================
+
+   {
+      test_ = "elements() function (lambda expression)";
+
+      initialize();
+
+      {
+         auto e1 = blaze::elements( vec_, { 1UL, 3UL, 5UL, 2UL, 4UL, 6UL } );
+         auto e2 = blaze::elements( e1  , []( size_t i ){ return i+1UL; }, 4UL );
+
+         if( e2[0] != -2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e2[0] << "\n"
+                << "   Expected result: -2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( e2.begin()->value() != -2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e2.begin()->value() << "\n"
+                << "   Expected result: -2\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         auto e1 = blaze::elements( vec_, { 3UL, 6UL } );
+         auto e2 = blaze::elements( e1  , []( size_t ){ return 1UL; }, 3UL );
+
+         if( e2[0] != 4 || e2[1] != 4 || e2[2] != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e2[0] << "\n"
+                << "   Expected result: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( e2.begin()->value() != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e2.begin()->value() << "\n"
+                << "   Expected result: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         auto e1 = blaze::elements( vec_, { 1UL, 2UL, 3UL, 4UL, 5UL, 6UL } );
+         auto e2 = blaze::elements( e1  , []( size_t ){ return 6UL; }, 1UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds elements succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << e2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
 }
 //*************************************************************************************************
 
