@@ -61,7 +61,7 @@ namespace blaze {
 // of compile time row arguments.
 */
 template< size_t... CRAs >  // Compile time row arguments
-struct RowData
+class RowData
 {};
 //*************************************************************************************************
 
@@ -83,9 +83,18 @@ struct RowData
 // time row arguments.
 */
 template<>
-struct RowData<>
+class RowData<>
 {
  public:
+   //**Compile time flags**************************************************************************
+   //! Compilation flag for compile time optimization.
+   /*! The \a compileTimeArgs compilation flag indicates whether the view has been created by
+       means of compile time arguments and whether these arguments can be queried at compile
+       time. In that case, the \a compileTimeArgs compilation flag is set to \a true, otherwise
+       it is set to \a false. */
+   static constexpr bool compileTimeArgs = false;
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -177,9 +186,18 @@ inline size_t RowData<>::row() const noexcept
 // compile time row argument.
 */
 template< size_t Index >  // Compile time row index
-struct RowData<Index>
+class RowData<Index>
 {
  public:
+   //**Compile time flags**************************************************************************
+   //! Compilation flag for compile time optimization.
+   /*! The \a compileTimeArgs compilation flag indicates whether the view has been created by
+       means of compile time arguments and whether these arguments can be queried at compile
+       time. In that case, the \a compileTimeArgs compilation flag is set to \a true, otherwise
+       it is set to \a false. */
+   static constexpr bool compileTimeArgs = true;
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
