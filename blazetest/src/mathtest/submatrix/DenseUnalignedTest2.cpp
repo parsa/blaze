@@ -5774,11 +5774,11 @@ void DenseUnalignedTest::testRow()
 void DenseUnalignedTest::testRows()
 {
    //=====================================================================================
-   // Row-major matrix tests
+   // Row-major matrix tests (initializer_list)
    //=====================================================================================
 
    {
-      test_ = "Row-major rows() function";
+      test_ = "Row-major rows() function (initializer_list)";
 
       initialize();
 
@@ -5824,11 +5824,115 @@ void DenseUnalignedTest::testRows()
 
 
    //=====================================================================================
-   // Column-major matrix tests
+   // Row-major matrix tests (std::array)
    //=====================================================================================
 
    {
-      test_ = "Column-major rows() function";
+      test_ = "Row-major rows() function (std::array)";
+
+      initialize();
+
+      {
+         std::array<int,2UL> indices{ 1UL, 0UL };
+
+         SMT  sm1 = blaze::submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
+         auto rs  = blaze::rows( sm1, indices );
+
+         if( rs(0,0) != 0 || rs(0,1) != -3 ||
+             rs(1,0) != 1 || rs(1,1) !=  0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator access failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs << "\n"
+                << "   Expected result:\n( 0 -3 )\n( 1  0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *rs.begin( 1UL ) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *rs.begin( 1UL ) << "\n"
+                << "   Expected result: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         std::array<int,1UL> indices{ 3UL };
+
+         SMT  sm1 = blaze::submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
+         auto rs  = blaze::rows( sm1, indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds row selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << rs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Row-major matrix tests (lambda expression)
+   //=====================================================================================
+
+   {
+      test_ = "Row-major rows() function (lambda expression)";
+
+      initialize();
+
+      {
+         SMT  sm1 = blaze::submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
+         auto rs  = blaze::rows( sm1, []( size_t i ){ return 1UL-i; }, 2UL );
+
+         if( rs(0,0) != 0 || rs(0,1) != -3 ||
+             rs(1,0) != 1 || rs(1,1) !=  0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator access failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs << "\n"
+                << "   Expected result:\n( 0 -3 )\n( 1  0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *rs.begin( 1UL ) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *rs.begin( 1UL ) << "\n"
+                << "   Expected result: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         SMT  sm1 = blaze::submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
+         auto rs  = blaze::rows( sm1, []( size_t ){ return 3UL; }, 1UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds row selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << rs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests (initializer_list)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major rows() function (initializer_list)";
 
       initialize();
 
@@ -5861,6 +5965,110 @@ void DenseUnalignedTest::testRows()
       try {
          OSMT sm1 = blaze::submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
          auto rs  = blaze::rows( sm1, { 2UL } );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds row selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << rs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests (std::array)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major rows() function (std::array)";
+
+      initialize();
+
+      {
+         std::array<int,2UL> indices{ 1UL, 0UL };
+
+         OSMT sm1 = blaze::submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
+         auto rs  = blaze::rows( sm1, indices );
+
+         if( rs(0,0) != 0 || rs(0,1) != -3 || rs(0,2) != 5 ||
+             rs(1,0) != 1 || rs(1,1) !=  0 || rs(1,2) != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator access failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs << "\n"
+                << "   Expected result:\n( 0 -3  5 )\n( 1  0  4 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *rs.begin( 1UL ) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *rs.begin( 1UL ) << "\n"
+                << "   Expected result: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         std::array<int,1UL> indices{ 2UL };
+
+         OSMT sm1 = blaze::submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
+         auto rs  = blaze::rows( sm1, indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds row selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << rs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests (lambda expression)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major rows() function (lambda expression)";
+
+      initialize();
+
+      {
+         OSMT sm1 = blaze::submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
+         auto rs  = blaze::rows( sm1, []( size_t i ){ return 1UL-i; }, 2UL );
+
+         if( rs(0,0) != 0 || rs(0,1) != -3 || rs(0,2) != 5 ||
+             rs(1,0) != 1 || rs(1,1) !=  0 || rs(1,2) != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator access failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs << "\n"
+                << "   Expected result:\n( 0 -3  5 )\n( 1  0  4 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *rs.begin( 1UL ) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *rs.begin( 1UL ) << "\n"
+                << "   Expected result: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         OSMT sm1 = blaze::submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
+         auto rs  = blaze::rows( sm1, []( size_t ){ return 2UL; }, 1UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -5998,11 +6206,11 @@ void DenseUnalignedTest::testColumn()
 void DenseUnalignedTest::testColumns()
 {
    //=====================================================================================
-   // Row-major matrix tests
+   // Row-major matrix tests (initializer_list)
    //=====================================================================================
 
    {
-      test_ = "Row-major columns() function";
+      test_ = "Row-major columns() function (initializer_list)";
 
       initialize();
 
@@ -6049,11 +6257,117 @@ void DenseUnalignedTest::testColumns()
 
 
    //=====================================================================================
-   // Column-major matrix tests
+   // Row-major matrix tests (std::array)
    //=====================================================================================
 
    {
-      test_ = "Column-major columns() function";
+      test_ = "Row-major columns() function (std::array)";
+
+      initialize();
+
+      {
+         std::array<int,2UL> indices{ 1UL, 0UL };
+
+         SMT  sm1 = blaze::submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
+         auto cs  = blaze::columns( sm1, indices );
+
+         if( cs(0,0) !=  0 || cs(0,1) != 1 ||
+             cs(1,0) != -3 || cs(1,1) != 0 ||
+             cs(2,0) !=  5 || cs(2,1) != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator access failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs << "\n"
+                << "   Expected result:\n(  0 1 )\n( -3 0 )\n(  5 4 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *cs.begin( 1UL ) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *cs.begin( 1UL ) << "\n"
+                << "   Expected result: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         std::array<int,1UL> indices{ 2UL };
+
+         SMT  sm1 = blaze::submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
+         auto cs  = blaze::columns( sm1, indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds column selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << cs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Row-major matrix tests (lambda expression)
+   //=====================================================================================
+
+   {
+      test_ = "Row-major columns() function (lambda expression)";
+
+      initialize();
+
+      {
+         SMT  sm1 = blaze::submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
+         auto cs  = blaze::columns( sm1, []( size_t i ){ return 1UL-i; }, 2UL );
+
+         if( cs(0,0) !=  0 || cs(0,1) != 1 ||
+             cs(1,0) != -3 || cs(1,1) != 0 ||
+             cs(2,0) !=  5 || cs(2,1) != 4 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator access failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs << "\n"
+                << "   Expected result:\n(  0 1 )\n( -3 0 )\n(  5 4 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *cs.begin( 1UL ) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *cs.begin( 1UL ) << "\n"
+                << "   Expected result: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         SMT  sm1 = blaze::submatrix( mat_, 1UL, 1UL, 3UL, 2UL );
+         auto cs  = blaze::columns( sm1, []( size_t ){ return 2UL; }, 1UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds column selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << cs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests (initializer_list)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major columns() function (initializer_list)";
 
       initialize();
 
@@ -6086,6 +6400,110 @@ void DenseUnalignedTest::testColumns()
       try {
          OSMT sm1 = blaze::submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
          auto cs  = blaze::columns( sm1, { 3UL } );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds column selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << cs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests (std::array)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major columns() function (std::array)";
+
+      initialize();
+
+      {
+         std::array<int,2UL> indices{ 1UL, 0UL };
+
+         OSMT sm1 = blaze::submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
+         auto cs  = blaze::columns( sm1, indices );
+
+         if( cs(0,0) !=  0 || cs(0,1) != 1 ||
+             cs(1,0) != -3 || cs(1,1) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator access failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs << "\n"
+                << "   Expected result:\n(  0 1 )\n( -3 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *cs.begin( 1UL ) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *cs.begin( 1UL ) << "\n"
+                << "   Expected result: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         std::array<int,1UL> indices{ 3UL };
+
+         OSMT sm1 = blaze::submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
+         auto cs  = blaze::columns( sm1, indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds column selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << cs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests (lambda expression)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major columns() function (lambda expression)";
+
+      initialize();
+
+      {
+         OSMT sm1 = blaze::submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
+         auto cs  = blaze::columns( sm1, []( size_t i ){ return 1UL-i; }, 2UL );
+
+         if( cs(0,0) !=  0 || cs(0,1) != 1 ||
+             cs(1,0) != -3 || cs(1,1) != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator access failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs << "\n"
+                << "   Expected result:\n(  0 1 )\n( -3 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *cs.begin( 1UL ) != 1 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *cs.begin( 1UL ) << "\n"
+                << "   Expected result: 1\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         OSMT sm1 = blaze::submatrix( tmat_, 1UL, 1UL, 2UL, 3UL );
+         auto cs  = blaze::columns( sm1, []( size_t ){ return 3UL; }, 1UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"

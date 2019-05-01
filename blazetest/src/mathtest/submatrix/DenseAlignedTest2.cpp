@@ -4550,11 +4550,11 @@ void DenseAlignedTest::testRows()
 
 
    //=====================================================================================
-   // Row-major matrix tests
+   // Row-major matrix tests (initializer_list)
    //=====================================================================================
 
    {
-      test_ = "Row-major rows() function";
+      test_ = "Row-major rows() function (initializer_list)";
 
       initialize();
 
@@ -4611,11 +4611,137 @@ void DenseAlignedTest::testRows()
 
 
    //=====================================================================================
-   // Column-major matrix tests
+   // Row-major matrix tests (std::array)
    //=====================================================================================
 
    {
-      test_ = "Column-major rows() function";
+      test_ = "Row-major rows() function (std::array)";
+
+      initialize();
+
+      {
+         std::array<int,4UL> indices{ 0UL, 2UL, 4UL, 6UL };
+
+         ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
+         USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
+         auto rs1 = rows( sm1, indices );
+         auto rs2 = rows( sm2, indices );
+
+         if( rs1 != rs2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Rows function failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs1 << "\n"
+                << "   Expected result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( rs1(1,1) != rs2(1,1) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << rs1(1,1) << "\n"
+                << "   Expected result: " << rs2(1,1) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *rs1.begin( 1UL ) != *rs2.begin( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *rs1.begin( 1UL ) << "\n"
+                << "   Expected result: " << *rs2.begin( 1UL ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         std::array<int,1UL> indices{ 8UL };
+
+         ASMT sm1 = submatrix<aligned>( mat1_, 8UL, 16UL, 8UL, 16UL );
+         auto rs  = rows( sm1, indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds row selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << rs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Row-major matrix tests (lambda expression)
+   //=====================================================================================
+
+   {
+      test_ = "Row-major rows() function (lambda expression)";
+
+      initialize();
+
+      {
+         ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
+         USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
+         auto rs1 = rows( sm1, []( size_t i ){ return i*2UL; }, 4UL );
+         auto rs2 = rows( sm2, []( size_t i ){ return i*2UL; }, 4UL );
+
+         if( rs1 != rs2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Rows function failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs1 << "\n"
+                << "   Expected result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( rs1(1,1) != rs2(1,1) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << rs1(1,1) << "\n"
+                << "   Expected result: " << rs2(1,1) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *rs1.begin( 1UL ) != *rs2.begin( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *rs1.begin( 1UL ) << "\n"
+                << "   Expected result: " << *rs2.begin( 1UL ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         ASMT sm1 = submatrix<aligned>( mat1_, 8UL, 16UL, 8UL, 16UL );
+         auto rs  = rows( sm1, []( size_t ){ return 8UL; }, 1UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds row selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << rs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests (initializer_list)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major rows() function (initializer_list)";
 
       initialize();
 
@@ -4659,6 +4785,132 @@ void DenseAlignedTest::testRows()
       try {
          AOSMT sm1   = submatrix<aligned>( tmat1_, 16UL, 8UL, 16UL, 8UL );
          auto  row16 = rows( sm1, { 16UL } );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds row selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << row16 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests (std::array)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major rows() function (std::array)";
+
+      initialize();
+
+      {
+         std::array<int,4UL> indices{ 0UL, 2UL, 4UL, 6UL };
+
+         AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
+         UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+         auto  rs1 = rows( sm1, indices );
+         auto  rs2 = rows( sm2, indices );
+
+         if( rs1 != rs2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Rows function failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs1 << "\n"
+                << "   Expected result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( rs1(1,1) != rs2(1,1) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << rs1(1,1) << "\n"
+                << "   Expected result: " << rs2(1,1) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *rs1.begin( 1UL ) != *rs2.begin( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *rs1.begin( 1UL ) << "\n"
+                << "   Expected result: " << *rs2.begin( 1UL ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         std::array<int,1UL> indices{ 16UL };
+
+         AOSMT sm1   = submatrix<aligned>( tmat1_, 16UL, 8UL, 16UL, 8UL );
+         auto  row16 = rows( sm1, indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds row selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << row16 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests (lambda expression)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major rows() function (lambda expression)";
+
+      initialize();
+
+      {
+         AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
+         UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+         auto  rs1 = rows( sm1, []( size_t i ){ return i*2UL; }, 4UL );
+         auto  rs2 = rows( sm2, []( size_t i ){ return i*2UL; }, 4UL );
+
+         if( rs1 != rs2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Rows function failed\n"
+                << " Details:\n"
+                << "   Result:\n" << rs1 << "\n"
+                << "   Expected result:\n" << rs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( rs1(1,1) != rs2(1,1) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << rs1(1,1) << "\n"
+                << "   Expected result: " << rs2(1,1) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *rs1.begin( 1UL ) != *rs2.begin( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *rs1.begin( 1UL ) << "\n"
+                << "   Expected result: " << *rs2.begin( 1UL ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         AOSMT sm1   = submatrix<aligned>( tmat1_, 16UL, 8UL, 16UL, 8UL );
+         auto  row16 = rows( sm1, []( size_t ){ return 16UL; }, 1UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -4832,11 +5084,11 @@ void DenseAlignedTest::testColumns()
 
 
    //=====================================================================================
-   // Row-major matrix tests
+   // Row-major matrix tests (initializer_list)
    //=====================================================================================
 
    {
-      test_ = "Row-major columns() function";
+      test_ = "Row-major columns() function (initializer_list)";
 
       initialize();
 
@@ -4893,11 +5145,137 @@ void DenseAlignedTest::testColumns()
 
 
    //=====================================================================================
-   // Column-major matrix tests
+   // Row-major matrix tests (std::array)
    //=====================================================================================
 
    {
-      test_ = "Column-major columns() function";
+      test_ = "Row-major columns() function (std::array)";
+
+      initialize();
+
+      {
+         std::array<int,4UL> indices{ 0UL, 2UL, 4UL, 6UL };
+
+         ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
+         USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
+         auto cs1 = columns( sm1, indices );
+         auto cs2 = columns( sm2, indices );
+
+         if( cs1 != cs2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Rows function failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs1 << "\n"
+                << "   Expected result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( cs1(1,1) != cs2(1,1) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << cs1(1,1) << "\n"
+                << "   Expected result: " << cs2(1,1) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *cs1.begin( 1UL ) != *cs2.begin( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *cs1.begin( 1UL ) << "\n"
+                << "   Expected result: " << *cs2.begin( 1UL ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         std::array<int,1UL> indices{ 16UL };
+
+         ASMT sm1 = submatrix<aligned>( mat1_, 8UL, 16UL, 8UL, 16UL );
+         auto cs  = columns( sm1, indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds column selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << cs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Row-major matrix tests (lambda expression)
+   //=====================================================================================
+
+   {
+      test_ = "Row-major columns() function (lambda expression)";
+
+      initialize();
+
+      {
+         ASMT sm1 = submatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
+         USMT sm2 = submatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
+         auto cs1 = columns( sm1, []( size_t i ){ return i*2UL; }, 4UL );
+         auto cs2 = columns( sm2, []( size_t i ){ return i*2UL; }, 4UL );
+
+         if( cs1 != cs2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Rows function failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs1 << "\n"
+                << "   Expected result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( cs1(1,1) != cs2(1,1) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << cs1(1,1) << "\n"
+                << "   Expected result: " << cs2(1,1) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *cs1.begin( 1UL ) != *cs2.begin( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *cs1.begin( 1UL ) << "\n"
+                << "   Expected result: " << *cs2.begin( 1UL ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         ASMT sm1 = submatrix<aligned>( mat1_, 8UL, 16UL, 8UL, 16UL );
+         auto cs  = columns( sm1, []( size_t ){ return 16UL; }, 1UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds column selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << cs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests (initializer_list)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major columns() function (initializer_list)";
 
       initialize();
 
@@ -4941,6 +5319,132 @@ void DenseAlignedTest::testColumns()
       try {
          AOSMT sm1 = submatrix<aligned>( tmat1_, 16UL, 8UL, 16UL, 8UL );
          auto cs  = columns( sm1, { 8UL } );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds column selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << cs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests (std::array)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major columns() function (std::array)";
+
+      initialize();
+
+      {
+         std::array<int,4UL> indices{ 0UL, 2UL, 4UL, 6UL };
+
+         AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
+         UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+         auto cs1 = columns( sm1, indices );
+         auto cs2 = columns( sm2, indices );
+
+         if( cs1 != cs2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Rows function failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs1 << "\n"
+                << "   Expected result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( cs1(1,1) != cs2(1,1) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << cs1(1,1) << "\n"
+                << "   Expected result: " << cs2(1,1) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *cs1.begin( 1UL ) != *cs2.begin( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *cs1.begin( 1UL ) << "\n"
+                << "   Expected result: " << *cs2.begin( 1UL ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         std::array<int,1UL> indices{ 8UL };
+
+         AOSMT sm1 = submatrix<aligned>( tmat1_, 16UL, 8UL, 16UL, 8UL );
+         auto cs  = columns( sm1, indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds column selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << cs << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests (lambda expression)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major columns() function (lambda expression)";
+
+      initialize();
+
+      {
+         AOSMT sm1 = submatrix<aligned>  ( tmat1_, 16UL, 8UL, 16UL, 8UL );
+         UOSMT sm2 = submatrix<unaligned>( tmat2_, 16UL, 8UL, 16UL, 8UL );
+         auto cs1 = columns( sm1, []( size_t i ){ return i*2UL; }, 4UL );
+         auto cs2 = columns( sm2, []( size_t i ){ return i*2UL; }, 4UL );
+
+         if( cs1 != cs2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Rows function failed\n"
+                << " Details:\n"
+                << "   Result:\n" << cs1 << "\n"
+                << "   Expected result:\n" << cs2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( cs1(1,1) != cs2(1,1) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Function call operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << cs1(1,1) << "\n"
+                << "   Expected result: " << cs2(1,1) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *cs1.begin( 1UL ) != *cs2.begin( 1UL ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *cs1.begin( 1UL ) << "\n"
+                << "   Expected result: " << *cs2.begin( 1UL ) << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         AOSMT sm1 = submatrix<aligned>( tmat1_, 16UL, 8UL, 16UL, 8UL );
+         auto cs  = columns( sm1, []( size_t ){ return 8UL; }, 1UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
