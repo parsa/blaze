@@ -570,6 +570,9 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = VT::smpAssignable;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -2706,6 +2709,9 @@ class Subvector<VT,aligned,TF,true,CSAs...>
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = VT::smpAssignable;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -4803,6 +4809,9 @@ class Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = false;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -4958,6 +4967,9 @@ class Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = false;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -5113,6 +5125,9 @@ class Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = false;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -5268,6 +5283,9 @@ class Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = false;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

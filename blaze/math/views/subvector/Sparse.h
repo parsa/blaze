@@ -423,6 +423,9 @@ class Subvector<VT,AF,TF,false,CSAs...>
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = VT::smpAssignable;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************

@@ -61,7 +61,7 @@ namespace blaze {
 // number of compile time subvector arguments.
 */
 template< size_t... CSAs >  // Compile time subvector arguments
-struct SubvectorData
+class SubvectorData
 {};
 //*************************************************************************************************
 
@@ -84,9 +84,18 @@ struct SubvectorData
 // compile time subvector arguments.
 */
 template<>
-struct SubvectorData<>
+class SubvectorData<>
 {
  public:
+   //**Compile time flags**************************************************************************
+   //! Compilation flag for compile time optimization.
+   /*! The \a compileTimeArgs compilation flag indicates whether the view has been created by
+       means of compile time arguments and whether these arguments can be queried at compile
+       time. In that case, the \a compileTimeArgs compilation flag is set to \a true, otherwise
+       it is set to \a false. */
+   static constexpr bool compileTimeArgs = false;
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -198,9 +207,18 @@ inline size_t SubvectorData<>::size() const noexcept
 */
 template< size_t I    // Index of the first element
         , size_t N >  // Number of elements
-struct SubvectorData<I,N>
+class SubvectorData<I,N>
 {
  public:
+   //**Compile time flags**************************************************************************
+   //! Compilation flag for compile time optimization.
+   /*! The \a compileTimeArgs compilation flag indicates whether the view has been created by
+       means of compile time arguments and whether these arguments can be queried at compile
+       time. In that case, the \a compileTimeArgs compilation flag is set to \a true, otherwise
+       it is set to \a false. */
+   static constexpr bool compileTimeArgs = true;
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
