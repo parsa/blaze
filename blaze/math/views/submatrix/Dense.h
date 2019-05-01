@@ -597,6 +597,9 @@ class Submatrix<MT,unaligned,false,true,CSAs...>
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = MT::smpAssignable;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -3879,6 +3882,9 @@ class Submatrix<MT,unaligned,true,true,CSAs...>
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = MT::smpAssignable;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -6706,6 +6712,9 @@ class Submatrix<MT,aligned,false,true,CSAs...>
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = MT::smpAssignable;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -9569,6 +9578,9 @@ class Submatrix<MT,aligned,true,true,CSAs...>
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = MT::smpAssignable;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
