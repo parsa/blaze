@@ -7944,11 +7944,11 @@ void SparseGeneralTest::testSubvector()
 void SparseGeneralTest::testElements()
 {
    //=====================================================================================
-   // Row-major matrix tests
+   // Row-major matrix tests (initializer_list)
    //=====================================================================================
 
    {
-      test_ = "Row-major elements() function";
+      test_ = "Row-major elements() function (initializer_list)";
 
       initialize();
 
@@ -7993,11 +7993,113 @@ void SparseGeneralTest::testElements()
 
 
    //=====================================================================================
-   // Column-major matrix tests
+   // Row-major matrix tests (std::array)
    //=====================================================================================
 
    {
-      test_ = "Column-major elements() function";
+      test_ = "Row-major elements() function (std::array)";
+
+      initialize();
+
+      {
+         std::array<int,2UL> indices{ 2UL, 0UL };
+
+         CT   col2 = blaze::column( mat_, 2UL );
+         auto e    = blaze::elements( col2, indices );
+
+         if( e[1] != -2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e[1] << "\n"
+                << "   Expected result: -2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( e.begin()->value() != -3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e.begin()->value() << "\n"
+                << "   Expected result: -3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         std::array<int,1UL> indices{ 4UL };
+
+         CT   col2 = blaze::column( mat_, 2UL );
+         auto e    = blaze::elements( col2, indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds element selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << e << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Row-major matrix tests (lambda expression)
+   //=====================================================================================
+
+   {
+      test_ = "Row-major elements() function (lambda expression)";
+
+      initialize();
+
+      {
+         CT   col2 = blaze::column( mat_, 2UL );
+         auto e    = blaze::elements( col2, []( size_t i ){ return 2UL-2UL*i; }, 2UL );
+
+         if( e[1] != -2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e[1] << "\n"
+                << "   Expected result: -2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( e.begin()->value() != -3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e.begin()->value() << "\n"
+                << "   Expected result: -3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         CT   col2 = blaze::column( mat_, 2UL );
+         auto e    = blaze::elements( col2, []( size_t ){ return 4UL; }, 1UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds element selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << e << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests (initializer_list)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major elements() function (initializer_list)";
 
       initialize();
 
@@ -8029,6 +8131,108 @@ void SparseGeneralTest::testElements()
       try {
          OCT  col2 = blaze::column( tmat_, 2UL );
          auto e    = blaze::elements( col2, { 4UL } );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds element selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << e << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests (std::array)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major elements() function (std::array)";
+
+      initialize();
+
+      {
+         std::array<int,2UL> indices{ 2UL, 0UL };
+
+         OCT  col2 = blaze::column( tmat_, 2UL );
+         auto e    = blaze::elements( col2, indices );
+
+         if( e[1] != -2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e[1] << "\n"
+                << "   Expected result: -2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( e.begin()->value() != -3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e.begin()->value() << "\n"
+                << "   Expected result: -3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         std::array<int,1UL> indices{ 4UL };
+
+         OCT  col2 = blaze::column( tmat_, 2UL );
+         auto e    = blaze::elements( col2, indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds element selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << e << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests (lambda expression)
+   //=====================================================================================
+
+   {
+      test_ = "Column-major elements() function (lambda expression)";
+
+      initialize();
+
+      {
+         OCT  col2 = blaze::column( tmat_, 2UL );
+         auto e    = blaze::elements( col2, []( size_t i ){ return 2UL-2UL*i; }, 2UL );
+
+         if( e[1] != -2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e[1] << "\n"
+                << "   Expected result: -2\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( e.begin()->value() != -3 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e.begin()->value() << "\n"
+                << "   Expected result: -3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         OCT  col2 = blaze::column( tmat_, 2UL );
+         auto e    = blaze::elements( col2, []( size_t ){ return 4UL; }, 1UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
