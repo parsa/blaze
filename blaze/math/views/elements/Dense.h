@@ -462,6 +462,9 @@ class Elements<VT,TF,true,CEAs...>
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = VT::smpAssignable;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -1962,6 +1965,9 @@ class Elements< DVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = false;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -2121,6 +2127,9 @@ class Elements< DVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = false;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -2280,6 +2289,9 @@ class Elements< SVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = false;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -2439,6 +2451,9 @@ class Elements< SVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = false;
+
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool compileTimeArgs = DataType::compileTimeArgs;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************

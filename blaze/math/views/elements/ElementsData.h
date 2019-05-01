@@ -67,7 +67,7 @@ namespace blaze {
 // template to the requirements of multiple compile time element arguments.
 */
 template< typename... CEAs >  // Compile time element arguments
-struct ElementsData
+class ElementsData
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -91,7 +91,7 @@ struct ElementsData
 */
 template< size_t I        // First element index
         , size_t... Is >  // Remaining element indices
-struct ElementsData< index_sequence<I,Is...> >
+class ElementsData< index_sequence<I,Is...> >
 {
  protected:
    //**Compile time flags**************************************************************************
@@ -99,6 +99,15 @@ struct ElementsData< index_sequence<I,Is...> >
    //**********************************************************************************************
 
  public:
+   //**Compile time flags**************************************************************************
+   //! Compilation flag for compile time optimization.
+   /*! The \a compileTimeArgs compilation flag indicates whether the view has been created by
+       means of compile time arguments and whether these arguments can be queried at compile
+       time. In that case, the \a compileTimeArgs compilation flag is set to \a true, otherwise
+       it is set to \a false. */
+   static constexpr bool compileTimeArgs = true;
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -245,7 +254,7 @@ inline constexpr size_t ElementsData< index_sequence<I,Is...> >::size() noexcept
 // producing callables.
 */
 template< typename P >  // Type of the index producer
-struct ElementsData<P>
+class ElementsData<P>
 {
  protected:
    //**Compile time flags**************************************************************************
@@ -253,6 +262,15 @@ struct ElementsData<P>
    //**********************************************************************************************
 
  public:
+   //**Compile time flags**************************************************************************
+   //! Compilation flag for compile time optimization.
+   /*! The \a compileTimeArgs compilation flag indicates whether the view has been created by
+       means of compile time arguments and whether these arguments can be queried at compile
+       time. In that case, the \a compileTimeArgs compilation flag is set to \a true, otherwise
+       it is set to \a false. */
+   static constexpr bool compileTimeArgs = false;
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -385,7 +403,7 @@ inline size_t ElementsData<P>::size() const noexcept
 // compile time element arguments.
 */
 template<>
-struct ElementsData<>
+class ElementsData<>
 {
  protected:
    //**Compile time flags**************************************************************************
@@ -393,6 +411,15 @@ struct ElementsData<>
    //**********************************************************************************************
 
  public:
+   //**Compile time flags**************************************************************************
+   //! Compilation flag for compile time optimization.
+   /*! The \a compileTimeArgs compilation flag indicates whether the view has been created by
+       means of compile time arguments and whether these arguments can be queried at compile
+       time. In that case, the \a compileTimeArgs compilation flag is set to \a true, otherwise
+       it is set to \a false. */
+   static constexpr bool compileTimeArgs = false;
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
