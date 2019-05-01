@@ -67,7 +67,7 @@ namespace blaze {
 // template to the requirements of multiple compile time column arguments.
 */
 template< typename... CCAs >  // Compile time column arguments
-struct ColumnsData
+class ColumnsData
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -91,7 +91,7 @@ struct ColumnsData
 */
 template< size_t I        // First column index
         , size_t... Is >  // Remaining column indices
-struct ColumnsData< index_sequence<I,Is...> >
+class ColumnsData< index_sequence<I,Is...> >
 {
  protected:
    //**Compile time flags**************************************************************************
@@ -99,6 +99,15 @@ struct ColumnsData< index_sequence<I,Is...> >
    //**********************************************************************************************
 
  public:
+   //**Compile time flags**************************************************************************
+   //! Compilation flag for compile time optimization.
+   /*! The \a compileTimeArgs compilation flag indicates whether the view has been created by
+       means of compile time arguments and whether these arguments can be queried at compile
+       time. In that case, the \a compileTimeArgs compilation flag is set to \a true, otherwise
+       it is set to \a false. */
+   static constexpr bool compileTimeArgs = true;
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -245,7 +254,7 @@ inline constexpr size_t ColumnsData< index_sequence<I,Is...> >::columns() noexce
 // producing callables.
 */
 template< typename P >  // Type of the index producer
-struct ColumnsData<P>
+class ColumnsData<P>
 {
  protected:
    //**Compile time flags**************************************************************************
@@ -253,6 +262,15 @@ struct ColumnsData<P>
    //**********************************************************************************************
 
  public:
+   //**Compile time flags**************************************************************************
+   //! Compilation flag for compile time optimization.
+   /*! The \a compileTimeArgs compilation flag indicates whether the view has been created by
+       means of compile time arguments and whether these arguments can be queried at compile
+       time. In that case, the \a compileTimeArgs compilation flag is set to \a true, otherwise
+       it is set to \a false. */
+   static constexpr bool compileTimeArgs = false;
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -385,7 +403,7 @@ inline size_t ColumnsData<P>::columns() const noexcept
 // time column arguments.
 */
 template<>
-struct ColumnsData<>
+class ColumnsData<>
 {
  protected:
    //**Compile time flags**************************************************************************
@@ -393,6 +411,15 @@ struct ColumnsData<>
    //**********************************************************************************************
 
  public:
+   //**Compile time flags**************************************************************************
+   //! Compilation flag for compile time optimization.
+   /*! The \a compileTimeArgs compilation flag indicates whether the view has been created by
+       means of compile time arguments and whether these arguments can be queried at compile
+       time. In that case, the \a compileTimeArgs compilation flag is set to \a true, otherwise
+       it is set to \a false. */
+   static constexpr bool compileTimeArgs = false;
+   //**********************************************************************************************
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
