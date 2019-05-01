@@ -3637,47 +3637,155 @@ void DenseUnalignedTest::testSubvector()
 */
 void DenseUnalignedTest::testElements()
 {
-   test_ = "elements() function";
-
-   initialize();
+   //=====================================================================================
+   // Setup via index_sequence
+   //=====================================================================================
 
    {
-      SVT sv = blaze::subvector( vec_, 1UL, 6UL );
-      auto e = blaze::elements( sv, { 4UL, 2UL, 1UL, 3UL } );
+      test_ = "elements() function (index_sequence)";
 
-      if( e[0] != 0 || e[1] != -2 || e[2] != 0 || e[3] != -3 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator access failed\n"
-             << " Details:\n"
-             << "   Result:\n" << e << "\n"
-             << "   Expected result:\n( 0 -2 0 -3 )\n";
-         throw std::runtime_error( oss.str() );
+      initialize();
+
+      {
+         SVT sv = blaze::subvector( vec_, 1UL, 6UL );
+         auto e = blaze::elements( sv, { 4UL, 3UL, 2UL, 1UL } );
+
+         if( e[0] != 0 || e[1] != -3 || e[2] != -2 || e[3] != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e << "\n"
+                << "   Expected result:\n( 0 -3 -2 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *e.begin() != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *e.begin() << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
-      if( *e.begin() != 0 ) {
+      try {
+         SVT sv = blaze::subvector( vec_, 1UL, 6UL );
+         auto e = blaze::elements( sv, { 6UL } );
+
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Iterator access failed\n"
+             << " Error: Setup of out-of-bounds element selection succeeded\n"
              << " Details:\n"
-             << "   Result: " << *e.begin() << "\n"
-             << "   Expected result: 0\n";
+             << "   Result:\n" << e << "\n";
          throw std::runtime_error( oss.str() );
       }
+      catch( std::invalid_argument& ) {}
    }
 
-   try {
-      SVT sv = blaze::subvector( vec_, 1UL, 6UL );
-      auto e = blaze::elements( sv, { 6UL } );
 
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Setup of out-of-bounds element selection succeeded\n"
-          << " Details:\n"
-          << "   Result:\n" << e << "\n";
-      throw std::runtime_error( oss.str() );
+   //=====================================================================================
+   // Setup via std::array
+   //=====================================================================================
+
+   {
+      test_ = "elements() function (std::array)";
+
+      initialize();
+
+      {
+         std::array<int,4UL> indices{ 4UL, 3UL, 2UL, 1UL };
+
+         SVT sv = blaze::subvector( vec_, 1UL, 6UL );
+         auto e = blaze::elements( sv, indices );
+
+         if( e[0] != 0 || e[1] != -3 || e[2] != -2 || e[3] != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e << "\n"
+                << "   Expected result:\n( 0 -3 -2 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *e.begin() != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *e.begin() << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         std::array<int,1UL> indices{ 6UL };
+
+         SVT sv = blaze::subvector( vec_, 1UL, 6UL );
+         auto e = blaze::elements( sv, indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds element selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << e << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
-   catch( std::invalid_argument& ) {}
+
+
+   //=====================================================================================
+   // Setup via lambda expression
+   //=====================================================================================
+
+   {
+      test_ = "elements() function (lambda expression)";
+
+      initialize();
+
+      {
+         SVT sv = blaze::subvector( vec_, 1UL, 6UL );
+         auto e = blaze::elements( sv, []( size_t i ){ return 4UL-i; }, 4UL );
+
+         if( e[0] != 0 || e[1] != -3 || e[2] != -2 || e[3] != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e << "\n"
+                << "   Expected result:\n( 0 -3 -2 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *e.begin() != 0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *e.begin() << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         SVT sv = blaze::subvector( vec_, 1UL, 6UL );
+         auto e = blaze::elements( sv, []( size_t i ){ return i+6UL; }, 1UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds element selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << e << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
 }
 //*************************************************************************************************
 

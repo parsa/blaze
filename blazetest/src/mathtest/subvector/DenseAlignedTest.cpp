@@ -3043,60 +3043,194 @@ void DenseAlignedTest::testElements()
    using blaze::unaligned;
 
 
-   test_ = "elements() function";
-
-   initialize();
+   //=====================================================================================
+   // Setup via index_sequence
+   //=====================================================================================
 
    {
-      ASVT sv1 = subvector<aligned>( vec1_, 16UL, 32UL );
-      auto e1 = elements( sv1, { 8UL, 16UL } );
+      test_ = "elements() function (index_sequence)";
 
-      USVT sv2 = subvector<unaligned>( vec2_, 16UL, 32UL );
-      auto e2 = elements( sv2, { 8UL, 16UL } );
+      initialize();
 
-      if( e1 != e2 || vec1_ != vec2_ ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Elements function failed\n"
-             << " Details:\n"
-             << "   Result:\n" << e1 << "\n"
-             << "   Expected result:\n" << e2 << "\n";
-         throw std::runtime_error( oss.str() );
+      {
+         ASVT sv1 = subvector<aligned>( vec1_, 16UL, 32UL );
+         auto e1 = elements( sv1, { 8UL, 16UL } );
+
+         USVT sv2 = subvector<unaligned>( vec2_, 16UL, 32UL );
+         auto e2 = elements( sv2, { 8UL, 16UL } );
+
+         if( e1 != e2 || vec1_ != vec2_ ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Elements function failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e1 << "\n"
+                << "   Expected result:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( e1[1] != e2[1] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e1[1] << "\n"
+                << "   Expected result: " << e2[1] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *e1.begin() != *e2.begin() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *e1.begin() << "\n"
+                << "   Expected result: " << *e2.begin() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
 
-      if( e1[1] != e2[1] ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Subscript operator access failed\n"
-             << " Details:\n"
-             << "   Result: " << e1[1] << "\n"
-             << "   Expected result: " << e2[1] << "\n";
-         throw std::runtime_error( oss.str() );
-      }
+      try {
+         ASVT sv = subvector<aligned>( vec1_, 16UL, 32UL );
+         auto e = elements( sv, { 8UL, 32UL } );
 
-      if( *e1.begin() != *e2.begin() ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Iterator access failed\n"
+             << " Error: Setup of out-of-bounds element selection succeeded\n"
              << " Details:\n"
-             << "   Result: " << *e1.begin() << "\n"
-             << "   Expected result: " << *e2.begin() << "\n";
+             << "   Result:\n" << e << "\n";
          throw std::runtime_error( oss.str() );
       }
+      catch( std::invalid_argument& ) {}
    }
 
-   try {
-      ASVT sv = subvector<aligned>( vec1_, 16UL, 32UL );
-      auto e = elements( sv, { 8UL, 32UL } );
 
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Setup of out-of-bounds element selection succeeded\n"
-          << " Details:\n"
-          << "   Result:\n" << e << "\n";
-      throw std::runtime_error( oss.str() );
+   //=====================================================================================
+   // Setup via std::array
+   //=====================================================================================
+
+   {
+      test_ = "elements() function (std::array)";
+
+      initialize();
+
+      {
+         std::array<int,2UL> indices{ 8UL, 16UL };
+
+         ASVT sv1 = subvector<aligned>( vec1_, 16UL, 32UL );
+         auto e1 = elements( sv1, indices );
+
+         USVT sv2 = subvector<unaligned>( vec2_, 16UL, 32UL );
+         auto e2 = elements( sv2, indices );
+
+         if( e1 != e2 || vec1_ != vec2_ ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Elements function failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e1 << "\n"
+                << "   Expected result:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( e1[1] != e2[1] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e1[1] << "\n"
+                << "   Expected result: " << e2[1] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *e1.begin() != *e2.begin() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *e1.begin() << "\n"
+                << "   Expected result: " << *e2.begin() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         std::array<int,2UL> indices{ 8UL, 32UL };
+
+         ASVT sv = subvector<aligned>( vec1_, 16UL, 32UL );
+         auto e = elements( sv, indices );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds element selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << e << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
-   catch( std::invalid_argument& ) {}
+
+
+   //=====================================================================================
+   // Setup via lambda expression
+   //=====================================================================================
+
+   {
+      test_ = "elements() function (lambda expression)";
+
+      initialize();
+
+      {
+         ASVT sv1 = subvector<aligned>( vec1_, 16UL, 32UL );
+         auto e1 = elements( sv1, []( size_t i ){ return i*8UL+8UL; }, 2UL );
+
+         USVT sv2 = subvector<unaligned>( vec2_, 16UL, 32UL );
+         auto e2 = elements( sv2, []( size_t i ){ return i*8UL+8UL; }, 2UL );
+
+         if( e1 != e2 || vec1_ != vec2_ ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Elements function failed\n"
+                << " Details:\n"
+                << "   Result:\n" << e1 << "\n"
+                << "   Expected result:\n" << e2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( e1[1] != e2[1] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << e1[1] << "\n"
+                << "   Expected result: " << e2[1] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *e1.begin() != *e2.begin() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *e1.begin() << "\n"
+                << "   Expected result: " << *e2.begin() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         ASVT sv = subvector<aligned>( vec1_, 16UL, 32UL );
+         auto e = elements( sv, []( size_t i ){ return i*24UL+8UL; }, 2UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds element selection succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << e << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
 }
 //*************************************************************************************************
 
