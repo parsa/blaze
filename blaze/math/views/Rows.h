@@ -808,7 +808,7 @@ inline decltype(auto) rows( MT&& matrix, const std::pair<T1,T2>& pair, RRAs... a
 // This function returns an expression representing the specified selection of rows on the given
 // matrix/matrix addition.
 */
-template< typename... CRAs  // Compile time row arguments
+template< size_t... CRAs    // Compile time row arguments
         , typename MT       // Matrix base type of the expression
         , typename... RRAs  // Runtime row arguments
         , EnableIf_t< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) >* = nullptr >
@@ -835,7 +835,7 @@ inline decltype(auto) rows( const MatMatAddExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // matrix/matrix subtraction.
 */
-template< typename... CRAs  // Compile time row arguments
+template< size_t... CRAs    // Compile time row arguments
         , typename MT       // Matrix base type of the expression
         , typename... RRAs  // Runtime row arguments
         , EnableIf_t< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) >* = nullptr >
@@ -862,7 +862,7 @@ inline decltype(auto) rows( const MatMatSubExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // Schur product.
 */
-template< typename... CRAs  // Compile time row arguments
+template< size_t... CRAs    // Compile time row arguments
         , typename MT       // Matrix base type of the expression
         , typename... RRAs  // Runtime row arguments
         , EnableIf_t< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) >* = nullptr >
@@ -889,7 +889,7 @@ inline decltype(auto) rows( const SchurExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // matrix/matrix multiplication.
 */
-template< typename... CRAs  // Compile time row arguments
+template< size_t... CRAs    // Compile time row arguments
         , typename MT       // Matrix base type of the expression
         , typename... RRAs  // Runtime row arguments
         , EnableIf_t< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) >* = nullptr >
@@ -915,7 +915,7 @@ inline decltype(auto) rows( const MatMatMultExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // outer product.
 */
-template< typename... CRAs  // Compile time row arguments
+template< size_t... CRAs    // Compile time row arguments
         , typename MT       // Matrix base type of the expression
         , typename... RRAs  // Runtime row arguments
         , EnableIf_t< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) >* = nullptr >
@@ -941,7 +941,7 @@ inline decltype(auto) rows( const VecTVecMultExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // matrix/scalar multiplication.
 */
-template< typename... CRAs  // Compile time row arguments
+template< size_t... CRAs    // Compile time row arguments
         , typename MT       // Matrix base type of the expression
         , typename... RRAs  // Runtime row arguments
         , EnableIf_t< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) >* = nullptr >
@@ -967,7 +967,7 @@ inline decltype(auto) rows( const MatScalarMultExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // matrix/scalar division.
 */
-template< typename... CRAs  // Compile time row arguments
+template< size_t... CRAs    // Compile time row arguments
         , typename MT       // Matrix base type of the expression
         , typename... RRAs  // Runtime row arguments
         , EnableIf_t< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) >* = nullptr >
@@ -993,7 +993,7 @@ inline decltype(auto) rows( const MatScalarDivExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // unary matrix map operation.
 */
-template< typename... CRAs  // Compile time row arguments
+template< size_t... CRAs    // Compile time row arguments
         , typename MT       // Matrix base type of the expression
         , typename... RRAs  // Runtime row arguments
         , EnableIf_t< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) >* = nullptr >
@@ -1019,7 +1019,7 @@ inline decltype(auto) rows( const MatMapExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // binary matrix map operation.
 */
-template< typename... CRAs  // Compile time row arguments
+template< size_t... CRAs    // Compile time row arguments
         , typename MT       // Matrix base type of the expression
         , typename... RRAs  // Runtime row arguments
         , EnableIf_t< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) >* = nullptr >
@@ -1047,7 +1047,7 @@ inline decltype(auto) rows( const MatMatMapExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // matrix evaluation operation.
 */
-template< typename... CRAs  // Compile time row arguments
+template< size_t... CRAs    // Compile time row arguments
         , typename MT       // Matrix base type of the expression
         , typename... RRAs  // Runtime row arguments
         , EnableIf_t< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) >* = nullptr >
@@ -1073,7 +1073,7 @@ inline decltype(auto) rows( const MatEvalExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // matrix serialization operation.
 */
-template< typename... CRAs  // Compile time row arguments
+template< size_t... CRAs    // Compile time row arguments
         , typename MT       // Matrix base type of the expression
         , typename... RRAs  // Runtime row arguments
         , EnableIf_t< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) >* = nullptr >
@@ -1099,7 +1099,7 @@ inline decltype(auto) rows( const MatSerialExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // matrix declaration operation.
 */
-template< typename... CRAs  // Compile time row arguments
+template< size_t... CRAs    // Compile time row arguments
         , typename MT       // Matrix base type of the expression
         , typename... RRAs  // Runtime row arguments
         , EnableIf_t< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) >* = nullptr >
@@ -1125,7 +1125,7 @@ inline decltype(auto) rows( const DeclExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows on the given
 // matrix transpose operation.
 */
-template< typename... CRAs  // Compile time row arguments
+template< size_t... CRAs    // Compile time row arguments
         , typename MT       // Matrix base type of the expression
         , typename... RRAs  // Runtime row arguments
         , EnableIf_t< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) >* = nullptr >
@@ -1151,7 +1151,7 @@ inline decltype(auto) rows( const MatTransExpr<MT>& matrix, RRAs... args )
 // This function returns an expression representing the specified selection of rows of the given
 // row-major vector expansion operation.
 */
-template< typename... CRAs  // Compile time row arguments
+template< size_t... CRAs    // Compile time row arguments
         , typename MT       // Matrix base type of the expression
         , size_t... CEAs    // Compile time expansion arguments
         , typename... RRAs  // Runtime row arguments
@@ -1175,25 +1175,26 @@ inline decltype(auto) rows( const VecExpandExpr<MT,CEAs...>& matrix, RRAs... arg
 // \ingroup rows
 //
 // \param matrix The constant vector expansion operation.
+// \param indices Pointer to the first index of the selected rows or callable producing the indices.
+// \param n The total number of indices.
 // \param args The runtime row arguments.
 // \return void
 //
 // This function returns an expression representing the specified selection of rows of the given
 // row-major vector expansion operation.
 */
-template< typename... CRAs  // Compile time row arguments
-        , typename MT       // Matrix base type of the expression
+template< typename MT       // Matrix base type of the expression
         , size_t... CEAs    // Compile time expansion arguments
+        , typename T        // Type of the row indices or index producer
         , typename... RRAs  // Runtime row arguments
-        , EnableIf_t< ( sizeof...( CRAs ) == 0UL ) &&
-                      IsRowMajorMatrix_v<MT> >* = nullptr >
-inline decltype(auto) rows( const VecExpandExpr<MT,CEAs...>& matrix, RRAs... args )
+        , EnableIf_t< IsRowMajorMatrix_v<MT> >* = nullptr >
+inline decltype(auto) rows( const VecExpandExpr<MT,CEAs...>& matrix, T indices, size_t n, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   const RowsData<CRAs...> rd( args... );
+   MAYBE_UNUSED( indices, args... );
 
-   return expand( (~matrix).operand(), rd.rows() );
+   return expand( (~matrix).operand(), n );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1211,7 +1212,7 @@ inline decltype(auto) rows( const VecExpandExpr<MT,CEAs...>& matrix, RRAs... arg
 // This function returns an expression representing the specified selection of rows of the given
 // column-major vector expansion operation.
 */
-template< typename... CRAs  // Compile time row arguments
+template< size_t... CRAs    // Compile time row arguments
         , typename MT       // Matrix base type of the expression
         , size_t... CEAs    // Compile time expansion arguments
         , typename... RRAs  // Runtime row arguments
