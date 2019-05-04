@@ -1930,8 +1930,8 @@ template< typename VT1        // Type of the left-hand side dense vector
         , typename VT2        // Type of the right-hand side dense vector
         , bool TF             // Transpose flag
         , typename... CEAs >  // Compile time element arguments
-class Elements< DVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
-   : public View< DenseVector< Elements< DVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >, TF > >
+class Elements< const DVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
+   : public View< DenseVector< Elements< const DVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >, TF > >
    , private ElementsData<CEAs...>
 {
  private:
@@ -1948,7 +1948,7 @@ class Elements< DVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
  public:
    //**Type definitions****************************************************************************
    //! Type of this Elements instance.
-   using This = Elements<CPE,TF,true,CEAs...>;
+   using This = Elements<const CPE,TF,true,CEAs...>;
 
    using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
    using ViewedType    = CPE;                          //!< The type viewed by this Elements instance.
@@ -2092,8 +2092,8 @@ template< typename VT1        // Type of the left-hand side dense vector
         , typename VT2        // Type of the right-hand side sparse vector
         , bool TF             // Transpose flag
         , typename... CEAs >  // Compile time element arguments
-class Elements< DVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
-   : public View< DenseVector< Elements< DVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >, TF > >
+class Elements< const DVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
+   : public View< DenseVector< Elements< const DVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >, TF > >
    , private ElementsData<CEAs...>
 {
  private:
@@ -2110,7 +2110,7 @@ class Elements< DVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
  public:
    //**Type definitions****************************************************************************
    //! Type of this Elements instance.
-   using This = Elements<CPE,TF,true,CEAs...>;
+   using This = Elements<const CPE,TF,true,CEAs...>;
 
    using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
    using ViewedType    = CPE;                          //!< The type viewed by this Elements instance.
@@ -2254,8 +2254,8 @@ template< typename VT1        // Type of the left-hand side sparse vector
         , typename VT2        // Type of the right-hand side dense vector
         , bool TF             // Transpose flag
         , typename... CEAs >  // Compile time element arguments
-class Elements< SVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
-   : public View< DenseVector< Elements< SVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >, TF > >
+class Elements< const SVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
+   : public View< DenseVector< Elements< const SVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >, TF > >
    , private ElementsData<CEAs...>
 {
  private:
@@ -2272,7 +2272,7 @@ class Elements< SVecDVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
  public:
    //**Type definitions****************************************************************************
    //! Type of this Elements instance.
-   using This = Elements<CPE,TF,true,CEAs...>;
+   using This = Elements<const CPE,TF,true,CEAs...>;
 
    using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
    using ViewedType    = CPE;                          //!< The type viewed by this Elements instance.
@@ -2416,8 +2416,8 @@ template< typename VT1        // Type of the left-hand side sparse vector
         , typename VT2        // Type of the right-hand side sparse vector
         , bool TF             // Transpose flag
         , typename... CEAs >  // Compile time element arguments
-class Elements< SVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
-   : public View< DenseVector< Elements< SVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >, TF > >
+class Elements< const SVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
+   : public View< DenseVector< Elements< const SVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >, TF > >
    , private ElementsData<CEAs...>
 {
  private:
@@ -2434,7 +2434,7 @@ class Elements< SVecSVecCrossExpr<VT1,VT2,TF>, TF, true, CEAs... >
  public:
    //**Type definitions****************************************************************************
    //! Type of this Elements instance.
-   using This = Elements<CPE,TF,true,CEAs...>;
+   using This = Elements<const CPE,TF,true,CEAs...>;
 
    using BaseType      = DenseVector<This,TF>;         //!< Base type of this Elements instance.
    using ViewedType    = CPE;                          //!< The type viewed by this Elements instance.

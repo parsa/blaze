@@ -794,7 +794,7 @@ inline decltype(auto) elements( VT&& vector, const std::pair<T1,T2>& pair, REAs.
 // This function returns an expression representing the specified selection of elements on the
 // given vector/vector addition.
 */
-template< typename... CEAs    // Compile time element arguments
+template< size_t... CEAs      // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const VecVecAddExpr<VT>& vector, REAs... args )
@@ -820,7 +820,7 @@ inline decltype(auto) elements( const VecVecAddExpr<VT>& vector, REAs... args )
 // This function returns an expression representing the specified selection of elements on the
 // given vector/vector subtraction.
 */
-template< typename... CEAs    // Compile time element arguments
+template< size_t... CEAs      // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const VecVecSubExpr<VT>& vector, REAs... args )
@@ -846,7 +846,7 @@ inline decltype(auto) elements( const VecVecSubExpr<VT>& vector, REAs... args )
 // This function returns an expression representing the specified selection of elements on the
 // given vector/vector multiplication.
 */
-template< typename... CEAs    // Compile time element arguments
+template< size_t... CEAs      // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const VecVecMultExpr<VT>& vector, REAs... args )
@@ -872,7 +872,7 @@ inline decltype(auto) elements( const VecVecMultExpr<VT>& vector, REAs... args )
 // This function returns an expression representing the specified selection of elements on the
 // given vector/vector division.
 */
-template< typename... CEAs    // Compile time element arguments
+template< size_t... CEAs      // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const VecVecDivExpr<VT>& vector, REAs... args )
@@ -881,32 +881,6 @@ inline decltype(auto) elements( const VecVecDivExpr<VT>& vector, REAs... args )
 
    return elements<CEAs...>( (~vector).leftOperand(), args... ) /
           elements<CEAs...>( (~vector).rightOperand(), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a selection of elements on the given vector/vector cross product.
-// \ingroup elements
-//
-// \param vector The constant vector/vector cross product.
-// \param args The runtime element arguments.
-// \return View on the specified selection of elements on the cross product.
-//
-// This function returns an expression representing the specified selection of elements on the
-// given vector/vector cross product.
-*/
-template< typename... CEAs    // Compile time element arguments
-        , typename VT         // Vector base type of the expression
-        , typename... REAs >  // Runtime element arguments
-inline decltype(auto) elements( const CrossExpr<VT>& vector, REAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   using ReturnType = Elements_< VectorType_t<VT>, CEAs... >;
-   return ReturnType( ~vector, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -924,7 +898,7 @@ inline decltype(auto) elements( const CrossExpr<VT>& vector, REAs... args )
 // This function returns an expression representing the specified selection of elements on the
 // given vector/scalar multiplication.
 */
-template< typename... CEAs    // Compile time element arguments
+template< size_t... CEAs      // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const VecScalarMultExpr<VT>& vector, REAs... args )
@@ -949,7 +923,7 @@ inline decltype(auto) elements( const VecScalarMultExpr<VT>& vector, REAs... arg
 // This function returns an expression representing the specified selection of elements on the
 // given vector/scalar division.
 */
-template< typename... CEAs    // Compile time element arguments
+template< size_t... CEAs      // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const VecScalarDivExpr<VT>& vector, REAs... args )
@@ -974,7 +948,7 @@ inline decltype(auto) elements( const VecScalarDivExpr<VT>& vector, REAs... args
 // This function returns an expression representing the specified selection of elements on the
 // given unary vector map operation.
 */
-template< typename... CEAs    // Compile time element arguments
+template< size_t... CEAs      // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const VecMapExpr<VT>& vector, REAs... args )
@@ -999,7 +973,7 @@ inline decltype(auto) elements( const VecMapExpr<VT>& vector, REAs... args )
 // This function returns an expression representing the specified selection of elements on the
 // given binary vector map operation.
 */
-template< typename... CEAs    // Compile time element arguments
+template< size_t... CEAs      // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const VecVecMapExpr<VT>& vector, REAs... args )
@@ -1026,7 +1000,7 @@ inline decltype(auto) elements( const VecVecMapExpr<VT>& vector, REAs... args )
 // This function returns an expression representing the specified selection of elements on the
 // given vector evaluation operation.
 */
-template< typename... CEAs    // Compile time element arguments
+template< size_t... CEAs      // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const VecEvalExpr<VT>& vector, REAs... args )
@@ -1051,7 +1025,7 @@ inline decltype(auto) elements( const VecEvalExpr<VT>& vector, REAs... args )
 // This function returns an expression representing the specified selection of elements on the
 // given vector serialization operation.
 */
-template< typename... CEAs    // Compile time element arguments
+template< size_t... CEAs      // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const VecSerialExpr<VT>& vector, REAs... args )
@@ -1076,7 +1050,7 @@ inline decltype(auto) elements( const VecSerialExpr<VT>& vector, REAs... args )
 // This function returns an expression representing the specified selection of elements on the
 // given vector transpose operation.
 */
-template< typename... CEAs    // Compile time element arguments
+template< size_t... CEAs      // Compile time element arguments
         , typename VT         // Vector base type of the expression
         , typename... REAs >  // Runtime element arguments
 inline decltype(auto) elements( const VecTransExpr<VT>& vector, REAs... args )
