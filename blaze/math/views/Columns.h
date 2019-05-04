@@ -811,7 +811,7 @@ inline decltype(auto) columns( MT&& matrix, const std::pair<T1,T2>& pair, RRAs..
 // This function returns an expression representing the specified selection of columns on the
 // given matrix/matrix addition.
 */
-template< typename... CCAs  // Compile time column arguments
+template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -838,7 +838,7 @@ inline decltype(auto) columns( const MatMatAddExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given matrix/matrix subtraction.
 */
-template< typename... CCAs  // Compile time column arguments
+template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -865,7 +865,7 @@ inline decltype(auto) columns( const MatMatSubExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given Schur product.
 */
-template< typename... CCAs  // Compile time column arguments
+template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -892,7 +892,7 @@ inline decltype(auto) columns( const SchurExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given matrix/matrix multiplication.
 */
-template< typename... CCAs  // Compile time column arguments
+template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -918,7 +918,7 @@ inline decltype(auto) columns( const MatMatMultExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given outer product.
 */
-template< typename... CCAs  // Compile time column arguments
+template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -944,7 +944,7 @@ inline decltype(auto) columns( const VecTVecMultExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given matrix/scalar multiplication.
 */
-template< typename... CCAs  // Compile time column arguments
+template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -970,7 +970,7 @@ inline decltype(auto) columns( const MatScalarMultExpr<MT>& matrix, RCAs... args
 // This function returns an expression representing the specified selection of columns on the
 // given matrix/scalar division.
 */
-template< typename... CCAs  // Compile time column arguments
+template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -996,7 +996,7 @@ inline decltype(auto) columns( const MatScalarDivExpr<MT>& matrix, RCAs... args 
 // This function returns an expression representing the specified selection of columns on the
 // given unary matrix map operation.
 */
-template< typename... CCAs  // Compile time column arguments
+template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -1022,7 +1022,7 @@ inline decltype(auto) columns( const MatMapExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given binary matrix map operation.
 */
-template< typename... CCAs  // Compile time column arguments
+template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -1050,7 +1050,7 @@ inline decltype(auto) columns( const MatMatMapExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given matrix evaluation operation.
 */
-template< typename... CCAs  // Compile time column arguments
+template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -1076,7 +1076,7 @@ inline decltype(auto) columns( const MatEvalExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given matrix serialization operation.
 */
-template< typename... CCAs  // Compile time column arguments
+template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -1102,7 +1102,7 @@ inline decltype(auto) columns( const MatSerialExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given matrix declaration operation.
 */
-template< typename... CCAs  // Compile time column arguments
+template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -1128,7 +1128,7 @@ inline decltype(auto) columns( const DeclExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns on the
 // given matrix transpose operation.
 */
-template< typename... CCAs  // Compile time column arguments
+template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , typename... RCAs  // Runtime column arguments
         , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
@@ -1155,7 +1155,7 @@ inline decltype(auto) columns( const MatTransExpr<MT>& matrix, RCAs... args )
 // This function returns an expression representing the specified selection of columns of the
 // given column-major vector expansion operation.
 */
-template< typename... CCAs  // Compile time column arguments
+template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , size_t... CEAs    // Compile time expansion arguments
         , typename... RCAs  // Runtime column arguments
@@ -1180,25 +1180,26 @@ inline decltype(auto) columns( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... 
 // \ingroup columns
 //
 // \param matrix The constant vector expansion operation.
+// \param indices Pointer to the first index of the selected columns or callable producing the indices.
+// \param n The total number of indices.
 // \param args The runtime column arguments.
 // \return void
 //
 // This function returns an expression representing the specified selection of columns of the
 // given column-major vector expansion operation.
 */
-template< typename... CCAs  // Compile time column arguments
-        , typename MT       // Matrix base type of the expression
+template< typename MT       // Matrix base type of the expression
         , size_t... CEAs    // Compile time expansion arguments
+        , typename T        // Type of the column indices or index producer
         , typename... RCAs  // Runtime column arguments
-        , EnableIf_t< ( sizeof...( CCAs ) == 0UL ) &&
-                      IsColumnMajorMatrix_v<MT> >* = nullptr >
-inline decltype(auto) columns( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... args )
+        , EnableIf_t< IsColumnMajorMatrix_v<MT> >* = nullptr >
+inline decltype(auto) columns( const VecExpandExpr<MT,CEAs...>& matrix, T indices, size_t n, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   const ColumnsData<CCAs...> cd( args... );
+   MAYBE_UNUSED( indices, args... );
 
-   return expand( (~matrix).operand(), cd.columns() );
+   return expand( (~matrix).operand(), n );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1216,7 +1217,7 @@ inline decltype(auto) columns( const VecExpandExpr<MT,CEAs...>& matrix, RCAs... 
 // This function returns an expression representing the specified selection of columns of the
 // given row-major vector expansion operation.
 */
-template< typename... CCAs  // Compile time column arguments
+template< size_t... CCAs    // Compile time column arguments
         , typename MT       // Matrix base type of the expression
         , size_t... CEAs    // Compile time expansion arguments
         , typename... RCAs  // Runtime column arguments
