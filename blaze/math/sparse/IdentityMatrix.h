@@ -55,6 +55,7 @@
 #include <blaze/math/traits/DeclLowTrait.h>
 #include <blaze/math/traits/DeclSymTrait.h>
 #include <blaze/math/traits/DeclUppTrait.h>
+#include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
@@ -1486,6 +1487,31 @@ struct MultTraitEval1< T1, T2
    using ET2 = ElementType_t<T2>;
 
    using Type = IdentityMatrix< MultTrait_t<ET1,ET2>, StorageOrder_v<T1> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  KRONTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+struct KronTraitEval1< T1, T2
+                     , EnableIf_t< IsMatrix_v<T1> &&
+                                   IsMatrix_v<T2> &&
+                                   IsIdentity_v<T1> && IsIdentity_v<T2> > >
+{
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   using Type = IdentityMatrix< MultTrait_t<ET1,ET2>, StorageOrder_v<T2> >;
 };
 /*! \endcond */
 //*************************************************************************************************
