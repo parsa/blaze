@@ -76,6 +76,7 @@
 #include <blaze/math/constraints/Identity.h>
 #include <blaze/math/constraints/Initializer.h>
 #include <blaze/math/constraints/Invertible.h>
+#include <blaze/math/constraints/KronExpr.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/MatEvalExpr.h>
 #include <blaze/math/constraints/MatInvExpr.h>

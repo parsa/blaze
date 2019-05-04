@@ -163,6 +163,7 @@
 #include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsInitializer.h>
 #include <blaze/math/typetraits/IsInvertible.h>
+#include <blaze/math/typetraits/IsKronExpr.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsMatEvalExpr.h>
 #include <blaze/math/typetraits/IsMatInvExpr.h>
