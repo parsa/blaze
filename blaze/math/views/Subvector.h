@@ -73,6 +73,7 @@
 #include <blaze/math/views/subvector/Dense.h>
 #include <blaze/math/views/subvector/Sparse.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/SmallArray.h>
@@ -1164,8 +1165,8 @@ inline decltype(auto) subvector( VT&& sv, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr size_t I2 = RemoveReference_t<VT>::offset();
-   constexpr size_t N2 = RemoveReference_t<VT>::size();
+   constexpr size_t I2( RemoveReference_t<VT>::offset() );
+   constexpr size_t N2( RemoveReference_t<VT>::size() );
 
    BLAZE_STATIC_ASSERT_MSG( I + N <= N2, "Invalid subvector specification" );
 
@@ -1275,85 +1276,20 @@ inline decltype(auto)
 // This function returns an expression representing the specified selection of elements on the
 // given subvector.
 */
-template< size_t I1           // First element index
-        , size_t... Is        // Remaining element indices
-        , typename VT         // Type of the vector
-        , AlignmentFlag AF    // Alignment flag
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , size_t I2           // Index of the first subvector element
-        , size_t N            // Size of the subvector
-        , typename... REAs >  // Optional element arguments
-inline decltype(auto)
-   elements( Subvector<VT,AF,TF,DF,I2,N>& sv, REAs... args )
+template< size_t I          // First element index
+        , size_t... Is      // Remaining element indices
+        , typename VT       // Type of the vector
+        , typename... REAs  // Optional element arguments
+        , EnableIf_t< IsSubvector_v< RemoveReference_t<VT> > &&
+                      RemoveReference_t<VT>::compileTimeArgs >* = nullptr >
+inline decltype(auto) elements( VT&& sv, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return elements( sv.operand(), make_shifted_index_subsequence<I2,N,I1,Is...>(), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
+   constexpr size_t I2 = RemoveReference_t<VT>::offset();
+   constexpr size_t N  = RemoveReference_t<VT>::size();
 
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a selection of elements on a constant subvector.
-// \ingroup subvector
-//
-// \param sv The given constant subvector.
-// \param args The optional element arguments.
-// \return View on the specified selection of elements on the subvector.
-//
-// This function returns an expression representing the specified selection of elements on the
-// given constant subvector.
-*/
-template< size_t I1           // First element index
-        , size_t... Is        // Remaining element indices
-        , typename VT         // Type of the vector
-        , AlignmentFlag AF    // Alignment flag
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , size_t I2           // Index of the first subvector element
-        , size_t N            // Size of the subvector
-        , typename... REAs >  // Optional element arguments
-inline decltype(auto)
-   elements( const Subvector<VT,AF,TF,DF,I2,N>& sv, REAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return elements( sv.operand(), make_shifted_index_subsequence<I2,N,I1,Is...>(), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a selection of elements on a temporary subvector.
-// \ingroup subvector
-//
-// \param sv The given temporary subvector.
-// \param args The optional element arguments.
-// \return View on the specified selection of elements on the subvector.
-//
-// This function returns an expression representing the specified selection of elements on the
-// given temporary subvector.
-*/
-template< size_t I1           // First element index
-        , size_t... Is        // Remaining element indices
-        , typename VT         // Type of the vector
-        , AlignmentFlag AF    // Alignment flag
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , size_t I2           // Index of the first subvector element
-        , size_t N            // Size of the subvector
-        , typename... REAs >  // Optional element arguments
-inline decltype(auto)
-   elements( Subvector<VT,AF,TF,DF,I2,N>&& sv, REAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return elements( sv.operand(), make_shifted_index_subsequence<I2,N,I1,Is...>(), args... );
+   return elements( sv.operand(), make_shifted_index_subsequence<I2,N,I,Is...>(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1372,96 +1308,13 @@ inline decltype(auto)
 // This function returns an expression representing the specified selection of elements on the
 // given subvector.
 */
-template< size_t I            // First element index
-        , size_t... Is        // Remaining element indices
-        , typename VT         // Type of the vector
-        , AlignmentFlag AF    // Alignment flag
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , typename... REAs >  // Optional element arguments
-inline decltype(auto) elements( Subvector<VT,AF,TF,DF>& sv, REAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
-
-   if( isChecked ) {
-      static constexpr size_t indices[] = { I, Is... };
-      for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
-         if( sv.size() <= indices[i] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid elements specification" );
-         }
-      }
-   }
-
-   return elements( sv.operand(), { I+sv.offset(), Is+sv.offset()... }, args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a selection of elements on a constant subvector.
-// \ingroup subvector
-//
-// \param sv The given constant subvector.
-// \param args The optional element arguments.
-// \return View on the specified selection of elements on the subvector.
-// \exception std::invalid_argument Invalid elements specification.
-//
-// This function returns an expression representing the specified selection of elements on the
-// given constant subvector.
-*/
-template< size_t I            // First element index
-        , size_t... Is        // Remaining element indices
-        , typename VT         // Type of the vector
-        , AlignmentFlag AF    // Alignment flag
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , typename... REAs >  // Optional element arguments
-inline decltype(auto) elements( const Subvector<VT,AF,TF,DF>& sv, REAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
-
-   if( isChecked ) {
-      static constexpr size_t indices[] = { I, Is... };
-      for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
-         if( sv.size() <= indices[i] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid elements specification" );
-         }
-      }
-   }
-
-   return elements( sv.operand(), { I+sv.offset(), Is+sv.offset()... }, args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a selection of elements on a temporary subvector.
-// \ingroup subvector
-//
-// \param sv The given temporary subvector.
-// \param args The optional element arguments.
-// \return View on the specified selection of elements on the subvector.
-// \exception std::invalid_argument Invalid elements specification.
-//
-// This function returns an expression representing the specified selection of elements on the
-// given temporary subvector.
-*/
-template< size_t I            // First element index
-        , size_t... Is        // Remaining element indices
-        , typename VT         // Type of the vector
-        , AlignmentFlag AF    // Alignment flag
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , typename... REAs >  // Optional element arguments
-inline decltype(auto) elements( Subvector<VT,AF,TF,DF>&& sv, REAs... args )
+template< size_t I          // First element index
+        , size_t... Is      // Remaining element indices
+        , typename VT       // Type of the vector
+        , typename... REAs  // Optional element arguments
+        , EnableIf_t< IsSubvector_v< RemoveReference_t<VT> > &&
+                      !RemoveReference_t<VT>::compileTimeArgs >* = nullptr >
+inline decltype(auto) elements( VT&& sv, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1497,109 +1350,12 @@ inline decltype(auto) elements( Subvector<VT,AF,TF,DF>&& sv, REAs... args )
 // This function returns an expression representing the specified selection of elements on the
 // given subvector.
 */
-template< typename VT         // Type of the vector
-        , AlignmentFlag AF    // Alignment flag
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time subvector arguments
-        , typename T          // Type of the element indices
-        , typename... REAs >  // Optional element arguments
+template< typename VT       // Type of the vector
+        , typename T        // Type of the element indices
+        , typename... REAs  // Optional element arguments
+        , EnableIf_t< IsSubvector_v< RemoveReference_t<VT> > >* = nullptr >
 inline decltype(auto)
-   elements( Subvector<VT,AF,TF,DF,CSAs...>& sv, const T* indices, size_t n, REAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
-
-   if( isChecked ) {
-      for( size_t i=0UL; i<n; ++i ) {
-         if( sv.size() <= indices[i] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid elements specification" );
-         }
-      }
-   }
-
-   SmallArray<size_t,128UL> newIndices( indices, indices+n );
-   std::for_each( newIndices.begin(), newIndices.end(),
-                  [offset=sv.offset()]( size_t& index ){ index += offset; } );
-
-   return elements( sv.operand(), newIndices.data(), n, args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a selection of elements on a constant subvector.
-// \ingroup subvector
-//
-// \param sv The given constant subvector.
-// \param indices The container of element indices.
-// \param n The total number of indices.
-// \param args The optional element arguments.
-// \return View on the specified selection of elements on the subvector.
-// \exception std::invalid_argument Invalid elements specification.
-//
-// This function returns an expression representing the specified selection of elements on the
-// given constant subvector.
-*/
-template< typename VT         // Type of the vector
-        , AlignmentFlag AF    // Alignment flag
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time subvector arguments
-        , typename T          // Type of the element indices
-        , typename... REAs >  // Optional element arguments
-inline decltype(auto)
-   elements( const Subvector<VT,AF,TF,DF,CSAs...>& sv, const T* indices, size_t n, REAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
-
-   if( isChecked ) {
-      for( size_t i=0UL; i<n; ++i ) {
-         if( sv.size() <= indices[i] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid elements specification" );
-         }
-      }
-   }
-
-   SmallArray<size_t,128UL> newIndices( indices, indices+n );
-   std::for_each( newIndices.begin(), newIndices.end(),
-                  [offset=sv.offset()]( size_t& index ){ index += offset; } );
-
-   return elements( sv.operand(), newIndices.data(), n, args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a selection of elements on a temporary subvector.
-// \ingroup subvector
-//
-// \param sv The given temporary subvector.
-// \param indices The container of element indices.
-// \param n The total number of indices.
-// \param args The optional element arguments.
-// \return View on the specified selection of elements on the subvector.
-// \exception std::invalid_argument Invalid elements specification.
-//
-// This function returns an expression representing the specified selection of elements on the
-// given temporary subvector.
-*/
-template< typename VT         // Type of the vector
-        , AlignmentFlag AF    // Alignment flag
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time subvector arguments
-        , typename T          // Type of the element indices
-        , typename... REAs >  // Optional element arguments
-inline decltype(auto)
-   elements( Subvector<VT,AF,TF,DF,CSAs...>&& sv, const T* indices, size_t n, REAs... args )
+   elements( VT&& sv, const T* indices, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 

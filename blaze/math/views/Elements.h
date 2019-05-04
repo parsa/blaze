@@ -75,6 +75,7 @@
 #include <blaze/math/views/elements/Dense.h>
 #include <blaze/math/views/elements/Sparse.h>
 #include <blaze/util/Assert.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/PtrdiffT.h>
@@ -1088,6 +1089,14 @@ inline decltype(auto) elements( const VecTransExpr<VT>& vector, REAs... args )
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS (ELEMENTS)
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a selection of elements on another element selection.
@@ -1100,85 +1109,17 @@ inline decltype(auto) elements( const VecTransExpr<VT>& vector, REAs... args )
 // This function returns an expression representing the specified selection of elements on the
 // given element selection.
 */
-template< size_t I1           // First required element index
-        , size_t... Is1       // Remaining required element indices
-        , typename VT         // Type of the vector
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , size_t I2           // First present element index
-        , size_t... Is2       // Remaining present element indices
-        , typename... CEAs    // Compile time element arguments
-        , typename... REAs >  // Optional element arguments
-inline decltype(auto) elements( Elements<VT,TF,DF,index_sequence<I2,Is2...>,CEAs...>& e, REAs... args )
+template< size_t I          // First required element index
+        , size_t... Is      // Remaining required element indices
+        , typename VT       // Type of the vector
+        , typename... REAs  // Optional element arguments
+        , EnableIf_t< IsElements_v< RemoveReference_t<VT> > &&
+                      RemoveReference_t<VT>::compileTimeArgs >* = nullptr >
+inline decltype(auto) elements( VT&& e, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   static constexpr size_t indices[] = { I2, Is2... };
-   return elements< indices[I1], indices[Is1]... >( e.operand(), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a selection of elements on another constant element selection.
-// \ingroup elements
-//
-// \param e The given constant element selection.
-// \param args The optional element arguments.
-// \return View on the specified selection of elements on the other element selection.
-//
-// This function returns an expression representing the specified selection of elements on the
-// given constant element selection.
-*/
-template< size_t I1           // First required element index
-        , size_t... Is1       // Remaining required element indices
-        , typename VT         // Type of the vector
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , size_t I2           // First present element index
-        , size_t... Is2       // Remaining present element indices
-        , typename... CEAs    // Compile time element arguments
-        , typename... REAs >  // Optional element arguments
-inline decltype(auto) elements( const Elements<VT,TF,DF,index_sequence<I2,Is2...>,CEAs...>& e, REAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   static constexpr size_t indices[] = { I2, Is2... };
-   return elements< indices[I1], indices[Is1]... >( e.operand(), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a selection of elements on another temporary element selection.
-// \ingroup elements
-//
-// \param e The given temporary element selection.
-// \param args The optional element arguments.
-// \return View on the specified selection of elements on the other element selection.
-//
-// This function returns an expression representing the specified selection of elements on the
-// given temporary element selection.
-*/
-template< size_t I1           // First required element index
-        , size_t... Is1       // Remaining required element indices
-        , typename VT         // Type of the vector
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , size_t I2           // First present element index
-        , size_t... Is2       // Remaining present element indices
-        , typename... CEAs    // Compile time element arguments
-        , typename... REAs >  // Optional element arguments
-inline decltype(auto) elements( Elements<VT,TF,DF,index_sequence<I2,Is2...>,CEAs...>&& e, REAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   static constexpr size_t indices[] = { I2, Is2... };
-   return elements< indices[I1], indices[Is1]... >( e.operand(), args... );
+   return elements( e.operand(), subsequence<I,Is...>( RemoveReference_t<VT>::idces() ), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1197,96 +1138,13 @@ inline decltype(auto) elements( Elements<VT,TF,DF,index_sequence<I2,Is2...>,CEAs
 // This function returns an expression representing the specified selection of elements on the
 // given element selection.
 */
-template< size_t I            // First element index
-        , size_t... Is        // Remaining element indices
-        , typename VT         // Type of the vector
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , typename... CEAs    // Compile time element arguments
-        , typename... REAs >  // Optional element arguments
-inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>& e, REAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
-
-   if( isChecked ) {
-      static constexpr size_t indices[] = { I, Is... };
-      for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
-         if( e.size() <= indices[i] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
-         }
-      }
-   }
-
-   return elements( e.operand(), { e.idx(I), e.idx(Is)... }, args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a selection of elements on another constant element selection.
-// \ingroup elements
-//
-// \param e The given constant element selection.
-// \param args The optional element arguments.
-// \return View on the specified selection of elements on the other element selection.
-// \exception std::invalid_argument Invalid element access index.
-//
-// This function returns an expression representing the specified selection of elements on the
-// given constant element selection.
-*/
-template< size_t I            // First element index
-        , size_t... Is        // Remaining element indices
-        , typename VT         // Type of the vector
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , typename... CEAs    // Compile time element arguments
-        , typename... REAs >  // Optional element arguments
-inline decltype(auto) elements( const Elements<VT,TF,DF,CEAs...>& e, REAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
-
-   if( isChecked ) {
-      static constexpr size_t indices[] = { I, Is... };
-      for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
-         if( e.size() <= indices[i] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
-         }
-      }
-   }
-
-   return elements( e.operand(), { e.idx(I), e.idx(Is)... }, args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a selection of elements on another temporary element selection.
-// \ingroup elements
-//
-// \param e The given temporary element selection.
-// \param args The optional element arguments.
-// \return View on the specified selection of elements on the other element selection.
-// \exception std::invalid_argument Invalid element access index.
-//
-// This function returns an expression representing the specified selection of elements on the
-// given temporary element selection.
-*/
-template< size_t I            // First element index
-        , size_t... Is        // Remaining element indices
-        , typename VT         // Type of the vector
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , typename... CEAs    // Compile time element arguments
-        , typename... REAs >  // Optional element arguments
-inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>&& e, REAs... args )
+template< size_t I          // First element index
+        , size_t... Is      // Remaining element indices
+        , typename VT       // Type of the vector
+        , typename... REAs  // Optional element arguments
+        , EnableIf_t< IsElements_v< RemoveReference_t<VT> > &&
+                      !RemoveReference_t<VT>::compileTimeArgs >* = nullptr >
+inline decltype(auto) elements( VT&& e, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1322,112 +1180,11 @@ inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>&& e, REAs... args )
 // This function returns an expression representing the specified selection of elements on the
 // given element selection.
 */
-template< typename VT         // Type of the vector
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , typename... CEAs    // Compile time element arguments
-        , typename T          // Type of the element indices
-        , typename... REAs >  // Optional element arguments
-inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>& e,
-                                const T* indices, size_t n, REAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
-
-   if( isChecked ) {
-      for( size_t i=0UL; i<n; ++i ) {
-         if( e.size() <= size_t( indices[i] ) ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
-         }
-      }
-   }
-
-   SmallArray<size_t,128UL> newIndices;
-   newIndices.reserve( n );
-
-   for( size_t i=0UL; i<n; ++i ) {
-      newIndices.pushBack( e.idx( indices[i] ) );
-   }
-
-   return elements( e.operand(), newIndices.data(), newIndices.size(), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a selection of elements on another constant element selection.
-// \ingroup elements
-//
-// \param e The given constant element selection.
-// \param indices The container of element indices.
-// \param n The total number of indices.
-// \param args The optional element arguments.
-// \return View on the specified selection of elements on the other element selection.
-// \exception std::invalid_argument Invalid element access index.
-//
-// This function returns an expression representing the specified selection of elements on the
-// given constant element selection.
-*/
-template< typename VT         // Type of the vector
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , typename... CEAs    // Compile time element arguments
-        , typename T          // Type of the element indices
-        , typename... REAs >  // Optional element arguments
-inline decltype(auto) elements( const Elements<VT,TF,DF,CEAs...>& e,
-                                const T* indices, size_t n, REAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
-
-   if( isChecked ) {
-      for( size_t i=0UL; i<n; ++i ) {
-         if( e.size() <= size_t( indices[i] ) ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
-         }
-      }
-   }
-
-   SmallArray<size_t,128UL> newIndices;
-   newIndices.reserve( n );
-
-   for( size_t i=0UL; i<n; ++i ) {
-      newIndices.pushBack( e.idx( indices[i] ) );
-   }
-
-   return elements( e.operand(), newIndices.data(), newIndices.size(), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a selection of elements on another temporary element selection.
-// \ingroup elements
-//
-// \param e The given temporary element selection.
-// \param indices The container of element indices.
-// \param n The total number of indices.
-// \param args The optional element arguments.
-// \return View on the specified selection of elements on the other element selection.
-// \exception std::invalid_argument Invalid element access index.
-//
-// This function returns an expression representing the specified selection of elements on the
-// given temporary element selection.
-*/
-template< typename VT         // Type of the vector
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , typename... CEAs    // Compile time element arguments
-        , typename T          // Type of the element indices
-        , typename... REAs >  // Optional element arguments
-inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>&& e,
-                                const T* indices, size_t n, REAs... args )
+template< typename VT       // Type of the vector
+        , typename T        // Type of the element indices
+        , typename... REAs  // Optional element arguments
+        , EnableIf_t< IsElements_v< RemoveReference_t<VT> > >* = nullptr >
+inline decltype(auto) elements( VT&& e, const T* indices, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1470,114 +1227,11 @@ inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>&& e,
 // given element selection.
 */
 template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , bool DF           // Density flag
-        , typename... CEAs  // Compile time element arguments
         , typename P        // Type of the index producer
         , typename... REAs  // Optional element arguments
-        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
-inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>& e,
-                                P p, size_t n, REAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
-
-   if( isChecked ) {
-      for( size_t i=0UL; i<n; ++i ) {
-         if( e.size() <= size_t( p(i) ) ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
-         }
-      }
-   }
-
-   SmallArray<size_t,128UL> newIndices;
-   newIndices.reserve( n );
-
-   for( size_t i=0UL; i<n; ++i ) {
-      newIndices.pushBack( e.idx( p(i) ) );
-   }
-
-   return elements( e.operand(), newIndices.data(), newIndices.size(), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a selection of elements on another constant element selection.
-// \ingroup elements
-//
-// \param e The given constant element selection.
-// \param p Callable producing the indices.
-// \param n The total number of indices.
-// \param args The optional element arguments.
-// \return View on the specified selection of elements on the other element selection.
-// \exception std::invalid_argument Invalid element access index.
-//
-// This function returns an expression representing the specified selection of elements on the
-// given constant element selection.
-*/
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , bool DF           // Density flag
-        , typename... CEAs  // Compile time element arguments
-        , typename P        // Type of the index producer
-        , typename... REAs  // Optional element arguments
-        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
-inline decltype(auto) elements( const Elements<VT,TF,DF,CEAs...>& e,
-                                P p, size_t n, REAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
-
-   if( isChecked ) {
-      for( size_t i=0UL; i<n; ++i ) {
-         if( e.size() <= size_t( p(i) ) ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid element access index" );
-         }
-      }
-   }
-
-   SmallArray<size_t,128UL> newIndices;
-   newIndices.reserve( n );
-
-   for( size_t i=0UL; i<n; ++i ) {
-      newIndices.pushBack( e.idx( p(i) ) );
-   }
-
-   return elements( e.operand(), newIndices.data(), newIndices.size(), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a selection of elements on another temporary element selection.
-// \ingroup elements
-//
-// \param e The given temporary element selection.
-// \param p Callable producing the indices.
-// \param n The total number of indices.
-// \param args The optional element arguments.
-// \return View on the specified selection of elements on the other element selection.
-// \exception std::invalid_argument Invalid element access index.
-//
-// This function returns an expression representing the specified selection of elements on the
-// given temporary element selection.
-*/
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , bool DF           // Density flag
-        , typename... CEAs  // Compile time element arguments
-        , typename P        // Type of the index producer
-        , typename... REAs  // Optional element arguments
-        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
-inline decltype(auto) elements( Elements<VT,TF,DF,CEAs...>&& e,
-                                P p, size_t n, REAs... args )
+        , EnableIf_t< IsElements_v< RemoveReference_t<VT> > &&
+                      !IsPointer_v<P> >* = nullptr >
+inline decltype(auto) elements( VT&& e, P p, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
