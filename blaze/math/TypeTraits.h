@@ -235,6 +235,7 @@
 #include <blaze/math/typetraits/IsVecTVecMultExpr.h>
 #include <blaze/math/typetraits/IsVecVecAddExpr.h>
 #include <blaze/math/typetraits/IsVecVecDivExpr.h>
+#include <blaze/math/typetraits/IsVecVecKronExpr.h>
 #include <blaze/math/typetraits/IsVecVecMapExpr.h>
 #include <blaze/math/typetraits/IsVecVecMultExpr.h>
 #include <blaze/math/typetraits/IsVecVecSubExpr.h>
