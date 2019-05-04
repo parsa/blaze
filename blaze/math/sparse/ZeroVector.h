@@ -52,6 +52,7 @@
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ElementsTrait.h>
+#include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -1307,6 +1308,34 @@ struct MultTraitEval1< T1, T2
    using ET2 = ElementType_t<T2>;
 
    using Type = ZeroVector< MultTrait_t<ET1,ET2>, true >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  KRONTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+struct KronTraitEval1< T1, T2
+                     , EnableIf_t< IsVector_v<T1> &&
+                                   IsVector_v<T2> &&
+                                   ( IsZero_v<T1> ||
+                                     IsZero_v<T2> ) > >
+{
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   static constexpr bool TF = ( IsZero_v<T2> ? TransposeFlag_v<T2> : TransposeFlag_v<T1> );
+
+   using Type = ZeroVector< MultTrait_t<ET1,ET2>, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
