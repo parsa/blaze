@@ -59,6 +59,7 @@
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
+#include <blaze/math/typetraits/IsBand.h>
 #include <blaze/math/typetraits/IsOpposedView.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsSubmatrix.h>
@@ -841,89 +842,21 @@ inline decltype(auto) band( const VecExpandExpr<MT,CEAs...>& matrix, RBAs... arg
 //
 // This function returns an expression representing the specified subvector of the given band.
 */
-template< AlignmentFlag AF    // Alignment flag
-        , size_t I1           // Index of the first subvector element
-        , size_t N            // Size of the subvector
-        , typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t I2        // Band index
-        , typename... RSAs >  // Optional subvector arguments
-inline decltype(auto) subvector( Band<MT,TF,DF,MF,I2>& b, RSAs... args )
+template< AlignmentFlag AF  // Alignment flag
+        , size_t I          // Index of the first subvector element
+        , size_t N          // Size of the subvector
+        , typename VT       // Type of the vector
+        , typename... RSAs  // Optional subvector arguments
+        , EnableIf_t< IsBand_v< RemoveReference_t<VT> > &&
+                      RemoveReference_t<VT>::compileTimeArgs >* = nullptr >
+inline decltype(auto) subvector( VT&& b, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   constexpr size_t row   ( ( I2 >= 0L ? 0UL : -I2 ) + I1 );
-   constexpr size_t column( ( I2 >= 0L ?  I2 : 0UL ) + I1 );
+   constexpr ptrdiff_t I2 = RemoveReference_t<VT>::band();
 
-   return diagonal( submatrix<AF,row,column,N,N>( b.operand(), args... ), unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given constant band.
-// \ingroup band
-//
-// \param b The constant band containing the subvector.
-// \param args The optional subvector arguments.
-// \return View on the specified subvector of the band.
-//
-// This function returns an expression representing the specified subvector of the given constant
-// band.
-*/
-template< AlignmentFlag AF    // Alignment flag
-        , size_t I1           // Index of the first subvector element
-        , size_t N            // Size of the subvector
-        , typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t I2        // Band index
-        , typename... RSAs >  // Optional subvector arguments
-inline decltype(auto) subvector( const Band<MT,TF,DF,MF,I2>& b, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr size_t row   ( ( I2 >= 0L ? 0UL : -I2 ) + I1 );
-   constexpr size_t column( ( I2 >= 0L ?  I2 : 0UL ) + I1 );
-
-   return diagonal( submatrix<AF,row,column,N,N>( b.operand(), args... ), unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given temporary band.
-// \ingroup band
-//
-// \param b The temporary band containing the subvector.
-// \param args The optional subvector arguments.
-// \return View on the specified subvector of the band.
-//
-// This function returns an expression representing the specified subvector of the given temporary
-// band.
-*/
-template< AlignmentFlag AF    // Alignment flag
-        , size_t I1           // Index of the first subvector element
-        , size_t N            // Size of the subvector
-        , typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t I2        // Band index
-        , typename... RSAs >  // Optional subvector arguments
-inline decltype(auto) subvector( Band<MT,TF,DF,MF,I2>&& b, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr size_t row   ( ( I2 >= 0L ? 0UL : -I2 ) + I1 );
-   constexpr size_t column( ( I2 >= 0L ?  I2 : 0UL ) + I1 );
+   constexpr size_t row   ( ( I2 >= 0L ? 0UL : -I2 ) + I );
+   constexpr size_t column( ( I2 >= 0L ?  I2 : 0UL ) + I );
 
    return diagonal( submatrix<AF,row,column,N,N>( b.operand(), args... ), unchecked );
 }
@@ -942,85 +875,13 @@ inline decltype(auto) subvector( Band<MT,TF,DF,MF,I2>&& b, RSAs... args )
 //
 // This function returns an expression representing the specified subvector of the given band.
 */
-template< AlignmentFlag AF    // Alignment flag
-        , size_t... CSAs      // Compile time subvector arguments
-        , typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t... CBAs   // Compile time band arguments
-        , typename... RSAs >  // Optional subvector arguments
-inline decltype(auto) subvector( Band<MT,TF,DF,MF,CBAs...>& b, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   const SubvectorData<CSAs...> sd( args... );
-
-   const size_t row   ( b.row() + sd.offset() );
-   const size_t column( b.column() + sd.offset() );
-
-   return diagonal( submatrix<AF>( b.operand(), row, column, sd.size(), sd.size(), args... ), unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given constant band.
-// \ingroup band
-//
-// \param b The constant band containing the subvector.
-// \param args The optional subvector arguments.
-// \return View on the specified subvector of the band.
-//
-// This function returns an expression representing the specified subvector of the given constant
-// band.
-*/
-template< AlignmentFlag AF    // Alignment flag
-        , size_t... CSAs      // Compile time subvector arguments
-        , typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t... CBAs   // Compile time band arguments
-        , typename... RSAs >  // Optional subvector arguments
-inline decltype(auto) subvector( const Band<MT,TF,DF,MF,CBAs...>& b, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   const SubvectorData<CSAs...> sd( args... );
-
-   const size_t row   ( b.row() + sd.offset() );
-   const size_t column( b.column() + sd.offset() );
-
-   return diagonal( submatrix<AF>( b.operand(), row, column, sd.size(), sd.size(), args... ), unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given temporary band.
-// \ingroup band
-//
-// \param b The temporary band containing the subvector.
-// \param args The optional subvector arguments.
-// \return View on the specified subvector of the band.
-//
-// This function returns an expression representing the specified subvector of the given temporary
-// band.
-*/
-template< AlignmentFlag AF    // Alignment flag
-        , size_t... CSAs      // Compile time subvector arguments
-        , typename MT         // Type of the matrix
-        , bool TF             // Transpose flag
-        , bool DF             // Density flag
-        , bool MF             // Multiplication flag
-        , ptrdiff_t... CBAs   // Compile time band arguments
-        , typename... RSAs >  // Optional subvector arguments
-inline decltype(auto) subvector( Band<MT,TF,DF,MF,CBAs...>&& b, RSAs... args )
+template< AlignmentFlag AF  // Alignment flag
+        , size_t... CSAs    // Compile time subvector arguments
+        , typename VT       // Type of the vector
+        , typename... RSAs  // Optional subvector arguments
+        , EnableIf_t< IsBand_v< RemoveReference_t<VT> > &&
+                      ( sizeof...( CSAs ) == 0UL || !RemoveReference_t<VT>::compileTimeArgs ) >* = nullptr >
+inline decltype(auto) subvector( VT&& b, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
