@@ -62,6 +62,7 @@
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ElementsTrait.h>
+#include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowTrait.h>
@@ -76,6 +77,7 @@
 #include <blaze/math/typetraits/IsSMPAssignable.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
+#include <blaze/math/typetraits/IsVector.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/TransposeFlag.h>
 #include <blaze/system/Thresholds.h>
@@ -2615,6 +2617,34 @@ struct DivTraitEval2< T1, T2
    using ET2 = ElementType_t<T2>;
 
    using Type = CompressedVector< DivTrait_t<ET1,ET2>, TransposeFlag_v<T1> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  KRONTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+struct KronTraitEval2< T1, T2
+                     , EnableIf_t< IsVector_v<T1> &&
+                                   IsVector_v<T2> &&
+                                   ( IsSparseVector_v<T1> || IsSparseVector_v<T2> ) > >
+{
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   static constexpr bool TF = ( IsDenseVector_v<T2> ? TransposeFlag_v<T1> : TransposeFlag_v<T2> );
+
+   using Type = CompressedVector< MultTrait_t<ET1,ET2>, TF >;
 };
 /*! \endcond */
 //*************************************************************************************************
