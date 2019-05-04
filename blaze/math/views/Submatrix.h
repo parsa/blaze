@@ -75,6 +75,7 @@
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
+#include <blaze/math/typetraits/IsSubmatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/math/typetraits/IsUniUpper.h>
@@ -280,7 +281,7 @@ inline decltype(auto) submatrix( Matrix<MT,SO>&& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<unaligned,I,J,M,N>( ~matrix, args... );
+   return submatrix<unaligned,I,J,M,N>( std::move( ~matrix ), args... );
 }
 //*************************************************************************************************
 
@@ -653,7 +654,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<unaligned>( ~matrix, row, column, m, n, args... );
+   return submatrix<unaligned>( std::move( ~matrix ), row, column, m, n, args... );
 }
 //*************************************************************************************************
 
@@ -1388,6 +1389,14 @@ inline decltype(auto)
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS (SUBMATRIX)
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific submatrix of another submatrix.
@@ -1399,106 +1408,28 @@ inline decltype(auto)
 //
 // This function returns an expression representing the specified submatrix of the given submatrix.
 */
-template< AlignmentFlag AF1   // Required alignment flag
-        , size_t I1           // Required index of the first row
-        , size_t J1           // Required index of the first column
-        , size_t M1           // Required number of rows
-        , size_t N1           // Required number of columns
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF2   // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Present index of the first row
-        , size_t J2           // Present index of the first column
-        , size_t M2           // Present number of rows
-        , size_t N2           // Present number of columns
-        , typename... RSAs >  // Optional submatrix arguments
-inline decltype(auto) submatrix( Submatrix<MT,AF2,SO,DF,I2,J2,M2,N2>& sm, RSAs... args )
+template< AlignmentFlag AF  // Required alignment flag
+        , size_t I          // Required index of the first row
+        , size_t J          // Required index of the first column
+        , size_t M          // Required number of rows
+        , size_t N          // Required number of columns
+        , typename MT       // Type of the sparse submatrix
+        , typename... RSAs  // Optional submatrix arguments
+        , EnableIf_t< IsSubmatrix_v< RemoveReference_t<MT> > &&
+                      RemoveReference_t<MT>::compileTimeArgs >* = nullptr >
+inline decltype(auto) submatrix( MT&& sm, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_STATIC_ASSERT_MSG( I1 + M1 <= M2, "Invalid submatrix specification" );
-   BLAZE_STATIC_ASSERT_MSG( J1 + N1 <= N2, "Invalid submatrix specification" );
+   constexpr size_t I2( RemoveReference_t<MT>::row() );
+   constexpr size_t J2( RemoveReference_t<MT>::column() );
+   constexpr size_t M2( RemoveReference_t<MT>::rows() );
+   constexpr size_t N2( RemoveReference_t<MT>::columns() );
 
-   return submatrix<AF1,I1+I2,J1+J2,M1,N1>( sm.operand(), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
+   BLAZE_STATIC_ASSERT_MSG( I + M <= M2, "Invalid submatrix specification" );
+   BLAZE_STATIC_ASSERT_MSG( J + N <= N2, "Invalid submatrix specification" );
 
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific submatrix of another constant submatrix.
-// \ingroup submatrix
-//
-// \param sm The given constant submatrix
-// \param args The optional submatrix arguments.
-// \return View on the specified submatrix of the other submatrix.
-//
-// This function returns an expression representing the specified submatrix of the given constant
-// submatrix.
-*/
-template< AlignmentFlag AF1   // Required alignment flag
-        , size_t I1           // Required index of the first row
-        , size_t J1           // Required index of the first column
-        , size_t M1           // Required number of rows
-        , size_t N1           // Required number of columns
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF2   // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Present index of the first row
-        , size_t J2           // Present index of the first column
-        , size_t M2           // Present number of rows
-        , size_t N2           // Present number of columns
-        , typename... RSAs >  // Optional submatrix arguments
-inline decltype(auto) submatrix( const Submatrix<MT,AF2,SO,DF,I2,J2,M2,N2>& sm, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_STATIC_ASSERT_MSG( I1 + M1 <= M2, "Invalid submatrix specification" );
-   BLAZE_STATIC_ASSERT_MSG( J1 + N1 <= N2, "Invalid submatrix specification" );
-
-   return submatrix<AF1,I1+I2,J1+J2,M1,N1>( sm.operand(), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific submatrix of another temporary submatrix.
-// \ingroup submatrix
-//
-// \param sm The given temporary submatrix
-// \param args The optional submatrix arguments.
-// \return View on the specified submatrix of the other submatrix.
-//
-// This function returns an expression representing the specified submatrix of the given temporary
-// submatrix.
-*/
-template< AlignmentFlag AF1   // Required alignment flag
-        , size_t I1           // Required index of the first row
-        , size_t J1           // Required index of the first column
-        , size_t M1           // Required number of rows
-        , size_t N1           // Required number of columns
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF2   // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Present index of the first row
-        , size_t J2           // Present index of the first column
-        , size_t M2           // Present number of rows
-        , size_t N2           // Present number of columns
-        , typename... RSAs >  // Optional submatrix arguments
-inline decltype(auto) submatrix( Submatrix<MT,AF2,SO,DF,I2,J2,M2,N2>&& sm, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_STATIC_ASSERT_MSG( I1 + M1 <= M2, "Invalid submatrix specification" );
-   BLAZE_STATIC_ASSERT_MSG( J1 + N1 <= N2, "Invalid submatrix specification" );
-
-   return submatrix<AF1,I1+I2,J1+J2,M1,N1>( sm.operand(), args... );
+   return submatrix<AF,I+I2,J+J2,M,N>( sm.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1516,17 +1447,15 @@ inline decltype(auto) submatrix( Submatrix<MT,AF2,SO,DF,I2,J2,M2,N2>&& sm, RSAs.
 //
 // This function returns an expression representing the specified submatrix of the given submatrix.
 */
-template< AlignmentFlag AF1   // Required alignment flag
-        , size_t I            // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF2   // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , typename... RSAs >  // Optional submatrix arguments
-inline decltype(auto) submatrix( Submatrix<MT,AF2,SO,DF>& sm, RSAs... args )
+template< AlignmentFlag AF  // Required alignment flag
+        , size_t I          // Index of the first row
+        , size_t J          // Index of the first column
+        , size_t M          // Number of rows
+        , size_t N          // Number of columns
+        , typename MT       // Type of the sparse submatrix
+        , typename... RSAs  // Optional submatrix arguments
+        , EnableIf_t< IsSubmatrix_v< RemoveReference_t<MT> > >* = nullptr >
+inline decltype(auto) submatrix( MT&& sm, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1542,97 +1471,7 @@ inline decltype(auto) submatrix( Submatrix<MT,AF2,SO,DF>& sm, RSAs... args )
       BLAZE_USER_ASSERT( J + N <= sm.columns(), "Invalid submatrix specification" );
    }
 
-   return submatrix<AF1>( sm.operand(), sm.row() + I, sm.column() + J, M, N, args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific submatrix of another constant submatrix.
-// \ingroup submatrix
-//
-// \param sm The constant submatrix
-// \param args The optional submatrix arguments.
-// \return View on the specified submatrix of the other submatrix.
-// \exception std::invalid_argument Invalid submatrix specification.
-//
-// This function returns an expression representing the specified submatrix of the given constant
-// submatrix.
-*/
-template< AlignmentFlag AF1   // Required alignment flag
-        , size_t I            // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF2   // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , typename... RSAs >  // Optional submatrix arguments
-inline decltype(auto) submatrix( const Submatrix<MT,AF2,SO,DF>& sm, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
-
-   if( isChecked ) {
-      if( ( I + M > sm.rows() ) || ( J + N > sm.columns() ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
-      }
-   }
-   else {
-      BLAZE_USER_ASSERT( I + M <= sm.rows()   , "Invalid submatrix specification" );
-      BLAZE_USER_ASSERT( J + N <= sm.columns(), "Invalid submatrix specification" );
-   }
-
-   return submatrix<AF1>( sm.operand(), sm.row() + I, sm.column() + J, M, N, args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific submatrix of another temporary submatrix.
-// \ingroup submatrix
-//
-// \param sm The temporary submatrix
-// \param args The optional submatrix arguments.
-// \return View on the specified submatrix of the other submatrix.
-// \exception std::invalid_argument Invalid submatrix specification.
-//
-// This function returns an expression representing the specified submatrix of the given temporary
-// submatrix.
-*/
-template< AlignmentFlag AF1   // Required alignment flag
-        , size_t I            // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF2   // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , typename... RSAs >  // Optional submatrix arguments
-inline decltype(auto) submatrix( Submatrix<MT,AF2,SO,DF>&& sm, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
-
-   if( isChecked ) {
-      if( ( I + M > sm.rows() ) || ( J + N > sm.columns() ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
-      }
-   }
-   else {
-      BLAZE_USER_ASSERT( I + M <= sm.rows()   , "Invalid submatrix specification" );
-      BLAZE_USER_ASSERT( J + N <= sm.columns(), "Invalid submatrix specification" );
-   }
-
-   return submatrix<AF1>( sm.operand(), sm.row() + I, sm.column() + J, M, N, args... );
+   return submatrix<AF>( sm.operand(), sm.row() + I, sm.column() + J, M, N, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1654,16 +1493,11 @@ inline decltype(auto) submatrix( Submatrix<MT,AF2,SO,DF>&& sm, RSAs... args )
 //
 // This function returns an expression representing the specified submatrix of the given submatrix.
 */
-template< AlignmentFlag AF1   // Required alignment flag
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF2   // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time submatrix arguments
-        , typename... RSAs >  // Optional submatrix arguments
-inline decltype(auto)
-   submatrix( Submatrix<MT,AF2,SO,DF,CSAs...>& sm, size_t row, size_t column,
-              size_t m, size_t n, RSAs... args )
+template< AlignmentFlag AF  // Required alignment flag
+        , typename MT       // Type of the sparse submatrix
+        , typename... RSAs  // Optional submatrix arguments
+        , EnableIf_t< IsSubmatrix_v< RemoveReference_t<MT> > >* = nullptr >
+inline decltype(auto) submatrix( MT&& sm, size_t row, size_t column, size_t m, size_t n, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1679,103 +1513,7 @@ inline decltype(auto)
       BLAZE_USER_ASSERT( column + n <= sm.columns(), "Invalid submatrix specification" );
    }
 
-   return submatrix<AF1>( sm.operand(), sm.row() + row, sm.column() + column, m, n, args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific submatrix of another constant submatrix.
-// \ingroup submatrix
-//
-// \param sm The given constant submatrix
-// \param row The index of the first row of the submatrix.
-// \param column The index of the first column of the submatrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \param args The optional submatrix arguments.
-// \return View on the specified submatrix of the other submatrix.
-// \exception std::invalid_argument Invalid submatrix specification.
-//
-// This function returns an expression representing the specified submatrix of the given constant
-// submatrix.
-*/
-template< AlignmentFlag AF1   // Required alignment flag
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF2   // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time submatrix arguments
-        , typename... RSAs >  // Optional submatrix arguments
-inline decltype(auto)
-   submatrix( const Submatrix<MT,AF2,SO,DF,CSAs...>& sm, size_t row, size_t column,
-              size_t m, size_t n, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
-
-   if( isChecked ) {
-      if( ( row + m > sm.rows() ) || ( column + n > sm.columns() ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
-      }
-   }
-   else {
-      BLAZE_USER_ASSERT( row    + m <= sm.rows()   , "Invalid submatrix specification" );
-      BLAZE_USER_ASSERT( column + n <= sm.columns(), "Invalid submatrix specification" );
-   }
-
-   return submatrix<AF1>( sm.operand(), sm.row() + row, sm.column() + column, m, n, args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific submatrix of another temporary submatrix.
-// \ingroup submatrix
-//
-// \param sm The given temporary submatrix
-// \param row The index of the first row of the submatrix.
-// \param column The index of the first column of the submatrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \param args The optional submatrix arguments.
-// \return View on the specified submatrix of the other submatrix.
-// \exception std::invalid_argument Invalid submatrix specification.
-//
-// This function returns an expression representing the specified submatrix of the given temporary
-// submatrix.
-*/
-template< AlignmentFlag AF1   // Required alignment flag
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF2   // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time submatrix arguments
-        , typename... RSAs >  // Optional submatrix arguments
-inline decltype(auto)
-   submatrix( Submatrix<MT,AF2,SO,DF,CSAs...>&& sm, size_t row, size_t column,
-              size_t m, size_t n, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
-
-   if( isChecked ) {
-      if( ( row + m > sm.rows() ) || ( column + n > sm.columns() ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid submatrix specification" );
-      }
-   }
-   else {
-      BLAZE_USER_ASSERT( row    + m <= sm.rows()   , "Invalid submatrix specification" );
-      BLAZE_USER_ASSERT( column + n <= sm.columns(), "Invalid submatrix specification" );
-   }
-
-   return submatrix<AF1>( sm.operand(), sm.row() + row, sm.column() + column, m, n, args... );
+   return submatrix<AF>( sm.operand(), sm.row() + row, sm.column() + column, m, n, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
