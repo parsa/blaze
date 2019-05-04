@@ -64,6 +64,7 @@
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ElementsTrait.h>
+#include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/ReduceTrait.h>
@@ -2866,6 +2867,34 @@ struct MultTraitEval2< T1, T2
    using ET2 = ElementType_t<T2>;
 
    using Type = DynamicVector< MultTrait_t<ET1,ET2>, true >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  KRONTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+struct KronTraitEval2< T1, T2
+                     , EnableIf_t< IsDenseVector_v<T1> &&
+                                   IsDenseVector_v<T2> &&
+                                   ( ( Size_v<T1,0UL> == DefaultSize_v ) ||
+                                     ( Size_v<T2,0UL> == DefaultSize_v ) ) &&
+                                   ( ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) ||
+                                     ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) ) > >
+{
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   using Type = DynamicVector< MultTrait_t<ET1,ET2>, TransposeFlag_v<T2> >;
 };
 /*! \endcond */
 //*************************************************************************************************
