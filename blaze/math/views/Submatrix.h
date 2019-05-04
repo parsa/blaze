@@ -1944,8 +1944,7 @@ template< typename MT       // Type of the sparse submatrix
         , typename... RRAs  // Optional row arguments
         , EnableIf_t< IsSubmatrix_v< RemoveReference_t<MT> > &&
                       !IsPointer_v<P> >* = nullptr >
-inline decltype(auto)
-   rows( MT&& sm, P p, size_t n, RRAs... args )
+inline decltype(auto) rows( MT&& sm, P p, size_t n, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2111,91 +2110,23 @@ inline decltype(auto) column( MT&& sm, RCAs... args )
 //
 // This function returns an expression representing the specified columns of the given submatrix.
 */
-template< size_t I1           // First column index
-        , size_t... Is        // Remaining column indices
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) columns( Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RCAs... args )
+template< size_t I          // First column index
+        , size_t... Is      // Remaining column indices
+        , typename MT       // Type of the sparse submatrix
+        , typename... RCAs  // Optional column arguments
+        , EnableIf_t< IsSubmatrix_v< RemoveReference_t<MT> > &&
+                      RemoveReference_t<MT>::compileTimeArgs >* = nullptr >
+inline decltype(auto) columns( MT&& sm, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return submatrix<I2,0UL,M,sizeof...(Is)+1UL>(
-      columns( sm.operand(), make_shifted_index_subsequence<J,N,I1,Is...>(), args... ), unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on specific columns of the given constant submatrix.
-// \ingroup submatrix
-//
-// \param sm The constant submatrix containing the columns.
-// \param args The optional column arguments.
-// \return View on the specified columns of the submatrix.
-//
-// This function returns an expression representing the specified columns of the given constant
-// submatrix.
-*/
-template< size_t I1           // First column index
-        , size_t... Is        // Remaining column indices
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) columns( const Submatrix<MT,AF,SO,DF,I2,J,M,N>& sm, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
+   constexpr size_t I2( RemoveReference_t<MT>::row() );
+   constexpr size_t J ( RemoveReference_t<MT>::column() );
+   constexpr size_t M ( RemoveReference_t<MT>::rows() );
+   constexpr size_t N ( RemoveReference_t<MT>::columns() );
 
    return submatrix<I2,0UL,M,sizeof...(Is)+1UL>(
-      columns( sm.operand(), make_shifted_index_subsequence<J,N,I1,Is...>(), args... ), unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on specific columns of the given temporary submatrix.
-// \ingroup submatrix
-//
-// \param sm The temporary submatrix containing the columns.
-// \param args The optional column arguments.
-// \return View on the specified columns of the submatrix.
-//
-// This function returns an expression representing the specified columns of the given temporary
-// submatrix.
-*/
-template< size_t I1           // First column index
-        , size_t... Is        // Remaining column indices
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) columns( Submatrix<MT,AF,SO,DF,I2,J,M,N>&& sm, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return submatrix<I2,0UL,M,sizeof...(Is)+1UL>(
-      columns( sm.operand(), make_shifted_index_subsequence<J,N,I1,Is...>(), args... ), unchecked );
+      columns( sm.operand(), make_shifted_index_subsequence<J,N,I,Is...>(), args... ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2213,21 +2144,20 @@ inline decltype(auto) columns( Submatrix<MT,AF,SO,DF,I2,J,M,N>&& sm, RCAs... arg
 //
 // This function returns an expression representing the specified columns of the given submatrix.
 */
-template< size_t I1           // First column index
-        , size_t... Is        // Remaining column indices
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) columns( Submatrix<MT,AF,SO,DF>& sm, RCAs... args )
+template< size_t I          // First column index
+        , size_t... Is      // Remaining column indices
+        , typename MT       // Type of the sparse submatrix
+        , typename... RCAs  // Optional column arguments
+        , EnableIf_t< IsSubmatrix_v< RemoveReference_t<MT> > &&
+                      !RemoveReference_t<MT>::compileTimeArgs >* = nullptr >
+inline decltype(auto) columns( MT&& sm, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
-      static constexpr size_t indices[] = { I1, Is... };
+      static constexpr size_t indices[] = { I, Is... };
       for( size_t j=0UL; j<sizeof...(Is)+1UL; ++j ) {
          if( sm.columns() <= indices[j] ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
@@ -2235,91 +2165,7 @@ inline decltype(auto) columns( Submatrix<MT,AF,SO,DF>& sm, RCAs... args )
       }
    }
 
-   return submatrix( columns( sm.operand(), { I1+sm.column(), Is+sm.column()... }, args... ),
-                     sm.row(), 0UL, sm.rows(), sizeof...(Is)+1UL, unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on specific columns of the given constant submatrix.
-// \ingroup submatrix
-//
-// \param sm The constant submatrix containing the columns.
-// \param args The optional column arguments.
-// \return View on the specified columns of the submatrix.
-// \exception std::invalid_argument Invalid column access index.
-//
-// This function returns an expression representing the specified columns of the given constant
-// submatrix.
-*/
-template< size_t I1           // First column index
-        , size_t... Is        // Remaining column indices
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) columns( const Submatrix<MT,AF,SO,DF>& sm, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
-      static constexpr size_t indices[] = { I1, Is... };
-      for( size_t j=0UL; j<sizeof...(Is)+1UL; ++j ) {
-         if( sm.columns() <= indices[j] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
-         }
-      }
-   }
-
-   return submatrix( columns( sm.operand(), { I1+sm.column(), Is+sm.column()... }, args... ),
-                     sm.row(), 0UL, sm.rows(), sizeof...(Is)+1UL, unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on specific columns of the given temporary submatrix.
-// \ingroup submatrix
-//
-// \param sm The temporary submatrix containing the columns.
-// \param args The optional column arguments.
-// \return View on the specified columns of the submatrix.
-// \exception std::invalid_argument Invalid column access index.
-//
-// This function returns an expression representing the specified columns of the given temporary
-// submatrix.
-*/
-template< size_t I1           // First column index
-        , size_t... Is        // Remaining column indices
-        , typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) columns( Submatrix<MT,AF,SO,DF>&& sm, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
-      static constexpr size_t indices[] = { I1, Is... };
-      for( size_t j=0UL; j<sizeof...(Is)+1UL; ++j ) {
-         if( sm.columns() <= indices[j] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
-         }
-      }
-   }
-
-   return submatrix( columns( sm.operand(), { I1+sm.column(), Is+sm.column()... }, args... ),
+   return submatrix( columns( sm.operand(), { I+sm.column(), Is+sm.column()... }, args... ),
                      sm.row(), 0UL, sm.rows(), sizeof...(Is)+1UL, unchecked );
 }
 /*! \endcond */
@@ -2340,111 +2186,11 @@ inline decltype(auto) columns( Submatrix<MT,AF,SO,DF>&& sm, RCAs... args )
 //
 // This function returns an expression representing the specified columns of the given submatrix.
 */
-template< typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time submatrix arguments
-        , typename T          // Type of the column indices
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto)
-   columns( Submatrix<MT,AF,SO,DF,CSAs...>& sm, const T* indices, size_t n, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
-      for( size_t j=0UL; j<n; ++j ) {
-         if( sm.columns() <= size_t( indices[j] ) ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid column specification" );
-         }
-      }
-   }
-
-   SmallArray<size_t,128UL> newIndices( indices, indices+n );
-   std::for_each( newIndices.begin(), newIndices.end(),
-                  [column=sm.column()]( size_t& index ){ index += column; } );
-
-   return submatrix( columns( sm.operand(), newIndices.data(), n, args... ),
-                     sm.row(), 0UL, sm.rows(), n, unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on specific columns of the given constant submatrix.
-// \ingroup submatrix
-//
-// \param sm The constant submatrix containing the columns.
-// \param indices Pointer to the first index of the selected columns.
-// \param n The total number of indices.
-// \param args The optional column arguments.
-// \return View on the specified columns of the submatrix.
-// \exception std::invalid_argument Invalid column access index.
-//
-// This function returns an expression representing the specified columns of the given constant
-// submatrix.
-*/
-template< typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time submatrix arguments
-        , typename T          // Type of the column indices
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto)
-   columns( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, const T* indices, size_t n, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
-      for( size_t j=0UL; j<n; ++j ) {
-         if( sm.columns() <= size_t( indices[j] ) ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid column specification" );
-         }
-      }
-   }
-
-   SmallArray<size_t,128UL> newIndices( indices, indices+n );
-   std::for_each( newIndices.begin(), newIndices.end(),
-                  [column=sm.column()]( size_t& index ){ index += column; } );
-
-   return submatrix( columns( sm.operand(), newIndices.data(), n, args... ),
-                     sm.row(), 0UL, sm.rows(), n, unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on specific columns of the given temporary submatrix.
-// \ingroup submatrix
-//
-// \param sm The temporary submatrix containing the columns.
-// \param indices Pointer to the first index of the selected columns.
-// \param n The total number of indices.
-// \param args The optional column arguments.
-// \return View on the specified columns of the submatrix.
-// \exception std::invalid_argument Invalid column access index.
-//
-// This function returns an expression representing the specified columns of the given temporary
-// submatrix.
-*/
-template< typename MT         // Type of the sparse submatrix
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time submatrix arguments
-        , typename T          // Type of the column indices
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto)
-   columns( Submatrix<MT,AF,SO,DF,CSAs...>&& sm, const T* indices, size_t n, RCAs... args )
+template< typename MT       // Type of the sparse submatrix
+        , typename T        // Type of the column indices
+        , typename... RCAs  // Optional column arguments
+        , EnableIf_t< IsSubmatrix_v< RemoveReference_t<MT> > >* = nullptr >
+inline decltype(auto) columns( MT&& sm, const T* indices, size_t n, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2484,105 +2230,11 @@ inline decltype(auto)
 // This function returns an expression representing the specified columns of the given submatrix.
 */
 template< typename MT       // Type of the sparse submatrix
-        , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , size_t... CSAs    // Compile time submatrix arguments
         , typename P        // Type of the index producer
         , typename... RCAs  // Optional column arguments
-        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
-inline decltype(auto)
-   columns( Submatrix<MT,AF,SO,DF,CSAs...>& sm, P p, size_t n, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
-      for( size_t j=0UL; j<n; ++j ) {
-         if( sm.columns() <= size_t( p(j) ) ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid column specification" );
-         }
-      }
-   }
-
-   return submatrix( columns( sm.operand(), [p,offset=sm.column()]( size_t i ){ return p(i)+offset; }, n, args... ),
-                     sm.row(), 0UL, sm.rows(), n, unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on specific columns of the given constant submatrix.
-// \ingroup submatrix
-//
-// \param sm The constant submatrix containing the columns.
-// \param p Callable producing the indices.
-// \param n The total number of indices.
-// \param args The optional column arguments.
-// \return View on the specified columns of the submatrix.
-// \exception std::invalid_argument Invalid column access index.
-//
-// This function returns an expression representing the specified columns of the given constant
-// submatrix.
-*/
-template< typename MT       // Type of the sparse submatrix
-        , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , size_t... CSAs    // Compile time submatrix arguments
-        , typename P        // Type of the index producer
-        , typename... RCAs  // Optional column arguments
-        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
-inline decltype(auto)
-   columns( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, P p, size_t n, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
-      for( size_t j=0UL; j<n; ++j ) {
-         if( sm.columns() <= size_t( p(j) ) ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid column specification" );
-         }
-      }
-   }
-
-   return submatrix( columns( sm.operand(), [p,offset=sm.column()]( size_t i ){ return p(i)+offset; }, n, args... ),
-                     sm.row(), 0UL, sm.rows(), n, unchecked );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on specific columns of the given temporary submatrix.
-// \ingroup submatrix
-//
-// \param sm The temporary submatrix containing the columns.
-// \param p Callable producing the indices.
-// \param n The total number of indices.
-// \param args The optional column arguments.
-// \return View on the specified columns of the submatrix.
-// \exception std::invalid_argument Invalid column access index.
-//
-// This function returns an expression representing the specified columns of the given temporary
-// submatrix.
-*/
-template< typename MT       // Type of the sparse submatrix
-        , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
-        , size_t... CSAs    // Compile time submatrix arguments
-        , typename P        // Type of the index producer
-        , typename... RCAs  // Optional column arguments
-        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
-inline decltype(auto)
-   columns( Submatrix<MT,AF,SO,DF,CSAs...>&& sm, P p, size_t n, RCAs... args )
+        , EnableIf_t< IsSubmatrix_v< RemoveReference_t<MT> > &&
+                      !IsPointer_v<P> >* = nullptr >
+inline decltype(auto) columns( MT&& sm, P p, size_t n, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
