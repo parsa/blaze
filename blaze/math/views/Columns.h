@@ -76,6 +76,7 @@
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
+#include <blaze/math/typetraits/IsColumns.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/Size.h>
@@ -95,6 +96,7 @@
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsPointer.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -1830,164 +1832,11 @@ inline decltype(auto) elements( const MatReduceExpr<VT,columnwise>& vector, REAs
 //
 // This function returns an expression representing the specified row of the given column selection.
 */
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , size_t I            // First column index
-        , size_t... Is        // Remaining column indices
-        , typename... CCAs    // Compile time column arguments
-        , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( Columns<MT,SO,DF,SF,index_sequence<I,Is...>,CCAs...>& columns, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return elements<I,Is...>( row<CRAs...>( columns.operand(), args... ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given constant column selection.
-// \ingroup columns
-//
-// \param columns The constant selection of columns containing the row.
-// \param args The runtime row arguments.
-// \return View on the specified row of the column selection.
-//
-// This function returns an expression representing the specified row of the given constant
-// column selection.
-*/
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , size_t I            // First column index
-        , size_t... Is        // Remaining column indices
-        , typename... CCAs    // Compile time column arguments
-        , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( const Columns<MT,SO,DF,SF,index_sequence<I,Is...>,CCAs...>& columns, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return elements<I,Is...>( row<CRAs...>( columns.operand(), args... ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given temporary column selection.
-// \ingroup columns
-//
-// \param columns The temporary selection of columns containing the row.
-// \param args The runtime row arguments.
-// \return View on the specified row of the column selection.
-//
-// This function returns an expression representing the specified row of the given temporary
-// column selection.
-*/
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , size_t I            // First column index
-        , size_t... Is        // Remaining column indices
-        , typename... CCAs    // Compile time column arguments
-        , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( Columns<MT,SO,DF,SF,index_sequence<I,Is...>,CCAs...>&& columns, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return elements<I,Is...>( row<CRAs...>( columns.operand(), args... ) );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given column selection.
-// \ingroup columns
-//
-// \param columns The selection of columns containing the row.
-// \param args The runtime row arguments.
-// \return View on the specified row of the column selection.
-//
-// This function returns an expression representing the specified row of the given column selection.
-*/
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , typename... CCAs    // Compile time column arguments
-        , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( Columns<MT,SO,DF,SF,CCAs...>& columns, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return elements( row<CRAs...>( columns.operand(), args... ), columns.idces() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given constant column selection.
-// \ingroup columns
-//
-// \param columns The constant selection of columns containing the row.
-// \param args The runtime row arguments.
-// \return View on the specified row of the column selection.
-//
-// This function returns an expression representing the specified row of the given constant
-// column selection.
-*/
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , typename... CCAs    // Compile time column arguments
-        , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( const Columns<MT,SO,DF,SF,CCAs...>& columns, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return elements( row<CRAs...>( columns.operand(), args... ), columns.idces() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given temporary column selection.
-// \ingroup columns
-//
-// \param columns The temporary selection of columns containing the row.
-// \param args The runtime row arguments.
-// \return View on the specified row of the column selection.
-//
-// This function returns an expression representing the specified row of the given temporary
-// column selection.
-*/
-template< size_t... CRAs      // Compile time row arguments
-        , typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , typename... CCAs    // Compile time column arguments
-        , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( Columns<MT,SO,DF,SF,CCAs...>&& columns, RRAs... args )
+template< size_t... CRAs    // Compile time row arguments
+        , typename MT       // Type of the matrix
+        , typename... RRAs  // Runtime row arguments
+        , EnableIf_t< IsColumns_v< RemoveReference_t<MT> > >* = nullptr >
+inline decltype(auto) row( MT&& columns, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 

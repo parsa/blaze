@@ -77,6 +77,7 @@
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsRows.h>
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/views/Check.h>
@@ -95,6 +96,7 @@
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsPointer.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 
 namespace blaze {
@@ -1821,85 +1823,16 @@ inline decltype(auto) elements( const MatReduceExpr<VT,rowwise>& vector, REAs...
 //
 // This function returns an expression representing the specified row of the given row selection.
 */
-template< size_t I1           // Row index
-        , typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , size_t I2           // First row index
-        , size_t... Is        // Remaining row indices
-        , typename... CRAs    // Compile time row arguments
-        , typename... RRAs >  // Optional row arguments
-inline decltype(auto) row( Rows<MT,SO,DF,SF,index_sequence<I2,Is...>,CRAs...>& rows, RRAs... args )
+template< size_t I          // Row index
+        , typename MT       // Type of the matrix
+        , typename... RRAs  // Optional row arguments
+        , EnableIf_t< IsRows_v< RemoveReference_t<MT> > &&
+                      RemoveReference_t<MT>::compileTimeArgs >* = nullptr >
+inline decltype(auto) row( MT&& rows, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   static constexpr size_t indices[] = { I2, Is... };
-   return row<indices[I1]>( rows.operand(), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given constant row selection.
-// \ingroup rows
-//
-// \param rows The constant selection of rows containing the row.
-// \param args The optional row arguments.
-// \return View on the specified row of the row selection.
-//
-// This function returns an expression representing the specified row of the given constant row
-// selection.
-*/
-template< size_t I1           // Row index
-        , typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , size_t I2           // First row index
-        , size_t... Is        // Remaining row indices
-        , typename... CRAs    // Compile time row arguments
-        , typename... RRAs >  // Optional row arguments
-inline decltype(auto) row( const Rows<MT,SO,DF,SF,index_sequence<I2,Is...>,CRAs...>& rows, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   static constexpr size_t indices[] = { I2, Is... };
-   return row<indices[I1]>( rows.operand(), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given temporary row selection.
-// \ingroup rows
-//
-// \param rows The temporary selection of rows containing the row.
-// \param args The optional row arguments.
-// \return View on the specified row of the row selection.
-//
-// This function returns an expression representing the specified row of the given temporary row
-// selection.
-*/
-template< size_t I1           // Row index
-        , typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , size_t I2           // First row index
-        , size_t... Is        // Remaining row indices
-        , typename... CRAs    // Compile time row arguments
-        , typename... RRAs >  // Optional row arguments
-inline decltype(auto) row( Rows<MT,SO,DF,SF,index_sequence<I2,Is...>,CRAs...>&& rows, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   static constexpr size_t indices[] = { I2, Is... };
-   return row<indices[I1]>( rows.operand(), args... );
+   return row< RemoveReference_t<MT>::idx(I) >( rows.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1917,98 +1850,16 @@ inline decltype(auto) row( Rows<MT,SO,DF,SF,index_sequence<I2,Is...>,CRAs...>&& 
 //
 // This function returns an expression representing the specified row of the given row selection.
 */
-template< size_t... CRAs1     // Compile time row arguments
-        , typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , typename... CRAs2   // Compile time row arguments
-        , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( Rows<MT,SO,DF,SF,CRAs2...>& rows, RRAs... args )
+template< size_t... CRAs    // Compile time row arguments
+        , typename MT       // Type of the matrix
+        , typename... RRAs  // Runtime row arguments
+        , EnableIf_t< IsRows_v< RemoveReference_t<MT> > &&
+                      ( sizeof...( CRAs ) == 0UL || !RemoveReference_t<MT>::compileTimeArgs ) >* = nullptr >
+inline decltype(auto) row( MT&& rows, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   const RowData<CRAs1...> rd( args... );
-
-   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-
-   if( isChecked ) {
-      if( rows.rows() <= rd.row() ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
-      }
-   }
-
-   return row( rows.operand(), rows.idx( rd.row() ), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given constant row selection.
-// \ingroup rows
-//
-// \param rows The constant selection of rows containing the row.
-// \param args The runtime row arguments.
-// \return View on the specified row of the row selection.
-// \exception std::invalid_argument Invalid row access index.
-//
-// This function returns an expression representing the specified row of the given constant row
-// selection.
-*/
-template< size_t... CRAs1     // Compile time row arguments
-        , typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , typename... CRAs2   // Compile time row arguments
-        , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( const Rows<MT,SO,DF,SF,CRAs2...>& rows, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   const RowData<CRAs1...> rd( args... );
-
-   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-
-   if( isChecked ) {
-      if( rows.rows() <= rd.row() ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
-      }
-   }
-
-   return row( rows.operand(), rows.idx( rd.row() ), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given temporary row selection.
-// \ingroup rows
-//
-// \param rows The temporary selection of rows containing the row.
-// \param args The runtime row arguments.
-// \return View on the specified row of the row selection.
-// \exception std::invalid_argument Invalid row access index.
-//
-// This function returns an expression representing the specified row of the given temporary row
-// selection.
-*/
-template< size_t... CRAs1     // Compile time row arguments
-        , typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , typename... CRAs2   // Compile time row arguments
-        , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( Rows<MT,SO,DF,SF,CRAs2...>&& rows, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   const RowData<CRAs1...> rd( args... );
+   const RowData<CRAs...> rd( args... );
 
    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
