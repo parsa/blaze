@@ -1866,85 +1866,16 @@ inline decltype(auto) row( MT&& columns, RRAs... args )
 // This function returns an expression representing the specified column of the given column
 // selection.
 */
-template< size_t I1           // Column index
-        , typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , size_t I2           // First column index
-        , size_t... Is        // Remaining column indices
-        , typename... CCAs    // Compile time column arguments
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) column( Columns<MT,SO,DF,SF,index_sequence<I2,Is...>,CCAs...>& columns, RCAs... args )
+template< size_t I          // Column index
+        , typename MT       // Type of the matrix
+        , typename... RCAs  // Optional column arguments
+        , EnableIf_t< IsColumns_v< RemoveReference_t<MT> > &&
+                      RemoveReference_t<MT>::compileTimeArgs >* = nullptr >
+inline decltype(auto) column( MT&& columns, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   static constexpr size_t indices[] = { I2, Is... };
-   return column<indices[I1]>( columns.operand(), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given constant column selection.
-// \ingroup columns
-//
-// \param columns The constant selection of columns containing the column.
-// \param args The optional column arguments.
-// \return View on the specified column of the column selection.
-//
-// This function returns an expression representing the specified column of the given constant
-// column selection.
-*/
-template< size_t I1           // Column index
-        , typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , size_t I2           // First column index
-        , size_t... Is        // Remaining column indices
-        , typename... CCAs    // Compile time column arguments
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) column( const Columns<MT,SO,DF,SF,index_sequence<I2,Is...>,CCAs...>& columns, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   static constexpr size_t indices[] = { I2, Is... };
-   return column<indices[I1]>( columns.operand(), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given temporary column selection.
-// \ingroup columns
-//
-// \param columns The temporary selection of columns containing the column.
-// \param args The optional column arguments.
-// \return View on the specified column of the column selection.
-//
-// This function returns an expression representing the specified column of the given temporary
-// column selection.
-*/
-template< size_t I1           // Column index
-        , typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , size_t I2           // First column index
-        , size_t... Is        // Remaining column indices
-        , typename... CCAs    // Compile time column arguments
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) column( Columns<MT,SO,DF,SF,index_sequence<I2,Is...>,CCAs...>&& columns, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   static constexpr size_t indices[] = { I2, Is... };
-   return column<indices[I1]>( columns.operand(), args... );
+   return column< RemoveReference_t<MT>::idx(I) >( columns.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1963,98 +1894,16 @@ inline decltype(auto) column( Columns<MT,SO,DF,SF,index_sequence<I2,Is...>,CCAs.
 // This function returns an expression representing the specified column of the given column
 // selection.
 */
-template< size_t... CCAs1     // Compile time column arguments
-        , typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , typename... CCAs2   // Compile time column arguments
-        , typename... RCAs >  // Runtime column arguments
-inline decltype(auto) column( Columns<MT,SO,DF,SF,CCAs2...>& columns, RCAs... args )
+template< size_t... CCAs    // Compile time column arguments
+        , typename MT       // Type of the matrix
+        , typename... RCAs  // Runtime column arguments
+        , EnableIf_t< IsColumns_v< RemoveReference_t<MT> > &&
+                      ( sizeof...( CCAs ) == 0UL || !RemoveReference_t<MT>::compileTimeArgs ) >* = nullptr >
+inline decltype(auto) column( MT&& columns, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   const ColumnData<CCAs1...> cd( args... );
-
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
-      if( columns.columns() <= cd.column() ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
-      }
-   }
-
-   return column( columns.operand(), columns.idx( cd.column() ), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given constant column selection.
-// \ingroup columns
-//
-// \param columns The constant selection of columns containing the column.
-// \param args The runtime column arguments.
-// \return View on the specified column of the column selection.
-// \exception std::invalid_argument Invalid column access index.
-//
-// This function returns an expression representing the specified column of the given constant
-// column selection.
-*/
-template< size_t... CCAs1     // Compile time column arguments
-        , typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , typename... CCAs2   // Compile time column arguments
-        , typename... RCAs >  // Runtime column arguments
-inline decltype(auto) column( const Columns<MT,SO,DF,SF,CCAs2...>& columns, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   const ColumnData<CCAs1...> cd( args... );
-
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
-      if( columns.columns() <= cd.column() ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
-      }
-   }
-
-   return column( columns.operand(), columns.idx( cd.column() ), args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given temporary column selection.
-// \ingroup columns
-//
-// \param columns The temporary selection of columns containing the column.
-// \param args The runtime column arguments.
-// \return View on the specified column of the column selection.
-// \exception std::invalid_argument Invalid column access index.
-//
-// This function returns an expression representing the specified column of the given temporary
-// column selection.
-*/
-template< size_t... CCAs1     // Compile time column arguments
-        , typename MT         // Type of the matrix
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , bool SF             // Symmetry flag
-        , typename... CCAs2   // Compile time column arguments
-        , typename... RCAs >  // Runtime column arguments
-inline decltype(auto) column( Columns<MT,SO,DF,SF,CCAs2...>&& columns, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   const ColumnData<CCAs1...> cd( args... );
+   const ColumnData<CCAs...> cd( args... );
 
    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
