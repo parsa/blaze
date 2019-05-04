@@ -59,6 +59,7 @@
 #include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ExpandTrait.h>
+#include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
@@ -6082,6 +6083,34 @@ struct MultTraitEval2< T1, T2
    using ET2 = ElementType_t<T2>;
 
    using Type = CompressedMatrix< MultTrait_t<ET1,ET2>, StorageOrder_v<T1> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  KRONTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1    // Type of the left-hand side operand
+        , typename T2 >  // Type of the right-hand side operand
+struct KronTraitEval2< T1, T2
+                     , EnableIf_t< IsMatrix_v<T1> &&
+                                   IsMatrix_v<T2> &&
+                                   ( IsSparseMatrix_v<T1> || IsSparseMatrix_v<T2> ) > >
+{
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   static constexpr bool SO = ( IsDenseMatrix_v<T2> ? StorageOrder_v<T1> : StorageOrder_v<T2> );
+
+   using Type = CompressedMatrix< MultTrait_t<ET1,ET2>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
