@@ -62,6 +62,7 @@
 #include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ExpandTrait.h>
+#include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
@@ -6642,6 +6643,38 @@ struct MultTraitEval2< T1, T2
    static constexpr bool SO = ( IsSparseMatrix_v<T1> ? StorageOrder_v<T2> : StorageOrder_v<T1> );
 
    using Type = DynamicMatrix< MultTrait_t<ET1,ET2>, SO >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  KRONTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+struct KronTraitEval2< T1, T2
+                     , EnableIf_t< IsDenseMatrix_v<T1> &&
+                                   IsDenseMatrix_v<T2> &&
+                                   ( ( Size_v<T1,0UL> == DefaultSize_v ) ||
+                                     ( Size_v<T2,0UL> == DefaultSize_v ) ||
+                                     ( Size_v<T1,1UL> == DefaultSize_v ) ||
+                                     ( Size_v<T2,1UL> == DefaultSize_v ) ) &&
+                                   ( ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) ||
+                                     ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) ||
+                                     ( MaxSize_v<T1,1UL> == DefaultMaxSize_v ) ||
+                                     ( MaxSize_v<T2,1UL> == DefaultMaxSize_v ) ) > >
+{
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   using Type = DynamicMatrix< MultTrait_t<ET1,ET2>, StorageOrder_v<T2> >;
 };
 /*! \endcond */
 //*************************************************************************************************
