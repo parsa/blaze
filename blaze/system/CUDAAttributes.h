@@ -37,6 +37,23 @@
 #ifndef _BLAZE_SYSTEM_HOSTDEVICE_H_
 #define _BLAZE_SYSTEM_HOSTDEVICE_H_
 
+#ifdef __CUDACC__
+#  define BLAZE_GLOBAL __global__
+#else
+#  define BLAZE_GLOBAL
+#endif
+
+#ifdef __CUDACC__
+#  define BLAZE_DEVICE __device__
+#else
+#  define BLAZE_DEVICE
+#endif
+
+#ifdef __CUDACC__
+#  define BLAZE_HOST __host__
+#else
+#  define BLAZE_HOST
+#endif
 
 //*************************************************************************************************
 /*!\def BLAZE_HOST_DEVICE
@@ -48,6 +65,7 @@
 #else
 #  define BLAZE_HOST_DEVICE
 #endif
+
 //*************************************************************************************************
 
 #endif
