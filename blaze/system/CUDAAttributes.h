@@ -37,23 +37,42 @@
 #ifndef _BLAZE_SYSTEM_HOSTDEVICE_H_
 #define _BLAZE_SYSTEM_HOSTDEVICE_H_
 
+
+//*************************************************************************************************
+/*!\def BLAZE_HOST_DEVICE
+// \brief Conditional macro that sets __global__ attribute when compiled with CUDA.
+// \ingroup system
+*/
 #ifdef __CUDACC__
 #  define BLAZE_GLOBAL __global__
 #else
 #  define BLAZE_GLOBAL
 #endif
 
+
+//*************************************************************************************************
+/*!\def BLAZE_HOST_DEVICE
+// \brief Conditional macro that sets __device__ attribute when compiled with CUDA.
+// \ingroup system
+*/
 #ifdef __CUDACC__
 #  define BLAZE_DEVICE __device__
 #else
 #  define BLAZE_DEVICE
 #endif
 
+
+//*************************************************************************************************
+/*!\def BLAZE_HOST_DEVICE
+// \brief Conditional macro that sets __host__ and __device__ attributes when compiled with CUDA.
+// \ingroup system
+*/
 #ifdef __CUDACC__
 #  define BLAZE_HOST __host__
 #else
 #  define BLAZE_HOST
 #endif
+
 
 //*************************************************************************************************
 /*!\def BLAZE_HOST_DEVICE
