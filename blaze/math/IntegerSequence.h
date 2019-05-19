@@ -234,7 +234,7 @@ using make_shifted_index_sequence = decltype( shift<Offset>( make_index_sequence
 
    \code
    // Creating the subsequence <3,6,8> from the index sequence <2,3,4,5,6,7,8>
-   using Type = make_shifted_index_subsequence<2UL,6UL,1UL,4UL,6UL>;
+   using Type = make_shifted_index_subsequence<2UL,7UL,1UL,4UL,6UL>;
    \endcode
 */
 template< size_t Offset    // The offset of the index sequence
