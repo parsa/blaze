@@ -91,6 +91,7 @@ struct Imag;
 struct Inv;
 struct InvCbrt;
 struct InvSqrt;
+struct Kron;
 struct L1Norm;
 struct L2Norm;
 struct L3Norm;

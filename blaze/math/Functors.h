@@ -80,6 +80,7 @@
 #include <blaze/math/functors/Inv.h>
 #include <blaze/math/functors/InvCbrt.h>
 #include <blaze/math/functors/InvSqrt.h>
+#include <blaze/math/functors/Kron.h>
 #include <blaze/math/functors/L1Norm.h>
 #include <blaze/math/functors/L2Norm.h>
 #include <blaze/math/functors/L3Norm.h>
