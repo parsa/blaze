@@ -46,6 +46,7 @@
 #include <blaze/math/expressions/MatEvalExpr.h>
 #include <blaze/math/expressions/MatMapExpr.h>
 #include <blaze/math/expressions/MatMatAddExpr.h>
+#include <blaze/math/expressions/MatMatKronExpr.h>
 #include <blaze/math/expressions/MatMatMapExpr.h>
 #include <blaze/math/expressions/MatMatMultExpr.h>
 #include <blaze/math/expressions/MatMatSubExpr.h>
@@ -449,6 +450,44 @@ inline decltype(auto) column( const MatMatMultExpr<MT>& matrix, RCAs... args )
    BLAZE_FUNCTION_TRACE;
 
    return (~matrix).leftOperand() * column<CCAs...>( (~matrix).rightOperand(), args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given Kronecker product.
+// \ingroup column
+//
+// \param matrix The constant Kronecker product.
+// \param args The runtime column arguments.
+// \return View on the specified column of the Kronecker product.
+//
+// This function returns an expression representing the specified column of the given Kronecker
+// product.
+*/
+template< size_t... CCAs      // Compile time column arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) column( const MatMatKronExpr<MT>& matrix, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   MAYBE_UNUSED( args... );
+
+   const ColumnData<CCAs...> cd( args... );
+
+   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
+      if( (~matrix).columns() <= cd.column() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+      }
+   }
+
+   const size_t columns( (~matrix).rightOperand().columns() );
+
+   return kron( column( (~matrix).leftOperand(), cd.column()/columns ),
+                column( (~matrix).rightOperand(), cd.column()%columns ) );
 }
 /*! \endcond */
 //*************************************************************************************************
