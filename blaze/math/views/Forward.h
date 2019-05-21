@@ -152,13 +152,22 @@ template< size_t I, size_t... Is, typename MT, bool SO, typename... RRAs >
 decltype(auto) rows( Matrix<MT,SO>&&, RRAs... );
 
 template< typename MT, bool SO, typename T, typename... RRAs >
-decltype(auto) rows( Matrix<MT,SO>&, const T*, size_t, RRAs... );
+decltype(auto) rows( Matrix<MT,SO>&, T*, size_t, RRAs... );
 
 template< typename MT, bool SO, typename T, typename... RRAs >
-decltype(auto) rows( const Matrix<MT,SO>&, const T*, size_t, RRAs... );
+decltype(auto) rows( const Matrix<MT,SO>&, T*, size_t, RRAs... );
 
 template< typename MT, bool SO, typename T, typename... RRAs >
-decltype(auto) rows( Matrix<MT,SO>&&, const T*, size_t, RRAs... );
+decltype(auto) rows( Matrix<MT,SO>&&, T*, size_t, RRAs... );
+
+template< typename MT, bool SO, typename P, typename... RRAs >
+decltype(auto) rows( Matrix<MT,SO>&, P, size_t, RRAs... );
+
+template< typename MT, bool SO, typename P, typename... RRAs >
+decltype(auto) rows( const Matrix<MT,SO>&, P, size_t, RRAs... );
+
+template< typename MT, bool SO, typename P, typename... RRAs >
+decltype(auto) rows( Matrix<MT,SO>&&, P, size_t, RRAs... );
 
 template< size_t I, typename MT, bool SO, typename... RCAs >
 decltype(auto) column( Matrix<MT,SO>&, RCAs... );

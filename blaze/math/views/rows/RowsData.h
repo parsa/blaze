@@ -424,7 +424,7 @@ class RowsData<>
    /*!\name Constructors */
    //@{
    template< typename T, typename... RRAs >
-   explicit inline RowsData( const T* indices, size_t n, RRAs... args );
+   explicit inline RowsData( T* indices, size_t n, RRAs... args );
 
    RowsData( const RowsData& ) = default;
    RowsData( RowsData&& ) = default;
@@ -480,7 +480,7 @@ class RowsData<>
 */
 template< typename T          // Type of the row indices
         , typename... RRAs >  // Optional row arguments
-inline RowsData<>::RowsData( const T* indices, size_t n, RRAs... args )
+inline RowsData<>::RowsData( T* indices, size_t n, RRAs... args )
    : indices_( indices, indices+n )  // The indices of the rows in the matrix
 {
    MAYBE_UNUSED( args... );

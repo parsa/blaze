@@ -95,7 +95,6 @@
 #include <blaze/util/SmallArray.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsPointer.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -279,7 +278,7 @@ template< typename MT         // Type of the matrix
         , bool SO             // Storage order
         , typename T          // Type of the row indices
         , typename... RRAs >  // Optional arguments
-inline decltype(auto) rows( Matrix<MT,SO>& matrix, const T* indices, size_t n, RRAs... args )
+inline decltype(auto) rows( Matrix<MT,SO>& matrix, T* indices, size_t n, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -333,7 +332,7 @@ template< typename MT         // Type of the matrix
         , bool SO             // Storage order
         , typename T          // Type of the row indices
         , typename... RRAs >  // Optional arguments
-inline decltype(auto) rows( const Matrix<MT,SO>& matrix, const T* indices, size_t n, RRAs... args )
+inline decltype(auto) rows( const Matrix<MT,SO>& matrix, T* indices, size_t n, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -362,7 +361,7 @@ template< typename MT         // Type of the matrix
         , bool SO             // Storage order
         , typename T          // Type of the row indices
         , typename... RRAs >  // Optional arguments
-inline decltype(auto) rows( Matrix<MT,SO>&& matrix, const T* indices, size_t n, RRAs... args )
+inline decltype(auto) rows( Matrix<MT,SO>&& matrix, T* indices, size_t n, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -409,11 +408,10 @@ inline decltype(auto) rows( Matrix<MT,SO>&& matrix, const T* indices, size_t n, 
    auto rows2 = rows( S, []( size_t i ){ return 4UL - 2UL*i; }, 2UL, unchecked );
    \endcode
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , typename P        // Type of the index producer
-        , typename... RRAs  // Optional arguments
-        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , typename P          // Type of the index producer
+        , typename... RRAs >  // Optional arguments
 inline decltype(auto) rows( Matrix<MT,SO>& matrix, P p, size_t n, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -462,11 +460,10 @@ inline decltype(auto) rows( Matrix<MT,SO>& matrix, P p, size_t n, RRAs... args )
    auto rows2 = rows( S, []( size_t i ){ return 4UL - 2UL*i; }, 2UL, unchecked );
    \endcode
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , typename P        // Type of the index producer
-        , typename... RRAs  // Optional arguments
-        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , typename P          // Type of the index producer
+        , typename... RRAs >  // Optional arguments
 inline decltype(auto) rows( const Matrix<MT,SO>& matrix, P p, size_t n, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -492,11 +489,10 @@ inline decltype(auto) rows( const Matrix<MT,SO>& matrix, P p, size_t n, RRAs... 
 // than or equal to the total number of rows in the given matrix) a \a std::invalid_argument
 // exception is thrown.
 */
-template< typename MT       // Type of the matrix
-        , bool SO           // Storage order
-        , typename P        // Type of the index producer
-        , typename... RRAs  // Optional arguments
-        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , typename P          // Type of the index producer
+        , typename... RRAs >  // Optional arguments
 inline decltype(auto) rows( Matrix<MT,SO>&& matrix, P p, size_t n, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1320,7 +1316,7 @@ template< typename MT       // Type of the matrix
         , typename T        // Type of the row indices
         , typename... RRAs  // Optional row arguments
         , EnableIf_t< IsRows_v< RemoveReference_t<MT> > >* = nullptr >
-inline decltype(auto) rows( MT&& r, const T* indices, size_t n, RRAs... args )
+inline decltype(auto) rows( MT&& r, T* indices, size_t n, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1364,8 +1360,7 @@ inline decltype(auto) rows( MT&& r, const T* indices, size_t n, RRAs... args )
 template< typename MT       // Type of the matrix
         , typename P        // Type of the index producer
         , typename... RRAs  // Optional row arguments
-        , EnableIf_t< IsRows_v< RemoveReference_t<MT> > &&
-                      !IsPointer_v<P> >* = nullptr >
+        , EnableIf_t< IsRows_v< RemoveReference_t<MT> > >* = nullptr >
 inline decltype(auto) rows( MT&& r, P p, size_t n, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;

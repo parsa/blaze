@@ -1900,7 +1900,7 @@ template< typename MT       // Type of the sparse submatrix
         , typename T        // Type of the row indices
         , typename... RRAs  // Optional row arguments
         , EnableIf_t< IsSubmatrix_v< RemoveReference_t<MT> > >* = nullptr >
-inline decltype(auto) rows( MT&& sm, const T* indices, size_t n, RRAs... args )
+inline decltype(auto) rows( MT&& sm, T* indices, size_t n, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1942,8 +1942,7 @@ inline decltype(auto) rows( MT&& sm, const T* indices, size_t n, RRAs... args )
 template< typename MT       // Type of the sparse submatrix
         , typename P        // Type of the index producer
         , typename... RRAs  // Optional row arguments
-        , EnableIf_t< IsSubmatrix_v< RemoveReference_t<MT> > &&
-                      !IsPointer_v<P> >* = nullptr >
+        , EnableIf_t< IsSubmatrix_v< RemoveReference_t<MT> > >* = nullptr >
 inline decltype(auto) rows( MT&& sm, P p, size_t n, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
