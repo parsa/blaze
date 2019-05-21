@@ -52,6 +52,7 @@ all: shims simd blas lapack typetraits traits constraints functors \
      dvecdveccross dvecsveccross svecdveccross svecsveccross \
      dvecdvecinner dvecsvecinner svecdvecinner svecsvecinner \
      dvecdvecouter dvecsvecouter svecdvecouter svecsvecouter \
+     dvecdveckron \
      dvecdvecdiv svecdvecdiv \
      dvecdvecmin dvecdvecmax \
      dvecreduce svecreduce \
@@ -435,6 +436,11 @@ svecsvecouter:
 	@echo "Building the sparse vector/sparse vector outer product tests..."
 	@$(MAKE) --no-print-directory -C ./svecsvecouter $(MAKECMDGOALS)
 
+dvecdveckron:
+	@echo
+	@echo "Building the dense vector/dense vector Kronecker product tests..."
+	@$(MAKE) --no-print-directory -C ./dvecdveckron $(MAKECMDGOALS)
+
 dvecdvecdiv:
 	@echo
 	@echo "Building the dense vector/dense vector division tests..."
@@ -744,6 +750,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./dvecsvecouter reset
 	@$(MAKE) --no-print-directory -C ./svecdvecouter reset
 	@$(MAKE) --no-print-directory -C ./svecsvecouter reset
+	@$(MAKE) --no-print-directory -C ./dvecdveckron reset
 	@$(MAKE) --no-print-directory -C ./dvecdvecdiv reset
 	@$(MAKE) --no-print-directory -C ./svecdvecdiv reset
 	@$(MAKE) --no-print-directory -C ./dvecdvecmin reset
@@ -864,6 +871,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./dvecsvecouter clean
 	@$(MAKE) --no-print-directory -C ./svecdvecouter clean
 	@$(MAKE) --no-print-directory -C ./svecsvecouter clean
+	@$(MAKE) --no-print-directory -C ./dvecdveckron clean
 	@$(MAKE) --no-print-directory -C ./dvecdvecdiv clean
 	@$(MAKE) --no-print-directory -C ./svecdvecdiv clean
 	@$(MAKE) --no-print-directory -C ./dvecdvecmin clean
@@ -933,6 +941,7 @@ clean:
         dvecdveccross dvecsveccross svecdveccross svecsveccross \
         dvecdvecinner dvecsvecinner svecdvecinner svecsvecinner \
         dvecdvecouter dvecsvecouter svecdvecouter svecsvecouter \
+        dvecdveckron \
         dvecdvecdiv svecdvecdiv \
         dvecdvecmin dvecdvecmax \
         dvecreduce svecreduce \
