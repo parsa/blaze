@@ -116,6 +116,7 @@ template< typename, bool > class SMatDeclHermExpr;
 template< typename, bool > class SMatDeclLowExpr;
 template< typename, bool > class SMatDeclSymExpr;
 template< typename, bool > class SMatDeclUppExpr;
+template< typename, typename, bool > class SMatDMatKronExpr;
 template< typename, typename, bool, bool, bool, bool > class SMatDMatMultExpr;
 template< typename, typename > class SMatDMatSchurExpr;
 template< typename, typename, bool > class SMatDMatSubExpr;

@@ -56,6 +56,7 @@
 #include <blaze/math/expressions/SMatDeclLowExpr.h>
 #include <blaze/math/expressions/SMatDeclSymExpr.h>
 #include <blaze/math/expressions/SMatDeclUppExpr.h>
+#include <blaze/math/expressions/SMatDMatKronExpr.h>
 #include <blaze/math/expressions/SMatDMatSchurExpr.h>
 #include <blaze/math/expressions/SMatDVecMultExpr.h>
 #include <blaze/math/expressions/SMatEvalExpr.h>
