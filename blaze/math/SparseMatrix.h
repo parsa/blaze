@@ -47,6 +47,7 @@
 #include <blaze/math/adaptors/UpperMatrix.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DMatSMatEqualExpr.h>
+#include <blaze/math/expressions/DMatSMatKronExpr.h>
 #include <blaze/math/expressions/DMatSMatSchurExpr.h>
 #include <blaze/math/expressions/DMatTSMatSchurExpr.h>
 #include <blaze/math/expressions/DVecSVecOuterExpr.h>
