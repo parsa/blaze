@@ -46,6 +46,7 @@
 #include <blaze/math/expressions/MatEvalExpr.h>
 #include <blaze/math/expressions/MatMapExpr.h>
 #include <blaze/math/expressions/MatMatAddExpr.h>
+#include <blaze/math/expressions/MatMatKronExpr.h>
 #include <blaze/math/expressions/MatMatMapExpr.h>
 #include <blaze/math/expressions/MatMatSubExpr.h>
 #include <blaze/math/expressions/Matrix.h>
@@ -528,29 +529,30 @@ inline decltype(auto) band( const SchurExpr<MT>& matrix, RBAs... args )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific band of the given outer product.
+/*!\brief Creating a view on a specific band of the given Kronecker product.
 // \ingroup band
 //
-// \param matrix The constant outer product.
-// \return View on the specified band of the outer product.
+// \param matrix The constant Kronecker product.
+// \param args The runtime band arguments.
+// \return View on the specified band of the Kronecker product.
 //
-// This function returns an expression representing the specified band of the given outer product.
+// This function returns an expression representing the specified band of the given Kronecker
+// product.
 */
-template< ptrdiff_t I    // Band index
-        , typename MT >  // Type of the matrix
-inline decltype(auto) band( const VecTVecMultExpr<MT>& matrix )
+template< ptrdiff_t... CBAs   // Compile time band arguments
+        , typename MT         // Type of the matrix
+        , typename... RBAs >  // Runtime band arguments
+inline decltype(auto) band( const MatMatKronExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   decltype(auto) leftOperand ( (~matrix).leftOperand()  );
-   decltype(auto) rightOperand( (~matrix).rightOperand() );
+   const BandData<CBAs...> bd( args... );
 
-   const size_t row   ( I <  0L ? -I : 0UL );
-   const size_t column( I >= 0L ?  I : 0UL );
-   const size_t size  ( min( leftOperand.size() - row, rightOperand.size() - column ) );
+   const size_t row   ( bd.band() <  0L ? -bd.band() : 0UL );
+   const size_t column( bd.band() >= 0L ?  bd.band() : 0UL );
+   const size_t n     ( min( (~matrix).rows() - row, (~matrix).columns() - column ) );
 
-   return transTo<defaultTransposeFlag>( subvector( leftOperand , row   , size ) ) *
-          transTo<defaultTransposeFlag>( subvector( rightOperand, column, size ) );
+   return diagonal( submatrix( ~matrix, row, column, n, n, args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -561,22 +563,26 @@ inline decltype(auto) band( const VecTVecMultExpr<MT>& matrix )
 /*!\brief Creating a view on a specific band of the given outer product.
 // \ingroup band
 //
-// \param matrix The constant outer product.
-// \param index The band index.
-// \return View on the specified band of the outer product.
+// \param matrix The constant Kronecker product.
+// \param args The runtime band arguments.
+// \return View on the specified band of the Kronecker product.
 //
 // This function returns an expression representing the specified band of the given outer product.
 */
-template< typename MT >  // Type of the matrix
-inline decltype(auto) band( const VecTVecMultExpr<MT>& matrix, ptrdiff_t index )
+template< ptrdiff_t... CBAs   // Compile time band arguments
+        , typename MT         // Type of the matrix
+        , typename... RBAs >  // Runtime band arguments
+inline decltype(auto) band( const VecTVecMultExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
+
+   const BandData<CBAs...> bd( args... );
 
    decltype(auto) leftOperand ( (~matrix).leftOperand()  );
    decltype(auto) rightOperand( (~matrix).rightOperand() );
 
-   const size_t row   ( index <  0L ? -index : 0UL );
-   const size_t column( index >= 0L ?  index : 0UL );
+   const size_t row   ( bd.band() <  0L ? -bd.band() : 0UL );
+   const size_t column( bd.band() >= 0L ?  bd.band() : 0UL );
    const size_t size  ( min( leftOperand.size() - row, rightOperand.size() - column ) );
 
    return transTo<defaultTransposeFlag>( subvector( leftOperand , row   , size ) ) *
