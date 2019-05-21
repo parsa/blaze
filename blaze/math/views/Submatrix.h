@@ -104,7 +104,6 @@
 #include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsPointer.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -2189,7 +2188,7 @@ template< typename MT       // Type of the sparse submatrix
         , typename T        // Type of the column indices
         , typename... RCAs  // Optional column arguments
         , EnableIf_t< IsSubmatrix_v< RemoveReference_t<MT> > >* = nullptr >
-inline decltype(auto) columns( MT&& sm, const T* indices, size_t n, RCAs... args )
+inline decltype(auto) columns( MT&& sm, T* indices, size_t n, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -2231,8 +2230,7 @@ inline decltype(auto) columns( MT&& sm, const T* indices, size_t n, RCAs... args
 template< typename MT       // Type of the sparse submatrix
         , typename P        // Type of the index producer
         , typename... RCAs  // Optional column arguments
-        , EnableIf_t< IsSubmatrix_v< RemoveReference_t<MT> > &&
-                      !IsPointer_v<P> >* = nullptr >
+        , EnableIf_t< IsSubmatrix_v< RemoveReference_t<MT> > >* = nullptr >
 inline decltype(auto) columns( MT&& sm, P p, size_t n, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;

@@ -424,7 +424,7 @@ class ColumnsData<>
    /*!\name Constructors */
    //@{
    template< typename T, typename... RCAs >
-   explicit inline ColumnsData( const T* indices, size_t n, RCAs... args );
+   explicit inline ColumnsData( T* indices, size_t n, RCAs... args );
 
    ColumnsData( const ColumnsData& ) = default;
    ColumnsData( ColumnsData&& ) = default;
@@ -480,7 +480,7 @@ class ColumnsData<>
 */
 template< typename T          // Type of the column indices
         , typename... RCAs >  // Optional column arguments
-inline ColumnsData<>::ColumnsData( const T* indices, size_t n, RCAs... args )
+inline ColumnsData<>::ColumnsData( T* indices, size_t n, RCAs... args )
    : indices_( indices, indices+n )  // The indices of the columns in the matrix
 {
    MAYBE_UNUSED( args... );
