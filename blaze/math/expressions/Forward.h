@@ -152,6 +152,7 @@ template< typename, typename, bool > class SVecScalarMultExpr;
 template< typename, bool > class SVecSerialExpr;
 template< typename, typename, bool > class SVecSVecAddExpr;
 template< typename, typename, bool > class SVecSVecCrossExpr;
+template< typename, typename, bool > class SVecSVecKronExpr;
 template< typename, typename, bool > class SVecSVecMultExpr;
 template< typename, typename > class SVecSVecOuterExpr;
 template< typename, typename, bool > class SVecSVecSubExpr;

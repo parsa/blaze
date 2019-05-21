@@ -61,6 +61,7 @@
 #include <blaze/math/expressions/SVecSVecAddExpr.h>
 #include <blaze/math/expressions/SVecSVecEqualExpr.h>
 #include <blaze/math/expressions/SVecSVecInnerExpr.h>
+#include <blaze/math/expressions/SVecSVecKronExpr.h>
 #include <blaze/math/expressions/SVecSVecMultExpr.h>
 #include <blaze/math/expressions/SVecSVecSubExpr.h>
 #include <blaze/math/expressions/SVecTransExpr.h>
