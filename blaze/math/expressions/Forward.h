@@ -488,6 +488,41 @@ template< typename MT1, typename MT2 >
 decltype(auto) operator%( const SparseMatrix<MT1,true>&, const SparseMatrix<MT2,true>& );
 
 
+template< typename VT1, typename VT2, bool TF >
+decltype(auto) kron( const DenseVector<VT1,TF>&, const DenseVector<VT2,TF>& );
+
+template< typename VT1, typename VT2, bool TF >
+decltype(auto) kron( const DenseVector<VT1,TF>&, const SparseVector<VT2,TF>& );
+
+template< typename VT1, typename VT2, bool TF >
+decltype(auto) kron( const SparseVector<VT1,TF>&, const DenseVector<VT2,TF>& );
+
+template< typename VT1, typename VT2, bool TF >
+decltype(auto) kron( const SparseVector<VT1,TF>&, const SparseVector<VT2,TF>& );
+
+
+template< typename MT1, bool SO1, typename MT2, bool SO2 >
+decltype(auto) kron( const DenseMatrix<MT1,SO1>&, const DenseMatrix<MT2,SO2>& );
+
+template< typename MT1, bool SO1, typename MT2, bool SO2 >
+decltype(auto) kron( const DenseMatrix<MT1,SO1>&, const SparseMatrix<MT2,SO2>& );
+
+template< typename MT1, bool SO1, typename MT2, bool SO2 >
+decltype(auto) kron( const SparseMatrix<MT1,SO1>&, const DenseMatrix<MT2,SO2>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) kron( const SparseMatrix<MT1,false>&, const SparseMatrix<MT2,false>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) kron( const SparseMatrix<MT1,false>&, const SparseMatrix<MT2,true>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) kron( const SparseMatrix<MT1,true>&, const SparseMatrix<MT2,false>& );
+
+template< typename MT1, typename MT2 >
+decltype(auto) kron( const SparseMatrix<MT1,true>&, const SparseMatrix<MT2,true>& );
+
+
 template< typename VT, bool TF >
 decltype(auto) trans( const DenseVector<VT,TF>& );
 
