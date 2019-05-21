@@ -48,6 +48,7 @@
 #include <blaze/math/expressions/MatEvalExpr.h>
 #include <blaze/math/expressions/MatMapExpr.h>
 #include <blaze/math/expressions/MatMatAddExpr.h>
+#include <blaze/math/expressions/MatMatKronExpr.h>
 #include <blaze/math/expressions/MatMatMapExpr.h>
 #include <blaze/math/expressions/MatMatMultExpr.h>
 #include <blaze/math/expressions/MatMatSubExpr.h>
@@ -62,6 +63,7 @@
 #include <blaze/math/expressions/TVecMatMultExpr.h>
 #include <blaze/math/expressions/VecExpandExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
+#include <blaze/math/IntegerSequence.h>
 #include <blaze/math/InversionFlag.h>
 #include <blaze/math/ReductionFlag.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -1003,6 +1005,67 @@ inline decltype(auto) submatrix( const MatMatMultExpr<MT>& matrix, RSAs... args 
 
    return submatrix<AF>( left, sd.row(), begin, sd.rows(), diff ) *
           submatrix<AF>( right, begin, sd.column(), diff, sd.columns() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given Kronecker product.
+// \ingroup submatrix
+//
+// \param matrix The constant Kronecker product.
+// \param args Optional submatrix arguments.
+// \return View on the specified submatrix of the Kronecker product.
+//
+// This function returns an expression representing the specified submatrix of the given
+// Kronecker product.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename MT         // Matrix base type of the expression
+        , typename... RSAs >  // Optional submatrix arguments
+inline decltype(auto) submatrix( const MatMatKronExpr<MT>& matrix, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return columns( rows( ~matrix, make_shifted_index_sequence<I,M>(), args... )
+                 , make_shifted_index_sequence<J,N>(), args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given Kronecker product.
+// \ingroup submatrix
+//
+// \param matrix The constant Kronecker product.
+// \param row The index of the first row of the submatrix.
+// \param column The index of the first column of the submatrix.
+// \param m The number of rows of the submatrix.
+// \param n The number of columns of the submatrix.
+// \param args Optional submatrix arguments.
+// \return View on the specified submatrix of the Kronecker product.
+//
+// This function returns an expression representing the specified submatrix of the given
+// Kronecker product.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , typename MT         // Matrix base type of the expression
+        , typename... RSAs >  // Optional submatrix arguments
+inline decltype(auto)
+   submatrix( const MatMatKronExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return columns( rows( ~matrix, [row]( size_t i ){ return i+row; }, m, args... )
+                 , [column]( size_t i ){ return i+column; }, n, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
