@@ -41,7 +41,7 @@
 //*************************************************************************************************
 
 #include <cmath>
-#include <stdexcept>
+#include <vector>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/adaptors/DiagonalMatrix.h>
 #include <blaze/math/adaptors/HermitianMatrix.h>
@@ -49,6 +49,7 @@
 #include <blaze/math/constraints/Resizable.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/DenseMatrix.h>
+#include <blaze/math/Exception.h>
 #include <blaze/math/shims/Real.h>
 #include <blaze/math/SparseMatrix.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
@@ -196,8 +197,9 @@ inline const HermitianMatrix<MT,SO,DF>
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   if( nonzeros > n*n )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > n*n ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    HermitianMatrix<MT,SO,DF> matrix( n );
    randomize( matrix, nonzeros );
@@ -281,8 +283,9 @@ inline const HermitianMatrix<MT,SO,DF>
    BLAZE_CONSTRAINT_MUST_BE_RESIZABLE_TYPE    ( MT );
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
 
-   if( nonzeros > n*n )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > n*n ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    HermitianMatrix<MT,SO,DF> matrix( n );
    randomize( matrix, nonzeros, min, max );
@@ -388,8 +391,9 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
 
    const size_t n( matrix.rows() );
 
-   if( nonzeros > n*n )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > n*n ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    if( n == 0UL ) return;
 
@@ -522,23 +526,50 @@ inline void Rand< HermitianMatrix<MT,SO,DF> >::randomize( HermitianMatrix<MT,SO,
 
    const size_t n( matrix.rows() );
 
-   if( nonzeros > n*n )
-      throw std::invalid_argument( "Invalid number of non-zero elements" );
+   if( nonzeros > n*n ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+   }
 
    if( n == 0UL ) return;
 
-   matrix.reset();
-   matrix.reserve( nonzeros );
+   std::vector<size_t> dist( n );
+   std::vector<bool> structure( n*n );
+   size_t nz( 0UL );
 
-   while( matrix.nonZeros() < nonzeros )
+   while( nz < nonzeros )
    {
-      const size_t row   ( rand<size_t>( 0UL, n-1UL ) );
-      const size_t column( rand<size_t>( 0UL, n-1UL ) );
+      const size_t row = rand<size_t>( 0UL, n-1UL );
+      const size_t col = rand<size_t>( 0UL, n-1UL );
 
-      if( row == column )
-         matrix(row,column) = rand<BT>( real( min ), real( max ) );
-      else
-         matrix(row,column) = rand<ET>( min, max );
+      if( structure[row*n+col] ) continue;
+
+      ++dist[row];
+      structure[row*n+col] = true;
+      ++nz;
+
+      if( row != col ) {
+         ++dist[col];
+         structure[col*n+row] = true;
+         ++nz;
+      }
+   }
+
+   matrix.reset();
+   matrix.reserve( nz );
+
+   for( size_t i=0UL; i<n; ++i ) {
+      matrix.reserve( i, dist[i] );
+   }
+
+   for( size_t i=0UL; i<n; ++i ) {
+      for( size_t j=i; j<n; ++j ) {
+         if( structure[i*n+j] ) {
+            if( i == j )
+               matrix.append( i, j, rand<BT>( real( min ), real( max ) ) );
+            else
+               matrix.append( i, j, rand<ET>( min, max ) );
+         }
+      }
    }
 }
 /*! \endcond */
