@@ -51,7 +51,7 @@ BIN = $(SRC:.cpp=)
 default: all
 
 all: $(BIN) addtrait crosstrait decldiagtrait declhermtrait decllowtrait declsymtrait \
-     declupptrait divtrait expandtrait maptrait multtrait schurtrait subtrait
+     declupptrait divtrait expandtrait krontrait maptrait multtrait schurtrait subtrait
 
 essential: all
 
@@ -107,6 +107,11 @@ expandtrait:
 	@echo "Building the ExpandTrait tests..."
 	@$(MAKE) --no-print-directory -C ./expandtrait $(MAKECMDGOALS)
 
+krontrait:
+	@echo
+	@echo "Building the KronTrait tests..."
+	@$(MAKE) --no-print-directory -C ./krontrait $(MAKECMDGOALS)
+
 maptrait:
 	@echo
 	@echo "Building the MapTrait tests..."
@@ -140,6 +145,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./declupptrait reset
 	@$(MAKE) --no-print-directory -C ./divtrait reset
 	@$(MAKE) --no-print-directory -C ./expandtrait reset
+	@$(MAKE) --no-print-directory -C ./krontrait reset
 	@$(MAKE) --no-print-directory -C ./maptrait reset
 	@$(MAKE) --no-print-directory -C ./multtrait reset
 	@$(MAKE) --no-print-directory -C ./schurtrait reset
@@ -156,6 +162,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./declupptrait clean
 	@$(MAKE) --no-print-directory -C ./divtrait clean
 	@$(MAKE) --no-print-directory -C ./expandtrait clean
+	@$(MAKE) --no-print-directory -C ./krontrait clean
 	@$(MAKE) --no-print-directory -C ./maptrait clean
 	@$(MAKE) --no-print-directory -C ./multtrait clean
 	@$(MAKE) --no-print-directory -C ./schurtrait clean
@@ -165,4 +172,4 @@ clean:
 # Setting the independent commands
 .PHONY: default all essential single reset clean \
         addtrait crosstrait decldiagtrait declhermtrait decllowtrait declsymtrait \
-        declupptrait divtrait expandtrait maptrait multtrait schurtrait subtrait
+        declupptrait divtrait krontrait expandtrait maptrait multtrait schurtrait subtrait
