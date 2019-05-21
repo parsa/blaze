@@ -54,6 +54,7 @@
 #include <blaze/math/expressions/VecTransExpr.h>
 #include <blaze/math/expressions/VecVecAddExpr.h>
 #include <blaze/math/expressions/VecVecDivExpr.h>
+#include <blaze/math/expressions/VecVecKronExpr.h>
 #include <blaze/math/expressions/VecVecMapExpr.h>
 #include <blaze/math/expressions/VecVecMultExpr.h>
 #include <blaze/math/expressions/VecVecSubExpr.h>
@@ -899,6 +900,60 @@ inline decltype(auto) subvector( const VecVecMultExpr<VT>& vector, RSAs... args 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given vector/vector Kronecker product.
+// \ingroup subvector
+//
+// \param vector The constant vector/vector Kronecker product.
+// \param args Optional subvector arguments.
+// \return View on the specified subvector of the Kronecker product.
+//
+// This function returns an expression representing the specified subvector of the given
+// vector/vector Kronecker product.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , size_t I            // Index of the first subvector element
+        , size_t N            // Size of the subvector
+        , typename VT         // Vector base type of the expression
+        , typename... RSAs >  // Optional subvector arguments
+inline decltype(auto) subvector( const VecVecKronExpr<VT>& vector, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return elements( ~vector, make_shifted_index_sequence<I,N>(), args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given vector/vector Kronecker product.
+// \ingroup subvector
+//
+// \param vector The constant vector/vector Kronecker product.
+// \param index The index of the first element of the subvector.
+// \param size The size of the subvector.
+// \param args Optional subvector arguments.
+// \return View on the specified subvector of the Kronecker product.
+//
+// This function returns an expression representing the specified subvector of the given
+// vector/vector Kronecker product.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , typename VT         // Vector base type of the expression
+        , typename... RSAs >  // Optional subvector arguments
+inline decltype(auto) subvector( const VecVecKronExpr<VT>& vector, size_t index, size_t size, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return elements( ~vector, [index]( size_t i ){ return i+index; }, size, args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific subvector of the given vector/vector division.
 // \ingroup subvector
 //
@@ -944,7 +999,7 @@ inline decltype(auto) subvector( const CrossExpr<VT>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = Subvector_< VectorType_t<VT>, AF, CSAs... >;
+   using ReturnType = Subvector_< VectorType_t<VT>, unaligned, CSAs... >;
    return ReturnType( ~vector, args... );
 }
 /*! \endcond */
