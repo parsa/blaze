@@ -52,6 +52,7 @@
 #include <blaze/math/expressions/MatEvalExpr.h>
 #include <blaze/math/expressions/MatMapExpr.h>
 #include <blaze/math/expressions/MatMatAddExpr.h>
+#include <blaze/math/expressions/MatMatKronExpr.h>
 #include <blaze/math/expressions/MatMatMapExpr.h>
 #include <blaze/math/expressions/MatMatMultExpr.h>
 #include <blaze/math/expressions/MatMatSubExpr.h>
@@ -853,7 +854,7 @@ inline decltype(auto) rows( const MatMatSubExpr<MT>& matrix, RRAs... args )
 //
 // \param matrix The constant Schur product.
 // \param args The runtime row arguments.
-// \return View on the specified selection of rows on the subtraction.
+// \return View on the specified selection of rows on the Schur product.
 //
 // This function returns an expression representing the specified selection of rows on the given
 // Schur product.
@@ -894,6 +895,143 @@ inline decltype(auto) rows( const MatMatMultExpr<MT>& matrix, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    return rows<CRAs...>( (~matrix).leftOperand(), args... ) * (~matrix).rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of rows on the given Kronecker product.
+// \ingroup rows
+//
+// \param matrix The constant Kronecker product.
+// \param args Optional arguments.
+// \return View on the specified selection of rows on the Kronecker product.
+//
+// This function returns an expression representing the specified selection of rows on the given
+// Kronecker product.
+*/
+template< size_t I            // First row index
+        , size_t... Is        // Remaining row indices
+        , typename MT         // Matrix base type of the expression
+        , typename... RRAs >  // Optional arguments
+inline decltype(auto) rows( const MatMatKronExpr<MT>& matrix, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   decltype(auto) lhs( (~matrix).leftOperand()  );
+   decltype(auto) rhs( (~matrix).rightOperand() );
+
+   const size_t M( rhs.rows()    );
+   const size_t N( rhs.columns() );
+
+   const auto lhsRows( [M]( size_t i ) {
+      static constexpr size_t indices[] = { I, Is... };
+      return indices[i] / M;
+   } );
+
+   const auto rhsRows( [M]( size_t i ) {
+      static constexpr size_t indices[] = { I, Is... };
+      return indices[i] % M;
+   } );
+
+   const auto lhsColumns( [N]( size_t i ){ return i / N; } );
+   const auto rhsColumns( [N]( size_t i ){ return i % N; } );
+
+   return columns( rows( lhs, lhsRows, sizeof...(Is)+1UL, args... ), lhsColumns, (~matrix).columns(), args... ) %
+          columns( rows( rhs, rhsRows, sizeof...(Is)+1UL, args... ), rhsColumns, (~matrix).columns(), args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of rows on the given Kronecker product.
+// \ingroup rows
+//
+// \param matrix The constant Kronecker product.
+// \param indices Pointer to the first index of the selected rows.
+// \param n The total number of indices.
+// \param args Optional arguments.
+// \return View on the specified selection of rows on the Kronecker product.
+//
+// This function returns an expression representing the specified selection of rows on the given
+// Kronecker product.
+*/
+template< typename MT         // Matrix base type of the expression
+        , typename T          // Type of the row indices
+        , typename... RRAs >  // Optional arguments
+inline decltype(auto) rows( const MatMatKronExpr<MT>& matrix, T* indices, size_t n, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   decltype(auto) lhs( (~matrix).leftOperand()  );
+   decltype(auto) rhs( (~matrix).rightOperand() );
+
+   const size_t M( rhs.rows()    );
+   const size_t N( rhs.columns() );
+
+   SmallArray<size_t,128UL> lhsRows;
+   lhsRows.reserve( n );
+
+   for( size_t i=0UL; i<n; ++i ) {
+      lhsRows.pushBack( indices[i] / M );
+   }
+
+   SmallArray<size_t,128UL> rhsRows;
+   rhsRows.reserve( n );
+
+   for( size_t i=0UL; i<n; ++i ) {
+      rhsRows.pushBack( indices[i] % M );
+   }
+
+   const auto lhsColumns( [N]( size_t i ){ return i / N; } );
+   const auto rhsColumns( [N]( size_t i ){ return i % N; } );
+
+   return columns( rows( lhs, lhsRows, n, args... ), lhsColumns, (~matrix).columns(), args... ) %
+          columns( rows( rhs, rhsRows, n, args... ), rhsColumns, (~matrix).columns(), args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of rows on the given Kronecker product.
+// \ingroup rows
+//
+// \param matrix The constant Kronecker product.
+// \param p Callable producing the indices.
+// \param n The total number of indices.
+// \param args Optional arguments.
+// \return View on the specified selection of rows on the Kronecker product.
+//
+// This function returns an expression representing the specified selection of rows on the given
+// Kronecker product.
+*/
+template< typename MT         // Matrix base type of the expression
+        , typename P          // Type of the index producer
+        , typename... RRAs >  // Optional arguments
+inline decltype(auto) rows( const MatMatKronExpr<MT>& matrix, P p, size_t n, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   decltype(auto) lhs( (~matrix).leftOperand()  );
+   decltype(auto) rhs( (~matrix).rightOperand() );
+
+   const size_t M( rhs.rows()    );
+   const size_t N( rhs.columns() );
+
+   const auto lhsRows( [p,M]( size_t i ) { return p(i) / M; } );
+   const auto rhsRows( [p,M]( size_t i ) { return p(i) % M; } );
+
+   const auto lhsColumns( [N]( size_t i ){ return i / N; } );
+   const auto rhsColumns( [N]( size_t i ){ return i % N; } );
+
+   return columns( rows( lhs, lhsRows, n, args... ), lhsColumns, (~matrix).columns(), args... ) %
+          columns( rows( rhs, rhsRows, n, args... ), rhsColumns, (~matrix).columns(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
