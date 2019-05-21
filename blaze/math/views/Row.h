@@ -46,6 +46,7 @@
 #include <blaze/math/expressions/MatEvalExpr.h>
 #include <blaze/math/expressions/MatMapExpr.h>
 #include <blaze/math/expressions/MatMatAddExpr.h>
+#include <blaze/math/expressions/MatMatKronExpr.h>
 #include <blaze/math/expressions/MatMatMapExpr.h>
 #include <blaze/math/expressions/MatMatMultExpr.h>
 #include <blaze/math/expressions/MatMatSubExpr.h>
@@ -448,6 +449,44 @@ inline decltype(auto) row( const MatMatMultExpr<MT>& matrix, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    return row<CRAs...>( (~matrix).leftOperand(), args... ) * (~matrix).rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given Kronecker product.
+// \ingroup row
+//
+// \param matrix The constant Kronecker product.
+// \param args The runtime row arguments.
+// \return View on the specified row of the Kronecker product.
+//
+// This function returns an expression representing the specified row of the given Kronecker
+// product.
+*/
+template< size_t... CRAs      // Compile time row arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( const MatMatKronExpr<MT>& matrix, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   MAYBE_UNUSED( args... );
+
+   const RowData<CRAs...> rd( args... );
+
+   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
+      if( (~matrix).rows() <= rd.row() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+
+   const size_t rows( (~matrix).rightOperand().rows() );
+
+   return kron( row( (~matrix).leftOperand(), rd.row()/rows ),
+                row( (~matrix).rightOperand(), rd.row()%rows ) );
 }
 /*! \endcond */
 //*************************************************************************************************
