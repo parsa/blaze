@@ -48,6 +48,7 @@
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/SVecDVecDivExpr.h>
 #include <blaze/math/expressions/SVecDVecInnerExpr.h>
+#include <blaze/math/expressions/SVecDVecKronExpr.h>
 #include <blaze/math/expressions/SVecDVecMultExpr.h>
 #include <blaze/math/expressions/SVecEvalExpr.h>
 #include <blaze/math/expressions/SVecExpandExpr.h>

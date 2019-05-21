@@ -140,6 +140,7 @@ template< typename, bool > struct SparseMatrix;
 template< typename, bool > struct SparseVector;
 template< typename, typename, bool > class SVecDVecCrossExpr;
 template< typename, typename, bool > class SVecDVecDivExpr;
+template< typename, typename, bool > class SVecDVecKronExpr;
 template< typename, typename, bool > class SVecDVecMultExpr;
 template< typename, typename > class SVecDVecOuterExpr;
 template< typename, typename, bool > class SVecDVecSubExpr;
