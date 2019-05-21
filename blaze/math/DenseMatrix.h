@@ -64,6 +64,7 @@
 #include <blaze/math/expressions/DMatDetExpr.h>
 #include <blaze/math/expressions/DMatDMatAddExpr.h>
 #include <blaze/math/expressions/DMatDMatEqualExpr.h>
+#include <blaze/math/expressions/DMatDMatKronExpr.h>
 #include <blaze/math/expressions/DMatDMatMapExpr.h>
 #include <blaze/math/expressions/DMatDMatMultExpr.h>
 #include <blaze/math/expressions/DMatDMatSchurExpr.h>

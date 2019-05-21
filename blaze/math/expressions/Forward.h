@@ -59,6 +59,7 @@ template< typename, bool > class DMatDeclLowExpr;
 template< typename, bool > class DMatDeclSymExpr;
 template< typename, bool > class DMatDeclUppExpr;
 template< typename, typename, bool > class DMatDMatAddExpr;
+template< typename, typename, bool > class DMatDMatKronExpr;
 template< typename, typename, typename, bool > class DMatDMatMapExpr;
 template< typename, typename, bool, bool, bool, bool > class DMatDMatMultExpr;
 template< typename, typename, bool > class DMatDMatSchurExpr;
