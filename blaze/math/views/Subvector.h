@@ -1354,8 +1354,7 @@ template< typename VT       // Type of the vector
         , typename T        // Type of the element indices
         , typename... REAs  // Optional element arguments
         , EnableIf_t< IsSubvector_v< RemoveReference_t<VT> > >* = nullptr >
-inline decltype(auto)
-   elements( VT&& sv, const T* indices, size_t n, REAs... args )
+inline decltype(auto) elements( VT&& sv, T* indices, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1374,6 +1373,45 @@ inline decltype(auto)
                   [offset=sv.offset()]( size_t& index ){ index += offset; } );
 
    return elements( sv.operand(), newIndices.data(), n, args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of elements on a subvector.
+// \ingroup subvector
+//
+// \param sv The given subvector.
+// \param p Callable producing the indices.
+// \param n The total number of indices.
+// \param args The optional element arguments.
+// \return View on the specified selection of elements on the subvector.
+// \exception std::invalid_argument Invalid elements specification.
+//
+// This function returns an expression representing the specified selection of elements on the
+// given subvector.
+*/
+template< typename VT       // Type of the vector
+        , typename P        // Type of the index producer
+        , typename... REAs  // Optional element arguments
+        , EnableIf_t< IsSubvector_v< RemoveReference_t<VT> > >* = nullptr >
+inline decltype(auto) elements( VT&& sv, P p, size_t n, REAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<REAs...>, Unchecked > );
+
+   if( isChecked ) {
+      for( size_t i=0UL; i<n; ++i ) {
+         if( sv.size() <= p(i) ) {
+            BLAZE_THROW_INVALID_ARGUMENT( "Invalid elements specification" );
+         }
+      }
+   }
+
+   return elements( sv.operand(), [p,offset=sv.offset()]( size_t i ){ return p(i)+offset; }, n, args... );
 }
 /*! \endcond */
 //*************************************************************************************************

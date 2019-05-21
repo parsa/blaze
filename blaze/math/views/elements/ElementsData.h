@@ -424,7 +424,7 @@ class ElementsData<>
    /*!\name Constructors */
    //@{
    template< typename T, typename... REAs >
-   explicit inline ElementsData( const T* indices, size_t n, REAs... args );
+   explicit inline ElementsData( T* indices, size_t n, REAs... args );
 
    ElementsData( const ElementsData& ) = default;
    ElementsData( ElementsData&& ) = default;
@@ -480,7 +480,7 @@ class ElementsData<>
 */
 template< typename T          // Type of the element indices
         , typename... REAs >  // Optional element arguments
-inline ElementsData<>::ElementsData( const T* indices, size_t n, REAs... args )
+inline ElementsData<>::ElementsData( T* indices, size_t n, REAs... args )
    : indices_( indices, indices+n )  // The indices of the elements in the vector
 {
    MAYBE_UNUSED( args... );

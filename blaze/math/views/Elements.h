@@ -83,7 +83,6 @@
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/IsPointer.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -267,7 +266,7 @@ template< typename VT         // Type of the vector
         , bool TF             // Transpose flag
         , typename T          // Type of the element indices
         , typename... REAs >  // Optional arguments
-inline decltype(auto) elements( Vector<VT,TF>& vector, const T* indices, size_t n, REAs... args )
+inline decltype(auto) elements( Vector<VT,TF>& vector, T* indices, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -320,7 +319,7 @@ template< typename VT         // Type of the vector
         , bool TF             // Transpose flag
         , typename T          // Type of the element indices
         , typename... REAs >  // Optional arguments
-inline decltype(auto) elements( const Vector<VT,TF>& vector, const T* indices, size_t n, REAs... args )
+inline decltype(auto) elements( const Vector<VT,TF>& vector, T* indices, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -350,7 +349,7 @@ template< typename VT         // Type of the vector
         , bool TF             // Transpose flag
         , typename T          // Type of the element indices
         , typename... REAs >  // Optional arguments
-inline decltype(auto) elements( Vector<VT,TF>&& vector, const T* indices, size_t n, REAs... args )
+inline decltype(auto) elements( Vector<VT,TF>&& vector, T* indices, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -397,11 +396,10 @@ inline decltype(auto) elements( Vector<VT,TF>&& vector, const T* indices, size_t
    auto elements2 = elements( s, []( size_t i ){ return 4UL - 2UL*i; }, 2UL, unchecked );
    \endcode
 */
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , typename P        // Type of the index producer
-        , typename... REAs  // Optional arguments
-        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , typename P          // Type of the index producer
+        , typename... REAs >  // Optional arguments
 inline decltype(auto) elements( Vector<VT,TF>& vector, P p, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -451,11 +449,10 @@ inline decltype(auto) elements( Vector<VT,TF>& vector, P p, size_t n, REAs... ar
    auto elements2 = elements( s, indices2.data(), indices2.size(), unchecked );
    \endcode
 */
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , typename P        // Type of the index producer
-        , typename... REAs  // Optional arguments
-        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , typename P          // Type of the index producer
+        , typename... REAs >  // Optional arguments
 inline decltype(auto) elements( const Vector<VT,TF>& vector, P p, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -482,11 +479,10 @@ inline decltype(auto) elements( const Vector<VT,TF>& vector, P p, size_t n, REAs
 // than or equal to the total number of elements in the given vector) a \a std::invalid_argument
 // exception is thrown.
 */
-template< typename VT       // Type of the vector
-        , bool TF           // Transpose flag
-        , typename P        // Type of the index producer
-        , typename... REAs  // Optional arguments
-        , EnableIf_t< !IsPointer_v<P> >* = nullptr >
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , typename P          // Type of the index producer
+        , typename... REAs >  // Optional arguments
 inline decltype(auto) elements( Vector<VT,TF>&& vector, P p, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1158,7 +1154,7 @@ template< typename VT       // Type of the vector
         , typename T        // Type of the element indices
         , typename... REAs  // Optional element arguments
         , EnableIf_t< IsElements_v< RemoveReference_t<VT> > >* = nullptr >
-inline decltype(auto) elements( VT&& e, const T* indices, size_t n, REAs... args )
+inline decltype(auto) elements( VT&& e, T* indices, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1203,8 +1199,7 @@ inline decltype(auto) elements( VT&& e, const T* indices, size_t n, REAs... args
 template< typename VT       // Type of the vector
         , typename P        // Type of the index producer
         , typename... REAs  // Optional element arguments
-        , EnableIf_t< IsElements_v< RemoveReference_t<VT> > &&
-                      !IsPointer_v<P> >* = nullptr >
+        , EnableIf_t< IsElements_v< RemoveReference_t<VT> > >* = nullptr >
 inline decltype(auto) elements( VT&& e, P p, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
