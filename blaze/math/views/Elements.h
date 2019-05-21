@@ -57,6 +57,7 @@
 #include <blaze/math/expressions/VecTransExpr.h>
 #include <blaze/math/expressions/VecVecAddExpr.h>
 #include <blaze/math/expressions/VecVecDivExpr.h>
+#include <blaze/math/expressions/VecVecKronExpr.h>
 #include <blaze/math/expressions/VecVecMapExpr.h>
 #include <blaze/math/expressions/VecVecMultExpr.h>
 #include <blaze/math/expressions/VecVecSubExpr.h>
@@ -851,6 +852,129 @@ inline decltype(auto) elements( const VecVecMultExpr<VT>& vector, REAs... args )
 
    return elements<CEAs...>( (~vector).leftOperand(), args... ) *
           elements<CEAs...>( (~vector).rightOperand(), args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of elements on the given vector/vector Kronecker product.
+// \ingroup elements
+//
+// \param vector The constant vector/vector Kronecker product.
+// \param args Optional arguments.
+// \return View on the specified selection of elements on the Kronecker product.
+//
+// This function returns an expression representing the specified selection of elements on the
+// given vector/vector Kronecker product.
+*/
+template< size_t I            // First element index
+        , size_t... Is        // Remaining element indices
+        , typename VT         // Vector base type of the expression
+        , typename... REAs >  // Optional arguments
+inline decltype(auto) elements( const VecVecKronExpr<VT>& vector, REAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   decltype(auto) lhs( (~vector).leftOperand()  );
+   decltype(auto) rhs( (~vector).rightOperand() );
+
+   const size_t N( rhs.size() );
+
+   const auto lhsIndices( [N]( size_t i ) {
+      static constexpr size_t indices[] = { I, Is... };
+      return indices[i] / N;
+   } );
+
+   const auto rhsIndices( [N]( size_t i ) {
+      static constexpr size_t indices[] = { I, Is... };
+      return indices[i] % N;
+   } );
+
+   return elements( lhs, lhsIndices, sizeof...(Is)+1UL, args... ) *
+          elements( rhs, rhsIndices, sizeof...(Is)+1UL, args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of elements on the given vector/vector Kronecker product.
+// \ingroup elements
+//
+// \param vector The constant vector/vector Kronecker product.
+// \param indices Pointer to the first index of the selected elements.
+// \param n The total number of indices.
+// \param args Optional arguments.
+// \return View on the specified selection of elements on the Kronecker product.
+//
+// This function returns an expression representing the specified selection of elements on the
+// given vector/vector Kronecker product.
+*/
+template< typename VT         // Vector base type of the expression
+        , typename T          // Type of the element indices
+        , typename... REAs >  // Optional arguments
+inline decltype(auto) elements( const VecVecKronExpr<VT>& vector, T* indices, size_t n, REAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   decltype(auto) lhs( (~vector).leftOperand()  );
+   decltype(auto) rhs( (~vector).rightOperand() );
+
+   const size_t N( rhs.size() );
+
+   SmallArray<size_t,128UL> lhsIndices;
+   lhsIndices.reserve( n );
+
+   for( size_t i=0UL; i<n; ++i ) {
+      lhsIndices.pushBack( indices[i] / N );
+   }
+
+   SmallArray<size_t,128UL> rhsIndices;
+   rhsIndices.reserve( n );
+
+   for( size_t i=0UL; i<n; ++i ) {
+      rhsIndices.pushBack( indices[i] % N );
+   }
+
+   return elements( lhs, lhsIndices, n, args... ) * elements( rhs, rhsIndices, n, args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of elements on the given vector/vector Kronecker product.
+// \ingroup elements
+//
+// \param vector The constant vector/vector Kronecker product.
+// \param p Callable producing the indices.
+// \param n The total number of indices.
+// \param args Optional arguments.
+// \return View on the specified selection of elements on the Kronecker product.
+//
+// This function returns an expression representing the specified selection of elements on the
+// given vector/vector Kronecker product.
+*/
+template< typename VT         // Vector base type of the expression
+        , typename P          // Type of the index producer
+        , typename... REAs >  // Optional arguments
+inline decltype(auto) elements( const VecVecKronExpr<VT>& vector, P p, size_t n, REAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   decltype(auto) lhs( (~vector).leftOperand()  );
+   decltype(auto) rhs( (~vector).rightOperand() );
+
+   const size_t N( rhs.size() );
+
+   const auto lhsIndices( [p,N]( size_t i ) { return p(i) / N; } );
+   const auto rhsIndices( [p,N]( size_t i ) { return p(i) % N; } );
+
+   return elements( lhs, lhsIndices, n, args... ) * elements( rhs, rhsIndices, n, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
