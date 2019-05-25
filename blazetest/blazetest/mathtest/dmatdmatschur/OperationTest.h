@@ -192,8 +192,6 @@ class OperationTest
                           void testConjOperation     ();
                           void testRealOperation     ();
                           void testImagOperation     ();
-                          void testInvOperation      ( blaze::TrueType  );
-                          void testInvOperation      ( blaze::FalseType );
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testDeclSymOperation  ( blaze::TrueType  );
@@ -409,7 +407,6 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testRealOperation();
    testImagOperation();
    testEvalOperation();
-   testInvOperation( Not< IsUniform<DRE> >() );
    testSerialOperation();
    testDeclSymOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
    testDeclHermOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
@@ -4614,48 +4611,6 @@ void OperationTest<MT1,MT2>::testImagOperation()
 
 
 //*************************************************************************************************
-/*!\brief Testing the \a inv dense matrix/dense matrix Schur product.
-//
-// \return void
-// \exception std::runtime_error Schur product error detected.
-//
-// This function tests the \a inv matrix Schur product with plain assignment, addition assignment,
-// subtraction assignment, and Schur product assignment. In case any error resulting from the Schur
-// product or the subsequent assignment is detected, a \a std::runtime_error exception is thrown.
-*/
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
-void OperationTest<MT1,MT2>::testInvOperation( blaze::TrueType )
-{
-#if BLAZETEST_MATHTEST_TEST_INV_OPERATION && BLAZETEST_MATHTEST_LAPACK_MODE
-   if( BLAZETEST_MATHTEST_TEST_INV_OPERATION > 1 )
-   {
-      if( !isSquare( lhs_ % rhs_ ) || blaze::isDefault( det( lhs_ % rhs_ ) ) )
-         return;
-
-      testCustomOperation( blaze::Inv(), "inv" );
-   }
-#endif
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Skipping the \a inv dense matrix/dense matrix Schur product.
-//
-// \return void
-//
-// This function is called in case the \a inv matrix/matrix Schur product operation is not
-// available for the given matrix types \a MT1 and \a MT2.
-*/
-template< typename MT1    // Type of the left-hand side dense matrix
-        , typename MT2 >  // Type of the right-hand side dense matrix
-void OperationTest<MT1,MT2>::testInvOperation( blaze::FalseType )
-{}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Testing the evaluated dense matrix/dense matrix Schur product.
 //
 // \return void
@@ -7639,8 +7594,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<lhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, lhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) = submatrix( lhs_ % rhs_      , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) = submatrix( lhs_ % rhs_      , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) = submatrix( lhs_ % rhs_      , row, column, m, n );
@@ -7659,8 +7614,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<olhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, olhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) = submatrix( lhs_ % orhs_     , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) = submatrix( lhs_ % orhs_     , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) = submatrix( lhs_ % orhs_     , row, column, m, n );
@@ -7679,8 +7634,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<lhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, lhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) = submatrix( olhs_ % rhs_     , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) = submatrix( olhs_ % rhs_     , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) = submatrix( olhs_ % rhs_     , row, column, m, n );
@@ -7699,8 +7654,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<olhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, olhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) = submatrix( olhs_ % orhs_    , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) = submatrix( olhs_ % orhs_    , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) = submatrix( olhs_ % orhs_    , row, column, m, n );
@@ -7725,8 +7680,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<lhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, lhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) = submatrix( eval( lhs_ ) % eval( rhs_ )      , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) = submatrix( eval( lhs_ ) % eval( rhs_ )      , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) = submatrix( eval( lhs_ ) % eval( rhs_ )      , row, column, m, n );
@@ -7745,8 +7700,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<olhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, olhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) = submatrix( eval( lhs_ ) % eval( orhs_ )     , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) = submatrix( eval( lhs_ ) % eval( orhs_ )     , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) = submatrix( eval( lhs_ ) % eval( orhs_ )     , row, column, m, n );
@@ -7765,8 +7720,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<lhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, lhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) = submatrix( eval( olhs_ ) % eval( rhs_ )     , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) = submatrix( eval( olhs_ ) % eval( rhs_ )     , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) = submatrix( eval( olhs_ ) % eval( rhs_ )     , row, column, m, n );
@@ -7785,8 +7740,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<olhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, olhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) = submatrix( eval( olhs_ ) % eval( orhs_ )    , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) = submatrix( eval( olhs_ ) % eval( orhs_ )    , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) = submatrix( eval( olhs_ ) % eval( orhs_ )    , row, column, m, n );
@@ -7816,8 +7771,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<lhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, lhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) += submatrix( lhs_ % rhs_      , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) += submatrix( lhs_ % rhs_      , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) += submatrix( lhs_ % rhs_      , row, column, m, n );
@@ -7836,8 +7791,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<olhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, olhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) += submatrix( lhs_ % orhs_     , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) += submatrix( lhs_ % orhs_     , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) += submatrix( lhs_ % orhs_     , row, column, m, n );
@@ -7856,8 +7811,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<lhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, lhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) += submatrix( olhs_ % rhs_     , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) += submatrix( olhs_ % rhs_     , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) += submatrix( olhs_ % rhs_     , row, column, m, n );
@@ -7876,8 +7831,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<olhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, olhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) += submatrix( olhs_ % orhs_    , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) += submatrix( olhs_ % orhs_    , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) += submatrix( olhs_ % orhs_    , row, column, m, n );
@@ -7902,8 +7857,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<lhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, lhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) += submatrix( eval( lhs_ ) % eval( rhs_ )      , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) += submatrix( eval( lhs_ ) % eval( rhs_ )      , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) += submatrix( eval( lhs_ ) % eval( rhs_ )      , row, column, m, n );
@@ -7922,8 +7877,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<olhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, olhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) += submatrix( eval( lhs_ ) % eval( orhs_ )     , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) += submatrix( eval( lhs_ ) % eval( orhs_ )     , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) += submatrix( eval( lhs_ ) % eval( orhs_ )     , row, column, m, n );
@@ -7942,8 +7897,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<lhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, lhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) += submatrix( eval( olhs_ ) % eval( rhs_ )     , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) += submatrix( eval( olhs_ ) % eval( rhs_ )     , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) += submatrix( eval( olhs_ ) % eval( rhs_ )     , row, column, m, n );
@@ -7962,8 +7917,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<olhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, olhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) += submatrix( eval( olhs_ ) % eval( orhs_ )    , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) += submatrix( eval( olhs_ ) % eval( orhs_ )    , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) += submatrix( eval( olhs_ ) % eval( orhs_ )    , row, column, m, n );
@@ -7993,8 +7948,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<lhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, lhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) -= submatrix( lhs_ % rhs_      , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) -= submatrix( lhs_ % rhs_      , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) -= submatrix( lhs_ % rhs_      , row, column, m, n );
@@ -8013,8 +7968,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<olhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, olhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) -= submatrix( lhs_ % orhs_     , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) -= submatrix( lhs_ % orhs_     , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) -= submatrix( lhs_ % orhs_     , row, column, m, n );
@@ -8033,8 +7988,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<lhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, lhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) -= submatrix( olhs_ % rhs_     , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) -= submatrix( olhs_ % rhs_     , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) -= submatrix( olhs_ % rhs_     , row, column, m, n );
@@ -8053,8 +8008,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<olhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, olhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) -= submatrix( olhs_ % orhs_    , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) -= submatrix( olhs_ % orhs_    , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) -= submatrix( olhs_ % orhs_    , row, column, m, n );
@@ -8079,8 +8034,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<lhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, lhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) -= submatrix( eval( lhs_ ) % eval( rhs_ )      , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) -= submatrix( eval( lhs_ ) % eval( rhs_ )      , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) -= submatrix( eval( lhs_ ) % eval( rhs_ )      , row, column, m, n );
@@ -8099,8 +8054,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<olhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, olhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) -= submatrix( eval( lhs_ ) % eval( orhs_ )     , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) -= submatrix( eval( lhs_ ) % eval( orhs_ )     , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) -= submatrix( eval( lhs_ ) % eval( orhs_ )     , row, column, m, n );
@@ -8119,8 +8074,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<lhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, lhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) -= submatrix( eval( olhs_ ) % eval( rhs_ )     , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) -= submatrix( eval( olhs_ ) % eval( rhs_ )     , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) -= submatrix( eval( olhs_ ) % eval( rhs_ )     , row, column, m, n );
@@ -8139,8 +8094,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<olhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, olhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) -= submatrix( eval( olhs_ ) % eval( orhs_ )    , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) -= submatrix( eval( olhs_ ) % eval( orhs_ )    , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) -= submatrix( eval( olhs_ ) % eval( orhs_ )    , row, column, m, n );
@@ -8170,8 +8125,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<lhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, lhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) %= submatrix( lhs_ % rhs_      , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) %= submatrix( lhs_ % rhs_      , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) %= submatrix( lhs_ % rhs_      , row, column, m, n );
@@ -8190,8 +8145,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<olhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, olhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) %= submatrix( lhs_ % orhs_     , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) %= submatrix( lhs_ % orhs_     , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) %= submatrix( lhs_ % orhs_     , row, column, m, n );
@@ -8210,8 +8165,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<lhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, lhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) %= submatrix( olhs_ % rhs_     , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) %= submatrix( olhs_ % rhs_     , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) %= submatrix( olhs_ % rhs_     , row, column, m, n );
@@ -8230,8 +8185,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<olhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, olhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) %= submatrix( olhs_ % orhs_    , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) %= submatrix( olhs_ % orhs_    , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) %= submatrix( olhs_ % orhs_    , row, column, m, n );
@@ -8256,8 +8211,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<lhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, lhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) %= submatrix( eval( lhs_ ) % eval( rhs_ )      , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) %= submatrix( eval( lhs_ ) % eval( rhs_ )      , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) %= submatrix( eval( lhs_ ) % eval( rhs_ )      , row, column, m, n );
@@ -8276,8 +8231,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<olhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, olhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) %= submatrix( eval( lhs_ ) % eval( orhs_ )     , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) %= submatrix( eval( lhs_ ) % eval( orhs_ )     , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) %= submatrix( eval( lhs_ ) % eval( orhs_ )     , row, column, m, n );
@@ -8296,8 +8251,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<rhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, rhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<lhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, lhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) %= submatrix( eval( olhs_ ) % eval( rhs_ )     , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) %= submatrix( eval( olhs_ ) % eval( rhs_ )     , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) %= submatrix( eval( olhs_ ) % eval( rhs_ )     , row, column, m, n );
@@ -8316,8 +8271,8 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
             initResults();
             for( size_t row=0UL, m=0UL; row<lhs_.rows(); row+=m ) {
                m = blaze::rand<size_t>( 1UL, lhs_.rows() - row );
-               for( size_t column=0UL, n=0UL; column<orhs_.columns(); column+=n ) {
-                  n = blaze::rand<size_t>( 1UL, orhs_.columns() - column );
+               for( size_t column=0UL, n=0UL; column<olhs_.columns(); column+=n ) {
+                  n = blaze::rand<size_t>( 1UL, olhs_.columns() - column );
                   submatrix( dres_  , row, column, m, n ) %= submatrix( eval( olhs_ ) % eval( orhs_ )    , row, column, m, n );
                   submatrix( odres_ , row, column, m, n ) %= submatrix( eval( olhs_ ) % eval( orhs_ )    , row, column, m, n );
                   submatrix( sres_  , row, column, m, n ) %= submatrix( eval( olhs_ ) % eval( orhs_ )    , row, column, m, n );
@@ -8342,7 +8297,6 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
 /*!\brief Skipping the submatrix-wise dense matrix/dense matrix Schur product.
 //
 // \return void
-// \exception std::runtime_error Schur product error detected.
 //
 // This function is called in case the submatrix-wise matrix/matrix Schur product operation is
 // not available for the given matrix types \a MT1 and \a MT2.
@@ -8964,7 +8918,6 @@ void OperationTest<MT1,MT2>::testRowOperation( blaze::TrueType )
 /*!\brief Skipping the row-wise dense matrix/dense matrix Schur product.
 //
 // \return void
-// \exception std::runtime_error Schur product error detected.
 //
 // This function is called in case the row-wise matrix/matrix Schur product operation is not
 // available for the given matrix types \a MT1 and \a MT2.
@@ -10244,7 +10197,6 @@ void OperationTest<MT1,MT2>::testColumnOperation( blaze::TrueType )
 /*!\brief Skipping the column-wise dense matrix/dense matrix Schur product.
 //
 // \return void
-// \exception std::runtime_error Schur product error detected.
 //
 // This function is called in case the column-wise matrix/matrix Schur product operation is not
 // available for the given matrix types \a MT1 and \a MT2.
@@ -11528,7 +11480,6 @@ void OperationTest<MT1,MT2>::testBandOperation( blaze::TrueType )
 /*!\brief Skipping the band-wise dense matrix/dense matrix Schur product.
 //
 // \return void
-// \exception std::runtime_error Schur product error detected.
 //
 // This function is called in case the band-wise matrix/matrix Schur product operation is not
 // available for the given matrix types \a MT1 and \a MT2.
