@@ -1957,7 +1957,6 @@ BLAZE_ALWAYS_INLINE typename Subvector<VT,unaligned,TF,true,CSAs...>::SIMDType
 
    BLAZE_INTERNAL_ASSERT( index < size()            , "Invalid subvector access index" );
    BLAZE_INTERNAL_ASSERT( index + SIMDSIZE <= size(), "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index % SIMDSIZE == 0UL   , "Invalid subvector access index" );
 
    return vector_.loadu( offset()+index );
 }
@@ -2053,7 +2052,6 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_INTERNAL_ASSERT( index < size()            , "Invalid subvector access index" );
    BLAZE_INTERNAL_ASSERT( index + SIMDSIZE <= size(), "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index % SIMDSIZE == 0UL   , "Invalid subvector access index" );
 
    vector_.storeu( offset()+index, value );
 }
@@ -4082,7 +4080,6 @@ BLAZE_ALWAYS_INLINE typename Subvector<VT,aligned,TF,true,CSAs...>::SIMDType
 
    BLAZE_INTERNAL_ASSERT( index < size()            , "Invalid subvector access index" );
    BLAZE_INTERNAL_ASSERT( index + SIMDSIZE <= size(), "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index % SIMDSIZE == 0UL   , "Invalid subvector access index" );
 
    return vector_.loadu( offset()+index );
 }
@@ -4175,7 +4172,6 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_INTERNAL_ASSERT( index < size()            , "Invalid subvector access index" );
    BLAZE_INTERNAL_ASSERT( index + SIMDSIZE <= size(), "Invalid subvector access index" );
-   BLAZE_INTERNAL_ASSERT( index % SIMDSIZE == 0UL   , "Invalid subvector access index" );
 
    vector_.storeu( offset()+index, value );
 }
