@@ -52,7 +52,7 @@ all: shims simd blas lapack typetraits traits constraints functors \
      dvecdveccross dvecsveccross svecdveccross svecsveccross \
      dvecdvecinner dvecsvecinner svecdvecinner svecsvecinner \
      dvecdvecouter dvecsvecouter svecdvecouter svecsvecouter \
-     dvecdveckron dvecsveckron svecdveckron \
+     dvecdveckron dvecsveckron svecdveckron svecsveckron \
      dvecdvecdiv svecdvecdiv \
      dvecdvecmin dvecdvecmax \
      dvecreduce svecreduce \
@@ -451,6 +451,11 @@ svecdveckron:
 	@echo "Building the sparse vector/dense vector Kronecker product tests..."
 	@$(MAKE) --no-print-directory -C ./svecdveckron $(MAKECMDGOALS)
 
+svecsveckron:
+	@echo
+	@echo "Building the sparse vector/sparse vector Kronecker product tests..."
+	@$(MAKE) --no-print-directory -C ./svecsveckron $(MAKECMDGOALS)
+
 dvecdvecdiv:
 	@echo
 	@echo "Building the dense vector/dense vector division tests..."
@@ -763,6 +768,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./dvecdveckron reset
 	@$(MAKE) --no-print-directory -C ./dvecsveckron reset
 	@$(MAKE) --no-print-directory -C ./svecdveckron reset
+	@$(MAKE) --no-print-directory -C ./svecsveckron reset
 	@$(MAKE) --no-print-directory -C ./dvecdvecdiv reset
 	@$(MAKE) --no-print-directory -C ./svecdvecdiv reset
 	@$(MAKE) --no-print-directory -C ./dvecdvecmin reset
@@ -886,6 +892,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./dvecdveckron clean
 	@$(MAKE) --no-print-directory -C ./dvecsveckron clean
 	@$(MAKE) --no-print-directory -C ./svecdveckron clean
+	@$(MAKE) --no-print-directory -C ./svecsveckron clean
 	@$(MAKE) --no-print-directory -C ./dvecdvecdiv clean
 	@$(MAKE) --no-print-directory -C ./svecdvecdiv clean
 	@$(MAKE) --no-print-directory -C ./dvecdvecmin clean
@@ -955,7 +962,7 @@ clean:
         dvecdveccross dvecsveccross svecdveccross svecsveccross \
         dvecdvecinner dvecsvecinner svecdvecinner svecsvecinner \
         dvecdvecouter dvecsvecouter svecdvecouter svecsvecouter \
-        dvecdveckron dvecsveckron svecdveckron \
+        dvecdveckron dvecsveckron svecdveckron svecsveckron \
         dvecdvecdiv svecdvecdiv \
         dvecdvecmin dvecdvecmax \
         dvecreduce svecreduce \
