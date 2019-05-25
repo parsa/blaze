@@ -63,6 +63,7 @@ all: shims simd blas lapack typetraits traits constraints functors \
      dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
      dmatdmatschur dmatsmatschur smatdmatschur smatsmatschur \
      dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
+     dmatdmatkron \
      dmatdmatmin dmatdmatmax \
      dmatreduce smatreduce \
      determinant lu llh qr rq ql lq inversion eigen svd \
@@ -616,6 +617,11 @@ smatsmatmult:
 	@echo "Building the sparse matrix/sparse matrix multiplication tests..."
 	@$(MAKE) --no-print-directory -C ./smatsmatmult $(MAKECMDGOALS)
 
+dmatdmatkron:
+	@echo
+	@echo "Building the dense matrix/dense matrix Kronecker product tests..."
+	@$(MAKE) --no-print-directory -C ./dmatdmatkron $(MAKECMDGOALS)
+
 dmatdmatmin:
 	@echo
 	@echo "Building the dense matrix/dense matrix minimum tests..."
@@ -801,6 +807,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./dmatsmatmult reset
 	@$(MAKE) --no-print-directory -C ./smatdmatmult reset
 	@$(MAKE) --no-print-directory -C ./smatsmatmult reset
+	@$(MAKE) --no-print-directory -C ./dmatdmatkron reset
 	@$(MAKE) --no-print-directory -C ./dmatdmatmin reset
 	@$(MAKE) --no-print-directory -C ./dmatdmatmax reset
 	@$(MAKE) --no-print-directory -C ./dmatreduce reset
@@ -925,6 +932,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./dmatsmatmult clean
 	@$(MAKE) --no-print-directory -C ./smatdmatmult clean
 	@$(MAKE) --no-print-directory -C ./smatsmatmult clean
+	@$(MAKE) --no-print-directory -C ./dmatdmatkron clean
 	@$(MAKE) --no-print-directory -C ./dmatdmatmin clean
 	@$(MAKE) --no-print-directory -C ./dmatdmatmax clean
 	@$(MAKE) --no-print-directory -C ./dmatreduce clean
@@ -973,6 +981,7 @@ clean:
         dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
         dmatdmatschur dmatsmatschur smatdmatschur smatsmatschur \
         dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
+        dmatdmatkron \
         dmatdmatmin dmatdmatmax \
         dmatreduce smatreduce \
         determinant lu llh qr rq ql lq inversion eigen svd \
