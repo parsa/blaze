@@ -52,7 +52,7 @@ all: shims simd blas lapack typetraits traits constraints functors \
      dvecdveccross dvecsveccross svecdveccross svecsveccross \
      dvecdvecinner dvecsvecinner svecdvecinner svecsvecinner \
      dvecdvecouter dvecsvecouter svecdvecouter svecsvecouter \
-     dvecdveckron \
+     dvecdveckron dvecsveckron \
      dvecdvecdiv svecdvecdiv \
      dvecdvecmin dvecdvecmax \
      dvecreduce svecreduce \
@@ -441,6 +441,11 @@ dvecdveckron:
 	@echo "Building the dense vector/dense vector Kronecker product tests..."
 	@$(MAKE) --no-print-directory -C ./dvecdveckron $(MAKECMDGOALS)
 
+dvecsveckron:
+	@echo
+	@echo "Building the dense vector/sparse vector Kronecker product tests..."
+	@$(MAKE) --no-print-directory -C ./dvecsveckron $(MAKECMDGOALS)
+
 dvecdvecdiv:
 	@echo
 	@echo "Building the dense vector/dense vector division tests..."
@@ -751,6 +756,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./svecdvecouter reset
 	@$(MAKE) --no-print-directory -C ./svecsvecouter reset
 	@$(MAKE) --no-print-directory -C ./dvecdveckron reset
+	@$(MAKE) --no-print-directory -C ./dvecsveckron reset
 	@$(MAKE) --no-print-directory -C ./dvecdvecdiv reset
 	@$(MAKE) --no-print-directory -C ./svecdvecdiv reset
 	@$(MAKE) --no-print-directory -C ./dvecdvecmin reset
@@ -872,6 +878,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./svecdvecouter clean
 	@$(MAKE) --no-print-directory -C ./svecsvecouter clean
 	@$(MAKE) --no-print-directory -C ./dvecdveckron clean
+	@$(MAKE) --no-print-directory -C ./dvecsveckron clean
 	@$(MAKE) --no-print-directory -C ./dvecdvecdiv clean
 	@$(MAKE) --no-print-directory -C ./svecdvecdiv clean
 	@$(MAKE) --no-print-directory -C ./dvecdvecmin clean
@@ -941,7 +948,7 @@ clean:
         dvecdveccross dvecsveccross svecdveccross svecsveccross \
         dvecdvecinner dvecsvecinner svecdvecinner svecsvecinner \
         dvecdvecouter dvecsvecouter svecdvecouter svecsvecouter \
-        dvecdveckron \
+        dvecdveckron dvecsveckron \
         dvecdvecdiv svecdvecdiv \
         dvecdvecmin dvecdvecmax \
         dvecreduce svecreduce \
