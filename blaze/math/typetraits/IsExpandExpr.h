@@ -116,7 +116,7 @@ struct IsExpandExpr<T&>
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsExpandExpr type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsExpandExpr_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsExpandExpr class template. For instance, given the type \a T the

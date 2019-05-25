@@ -84,7 +84,7 @@ struct IsBLASCompatible
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsBLASCompatible type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsBLASCompatible_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsBLASCompatible class template. For instance, given the type \a T the

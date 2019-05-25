@@ -102,7 +102,7 @@ struct UnderlyingNumeric
 
 //*************************************************************************************************
 /*!\brief Auxiliary alias declaration for the UnderlyingNumeric type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The UnderlyingNumeric_t alias declaration provides a convenient shortcut to access the
 // nested \a Type of the UnderlyingNumeric class template. For instance, given the type \a T

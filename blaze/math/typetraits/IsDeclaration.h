@@ -116,7 +116,7 @@ struct IsDeclaration<T&>
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsDeclaration type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsDeclaration_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsDeclaration class template. For instance, given the type \a T the following

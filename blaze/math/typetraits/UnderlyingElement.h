@@ -104,7 +104,7 @@ struct UnderlyingElement
 
 //*************************************************************************************************
 /*!\brief Auxiliary alias declaration for the UnderlyingElement type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The UnderlyingElement_t alias declaration provides a convenient shortcut to access the
 // nested \a Type of the UnderlyingElement class template. For instance, given the type \a T

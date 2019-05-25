@@ -102,7 +102,7 @@ struct HasSIMDTanh
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSIMDTanh type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSIMDTanh_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasSIMDTanh class template. For instance, given the type \a T the following

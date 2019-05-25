@@ -111,7 +111,7 @@ struct YieldsIdentity< const volatile OP, MT, MTs... >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the YieldsIdentity type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The YieldsIdentity_v variable template provides a convenient shortcut to access the nested
 // \a value of the YieldsIdentity class template. For instance, given the operation \a OP and

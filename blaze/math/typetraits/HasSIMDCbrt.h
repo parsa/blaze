@@ -102,7 +102,7 @@ struct HasSIMDCbrt
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSIMDCbrt type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSIMDCbrt_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasSIMDCbrt class template. For instance, given the type \a T the following

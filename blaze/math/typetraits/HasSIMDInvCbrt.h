@@ -101,7 +101,7 @@ struct HasSIMDInvCbrt
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSIMDInvCbrt type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSIMDInvCbrt_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasSIMDInvCbrt class template. For instance, given the type \a T the following

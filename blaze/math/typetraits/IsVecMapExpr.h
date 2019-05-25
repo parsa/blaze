@@ -117,7 +117,7 @@ struct IsVecMapExpr<T&>
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsVecMapExpr type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsVecMapExpr_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsVecMapExpr class template. For instance, given the type \a T the following

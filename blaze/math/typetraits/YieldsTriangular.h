@@ -112,7 +112,7 @@ struct YieldsTriangular< const volatile OP, MT, MTs... >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the YieldsTriangular type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The YieldsTriangular_v variable template provides a convenient shortcut to access the nested
 // \a value of the YieldsTriangular class template. For instance, given the operation \a OP and

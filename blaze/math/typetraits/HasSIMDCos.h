@@ -102,7 +102,7 @@ struct HasSIMDCos
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSIMDCos type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSIMDCos_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasSIMDCos class template. For instance, given the type \a T the following

@@ -116,7 +116,7 @@ struct IsExpression<T&>
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsExpression type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsExpression_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsExpression class template. For instance, given the type \a T the

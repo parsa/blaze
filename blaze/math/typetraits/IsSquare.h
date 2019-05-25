@@ -132,7 +132,7 @@ struct IsSquare< const volatile T >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsSquare type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsSquare_v variable template provides a convenient shortcut to access the nested \a value
 // of the IsSquare class template. For instance, given the type \a T the following two statements

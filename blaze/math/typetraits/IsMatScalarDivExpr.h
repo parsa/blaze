@@ -118,7 +118,7 @@ struct IsMatScalarDivExpr<T&>
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsMatScalarDivExpr type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsMatScalarDivExpr_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsMatScalarDivExpr class template. For instance, given the type \a T the

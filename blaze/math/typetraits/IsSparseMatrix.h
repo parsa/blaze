@@ -124,7 +124,7 @@ struct IsSparseMatrix<T&>
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsSparseMatrix type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsSparseMatrix_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsSparseMatrix class template. For instance, given the type \a T the

@@ -138,7 +138,7 @@ struct RemoveAdaptor< const volatile T >
 
 //*************************************************************************************************
 /*!\brief Auxiliary alias declaration for the RemoveAdaptor type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The RemoveAdaptor_t alias declaration provides a convenient shortcut to access the nested
 // \a Type of the RemoveAdaptor class template. For instance, given the type \a T the following

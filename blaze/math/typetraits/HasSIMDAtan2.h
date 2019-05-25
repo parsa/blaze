@@ -107,7 +107,7 @@ struct HasSIMDAtan2
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSIMDAtan2 type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSIMDAtan2_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasSIMDAtan2 class template. For instance, given the types \a T1 and \a T2

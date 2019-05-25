@@ -138,7 +138,7 @@ struct HasMax< T1, T2, EnableIf_t< IsVector_v<T1> && IsVector_v<T2> > >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasMax type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasMax_v variable template provides a convenient shortcut to access the nested \a value
 // of the HasMax class template. For instance, given the types \a T1 and \a T2 the following

@@ -331,7 +331,7 @@ struct HighType
 
 //*************************************************************************************************
 /*!\brief Auxiliary alias declaration for the HighType type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HighType_t alias declaration provides a convenient shortcut to access the nested \a Type of
 // the HighType class template. For instance, given the types \a T1 and \a T2 the following two

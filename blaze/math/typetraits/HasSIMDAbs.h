@@ -117,7 +117,7 @@ struct HasSIMDAbs
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSIMDAbs type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSIMDAbs_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasSIMDAbs class template. For instance, given the type \a T the following

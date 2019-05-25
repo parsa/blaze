@@ -110,7 +110,7 @@ struct YieldsStrictlyUpper< const volatile OP, MT, MTs... >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the YieldsStrictlyUpper type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The YieldsStrictlyUpper_v variable template provides a convenient shortcut to access the nested
 // \a value of the YieldsStrictlyUpper class template. For instance, given the operation \a OP and

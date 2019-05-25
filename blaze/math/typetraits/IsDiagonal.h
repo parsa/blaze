@@ -133,7 +133,7 @@ struct IsDiagonal< const volatile T >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsDiagonal type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsDiagonal_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsDiagonal class template. For instance, given the type \a T the following

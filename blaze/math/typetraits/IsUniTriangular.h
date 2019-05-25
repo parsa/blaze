@@ -91,7 +91,7 @@ struct IsUniTriangular
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsUniTriangular type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsUniTriangular_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsUniTriangular class template. For instance, given the type \a T the

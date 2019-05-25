@@ -101,7 +101,7 @@ struct HasSIMDFloor
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSIMDFloor type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSIMDFloor_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasSIMDFloor class template. For instance, given the type \a T the following

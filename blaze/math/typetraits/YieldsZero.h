@@ -111,7 +111,7 @@ struct YieldsZero< const volatile OP, T, Ts... >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the YieldsZero type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The YieldsZero_v variable template provides a convenient shortcut to access the nested
 // \a value of the YieldsZero class template. For instance, given the operation \a OP and

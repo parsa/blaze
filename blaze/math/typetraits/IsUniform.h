@@ -148,7 +148,7 @@ struct IsUniform< const volatile T >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsUniform type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsUniform_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsUniform class template. For instance, given the type \a T the following

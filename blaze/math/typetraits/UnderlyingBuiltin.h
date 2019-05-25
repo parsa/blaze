@@ -101,7 +101,7 @@ struct UnderlyingBuiltin
 
 //*************************************************************************************************
 /*!\brief Auxiliary alias declaration for the UnderlyingBuiltin type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The UnderlyingBuiltin_t alias declaration provides a convenient shortcut to access the
 // nested \a Type of the UnderlyingBuiltin class template. For instance, given the type \a T

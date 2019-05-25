@@ -331,7 +331,7 @@ struct LowType
 
 //*************************************************************************************************
 /*!\brief Auxiliary alias declaration for the LowType type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The LowType_t alias declaration provides a convenient shortcut to access the nested \a Type of
 // the LowType class template. For instance, given the types \a T1 and \a T2 the following two

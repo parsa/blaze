@@ -74,7 +74,7 @@ struct IsSparseElement
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsSparseElement type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsSparseElement_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsSparseElement class template. For instance, given the type \a T the

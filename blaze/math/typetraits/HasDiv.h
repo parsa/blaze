@@ -124,7 +124,7 @@ struct HasDiv< T1, T2, EnableIf_t< IsVector_v<T1> && IsDenseVector_v<T2> > >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasDiv type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasDiv_v variable template provides a convenient shortcut to access the nested \a value
 // of the HasDiv class template. For instance, given the types \a T1 and \a T2 the following

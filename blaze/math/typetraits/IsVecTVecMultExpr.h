@@ -118,7 +118,7 @@ struct IsVecTVecMultExpr<T&>
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsVecTVecMultExpr type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsVecTVecMultExpr_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsVecTVecMultExpr class template. For instance, given the type \a T the

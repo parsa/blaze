@@ -139,7 +139,7 @@ struct HasSinh< T, EnableIf_t< IsMatrix_v<T> > >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSinh type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSinh_v variable template provides a convenient shortcut to access the nested \a value
 // of the HasSinh class template. For instance, given the type \a T the following two statements

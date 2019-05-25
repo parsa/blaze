@@ -145,7 +145,7 @@ struct IsElements< const volatile Elements<VT,TF,DF,CEAs...> >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsElements type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsElements_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsElements class template. For instance, given the type \a T the following

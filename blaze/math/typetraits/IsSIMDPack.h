@@ -159,7 +159,7 @@ struct IsSIMDPack<T&>
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsSIMDPack type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsSIMDPack_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsSIMDPack class template. For instance, given the type \a T the following

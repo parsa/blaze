@@ -159,7 +159,7 @@ struct IsLower< const volatile T >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsLower type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsLower_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsLower class template. For instance, given the type \a T the following

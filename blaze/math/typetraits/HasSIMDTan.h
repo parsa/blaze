@@ -102,7 +102,7 @@ struct HasSIMDTan
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSIMDTan type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSIMDTan_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasSIMDTan class template. For instance, given the type \a T the following

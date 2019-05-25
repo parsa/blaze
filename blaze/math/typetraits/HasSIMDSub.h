@@ -172,7 +172,7 @@ struct HasSIMDSub
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSIMDSub type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSIMDSub_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasSIMDSub class template. For instance, given the types \a T1 and \a T2

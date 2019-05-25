@@ -173,7 +173,7 @@ struct HasSIMDMax
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSIMDMax type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSIMDMax_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasSIMDMax class template. For instance, given the types \a T1 and \a T2

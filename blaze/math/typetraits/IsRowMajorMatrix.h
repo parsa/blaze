@@ -131,7 +131,7 @@ struct IsRowMajorMatrix<T&>
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsRowMajorMatrix type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsRowMajorMatrix_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsRowMajorMatrix class template. For instance, given the type \a T the

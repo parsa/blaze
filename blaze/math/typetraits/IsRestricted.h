@@ -126,7 +126,7 @@ struct IsRestricted< const volatile T >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsRestricted type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsRestricted_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsRestricted class template. For instance, given the type \a T the following

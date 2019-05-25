@@ -139,7 +139,7 @@ struct HasLog10< T, EnableIf_t< IsMatrix_v<T> > >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasLog10 type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasLog10_v variable template provides a convenient shortcut to access the nested \a value
 // of the HasLog10 class template. For instance, given the type \a T the following two statements

@@ -111,7 +111,7 @@ struct YieldsDiagonal< const volatile OP, MT, MTs... >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the YieldsDiagonal type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The YieldsDiagonal_v variable template provides a convenient shortcut to access the nested
 // \a value of the YieldsDiagonal class template. For instance, given the operation \a OP and

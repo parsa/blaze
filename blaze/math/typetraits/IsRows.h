@@ -147,7 +147,7 @@ struct IsRows< const volatile Rows<MT,SO,DF,SF,CRAs...> >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsRows type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsRows_v variable template provides a convenient shortcut to access the nested \a value
 // of the IsRows class template. For instance, given the type \a T the following two statements

@@ -78,7 +78,7 @@ struct StorageOrder
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the StorageOrder type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The StorageOrder_v variable template provides a convenient shortcut to access the nested
 // \a value of the StorageOrder class template. For instance, given the matrix type \a T the

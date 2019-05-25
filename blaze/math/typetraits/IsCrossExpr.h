@@ -117,7 +117,7 @@ struct IsCrossExpr<T&>
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsCrossExpr type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsCrossExpr_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsCrossExpr class template. For instance, given the type \a T the

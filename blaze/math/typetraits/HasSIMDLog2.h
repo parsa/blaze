@@ -102,7 +102,7 @@ struct HasSIMDLog2
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSIMDLog2 type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSIMDLog2_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasSIMDLog2 class template. For instance, given the type \a T the following

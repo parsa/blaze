@@ -172,7 +172,7 @@ struct HasSIMDAdd
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSIMDAdd type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSIMDAdd_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasSIMDAdd class template. For instance, given the types \a T1 and \a T2

@@ -119,7 +119,7 @@ struct HasConstDataAccess< const volatile T >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasConstDataAccess type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasConstDataAccess_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasConstDataAccess class template. For instance, given the type \a T the

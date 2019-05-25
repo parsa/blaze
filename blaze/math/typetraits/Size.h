@@ -161,7 +161,7 @@ struct Size< const volatile T, N >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the Size type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The Size_v variable template provides a convenient shortcut to access the nested \a value
 // of the Size class template. For instance, given the type \a T and the dimension \a N the

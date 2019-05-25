@@ -116,7 +116,7 @@ struct IsUnaryMapExpr<T&>
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsUnaryMapExpr type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsUnaryMapExpr_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsUnaryMapExpr class template. For instance, given the type \a T the

@@ -73,7 +73,7 @@ struct IsTemporary
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsTemporary type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsTemporary_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsTemporary class template. For instance, given the type \a T the following

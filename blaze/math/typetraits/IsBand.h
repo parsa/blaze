@@ -148,7 +148,7 @@ struct IsBand< const volatile Band<MT,TF,DF,MF,CBAs...> >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsBand type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsBand_v variable template provides a convenient shortcut to access the nested \a value
 // of the IsBand class template. For instance, given the type \a T the following two statements

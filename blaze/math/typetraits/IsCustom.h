@@ -131,7 +131,7 @@ struct IsCustom< const volatile T >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsCustom type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsCustom_v variable template provides a convenient shortcut to access the nested \a value
 // of the IsCustom class template. For instance, given the type \a T the following two statements

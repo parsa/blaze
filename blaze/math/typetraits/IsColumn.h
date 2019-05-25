@@ -147,7 +147,7 @@ struct IsColumn< const volatile Column<MT,SO,DF,SF,CCAs...> >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsColumn type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsColumn_v variable template provides a convenient shortcut to access the nested \a value
 // of the IsColumn class template. For instance, given the type \a T the following two statements

@@ -102,7 +102,7 @@ struct HasSIMDAcosh
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSIMDAcosh type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSIMDAcosh_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasSIMDAcosh class template. For instance, given the type \a T the following

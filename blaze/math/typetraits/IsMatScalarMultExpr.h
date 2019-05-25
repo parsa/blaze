@@ -119,7 +119,7 @@ struct IsMatScalarMultExpr<T&>
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsMatScalarMultExpr type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsMatScalarMultExpr_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsMatScalarMultExpr class template. For instance, given the type \a T the

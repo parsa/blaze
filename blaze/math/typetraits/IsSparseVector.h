@@ -124,7 +124,7 @@ struct IsSparseVector<T&>
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsSparseVector type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsSparseVector_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsSparseVector class template. For instance, given the type \a T the

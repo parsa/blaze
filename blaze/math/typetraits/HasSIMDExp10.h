@@ -102,7 +102,7 @@ struct HasSIMDExp10
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasSIMDExp10 type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasSIMDExp10_v variable template provides a convenient shortcut to access the nested
 // \a value of the HasSIMDExp10 class template. For instance, given the type \a T the following

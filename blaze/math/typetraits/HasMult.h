@@ -164,7 +164,7 @@ struct HasMult< T1, T2, EnableIf_t< IsMatrix_v<T1> && IsMatrix_v<T2> > >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasMult type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasMult_v variable template provides a convenient shortcut to access the nested \a value
 // of the HasMult class template. For instance, given the types \a T1 and \a T2 the following

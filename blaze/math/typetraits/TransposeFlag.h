@@ -78,7 +78,7 @@ struct TransposeFlag
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the TransposeFlag type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The TransposeFlag_v variable template provides a convenient shortcut to access the nested
 // \a value of the TransposeFlag class template. For instance, given the vector type \a T the

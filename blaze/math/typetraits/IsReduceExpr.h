@@ -116,7 +116,7 @@ struct IsReduceExpr<T&>
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsReduceExpr type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsReduceExpr_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsReduceExpr class template. For instance, given the type \a T the

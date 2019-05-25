@@ -139,7 +139,7 @@ struct HasAcosh< T, EnableIf_t< IsMatrix_v<T> > >
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the HasAcosh type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The HasAcosh_v variable template provides a convenient shortcut to access the nested \a value
 // of the HasAcosh class template. For instance, given the type \a T the following two statements

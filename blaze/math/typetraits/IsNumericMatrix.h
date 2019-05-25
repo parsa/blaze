@@ -90,7 +90,7 @@ struct IsNumericMatrix
 
 //*************************************************************************************************
 /*!\brief Auxiliary variable template for the IsNumericMatrix type trait.
-// \ingroup type_traits
+// \ingroup math_type_traits
 //
 // The IsNumericMatrix_v variable template provides a convenient shortcut to access the nested
 // \a value of the IsNumericMatrix class template. For instance, given the type \a T the
