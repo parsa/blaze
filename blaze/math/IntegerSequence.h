@@ -170,8 +170,10 @@ constexpr bool operator!=( index_sequence<I1s...> lhs, index_sequence<I2s...> rh
 */
 template< size_t Offset   // The offset for the shift operation
         , size_t... Is >  // The sequence of indices
-constexpr decltype(auto) shift( std::index_sequence<Is...> /*sequence*/ )
+constexpr decltype(auto) shift( std::index_sequence<Is...> sequence )
 {
+   MAYBE_UNUSED( sequence );
+
    return std::index_sequence< ( Is + Offset )... >();
 }
 /*! \endcond */
@@ -188,8 +190,10 @@ constexpr decltype(auto) shift( std::index_sequence<Is...> /*sequence*/ )
 */
 template< size_t... Is1    // The indices to be selected
         , size_t... Is2 >  // The sequence of indices
-constexpr decltype(auto) subsequence( std::index_sequence<Is2...> /*sequence*/ )
+constexpr decltype(auto) subsequence( std::index_sequence<Is2...> sequence )
 {
+   MAYBE_UNUSED( sequence );
+
    constexpr size_t indices[] = { Is2... };
    return std::index_sequence< indices[Is1]... >();
 }
