@@ -63,7 +63,7 @@ all: shims simd blas lapack typetraits traits constraints functors \
      dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
      dmatdmatschur dmatsmatschur smatdmatschur smatsmatschur \
      dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
-     dmatdmatkron dmatsmatkron \
+     dmatdmatkron dmatsmatkron smatdmatkron \
      dmatdmatmin dmatdmatmax \
      dmatreduce smatreduce \
      determinant lu llh qr rq ql lq inversion eigen svd \
@@ -627,6 +627,11 @@ dmatsmatkron:
 	@echo "Building the dense matrix/sparse matrix Kronecker product tests..."
 	@$(MAKE) --no-print-directory -C ./dmatsmatkron $(MAKECMDGOALS)
 
+smatdmatkron:
+	@echo
+	@echo "Building the sparse matrix/dense matrix Kronecker product tests..."
+	@$(MAKE) --no-print-directory -C ./smatdmatkron $(MAKECMDGOALS)
+
 dmatdmatmin:
 	@echo
 	@echo "Building the dense matrix/dense matrix minimum tests..."
@@ -814,6 +819,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./smatsmatmult reset
 	@$(MAKE) --no-print-directory -C ./dmatdmatkron reset
 	@$(MAKE) --no-print-directory -C ./dmatsmatkron reset
+	@$(MAKE) --no-print-directory -C ./smatdmatkron reset
 	@$(MAKE) --no-print-directory -C ./dmatdmatmin reset
 	@$(MAKE) --no-print-directory -C ./dmatdmatmax reset
 	@$(MAKE) --no-print-directory -C ./dmatreduce reset
@@ -940,6 +946,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./smatsmatmult clean
 	@$(MAKE) --no-print-directory -C ./dmatdmatkron clean
 	@$(MAKE) --no-print-directory -C ./dmatsmatkron clean
+	@$(MAKE) --no-print-directory -C ./smatdmatkron clean
 	@$(MAKE) --no-print-directory -C ./dmatdmatmin clean
 	@$(MAKE) --no-print-directory -C ./dmatdmatmax clean
 	@$(MAKE) --no-print-directory -C ./dmatreduce clean
@@ -988,7 +995,7 @@ clean:
         dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
         dmatdmatschur dmatsmatschur smatdmatschur smatsmatschur \
         dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
-        dmatdmatkron dmatsmatkron \
+        dmatdmatkron dmatsmatkron smatdmatkron \
         dmatdmatmin dmatdmatmax \
         dmatreduce smatreduce \
         determinant lu llh qr rq ql lq inversion eigen svd \
