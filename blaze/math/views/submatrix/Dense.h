@@ -2423,7 +2423,6 @@ BLAZE_ALWAYS_INLINE typename Submatrix<MT,unaligned,false,true,CSAs...>::SIMDTyp
    BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index" );
 
    return matrix_.loadu( row()+i, column()+j );
 }
@@ -2524,7 +2523,6 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index" );
 
    matrix_.storeu( row()+i, column()+j, value );
 }
@@ -5666,7 +5664,6 @@ BLAZE_ALWAYS_INLINE typename Submatrix<MT,unaligned,true,true,CSAs...>::SIMDType
 
    BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( i + SIMDSIZE <= rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i % SIMDSIZE == 0UL, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
 
    return matrix_.loadu( row()+i, column()+j );
@@ -5764,7 +5761,6 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( i + SIMDSIZE <= rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i % SIMDSIZE == 0UL, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
 
    matrix_.storeu( row()+i, column()+j, value );
@@ -8536,7 +8532,6 @@ BLAZE_ALWAYS_INLINE typename Submatrix<MT,aligned,false,true,CSAs...>::SIMDType
    BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index" );
 
    return matrix_.loadu( row()+i, column()+j );
 }
@@ -8634,7 +8629,6 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index" );
 
    matrix_.storeu( row()+i, column()+j, value );
 }
@@ -11359,7 +11353,6 @@ BLAZE_ALWAYS_INLINE typename Submatrix<MT,aligned,true,true,CSAs...>::SIMDType
 
    BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( i + SIMDSIZE <= rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i % SIMDSIZE == 0UL, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
 
    return matrix_.loadu( row()+i, column()+j );
@@ -11454,7 +11447,6 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( i + SIMDSIZE <= rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i % SIMDSIZE == 0UL, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
 
    matrix_.storeu( row()+i, column()+j, value );
