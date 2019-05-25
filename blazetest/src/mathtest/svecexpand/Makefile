@@ -50,8 +50,8 @@ BIN = $(SRC:.cpp=)
 # General rules
 default: $(BIN)
 all: $(BIN)
-essential: $(BIN)
-single: $(BIN)
+essential: VCa
+single: VCa
 
 
 # Build rules
