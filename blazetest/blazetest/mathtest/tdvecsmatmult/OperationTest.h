@@ -45,6 +45,7 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <utility>
 #include <vector>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedMatrix.h>
@@ -4027,7 +4028,6 @@ void OperationTest<VT,MT>::testSubvectorOperation( blaze::TrueType )
 /*!\brief Skipping the subvector-wise dense vector/sparse matrix multiplication.
 //
 // \return void
-// \exception std::runtime_error Addition error detected.
 //
 // This function is called in case the subvector-wise vector/matrix multiplication operation is
 // not available for the given types \a VT and \a MT.
@@ -4493,7 +4493,6 @@ void OperationTest<VT,MT>::testElementsOperation( blaze::TrueType )
 /*!\brief Skipping the elements-wise dense vector/sparse matrix multiplication.
 //
 // \return void
-// \exception std::runtime_error Addition error detected.
 //
 // This function is called in case the elements-wise vector/matrix multiplication operation is
 // not available for the given types \a VT and \a MT.

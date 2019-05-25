@@ -45,6 +45,7 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <utility>
 #include <vector>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedMatrix.h>
@@ -9332,7 +9333,6 @@ void OperationTest<VT,E>::testBandOperation( blaze::TrueType )
 /*!\brief Skipping the band-wise dense vector expansion operation.
 //
 // \return void
-// \exception std::runtime_error Expansion error detected.
 //
 // This function is called in case the band-wise dense vector expansion operation is not available
 // for the given vector type \a VT.

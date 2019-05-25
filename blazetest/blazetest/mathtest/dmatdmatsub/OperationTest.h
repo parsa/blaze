@@ -45,6 +45,7 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <utility>
 #include <vector>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedMatrix.h>
@@ -8351,7 +8352,6 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
 /*!\brief Skipping the submatrix-wise dense matrix/dense matrix subtraction.
 //
 // \return void
-// \exception std::runtime_error Subtraction error detected.
 //
 // This function is called in case the submatrix-wise matrix/matrix subtraction operation is not
 // available for the given matrix types \a MT1 and \a MT2.
@@ -8973,7 +8973,6 @@ void OperationTest<MT1,MT2>::testRowOperation( blaze::TrueType )
 /*!\brief Skipping the row-wise dense matrix/dense matrix subtraction.
 //
 // \return void
-// \exception std::runtime_error Subtraction error detected.
 //
 // This function is called in case the row-wise matrix/matrix subtraction operation is not
 // available for the given matrix types \a MT1 and \a MT2.
@@ -10253,7 +10252,6 @@ void OperationTest<MT1,MT2>::testColumnOperation( blaze::TrueType )
 /*!\brief Skipping the column-wise dense matrix/dense matrix subtraction.
 //
 // \return void
-// \exception std::runtime_error Subtraction error detected.
 //
 // This function is called in case the column-wise matrix/matrix subtraction operation is not
 // available for the given matrix types \a MT1 and \a MT2.
@@ -11537,7 +11535,6 @@ void OperationTest<MT1,MT2>::testBandOperation( blaze::TrueType )
 /*!\brief Skipping the band-wise dense matrix/dense matrix subtraction.
 //
 // \return void
-// \exception std::runtime_error Subtraction error detected.
 //
 // This function is called in case the band-wise matrix/matrix subtraction operation is not
 // available for the given matrix types \a MT1 and \a MT2.

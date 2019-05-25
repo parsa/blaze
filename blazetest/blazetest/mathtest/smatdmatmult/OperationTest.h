@@ -45,6 +45,7 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <utility>
 #include <vector>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedMatrix.h>
@@ -9430,7 +9431,6 @@ void OperationTest<MT1,MT2>::testSubmatrixOperation( blaze::TrueType )
 /*!\brief Skipping the submatrix-wise sparse matrix/dense matrix multiplication.
 //
 // \return void
-// \exception std::runtime_error Multiplication error detected.
 //
 // This function is called in case the submatrix-wise matrix/matrix multiplication operation is
 // not available for the given matrix types \a MT1 and \a MT2.
@@ -10052,7 +10052,6 @@ void OperationTest<MT1,MT2>::testRowOperation( blaze::TrueType )
 /*!\brief Skipping the row-wise sparse matrix/dense matrix multiplication.
 //
 // \return void
-// \exception std::runtime_error Multiplication error detected.
 //
 // This function is called in case the row-wise matrix/matrix multiplication operation is not
 // available for the given matrix types \a MT1 and \a MT2.
@@ -11334,7 +11333,6 @@ void OperationTest<MT1,MT2>::testColumnOperation( blaze::TrueType )
 /*!\brief Skipping the column-wise sparse matrix/dense matrix multiplication.
 //
 // \return void
-// \exception std::runtime_error Multiplication error detected.
 //
 // This function is called in case the column-wise matrix/matrix multiplication operation is not
 // available for the given matrix types \a MT1 and \a MT2.
@@ -12618,7 +12616,6 @@ void OperationTest<MT1,MT2>::testBandOperation( blaze::TrueType )
 /*!\brief Skipping the band-wise sparse matrix/dense matrix multiplication.
 //
 // \return void
-// \exception std::runtime_error Multiplication error detected.
 //
 // This function is called in case the band-wise matrix/matrix multiplication operation is not
 // available for the given matrix types \a MT1 and \a MT2.

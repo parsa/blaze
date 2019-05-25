@@ -45,6 +45,7 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <utility>
 #include <vector>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedVector.h>
@@ -3566,7 +3567,6 @@ void OperationTest<VT1,VT2>::testSubmatrixOperation( blaze::TrueType )
 /*!\brief Skipping the submatrix-wise dense vector/dense vector outer product.
 //
 // \return void
-// \exception std::runtime_error Outer product error detected.
 //
 // This function is called in case the submatrix-wise outer product operation is not available
 // for the given vector types \a VT1 and \a VT2.
@@ -3800,7 +3800,6 @@ void OperationTest<VT1,VT2>::testRowOperation( blaze::TrueType )
 /*!\brief Skipping the row-wise dense vector/dense vector outer product.
 //
 // \return void
-// \exception std::runtime_error Outer product error detected.
 //
 // This function is called in case the row-wise outer product operation is not available for the
 // given vector types \a VT1 and \a VT2.
@@ -4051,7 +4050,6 @@ void OperationTest<VT1,VT2>::testRowsOperation( blaze::TrueType )
 /*!\brief Skipping the rows-wise dense vector/dense vector outer product.
 //
 // \return void
-// \exception std::runtime_error Outer product error detected.
 //
 // This function is called in case the rows-wise outer product operation is not available for the
 // given vector types \a VT1 and \a VT2.
@@ -4285,7 +4283,6 @@ void OperationTest<VT1,VT2>::testColumnOperation( blaze::TrueType )
 /*!\brief Skipping the column-wise dense vector/dense vector outer product.
 //
 // \return void
-// \exception std::runtime_error Outer product error detected.
 //
 // This function is called in case the column-wise outer product operation is not available for
 // the given vector types \a VT1 and \a VT2.
@@ -4536,7 +4533,6 @@ void OperationTest<VT1,VT2>::testColumnsOperation( blaze::TrueType )
 /*!\brief Skipping the columns-wise dense vector/dense vector outer product.
 //
 // \return void
-// \exception std::runtime_error Outer product error detected.
 //
 // This function is called in case the columns-wise outer product operation is not available for
 // the given vector types \a VT1 and \a VT2.
@@ -4774,7 +4770,6 @@ void OperationTest<VT1,VT2>::testBandOperation( blaze::TrueType )
 /*!\brief Skipping the band-wise dense vector/dense vector outer product.
 //
 // \return void
-// \exception std::runtime_error Outer product error detected.
 //
 // This function is called in case the band-wise outer product operation is not available for
 // the given vector types \a VT1 and \a VT2.

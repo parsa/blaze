@@ -45,6 +45,7 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <utility>
 #include <vector>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/CompressedVector.h>
@@ -4039,7 +4040,6 @@ void OperationTest<VT1,VT2>::testSubvectorOperation( blaze::TrueType )
 /*!\brief Skipping the subvector-wise dense vector/dense vector subtraction.
 //
 // \return void
-// \exception std::runtime_error Subtraction error detected.
 //
 // This function is called in case the subvector-wise vector/vector subtraction operation is not
 // available for the given vector types \a VT1 and \a VT2.
@@ -4475,7 +4475,6 @@ void OperationTest<VT1,VT2>::testElementsOperation( blaze::TrueType )
 /*!\brief Skipping the elements-wise dense vector/dense vector subtraction.
 //
 // \return void
-// \exception std::runtime_error Subtraction error detected.
 //
 // This function is called in case the elements-wise vector/vector subtraction operation is not
 // available for the given vector types \a VT1 and \a VT2.
