@@ -63,7 +63,7 @@ all: shims simd blas lapack typetraits traits constraints functors \
      dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
      dmatdmatschur dmatsmatschur smatdmatschur smatsmatschur \
      dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
-     dmatdmatkron dmatsmatkron smatdmatkron \
+     dmatdmatkron dmatsmatkron smatdmatkron smatsmatkron \
      dmatdmatmin dmatdmatmax \
      dmatreduce smatreduce \
      determinant lu llh qr rq ql lq inversion eigen svd \
@@ -632,6 +632,11 @@ smatdmatkron:
 	@echo "Building the sparse matrix/dense matrix Kronecker product tests..."
 	@$(MAKE) --no-print-directory -C ./smatdmatkron $(MAKECMDGOALS)
 
+smatsmatkron:
+	@echo
+	@echo "Building the sparse matrix/sparse matrix Kronecker product tests..."
+	@$(MAKE) --no-print-directory -C ./smatsmatkron $(MAKECMDGOALS)
+
 dmatdmatmin:
 	@echo
 	@echo "Building the dense matrix/dense matrix minimum tests..."
@@ -820,6 +825,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./dmatdmatkron reset
 	@$(MAKE) --no-print-directory -C ./dmatsmatkron reset
 	@$(MAKE) --no-print-directory -C ./smatdmatkron reset
+	@$(MAKE) --no-print-directory -C ./smatsmatkron reset
 	@$(MAKE) --no-print-directory -C ./dmatdmatmin reset
 	@$(MAKE) --no-print-directory -C ./dmatdmatmax reset
 	@$(MAKE) --no-print-directory -C ./dmatreduce reset
@@ -947,6 +953,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./dmatdmatkron clean
 	@$(MAKE) --no-print-directory -C ./dmatsmatkron clean
 	@$(MAKE) --no-print-directory -C ./smatdmatkron clean
+	@$(MAKE) --no-print-directory -C ./smatsmatkron clean
 	@$(MAKE) --no-print-directory -C ./dmatdmatmin clean
 	@$(MAKE) --no-print-directory -C ./dmatdmatmax clean
 	@$(MAKE) --no-print-directory -C ./dmatreduce clean
@@ -995,7 +1002,7 @@ clean:
         dmatdmatsub dmatsmatsub smatdmatsub smatsmatsub \
         dmatdmatschur dmatsmatschur smatdmatschur smatsmatschur \
         dmatdmatmult dmatsmatmult smatdmatmult smatsmatmult \
-        dmatdmatkron dmatsmatkron smatdmatkron \
+        dmatdmatkron dmatsmatkron smatdmatkron smatsmatkron \
         dmatdmatmin dmatdmatmax \
         dmatreduce smatreduce \
         determinant lu llh qr rq ql lq inversion eigen svd \
