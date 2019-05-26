@@ -55,9 +55,9 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void sgesv_( int* n, int* nrhs, float*  A, int* lda, int* ipiv, float*  b, int* ldb, int* info );
+void sgesv_( int* n, int* nrhs, float* A, int* lda, int* ipiv, float* b, int* ldb, int* info );
 void dgesv_( int* n, int* nrhs, double* A, int* lda, int* ipiv, double* b, int* ldb, int* info );
-void cgesv_( int* n, int* nrhs, float*  A, int* lda, int* ipiv, float*  b, int* ldb, int* info );
+void cgesv_( int* n, int* nrhs, float* A, int* lda, int* ipiv, float* b, int* ldb, int* info );
 void zgesv_( int* n, int* nrhs, double* A, int* lda, int* ipiv, double* b, int* ldb, int* info );
 
 }

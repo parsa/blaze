@@ -55,8 +55,10 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void sorgql_( int* m, int* n, int* k, float*  A, int* lda, float*  tau, float*  work, int* lwork, int* info );
-void dorgql_( int* m, int* n, int* k, double* A, int* lda, double* tau, double* work, int* lwork, int* info );
+void sorgql_( int* m, int* n, int* k, float* A, int* lda, float* tau,
+              float* work, int* lwork, int* info );
+void dorgql_( int* m, int* n, int* k, double* A, int* lda, double* tau,
+              double* work, int* lwork, int* info );
 
 }
 #endif

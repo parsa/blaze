@@ -55,9 +55,9 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void sgerqf_( int* m, int* n, float*  A, int* lda, float*  tau, float*  work, int* lwork, int* info );
+void sgerqf_( int* m, int* n, float* A, int* lda, float* tau, float* work, int* lwork, int* info );
 void dgerqf_( int* m, int* n, double* A, int* lda, double* tau, double* work, int* lwork, int* info );
-void cgerqf_( int* m, int* n, float*  A, int* lda, float*  tau, float*  work, int* lwork, int* info );
+void cgerqf_( int* m, int* n, float* A, int* lda, float* tau, float* work, int* lwork, int* info );
 void zgerqf_( int* m, int* n, double* A, int* lda, double* tau, double* work, int* lwork, int* info );
 
 }

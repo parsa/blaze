@@ -42,6 +42,7 @@
 
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 
 
 //=================================================================================================
@@ -55,8 +56,12 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void ssyevd_( char* jobz, char* uplo, int* n, float*  A, int* lda, float*  w, float*  work, int* lwork, int* iwork, int* liwork, int* info );
-void dsyevd_( char* jobz, char* uplo, int* n, double* A, int* lda, double* w, double* work, int* lwork, int* iwork, int* liwork, int* info );
+void ssyevd_( char* jobz, char* uplo, int* n, float* A, int* lda, float* w,
+              float* work, int* lwork, int* iwork, int* liwork, int* info,
+              blaze::fortran_charlen_t njobz, blaze::fortran_charlen_t nuplo );
+void dsyevd_( char* jobz, char* uplo, int* n, double* A, int* lda, double* w,
+              double* work, int* lwork, int* iwork, int* liwork, int* info,
+              blaze::fortran_charlen_t njobz, blaze::fortran_charlen_t nuplo );
 
 }
 #endif
@@ -135,7 +140,8 @@ inline void syevd( char jobz, char uplo, int n, float* A, int lda, float* w,
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   ssyevd_( &jobz, &uplo, &n, A, &lda, w, work, &lwork, iwork, &liwork, info );
+   ssyevd_( &jobz, &uplo, &n, A, &lda, w, work, &lwork, iwork, &liwork, info,
+            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -189,7 +195,8 @@ inline void syevd( char jobz, char uplo, int n, double* A, int lda, double* w,
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   dsyevd_( &jobz, &uplo, &n, A, &lda, w, work, &lwork, iwork, &liwork, info );
+   dsyevd_( &jobz, &uplo, &n, A, &lda, w, work, &lwork, iwork, &liwork, info,
+            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 

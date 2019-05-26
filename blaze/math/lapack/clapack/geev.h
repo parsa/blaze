@@ -42,6 +42,7 @@
 
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 
 
 //=================================================================================================
@@ -55,10 +56,18 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void sgeev_( char* jobvl, char* jobvr, int* n, float*  A, int* lda, float*  wr, float*  wi, float*  VL, int* ldvl, float*  VR, int* ldvr, float*  work, int* lwork, int* info );
-void dgeev_( char* jobvl, char* jobvr, int* n, double* A, int* lda, double* wr, double* wi, double* VL, int* ldvl, double* VR, int* ldvr, double* work, int* lwork, int* info );
-void cgeev_( char* jobvl, char* jobvr, int* n, float*  A, int* lda, float*  w, float*  VL, int* ldvl, float*  VR, int* ldvr, float*  work, int* lwork, float*  rwork, int* info );
-void zgeev_( char* jobvl, char* jobvr, int* n, double* A, int* lda, double* w, double* VL, int* ldvl, double* VR, int* ldvr, double* work, int* lwork, double* rwork, int* info );
+void sgeev_( char* jobvl, char* jobvr, int* n, float* A, int* lda, float* wr, float* wi,
+             float* VL, int* ldvl, float* VR, int* ldvr, float* work, int* lwork, int* info,
+             blaze::fortran_charlen_t njobvl, blaze::fortran_charlen_t njobvr );
+void dgeev_( char* jobvl, char* jobvr, int* n, double* A, int* lda, double* wr, double* wi,
+             double* VL, int* ldvl, double* VR, int* ldvr, double* work, int* lwork, int* info,
+             blaze::fortran_charlen_t njobvl, blaze::fortran_charlen_t njobvr );
+void cgeev_( char* jobvl, char* jobvr, int* n, float* A, int* lda, float* w, float* VL,
+             int* ldvl, float* VR, int* ldvr, float* work, int* lwork, float* rwork,
+             int* info, blaze::fortran_charlen_t njobvl, blaze::fortran_charlen_t njobvr );
+void zgeev_( char* jobvl, char* jobvr, int* n, double* A, int* lda, double* w, double* VL,
+             int* ldvl, double* VR, int* ldvr, double* work, int* lwork, double* rwork,
+             int* info, blaze::fortran_charlen_t njobvl, blaze::fortran_charlen_t njobvr );
 
 }
 #endif
@@ -168,7 +177,8 @@ inline void geev( char jobvl, char jobvr, int n, float* A, int lda,
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   sgeev_( &jobvl, &jobvr, &n, A, &lda, wr, wi, VL, &ldvl, VR, &ldvr, work, &lwork, info );
+   sgeev_( &jobvl, &jobvr, &n, A, &lda, wr, wi, VL, &ldvl, VR, &ldvr, work, &lwork, info,
+           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -243,7 +253,8 @@ inline void geev( char jobvl, char jobvr, int n, double* A, int lda,
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   dgeev_( &jobvl, &jobvr, &n, A, &lda, wr, wi, VL, &ldvl, VR, &ldvr, work, &lwork, info );
+   dgeev_( &jobvl, &jobvr, &n, A, &lda, wr, wi, VL, &ldvl, VR, &ldvr, work, &lwork, info,
+           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -325,7 +336,8 @@ inline void geev( char jobvl, char jobvr, int n, complex<float>* A, int lda,
 
    cgeev_( &jobvl, &jobvr, &n, reinterpret_cast<ET*>( A ), &lda, reinterpret_cast<ET*>( w ),
            reinterpret_cast<ET*>( VL ), &ldvl, reinterpret_cast<ET*>( VR ), &ldvr,
-           reinterpret_cast<ET*>( work ), &lwork, rwork, info );
+           reinterpret_cast<ET*>( work ), &lwork, rwork, info,
+           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -407,7 +419,8 @@ inline void geev( char jobvl, char jobvr, int n, complex<double>* A, int lda,
 
    zgeev_( &jobvl, &jobvr, &n, reinterpret_cast<ET*>( A ), &lda, reinterpret_cast<ET*>( w ),
            reinterpret_cast<ET*>( VL ), &ldvl, reinterpret_cast<ET*>( VR ), &ldvr,
-           reinterpret_cast<ET*>( work ), &lwork, rwork, info );
+           reinterpret_cast<ET*>( work ), &lwork, rwork, info,
+           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 

@@ -42,6 +42,7 @@
 
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 
 
 //=================================================================================================
@@ -55,10 +56,14 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void spotrs_( char* uplo, int* n, int* nrhs, float*  A, int* lda, float*  B, int* ldb, int* info );
-void dpotrs_( char* uplo, int* n, int* nrhs, double* A, int* lda, double* B, int* ldb, int* info );
-void cpotrs_( char* uplo, int* n, int* nrhs, float*  A, int* lda, float*  B, int* ldb, int* info );
-void zpotrs_( char* uplo, int* n, int* nrhs, double* A, int* lda, double* B, int* ldb, int* info );
+void spotrs_( char* uplo, int* n, int* nrhs, float* A, int* lda, float* B, int* ldb,
+              int* info, blaze::fortran_charlen_t nuplo );
+void dpotrs_( char* uplo, int* n, int* nrhs, double* A, int* lda, double* B, int* ldb,
+              int* info, blaze::fortran_charlen_t nuplo );
+void cpotrs_( char* uplo, int* n, int* nrhs, float* A, int* lda, float* B, int* ldb,
+              int* info, blaze::fortran_charlen_t nuplo );
+void zpotrs_( char* uplo, int* n, int* nrhs, double* A, int* lda, double* B, int* ldb,
+              int* info, blaze::fortran_charlen_t nuplo );
 
 }
 #endif
@@ -79,13 +84,17 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK LLH-based substitution functions (potrs) */
 //@{
-inline void potrs( char uplo, int n, int nrhs, const float* A, int lda, float* B, int ldb, int* info );
+inline void potrs( char uplo, int n, int nrhs, const float* A, int lda,
+                   float* B, int ldb, int* info );
 
-inline void potrs( char uplo, int n, int nrhs, const double* A, int lda, double* B, int ldb, int* info );
+inline void potrs( char uplo, int n, int nrhs, const double* A, int lda,
+                   double* B, int ldb, int* info );
 
-inline void potrs( char uplo, int n, int nrhs, const complex<float>* A, int lda, complex<float>* B, int ldb, int* info );
+inline void potrs( char uplo, int n, int nrhs, const complex<float>* A, int lda,
+                   complex<float>* B, int ldb, int* info );
 
-inline void potrs( char uplo, int n, int nrhs, const complex<double>* A, int lda, complex<double>* B, int ldb, int* info );
+inline void potrs( char uplo, int n, int nrhs, const complex<double>* A, int lda,
+                   complex<double>* B, int ldb, int* info );
 //@}
 //*************************************************************************************************
 
@@ -129,7 +138,8 @@ inline void potrs( char uplo, int n, int nrhs, const float* A, int lda, float* B
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   spotrs_( &uplo, &n, &nrhs, const_cast<float*>( A ), &lda, B, &ldb, info );
+   spotrs_( &uplo, &n, &nrhs, const_cast<float*>( A ), &lda, B, &ldb, info,
+            blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -173,7 +183,8 @@ inline void potrs( char uplo, int n, int nrhs, const double* A, int lda, double*
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   dpotrs_( &uplo, &n, &nrhs, const_cast<double*>( A ), &lda, B, &ldb, info );
+   dpotrs_( &uplo, &n, &nrhs, const_cast<double*>( A ), &lda, B, &ldb, info,
+            blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -224,7 +235,7 @@ inline void potrs( char uplo, int n, int nrhs, const complex<float>* A,
 #endif
 
    cpotrs_( &uplo, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
-            &lda, reinterpret_cast<ET*>( B ), &ldb, info );
+            &lda, reinterpret_cast<ET*>( B ), &ldb, info, blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -275,7 +286,7 @@ inline void potrs( char uplo, int n, int nrhs, const complex<double>* A,
 #endif
 
    zpotrs_( &uplo, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
-            &lda, reinterpret_cast<ET*>( B ), &ldb, info );
+            &lda, reinterpret_cast<ET*>( B ), &ldb, info, blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 

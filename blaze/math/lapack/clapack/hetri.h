@@ -42,6 +42,7 @@
 
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 
 
 //=================================================================================================
@@ -55,8 +56,10 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void chetri_( char* uplo, int* n, float*  A, int* lda, int* ipiv, float*  work, int* info );
-void zhetri_( char* uplo, int* n, double* A, int* lda, int* ipiv, double* work, int* info );
+void chetri_( char* uplo, int* n, float* A, int* lda, int* ipiv, float* work,
+              int* info, blaze::fortran_charlen_t nuplo );
+void zhetri_( char* uplo, int* n, double* A, int* lda, int* ipiv, double* work,
+              int* info, blaze::fortran_charlen_t nuplo );
 
 }
 #endif
@@ -130,8 +133,8 @@ inline void hetri( char uplo, int n, complex<float>* A, int lda,
    using ET = float;
 #endif
 
-   chetri_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda,
-            const_cast<int*>( ipiv ), reinterpret_cast<ET*>( work ), info );
+   chetri_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, const_cast<int*>( ipiv ),
+            reinterpret_cast<ET*>( work ), info, blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -180,8 +183,8 @@ inline void hetri( char uplo, int n, complex<double>* A, int lda,
    using ET = double;
 #endif
 
-   zhetri_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda,
-            const_cast<int*>( ipiv ), reinterpret_cast<ET*>( work ), info );
+   zhetri_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, const_cast<int*>( ipiv ),
+            reinterpret_cast<ET*>( work ), info, blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 

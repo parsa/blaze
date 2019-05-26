@@ -42,6 +42,7 @@
 
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 
 
 //=================================================================================================
@@ -55,10 +56,14 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void sgetrs_( char* trans, int* n, int* nrhs, float*  A, int* lda, int* ipiv, float*  B, int* ldb, int* info );
-void dgetrs_( char* trans, int* n, int* nrhs, double* A, int* lda, int* ipiv, double* B, int* ldb, int* info );
-void cgetrs_( char* trans, int* n, int* nrhs, float*  A, int* lda, int* ipiv, float*  B, int* ldb, int* info );
-void zgetrs_( char* trans, int* n, int* nrhs, double* A, int* lda, int* ipiv, double* B, int* ldb, int* info );
+void sgetrs_( char* trans, int* n, int* nrhs, float* A, int* lda, int* ipiv,
+              float* B, int* ldb, int* info, blaze::fortran_charlen_t ntrans );
+void dgetrs_( char* trans, int* n, int* nrhs, double* A, int* lda, int* ipiv,
+              double* B, int* ldb, int* info, blaze::fortran_charlen_t ntrans );
+void cgetrs_( char* trans, int* n, int* nrhs, float* A, int* lda, int* ipiv,
+              float* B, int* ldb, int* info, blaze::fortran_charlen_t ntrans );
+void zgetrs_( char* trans, int* n, int* nrhs, double* A, int* lda, int* ipiv,
+              double* B, int* ldb, int* info, blaze::fortran_charlen_t ntrans );
 
 }
 #endif
@@ -141,7 +146,7 @@ inline void getrs( char trans, int n, int nrhs, const float* A, int lda,
 #endif
 
    sgetrs_( &trans, &n, &nrhs, const_cast<float*>( A ), &lda,
-            const_cast<int*>( ipiv ), B, &ldb, info );
+            const_cast<int*>( ipiv ), B, &ldb, info, blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -193,7 +198,7 @@ inline void getrs( char trans, int n, int nrhs, const double* A, int lda,
 #endif
 
    dgetrs_( &trans, &n, &nrhs, const_cast<double*>( A ), &lda,
-            const_cast<int*>( ipiv ), B, &ldb, info );
+            const_cast<int*>( ipiv ), B, &ldb, info, blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -250,7 +255,8 @@ inline void getrs( char trans, int n, int nrhs, const complex<float>* A, int lda
 #endif
 
    cgetrs_( &trans, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
-            &lda, const_cast<int*>( ipiv ), reinterpret_cast<ET*>( B ), &ldb, info );
+            &lda, const_cast<int*>( ipiv ), reinterpret_cast<ET*>( B ), &ldb, info,
+            blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -307,7 +313,8 @@ inline void getrs( char trans, int n, int nrhs, const complex<double>* A, int ld
 #endif
 
    zgetrs_( &trans, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
-            &lda, const_cast<int*>( ipiv ), reinterpret_cast<ET*>( B ), &ldb, info );
+            &lda, const_cast<int*>( ipiv ), reinterpret_cast<ET*>( B ), &ldb, info,
+            blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 

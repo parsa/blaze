@@ -55,9 +55,9 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void sgetri_( int* n, float*  A, int* lda, int* ipiv, float*  work, int* lwork, int* info );
+void sgetri_( int* n, float* A, int* lda, int* ipiv, float* work, int* lwork, int* info );
 void dgetri_( int* n, double* A, int* lda, int* ipiv, double* work, int* lwork, int* info );
-void cgetri_( int* n, float*  A, int* lda, int* ipiv, float*  work, int* lwork, int* info );
+void cgetri_( int* n, float* A, int* lda, int* ipiv, float* work, int* lwork, int* info );
 void zgetri_( int* n, double* A, int* lda, int* ipiv, double* work, int* lwork, int* info );
 
 }

@@ -42,6 +42,7 @@
 
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 
 
 //=================================================================================================
@@ -55,10 +56,18 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void strtrs_( char* uplo, char* trans, char* diag, int* n, int* nrhs, float*  A, int* lda, float*  B, int* ldb, int* info );
-void dtrtrs_( char* uplo, char* trans, char* diag, int* n, int* nrhs, double* A, int* lda, double* B, int* ldb, int* info );
-void ctrtrs_( char* uplo, char* trans, char* diag, int* n, int* nrhs, float*  A, int* lda, float*  B, int* ldb, int* info );
-void ztrtrs_( char* uplo, char* trans, char* diag, int* n, int* nrhs, double* A, int* lda, double* B, int* ldb, int* info );
+void strtrs_( char* uplo, char* trans, char* diag, int* n, int* nrhs, float* A, int* lda,
+              float* B, int* ldb, int* info, blaze::fortran_charlen_t nuplo,
+              blaze::fortran_charlen_t ntrans, blaze::fortran_charlen_t ndiag );
+void dtrtrs_( char* uplo, char* trans, char* diag, int* n, int* nrhs, double* A, int* lda,
+              double* B, int* ldb, int* info, blaze::fortran_charlen_t nuplo,
+              blaze::fortran_charlen_t ntrans, blaze::fortran_charlen_t ndiag );
+void ctrtrs_( char* uplo, char* trans, char* diag, int* n, int* nrhs, float* A, int* lda,
+              float* B, int* ldb, int* info, blaze::fortran_charlen_t nuplo,
+              blaze::fortran_charlen_t ntrans, blaze::fortran_charlen_t ndiag );
+void ztrtrs_( char* uplo, char* trans, char* diag, int* n, int* nrhs, double* A, int* lda,
+              double* B, int* ldb, int* info, blaze::fortran_charlen_t nuplo,
+              blaze::fortran_charlen_t ntrans, blaze::fortran_charlen_t ndiag );
 
 }
 #endif
@@ -141,7 +150,8 @@ inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const floa
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   strtrs_( &uplo, &trans, &diag, &n, &nrhs, const_cast<float*>( A ), &lda, B, &ldb, info );
+   strtrs_( &uplo, &trans, &diag, &n, &nrhs, const_cast<float*>( A ), &lda, B, &ldb, info,
+            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -193,7 +203,8 @@ inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const doub
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   dtrtrs_( &uplo, &trans, &diag, &n, &nrhs, const_cast<double*>( A ), &lda, B, &ldb, info );
+   dtrtrs_( &uplo, &trans, &diag, &n, &nrhs, const_cast<double*>( A ), &lda, B, &ldb, info,
+            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -251,7 +262,8 @@ inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const comp
 #endif
 
    ctrtrs_( &uplo, &trans, &diag, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
-            &lda, reinterpret_cast<ET*>( B ), &ldb, info );
+            &lda, reinterpret_cast<ET*>( B ), &ldb, info, blaze::fortran_charlen_t(1),
+            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -309,7 +321,8 @@ inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const comp
 #endif
 
    ztrtrs_( &uplo, &trans, &diag, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
-            &lda, reinterpret_cast<ET*>( B ), &ldb, info );
+            &lda, reinterpret_cast<ET*>( B ), &ldb, info, blaze::fortran_charlen_t(1),
+            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 

@@ -55,9 +55,9 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void sgetrf_( int* m, int* n, float*  A, int* lda, int* ipiv, int* info );
+void sgetrf_( int* m, int* n, float* A, int* lda, int* ipiv, int* info );
 void dgetrf_( int* m, int* n, double* A, int* lda, int* ipiv, int* info );
-void cgetrf_( int* m, int* n, float*  A, int* lda, int* ipiv, int* info );
+void cgetrf_( int* m, int* n, float* A, int* lda, int* ipiv, int* info );
 void zgetrf_( int* m, int* n, double* A, int* lda, int* ipiv, int* info );
 
 }

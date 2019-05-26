@@ -42,6 +42,7 @@
 
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 
 
 //=================================================================================================
@@ -55,8 +56,16 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void cheevx_( char* jobz, char* range, char* uplo, int* n, float*  A, int* lda, float*  vl, float*  vu, int* il, int* iu, float*  abstol, int* m, float*  w, float*  Z, int* ldz, float*  work, int* lwork, float*  rwork, int* iwork, int* ifail, int* info );
-void zheevx_( char* jobz, char* range, char* uplo, int* n, double* A, int* lda, double* vl, double* vu, int* il, int* iu, double* abstol, int* m, double* w, double* Z, int* ldz, double* work, int* lwork, double* rwork, int* iwork, int* ifail, int* info );
+void cheevx_( char* jobz, char* range, char* uplo, int* n, float* A, int* lda, float* vl,
+              float* vu, int* il, int* iu, float* abstol, int* m, float* w, float* Z, int* ldz,
+              float* work, int* lwork, float* rwork, int* iwork, int* ifail, int* info,
+              blaze::fortran_charlen_t njobz, blaze::fortran_charlen_t nrange,
+              blaze::fortran_charlen_t nuplo );
+void zheevx_( char* jobz, char* range, char* uplo, int* n, double* A, int* lda, double* vl,
+              double* vu, int* il, int* iu, double* abstol, int* m, double* w, double* Z, int* ldz,
+              double* work, int* lwork, double* rwork, int* iwork, int* ifail, int* info,
+              blaze::fortran_charlen_t njobz, blaze::fortran_charlen_t nrange,
+              blaze::fortran_charlen_t nuplo );
 
 }
 #endif
@@ -167,7 +176,8 @@ inline void heevx( char jobz, char range, char uplo, int n, complex<float>* A, i
 
    cheevx_( &jobz, &range, &uplo, &n, reinterpret_cast<ET*>( A ), &lda, &vl, &vu, &il, &iu,
             &abstol, m, w, reinterpret_cast<ET*>( Z ), &ldz, reinterpret_cast<ET*>( work ),
-            &lwork, rwork, iwork, ifail, info );
+            &lwork, rwork, iwork, ifail, info, blaze::fortran_charlen_t(1),
+            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -249,7 +259,8 @@ inline void heevx( char jobz, char range, char uplo, int n, complex<double>* A, 
 
    zheevx_( &jobz, &range, &uplo, &n, reinterpret_cast<ET*>( A ), &lda, &vl, &vu, &il, &iu,
             &abstol, m, w, reinterpret_cast<ET*>( Z ), &ldz, reinterpret_cast<ET*>( work ),
-            &lwork, rwork, iwork, ifail, info );
+            &lwork, rwork, iwork, ifail, info, blaze::fortran_charlen_t(1),
+            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 

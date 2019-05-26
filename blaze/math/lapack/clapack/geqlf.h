@@ -55,9 +55,9 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void sgeqlf_( int* m, int* n, float*  A, int* lda, float*  tau, float*  work, int* lwork, int* info );
+void sgeqlf_( int* m, int* n, float* A, int* lda, float* tau, float* work, int* lwork, int* info );
 void dgeqlf_( int* m, int* n, double* A, int* lda, double* tau, double* work, int* lwork, int* info );
-void cgeqlf_( int* m, int* n, float*  A, int* lda, float*  tau, float*  work, int* lwork, int* info );
+void cgeqlf_( int* m, int* n, float* A, int* lda, float* tau, float* work, int* lwork, int* info );
 void zgeqlf_( int* m, int* n, double* A, int* lda, double* tau, double* work, int* lwork, int* info );
 
 }

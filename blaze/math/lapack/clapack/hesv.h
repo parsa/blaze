@@ -42,6 +42,7 @@
 
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 
 
 //=================================================================================================
@@ -55,8 +56,10 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void chesv_( char* uplo, int* n, int* nrhs, float*  A, int* lda, int* ipiv, float*  b, int* ldb, float*  work, int* lwork, int* info );
-void zhesv_( char* uplo, int* n, int* nrhs, double* A, int* lda, int* ipiv, double* b, int* ldb, double* work, int* lwork, int* info );
+void chesv_( char* uplo, int* n, int* nrhs, float* A, int* lda, int* ipiv, float* b, int* ldb,
+             float* work, int* lwork, int* info, blaze::fortran_charlen_t nuplo );
+void zhesv_( char* uplo, int* n, int* nrhs, double* A, int* lda, int* ipiv, double* b, int* ldb,
+             double* work, int* lwork, int* info, blaze::fortran_charlen_t nuplo );
 
 }
 #endif
@@ -148,7 +151,8 @@ inline void hesv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* i
 #endif
 
    chesv_( &uplo, &n, &nrhs, reinterpret_cast<ET*>( A ), &lda, ipiv,
-           reinterpret_cast<ET*>( B ), &ldb, reinterpret_cast<ET*>( work ), &lwork, info );
+           reinterpret_cast<ET*>( B ), &ldb, reinterpret_cast<ET*>( work ), &lwork, info,
+           blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -215,7 +219,8 @@ inline void hesv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* 
 #endif
 
    zhesv_( &uplo, &n, &nrhs, reinterpret_cast<ET*>( A ), &lda, ipiv,
-           reinterpret_cast<ET*>( B ), &ldb, reinterpret_cast<ET*>( work ), &lwork, info );
+           reinterpret_cast<ET*>( B ), &ldb, reinterpret_cast<ET*>( work ), &lwork, info,
+           blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 

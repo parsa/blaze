@@ -42,6 +42,7 @@
 
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 
 
 //=================================================================================================
@@ -55,10 +56,18 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void sgesdd_( char* jobz, int* m, int* n, float*  A, int* lda, float*  s, float*  U, int* ldu, float*  V, int* ldv, float*  work, int* lwork, int* iwork, int* info );
-void dgesdd_( char* jobz, int* m, int* n, double* A, int* lda, double* s, double* U, int* ldu, double* V, int* ldv, double* work, int* lwork, int* iwork, int* info );
-void cgesdd_( char* jobz, int* m, int* n, float*  A, int* lda, float*  s, float*  U, int* ldu, float*  V, int* ldv, float*  work, int* lwork, float*  rwork, int* iwork, int* info );
-void zgesdd_( char* jobz, int* m, int* n, double* A, int* lda, double* s, double* U, int* ldu, double* V, int* ldv, double* work, int* lwork, double* rwork, int* iwork, int* info );
+void sgesdd_( char* jobz, int* m, int* n, float* A, int* lda, float* s, float* U, int* ldu,
+              float* V, int* ldv, float* work, int* lwork, int* iwork, int* info,
+              blaze::fortran_charlen_t njobz );
+void dgesdd_( char* jobz, int* m, int* n, double* A, int* lda, double* s, double* U, int* ldu,
+              double* V, int* ldv, double* work, int* lwork, int* iwork, int* info,
+              blaze::fortran_charlen_t njobz );
+void cgesdd_( char* jobz, int* m, int* n, float* A, int* lda, float* s, float* U, int* ldu,
+              float* V, int* ldv, float* work, int* lwork, float* rwork, int* iwork, int* info,
+              blaze::fortran_charlen_t njobz );
+void zgesdd_( char* jobz, int* m, int* n, double* A, int* lda, double* s, double* U, int* ldu,
+              double* V, int* ldv, double* work, int* lwork, double* rwork, int* iwork, int* info,
+              blaze::fortran_charlen_t njobz );
 
 }
 #endif
@@ -170,7 +179,8 @@ inline void gesdd( char jobz, int m, int n, float* A, int lda,
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   sgesdd_( &jobz, &m, &n, A, &lda, s, U, &ldu, V, &ldv, work, &lwork, iwork, info );
+   sgesdd_( &jobz, &m, &n, A, &lda, s, U, &ldu, V, &ldv, work, &lwork, iwork, info,
+            blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -247,7 +257,8 @@ inline void gesdd( char jobz, int m, int n, double* A, int lda,
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   dgesdd_( &jobz, &m, &n, A, &lda, s, U, &ldu, V, &ldv, work, &lwork, iwork, info );
+   dgesdd_( &jobz, &m, &n, A, &lda, s, U, &ldu, V, &ldv, work, &lwork, iwork, info,
+            blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -332,7 +343,8 @@ inline void gesdd( char jobz, int m, int n, complex<float>* A, int lda, float* s
 
    cgesdd_( &jobz, &m, &n, reinterpret_cast<ET*>( A ), &lda, s,
             reinterpret_cast<ET*>( U ), &ldu, reinterpret_cast<ET*>( V ), &ldv,
-            reinterpret_cast<ET*>( work ), &lwork, rwork, iwork, info );
+            reinterpret_cast<ET*>( work ), &lwork, rwork, iwork, info,
+            blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -417,7 +429,8 @@ inline void gesdd( char jobz, int m, int n, complex<double>* A, int lda, double*
 
    zgesdd_( &jobz, &m, &n, reinterpret_cast<ET*>( A ), &lda, s,
             reinterpret_cast<ET*>( U ), &ldu, reinterpret_cast<ET*>( V ), &ldv,
-            reinterpret_cast<ET*>( work ), &lwork, rwork, iwork, info );
+            reinterpret_cast<ET*>( work ), &lwork, rwork, iwork, info,
+            blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 

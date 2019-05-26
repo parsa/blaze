@@ -42,6 +42,7 @@
 
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 
 
 //=================================================================================================
@@ -55,8 +56,12 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void cheev_( char* jobz, char* uplo, int* n, float*  A, int* lda, float*  w, float*  work, int* lwork, float*  rwork, int* info );
-void zheev_( char* jobz, char* uplo, int* n, double* A, int* lda, double* w, double* work, int* lwork, double* rwork, int* info );
+void cheev_( char* jobz, char* uplo, int* n, float* A, int* lda, float* w,
+             float* work, int* lwork, float* rwork, int* info,
+             blaze::fortran_charlen_t njobz, blaze::fortran_charlen_t nuplo );
+void zheev_( char* jobz, char* uplo, int* n, double* A, int* lda, double* w,
+             double* work, int* lwork, double* rwork, int* info,
+             blaze::fortran_charlen_t njobz, blaze::fortran_charlen_t nuplo );
 
 }
 #endif
@@ -140,7 +145,8 @@ inline void heev( char jobz, char uplo, int n, complex<float>* A, int lda,
 #endif
 
    cheev_( &jobz, &uplo, &n, reinterpret_cast<ET*>( A ), &lda, w,
-           reinterpret_cast<ET*>( work ), &lwork, rwork, info );
+           reinterpret_cast<ET*>( work ), &lwork, rwork, info,
+           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -199,7 +205,8 @@ inline void heev( char jobz, char uplo, int n, complex<double>* A, int lda,
 #endif
 
    zheev_( &jobz, &uplo, &n, reinterpret_cast<ET*>( A ), &lda, w,
-           reinterpret_cast<ET*>( work ), &lwork, rwork, info );
+           reinterpret_cast<ET*>( work ), &lwork, rwork, info,
+           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 

@@ -42,6 +42,7 @@
 
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 
 
 //=================================================================================================
@@ -55,8 +56,12 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void cunmql_( char* side, char* trans, int* m, int* n, int* k, float*  A, int* lda, float*  tau, float*  C, int* ldc, float*  work, int* lwork, int* info );
-void zunmql_( char* side, char* trans, int* m, int* n, int* k, double* A, int* lda, double* tau, double* C, int* ldc, double* work, int* lwork, int* info );
+void cunmql_( char* side, char* trans, int* m, int* n, int* k, float* A, int* lda,
+              float* tau, float* C, int* ldc, float* work, int* lwork, int* info,
+              blaze::fortran_charlen_t nside, blaze::fortran_charlen_t ntrans );
+void zunmql_( char* side, char* trans, int* m, int* n, int* k, double* A, int* lda,
+              double* tau, double* C, int* ldc, double* work, int* lwork, int* info,
+              blaze::fortran_charlen_t nside, blaze::fortran_charlen_t ntrans );
 
 }
 #endif
@@ -152,7 +157,7 @@ inline void unmql( char side, char trans, int m, int n, int k, const complex<flo
             const_cast<ET*>( reinterpret_cast<const ET*>( A ) ), &lda,
             const_cast<ET*>( reinterpret_cast<const ET*>( tau ) ),
             reinterpret_cast<ET*>( C ), &ldc, reinterpret_cast<ET*>( work ),
-            &lwork, info );
+            &lwork, info, blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -221,7 +226,7 @@ inline void unmql( char side, char trans, int m, int n, int k, const complex<dou
             const_cast<ET*>( reinterpret_cast<const ET*>( A ) ), &lda,
             const_cast<ET*>( reinterpret_cast<const ET*>( tau ) ),
             reinterpret_cast<ET*>( C ), &ldc, reinterpret_cast<ET*>( work ),
-            &lwork, info );
+            &lwork, info, blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 

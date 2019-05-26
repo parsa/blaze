@@ -42,6 +42,7 @@
 
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 
 
 //=================================================================================================
@@ -55,10 +56,18 @@
 #if !defined(BLAS_H)
 extern "C" {
 
-void strsv_( char* uplo, char* trans, char* diag, int* n, float*  A, int* lda, float*  x, int* incX );
-void dtrsv_( char* uplo, char* trans, char* diag, int* n, double* A, int* lda, double* x, int* incX );
-void ctrsv_( char* uplo, char* trans, char* diag, int* n, float*  A, int* lda, float*  x, int* incX );
-void ztrsv_( char* uplo, char* trans, char* diag, int* n, double* A, int* lda, double* x, int* incX );
+void strsv_( char* uplo, char* trans, char* diag, int* n, float* A, int* lda,
+             float* x, int* incX, blaze::fortran_charlen_t nuplo,
+             blaze::fortran_charlen_t ntrans, blaze::fortran_charlen_t ndiag );
+void dtrsv_( char* uplo, char* trans, char* diag, int* n, double* A, int* lda,
+             double* x, int* incX, blaze::fortran_charlen_t nuplo,
+             blaze::fortran_charlen_t ntrans, blaze::fortran_charlen_t ndiag );
+void ctrsv_( char* uplo, char* trans, char* diag, int* n, float* A, int* lda,
+             float* x, int* incX, blaze::fortran_charlen_t nuplo,
+             blaze::fortran_charlen_t ntrans, blaze::fortran_charlen_t ndiag );
+void ztrsv_( char* uplo, char* trans, char* diag, int* n, double* A, int* lda,
+             double* x, int* incX, blaze::fortran_charlen_t nuplo,
+             blaze::fortran_charlen_t ntrans, blaze::fortran_charlen_t ndiag );
 
 }
 #endif
@@ -132,7 +141,8 @@ inline void trsv( char uplo, char trans, char diag, int n, const complex<double>
 inline void trsv( char uplo, char trans, char diag, int n, const float* A,
                   int lda, float* x, int incX )
 {
-   strsv_( &uplo, &trans, &diag, &n, const_cast<float*>( A ), &lda, x, &incX );
+   strsv_( &uplo, &trans, &diag, &n, const_cast<float*>( A ), &lda, x, &incX,
+           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -175,7 +185,8 @@ inline void trsv( char uplo, char trans, char diag, int n, const float* A,
 inline void trsv( char uplo, char trans, char diag, int n, const double* A,
                   int lda, double* x, int incX )
 {
-   dtrsv_( &uplo, &trans, &diag, &n, const_cast<double*>( A ), &lda, x, &incX );
+   dtrsv_( &uplo, &trans, &diag, &n, const_cast<double*>( A ), &lda, x, &incX,
+           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -221,7 +232,8 @@ inline void trsv( char uplo, char trans, char diag, int n, const complex<float>*
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
    ctrsv_( &uplo, &trans, &diag, &n, const_cast<float*>( reinterpret_cast<const float*>( A ) ),
-           &lda, reinterpret_cast<float*>( x ), &incX );
+           &lda, reinterpret_cast<float*>( x ), &incX, blaze::fortran_charlen_t(1),
+           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -267,7 +279,8 @@ inline void trsv( char uplo, char trans, char diag, int n, const complex<double>
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
    ztrsv_( &uplo, &trans, &diag, &n, const_cast<double*>( reinterpret_cast<const double*>( A ) ),
-           &lda, reinterpret_cast<double*>( x ), &incX );
+           &lda, reinterpret_cast<double*>( x ), &incX, blaze::fortran_charlen_t(1),
+           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 

@@ -42,6 +42,7 @@
 
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 
 
 //=================================================================================================
@@ -55,8 +56,16 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void ssyevx_( char* jobz, char* range, char* uplo, int* n, float*  A, int* lda, float*  vl, float*  vu, int* il, int* iu, float*  abstol, int* m, float*  w, float*  Z, int* ldz, float*  work, int* lwork, int* iwork, int* ifail, int* info );
-void dsyevx_( char* jobz, char* range, char* uplo, int* n, double* A, int* lda, double* vl, double* vu, int* il, int* iu, double* abstol, int* m, double* w, double* Z, int* ldz, double* work, int* lwork, int* iwork, int* ifail, int* info );
+void ssyevx_( char* jobz, char* range, char* uplo, int* n, float* A, int* lda, float* vl,
+              float* vu, int* il, int* iu, float* abstol, int* m, float* w, float* Z,
+              int* ldz, float* work, int* lwork, int* iwork, int* ifail, int* info,
+              blaze::fortran_charlen_t njobz, blaze::fortran_charlen_t nrange,
+              blaze::fortran_charlen_t nuplo );
+void dsyevx_( char* jobz, char* range, char* uplo, int* n, double* A, int* lda, double* vl,
+              double* vu, int* il, int* iu, double* abstol, int* m, double* w, double* Z,
+              int* ldz, double* work, int* lwork, int* iwork, int* ifail, int* info,
+              blaze::fortran_charlen_t njobz, blaze::fortran_charlen_t nrange,
+              blaze::fortran_charlen_t nuplo );
 
 }
 #endif
@@ -157,7 +166,8 @@ inline void syevx( char jobz, char range, char uplo, int n, float* A, int lda,
    ++iu;
 
    ssyevx_( &jobz, &range, &uplo, &n, A, &lda, &vl, &vu, &il, &iu,
-            &abstol, m, w, Z, &ldz, work, &lwork, iwork, ifail, info );
+            &abstol, m, w, Z, &ldz, work, &lwork, iwork, ifail, info,
+            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -231,7 +241,8 @@ inline void syevx( char jobz, char range, char uplo, int n, double* A, int lda,
    ++iu;
 
    dsyevx_( &jobz, &range, &uplo, &n, A, &lda, &vl, &vu, &il, &iu,
-            &abstol, m, w, Z, &ldz, work, &lwork, iwork, ifail, info );
+            &abstol, m, w, Z, &ldz, work, &lwork, iwork, ifail, info,
+            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 

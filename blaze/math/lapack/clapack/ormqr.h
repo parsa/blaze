@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 
 
 //=================================================================================================
@@ -54,8 +55,12 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void sormqr_( char* side, char* trans, int* m, int* n, int* k, float*  A, int* lda, float*  tau, float*  C, int* ldc, float*  work, int* lwork, int* info );
-void dormqr_( char* side, char* trans, int* m, int* n, int* k, double* A, int* lda, double* tau, double* C, int* ldc, double* work, int* lwork, int* info );
+void sormqr_( char* side, char* trans, int* m, int* n, int* k, float* A, int* lda,
+              float* tau, float* C, int* ldc, float* work, int* lwork, int* info,
+              blaze::fortran_charlen_t nside, blaze::fortran_charlen_t ntrans );
+void dormqr_( char* side, char* trans, int* m, int* n, int* k, double* A, int* lda,
+              double* tau, double* C, int* ldc, double* work, int* lwork, int* info,
+              blaze::fortran_charlen_t nside, blaze::fortran_charlen_t ntrans );
 
 }
 #endif
@@ -140,7 +145,8 @@ inline void ormqr( char side, char trans, int m, int n, int k, const float* A, i
 #endif
 
    sormqr_( &side, &trans, &m, &n, &k, const_cast<float*>( A ), &lda,
-            const_cast<float*>( tau ), C, &ldc, work, &lwork, info );
+            const_cast<float*>( tau ), C, &ldc, work, &lwork, info,
+            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -200,7 +206,8 @@ inline void ormqr( char side, char trans, int m, int n, int k, const double* A, 
 #endif
 
    dormqr_( &side, &trans, &m, &n, &k, const_cast<double*>( A ), &lda,
-            const_cast<double*>( tau ), C, &ldc, work, &lwork, info );
+            const_cast<double*>( tau ), C, &ldc, work, &lwork, info,
+            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 

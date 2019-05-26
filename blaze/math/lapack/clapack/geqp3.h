@@ -54,8 +54,10 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void sgeqp3_( int* m, int* n, float*  A, int* lda, int* jpvt, float*  tau, float*  work, int* lwork, int* info );
-void dgeqp3_( int* m, int* n, double* A, int* lda, int* jpvt, double* tau, double* work, int* lwork, int* info );
+void sgeqp3_( int* m, int* n, float* A, int* lda, int* jpvt, float* tau,
+              float* work, int* lwork, int* info );
+void dgeqp3_( int* m, int* n, double* A, int* lda, int* jpvt, double* tau,
+              double* work, int* lwork, int* info );
 
 }
 #endif

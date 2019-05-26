@@ -55,8 +55,10 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void cunglq_( int* m, int* n, int* k, float*  A, int* lda, float*  tau, float*  work, int* lwork, int* info );
-void zunglq_( int* m, int* n, int* k, double* A, int* lda, double* tau, double* work, int* lwork, int* info );
+void cunglq_( int* m, int* n, int* k, float* A, int* lda, float* tau,
+              float* work, int* lwork, int* info );
+void zunglq_( int* m, int* n, int* k, double* A, int* lda, double* tau,
+              double* work, int* lwork, int* info );
 
 }
 #endif

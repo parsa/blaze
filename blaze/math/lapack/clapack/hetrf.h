@@ -42,6 +42,7 @@
 
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 
 
 //=================================================================================================
@@ -55,8 +56,10 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void chetrf_( char* uplo, int* n, float*  A, int* lda, int* ipiv, float*  work, int* lwork, int* info );
-void zhetrf_( char* uplo, int* n, double* A, int* lda, int* ipiv, double* work, int* lwork, int* info );
+void chetrf_( char* uplo, int* n, float* A, int* lda, int* ipiv, float* work, int* lwork,
+              int* info, blaze::fortran_charlen_t nuplo );
+void zhetrf_( char* uplo, int* n, double* A, int* lda, int* ipiv, double* work, int* lwork,
+              int* info, blaze::fortran_charlen_t nuplo );
 
 }
 #endif
@@ -147,7 +150,7 @@ inline void hetrf( char uplo, int n, complex<float>* A, int lda, int* ipiv,
 #endif
 
    chetrf_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, ipiv,
-            reinterpret_cast<ET*>( work ), &lwork, info );
+            reinterpret_cast<ET*>( work ), &lwork, info, blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -213,7 +216,7 @@ inline void hetrf( char uplo, int n, complex<double>* A, int lda, int* ipiv,
 #endif
 
    zhetrf_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, ipiv,
-            reinterpret_cast<ET*>( work ), &lwork, info );
+            reinterpret_cast<ET*>( work ), &lwork, info, blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
