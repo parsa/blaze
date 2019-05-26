@@ -175,6 +175,18 @@ using ularge_t = uint64_t;
 using id_t = ularge_t;
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Type of the hidden arguments of character type within a Fortran forward declaration.
+// \ingroup util
+*/
+#if BLAZE_GNU_COMPILER && BLAZE_GNU_MAJOR_VERSION <= 7
+using fortran_charlen_t = int;
+#else
+using fortran_charlen_t = size_t;
+#endif
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
