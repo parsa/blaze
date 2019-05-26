@@ -101,6 +101,7 @@
 //                <li> \ref inner_product </li>
 //                <li> \ref outer_product </li>
 //                <li> \ref cross_product </li>
+//                <li> \ref vector_kronecker_product </li>
 //             </ul>
 //          </li>
 //          <li> \ref vector_vector_division </li>
@@ -109,6 +110,7 @@
 //             <ul>
 //                <li> \ref schur_product </li>
 //                <li> \ref matrix_product </li>
+//                <li> \ref kronecker_product </li>
 //             </ul>
 //          </li>
 //       </ul>
@@ -11262,6 +11264,29 @@
 // Please note that the cross product is restricted to three dimensional (dense and sparse)
 // column vectors.
 //
+//
+// \n \section vector_kronecker_product Kronecker Product
+// <hr>
+//
+// The Kronecker product of two vectors with the same transpose flag can be computed via the
+// \a kron() function:
+
+   \code
+   using blaze::DynamicVector;
+   using blaze::CompressedVector;
+
+   DynamicVector<double>   v1( 28UL );
+   CompressedVector<float> v2( 17UL );
+
+   // ... Initialization of the vectors
+
+   CompressedVector<double> v3 = kron( v1, v2 );
+   \endcode
+
+// Both dense and sparse vectors can be used for a Kronecker product. It is possible to multiply
+// two vectors with different element type, as long as the element types themselves can be
+// multiplied.
+//
 // \n Previous: \ref scalar_multiplication &nbsp; &nbsp; Next: \ref vector_vector_division
 */
 //*************************************************************************************************
@@ -11355,6 +11380,12 @@
    DynamicMatrix<double> M3 = M1 % M2;
    \endcode
 
+// Both dense and sparse matrices can be used for a Schur product. The storage order of the two
+// matrices poses no restrictions on the operation, all variations are possible. It is also
+// possible to multiply two matrices with different element type, as long as the element types
+// themselves can be multiplied.
+//
+//
 // \n \section matrix_product Matrix Product
 // <hr>
 //
@@ -11402,6 +11433,29 @@
 // full responsibility for the correctness of the declaration. Falsely declaring a multiplication
 // as symmetric, Hermitian, lower triangular, upper triangular, or diagonal leads to undefined
 // behavior!
+//
+//
+// \n \section kronecker_product Kronecker Product
+// <hr>
+//
+// The Kronecker product of two matrices can be computed via the \a kron() function:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::CompressedMatrix;
+
+   DynamicMatrix<double>   M1( 28UL, 35UL );
+   CompressedMatrix<float> M2( 17UL, 11UL );
+
+   // ... Initialization of the matrices
+
+   CompressedMatrix<double> M3 = kron( M1, M2 );
+   \endcode
+
+// Both dense and sparse matrices can be used for a Kronecker product. The storage order of the
+// two matrices poses no restrictions on the operation, all variations are possible. It is also
+// possible to multiply two matrices with different element type, as long as the element types
+// themselves can be multiplied.
 //
 // \n Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref shared_memory_parallelization
 */
