@@ -114,6 +114,12 @@ class OperationTest
    struct B { using ElementType = int; };
    struct C { using value_type = blaze::complex<float>; };
    struct D { using ElementType = double; using value_type = double; };
+
+   struct E { static constexpr bool paddingEnabled() { return false; } };
+   struct F { static constexpr bool paddingEnabled() { return true; } };
+
+   struct G { static constexpr bool simdEnabled() { return false; } };
+   struct H { static constexpr bool simdEnabled() { return true; } };
    /*! \endcond */
    //**********************************************************************************************
 };

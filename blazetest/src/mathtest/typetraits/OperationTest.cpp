@@ -530,13 +530,9 @@ void OperationTest::testIsMatrix()
 */
 void OperationTest::testIsPaddingEnabled()
 {
-   struct A {};
-   struct B { static constexpr bool paddingEnabled() { return false; } };
-   struct C { static constexpr bool paddingEnabled() { return true; } };
-
    BLAZE_CONSTRAINT_MUST_NOT_BE_PADDING_ENABLED( A );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_PADDING_ENABLED( B );
-   BLAZE_CONSTRAINT_MUST_BE_PADDING_ENABLED    ( C );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_PADDING_ENABLED( E );
+   BLAZE_CONSTRAINT_MUST_BE_PADDING_ENABLED    ( F );
 }
 //*************************************************************************************************
 
@@ -583,13 +579,9 @@ void OperationTest::testIsRowMajorMatrix()
 */
 void OperationTest::testIsSIMDEnabled()
 {
-   struct A {};
-   struct B { static constexpr bool simdEnabled() { return false; } };
-   struct C { static constexpr bool simdEnabled() { return true; } };
-
    BLAZE_CONSTRAINT_MUST_NOT_BE_SIMD_ENABLED( A );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SIMD_ENABLED( B );
-   BLAZE_CONSTRAINT_MUST_BE_SIMD_ENABLED    ( C );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_SIMD_ENABLED( G );
+   BLAZE_CONSTRAINT_MUST_BE_SIMD_ENABLED    ( H );
 }
 //*************************************************************************************************
 
