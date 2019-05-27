@@ -73,6 +73,7 @@
 #include <blaze/math/expressions/DMatEvalExpr.h>
 #include <blaze/math/expressions/DMatInvExpr.h>
 #include <blaze/math/expressions/DMatMapExpr.h>
+#include <blaze/math/expressions/DMatMeanExpr.h>
 #include <blaze/math/expressions/DMatNormExpr.h>
 #include <blaze/math/expressions/DMatReduceExpr.h>
 #include <blaze/math/expressions/DMatScalarDivExpr.h>
