@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/DenseVector.h
-//  \brief Header file for all basic DenseVector functionality
+//  \file blaze/math/expressions/DVecMeanExpr.h
+//  \brief Header file for the dense vector mean expression
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -32,46 +32,67 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_DENSEVECTOR_H_
-#define _BLAZE_MATH_DENSEVECTOR_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_DVECMEANEXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_DVECMEANEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/dense/DenseVector.h>
+#include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseVector.h>
-#include <blaze/math/expressions/DVecDVecAddExpr.h>
-#include <blaze/math/expressions/DVecDVecCrossExpr.h>
-#include <blaze/math/expressions/DVecDVecDivExpr.h>
-#include <blaze/math/expressions/DVecDVecEqualExpr.h>
-#include <blaze/math/expressions/DVecDVecInnerExpr.h>
-#include <blaze/math/expressions/DVecDVecKronExpr.h>
-#include <blaze/math/expressions/DVecDVecMapExpr.h>
-#include <blaze/math/expressions/DVecDVecMultExpr.h>
-#include <blaze/math/expressions/DVecDVecSubExpr.h>
-#include <blaze/math/expressions/DVecEvalExpr.h>
-#include <blaze/math/expressions/DVecExpandExpr.h>
-#include <blaze/math/expressions/DVecMapExpr.h>
-#include <blaze/math/expressions/DVecMeanExpr.h>
-#include <blaze/math/expressions/DVecNormExpr.h>
-#include <blaze/math/expressions/DVecReduceExpr.h>
-#include <blaze/math/expressions/DVecScalarDivExpr.h>
-#include <blaze/math/expressions/DVecScalarMultExpr.h>
-#include <blaze/math/expressions/DVecSerialExpr.h>
-#include <blaze/math/expressions/DVecSoftmaxExpr.h>
-#include <blaze/math/expressions/DVecSVecAddExpr.h>
-#include <blaze/math/expressions/DVecSVecCrossExpr.h>
-#include <blaze/math/expressions/DVecSVecSubExpr.h>
-#include <blaze/math/expressions/DVecTransExpr.h>
-#include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/expressions/SVecDVecCrossExpr.h>
-#include <blaze/math/expressions/SVecDVecSubExpr.h>
-#include <blaze/math/expressions/SVecSVecCrossExpr.h>
-#include <blaze/math/smp/DenseVector.h>
-#include <blaze/math/smp/SparseVector.h>
-#include <blaze/math/Vector.h>
-#include <blaze/math/views/Subvector.h>
+#include <blaze/math/shims/Invert.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/util/Types.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  GLOBAL FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Computes the (arithmetic) mean for the given dense vector.
+// \ingroup dense_vector
+//
+// \param dv The given dense vector for the mean computation.
+// \return The mean of the given vector.
+// \exception std::invalid_argument Invalid input vector.
+//
+// This function computes the
+// <a href="https://en.wikipedia.org/wiki/Arithmetic_mean">(arithmetic) mean</a> for the given
+// dense vector \a dv. Example:
+
+   \code
+   using blaze::DynamicVector;
+
+   DynamicVector<int> v{ 1, 4, 3, 6, 7 };
+
+   const double m = mean( v );  // Results in 4.2 (i.e. 21/5)
+   \endcode
+
+// In case the size of the given vector is 0, a \a std::invalid_argument is thrown.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) mean( const DenseVector<VT,TF>& dv )
+{
+   using BT = UnderlyingBuiltin_t<VT>;
+
+   const size_t n( size( ~dv ) );
+
+   if( n == 0UL ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid input vector" );
+   }
+
+   return sum( ~dv ) * inv( BT( n ) );
+}
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
