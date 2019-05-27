@@ -80,6 +80,7 @@ OperationTest::OperationTest()
    testL3Norm();
    testL4Norm();
    testLpNorm();
+   testMean();
 }
 //*************************************************************************************************
 
@@ -1102,6 +1103,68 @@ void OperationTest::testLpNorm()
          throw std::runtime_error( oss.str() );
       }
    }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c mean() function for sparse vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c mean() function for sparse vectors. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testMean()
+{
+   test_ = "mean() function";
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 5UL );
+
+      const double mean = blaze::mean( vec );
+
+      if( !isEqual( mean, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Mean computation failed\n"
+             << " Details:\n"
+             << "   Result: " << mean << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 1, 0, 4, 0, 3, 0, 6, 0, 7, 0 };
+
+      const double mean = blaze::mean( vec );
+
+      if( !isEqual( mean, 2.1 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Mean computation failed\n"
+             << " Details:\n"
+             << "   Result: " << mean << "\n"
+             << "   Expected result: 2.1\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   try {
+      blaze::CompressedVector<int,blaze::rowVector> vec;
+
+      const double mean = blaze::mean( vec );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Mean computation of empty vector succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << mean << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
 }
 //*************************************************************************************************
 
