@@ -104,13 +104,14 @@ class GeneralTest
    void testIsIdentity();
    void testMinimum();
    void testMaximum();
-   void testSoftmax();
    void testTrace();
    void testL1Norm();
    void testL2Norm();
    void testL3Norm();
    void testL4Norm();
    void testLpNorm();
+   void testMean();
+   void testSoftmax();
 
    template< typename Type >
    void checkRows( const Type& matrix, size_t expectedRows ) const;
