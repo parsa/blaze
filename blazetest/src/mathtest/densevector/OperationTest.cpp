@@ -75,12 +75,13 @@ OperationTest::OperationTest()
    testNormalize();
    testMinimum();
    testMaximum();
-   testSoftmax();
    testL1Norm();
    testL2Norm();
    testL3Norm();
    testL4Norm();
    testLpNorm();
+   testMean();
+   testSoftmax();
 }
 //*************************************************************************************************
 
@@ -649,41 +650,6 @@ void OperationTest::testMaximum()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c softmax() function for dense vectors.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c softmax() function for dense vectors. In case an error
-// is detected, a \a std::runtime_error exception is thrown.
-*/
-void OperationTest::testSoftmax()
-{
-   test_ = "softmax() function";
-
-   blaze::DynamicVector<double,blaze::rowVector> a( 4UL );
-   randomize( a, -5.0, 5.0 );
-
-   const auto b = softmax( a );
-
-   if( b[0] <= 0.0 || b[0] > 1.0 ||
-       b[1] <= 0.0 || b[1] > 1.0 ||
-       b[2] <= 0.0 || b[2] > 1.0 ||
-       b[3] <= 0.0 || b[3] > 1.0 ||
-       !isEqual( sum( b ), 1.0 ) ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Softmax computation failed\n"
-          << " Details:\n"
-          << "   Result: " << sum( b ) << "\n"
-          << "   Expected result: 1\n";
-      throw std::runtime_error( oss.str() );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Test of the \c l1Norm() function for dense vectors.
 //
 // \return void
@@ -1066,6 +1032,103 @@ void OperationTest::testLpNorm()
              << "   Expected result: " << norm3 << "\n";
          throw std::runtime_error( oss.str() );
       }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c mean() function for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c mean() function for dense vectors. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testMean()
+{
+   test_ = "mean() function";
+
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec( 5UL, 0 );
+
+      const double mean = blaze::mean( vec );
+
+      if( !isEqual( mean, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Mean computation failed\n"
+             << " Details:\n"
+             << "   Result: " << mean << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 1, 4, 3, 6, 7 };
+
+      const double mean = blaze::mean( vec );
+
+      if( !isEqual( mean, 4.2 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Mean computation failed\n"
+             << " Details:\n"
+             << "   Result: " << mean << "\n"
+             << "   Expected result: 4.2\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   try {
+      blaze::DynamicVector<int,blaze::rowVector> vec;
+
+      const double mean = blaze::mean( vec );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Mean computation of empty vector succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << mean << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c softmax() function for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c softmax() function for dense vectors. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testSoftmax()
+{
+   test_ = "softmax() function";
+
+   blaze::DynamicVector<double,blaze::rowVector> a( 4UL );
+   randomize( a, -5.0, 5.0 );
+
+   const auto b = softmax( a );
+
+   if( b[0] <= 0.0 || b[0] > 1.0 ||
+       b[1] <= 0.0 || b[1] > 1.0 ||
+       b[2] <= 0.0 || b[2] > 1.0 ||
+       b[3] <= 0.0 || b[3] > 1.0 ||
+       !isEqual( sum( b ), 1.0 ) ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Softmax computation failed\n"
+          << " Details:\n"
+          << "   Result: " << sum( b ) << "\n"
+          << "   Expected result: 1\n";
+      throw std::runtime_error( oss.str() );
    }
 }
 //*************************************************************************************************
