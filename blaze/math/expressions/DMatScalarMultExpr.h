@@ -250,7 +250,7 @@ class DMatScalarMultExpr
       // \return The previous position of the iterator.
       */
       inline const ConstIterator operator++( int ) {
-         return ConstIterator( iterator_++ );
+         return ConstIterator( iterator_++, scalar_ );
       }
       //*******************************************************************************************
 
@@ -271,7 +271,7 @@ class DMatScalarMultExpr
       // \return The previous position of the iterator.
       */
       inline const ConstIterator operator--( int ) {
-         return ConstIterator( iterator_-- );
+         return ConstIterator( iterator_--, scalar_ );
       }
       //*******************************************************************************************
 
