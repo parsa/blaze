@@ -87,7 +87,7 @@ struct Sign
    // \return The result of the sign() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_HOST_DEVICE decltype(auto) operator()( T a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( T a ) const
    {
       return sign( a );
    }

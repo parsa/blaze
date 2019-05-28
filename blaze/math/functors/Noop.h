@@ -66,7 +66,7 @@ struct Noop
    // \return The given object/value without modifications.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_HOST_DEVICE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
    {
       return a;
    }

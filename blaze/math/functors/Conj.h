@@ -89,7 +89,7 @@ struct Conj
    // \return The result of the conj() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_HOST_DEVICE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
    {
       return conj( a );
    }

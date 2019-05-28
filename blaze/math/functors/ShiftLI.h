@@ -93,7 +93,7 @@ struct ShiftLI
    // \return The result of the uniform left-shift operation for the given objects/values.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_HOST_DEVICE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
    {
       return a << count_;
    }
