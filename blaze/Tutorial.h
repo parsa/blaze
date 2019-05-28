@@ -2556,6 +2556,23 @@
    expand<3>( b );  // Compile time parameter
    \endcode
 
+// \n \section vector_operations_statistic_operations Statistic Operations
+// <hr>
+//
+// \subsection vector_operations_mean mean()
+//
+// The arithmetic mean of a non-empty dense or sparse vector can be computed via the \c mean()
+// function. Example:
+
+   \code
+   blaze::DynamicVector<int> v{ 1, 4, 3, 6, 7 };
+
+   const double m = mean( v );  // Results in 4.2 (i.e. 21/5)
+   \endcode
+
+// In case the size of the given vector is 0, a \a std::invalid_argument is thrown.
+//
+//
 // \n \section vector_operations_declaration_operations Declaration Operations
 // <hr>
 //
@@ -5228,6 +5245,39 @@
    const double max = maxNorm( A );
    \endcode
 
+// \n \section matrix_operations_statistic_operations Statistic Operations
+// <hr>
+//
+// \subsection matrix_operations_mean mean()
+//
+// The arithmetic mean of a non-empty dense or sparse matrix can be computed via the \c mean()
+// function. Example:
+
+   \code
+   blaze::DynamicMatrix<int> A{ { 1, 4, 3, 6, 7 }
+                              , { 2, 6, 3, 1, 0 } };
+
+   const double m = mean( A );  // Results in 3.3 (i.e. 33/10)
+   \endcode
+
+// In case the number of rows or columns of the given matrix is 0, a \a std::invalid_argument is
+// thrown.
+//
+// Alternatively it is possible to compute the row- or columnwise mean:
+
+   \code
+   blaze::DynamicMatrix<int> A{ { 1, 4, 3, 6, 7 }
+                              , { 2, 6, 3, 1, 0 } };
+
+   const auto v1 = mean<rowwise>( A );     // Results in ( 4.2  2.4 )
+   const auto v2 = mean<columnwise>( A );  // Results in ( 1.5  5.0  3.0  3.5  3.5 )
+   \endcode
+
+// In case the rowwise mean is computed and the number of columns of the given matrix is 0 or
+// in case the columnwise mean is computed and the number of rows of the given matrix is 0, a
+// \a std::invalid_argument is thrown.
+//
+//
 // \n \section matrix_operations_declaration_operations Declaration Operations
 // <hr>
 //
