@@ -255,7 +255,7 @@ class DVecScalarDivExpr
       // \return The previous position of the iterator.
       */
       inline const ConstIterator operator++( int ) {
-         return ConstIterator( iterator_++ );
+         return ConstIterator( iterator_++, scalar_ );
       }
       //*******************************************************************************************
 
@@ -276,7 +276,7 @@ class DVecScalarDivExpr
       // \return The previous position of the iterator.
       */
       inline const ConstIterator operator--( int ) {
-         return ConstIterator( iterator_-- );
+         return ConstIterator( iterator_--, scalar_ );
       }
       //*******************************************************************************************
 
@@ -385,7 +385,7 @@ class DVecScalarDivExpr
       // \return The incremented iterator.
       */
       friend inline const ConstIterator operator+( const ConstIterator& it, size_t inc ) {
-         return ConstIterator( it.iterator_ + inc );
+         return ConstIterator( it.iterator_ + inc, it.scalar_ );
       }
       //*******************************************************************************************
 
@@ -397,7 +397,7 @@ class DVecScalarDivExpr
       // \return The incremented iterator.
       */
       friend inline const ConstIterator operator+( size_t inc, const ConstIterator& it ) {
-         return ConstIterator( it.iterator_ + inc );
+         return ConstIterator( it.iterator_ + inc, it.scalar_ );
       }
       //*******************************************************************************************
 
@@ -409,7 +409,7 @@ class DVecScalarDivExpr
       // \return The decremented iterator.
       */
       friend inline const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
-         return ConstIterator( it.iterator_ - dec );
+         return ConstIterator( it.iterator_ - dec, it.scalar_ );
       }
       //*******************************************************************************************
 
