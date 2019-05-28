@@ -41,6 +41,7 @@
 #include <iostream>
 #include <blaze/math/sparse/SparseMatrix.h>
 #include <blaze/math/CompressedMatrix.h>
+#include <blaze/math/DynamicVector.h>
 #include <blazetest/mathtest/IsEqual.h>
 #include <blazetest/mathtest/sparsematrix/GeneralTest.h>
 
@@ -90,6 +91,7 @@ GeneralTest::GeneralTest()
    testL4Norm();
    testLpNorm();
    testTrace();
+   testMean();
 }
 //*************************************************************************************************
 
@@ -6008,6 +6010,351 @@ void GeneralTest::testLpNorm()
             throw std::runtime_error( oss.str() );
          }
       }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c mean() function for dense matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c mean() function for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testMean()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major mean()";
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 5UL );
+
+         const double mean = blaze::mean( mat );
+
+         if( !isEqual( mean, 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Mean computation failed\n"
+                << " Details:\n"
+                << "   Result: " << mean << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 1, 4, 3, 6, 7 },
+                                                           { 2, 6, 3, 1, 0 } };
+
+         const double mean = blaze::mean( mat );
+
+         if( !isEqual( mean, 3.3 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Mean computation failed\n"
+                << " Details:\n"
+                << "   Result: " << mean << "\n"
+                << "   Expected result: 3.3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat;
+
+         const double mean = blaze::mean( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Mean computation of empty matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << mean << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Row-major mean<rowwise>()";
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 5UL );
+
+         blaze::DynamicVector<double,blaze::columnVector> mean;
+         mean = blaze::mean<blaze::rowwise>( mat );
+
+         if( !isEqual( mean[0], 0.0 ) || !isEqual( mean[1], 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Mean computation failed\n"
+                << " Details:\n"
+                << "   Result: " << trans( mean ) << "\n"
+                << "   Expected result: ( 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 1, 4, 3, 6, 7 },
+                                                           { 2, 6, 3, 1, 0 } };
+
+         blaze::DynamicVector<double,blaze::columnVector> mean;
+         mean = blaze::mean<blaze::rowwise>( mat );
+
+         if( !isEqual( mean[0], 4.2 ) || !isEqual( mean[1], 2.4 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Mean computation failed\n"
+                << " Details:\n"
+                << "   Result: " << trans( mean ) << "\n"
+                << "   Expected result: ( 4.2 2.4 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 0UL );
+
+         blaze::DynamicVector<double,blaze::columnVector> mean;
+         mean = blaze::mean<blaze::rowwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Mean computation of empty matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << trans( mean ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Row-major mean<columnwise>()";
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 2UL, 5UL );
+
+         blaze::DynamicVector<double,blaze::rowVector> mean;
+         mean = blaze::mean<blaze::columnwise>( mat );
+
+         if( !isEqual( mean[0], 0.0 ) || !isEqual( mean[1], 0.0 ) || !isEqual( mean[2], 0.0 ) ||
+             !isEqual( mean[3], 0.0 ) || !isEqual( mean[4], 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Mean computation failed\n"
+                << " Details:\n"
+                << "   Result: " << mean << "\n"
+                << "   Expected result: ( 0 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat{ { 1, 4, 3, 6, 7 },
+                                                           { 2, 6, 3, 1, 0 } };
+
+         blaze::DynamicVector<double,blaze::rowVector> mean;
+         mean = blaze::mean<blaze::columnwise>( mat );
+
+         if( !isEqual( mean[0], 1.5 ) || !isEqual( mean[1], 5.0 ) || !isEqual( mean[2], 3.0 ) ||
+             !isEqual( mean[3], 3.5 ) || !isEqual( mean[4], 3.5 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Mean computation failed\n"
+                << " Details:\n"
+                << "   Result: " << mean << "\n"
+                << "   Expected result: ( 1.5 5.0 3.0 3.5 3.5 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::CompressedMatrix<int,blaze::rowMajor> mat( 0UL, 5UL );
+
+         blaze::DynamicVector<double,blaze::rowVector> mean;
+         mean = blaze::mean<blaze::columnwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Mean computation of empty matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << mean << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major mean()";
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 5UL );
+
+         const double mean = blaze::mean( mat );
+
+         if( !isEqual( mean, 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Mean computation failed\n"
+                << " Details:\n"
+                << "   Result: " << mean << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 1, 4, 3, 6, 7 },
+                                                              { 2, 6, 3, 1, 0 } };
+
+         const double mean = blaze::mean( mat );
+
+         if( !isEqual( mean, 3.3 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Mean computation failed\n"
+                << " Details:\n"
+                << "   Result: " << mean << "\n"
+                << "   Expected result: 3.3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat;
+
+         const double mean = blaze::mean( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Mean computation of empty matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << mean << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Row-major mean<rowwise>()";
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 5UL );
+
+         blaze::DynamicVector<double,blaze::columnVector> mean;
+         mean = blaze::mean<blaze::rowwise>( mat );
+
+         if( !isEqual( mean[0], 0.0 ) || !isEqual( mean[1], 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Mean computation failed\n"
+                << " Details:\n"
+                << "   Result: " << trans( mean ) << "\n"
+                << "   Expected result: ( 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 1, 4, 3, 6, 7 },
+                                                              { 2, 6, 3, 1, 0 } };
+
+         blaze::DynamicVector<double,blaze::columnVector> mean;
+         mean = blaze::mean<blaze::rowwise>( mat );
+
+         if( !isEqual( mean[0], 4.2 ) || !isEqual( mean[1], 2.4 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Mean computation failed\n"
+                << " Details:\n"
+                << "   Result: " << trans( mean ) << "\n"
+                << "   Expected result: ( 4.2 2.4 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 0UL );
+
+         blaze::DynamicVector<double,blaze::columnVector> mean;
+         mean = blaze::mean<blaze::rowwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Mean computation of empty matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << trans( mean ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Row-major mean<columnwise>()";
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 2UL, 5UL );
+
+         blaze::DynamicVector<double,blaze::rowVector> mean;
+         mean = blaze::mean<blaze::columnwise>( mat );
+
+         if( !isEqual( mean[0], 0.0 ) || !isEqual( mean[1], 0.0 ) || !isEqual( mean[2], 0.0 ) ||
+             !isEqual( mean[3], 0.0 ) || !isEqual( mean[4], 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Mean computation failed\n"
+                << " Details:\n"
+                << "   Result: " << mean << "\n"
+                << "   Expected result: ( 0 0 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat{ { 1, 4, 3, 6, 7 },
+                                                              { 2, 6, 3, 1, 0 } };
+
+         blaze::DynamicVector<double,blaze::rowVector> mean;
+         mean = blaze::mean<blaze::columnwise>( mat );
+
+         if( !isEqual( mean[0], 1.5 ) || !isEqual( mean[1], 5.0 ) || !isEqual( mean[2], 3.0 ) ||
+             !isEqual( mean[3], 3.5 ) || !isEqual( mean[4], 3.5 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Mean computation failed\n"
+                << " Details:\n"
+                << "   Result: " << mean << "\n"
+                << "   Expected result: ( 1.5 5.0 3.0 3.5 3.5 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::CompressedMatrix<int,blaze::columnMajor> mat( 0UL, 5UL );
+
+         blaze::DynamicVector<double,blaze::rowVector> mean;
+         mean = blaze::mean<blaze::columnwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Mean computation of empty matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << mean << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************
