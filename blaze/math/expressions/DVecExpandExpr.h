@@ -709,14 +709,14 @@ class DVecExpandExpr
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-   blaze::DynamicVector<int,columnVector> a{ 1, 5, -2, 4 }
-   blaze::DynamicVector<int,rowVector> b{ 3, -1, 7, 0 }
+   blaze::DynamicVector<int,columnVector> a{ 1, 5, -2, 4 };
+   blaze::DynamicVector<int,rowVector> b{ 3, -1, 7, 0 };
 
    blaze::DynamicMatrix<double,columnMajor> A;
    blaze::DynamicMatrix<double,rowMajor> B;
    // ... Resizing and initialization
 
-   // Expansion of the column vector 'a' to 4x3 column-major matrix
+   // Expansion of the column vector 'a' to a 4x3 column-major matrix
    //
    //    (  1  1  1 )
    //    (  5  5  5 )
@@ -759,14 +759,14 @@ inline decltype(auto) expand( const DenseVector<VT,TF>& dv, size_t expansion )
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-   blaze::DynamicVector<int,columnVector> a{ 1, 5, -2, 4 }
-   blaze::DynamicVector<int,rowVector> b{ 3, -1, 7, 0 }
+   blaze::DynamicVector<int,columnVector> a{ 1, 5, -2, 4 };
+   blaze::DynamicVector<int,rowVector> b{ 3, -1, 7, 0 };
 
    blaze::DynamicMatrix<double,columnMajor> A;
    blaze::DynamicMatrix<double,rowMajor> B;
    // ... Resizing and initialization
 
-   // Expansion of the column vector 'a' to 4x3 column-major matrix
+   // Expansion of the column vector 'a' to a 4x3 column-major matrix
    //
    //    (  1  1  1 )
    //    (  5  5  5 )
@@ -835,8 +835,8 @@ inline decltype(auto) expand( const DenseVector<VT,TF>& dv, size_t expansion )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF >
-struct IsAligned< DVecExpandExpr<VT,TF> >
+template< typename VT, bool TF, size_t... CEAs >
+struct IsAligned< DVecExpandExpr<VT,TF,CEAs...> >
    : public IsAligned<VT>
 {};
 /*! \endcond */
@@ -853,8 +853,8 @@ struct IsAligned< DVecExpandExpr<VT,TF> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, bool TF >
-struct IsPadded< DVecExpandExpr<VT,TF> >
+template< typename VT, bool TF, size_t... CEAs >
+struct IsPadded< DVecExpandExpr<VT,TF,CEAs...> >
    : public IsPadded<VT>
 {};
 /*! \endcond */
