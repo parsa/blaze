@@ -111,6 +111,7 @@ template< typename, typename, bool > class DVecSVecSubExpr;
 template< typename, bool > class DVecTransExpr;
 template< typename, bool > class DVecTransposer;
 template< typename, bool > struct Matrix;
+template< typename, bool, size_t... > class ScalarExpandExpr;
 template< typename, bool > class SMatDeclDiagExpr;
 template< typename, bool > class SMatDeclHermExpr;
 template< typename, bool > class SMatDeclLowExpr;

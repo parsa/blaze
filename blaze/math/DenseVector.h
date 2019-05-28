@@ -65,6 +65,7 @@
 #include <blaze/math/expressions/DVecSVecCrossExpr.h>
 #include <blaze/math/expressions/DVecSVecSubExpr.h>
 #include <blaze/math/expressions/DVecTransExpr.h>
+#include <blaze/math/expressions/ScalarExpandExpr.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/SVecDVecCrossExpr.h>
 #include <blaze/math/expressions/SVecDVecSubExpr.h>
