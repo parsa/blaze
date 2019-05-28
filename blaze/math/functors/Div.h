@@ -86,7 +86,7 @@ struct Div
    // \return The result of the division operator for the given objects/values.
    */
    template< typename T1, typename T2 >
-   BLAZE_ALWAYS_INLINE BLAZE_HOST_DEVICE decltype(auto) operator()( const T1& a, const T2& b ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T1& a, const T2& b ) const
    {
       return a / b;
    }

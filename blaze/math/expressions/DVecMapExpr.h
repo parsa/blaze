@@ -192,7 +192,7 @@ class DVecMapExpr
       // \param it Iterator to the initial vector element.
       // \param op The custom unary operation.
       */
-      explicit inline BLAZE_HOST_DEVICE ConstIterator( IteratorType it, OP op )
+      explicit inline BLAZE_DEVICE_CALLABLE ConstIterator( IteratorType it, OP op )
          : it_( it )  // Iterator to the current vector element
          , op_( op )  // The custom unary operation
       {}
@@ -269,7 +269,7 @@ class DVecMapExpr
       //
       // \return The resulting value.
       */
-      inline BLAZE_HOST_DEVICE ReturnType operator*() const {
+      inline BLAZE_DEVICE_CALLABLE ReturnType operator*() const {
          return op_( *it_ );
       }
       //*******************************************************************************************
@@ -290,7 +290,7 @@ class DVecMapExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
-      inline BLAZE_HOST_DEVICE bool operator==( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator==( const ConstIterator& rhs ) const {
          return it_ == rhs.it_;
       }
       //*******************************************************************************************
@@ -301,7 +301,7 @@ class DVecMapExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
-      inline BLAZE_HOST_DEVICE bool operator!=( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator!=( const ConstIterator& rhs ) const {
          return it_ != rhs.it_;
       }
       //*******************************************************************************************
@@ -312,7 +312,7 @@ class DVecMapExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is smaller, \a false if not.
       */
-      inline BLAZE_HOST_DEVICE bool operator<( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator<( const ConstIterator& rhs ) const {
          return it_ < rhs.it_;
       }
       //*******************************************************************************************
@@ -323,7 +323,7 @@ class DVecMapExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is greater, \a false if not.
       */
-      inline BLAZE_HOST_DEVICE bool operator>( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator>( const ConstIterator& rhs ) const {
          return it_ > rhs.it_;
       }
       //*******************************************************************************************
@@ -334,7 +334,7 @@ class DVecMapExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
       */
-      inline BLAZE_HOST_DEVICE bool operator<=( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator<=( const ConstIterator& rhs ) const {
          return it_ <= rhs.it_;
       }
       //*******************************************************************************************
@@ -345,7 +345,7 @@ class DVecMapExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
       */
-      inline BLAZE_HOST_DEVICE bool operator>=( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator>=( const ConstIterator& rhs ) const {
          return it_ >= rhs.it_;
       }
       //*******************************************************************************************
@@ -356,7 +356,7 @@ class DVecMapExpr
       // \param rhs The right-hand side iterator.
       // \return The number of elements between the two iterators.
       */
-      inline BLAZE_HOST_DEVICE DifferenceType operator-( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE DifferenceType operator-( const ConstIterator& rhs ) const {
          return it_ - rhs.it_;
       }
       //*******************************************************************************************
@@ -368,7 +368,7 @@ class DVecMapExpr
       // \param inc The number of elements the iterator is incremented.
       // \return The incremented iterator.
       */
-      friend inline BLAZE_HOST_DEVICE const ConstIterator operator+( const ConstIterator& it, size_t inc ) {
+      friend inline BLAZE_DEVICE_CALLABLE const ConstIterator operator+( const ConstIterator& it, size_t inc ) {
          return ConstIterator( it.it_ + inc, it.op_ );
       }
       //*******************************************************************************************
@@ -380,7 +380,7 @@ class DVecMapExpr
       // \param it The iterator to be incremented.
       // \return The incremented iterator.
       */
-      friend inline BLAZE_HOST_DEVICE const ConstIterator operator+( size_t inc, const ConstIterator& it ) {
+      friend inline BLAZE_DEVICE_CALLABLE const ConstIterator operator+( size_t inc, const ConstIterator& it ) {
          return ConstIterator( it.it_ + inc, it.op_ );
       }
       //*******************************************************************************************
@@ -392,7 +392,7 @@ class DVecMapExpr
       // \param dec The number of elements the iterator is decremented.
       // \return The decremented iterator.
       */
-      friend inline BLAZE_HOST_DEVICE const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
+      friend inline BLAZE_DEVICE_CALLABLE const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
          return ConstIterator( it.it_ - dec, it.op_ );
       }
       //*******************************************************************************************

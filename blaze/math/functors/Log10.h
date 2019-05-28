@@ -75,7 +75,7 @@ struct Log10
    // \return The result of the log10() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_HOST_DEVICE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
    {
       return log10( a );
    }
