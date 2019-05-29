@@ -55,7 +55,7 @@
 #include <blaze/math/typetraits/YieldsUniform.h>
 #include <blaze/math/typetraits/YieldsUpper.h>
 #include <blaze/math/typetraits/YieldsZero.h>
-#include <blaze/system/HostDevice.h>
+#include <blaze/system/CUDAAttributes.h>
 #include <blaze/system/Inline.h>
 
 

@@ -60,7 +60,7 @@
 #include <blaze/math/typetraits/YieldsUniUpper.h>
 #include <blaze/math/typetraits/YieldsUpper.h>
 #include <blaze/util/algorithms/Max.h>
-#include <blaze/system/HostDevice.h>
+#include <blaze/system/CUDAAttributes.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/IntegralConstant.h>
 
