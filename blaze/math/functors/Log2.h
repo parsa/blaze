@@ -48,7 +48,7 @@
 #include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/math/typetraits/YieldsUniform.h>
-#include <blaze/system/HostDevice.h>
+#include <blaze/system/CUDAAttributes.h>
 #include <blaze/system/Inline.h>
 
 
