@@ -220,7 +220,7 @@ class DVecScalarDivExpr
       // \param inc The increment of the iterator.
       // \return The incremented iterator.
       */
-      inline ConstIterator& operator+=( size_t inc ) {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator+=( size_t inc ) {
          iterator_ += inc;
          return *this;
       }
@@ -232,7 +232,7 @@ class DVecScalarDivExpr
       // \param dec The decrement of the iterator.
       // \return The decremented iterator.
       */
-      inline ConstIterator& operator-=( size_t dec ) {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator-=( size_t dec ) {
          iterator_ -= dec;
          return *this;
       }
@@ -243,7 +243,7 @@ class DVecScalarDivExpr
       //
       // \return Reference to the incremented iterator.
       */
-      inline ConstIterator& operator++() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator++() {
          ++iterator_;
          return *this;
       }
@@ -254,7 +254,7 @@ class DVecScalarDivExpr
       //
       // \return The previous position of the iterator.
       */
-      inline const ConstIterator operator++( int ) {
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator++( int ) {
          return ConstIterator( iterator_++, scalar_ );
       }
       //*******************************************************************************************
@@ -264,7 +264,7 @@ class DVecScalarDivExpr
       //
       // \return Reference to the decremented iterator.
       */
-      inline ConstIterator& operator--() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator--() {
          --iterator_;
          return *this;
       }
@@ -275,7 +275,7 @@ class DVecScalarDivExpr
       //
       // \return The previous position of the iterator.
       */
-      inline const ConstIterator operator--( int ) {
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator--( int ) {
          return ConstIterator( iterator_--, scalar_ );
       }
       //*******************************************************************************************

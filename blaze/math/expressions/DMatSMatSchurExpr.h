@@ -210,7 +210,7 @@ class DMatSMatSchurExpr
       //
       // \return Reference to the incremented expression iterator.
       */
-      inline ConstIterator& operator++() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator++() {
          ++right_;
          return *this;
       }

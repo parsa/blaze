@@ -211,7 +211,7 @@ class SMatScalarMultExpr
       //
       // \return Reference to the incremented expression iterator.
       */
-      inline ConstIterator& operator++() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator++() {
          ++matrix_;
          return *this;
       }
