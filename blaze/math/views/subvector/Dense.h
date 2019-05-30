@@ -77,6 +77,7 @@
 #include <blaze/math/views/subvector/BaseTemplate.h>
 #include <blaze/math/views/subvector/SubvectorData.h>
 #include <blaze/system/CacheSize.h>
+#include <blaze/system/CUDAAttributes.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/Thresholds.h>
@@ -89,7 +90,6 @@
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsConst.h>
-
 
 namespace blaze {
 
@@ -181,7 +181,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       //**Constructor******************************************************************************
       /*!\brief Default constructor of the SubvectorIterator class.
       */
-      inline SubvectorIterator()
+      inline BLAZE_DEVICE_CALLABLE SubvectorIterator()
          : iterator_ (       )  // Iterator to the current subvector element
          , isAligned_( false )  // Memory alignment flag
       {}
@@ -193,7 +193,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       // \param iterator Iterator to the initial element.
       // \param isMemoryAligned Memory alignment flag.
       */
-      inline SubvectorIterator( IteratorType iterator, bool isMemoryAligned )
+      inline BLAZE_DEVICE_CALLABLE SubvectorIterator( IteratorType iterator, bool isMemoryAligned )
          : iterator_ ( iterator        )  // Iterator to the current subvector element
          , isAligned_( isMemoryAligned )  // Memory alignment flag
       {}
@@ -205,7 +205,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       // \param it The subvector iterator to be copied
       */
       template< typename IteratorType2 >
-      inline SubvectorIterator( const SubvectorIterator<IteratorType2>& it )
+      inline BLAZE_DEVICE_CALLABLE SubvectorIterator( const SubvectorIterator<IteratorType2>& it )
          : iterator_ ( it.base()      )  // Iterator to the current subvector element
          , isAligned_( it.isAligned() )  // Memory alignment flag
       {}
@@ -217,7 +217,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       // \param inc The increment of the iterator.
       // \return The incremented iterator.
       */
-      inline SubvectorIterator& operator+=( size_t inc ) {
+      inline BLAZE_DEVICE_CALLABLE SubvectorIterator& operator+=( size_t inc ) {
          iterator_ += inc;
          return *this;
       }
@@ -229,7 +229,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       // \param dec The decrement of the iterator.
       // \return The decremented iterator.
       */
-      inline SubvectorIterator& operator-=( size_t dec ) {
+      inline BLAZE_DEVICE_CALLABLE SubvectorIterator& operator-=( size_t dec ) {
          iterator_ -= dec;
          return *this;
       }
@@ -240,7 +240,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       //
       // \return Reference to the incremented iterator.
       */
-      inline SubvectorIterator& operator++() {
+      inline BLAZE_DEVICE_CALLABLE SubvectorIterator& operator++() {
          ++iterator_;
          return *this;
       }
@@ -251,7 +251,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       //
       // \return The previous position of the iterator.
       */
-      inline const SubvectorIterator operator++( int ) {
+      inline BLAZE_DEVICE_CALLABLE const SubvectorIterator operator++( int ) {
          return SubvectorIterator( iterator_++, isAligned_ );
       }
       //*******************************************************************************************
@@ -261,7 +261,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       //
       // \return Reference to the decremented iterator.
       */
-      inline SubvectorIterator& operator--() {
+      inline BLAZE_DEVICE_CALLABLE SubvectorIterator& operator--() {
          --iterator_;
          return *this;
       }
@@ -272,7 +272,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       //
       // \return The previous position of the iterator.
       */
-      inline const SubvectorIterator operator--( int ) {
+      inline BLAZE_DEVICE_CALLABLE const SubvectorIterator operator--( int ) {
          return SubvectorIterator( iterator_--, isAligned_ );
       }
       //*******************************************************************************************
@@ -282,7 +282,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       //
       // \return Reference to the current value.
       */
-      inline ReferenceType operator*() const {
+      inline BLAZE_DEVICE_CALLABLE ReferenceType operator*() const {
          return *iterator_;
       }
       //*******************************************************************************************
@@ -292,7 +292,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       //
       // \return Pointer to the element at the current iterator position.
       */
-      inline IteratorType operator->() const {
+      inline BLAZE_DEVICE_CALLABLE IteratorType operator->() const {
          return iterator_;
       }
       //*******************************************************************************************
@@ -422,7 +422,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
-      inline bool operator==( const SubvectorIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator==( const SubvectorIterator& rhs ) const {
          return iterator_ == rhs.iterator_;
       }
       //*******************************************************************************************
@@ -433,7 +433,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
-      inline bool operator!=( const SubvectorIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator!=( const SubvectorIterator& rhs ) const {
          return iterator_ != rhs.iterator_;
       }
       //*******************************************************************************************
@@ -444,7 +444,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is smaller, \a false if not.
       */
-      inline bool operator<( const SubvectorIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator<( const SubvectorIterator& rhs ) const {
          return iterator_ < rhs.iterator_;
       }
       //*******************************************************************************************
@@ -455,7 +455,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is greater, \a false if not.
       */
-      inline bool operator>( const SubvectorIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator>( const SubvectorIterator& rhs ) const {
          return iterator_ > rhs.iterator_;
       }
       //*******************************************************************************************
@@ -466,7 +466,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
       */
-      inline bool operator<=( const SubvectorIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator<=( const SubvectorIterator& rhs ) const {
          return iterator_ <= rhs.iterator_;
       }
       //*******************************************************************************************
@@ -477,7 +477,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
       */
-      inline bool operator>=( const SubvectorIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator>=( const SubvectorIterator& rhs ) const {
          return iterator_ >= rhs.iterator_;
       }
       //*******************************************************************************************
@@ -488,7 +488,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       // \param rhs The right-hand side iterator.
       // \return The number of elements between the two iterators.
       */
-      inline DifferenceType operator-( const SubvectorIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE DifferenceType operator-( const SubvectorIterator& rhs ) const {
          return iterator_ - rhs.iterator_;
       }
       //*******************************************************************************************
@@ -500,7 +500,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       // \param inc The number of elements the iterator is incremented.
       // \return The incremented iterator.
       */
-      friend inline const SubvectorIterator operator+( const SubvectorIterator& it, size_t inc ) {
+      friend inline BLAZE_DEVICE_CALLABLE const SubvectorIterator operator+( const SubvectorIterator& it, size_t inc ) {
          return SubvectorIterator( it.iterator_ + inc, it.isAligned_ );
       }
       //*******************************************************************************************
@@ -512,7 +512,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       // \param it The iterator to be incremented.
       // \return The incremented iterator.
       */
-      friend inline const SubvectorIterator operator+( size_t inc, const SubvectorIterator& it ) {
+      friend inline BLAZE_DEVICE_CALLABLE const SubvectorIterator operator+( size_t inc, const SubvectorIterator& it ) {
          return SubvectorIterator( it.iterator_ + inc, it.isAligned_ );
       }
       //*******************************************************************************************
@@ -524,7 +524,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       // \param dec The number of elements the iterator is decremented.
       // \return The decremented iterator.
       */
-      friend inline const SubvectorIterator operator-( const SubvectorIterator& it, size_t dec ) {
+      friend inline BLAZE_DEVICE_CALLABLE const SubvectorIterator operator-( const SubvectorIterator& it, size_t dec ) {
          return SubvectorIterator( it.iterator_ - dec, it.isAligned_ );
       }
       //*******************************************************************************************
@@ -534,7 +534,7 @@ class Subvector<VT,unaligned,TF,true,CSAs...>
       //
       // \return The current position of the subvector iterator.
       */
-      inline IteratorType base() const {
+      inline BLAZE_DEVICE_CALLABLE IteratorType base() const {
          return iterator_;
       }
       //*******************************************************************************************
