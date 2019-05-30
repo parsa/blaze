@@ -204,7 +204,7 @@ class DVecMapExpr
       // \param inc The increment of the iterator.
       // \return The incremented iterator.
       */
-      inline ConstIterator& operator+=( size_t inc ) {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator+=( size_t inc ) {
          it_ += inc;
          return *this;
       }
@@ -216,7 +216,7 @@ class DVecMapExpr
       // \param dec The decrement of the iterator.
       // \return The decremented iterator.
       */
-      inline ConstIterator& operator-=( size_t dec ) {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator-=( size_t dec ) {
          it_ -= dec;
          return *this;
       }
@@ -227,7 +227,7 @@ class DVecMapExpr
       //
       // \return Reference to the incremented iterator.
       */
-      inline ConstIterator& operator++() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator++() {
          ++it_;
          return *this;
       }
@@ -238,7 +238,7 @@ class DVecMapExpr
       //
       // \return The previous position of the iterator.
       */
-      inline const ConstIterator operator++( int ) {
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator++( int ) {
          return ConstIterator( it_++, op_ );
       }
       //*******************************************************************************************
@@ -248,7 +248,7 @@ class DVecMapExpr
       //
       // \return Reference to the decremented iterator.
       */
-      inline ConstIterator& operator--() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator--() {
          --it_;
          return *this;
       }
@@ -259,7 +259,7 @@ class DVecMapExpr
       //
       // \return The previous position of the iterator.
       */
-      inline const ConstIterator operator--( int ) {
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator--( int ) {
          return ConstIterator( it_--, op_ );
       }
       //*******************************************************************************************
