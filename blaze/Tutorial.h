@@ -2525,6 +2525,35 @@
    const double max = maxNorm( a );
    \endcode
 
+// \n \section vector_operations_scalar_expansion Scalar Expansion
+// <hr>
+//
+// By means of the \c expand() function it is possible to expand a scalar value into a dense
+// vector. As demonstrated by the following examples, \c expand() can be used with both
+// runtime and compile time parameters:
+
+   \code
+   using blaze::columnVector;
+
+   int scalar = 5;
+
+   blaze::DynamicVector<int,columnVector> v;
+   // ... Resizing and initialization
+
+   // Expansion of 'scalar' to a 3-dimensional column vector
+   //
+   //    ( 5 )
+   //    ( 5 )
+   //    ( 5 )
+   //
+   v = expand( scalar, 3UL );
+   v = expand<3UL>( scalar );
+   \endcode
+
+// By default, the resulting vector is a column vector, but this setting can be changed via the
+// \c BLAZE_DEFAULT_TRANSPOSE_FLAG switch (see \ref transpose_flag).
+//
+//
 // \n \section vector_operations_vector_expansion Vector Expansion
 // <hr>
 //
@@ -5245,6 +5274,35 @@
    const double max = maxNorm( A );
    \endcode
 
+// \n \section matrix_operations_scalar_expansion Scalar Expansion
+// <hr>
+//
+// By means of the \c expand() function it is possible to expand a scalar value into a dense
+// matrix. As demonstrated by the following examples, \c expand() can be used with both
+// runtime and compile time parameters:
+
+   \code
+   using blaze::rowMajor;
+
+   int scalar = 5;
+
+   blaze::DynamicMatrix<int,rowMajor> A;
+   // ... Resizing and initialization
+
+   // Expansion of 'scalar' to a 3x5 row-major matrix
+   //
+   //    ( 5  5  5  5  5 )
+   //    ( 5  5  5  5  5 )
+   //    ( 5  5  5  5  5 )
+   //
+   A = expand( scalar, 3UL, 5UL );
+   A = expand<3UL,5UL>( scalar );
+   \endcode
+
+// By default, the resulting matrix is a row-major matrix, but this setting can be changed via
+// the \c BLAZE_DEFAULT_STORAGE_ORDER switch (see \ref storage_order).
+//
+//
 // \n \section matrix_operations_statistic_operations Statistic Operations
 // <hr>
 //
@@ -10772,11 +10830,12 @@
 
 // This resulting view can be treated as any other vector, i.e. it can be assigned to, it can
 // be copied from, and it can be used in arithmetic operations. By default, bands are considered
-// column vectors, but this setting can be changed via the \c defaultTransposeFlag switch. The
-// reference can also be used on both sides of an assignment: The band can either be used as an
-// alias to grant write access to a specific band of a matrix primitive on the left-hand side of
-// an assignment or to grant read-access to a specific band of a matrix primitive or expression
-// on the right-hand side of an assignment. The following example demonstrates this in detail:
+// column vectors, but this setting can be changed via the \c BLAZE_DEFAULT_TRANSPOSE_FLAG switch
+// (see \ref transpose_flag). The reference can also be used on both sides of an assignment: The
+// band can either be used as an alias to grant write access to a specific band of a matrix
+// primitive on the left-hand side of an assignment or to grant read-access to a specific band of
+// a matrix primitive or expression on the right-hand side of an assignment. The following example
+// demonstrates this in detail:
 
    \code
    blaze::DynamicVector<double,blaze::rowVector> x;
