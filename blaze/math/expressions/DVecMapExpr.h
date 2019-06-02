@@ -833,7 +833,7 @@ class DVecMapExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
 
       smpAssign( ~lhs, rhs.dv_ );
-      smpAssign( ~lhs, rhs.op_( ~lhs ) );
+      smpAssign( ~lhs, map( ~lhs, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
