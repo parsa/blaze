@@ -83,6 +83,7 @@
 #include <blaze/math/expressions/DMatSMatMultExpr.h>
 #include <blaze/math/expressions/DMatSMatSubExpr.h>
 #include <blaze/math/expressions/DMatSoftmaxExpr.h>
+#include <blaze/math/expressions/DMatStdDevExpr.h>
 #include <blaze/math/expressions/DMatSVecMultExpr.h>
 #include <blaze/math/expressions/DMatTDMatAddExpr.h>
 #include <blaze/math/expressions/DMatTDMatMapExpr.h>
