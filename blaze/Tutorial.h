@@ -2590,8 +2590,8 @@
 //
 // \subsection vector_operations_mean mean()
 //
-// The arithmetic mean of a non-empty dense or sparse vector can be computed via the \c mean()
-// function. Example:
+// The arithmetic mean of a dense or sparse vector can be computed via the \c mean() function.
+// The following example demonstrates the computation of the mean of a dense vector:
 
    \code
    blaze::DynamicVector<int> v{ 1, 4, 3, 6, 7 };
@@ -2600,6 +2600,19 @@
    \endcode
 
 // In case the size of the given vector is 0, a \a std::invalid_argument is thrown.
+//
+// \n \subsection vector_operations_var var()
+//
+// The variance of a dense or sparse vector can be computed via the \c var() function. The
+// following example demonstrates the computation of the variance of a dense vector:
+
+   \code
+   blaze::DynamicVector<int> v{ 1, 4, 3, 6, 7 };
+
+   const double m = var( v );  // Results in 5.7
+   \endcode
+
+// In case the size of the given vector is smaller than 2, a \a std::invalid_argument is thrown.
 //
 //
 // \n \section vector_operations_declaration_operations Declaration Operations
@@ -5308,8 +5321,8 @@
 //
 // \subsection matrix_operations_mean mean()
 //
-// The arithmetic mean of a non-empty dense or sparse matrix can be computed via the \c mean()
-// function. Example:
+// The arithmetic mean of a dense or sparse matrix can be computed via the \c mean() function.
+// The following example demonstrates the computation of the mean of a dense matrix:
 
    \code
    blaze::DynamicMatrix<int> A{ { 1, 4, 3, 6, 7 }
@@ -5334,6 +5347,36 @@
 // In case the rowwise mean is computed and the number of columns of the given matrix is 0 or
 // in case the columnwise mean is computed and the number of rows of the given matrix is 0, a
 // \a std::invalid_argument is thrown.
+//
+// \n \subsection matrix_operations_var var()
+//
+// The variance of a dense or sparse matrix can be computed via the \c var() function. The
+// following example demonstrates the computation of the variance of a dense matrix:
+
+   \code
+   blaze::DynamicMatrix<int> A{ { 1, 3, 2 }
+                              , { 2, 6, 4 }
+                              , { 9, 6, 3 } };
+
+   const double v = var( A );  // Results in 6.5
+   \endcode
+
+// In case the size of the given matrix is smaller than 2, a \a std::invalid_argument is thrown.
+//
+// Alternatively it is possible to compute the row- or columnwise mean:
+
+   \code
+   blaze::DynamicMatrix<int> A{ { 1, 3, 2 }
+                              , { 2, 6, 4 }
+                              , { 9, 6, 3 } };
+
+   const auto v1 = var<rowwise>( A );     // Results in ( 1  4  9 )
+   const auto v2 = var<columnwise>( A );  // Results in ( 19  3  1 )
+   \endcode
+
+// In case the rowwise mean is computed and the number of columns of the given matrix is smaller
+// than 2 or in case the columnwise mean is computed and the number of rows of the given matrix
+// is smaller than 2, a \a std::invalid_argument is thrown.
 //
 //
 // \n \section matrix_operations_declaration_operations Declaration Operations
