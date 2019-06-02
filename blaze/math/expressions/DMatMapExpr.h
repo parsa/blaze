@@ -619,7 +619,7 @@ class DMatMapExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       assign( ~lhs, rhs.dm_ );
-      assign( ~lhs, rhs.op_( ~lhs ) );
+      assign( ~lhs, map( ~lhs, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -694,7 +694,7 @@ class DMatMapExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const TmpType tmp( serial( rhs.dm_ ) );
-      assign( ~lhs, rhs.op_( tmp ) );
+      assign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -848,7 +848,7 @@ class DMatMapExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       smpAssign( ~lhs, rhs.dm_ );
-      smpAssign( ~lhs, rhs.op_( ~lhs ) );
+      smpAssign( ~lhs, map( ~lhs, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -923,7 +923,7 @@ class DMatMapExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const TmpType tmp( rhs.dm_ );
-      smpAssign( ~lhs, rhs.op_( tmp ) );
+      smpAssign( ~lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
