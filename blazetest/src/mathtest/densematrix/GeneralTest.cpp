@@ -37,6 +37,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <cmath>
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/dense/DenseMatrix.h>
@@ -93,6 +94,7 @@ GeneralTest::GeneralTest()
    testLpNorm();
    testMean();
    testVar();
+   testStdDev();
    testSoftmax();
 }
 //*************************************************************************************************
@@ -6601,6 +6603,415 @@ void GeneralTest::testVar()
              << " Error: Variance computation of matrix with one row succeeded\n"
              << " Details:\n"
              << "   Result:\n" << var << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c stddev() function for dense matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c stddev() function for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testStdDev()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major stddev()";
+
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
+
+         const double stddev = blaze::stddev( mat );
+
+         if( !isEqual( stddev, 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Standard deviation computation failed\n"
+                << " Details:\n"
+                << "   Result: " << stddev << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 1, 3, 2 },
+                                                        { 2, 6, 4 },
+                                                        { 9, 6, 3 } };
+
+         const double stddev = blaze::stddev( mat );
+
+         if( !isEqual( stddev, std::sqrt(6.5) ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Standard deviation computation failed\n"
+                << " Details:\n"
+                << "   Result: " << stddev << "\n"
+                << "   Expected result: sqrt(6.5)\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat;
+
+         const double stddev = blaze::stddev( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of empty matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << stddev << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Row-major stddev<rowwise>()";
+
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
+
+         blaze::DynamicVector<double,blaze::columnVector> stddev;
+         stddev = blaze::stddev<blaze::rowwise>( mat );
+
+         if( !isEqual( stddev[0], 0.0 ) || !isEqual( stddev[1], 0.0 ) || !isEqual( stddev[2], 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Standard deviation computation failed\n"
+                << " Details:\n"
+                << "   Result: " << trans( stddev ) << "\n"
+                << "   Expected result: ( 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 1, 3, 2 },
+                                                        { 2, 6, 4 },
+                                                        { 9, 6, 3 } };
+
+         blaze::DynamicVector<double,blaze::columnVector> stddev;
+         stddev = blaze::stddev<blaze::rowwise>( mat );
+
+         if( !isEqual( stddev[0], 1.0 ) || !isEqual( stddev[1], 2.0 ) || !isEqual( stddev[2], 3.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Standard deviation computation failed\n"
+                << " Details:\n"
+                << "   Result: " << trans( stddev ) << "\n"
+                << "   Expected result: ( 1 2 3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 0UL );
+
+         blaze::DynamicVector<double,blaze::columnVector> stddev;
+         stddev = blaze::stddev<blaze::rowwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of matrix with zero columns succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << trans( stddev ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 1UL );
+
+         blaze::DynamicVector<double,blaze::columnVector> stddev;
+         stddev = blaze::stddev<blaze::rowwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of matrix with one column succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << trans( stddev ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Row-major stddev<columnwise>()";
+
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 3UL, 0 );
+
+         blaze::DynamicVector<double,blaze::rowVector> stddev;
+         stddev = blaze::stddev<blaze::columnwise>( mat );
+
+         if( !isEqual( stddev[0], 0.0 ) || !isEqual( stddev[1], 0.0 ) || !isEqual( stddev[2], 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Standard deviation computation failed\n"
+                << " Details:\n"
+                << "   Result: " << stddev << "\n"
+                << "   Expected result: ( 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat{ { 1, 3, 2 },
+                                                        { 2, 6, 4 },
+                                                        { 9, 6, 3 } };
+
+         blaze::DynamicVector<double,blaze::rowVector> stddev;
+         stddev = blaze::stddev<blaze::columnwise>( mat );
+
+         if( !isEqual( stddev[0], std::sqrt(19.0) ) || !isEqual( stddev[1], std::sqrt(3.0) ) ||
+             !isEqual( stddev[2], 1.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Standard deviation computation failed\n"
+                << " Details:\n"
+                << "   Result: " << stddev << "\n"
+                << "   Expected result: ( sqrt(19) sqrt(3) 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 0UL, 3UL );
+
+         blaze::DynamicVector<double,blaze::rowVector> stddev;
+         stddev = blaze::stddev<blaze::columnwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of matrix with zero rows succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << stddev << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 1UL, 3UL );
+
+         blaze::DynamicVector<double,blaze::rowVector> stddev;
+         stddev = blaze::stddev<blaze::columnwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of matrix with one row succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << stddev << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major stddev()";
+
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
+
+         const double stddev = blaze::stddev( mat );
+
+         if( !isEqual( stddev, 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Standard deviation computation failed\n"
+                << " Details:\n"
+                << "   Result: " << stddev << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { 1, 3, 2 },
+                                                           { 2, 6, 4 },
+                                                           { 9, 6, 3 } };
+
+         const double stddev = blaze::stddev( mat );
+
+         if( !isEqual( stddev, std::sqrt(6.5) ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Standard deviation computation failed\n"
+                << " Details:\n"
+                << "   Result: " << stddev << "\n"
+                << "   Expected result: sqrt(6.5)\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat;
+
+         const double stddev = blaze::stddev( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of empty matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << stddev << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Column-major stddev<rowwise>()";
+
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
+
+         blaze::DynamicVector<double,blaze::columnVector> stddev;
+         stddev = blaze::stddev<blaze::rowwise>( mat );
+
+         if( !isEqual( stddev[0], 0.0 ) || !isEqual( stddev[1], 0.0 ) || !isEqual( stddev[2], 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Standard deviation computation failed\n"
+                << " Details:\n"
+                << "   Result: " << trans( stddev ) << "\n"
+                << "   Expected result: ( 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { 1, 3, 2 },
+                                                           { 2, 6, 4 },
+                                                           { 9, 6, 3 } };
+
+         blaze::DynamicVector<double,blaze::columnVector> stddev;
+         stddev = blaze::stddev<blaze::rowwise>( mat );
+
+         if( !isEqual( stddev[0], 1.0 ) || !isEqual( stddev[1], 2.0 ) || !isEqual( stddev[2], 3.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Standard deviation computation failed\n"
+                << " Details:\n"
+                << "   Result: " << trans( stddev ) << "\n"
+                << "   Expected result: ( 1 2 3 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 0UL );
+
+         blaze::DynamicVector<double,blaze::columnVector> stddev;
+         stddev = blaze::stddev<blaze::rowwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of matrix with zero columns succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << trans( stddev ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 1UL );
+
+         blaze::DynamicVector<double,blaze::columnVector> stddev;
+         stddev = blaze::stddev<blaze::rowwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of matrix with one column succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << trans( stddev ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Column-major stddev<columnwise>()";
+
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 3UL, 0 );
+
+         blaze::DynamicVector<double,blaze::rowVector> stddev;
+         stddev = blaze::stddev<blaze::columnwise>( mat );
+
+         if( !isEqual( stddev[0], 0.0 ) || !isEqual( stddev[1], 0.0 ) || !isEqual( stddev[2], 0.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Standard deviation computation failed\n"
+                << " Details:\n"
+                << "   Result: " << stddev << "\n"
+                << "   Expected result: ( 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat{ { 1, 3, 2 },
+                                                           { 2, 6, 4 },
+                                                           { 9, 6, 3 } };
+
+         blaze::DynamicVector<double,blaze::rowVector> stddev;
+         stddev = blaze::stddev<blaze::columnwise>( mat );
+
+         if( !isEqual( stddev[0], std::sqrt(19.0) ) || !isEqual( stddev[1], std::sqrt(3.0) ) ||
+             !isEqual( stddev[2], 1.0 ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Standard deviation computation failed\n"
+                << " Details:\n"
+                << "   Result: " << stddev << "\n"
+                << "   Expected result: ( sqrt(19) sqrt(3) 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 0UL, 3UL );
+
+         blaze::DynamicVector<double,blaze::rowVector> stddev;
+         stddev = blaze::stddev<blaze::columnwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of matrix with zero rows succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << stddev << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 1UL, 3UL );
+
+         blaze::DynamicVector<double,blaze::rowVector> stddev;
+         stddev = blaze::stddev<blaze::columnwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of matrix with one row succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << stddev << "\n";
          throw std::runtime_error( oss.str() );
       }
       catch( std::invalid_argument& ) {}

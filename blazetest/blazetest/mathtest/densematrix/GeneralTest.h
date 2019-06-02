@@ -112,6 +112,7 @@ class GeneralTest
    void testLpNorm();
    void testMean();
    void testVar();
+   void testStdDev();
    void testSoftmax();
 
    template< typename Type >
