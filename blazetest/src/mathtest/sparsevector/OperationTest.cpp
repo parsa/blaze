@@ -81,6 +81,7 @@ OperationTest::OperationTest()
    testL4Norm();
    testLpNorm();
    testMean();
+   testVar();
 }
 //*************************************************************************************************
 
@@ -720,12 +721,12 @@ void OperationTest::testMaximum()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c l1Norm() function for dense vectors.
+/*!\brief Test of the \c l1Norm() function for sparse vectors.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c l1Norm() function for dense vectors template. In case
+// This function performs a test of the \c l1Norm() function for sparse vectors template. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
 void OperationTest::testL1Norm()
@@ -784,12 +785,12 @@ void OperationTest::testL1Norm()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c l2Norm() function for dense vectors.
+/*!\brief Test of the \c l2Norm() function for sparse vectors.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c l2Norm() function for dense vectors template. In case
+// This function performs a test of the \c l2Norm() function for sparse vectors template. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
 void OperationTest::testL2Norm()
@@ -848,12 +849,12 @@ void OperationTest::testL2Norm()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c l3Norm() function for dense vectors.
+/*!\brief Test of the \c l3Norm() function for sparse vectors.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c l3Norm() function for dense vectors template. In case
+// This function performs a test of the \c l3Norm() function for sparse vectors template. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
 void OperationTest::testL3Norm()
@@ -912,12 +913,12 @@ void OperationTest::testL3Norm()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c l4Norm() function for dense vectors.
+/*!\brief Test of the \c l4Norm() function for sparse vectors.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c l4Norm() function for dense vectors template. In case
+// This function performs a test of the \c l4Norm() function for sparse vectors template. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
 void OperationTest::testL4Norm()
@@ -976,12 +977,12 @@ void OperationTest::testL4Norm()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c lpNorm() function for dense vectors.
+/*!\brief Test of the \c lpNorm() function for sparse vectors.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c lpNorm() function for dense vectors template. In case
+// This function performs a test of the \c lpNorm() function for sparse vectors template. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
 void OperationTest::testLpNorm()
@@ -1162,6 +1163,82 @@ void OperationTest::testMean()
           << " Error: Mean computation of empty vector succeeded\n"
           << " Details:\n"
           << "   Result:\n" << mean << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c var() function for sparse vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c var() function for sparse vectors. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testVar()
+{
+   test_ = "var() function";
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 5UL );
+
+      const double var = blaze::var( vec );
+
+      if( !isEqual( var, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Variance computation failed\n"
+             << " Details:\n"
+             << "   Result: " << var << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 1, 4, 3, 6, 7 };
+
+      const double var = blaze::var( vec );
+
+      if( !isEqual( var, 5.7 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Variance computation failed\n"
+             << " Details:\n"
+             << "   Result: " << var << "\n"
+             << "   Expected result: 5.7\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   try {
+      blaze::CompressedVector<int,blaze::rowVector> vec;
+
+      const double var = blaze::var( vec );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Variance computation of empty vector succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << var << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
+
+   try {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 1UL );
+
+      const double var = blaze::var( vec );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Variance computation of 1D vector succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << var << "\n";
       throw std::runtime_error( oss.str() );
    }
    catch( std::invalid_argument& ) {}
