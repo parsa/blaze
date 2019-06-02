@@ -73,6 +73,7 @@
 #include <blaze/math/expressions/SMatSMatMultExpr.h>
 #include <blaze/math/expressions/SMatSMatSchurExpr.h>
 #include <blaze/math/expressions/SMatSMatSubExpr.h>
+#include <blaze/math/expressions/SMatStdDevExpr.h>
 #include <blaze/math/expressions/SMatSVecMultExpr.h>
 #include <blaze/math/expressions/SMatTransExpr.h>
 #include <blaze/math/expressions/SMatTSMatAddExpr.h>
