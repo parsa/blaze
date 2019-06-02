@@ -112,6 +112,7 @@ class GeneralTest
    void testLpNorm();
    void testMean();
    void testVar();
+   void testStdDev();
 
    template< typename Type >
    void checkRows( const Type& matrix, size_t expectedRows ) const;
