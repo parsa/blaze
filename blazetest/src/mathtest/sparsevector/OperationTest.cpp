@@ -37,6 +37,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <cmath>
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/sparse/SparseVector.h>
@@ -82,6 +83,7 @@ OperationTest::OperationTest()
    testLpNorm();
    testMean();
    testVar();
+   testStdDev();
 }
 //*************************************************************************************************
 
@@ -1239,6 +1241,82 @@ void OperationTest::testVar()
           << " Error: Variance computation of 1D vector succeeded\n"
           << " Details:\n"
           << "   Result:\n" << var << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c stddev() function for sparse vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c stddev() function for sparse vectors. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testStdDev()
+{
+   test_ = "stddev() function";
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 5UL );
+
+      const double stddev = blaze::stddev( vec );
+
+      if( !isEqual( stddev, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation failed\n"
+             << " Details:\n"
+             << "   Result: " << stddev << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 1, 4, 3, 6, 7 };
+
+      const double stddev = blaze::stddev( vec );
+
+      if( !isEqual( stddev, std::sqrt(5.7) ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation failed\n"
+             << " Details:\n"
+             << "   Result: " << stddev << "\n"
+             << "   Expected result: sqrt(5.7)\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   try {
+      blaze::CompressedVector<int,blaze::rowVector> vec;
+
+      const double stddev = blaze::stddev( vec );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Standard deviation computation of empty vector succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << stddev << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
+
+   try {
+      blaze::CompressedVector<int,blaze::rowVector> vec( 1UL );
+
+      const double stddev = blaze::stddev( vec );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Standard deviation computation of 1D vector succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << stddev << "\n";
       throw std::runtime_error( oss.str() );
    }
    catch( std::invalid_argument& ) {}

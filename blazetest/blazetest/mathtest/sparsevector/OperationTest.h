@@ -96,6 +96,7 @@ class OperationTest
    void testLpNorm();
    void testMean();
    void testVar();
+   void testStdDev();
 
    template< typename Type >
    void checkSize( const Type& vector, size_t expectedSize ) const;
