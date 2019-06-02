@@ -80,6 +80,7 @@
 #include <blaze/math/expressions/SMatTSMatMultExpr.h>
 #include <blaze/math/expressions/SMatTSMatSchurExpr.h>
 #include <blaze/math/expressions/SMatTSMatSubExpr.h>
+#include <blaze/math/expressions/SMatVarExpr.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/expressions/SVecDVecOuterExpr.h>
 #include <blaze/math/expressions/SVecSVecOuterExpr.h>
