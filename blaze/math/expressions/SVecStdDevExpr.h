@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/SparseVector.h
-//  \brief Header file for all basic SparseVector functionality
+//  \file blaze/math/expressions/SVecStdDevExpr.h
+//  \brief Header file for the sparse vector standard deviation expression
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -32,46 +32,58 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SPARSEVECTOR_H_
-#define _BLAZE_MATH_SPARSEVECTOR_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_SVECSTDDEVEXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_SVECSTDDEVEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/DenseVector.h>
-#include <blaze/math/expressions/DVecSVecEqualExpr.h>
-#include <blaze/math/expressions/DVecSVecInnerExpr.h>
-#include <blaze/math/expressions/DVecSVecKronExpr.h>
-#include <blaze/math/expressions/DVecSVecMultExpr.h>
 #include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/expressions/SVecDVecDivExpr.h>
-#include <blaze/math/expressions/SVecDVecInnerExpr.h>
-#include <blaze/math/expressions/SVecDVecKronExpr.h>
-#include <blaze/math/expressions/SVecDVecMultExpr.h>
-#include <blaze/math/expressions/SVecEvalExpr.h>
-#include <blaze/math/expressions/SVecExpandExpr.h>
 #include <blaze/math/expressions/SVecMapExpr.h>
-#include <blaze/math/expressions/SVecMeanExpr.h>
-#include <blaze/math/expressions/SVecNormExpr.h>
-#include <blaze/math/expressions/SVecReduceExpr.h>
-#include <blaze/math/expressions/SVecScalarDivExpr.h>
-#include <blaze/math/expressions/SVecScalarMultExpr.h>
-#include <blaze/math/expressions/SVecSerialExpr.h>
-#include <blaze/math/expressions/SVecStdDevExpr.h>
-#include <blaze/math/expressions/SVecSVecAddExpr.h>
-#include <blaze/math/expressions/SVecSVecEqualExpr.h>
-#include <blaze/math/expressions/SVecSVecInnerExpr.h>
-#include <blaze/math/expressions/SVecSVecKronExpr.h>
-#include <blaze/math/expressions/SVecSVecMultExpr.h>
-#include <blaze/math/expressions/SVecSVecSubExpr.h>
-#include <blaze/math/expressions/SVecTransExpr.h>
 #include <blaze/math/expressions/SVecVarExpr.h>
-#include <blaze/math/smp/DenseVector.h>
-#include <blaze/math/smp/SparseVector.h>
-#include <blaze/math/sparse/SparseVector.h>
-#include <blaze/math/Vector.h>
-#include <blaze/math/views/Subvector.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  GLOBAL FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Computes the standard deviation for the given sparse vector.
+// \ingroup sparse_vector
+//
+// \param sv The given sparse vector for the standard deviation computation.
+// \return The standard deviation of the given vector.
+// \exception std::invalid_argument Invalid input vector.
+//
+// This function computes the
+// <a href="https://en.wikipedia.org/wiki/Standard_deviation">standard deviation</a> for the
+// given sparse vector \a sv. Both the non-zero and zero elements of the sparse vector are taken
+// into account. Example:
+
+   \code
+   using blaze::CompressedVector;
+
+   CompressedVector<int> v{ 1, 4, 3, 6, 7 };
+
+   const double m = stddev( v );  // Results in 2.38747
+   \endcode
+
+// In case the size of the given vector is smaller than 2, a \a std::invalid_argument is thrown.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+decltype(auto) stddev( const SparseVector<VT,TF>& sv )
+{
+   return sqrt( var( ~sv ) );
+}
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif
