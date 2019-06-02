@@ -95,6 +95,7 @@ class OperationTest
    void testL4Norm();
    void testLpNorm();
    void testMean();
+   void testVar();
    void testSoftmax();
 
    template< typename Type >

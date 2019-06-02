@@ -81,6 +81,7 @@ OperationTest::OperationTest()
    testL4Norm();
    testLpNorm();
    testMean();
+   testVar();
    testSoftmax();
 }
 //*************************************************************************************************
@@ -1092,6 +1093,82 @@ void OperationTest::testMean()
           << " Error: Mean computation of empty vector succeeded\n"
           << " Details:\n"
           << "   Result:\n" << mean << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c var() function for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c var() function for dense vectors. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testVar()
+{
+   test_ = "var() function";
+
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec( 5UL, 0 );
+
+      const double var = blaze::var( vec );
+
+      if( !isEqual( var, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Variance computation failed\n"
+             << " Details:\n"
+             << "   Result: " << var << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 1, 4, 3, 6, 7 };
+
+      const double var = blaze::var( vec );
+
+      if( !isEqual( var, 5.7 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Variance computation failed\n"
+             << " Details:\n"
+             << "   Result: " << var << "\n"
+             << "   Expected result: 5.7\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   try {
+      blaze::DynamicVector<int,blaze::rowVector> vec;
+
+      const double var = blaze::var( vec );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Variance computation of empty vector succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << var << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+   catch( std::invalid_argument& ) {}
+
+   try {
+      blaze::DynamicVector<int,blaze::rowVector> vec( 1UL );
+
+      const double var = blaze::var( vec );
+
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Variance computation of 1D vector succeeded\n"
+          << " Details:\n"
+          << "   Result:\n" << var << "\n";
       throw std::runtime_error( oss.str() );
    }
    catch( std::invalid_argument& ) {}
