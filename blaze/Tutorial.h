@@ -5358,11 +5358,17 @@
 // Alternatively it is possible to compute the row- or columnwise mean:
 
    \code
+   using blaze::columnVector;
+   using blaze::rowVector;
+
    blaze::DynamicMatrix<int> A{ { 1, 4, 3, 6, 7 }
                               , { 2, 6, 3, 1, 0 } };
 
-   const auto v1 = mean<rowwise>( A );     // Results in ( 4.2  2.4 )
-   const auto v2 = mean<columnwise>( A );  // Results in ( 1.5  5.0  3.0  3.5  3.5 )
+   blaze::DynamicVector<double,columnVector> rm;
+   blaze::DynamicVector<double,rowVector> cm;
+
+   rm = mean<rowwise>( A );     // Results in ( 4.2  2.4 )
+   cm = mean<columnwise>( A );  // Results in ( 1.5  5.0  3.0  3.5  3.5 )
    \endcode
 
 // In case the rowwise mean is computed and the number of columns of the given matrix is 0 or
@@ -5389,12 +5395,18 @@
 // Alternatively it is possible to compute the row- or columnwise mean:
 
    \code
+   using blaze::columnVector;
+   using blaze::rowVector;
+
    blaze::DynamicMatrix<int> A{ { 1, 3, 2 }
                               , { 2, 6, 4 }
                               , { 9, 6, 3 } };
 
-   const auto v1 = var<rowwise>( A );     // Results in ( 1  4  9 )
-   const auto v2 = var<columnwise>( A );  // Results in ( 19  3  1 )
+   blaze::DynamicVector<double,columnVector> rv;
+   blaze::DynamicVector<double,rowVector> cv;
+
+   rv = var<rowwise>( A );     // Results in ( 1  4  9 )
+   cv = var<columnwise>( A );  // Results in ( 19  3  1 )
    \endcode
 
 // In case the rowwise mean is computed and the number of columns of the given matrix is smaller
@@ -5421,12 +5433,18 @@
 // Alternatively it is possible to compute the row- or columnwise mean:
 
    \code
+   using blaze::columnVector;
+   using blaze::rowVector;
+
    blaze::DynamicMatrix<int> A{ { 1, 3, 2 }
                               , { 2, 6, 4 }
                               , { 9, 6, 3 } };
 
-   const auto v1 = stddev<rowwise>( A );     // Results in ( 1  2  3 )
-   const auto v2 = stddev<columnwise>( A );  // Results in ( sqrt(19)  sqrt(3)  1 )
+   blaze::DynamicVector<double,columnVector> rs;
+   blaze::DynamicVector<double,rowVector> cs;
+
+   rs = stddev<rowwise>( A );     // Results in ( 1  2  3 )
+   cs = stddev<columnwise>( A );  // Results in ( sqrt(19)  sqrt(3)  1 )
    \endcode
 
 // In case the rowwise mean is computed and the number of columns of the given matrix is smaller
