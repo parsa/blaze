@@ -96,6 +96,7 @@
 #include <blaze/util/SmallArray.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsPointer.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -1507,7 +1508,7 @@ inline decltype(auto) columns( MT&& c, T* indices, size_t n, RCAs... args )
 template< typename MT       // Type of the matrix
         , typename P        // Type of the index producer
         , typename... RCAs  // Optional column arguments
-        , EnableIf_t< IsColumns_v< RemoveReference_t<MT> > >* = nullptr >
+        , EnableIf_t< IsColumns_v< RemoveReference_t<MT> > && !IsPointer_v<P> >* = nullptr >
 inline decltype(auto) columns( MT&& c, P p, size_t n, RCAs... args )
 {
    BLAZE_FUNCTION_TRACE;
