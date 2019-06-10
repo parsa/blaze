@@ -115,13 +115,19 @@ inline decltype(auto) mean( const DenseMatrix<MT,SO>& dm )
 
    \code
    using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::columnVector;
+   using blaze::rowVector;
 
    DynamicMatrix<int> A{ { 1, 3, 2 }
                        , { 2, 6, 4 }
                        , { 9, 6, 3 } };
 
-   const auto v1 = mean<rowwise>( A );     // Results in ( 2  4  6 )
-   const auto v2 = mean<columnwise>( A );  // Results in ( 4  5  3 )
+   DynamicVector<double,columnVector> rm;
+   DynamicVector<double,rowVector> cm;
+
+   rm = mean<rowwise>( A );     // Results in ( 2  4  6 )
+   cm = mean<columnwise>( A );  // Results in ( 4  5  3 )
    \endcode
 
 // In case \a RF is set to \a rowwise and the number of columns of the given matrix is 0 or in

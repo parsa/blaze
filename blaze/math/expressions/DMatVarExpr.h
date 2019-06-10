@@ -114,13 +114,19 @@ inline decltype(auto) var( const DenseMatrix<MT,SO>& dm )
 
    \code
    using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::columnVector;
+   using blaze::rowVector;
 
    DynamicMatrix<int> A{ { 1, 3, 2 }
                        , { 2, 6, 4 }
                        , { 9, 6, 3 } };
 
-   const auto v1 = var<rowwise>( A );     // Results in ( 1  4  9 )
-   const auto v2 = var<columnwise>( A );  // Results in ( 19  3  1 )
+   DynamicVector<double,columnVector> rv;
+   DynamicVector<double,rowVector> cv;
+
+   rv = var<rowwise>( A );     // Results in ( 1  4  9 )
+   cv = var<columnwise>( A );  // Results in ( 19  3  1 )
    \endcode
 
 // In case \a RF is set to \a rowwise and the number of columns of the given matrix is smaller
