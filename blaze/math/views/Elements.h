@@ -84,6 +84,7 @@
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsPointer.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
 
@@ -1323,7 +1324,7 @@ inline decltype(auto) elements( VT&& e, T* indices, size_t n, REAs... args )
 template< typename VT       // Type of the vector
         , typename P        // Type of the index producer
         , typename... REAs  // Optional element arguments
-        , EnableIf_t< IsElements_v< RemoveReference_t<VT> > >* = nullptr >
+        , EnableIf_t< IsElements_v< RemoveReference_t<VT> > && !IsPointer_v<P> >* = nullptr >
 inline decltype(auto) elements( VT&& e, P p, size_t n, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
@@ -1381,7 +1382,7 @@ inline decltype(auto) subvector( VT&& e, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return elements( e, make_shifted_index_sequence<I,N>(), args... );
+   return elements( std::forward<VT>( e ), make_shifted_index_sequence<I,N>(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1412,7 +1413,7 @@ inline decltype(auto) subvector( VT&& e, size_t index, size_t size, RSAs... args
    SmallArray<size_t,128UL> indices( size );
    std::iota( indices.begin(), indices.end(), index );
 
-   return elements( e, indices.data(), indices.size(), args... );
+   return elements( std::forward<VT>( e ), indices.data(), indices.size(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
