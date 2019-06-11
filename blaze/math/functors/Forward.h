@@ -62,6 +62,7 @@ struct Assign;
 struct Atan;
 struct Atan2;
 struct Atanh;
+template< typename, typename > struct Bind1st;
 struct Cbrt;
 struct Ceil;
 template< typename > struct Clamp;
