@@ -583,6 +583,14 @@ class StaticMatrix
 /*!\brief The default constructor for StaticMatrix.
 //
 // All matrix elements are initialized to the default value (i.e. 0 for integral data types).
+//
+// Note that it is possible to skip the default initialization by means of the
+// \a BLAZE_USE_DEFAULT_INITIALIZATION configuration switch. In case the switch is set to 1
+// all elements are initialized to their respective default. In case the switch is set to 0 the
+// default initialization is skipped and the elements are not initialized. Please note that this
+// switch is only effective in case the elements are of fundamental type (i.e. integral or
+// floating point). In case the elements are of class type, this switch has no effect. See
+// the <tt><blaze/config/Optimizations.h></tt> configuration file for more details.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -594,8 +602,15 @@ inline StaticMatrix<Type,M,N,SO>::StaticMatrix()
    BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    if( IsNumeric_v<Type> ) {
-      for( size_t i=0UL; i<M*NN; ++i )
-         v_[i] = Type();
+      if( useDefaultInitialization ) {
+         for( size_t i=0UL; i<M*NN; ++i )
+            v_[i] = Type();
+      }
+      else if( usePadding ) {
+         for( size_t i=0UL; i<M; ++i )
+            for( size_t j=N; j<NN; ++j )
+               v_[i*NN+j] = Type();
+      }
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -3474,6 +3489,14 @@ class StaticMatrix<Type,M,N,true>
 /*!\brief The default constructor for StaticMatrix.
 //
 // All matrix elements are initialized to the default value (i.e. 0 for integral data types).
+//
+// Note that it is possible to skip the default initialization by means of the
+// \a BLAZE_USE_DEFAULT_INITIALIZATION configuration switch. In case the switch is set to 1
+// all elements are initialized to their respective default. In case the switch is set to 0 the
+// default initialization is skipped and the elements are not initialized. Please note that this
+// switch is only effective in case the elements are of fundamental type (i.e. integral or
+// floating point). In case the elements are of class type, this switch has no effect. See
+// the <tt><blaze/config/Optimizations.h></tt> configuration file for more details.
 */
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
@@ -3484,8 +3507,15 @@ inline StaticMatrix<Type,M,N,true>::StaticMatrix()
    BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
 
    if( IsNumeric_v<Type> ) {
-      for( size_t i=0UL; i<MM*N; ++i )
-         v_[i] = Type();
+      if( useDefaultInitialization ) {
+         for( size_t i=0UL; i<MM*N; ++i )
+            v_[i] = Type();
+      }
+      else if( usePadding ) {
+         for( size_t j=0UL; j<N; ++j )
+            for( size_t i=M; i<MM; ++i )
+               v_[i+j*MM] = Type();
+      }
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
