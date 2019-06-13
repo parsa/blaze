@@ -254,8 +254,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
 inline auto smpAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsDenseMatrix_v<MT1>
-            && ( !IsSMPAssignable_v<MT1>  || !IsSMPAssignable_v<MT2>
-              || !IsCUDAAssignable_v<MT1> || !IsCUDAAssignable_v<MT2> ) >
+            && ( !IsSMPAssignable_v<MT1>  || !IsSMPAssignable_v<MT2> )
+            && ( !IsCUDAAssignable_v<MT1> || !IsCUDAAssignable_v<MT2> ) >
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -345,8 +345,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
 inline auto smpAddAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsDenseMatrix_v<MT1>
-            && ( !IsSMPAssignable_v<MT1>  || !IsSMPAssignable_v<MT2>
-              || !IsCUDAAssignable_v<MT1> || !IsCUDAAssignable_v<MT2> ) >
+            && ( !IsSMPAssignable_v<MT1>  || !IsSMPAssignable_v<MT2> )
+            && ( !IsCUDAAssignable_v<MT1> || !IsCUDAAssignable_v<MT2> ) >
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -436,8 +436,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
 inline auto smpSubAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsDenseMatrix_v<MT1>
-            && ( !IsSMPAssignable_v<MT1>  || !IsSMPAssignable_v<MT2>
-              || !IsCUDAAssignable_v<MT1> || !IsCUDAAssignable_v<MT2> ) >
+            && ( !IsSMPAssignable_v<MT1>  || !IsSMPAssignable_v<MT2> )
+            && ( !IsCUDAAssignable_v<MT1> || !IsCUDAAssignable_v<MT2> ) >
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -527,8 +527,8 @@ template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
 inline auto smpSchurAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
    -> EnableIf_t< IsDenseMatrix_v<MT1>
-            && ( !IsSMPAssignable_v<MT1>  || !IsSMPAssignable_v<MT2>
-              || !IsCUDAAssignable_v<MT1> || !IsCUDAAssignable_v<MT2> ) >
+            && ( !IsSMPAssignable_v<MT1>  || !IsSMPAssignable_v<MT2> )
+            && ( !IsCUDAAssignable_v<MT1> || !IsCUDAAssignable_v<MT2> ) >
 {
    BLAZE_FUNCTION_TRACE;
 
