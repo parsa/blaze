@@ -53,9 +53,10 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-constexpr bool usePadding          = BLAZE_USE_PADDING;
-constexpr bool useStreaming        = BLAZE_USE_STREAMING;
-constexpr bool useOptimizedKernels = BLAZE_USE_OPTIMIZED_KERNELS;
+constexpr bool usePadding               = BLAZE_USE_PADDING;
+constexpr bool useStreaming             = BLAZE_USE_STREAMING;
+constexpr bool useOptimizedKernels      = BLAZE_USE_OPTIMIZED_KERNELS;
+constexpr bool useDefaultInitialization = BLAZE_USE_DEFAULT_INITIALIZATION;
 /*! \endcond */
 //*************************************************************************************************
 

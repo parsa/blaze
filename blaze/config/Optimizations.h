@@ -97,9 +97,9 @@
 // \ingroup config
 //
 // This configuration switch enables/disables all optimized compute kernels of the Blaze library,
-// including all vectorized and data type depending kernels. In case the switch is set to \a true
-// the optimized kernels are used whenever possible. In case the switch is set to \a false all
-// optimized kernels are not used, even if it would be possible.
+// including all vectorized and data type depending kernels. In case the switch is set to 1 the
+// optimized kernels are used whenever possible. In case the switch is set to 0 all optimized
+// kernels are not used, even if it would be possible.
 //
 // Possible settings for the optimized kernels:
 //  - Disabled: \b 0
@@ -118,5 +118,34 @@
 */
 #ifndef BLAZE_USE_OPTIMIZED_KERNELS
 #define BLAZE_USE_OPTIMIZED_KERNELS 1
+#endif
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Configuration switch for the initialization in default constructors.
+// \ingroup config
+//
+// This configuration switch enables/disables the element initialization in the default
+// constructors of the \a StaticVector and \a StaticMatrix class templates. In case the switch
+// is set to 1 all elements are initialized to their respective default. In case the switch is
+// set to 0 the default initialization is skipped and the elements are not initialized. Please
+// note that this switch is only effective in case the elements are of fundamental type (i.e.
+// integral or floating point). In case the elements are of class type, this switch has no effect.
+//
+// Possible settings for the default initialization:
+//  - Disabled: \b 0
+//  - Enabled : \b 1
+//
+// \note It is possible to (de-)activate the default initialization via command line or by
+// defining this symbol manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_USE_DEFAULT_INITIALIZATION 1
+   #include <blaze/Blaze.h>
+   \endcode
+*/
+#ifndef BLAZE_USE_DEFAULT_INITIALIZATION
+#define BLAZE_USE_DEFAULT_INITIALIZATION 1
 #endif
 //*************************************************************************************************
