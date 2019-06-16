@@ -95,6 +95,7 @@
 #include <blaze/math/typetraits/HasSIMDAtan2.h>
 #include <blaze/math/typetraits/HasSIMDAtanh.h>
 #include <blaze/math/typetraits/HasSIMDBitand.h>
+#include <blaze/math/typetraits/HasSIMDBitor.h>
 #include <blaze/math/typetraits/HasSIMDCbrt.h>
 #include <blaze/math/typetraits/HasSIMDCeil.h>
 #include <blaze/math/typetraits/HasSIMDConj.h>
@@ -220,6 +221,8 @@ class OperationTest : private blaze::NonCopyable
 
    void testBitand        ( blaze::TrueType  );
    void testBitand        ( blaze::FalseType );
+   void testBitor         ( blaze::TrueType  );
+   void testBitor         ( blaze::FalseType );
 
    void testMin           ( blaze::TrueType  );
    void testMin           ( blaze::FalseType );
@@ -394,6 +397,7 @@ OperationTest<T>::OperationTest()
    testDivision      ( blaze::HasSIMDDiv <T,T>() );
 
    testBitand        ( blaze::HasSIMDBitand<T,T>() );
+   testBitor         ( blaze::HasSIMDBitor <T,T>() );
 
    testMin           ( blaze::HasSIMDMin<T,T>() );
    testMax           ( blaze::HasSIMDMax<T,T>() );
@@ -1284,6 +1288,53 @@ void OperationTest<T>::testBitand( blaze::TrueType )
 */
 template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testBitand( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the bitwise or ('|') operation.
+//
+// \return void
+// \exception std::runtime_error Division error detected.
+//
+// This function tests the bitwise or ('|') operation by comparing the results of a vectorized
+// and a scalar operation. In case any error is detected, a \a std::runtime_error exception is
+// thrown.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testBitor( blaze::TrueType )
+{
+   using blaze::loada;
+   using blaze::storea;
+
+   test_ = "Bitwise or ('|') operation";
+
+   initialize();
+
+   for( size_t i=0UL; i<N; ++i ) {
+      c_[i] = a_[i] | b_[i];
+   }
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      storea( d_+i, loada( a_+i ) | loada( b_+i ) );
+   }
+
+   compare( c_, d_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the test of the bitwise or ('|') operation.
+//
+// \return void
+//
+// This function is called in case the bitwise or ('|') operation is not available for the
+// given data type \a T.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testBitor( blaze::FalseType )
 {}
 //*************************************************************************************************
 
