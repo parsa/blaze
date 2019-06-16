@@ -89,6 +89,7 @@
 #include <blaze/math/typetraits/HasSIMDAtan2.h>
 #include <blaze/math/typetraits/HasSIMDAtanh.h>
 #include <blaze/math/typetraits/HasSIMDBitand.h>
+#include <blaze/math/typetraits/HasSIMDBitor.h>
 #include <blaze/math/typetraits/HasSIMDCbrt.h>
 #include <blaze/math/typetraits/HasSIMDCeil.h>
 #include <blaze/math/typetraits/HasSIMDConj.h>
