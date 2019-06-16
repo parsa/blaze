@@ -66,6 +66,7 @@ template< typename, typename > struct Bind1st;
 template< typename, typename > struct Bind2nd;
 struct Bitand;
 struct Bitor;
+struct Bitxor;
 struct Cbrt;
 struct Ceil;
 template< typename > struct Clamp;
