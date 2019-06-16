@@ -50,6 +50,7 @@
 #include <blaze/math/simd/Atan2.h>
 #include <blaze/math/simd/Atanh.h>
 #include <blaze/math/simd/Bitand.h>
+#include <blaze/math/simd/Bitor.h>
 #include <blaze/math/simd/Cbrt.h>
 #include <blaze/math/simd/Ceil.h>
 #include <blaze/math/simd/Conj.h>
