@@ -110,6 +110,7 @@
 #include <blaze/math/functors/Schur.h>
 #include <blaze/math/functors/SchurAssign.h>
 #include <blaze/math/functors/Serial.h>
+#include <blaze/math/functors/ShiftLI.h>
 #include <blaze/math/functors/Sign.h>
 #include <blaze/math/functors/Sin.h>
 #include <blaze/math/functors/Sinh.h>

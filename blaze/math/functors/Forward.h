@@ -121,6 +121,7 @@ struct Round;
 struct Schur;
 struct SchurAssign;
 struct Serial;
+struct ShiftLI;
 struct Sign;
 struct Sin;
 struct Sinh;
