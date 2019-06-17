@@ -122,6 +122,7 @@ struct Schur;
 struct SchurAssign;
 struct Serial;
 struct ShiftLI;
+struct ShiftLV;
 struct Sign;
 struct Sin;
 struct Sinh;
