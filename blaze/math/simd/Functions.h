@@ -83,6 +83,7 @@
 #include <blaze/math/simd/Round.h>
 #include <blaze/math/simd/Set.h>
 #include <blaze/math/simd/Setzero.h>
+#include <blaze/math/simd/ShiftLI.h>
 #include <blaze/math/simd/Sign.h>
 #include <blaze/math/simd/Sin.h>
 #include <blaze/math/simd/Sinh.h>
