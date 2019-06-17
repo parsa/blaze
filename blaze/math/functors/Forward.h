@@ -124,6 +124,7 @@ struct Serial;
 struct ShiftLI;
 struct ShiftLV;
 struct ShiftRI;
+struct ShiftRV;
 struct Sign;
 struct Sin;
 struct Sinh;
