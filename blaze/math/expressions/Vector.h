@@ -763,12 +763,45 @@ BLAZE_ALWAYS_INLINE bool trySet( const Vector<VT,TF>& vec, size_t index, const E
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by setting a range of elements of a vector.
+// \ingroup vector
+//
+// \param vec The target vector.
+// \param index The index of the first element of the range to be set.
+// \param size The number of elements of the range to be set.
+// \param value The value to be set to the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT    // Type of the vector
+        , bool TF        // Transpose flag
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   trySet( const Vector<VT,TF>& vec, size_t index, size_t size, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (~vec).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (~vec).size(), "Invalid range size" );
+
+   MAYBE_UNUSED( vec, index, size, value );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by adding to a single element of a vector.
 // \ingroup vector
 //
 // \param vec The target vector.
 // \param index The index of the element to be modified.
-// \param value The value to be added to element.
+// \param value The value to be added to the element.
 // \return \a true in case the operation would be successful, \a false if not.
 //
 // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -793,12 +826,45 @@ BLAZE_ALWAYS_INLINE bool tryAdd( const Vector<VT,TF>& vec, size_t index, const E
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by adding to a range of elements of a vector.
+// \ingroup vector
+//
+// \param vec The target vector.
+// \param index The index of the first element of the range to be modified.
+// \param size The number of elements of the range to be modified.
+// \param value The value to be added to the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT    // Type of the vector
+        , bool TF        // Transpose flag
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryAdd( const Vector<VT,TF>& vec, size_t index, size_t size, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (~vec).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (~vec).size(), "Invalid range size" );
+
+   MAYBE_UNUSED( vec, index, size, value );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by subtracting from a single element of a vector.
 // \ingroup vector
 //
 // \param vec The target vector.
 // \param index The index of the element to be modified.
-// \param value The value to be subtracted from element.
+// \param value The value to be subtracted from the element.
 // \return \a true in case the operation would be successful, \a false if not.
 //
 // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -814,6 +880,39 @@ BLAZE_ALWAYS_INLINE bool trySub( const Vector<VT,TF>& vec, size_t index, const E
    BLAZE_INTERNAL_ASSERT( index < (~vec).size(), "Invalid vector access index" );
 
    MAYBE_UNUSED( vec, index, value );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by subtracting from a range of elements of a vector.
+// \ingroup vector
+//
+// \param vec The target vector.
+// \param index The index of the first element of the range to be modified.
+// \param size The number of elements of the range to be modified.
+// \param value The value to be subtracted from the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT    // Type of the vector
+        , bool TF        // Transpose flag
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   trySub( const Vector<VT,TF>& vec, size_t index, size_t size, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (~vec).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (~vec).size(), "Invalid range size" );
+
+   MAYBE_UNUSED( vec, index, size, value );
 
    return true;
 }
