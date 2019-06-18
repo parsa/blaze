@@ -428,7 +428,7 @@ inline void lu( const UniLowerMatrix<MT1,SO1,true>& A, DenseMatrix<MT2,SO1>& L,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by setting a single element of an unilower matrix.
-// \ingroup matrix
+// \ingroup unilower_matrix
 //
 // \param mat The target unilower matrix.
 // \param i The row index of the element to be set.
@@ -452,12 +452,51 @@ inline bool trySet( const UniLowerMatrix<MT,SO,DF>& mat, size_t i, size_t j, con
 
    MAYBE_UNUSED( mat );
 
-   if( i > j )
-      return true;
-   else if( i == j )
-      return isOne( value );
-   else
-      return isDefault( value );
+   return ( i > j ) ||
+          ( i == j && isOne( value ) ) ||
+          isDefault( value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by setting a range of elements of an unilower matrix.
+// \ingroup unilower_matrix
+//
+// \param mat The target unilower matrix.
+// \param row The index of the first row of the range to be multiplied.
+// \param column The index of the first column of the range to be multiplied.
+// \param m The number of rows of the range to be multiplied.
+// \param n The number of columns of the range to be multiplied.
+// \param value The value to be set to the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   trySet( const UniLowerMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
+
+   MAYBE_UNUSED( mat );
+
+   return ( m == 0UL ) ||
+          ( n == 0UL ) ||
+          ( row >= column + n ) ||
+          ( ( column >= row + m ) && isDefault( value ) ) ||
+          ( row == column && m == 1UL && n == 1UL && isOne( value ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -466,7 +505,7 @@ inline bool trySet( const UniLowerMatrix<MT,SO,DF>& mat, size_t i, size_t j, con
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by adding to a single element of an unilower matrix.
-// \ingroup matrix
+// \ingroup unilower_matrix
 //
 // \param mat The target unilower matrix.
 // \param i The row index of the element to be modified.
@@ -490,10 +529,48 @@ inline bool tryAdd( const UniLowerMatrix<MT,SO,DF>& mat, size_t i, size_t j, con
 
    MAYBE_UNUSED( mat );
 
-   if( i > j )
-      return true;
-   else
-      return isDefault( value );
+   return ( i > j ) || isDefault( value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by adding to a range of elements of an unilower matrix.
+// \ingroup unilower_matrix
+//
+// \param mat The target unilower matrix.
+// \param row The index of the first row of the range to be multiplied.
+// \param column The index of the first column of the range to be multiplied.
+// \param m The number of rows of the range to be multiplied.
+// \param n The number of columns of the range to be multiplied.
+// \param value The value to be added to the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryAdd( const UniLowerMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
+
+   MAYBE_UNUSED( mat );
+
+   return ( m == 0UL ) ||
+          ( n == 0UL ) ||
+          ( row >= column + n ) ||
+          isDefault( value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -502,7 +579,7 @@ inline bool tryAdd( const UniLowerMatrix<MT,SO,DF>& mat, size_t i, size_t j, con
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by subtracting from a single element of an unilower matrix.
-// \ingroup matrix
+// \ingroup unilower_matrix
 //
 // \param mat The target unilower matrix.
 // \param i The row index of the element to be modified.
@@ -529,8 +606,39 @@ inline bool trySub( const UniLowerMatrix<MT,SO,DF>& mat, size_t i, size_t j, con
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by subtracting from a range of elements of an unilower matrix.
+// \ingroup unilower_matrix
+//
+// \param mat The target unilower matrix.
+// \param row The index of the first row of the range to be multiplied.
+// \param column The index of the first column of the range to be multiplied.
+// \param m The number of rows of the range to be multiplied.
+// \param n The number of columns of the range to be multiplied.
+// \param value The value to be subtracting from the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   trySub( const UniLowerMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
+{
+   return tryAdd( mat, row, column, m, n, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by scaling a single element of an unilower matrix.
-// \ingroup matrix
+// \ingroup unilower_matrix
 //
 // \param mat The target unilower matrix.
 // \param i The row index of the element to be modified.
@@ -563,7 +671,7 @@ inline bool tryMult( const UniLowerMatrix<MT,SO,DF>& mat, size_t i, size_t j, co
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by scaling a range of elements of an unilower matrix.
-// \ingroup matrix
+// \ingroup unilower_matrix
 //
 // \param mat The target unilower matrix.
 // \param row The index of the first row of the range to be multiplied.
@@ -592,7 +700,11 @@ BLAZE_ALWAYS_INLINE bool
 
    MAYBE_UNUSED( mat );
 
-   return ( row >= column + n ) || ( column >= row + m ) || isOne( value );
+   return ( m == 0UL ) ||
+          ( n == 0UL ) ||
+          ( row >= column + n ) ||
+          ( column >= row + m ) ||
+          isOne( value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -601,7 +713,7 @@ BLAZE_ALWAYS_INLINE bool
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by scaling a single element of an unilower matrix.
-// \ingroup matrix
+// \ingroup unilower_matrix
 //
 // \param mat The target unilower matrix.
 // \param i The row index of the element to be modified.
@@ -629,7 +741,7 @@ inline bool tryDiv( const UniLowerMatrix<MT,SO,DF>& mat, size_t i, size_t j, con
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by scaling a range of elements of an unilower matrix.
-// \ingroup matrix
+// \ingroup unilower_matrix
 //
 // \param mat The target unilower matrix.
 // \param row The index of the first row of the range to be modified.
@@ -651,14 +763,7 @@ template< typename MT    // Type of the adapted matrix
 BLAZE_ALWAYS_INLINE bool
    tryDiv( const UniLowerMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~mat).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
-
-   MAYBE_UNUSED( mat );
-
-   return ( row >= column + n ) || ( column >= row + m ) || isOne( value );
+   return tryMult( mat, row, column, m, n, value );
 }
 /*! \endcond */
 //*************************************************************************************************
