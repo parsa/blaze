@@ -124,6 +124,7 @@
 #include <blaze/math/typetraits/HasSIMDShiftLI.h>
 #include <blaze/math/typetraits/HasSIMDShiftLV.h>
 #include <blaze/math/typetraits/HasSIMDShiftRI.h>
+#include <blaze/math/typetraits/HasSIMDShiftRV.h>
 #include <blaze/math/typetraits/HasSIMDSign.h>
 #include <blaze/math/typetraits/HasSIMDSin.h>
 #include <blaze/math/typetraits/HasSIMDSinh.h>
@@ -236,6 +237,8 @@ class OperationTest : private blaze::NonCopyable
    void testShiftLV       ( blaze::FalseType );
    void testShiftRI       ( blaze::TrueType  );
    void testShiftRI       ( blaze::FalseType );
+   void testShiftRV       ( blaze::TrueType  );
+   void testShiftRV       ( blaze::FalseType );
 
    void testMin           ( blaze::TrueType  );
    void testMin           ( blaze::FalseType );
@@ -418,6 +421,7 @@ OperationTest<T>::OperationTest()
    testShiftLI       ( blaze::HasSIMDShiftLI< T >() );
    testShiftLV       ( blaze::HasSIMDShiftLV<T,T>() );
    testShiftRI       ( blaze::HasSIMDShiftRI< T >() );
+   testShiftRV       ( blaze::HasSIMDShiftRV<T,T>() );
 
    testMin           ( blaze::HasSIMDMin<T,T>() );
    testMax           ( blaze::HasSIMDMax<T,T>() );
@@ -1550,6 +1554,56 @@ void OperationTest<T>::testShiftRI( blaze::TrueType )
 */
 template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testShiftRI( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the componentwise right-shift operation.
+//
+// \return void
+// \exception std::runtime_error Error in right-shift operation detected.
+//
+// This function tests the componentwise right-shift operation by comparing the results of a
+// vectorized and a scalar operation. In case any error is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testShiftRV( blaze::TrueType )
+{
+   using blaze::loada;
+   using blaze::storea;
+
+   test_ = "Componentwise right-shift operation";
+
+   initialize( a_ );
+   initialize( b_, 0, sizeof(T)*8UL-1UL );
+   initialize( c_ );
+   initialize( d_ );
+
+   for( size_t i=0UL; i<N; ++i ) {
+      c_[i] = a_[i] >> b_[i];
+   }
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      storea( d_+i, loada( a_+i ) >> loada( b_+i ) );
+   }
+
+   compare( c_, d_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the test of the componentwise right-shift operation.
+//
+// \return void
+//
+// This function is called in case the componentwise right-shift operation is not available for
+// the given data type \a T.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testShiftRV( blaze::FalseType )
 {}
 //*************************************************************************************************
 
