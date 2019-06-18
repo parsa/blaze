@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/math/adaptors/UpperMatrix.h
-//  \brief Header file for the implementation of a upper matrix adaptor
+//  \brief Header file for the implementation of an upper matrix adaptor
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -345,7 +345,7 @@ inline void invert( UpperMatrix<MT,SO,true>& m )
 // \param P The resulting permutation matrix.
 // \return void
 //
-// This function performs the dense matrix (P)LU decomposition of a upper n-by-n matrix. The
+// This function performs the dense matrix (P)LU decomposition of an upper n-by-n matrix. The
 // resulting decomposition is written to the three distinct matrices \c L, \c U, and \c P, which
 // are resized to the correct dimensions (if possible and necessary).
 //
@@ -395,8 +395,8 @@ inline void lu( const UpperMatrix<MT1,SO1,true>& A, DenseMatrix<MT2,SO1>& L,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by setting a single element of a upper matrix.
-// \ingroup matrix
+/*!\brief Predict invariant violations by setting a single element of an upper matrix.
+// \ingroup upper_matrix
 //
 // \param mat The target upper matrix.
 // \param i The row index of the element to be set.
@@ -428,8 +428,49 @@ inline bool trySet( const UpperMatrix<MT,SO,DF>& mat, size_t i, size_t j, const 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by adding to a single element of a upper matrix.
-// \ingroup matrix
+/*!\brief Predict invariant violations by setting a range of elements of an upper matrix.
+// \ingroup upper_matrix
+//
+// \param mat The target upper matrix.
+// \param row The index of the first row of the range to be multiplied.
+// \param column The index of the first column of the range to be multiplied.
+// \param m The number of rows of the range to be multiplied.
+// \param n The number of columns of the range to be multiplied.
+// \param value The value to be set to the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   trySet( const UpperMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
+
+   MAYBE_UNUSED( mat );
+
+   return ( m == 0UL ) ||
+          ( n == 0UL ) ||
+          ( column + 1UL >= row + m ) ||
+          isDefault( value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by adding to a single element of an upper matrix.
+// \ingroup upper_matrix
 //
 // \param mat The target upper matrix.
 // \param i The row index of the element to be modified.
@@ -456,8 +497,39 @@ inline bool tryAdd( const UpperMatrix<MT,SO,DF>& mat, size_t i, size_t j, const 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by subtracting from a single element of a upper matrix.
-// \ingroup matrix
+/*!\brief Predict invariant violations by adding to a range of elements of an upper matrix.
+// \ingroup upper_matrix
+//
+// \param mat The target upper matrix.
+// \param row The index of the first row of the range to be multiplied.
+// \param column The index of the first column of the range to be multiplied.
+// \param m The number of rows of the range to be multiplied.
+// \param n The number of columns of the range to be multiplied.
+// \param value The value to be added to the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryAdd( const UpperMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
+{
+   return trySet( mat, row, column, m, n, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by subtracting from a single element of an upper matrix.
+// \ingroup upper_matrix
 //
 // \param mat The target upper matrix.
 // \param i The row index of the element to be modified.
@@ -484,7 +556,38 @@ inline bool trySub( const UpperMatrix<MT,SO,DF>& mat, size_t i, size_t j, const 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the assignment of a dense vector to a upper matrix.
+/*!\brief Predict invariant violations by subtracting from a range of elements of an upper matrix.
+// \ingroup upper_matrix
+//
+// \param mat The target upper matrix.
+// \param row The index of the first row of the range to be multiplied.
+// \param column The index of the first column of the range to be multiplied.
+// \param m The number of rows of the range to be multiplied.
+// \param n The number of columns of the range to be multiplied.
+// \param value The value to be subtracted from the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   trySub( const UpperMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
+{
+   return trySet( mat, row, column, m, n, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a dense vector to an upper matrix.
 // \ingroup upper_matrix
 //
 // \param lhs The target left-hand side upper matrix.
@@ -528,7 +631,7 @@ inline bool tryAssign( const UpperMatrix<MT,SO,DF>& lhs,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the assignment of a dense vector to a upper matrix.
+/*!\brief Predict invariant violations by the assignment of a dense vector to an upper matrix.
 // \ingroup upper_matrix
 //
 // \param lhs The target left-hand side upper matrix.
@@ -576,7 +679,7 @@ inline bool tryAssign( const UpperMatrix<MT,SO,DF>& lhs,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by the assignment of a dense vector to the band of
-//        a upper matrix.
+//        an upper matrix.
 // \ingroup upper_matrix
 //
 // \param lhs The target left-hand side upper matrix.
@@ -623,7 +726,7 @@ inline bool tryAssign( const UpperMatrix<MT,SO,DF>& lhs, const DenseVector<VT,TF
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the assignment of a sparse vector to a upper matrix.
+/*!\brief Predict invariant violations by the assignment of a sparse vector to an upper matrix.
 // \ingroup upper_matrix
 //
 // \param lhs The target left-hand side upper matrix.
@@ -668,7 +771,7 @@ inline bool tryAssign( const UpperMatrix<MT,SO,DF>& lhs,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the assignment of a sparse vector to a upper matrix.
+/*!\brief Predict invariant violations by the assignment of a sparse vector to an upper matrix.
 // \ingroup upper_matrix
 //
 // \param lhs The target left-hand side upper matrix.
@@ -716,7 +819,7 @@ inline bool tryAssign( const UpperMatrix<MT,SO,DF>& lhs,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by the assignment of a sparse vector to the band of
-//        a upper matrix.
+//        an upper matrix.
 // \ingroup upper_matrix
 //
 // \param lhs The target left-hand side upper matrix.
@@ -763,7 +866,7 @@ inline bool tryAssign( const UpperMatrix<MT,SO,DF>& lhs, const SparseVector<VT,T
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the assignment of a dense matrix to a upper matrix.
+/*!\brief Predict invariant violations by the assignment of a dense matrix to an upper matrix.
 // \ingroup upper_matrix
 //
 // \param lhs The target left-hand side upper matrix.
@@ -819,7 +922,7 @@ inline bool tryAssign( const UpperMatrix<MT1,SO,DF>& lhs,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the assignment of a dense matrix to a upper matrix.
+/*!\brief Predict invariant violations by the assignment of a dense matrix to an upper matrix.
 // \ingroup upper_matrix
 //
 // \param lhs The target left-hand side upper matrix.
@@ -876,7 +979,7 @@ inline bool tryAssign( const UpperMatrix<MT1,SO,DF>& lhs,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the assignment of a sparse matrix to a upper matrix.
+/*!\brief Predict invariant violations by the assignment of a sparse matrix to an upper matrix.
 // \ingroup upper_matrix
 //
 // \param lhs The target left-hand side upper matrix.
@@ -933,7 +1036,7 @@ inline bool tryAssign( const UpperMatrix<MT1,SO,DF>& lhs,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the assignment of a sparse matrix to a upper matrix.
+/*!\brief Predict invariant violations by the assignment of a sparse matrix to an upper matrix.
 // \ingroup upper_matrix
 //
 // \param lhs The target left-hand side upper matrix.
@@ -993,7 +1096,7 @@ inline bool tryAssign( const UpperMatrix<MT1,SO,DF>& lhs,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the addition assignment of a vector to a upper matrix.
+/*!\brief Predict invariant violations by the addition assignment of a vector to an upper matrix.
 // \ingroup upper_matrix
 //
 // \param lhs The target left-hand side upper matrix.
@@ -1024,7 +1127,7 @@ inline bool tryAddAssign( const UpperMatrix<MT,SO,DF>& lhs,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by the addition assignment of a vector to the band of
-//        a upper matrix.
+//        an upper matrix.
 // \ingroup upper_matrix
 //
 // \param lhs The target left-hand side upper matrix.
@@ -1055,7 +1158,7 @@ inline bool tryAddAssign( const UpperMatrix<MT,SO,DF>& lhs, const Vector<VT,TF>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the addition assignment of a matrix to a upper matrix.
+/*!\brief Predict invariant violations by the addition assignment of a matrix to an upper matrix.
 // \ingroup upper_matrix
 //
 // \param lhs The target left-hand side upper matrix.
@@ -1085,7 +1188,7 @@ inline bool tryAddAssign( const UpperMatrix<MT1,SO1,DF>& lhs,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the subtraction assignment of a vector to a upper matrix.
+/*!\brief Predict invariant violations by the subtraction assignment of a vector to an upper matrix.
 // \ingroup upper_matrix
 //
 // \param lhs The target left-hand side upper matrix.
@@ -1116,7 +1219,7 @@ inline bool trySubAssign( const UpperMatrix<MT,SO,DF>& lhs,
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by the subtraction assignment of a vector to the band of
-//        a upper matrix.
+//        an upper matrix.
 // \ingroup upper_matrix
 //
 // \param lhs The target left-hand side upper matrix.
@@ -1147,7 +1250,7 @@ inline bool trySubAssign( const UpperMatrix<MT,SO,DF>& lhs, const Vector<VT,TF>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the subtraction assignment of a matrix to a upper matrix.
+/*!\brief Predict invariant violations by the subtraction assignment of a matrix to an upper matrix.
 // \ingroup upper_matrix
 //
 // \param lhs The target left-hand side upper matrix.
