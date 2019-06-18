@@ -332,7 +332,7 @@ inline void invert( HermitianMatrix<MT,SO,true>& m )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by setting a single element of an Hermitian matrix.
-// \ingroup matrix
+// \ingroup hermitian_matrix
 //
 // \param mat The target Hermitian matrix.
 // \param i The row index of the element to be set.
@@ -364,8 +364,50 @@ inline bool trySet( const HermitianMatrix<MT,SO,DF>& mat, size_t i, size_t j, co
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by setting a range of elements of an Hermitian matrix.
+// \ingroup hermitian_matrix
+//
+// \param mat The target Hermitian matrix.
+// \param row The index of the first row of the range to be multiplied.
+// \param column The index of the first column of the range to be multiplied.
+// \param m The number of rows of the range to be multiplied.
+// \param n The number of columns of the range to be multiplied.
+// \param value The value to be set to the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   trySet( const HermitianMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
+
+   MAYBE_UNUSED( mat );
+
+   return ( m == 0UL ) ||
+          ( n == 0UL ) ||
+          ( row >= column + n ) ||
+          ( column >= row + m ) ||
+          isReal( value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by adding to a single element of an Hermitian matrix.
-// \ingroup matrix
+// \ingroup hermitian_matrix
 //
 // \param mat The target Hermitian matrix.
 // \param i The row index of the element to be modified.
@@ -392,8 +434,39 @@ inline bool tryAdd( const HermitianMatrix<MT,SO,DF>& mat, size_t i, size_t j, co
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by adding to a range of elements of an Hermitian matrix.
+// \ingroup hermitian_matrix
+//
+// \param mat The target Hermitian matrix.
+// \param row The index of the first row of the range to be multiplied.
+// \param column The index of the first column of the range to be multiplied.
+// \param m The number of rows of the range to be multiplied.
+// \param n The number of columns of the range to be multiplied.
+// \param value The value to be added to the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryAdd( const HermitianMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
+{
+   return trySet( mat, row, column, m, n, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by subtracting from a single element of an Hermitian matrix.
-// \ingroup matrix
+// \ingroup hermitian_matrix
 //
 // \param mat The target Hermitian matrix.
 // \param i The row index of the element to be modified.
@@ -420,8 +493,39 @@ inline bool trySub( const HermitianMatrix<MT,SO,DF>& mat, size_t i, size_t j, co
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by subtracting from a range of elements of an Hermitian matrix.
+// \ingroup hermitian_matrix
+//
+// \param mat The target Hermitian matrix.
+// \param row The index of the first row of the range to be multiplied.
+// \param column The index of the first column of the range to be multiplied.
+// \param m The number of rows of the range to be multiplied.
+// \param n The number of columns of the range to be multiplied.
+// \param value The value to be subtracted from the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   trySub( const HermitianMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
+{
+   return trySet( mat, row, column, m, n, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by scaling a single element of an Hermitian matrix.
-// \ingroup matrix
+// \ingroup hermitian_matrix
 //
 // \param mat The target Hermitian matrix.
 // \param i The row index of the element to be modified.
@@ -449,7 +553,7 @@ inline bool tryMult( const HermitianMatrix<MT,SO,DF>& mat, size_t i, size_t j, c
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by scaling a range of elements of an Hermitian matrix.
-// \ingroup matrix
+// \ingroup hermitian_matrix
 //
 // \param mat The target Hermitian matrix.
 // \param row The index of the first row of the range to be multiplied.
@@ -480,7 +584,7 @@ BLAZE_ALWAYS_INLINE bool
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by scaling a single element of an Hermitian matrix.
-// \ingroup matrix
+// \ingroup hermitian_matrix
 //
 // \param mat The target Hermitian matrix.
 // \param i The row index of the element to be modified.
@@ -508,7 +612,7 @@ inline bool tryDiv( const HermitianMatrix<MT,SO,DF>& mat, size_t i, size_t j, co
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by scaling a range of elements of an Hermitian matrix.
-// \ingroup matrix
+// \ingroup hermitian_matrix
 //
 // \param mat The target Hermitian matrix.
 // \param row The index of the first row of the range to be multiplied.
