@@ -1097,6 +1097,40 @@ inline bool trySet( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, const ET&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by setting a range of elements of a row.
+// \ingroup row
+//
+// \param row The target row.
+// \param index The index of the first element of the range to be modified.
+// \param size The number of elements of the range to be modified.
+// \param value The value to be set to the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CRAs  // Compile time row arguments
+        , typename ET >   // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   trySet( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (~row).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (~row).size(), "Invalid range size" );
+
+   return trySet( row.operand(), row.row(), index, 1UL, size, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by adding to a single element of a row.
 // \ingroup row
 //
@@ -1128,6 +1162,40 @@ inline bool tryAdd( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, const ET&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by adding to a range of elements of a row.
+// \ingroup row
+//
+// \param row The target row.
+// \param index The index of the first element of the range to be modified.
+// \param size The number of elements of the range to be modified.
+// \param value The value to be added to the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CRAs  // Compile time row arguments
+        , typename ET >   // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryAdd( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (~row).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (~row).size(), "Invalid range size" );
+
+   return tryAdd( row.operand(), row.row(), index, 1UL, size, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by subtracting from a single element of a row.
 // \ingroup row
 //
@@ -1152,6 +1220,40 @@ inline bool trySub( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, const ET&
    BLAZE_INTERNAL_ASSERT( index < row.size(), "Invalid vector access index" );
 
    return trySub( row.operand(), row.row(), index, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by subtracting from a range of elements of a row.
+// \ingroup row
+//
+// \param row The target row.
+// \param index The index of the first element of the range to be modified.
+// \param size The number of elements of the range to be modified.
+// \param value The value to be subtracted from the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT     // Type of the matrix
+        , bool SO         // Storage order
+        , bool DF         // Density flag
+        , bool SF         // Symmetry flag
+        , size_t... CRAs  // Compile time row arguments
+        , typename ET >   // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   trySub( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (~row).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (~row).size(), "Invalid range size" );
+
+   return trySub( row.operand(), row.row(), index, 1UL, size, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1209,7 +1311,7 @@ template< typename MT     // Type of the matrix
         , bool DF         // Density flag
         , bool SF         // Symmetry flag
         , size_t... CRAs  // Compile time row arguments
-        , typename ET >  // Type of the element
+        , typename ET >   // Type of the element
 BLAZE_ALWAYS_INLINE bool
    tryMult( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, const ET& value )
 {
@@ -1274,7 +1376,7 @@ template< typename MT     // Type of the matrix
         , bool DF         // Density flag
         , bool SF         // Symmetry flag
         , size_t... CRAs  // Compile time row arguments
-        , typename ET >  // Type of the element
+        , typename ET >   // Type of the element
 BLAZE_ALWAYS_INLINE bool
    tryDiv( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, const ET& value )
 {
