@@ -448,6 +448,37 @@ inline bool tryMult( const HermitianMatrix<MT,SO,DF>& mat, size_t i, size_t j, c
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by scaling a range of elements of an Hermitian matrix.
+// \ingroup matrix
+//
+// \param mat The target Hermitian matrix.
+// \param row The index of the first row of the range to be multiplied.
+// \param column The index of the first column of the range to be multiplied.
+// \param m The number of rows of the range to be multiplied.
+// \param n The number of columns of the range to be multiplied.
+// \param value The factor for the elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryMult( const HermitianMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
+{
+   return trySet( mat, row, column, m, n, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by scaling a single element of an Hermitian matrix.
 // \ingroup matrix
 //
@@ -469,6 +500,37 @@ template< typename MT    // Type of the adapted matrix
 inline bool tryDiv( const HermitianMatrix<MT,SO,DF>& mat, size_t i, size_t j, const ET& value )
 {
    return trySet( mat, i, j, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by scaling a range of elements of an Hermitian matrix.
+// \ingroup matrix
+//
+// \param mat The target Hermitian matrix.
+// \param row The index of the first row of the range to be multiplied.
+// \param column The index of the first column of the range to be multiplied.
+// \param m The number of rows of the range to be multiplied.
+// \param n The number of columns of the range to be multiplied.
+// \param value The divisor for the elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryDiv( const HermitianMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
+{
+   return trySet( mat, row, column, m, n, value );
 }
 /*! \endcond */
 //*************************************************************************************************
