@@ -126,6 +126,11 @@
 #include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsSame.h>
 
+#ifdef BLAZE_CUDA_MODE
+# include <blaze_cuda/math/cublas/gemm.h>
+# include <blaze_cuda/math/cublas/trmm.h>
+#endif
+
 
 namespace blaze {
 
