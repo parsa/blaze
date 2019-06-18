@@ -121,6 +121,7 @@
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/HasSIMDPow.h>
 #include <blaze/math/typetraits/HasSIMDRound.h>
+#include <blaze/math/typetraits/HasSIMDShiftLI.h>
 #include <blaze/math/typetraits/HasSIMDSign.h>
 #include <blaze/math/typetraits/HasSIMDSin.h>
 #include <blaze/math/typetraits/HasSIMDSinh.h>
@@ -226,6 +227,9 @@ class OperationTest : private blaze::NonCopyable
    void testBitor         ( blaze::FalseType );
    void testBitxor        ( blaze::TrueType  );
    void testBitxor        ( blaze::FalseType );
+
+   void testShiftLI       ( blaze::TrueType  );
+   void testShiftLI       ( blaze::FalseType );
 
    void testMin           ( blaze::TrueType  );
    void testMin           ( blaze::FalseType );
@@ -333,6 +337,8 @@ class OperationTest : private blaze::NonCopyable
    //@{
    void initialize();
    void initialize( T min, T max );
+   void initialize( T* array );
+   void initialize( T* array, T min, T max );
    //@}
    //**********************************************************************************************
 
@@ -402,6 +408,8 @@ OperationTest<T>::OperationTest()
    testBitand        ( blaze::HasSIMDBitand<T,T>() );
    testBitor         ( blaze::HasSIMDBitor <T,T>() );
    testBitxor        ( blaze::HasSIMDBitxor<T,T>() );
+
+   testShiftLI       ( blaze::HasSIMDShiftLI< T >() );
 
    testMin           ( blaze::HasSIMDMin<T,T>() );
    testMax           ( blaze::HasSIMDMax<T,T>() );
@@ -1250,12 +1258,12 @@ void OperationTest<T>::testDivision( blaze::FalseType )
 
 
 //*************************************************************************************************
-/*!\brief Testing the bitwise and ('&') operation.
+/*!\brief Testing the bitwise AND ('&') operation.
 //
 // \return void
-// \exception std::runtime_error Division error detected.
+// \exception std::runtime_error Error in AND computation detected.
 //
-// This function tests the bitwise and ('&') operation by comparing the results of a vectorized
+// This function tests the bitwise AND ('&') operation by comparing the results of a vectorized
 // and a scalar operation. In case any error is detected, a \a std::runtime_error exception is
 // thrown.
 */
@@ -1265,7 +1273,7 @@ void OperationTest<T>::testBitand( blaze::TrueType )
    using blaze::loada;
    using blaze::storea;
 
-   test_ = "Bitwise and ('&') operation";
+   test_ = "Bitwise AND ('&') operation";
 
    initialize();
 
@@ -1283,11 +1291,11 @@ void OperationTest<T>::testBitand( blaze::TrueType )
 
 
 //*************************************************************************************************
-/*!\brief Skipping the test of the bitwise and ('&') operation.
+/*!\brief Skipping the test of the bitwise AND ('&') operation.
 //
 // \return void
 //
-// This function is called in case the bitwise and ('&') operation is not available for the
+// This function is called in case the bitwise AND ('&') operation is not available for the
 // given data type \a T.
 */
 template< typename T >  // Data type of the SIMD test
@@ -1297,12 +1305,12 @@ void OperationTest<T>::testBitand( blaze::FalseType )
 
 
 //*************************************************************************************************
-/*!\brief Testing the bitwise or ('|') operation.
+/*!\brief Testing the bitwise OR ('|') operation.
 //
 // \return void
-// \exception std::runtime_error Division error detected.
+// \exception std::runtime_error Error in OR computation detected.
 //
-// This function tests the bitwise or ('|') operation by comparing the results of a vectorized
+// This function tests the bitwise OR ('|') operation by comparing the results of a vectorized
 // and a scalar operation. In case any error is detected, a \a std::runtime_error exception is
 // thrown.
 */
@@ -1312,7 +1320,7 @@ void OperationTest<T>::testBitor( blaze::TrueType )
    using blaze::loada;
    using blaze::storea;
 
-   test_ = "Bitwise or ('|') operation";
+   test_ = "Bitwise OR ('|') operation";
 
    initialize();
 
@@ -1330,11 +1338,11 @@ void OperationTest<T>::testBitor( blaze::TrueType )
 
 
 //*************************************************************************************************
-/*!\brief Skipping the test of the bitwise or ('|') operation.
+/*!\brief Skipping the test of the bitwise OR ('|') operation.
 //
 // \return void
 //
-// This function is called in case the bitwise or ('|') operation is not available for the
+// This function is called in case the bitwise OR ('|') operation is not available for the
 // given data type \a T.
 */
 template< typename T >  // Data type of the SIMD test
@@ -1344,12 +1352,12 @@ void OperationTest<T>::testBitor( blaze::FalseType )
 
 
 //*************************************************************************************************
-/*!\brief Testing the bitwise xor ('^') operation.
+/*!\brief Testing the bitwise XOR ('^') operation.
 //
 // \return void
-// \exception std::runtime_error Division error detected.
+// \exception std::runtime_error Error in XOR computation detected.
 //
-// This function tests the bitwise xor ('^') operation by comparing the results of a vectorized
+// This function tests the bitwise XOR ('^') operation by comparing the results of a vectorized
 // and a scalar operation. In case any error is detected, a \a std::runtime_error exception is
 // thrown.
 */
@@ -1359,7 +1367,7 @@ void OperationTest<T>::testBitxor( blaze::TrueType )
    using blaze::loada;
    using blaze::storea;
 
-   test_ = "Bitwise xor ('^') operation";
+   test_ = "Bitwise XOR ('^') operation";
 
    initialize();
 
@@ -1377,15 +1385,64 @@ void OperationTest<T>::testBitxor( blaze::TrueType )
 
 
 //*************************************************************************************************
-/*!\brief Skipping the test of the bitwise xor ('^') operation.
+/*!\brief Skipping the test of the bitwise XOR ('^') operation.
 //
 // \return void
 //
-// This function is called in case the bitwise xor ('^') operation is not available for the
+// This function is called in case the bitwise XOR ('^') operation is not available for the
 // given data type \a T.
 */
 template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::testBitxor( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the uniform left-shift operation.
+//
+// \return void
+// \exception std::runtime_error Error in left-shift operation detected.
+//
+// This function tests the uniform left-shift operation by comparing the results of a vectorized
+// and a scalar operation. In case any error is detected, a \a std::runtime_error exception is
+// thrown.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testShiftLI( blaze::TrueType )
+{
+   using blaze::loada;
+   using blaze::storea;
+
+   test_ = "Uniform left-shift operation";
+
+   initialize();
+
+   const int shift = blaze::rand<int>( 0, sizeof(T)*8UL-1UL );
+
+   for( size_t i=0UL; i<N; ++i ) {
+      c_[i] = a_[i] << shift;
+   }
+
+   for( size_t i=0UL; i<N; i+=SIMDSIZE ) {
+      storea( d_+i, loada( a_+i ) << shift );
+   }
+
+   compare( c_, d_ );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the test of the uniform left-shift operation.
+//
+// \return void
+//
+// This function is called in case the uniform left-shift operation is not available for the
+// given data type \a T.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::testShiftLI( blaze::FalseType )
 {}
 //*************************************************************************************************
 
@@ -3401,21 +3458,17 @@ void OperationTest<T>::compare( const T* expected, const T* actual ) const
 //
 // \return void
 //
-// This function is called before each single test case to initialize all arrays with random
+// This function can be called before each single test case to initialize all arrays with random
 // values.
 */
 template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::initialize()
 {
-   using blaze::randomize;
-
-   for( size_t i=0UL; i<NN; ++i ) {
-      randomize( a_[i] );
-      randomize( b_[i] );
-      randomize( c_[i] );
-      randomize( d_[i] );
-      randomize( e_[i] );
-   }
+   initialize( a_ );
+   initialize( b_ );
+   initialize( c_ );
+   initialize( d_ );
+   initialize( e_ );
 }
 //*************************************************************************************************
 
@@ -3427,20 +3480,60 @@ void OperationTest<T>::initialize()
 // \param max The largest possible value for a value.
 // \return void
 //
-// This function is called before each single test case to initialize all arrays with random
+// This function can be called before each single test case to initialize all arrays with random
 // values in the range \f$ [min,max] \f$.
 */
 template< typename T >  // Data type of the SIMD test
 void OperationTest<T>::initialize( T min, T max )
 {
+   initialize( a_, min, max );
+   initialize( b_, min, max );
+   initialize( c_, min, max );
+   initialize( d_, min, max );
+   initialize( e_, min, max );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initialization of a specific member array.
+//
+// \param array The array to be initialized.
+// \return void
+//
+// This function can be called before each single test case to initialize the given array with
+// random values.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::initialize( T* array )
+{
    using blaze::randomize;
 
    for( size_t i=0UL; i<NN; ++i ) {
-      randomize( a_[i], min, max );
-      randomize( b_[i], min, max );
-      randomize( c_[i], min, max );
-      randomize( d_[i], min, max );
-      randomize( e_[i], min, max );
+      randomize( array[i] );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initialization of a specific member array.
+//
+// \param array The array to be initialized.
+// \param min The smallest possible value for a value.
+// \param max The largest possible value for a value.
+// \return void
+//
+// This function can be called before each single test case to initialize the given array with
+// random values in the range \f$ [min,max] \f$.
+*/
+template< typename T >  // Data type of the SIMD test
+void OperationTest<T>::initialize( T* array, T min, T max )
+{
+   using blaze::randomize;
+
+   for( size_t i=0UL; i<NN; ++i ) {
+      randomize( array[i], min, max );
    }
 }
 //*************************************************************************************************
