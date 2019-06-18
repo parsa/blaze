@@ -58,6 +58,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/HasLoad.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsPaddingEnabled.h>
@@ -109,11 +110,11 @@ class DVecMapExpr
    //! Compilation switch for the serial evaluation strategy of the map expression.
    /*! The \a useAssign compile time constant expression represents a compilation switch for
        the serial evaluation strategy of the map expression. In case the given dense vector
-       expression of type \a VT requires an intermediate evaluation, \a useAssign will be
-       set to 1 and the map expression will be evaluated via the \a assign function family.
-       Otherwise \a useAssign will be set to 0 and the expression will be evaluated via the
-       subscript operator. */
-   static constexpr bool useAssign = RequiresEvaluation_v<VT>;
+       expression of type \a VT is a computation expression and requires an intermediate
+       evaluation, \a useAssign will be set to 1 and the map expression will be evaluated
+       via the \a assign function family. Otherwise \a useAssign will be set to 0 and the
+       expression will be evaluated via the subscript operator. */
+   static constexpr bool useAssign = ( IsComputation_v<VT> && RequiresEvaluation_v<VT> );
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper variable template for the explicit application of the SFINAE principle.
