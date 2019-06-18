@@ -74,7 +74,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,1UL>
                                     , If_t< IsSigned_v<T>, SIMDint8, SIMDuint8 > >
    set( T value ) noexcept
 {
-#if BLAZE_AVX512BW_MODE
+#if BLAZE_AVX512F_MODE
    return _mm512_set1_epi8( value );
 #elif BLAZE_AVX2_MODE
    return _mm256_set1_epi8( value );
@@ -99,10 +99,8 @@ BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,1UL>
                                     , If_t< IsSigned_v<T>, SIMDcint8, SIMDcuint8 > >
    set( complex<T> value ) noexcept
 {
-#if BLAZE_AVX512BW_MODE
-   __m512i dst( _mm512_maskz_set1_epi8( 0XAAAAAAAA, value.imag() ) );
-   dst = _mm512_maskz_set1_epi8( 0x55555555, value.real() );
-   return dst;
+#if BLAZE_AVX512F_MODE
+   return _m512_set1_epi16( reinterpret_cast<const int16_t>( value ) );
 #elif BLAZE_AVX2_MODE
    return _mm256_set_epi8( value.imag(), value.real(), value.imag(), value.real(),
                            value.imag(), value.real(), value.imag(), value.real(),
@@ -145,7 +143,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,2UL>
                                     , If_t< IsSigned_v<T>, SIMDint16, SIMDuint16 > >
    set( T value ) noexcept
 {
-#if BLAZE_AVX512BW_MODE
+#if BLAZE_AVX512F_MODE
    return _mm512_set1_epi16( value );
 #elif BLAZE_AVX2_MODE
    return _mm256_set1_epi16( value );
@@ -170,10 +168,8 @@ BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,2UL>
                                     , If_t< IsSigned_v<T>, SIMDcint16, SIMDcuint16 > >
    set( complex<T> value ) noexcept
 {
-#if BLAZE_AVX512BW_MODE
-   __m512i dst( _mm512_maskz_set1_epi16( 0XAAAA, value.imag() ) );
-   dst = _mm512_maskz_set1_epi16( 0x5555, value.real() );
-   return dst;
+#if BLAZE_AVX512F_MODE
+   return _mm512_set1_epi32( reinterpret_cast<const int32_t&>( value ) );
 #elif BLAZE_AVX2_MODE
    return _mm256_set_epi16( value.imag(), value.real(), value.imag(), value.real(),
                             value.imag(), value.real(), value.imag(), value.real(),
