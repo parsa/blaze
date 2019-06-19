@@ -122,6 +122,14 @@ auto operator+=( DenseMatrix<MT,SO>&& mat, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, MT& >;
 
 template< typename MT, bool SO, typename ST >
+auto operator-=( DenseMatrix<MT,SO>& mat, ST scalar )
+   -> EnableIf_t< IsNumeric_v<ST>, MT& >;
+
+template< typename MT, bool SO, typename ST >
+auto operator-=( DenseMatrix<MT,SO>&& mat, ST scalar )
+   -> EnableIf_t< IsNumeric_v<ST>, MT& >;
+
+template< typename MT, bool SO, typename ST >
 auto operator*=( DenseMatrix<MT,SO>& mat, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, MT& >;
 
@@ -337,6 +345,68 @@ inline auto operator+=( DenseMatrix<MT,SO>&& mat, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, MT& >
 {
    return operator+=( ~mat, scalar );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Subtraction assignment operator for the subtraction of a dense matrix and a scalar value
+//        (\f$ A-=s \f$).
+// \ingroup dense_matrix
+//
+// \param mat The left-hand side dense matrix for the subtraction.
+// \param scalar The right-hand side scalar value for the subtraction.
+// \return Reference to the left-hand side dense matrix.
+// \exception std::invalid_argument Invalid subtraction from restricted matrix.
+//
+// In case the matrix \a MT is restricted and the assignment would violate an invariant of the
+// matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT    // Type of the left-hand side dense matrix
+        , bool SO        // Storage order
+        , typename ST >  // Data type of the right-hand side scalar
+inline auto operator-=( DenseMatrix<MT,SO>& mat, ST scalar )
+   -> EnableIf_t< IsNumeric_v<ST>, MT& >
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
+   if( IsRestricted_v<MT> ) {
+      if( !trySub( ~mat, 0UL, 0UL, (~mat).rows(), (~mat).columns(), scalar ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid subtraction from restricted matrix" );
+      }
+   }
+
+   BLAZE_DECLTYPE_AUTO( left, derestrict( ~mat ) );
+
+   smpAssign( left, left - scalar );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~mat ), "Invariant violation detected" );
+
+   return ~mat;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Subtraction assignment operator for the subtraction of a temporary dense matrix and a
+//        scalar value (\f$ A-=s \f$).
+// \ingroup dense_matrix
+//
+// \param mat The left-hand side temporary dense matrix for the subtraction.
+// \param scalar The right-hand side scalar value for the subtraction.
+// \return Reference to the left-hand side dense matrix.
+// \exception std::invalid_argument Invalid scaling of restricted matrix.
+//
+// In case the matrix \a MT is restricted and the assignment would violate an invariant of the
+// matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT    // Type of the left-hand side dense matrix
+        , bool SO        // Storage order
+        , typename ST >  // Data type of the right-hand side scalar
+inline auto operator-=( DenseMatrix<MT,SO>&& mat, ST scalar )
+   -> EnableIf_t< IsNumeric_v<ST>, MT& >
+{
+   return operator-=( ~mat, scalar );
 }
 //*************************************************************************************************
 
