@@ -57,6 +57,7 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/HasLoad.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -2495,6 +2496,42 @@ inline decltype(auto) operator+( const DenseVector<VT,TF>& vec, ST scalar )
 
    using ScalarType = AddTrait_t< UnderlyingBuiltin_t<VT>, ST >;
    return map( ~vec, blaze::bind2nd( blaze::Add{}, ScalarType( scalar ) ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Subtraction operator for the subtraction of a dense vector and a scalar value
+//        (\f$ \vec{a}=\vec{b}-s \f$).
+// \ingroup dense_vector
+//
+// \param vec The left-hand side dense vector for the subtraction.
+// \param scalar The right-hand side scalar value for the subtraction.
+// \return The resulting vector.
+//
+// This operator represents the subtraction of a scalar value to all elements of a dense vector:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = a - 1.25;
+   \endcode
+
+// The operator returns an expression representing a dense vector of the higher-order element type
+// of the involved data types \a VT::ElementType and \a ST. Both data types \a VT::ElementType and
+// \a ST have to be supported by the SubTrait class template. Note that this operator only works
+// for scalar values of built-in data type.
+*/
+template< typename VT  // Type of the left-hand side dense vector
+        , typename ST  // Type of the right-hand side scalar
+        , bool TF      // Transpose flag
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+inline decltype(auto) operator-( const DenseVector<VT,TF>& vec, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = SubTrait_t< UnderlyingBuiltin_t<VT>, ST >;
+   return map( ~vec, blaze::bind2nd( blaze::Sub{}, ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
 
