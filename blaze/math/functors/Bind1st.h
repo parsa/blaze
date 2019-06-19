@@ -143,7 +143,7 @@ struct Bind1st
 // \ingroup functors
 //
 // \param op The binary operation to be wrapped.
-// \param x The argument to be bound to the second parameter of the binary operation.
+// \param a1 The argument to be bound to the second parameter of the binary operation.
 // \return The operation with bound 1st argument.
 //
 // The \a bind1st() function binds the given argument \a x to the 1st parameter of the given

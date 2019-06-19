@@ -143,7 +143,7 @@ struct Bind2nd
 // \ingroup functors
 //
 // \param op The binary operation to be wrapped.
-// \param x The argument to be bound to the second parameter of the binary operation.
+// \param a2 The argument to be bound to the second parameter of the binary operation.
 // \return The operation with bound 2nd argument.
 //
 // The \a bind2nd() function binds the given argument \a x to the 2nd parameter of the given
