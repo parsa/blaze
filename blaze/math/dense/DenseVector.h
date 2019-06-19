@@ -89,6 +89,14 @@ auto operator!=( T1 scalar, const DenseVector<T2,TF>& vec )
    -> EnableIf_t< IsNumeric_v<T1>, bool >;
 
 template< typename VT, bool TF, typename ST >
+auto operator+=( DenseVector<VT,TF>& vec, ST scalar )
+   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+
+template< typename VT, bool TF, typename ST >
+auto operator+=( DenseVector<VT,TF>&& vec, ST scalar )
+   -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+
+template< typename VT, bool TF, typename ST >
 auto operator*=( DenseVector<VT,TF>& vec, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, VT& >;
 
@@ -204,6 +212,66 @@ inline auto operator!=( T1 scalar, const DenseVector<T2,TF>& vec )
    -> EnableIf_t< IsNumeric_v<T1>, bool >
 {
    return !( vec == scalar );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Addition assignment operator for the addition of a dense vector and a scalar value
+//        (\f$ \vec{a}+=s \f$).
+// \ingroup dense_vector
+//
+// \param vec The left-hand side dense vector for the addition.
+// \param scalar The right-hand side scalar value for the addition.
+// \return Reference to the left-hand side dense vector.
+// \exception std::invalid_argument Invalid addition to restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT    // Type of the left-hand side dense vector
+        , bool TF        // Transpose flag
+        , typename ST >  // Data type of the right-hand side scalar
+inline auto operator+=( DenseVector<VT,TF>& vec, ST scalar )
+   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+{
+   if( IsRestricted_v<VT> ) {
+      if( !tryAdd( ~vec, 0UL, (~vec).size(), scalar ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid addition to restricted vector" );
+      }
+   }
+
+   BLAZE_DECLTYPE_AUTO( left, derestrict( ~vec ) );
+
+   smpAssign( left, left + scalar );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~vec ), "Invariant violation detected" );
+
+   return ~vec;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Addition assignment operator for the addition of a temporary dense vector and a scalar
+//        (\f$ v+=s \f$).
+// \ingroup dense_vector
+//
+// \param vec The left-hand side temporary dense vector for the addition.
+// \param scalar The right-hand side scalar value for the addition.
+// \return Reference to the left-hand side dense vector.
+// \exception std::invalid_argument Invalid addition of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT    // Type of the left-hand side dense vector
+        , bool TF        // Transpose flag
+        , typename ST >  // Data type of the right-hand side scalar
+inline auto operator+=( DenseVector<VT,TF>&& vec, ST scalar )
+   -> EnableIf_t< IsNumeric_v<ST>, VT& >
+{
+   return operator+=( ~vec, scalar );
 }
 //*************************************************************************************************
 
