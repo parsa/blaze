@@ -93,6 +93,11 @@
 //    <li> \ref arithmetic_operations
 //       <ul>
 //          <li> \ref addition </li>
+//             <ul>
+//                <li> \ref vector_vector_addition </li>
+//                <li> \ref matrix_matrix_addition </li>
+//                <li> \ref scalar_addition </li>
+//             </ul>
 //          <li> \ref subtraction </li>
 //          <li> \ref scalar_multiplication </li>
 //          <li> \ref vector_vector_multiplication
@@ -11164,6 +11169,11 @@
 //
 // <ul>
 //    <li> \ref addition </li>
+//       <ul>
+//          <li> \ref vector_vector_addition </li>
+//          <li> \ref matrix_matrix_addition </li>
+//          <li> \ref scalar_addition </li>
+//       </ul>
 //    <li> \ref subtraction </li>
 //    <li> \ref scalar_multiplication </li>
 //    <li> \ref vector_vector_multiplication
@@ -11194,10 +11204,12 @@
 //**Addition***************************************************************************************
 /*!\page addition Addition
 //
-// The addition of vectors and matrices is as intuitive as the addition of scalar values. For both
-// the vector addition as well as the matrix addition the addition operator can be used. It even
-// enables the addition of dense and sparse vectors as well as the addition of dense and sparse
-// matrices:
+// \n \section vector_vector_addition Vector/Vector Addition
+// <hr>
+//
+// The addition of vectors is as intuitive as the addition of scalar values. For the addition of
+// any two vectors the addition operator (i.e. \c operator+()) can be used. It even enables the
+// addition of dense and sparse vectors:
 
    \code
    blaze::DynamicVector<int>      v1( 5UL ), v3;
@@ -11205,23 +11217,17 @@
 
    // ... Initializing the vectors
 
-   v3 = v1 + v2;  // Addition of a two column vectors of different data type
-   \endcode
-
-   \code
-   blaze::DynamicMatrix<float,rowMajor>        M1( 7UL, 3UL );
-   blaze::CompressedMatrix<size_t,columnMajor> M2( 7UL, 3UL ), M3;
-
-   // ... Initializing the matrices
-
-   M3 = M1 + M2;  // Addition of a row-major and a column-major matrix of different data type
+   v3 = v1 + v2;  // Addition of a dense and a sparse column vector of different data type
    \endcode
 
 // Note that it is necessary that both operands have exactly the same dimensions. Violating this
-// precondition results in an exception. Also note that in case of vectors it is only possible to
-// add vectors with the same transpose flag:
+// precondition results in an exception. Also note that it is only possible to add vectors with
+// the same transpose flag:
 
    \code
+   using blaze::columnVector;
+   using blaze::rowVector;
+
    blaze::DynamicVector<int,columnVector>   v1( 5UL );
    blaze::CompressedVector<float,rowVector> v2( 5UL );
 
@@ -11229,11 +11235,8 @@
    v1 + trans( v2 );  // OK: Addition of two column vectors
    \endcode
 
-// In case of matrices, however, it is possible to add row-major and column-major matrices. Note
-// however that in favor of performance the addition of two matrices with the same storage order
-// is favorable. The same argument holds for the element type: In case two vectors or matrices
-// with the same element type are added, the performance can be much higher due to vectorization
-// of the operation.
+// Also note that the addition of two vectors with the same element type is favorable due to
+// possible vectorization of the operation:
 
    \code
    blaze::DynamicVector<double> v1( 100UL ), v2( 100UL ), v3;
@@ -11243,12 +11246,68 @@
    v3 = v1 + v2;  // Vectorized addition of two double precision vectors
    \endcode
 
+// \n \section matrix_matrix_addition Matrix/Matrix Addition
+// <hr>
+//
+// For the addition of any two matrices the addition operator (i.e. \c operator+()) can be used.
+// It even enables the addition of dense and sparse matrices:
+
+   \code
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   blaze::CompressedMatrix<size_t,columnMajor> M1( 7UL, 3UL );
+   blaze::DynamicMatrix<float,rowMajor>        M2( 7UL, 3UL ), M3;
+
+   // ... Initializing the matrices
+
+   M3 = M1 + M2;  // Addition of a sparse column-major and a dense row-major matrix of different data type
+   \endcode
+
+// Note that it is necessary that both operands have exactly the same dimensions. Violating this
+// precondition results in an exception. It is possible to add row-major and column-major matrices.
+// Note however that in favor of performance the addition of two matrices with the same storage
+// order is favorable. The same argument holds for the element type: In case two matrices with
+// the same element type are added, the performance can be much higher due to vectorization of
+// the operation.
+
    \code
    blaze::DynamicMatrix<float> M1( 50UL, 70UL ), M2( 50UL, 70UL ), M3;
 
    // ... Initialization of the matrices
 
    M3 = M1 + M2;  // Vectorized addition of two row-major, single precision dense matrices
+   \endcode
+
+// \n \section scalar_addition Scalar Addition
+// <hr>
+//
+// For convenience it is also possible to add a scalar value to a dense vector or dense matrix,
+// which has the same effect as adding a uniform vector or matrix. In \b Blaze it is possible to
+// use all built-in/fundamental data types except bool as scalar values. Additionally, it is
+// possible to use std::complex values with the same built-in data types as element type.
+// Examples:
+
+   \code
+   blaze::DynamicVector<int> v1{ 3, 2, 5, -4, 1, 6 };
+
+   // Add 3 to all elements of v1; Results in
+   //
+   //    ( 6, 5, 8, -1, 4, 9 )
+   //
+   blaze::DynamicVector<int> v2( v1 + 3 );
+   \endcode
+
+   \code
+   blaze::DynamicMatrix<int> M1{ {  3, 2, 5 },
+                                 { -4, 1, 6 } };
+
+   // Add 3 to all elements of M1; Results in
+   //
+   //    (  6, 5, 8 )
+   //    ( -1, 4, 9 )
+   //
+   blaze::DynamicMatrix<int> M2( M1 + 3 );
    \endcode
 
 // \n Previous: \ref arithmetic_operations &nbsp; &nbsp; Next: \ref subtraction
