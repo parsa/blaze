@@ -5582,7 +5582,7 @@
    \endcode
 
 // Any matrix or matrix expression that has been declared as upper triangular via \c declupp()
-// will gain all the benefits of a upper triangular matrix, which range from reduced runtime
+// will gain all the benefits of an upper triangular matrix, which range from reduced runtime
 // checking to a considerable speed-up in computations:
 
    \code
@@ -5595,7 +5595,7 @@
 
    isUpper( declupp( A ) );  // Will always return true without runtime effort
 
-   U = declupp( A );  // Omit any runtime check for A being a upper matrix
+   U = declupp( A );  // Omit any runtime check for A being an upper matrix
 
    C = declupp( A * B );  // Declare the result of the matrix multiplication as upper triangular,
                           // i.e. perform an optimized matrix multiplication
@@ -5764,8 +5764,8 @@
    invert<asHermitian>( A );  // In-place inversion of a Hermitian matrix
    invert<asLower>    ( A );  // In-place inversion of a lower triangular matrix
    invert<asUniLower> ( A );  // In-place inversion of a lower unitriangular matrix
-   invert<asUpper>    ( A );  // In-place inversion of a upper triangular matrix
-   invert<asUniUpper> ( A );  // In-place inversion of a upper unitriangular matrix
+   invert<asUpper>    ( A );  // In-place inversion of an upper triangular matrix
+   invert<asUniUpper> ( A );  // In-place inversion of an upper unitriangular matrix
    invert<asDiagonal> ( A );  // In-place inversion of a diagonal matrix
    \endcode
 
@@ -8424,9 +8424,9 @@
    \code
    UpperMatrix< DynamicMatrix<double> > A, B, C;
 
-   C = A + B;  // Results in a upper matrix; no runtime overhead
-   C = A - B;  // Results in a upper matrix; no runtime overhead
-   C = A * B;  // Results in a upper matrix; no runtime overhead
+   C = A + B;  // Results in an upper matrix; no runtime overhead
+   C = A - B;  // Results in an upper matrix; no runtime overhead
+   C = A * B;  // Results in an upper matrix; no runtime overhead
    \endcode
 
 // \n Previous: \ref adaptors_hermitian_matrices &nbsp; &nbsp; Next: \ref views
@@ -11172,11 +11172,18 @@
 //          <li> \ref inner_product </li>
 //          <li> \ref outer_product </li>
 //          <li> \ref cross_product </li>
+//          <li> \ref vector_kronecker_product </li>
 //       </ul>
 //    </li>
 //    <li> \ref vector_vector_division </li>
 //    <li> \ref matrix_vector_multiplication </li>
-//    <li> \ref matrix_matrix_multiplication </li>
+//    <li> \ref matrix_matrix_multiplication
+//       <ul>
+//          <li> \ref schur_product </li>
+//          <li> \ref matrix_product </li>
+//          <li> \ref matrix_kronecker_product </li>
+//       </ul>
+//    </li>
 // </ul>
 //
 // \n Previous: \ref views_bands &nbsp; &nbsp; Next: \ref addition
@@ -11229,7 +11236,7 @@
 // of the operation.
 
    \code
-   blaze::DynamicVector<double>v1( 100UL ), v2( 100UL ), v3;
+   blaze::DynamicVector<double> v1( 100UL ), v2( 100UL ), v3;
 
    // ... Initialization of the vectors
 
@@ -11293,7 +11300,7 @@
 // of the operation.
 
    \code
-   blaze::DynamicVector<double>v1( 100UL ), v2( 100UL ), v3;
+   blaze::DynamicVector<double> v1( 100UL ), v2( 100UL ), v3;
 
    // ... Initialization of the vectors
 
