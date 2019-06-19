@@ -54,6 +54,7 @@
 #include <blaze/math/Functors.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
+#include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/HasLoad.h>
@@ -2451,6 +2452,50 @@ inline decltype(auto) real( const DVecMapExpr<VT,Real,TF>& dv )
    return dv;
 }
 /*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL ARITHMETIC OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Addition operator for the addition of a dense vector and a scalar value
+//        (\f$ \vec{a}=\vec{b}+s \f$).
+// \ingroup dense_vector
+//
+// \param vec The left-hand side dense vector for the addition.
+// \param scalar The right-hand side scalar value for the addition.
+// \return The resulting vector.
+//
+// This operator represents the addition of a scalar value to all elements of a dense vector:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = a + 1.25;
+   \endcode
+
+// The operator returns an expression representing a dense vector of the higher-order element type
+// of the involved data types \a VT::ElementType and \a ST. Both data types \a VT::ElementType and
+// \a ST have to be supported by the AddTrait class template. Note that this operator only works
+// for scalar values of built-in data type.
+*/
+template< typename VT  // Type of the left-hand side dense vector
+        , typename ST  // Type of the right-hand side scalar
+        , bool TF      // Transpose flag
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+inline decltype(auto) operator+( const DenseVector<VT,TF>& vec, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = AddTrait_t< UnderlyingBuiltin_t<VT>, ST >;
+   return map( ~vec, blaze::bind2nd( blaze::Add{}, ScalarType( scalar ) ) );
+}
 //*************************************************************************************************
 
 
