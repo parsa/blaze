@@ -54,6 +54,7 @@
 #include <blaze/math/Functors.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
+#include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/HasLoad.h>
@@ -2453,6 +2454,48 @@ inline decltype(auto) real( const DMatMapExpr<MT,Real,SO>& dm )
    return dm;
 }
 /*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL ARITHMETIC OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Addition operator for the addition of a dense matrix and a scalar value (\f$ A=B+s \f$).
+// \ingroup dense_matrix
+//
+// \param mat The left-hand side dense matrix for the addition.
+// \param scalar The right-hand side scalar value for the addition.
+// \return The resulting matrix.
+//
+// This operator represents the addition between a dense matrix and a scalar value:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = A + 1.25;
+   \endcode
+
+// The operator returns an expression representing a dense matrix of the higher-order element
+// type of the involved data types \a MT::ElementType and \a ST. Note that this operator only
+// works for scalar values of built-in data type.
+*/
+template< typename MT  // Type of the left-hand side dense matrix
+        , bool SO      // Storage order of the left-hand side dense matrix
+        , typename ST  // Type of the right-hand side scalar
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+inline decltype(auto) operator+( const DenseMatrix<MT,SO>& mat, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = AddTrait_t< UnderlyingBuiltin_t<MT>, ST >;
+   return map( ~mat, blaze::bind2nd( blaze::Add{}, ScalarType( scalar ) ) );
+}
 //*************************************************************************************************
 
 
