@@ -92,13 +92,20 @@
 //    </li>
 //    <li> \ref arithmetic_operations
 //       <ul>
-//          <li> \ref addition </li>
+//          <li> \ref addition
 //             <ul>
 //                <li> \ref vector_vector_addition </li>
 //                <li> \ref matrix_matrix_addition </li>
 //                <li> \ref scalar_addition </li>
 //             </ul>
-//          <li> \ref subtraction </li>
+//          </li>
+//          <li> \ref subtraction
+//             <ul>
+//                <li> \ref vector_vector_subtraction </li>
+//                <li> \ref matrix_matrix_subtraction </li>
+//                <li> \ref scalar_subtraction </li>
+//             </ul>
+//          </li>
 //          <li> \ref scalar_multiplication </li>
 //          <li> \ref vector_vector_multiplication
 //             <ul>
@@ -11168,13 +11175,20 @@
 // \b Blaze provides the following arithmetic operations for vectors and matrices:
 //
 // <ul>
-//    <li> \ref addition </li>
+//    <li> \ref addition
 //       <ul>
 //          <li> \ref vector_vector_addition </li>
 //          <li> \ref matrix_matrix_addition </li>
 //          <li> \ref scalar_addition </li>
 //       </ul>
-//    <li> \ref subtraction </li>
+//    </li>
+//    <li> \ref subtraction
+//       <ul>
+//          <li> \ref vector_vector_subtraction </li>
+//          <li> \ref matrix_matrix_subtraction </li>
+//          <li> \ref scalar_subtraction </li>
+//       </ul>
+//    </li>
 //    <li> \ref scalar_multiplication </li>
 //    <li> \ref vector_vector_multiplication
 //       <ul>
@@ -11318,10 +11332,11 @@
 //**Subtraction************************************************************************************
 /*!\page subtraction Subtraction
 //
-// The subtraction of vectors and matrices works exactly as intuitive as the addition, but with
-// the subtraction operator. For both the vector subtraction as well as the matrix subtraction
-// the subtraction operator can be used. It also enables the subtraction of dense and sparse
-// vectors as well as the subtraction of dense and sparse matrices:
+// \n \section vector_vector_subtraction Vector/Vector Subtraction
+// <hr>
+//
+// The subtraction of vectors works exactly as intuitive as the addition, but with the subtraction
+// operator (i.e. \c operator-()). It also enables the subtraction of dense and sparse vectors:
 
    \code
    blaze::DynamicVector<int>      v1( 5UL ), v3;
@@ -11329,15 +11344,7 @@
 
    // ... Initializing the vectors
 
-   v3 = v1 - v2;  // Subtraction of a two column vectors of different data type
-
-
-   blaze::DynamicMatrix<float,rowMajor>        M1( 7UL, 3UL );
-   blaze::CompressedMatrix<size_t,columnMajor> M2( 7UL, 3UL ), M3;
-
-   // ... Initializing the matrices
-
-   M3 = M1 - M2;  // Subtraction of a row-major and a column-major matrix of different data type
+   v3 = v1 - v2;  // Subtraction of a dense and a sparse column vector of different data type
    \endcode
 
 // Note that it is necessary that both operands have exactly the same dimensions. Violating this
@@ -11352,11 +11359,8 @@
    v1 - trans( v2 );  // OK: Subtraction of two column vectors
    \endcode
 
-// In case of matrices, however, it is possible to subtract row-major and column-major matrices.
-// Note however that in favor of performance the subtraction of two matrices with the same storage
-// order is favorable. The same argument holds for the element type: In case two vectors or matrices
-// with the same element type are added, the performance can be much higher due to vectorization
-// of the operation.
+// Also note that the subtraction of two vectors with the same element type is favorable due to
+// possible vectorization of the operation:
 
    \code
    blaze::DynamicVector<double> v1( 100UL ), v2( 100UL ), v3;
@@ -11364,13 +11368,67 @@
    // ... Initialization of the vectors
 
    v3 = v1 - v2;  // Vectorized subtraction of two double precision vectors
+   \endcode
 
+// \n \section matrix_matrix_subtraction Matrix/Matrix Subtraction
+// <hr>
+//
+// For the subtraction of any two matrices the subtraction operator (i.e. \c operator-()) can be
+// used. It even enables the subtraction of dense and sparse matrices:
 
+   \code
+   blaze::DynamicMatrix<float,rowMajor>        M1( 7UL, 3UL );
+   blaze::CompressedMatrix<size_t,columnMajor> M2( 7UL, 3UL ), M3;
+
+   // ... Initializing the matrices
+
+   M3 = M1 - M2;  // Subtraction of a row-major and a column-major matrix of different data type
+   \endcode
+
+// Note that it is necessary that both operands have exactly the same dimensions. Violating this
+// precondition results in an exception. It is possible to subtract row-major and column-major
+// matrices. Note however that in favor of performance the subtraction of two matrices with the
+// same storage order is favorable. The same argument holds for the element type: In case two
+// matrices with the same element type are subtracted, the performance can be much higher due
+// to vectorization of the operation.
+
+   \code
    blaze::DynamicMatrix<float> M1( 50UL, 70UL ), M2( 50UL, 70UL ), M3;
 
    // ... Initialization of the matrices
 
    M3 = M1 - M2;  // Vectorized subtraction of two row-major, single precision dense matrices
+   \endcode
+
+// \n \section scalar_subtraction Scalar Subtraction
+// <hr>
+//
+// For convenience it is also possible to subtract a scalar value from a dense vector or dense
+// matrix, which has the same effect as subtracting a uniform vector or matrix. In \b Blaze it is
+// possible to use all built-in/fundamental data types except bool as scalar values. Additionally,
+// it is possible to use std::complex values with the same built-in data types as element type.
+// Examples:
+
+   \code
+   blaze::DynamicVector<int> v1{ 3, 2, 5, -4, 1, 6 };
+
+   // Subtract 3 from all elements of v1; Results in
+   //
+   //    ( 0, -1, 2, -7, -2, 3 )
+   //
+   blaze::DynamicVector<int> v2( v1 - 3 );
+   \endcode
+
+   \code
+   blaze::DynamicMatrix<int> M1{ {  3, 2, 5 },
+                                 { -4, 1, 6 } };
+
+   // Subtract 3 from all elements of M1; Results in
+   //
+   //    (  0, -1, 2 )
+   //    ( -7, -2, 3 )
+   //
+   blaze::DynamicMatrix<int> M2( M1 - 3 );
    \endcode
 
 // \n Previous: \ref addition &nbsp; &nbsp; Next: \ref scalar_multiplication
@@ -11381,28 +11439,31 @@
 //**Scalar Multiplication**************************************************************************
 /*!\page scalar_multiplication Scalar Multiplication
 //
-// The scalar multiplication is the multiplication of a scalar value with a vector or a matrix.
-// In \b Blaze it is possible to use all built-in/fundamental data types except bool as scalar
-// values. Additionally, it is possible to use std::complex values with the same built-in data
-// types as element type.
+// The scalar multiplication is the multiplication of vector or a matrix with a scalar value.
+// Alternatively it is also possible to divide a vector or a matrix by a scalar value. In \b Blaze
+// it is possible to use all built-in/fundamental data types except bool as scalar values.
+// Additionally, it is possible to use std::complex values with the same built-in data types
+// as element type.
 
    \code
    blaze::StaticVector<int,3UL> v1{ 1, 2, 3 };
 
-   blaze::DynamicVector<double>   v2 = v1 * 1.2;
-   blaze::CompressedVector<float> v3 = -0.3F * v1;
+   blaze::DynamicVector<double>   v2 = v1 * 1.2;    // Scalar multiplication
+   blaze::CompressedVector<float> v3 = -0.3F * v1;  // Scalar multiplication
+   blaze::DynamicVector<double>   v4 = v1 / 1.2;    // Scalar division
    \endcode
 
    \code
    blaze::StaticMatrix<int,3UL,2UL> M1{ { 1, 2 }, { 3, 4 }, { 5, 6 } };
 
-   blaze::DynamicMatrix<double>   M2 = M1 * 1.2;
-   blaze::CompressedMatrix<float> M3 = -0.3F * M1;
+   blaze::DynamicMatrix<double>   M2 = M1 * 1.2;    // Scalar multiplication
+   blaze::CompressedMatrix<float> M3 = -0.3F * M1;  // Scalar multiplication
+   blaze::DynamicVector<double>   M4 = M1 / 1.2;    // Scalar division
    \endcode
 
-// Vectors and matrices cannot be used for as scalar value for scalar multiplications (see the
-// following example). However, each vector and matrix provides the \c scale() function, which
-// can be used to scale a vector or matrix element-wise with arbitrary scalar data types:
+// Vectors and matrices cannot be used for as scalar value for scalar multiplications or divisions
+// (see the following example). However, each vector and matrix provides the \c scale() function,
+// which can be used to scale a vector or matrix element-wise with arbitrary scalar data types:
 
    \code
    blaze::CompressedMatrix< blaze::StaticMatrix<int,3UL,3UL> > M1;
