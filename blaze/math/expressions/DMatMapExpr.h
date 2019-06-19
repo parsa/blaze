@@ -2499,6 +2499,41 @@ inline decltype(auto) operator+( const DenseMatrix<MT,SO>& mat, ST scalar )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Subtraction operator for the subtraction of a dense matrix and a scalar value
+//        (\f$ A=B-s \f$).
+// \ingroup dense_matrix
+//
+// \param mat The left-hand side dense matrix for the subtraction.
+// \param scalar The right-hand side scalar value for the subtraction.
+// \return The resulting matrix.
+//
+// This operator represents the subtraction between a dense matrix and a scalar value:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = A - 1.25;
+   \endcode
+
+// The operator returns an expression representing a dense matrix of the higher-order element
+// type of the involved data types \a MT::ElementType and \a ST. Note that this operator only
+// works for scalar values of built-in data type.
+*/
+template< typename MT  // Type of the left-hand side dense matrix
+        , bool SO      // Storage order of the left-hand side dense matrix
+        , typename ST  // Type of the right-hand side scalar
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+inline decltype(auto) operator-( const DenseMatrix<MT,SO>& mat, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = SubTrait_t< UnderlyingBuiltin_t<MT>, ST >;
+   return map( ~mat, blaze::bind2nd( blaze::Sub{}, ScalarType( scalar ) ) );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
