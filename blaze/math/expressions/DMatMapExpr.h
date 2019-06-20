@@ -273,7 +273,7 @@ class DMatMapExpr
       //
       // \return The resulting value.
       */
-      inline ReturnType operator*() const {
+      inline BLAZE_DEVICE_CALLABLE ReturnType operator*() const {
          return op_( *it_ );
       }
       //*******************************************************************************************
