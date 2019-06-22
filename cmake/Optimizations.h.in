@@ -120,3 +120,32 @@
 #define BLAZE_USE_OPTIMIZED_KERNELS @BLAZE_OPTIMIZATION_KERNELS@
 #endif
 //*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Configuration switch for the initialization in default constructors.
+// \ingroup config
+//
+// This configuration switch enables/disables the element initialization in the default
+// constructors of the \a StaticVector and \a StaticMatrix class templates. In case the switch
+// is set to 1 all elements are initialized to their respective default. In case the switch is
+// set to 0 the default initialization is skipped and the elements are not initialized. Please
+// note that this switch is only effective in case the elements are of fundamental type (i.e.
+// integral or floating point). In case the elements are of class type, this switch has no effect.
+//
+// Possible settings for the default initialization:
+//  - Disabled: \b 0
+//  - Enabled : \b 1
+//
+// \note It is possible to (de-)activate the default initialization via command line or by
+// defining this symbol manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_USE_DEFAULT_INITIALIZATION 1
+   #include <blaze/Blaze.h>
+   \endcode
+*/
+#ifndef BLAZE_USE_DEFAULT_INITIALIZATION
+#define BLAZE_USE_DEFAULT_INITIALIZATION @BLAZE_OPTIMIZATION_INITIALIZATION@
+#endif
+//*************************************************************************************************

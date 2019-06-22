@@ -326,6 +326,7 @@ configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/Restrict.h.in"
 set(BLAZE_OPTIMIZATION_PADDING ON CACHE BOOL "Enable/Disable the padding of dense vectors and matrices.")
 set(BLAZE_OPTIMIZATION_STREAMING ON CACHE BOOL "Enable/Disable streaming (i.e. non-temporal stores).")
 set(BLAZE_OPTIMIZATION_KERNELS ON CACHE BOOL "Enable/Disable all optimized compute kernels of the Blaze library.")
+set(BLAZE_OPTIMIZATION_INITIALIZATION ON CACHE BOOL "Enable/Disable the default initialization of StaticVector and StaticMatrix.")
 
 if (BLAZE_OPTIMIZATION_PADDING)
    set(BLAZE_OPTIMIZATION_PADDING "true")
@@ -343,6 +344,12 @@ if (BLAZE_OPTIMIZATION_KERNELS)
    set(BLAZE_OPTIMIZATION_KERNELS "true")
 else ()
    set(BLAZE_OPTIMIZATION_KERNELS "false")
+endif ()
+
+if (BLAZE_OPTIMIZATION_INITIALIZATION)
+   set(BLAZE_OPTIMIZATION_INITIALIZATION "true")
+else ()
+   set(BLAZE_OPTIMIZATION_INITIALIZATION "false")
 endif ()
 
 configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/Optimizations.h.in"
