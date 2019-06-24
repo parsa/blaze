@@ -97,9 +97,9 @@
 // \ingroup config
 //
 // This configuration switch enables/disables all optimized compute kernels of the Blaze library,
-// including all vectorized and data type depending kernels. In case the switch is set to \a true
-// the optimized kernels are used whenever possible. In case the switch is set to \a false all
-// optimized kernels are not used, even if it would be possible.
+// including all vectorized and data type depending kernels. In case the switch is set to 1 the
+// optimized kernels are used whenever possible. In case the switch is set to 0 all optimized
+// kernels are not used, even if it would be possible.
 //
 // Possible settings for the optimized kernels:
 //  - Disabled: \b 0

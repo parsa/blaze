@@ -223,8 +223,8 @@ configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/BLAS.h.in"
 # Configure transpose flag
 #==================================================================================================
 
-set(BLAZE_TRANSPOSE_FLAG "columnVector" CACHE STRING "Specify the default transpose flag for all vectors of the Blaze library.")
-set_property(CACHE BLAZE_TRANSPOSE_FLAG PROPERTY STRINGS "columnVector;rowVector")
+set(BLAZE_TRANSPOSE_FLAG "blaze::columnVector" CACHE STRING "Specify the default transpose flag for all vectors of the Blaze library.")
+set_property(CACHE BLAZE_TRANSPOSE_FLAG PROPERTY STRINGS "blaze::columnVector;blaze::rowVector")
 
 configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/TransposeFlag.h.in"
                 "${CMAKE_CURRENT_BINARY_DIR}/blaze/config/TransposeFlag.h")
@@ -234,8 +234,8 @@ configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/TransposeFlag.h.in"
 # Configure storage order
 #==================================================================================================
 
-set(BLAZE_STORAGE_ORDER "rowMajor" CACHE STRING "Specify the default storage order for all matrices of the Blaze library.")
-set_property(CACHE BLAZE_STORAGE_ORDER PROPERTY STRINGS "rowMajor;columnMajor")
+set(BLAZE_STORAGE_ORDER "blaze::rowMajor" CACHE STRING "Specify the default storage order for all matrices of the Blaze library.")
+set_property(CACHE BLAZE_STORAGE_ORDER PROPERTY STRINGS "blaze::rowMajor;blaze::columnMajor")
 
 configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/StorageOrder.h.in"
                 "${CMAKE_CURRENT_BINARY_DIR}/blaze/config/StorageOrder.h")
@@ -329,27 +329,27 @@ set(BLAZE_OPTIMIZATION_KERNELS ON CACHE BOOL "Enable/Disable all optimized compu
 set(BLAZE_OPTIMIZATION_INITIALIZATION ON CACHE BOOL "Enable/Disable the default initialization of StaticVector and StaticMatrix.")
 
 if (BLAZE_OPTIMIZATION_PADDING)
-   set(BLAZE_OPTIMIZATION_PADDING "true")
+   set(BLAZE_OPTIMIZATION_PADDING "1")
 else ()
-   set(BLAZE_OPTIMIZATION_PADDING "false")
+   set(BLAZE_OPTIMIZATION_PADDING "0")
 endif ()
 
 if (BLAZE_OPTIMIZATION_STREAMING)
-   set(BLAZE_OPTIMIZATION_STREAMING "true")
+   set(BLAZE_OPTIMIZATION_STREAMING "1")
 else ()
-   set(BLAZE_OPTIMIZATION_STREAMING "false")
+   set(BLAZE_OPTIMIZATION_STREAMING "0")
 endif ()
 
 if (BLAZE_OPTIMIZATION_KERNELS)
-   set(BLAZE_OPTIMIZATION_KERNELS "true")
+   set(BLAZE_OPTIMIZATION_KERNELS "1")
 else ()
-   set(BLAZE_OPTIMIZATION_KERNELS "false")
+   set(BLAZE_OPTIMIZATION_KERNELS "0")
 endif ()
 
 if (BLAZE_OPTIMIZATION_INITIALIZATION)
-   set(BLAZE_OPTIMIZATION_INITIALIZATION "true")
+   set(BLAZE_OPTIMIZATION_INITIALIZATION "1")
 else ()
-   set(BLAZE_OPTIMIZATION_INITIALIZATION "false")
+   set(BLAZE_OPTIMIZATION_INITIALIZATION "0")
 endif ()
 
 configure_file ("${CMAKE_CURRENT_LIST_DIR}/cmake/Optimizations.h.in"
