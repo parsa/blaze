@@ -134,7 +134,7 @@ inline auto equal( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,fals
    // type are converted to the higher-order data type within the equal function.
    for( size_t i=0UL; i<A.rows(); ++i ) {
       for( size_t j=0UL; j<A.columns(); ++j ) {
-         if( !equal( A(i,j), B(i,j) ) ) return false;
+         if( !equal<RF>( A(i,j), B(i,j) ) ) return false;
       }
    }
 
@@ -190,20 +190,20 @@ inline auto equal( const DenseMatrix<MT1,false>& lhs, const DenseMatrix<MT2,fals
       size_t j( 0UL );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-         if( !equal( A.load(i,j             ), B.load(i,j             ) ) ) return false;
-         if( !equal( A.load(i,j+SIMDSIZE    ), B.load(i,j+SIMDSIZE    ) ) ) return false;
-         if( !equal( A.load(i,j+SIMDSIZE*2UL), B.load(i,j+SIMDSIZE*2UL) ) ) return false;
-         if( !equal( A.load(i,j+SIMDSIZE*3UL), B.load(i,j+SIMDSIZE*3UL) ) ) return false;
+         if( !equal<RF>( A.load(i,j             ), B.load(i,j             ) ) ) return false;
+         if( !equal<RF>( A.load(i,j+SIMDSIZE    ), B.load(i,j+SIMDSIZE    ) ) ) return false;
+         if( !equal<RF>( A.load(i,j+SIMDSIZE*2UL), B.load(i,j+SIMDSIZE*2UL) ) ) return false;
+         if( !equal<RF>( A.load(i,j+SIMDSIZE*3UL), B.load(i,j+SIMDSIZE*3UL) ) ) return false;
       }
       for( ; (j+SIMDSIZE) < jpos; j+=SIMDSIZE*2UL ) {
-         if( !equal( A.load(i,j         ), B.load(i,j         ) ) ) return false;
-         if( !equal( A.load(i,j+SIMDSIZE), B.load(i,j+SIMDSIZE) ) ) return false;
+         if( !equal<RF>( A.load(i,j         ), B.load(i,j         ) ) ) return false;
+         if( !equal<RF>( A.load(i,j+SIMDSIZE), B.load(i,j+SIMDSIZE) ) ) return false;
       }
       for( ; j<jpos; j+=SIMDSIZE ) {
-         if( !equal( A.load(i,j), B.load(i,j) ) ) return false;
+         if( !equal<RF>( A.load(i,j), B.load(i,j) ) ) return false;
       }
       for( ; remainder && j<A.columns(); ++j ) {
-         if( !equal( A(i,j), B(i,j) ) ) return false;
+         if( !equal<RF>( A(i,j), B(i,j) ) ) return false;
       }
    }
 
@@ -247,7 +247,7 @@ inline auto equal( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,true>
    // type are converted to the higher-order data type within the equal function.
    for( size_t j=0UL; j<A.columns(); ++j ) {
       for( size_t i=0UL; i<A.rows(); ++i ) {
-         if( !equal( A(i,j), B(i,j) ) ) return false;
+         if( !equal<RF>( A(i,j), B(i,j) ) ) return false;
       }
    }
 
@@ -303,20 +303,20 @@ inline auto equal( const DenseMatrix<MT1,true>& lhs, const DenseMatrix<MT2,true>
       size_t i( 0UL );
 
       for( ; (i+SIMDSIZE*3UL) < ipos; i+=SIMDSIZE*4UL ) {
-         if( !equal( A.load(i             ,j), B.load(i             ,j) ) ) return false;
-         if( !equal( A.load(i+SIMDSIZE    ,j), B.load(i+SIMDSIZE    ,j) ) ) return false;
-         if( !equal( A.load(i+SIMDSIZE*2UL,j), B.load(i+SIMDSIZE*2UL,j) ) ) return false;
-         if( !equal( A.load(i+SIMDSIZE*3UL,j), B.load(i+SIMDSIZE*3UL,j) ) ) return false;
+         if( !equal<RF>( A.load(i             ,j), B.load(i             ,j) ) ) return false;
+         if( !equal<RF>( A.load(i+SIMDSIZE    ,j), B.load(i+SIMDSIZE    ,j) ) ) return false;
+         if( !equal<RF>( A.load(i+SIMDSIZE*2UL,j), B.load(i+SIMDSIZE*2UL,j) ) ) return false;
+         if( !equal<RF>( A.load(i+SIMDSIZE*3UL,j), B.load(i+SIMDSIZE*3UL,j) ) ) return false;
       }
       for( ; (i+SIMDSIZE) < ipos; i+=SIMDSIZE*2UL ) {
-         if( !equal( A.load(i         ,j), B.load(i         ,j) ) ) return false;
-         if( !equal( A.load(i+SIMDSIZE,j), B.load(i+SIMDSIZE,j) ) ) return false;
+         if( !equal<RF>( A.load(i         ,j), B.load(i         ,j) ) ) return false;
+         if( !equal<RF>( A.load(i+SIMDSIZE,j), B.load(i+SIMDSIZE,j) ) ) return false;
       }
       for( ; i<ipos; i+=SIMDSIZE ) {
-         if( !equal( A.load(i,j), B.load(i,j) ) ) return false;
+         if( !equal<RF>( A.load(i,j), B.load(i,j) ) ) return false;
       }
       for( ; remainder && i<M; ++i ) {
-         if( !equal( A(i,j), B(i,j) ) ) return false;
+         if( !equal<RF>( A(i,j), B(i,j) ) ) return false;
       }
    }
 
@@ -368,7 +368,7 @@ inline bool equal( const DenseMatrix<MT1,SO>& lhs, const DenseMatrix<MT2,!SO>& r
          const size_t jend( ( columns < jj+block )?( columns ):( jj+block ) );
          for( size_t i=ii; i<iend; ++i ) {
             for( size_t j=jj; j<jend; ++j ) {
-               if( !equal( A(i,j), B(i,j) ) ) return false;
+               if( !equal<RF>( A(i,j), B(i,j) ) ) return false;
             }
          }
       }
