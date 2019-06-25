@@ -380,6 +380,44 @@ decltype(auto) maxNorm( const SparseVector<VT,TF>& sv )
 }
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Calculation of the square length (magnitude) of the sparse vector \f$|\vec{a}|^2\f$.
+// \ingroup sparse_vector
+//
+// \param sv The given sparse vector.
+// \return The square length (magnitude) of the sparse vector.
+//
+// This function calculates the actual square length (magnitude) of the sparse vector. The
+// function has the same effect as calling the \a sqrNorm() function on the sparse vector.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) sqrLength( const SparseVector<VT,TF>& sv )
+{
+   return sqrNorm( ~sv );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculation of the length (magnitude) of the sparse vector \f$|\vec{a}|\f$.
+// \ingroup sparse_vector
+//
+// \param sv The given sparse vector.
+// \return The length (magnitude) of the sparse vector.
+//
+// This function calculates the actual length (magnitude) of the sparse vector. The function has
+// the same effect as calling the \a norm() function on the sparse vector.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) length( const SparseVector<VT,TF>& sv )
+{
+   return norm( ~sv );
+}
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
