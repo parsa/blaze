@@ -150,6 +150,12 @@ MT& operator<<=( DenseMatrix<MT,SO>& mat, int count );
 
 template< typename MT, bool SO >
 MT& operator<<=( DenseMatrix<MT,SO>&& mat, int count );
+
+template< typename MT, bool SO >
+MT& operator>>=( DenseMatrix<MT,SO>& mat, int count );
+
+template< typename MT, bool SO >
+MT& operator>>=( DenseMatrix<MT,SO>&& mat, int count );
 //@}
 //*************************************************************************************************
 
@@ -601,6 +607,64 @@ template< typename MT  // Type of the dense matrix
 inline MT& operator<<=( DenseMatrix<MT,SO>&& mat, int count )
 {
    return operator<<=( ~mat, count );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Right-shift assignment operator for the uniform right-shift of a dense matrix
+//        (\f$ A>>=s \f$).
+// \ingroup dense_matrix
+//
+// \param mat The dense matrix for the uniform right-shift operation.
+// \param count The number of bits to shift all vector elements.
+// \return Reference to the dense matrix.
+// \exception std::invalid_argument Invalid right-shift of restricted matrix.
+//
+// In case the matrix \a MT is restricted and the assignment would violate an invariant of the
+// matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline MT& operator>>=( DenseMatrix<MT,SO>& mat, int count )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
+   if( IsRestricted_v<MT> ) {
+      if( !tryShift( ~mat, 0UL, 0UL, (~mat).rows(), (~mat).columns(), count ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-shift of restricted matrix" );
+      }
+   }
+
+   BLAZE_DECLTYPE_AUTO( left, derestrict( ~mat ) );
+
+   smpAssign( left, left >> count );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~mat ), "Invariant violation detected" );
+
+   return ~mat;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Right-shift assignment operator for the uniform right-shift of a temporary dense matrix
+//        (\f$ A>>=s \f$).
+// \ingroup dense_matrix
+//
+// \param mat The temporary dense matrix for the uniform right-shift operation.
+// \param count The number of bits to shift all vector elements.
+// \return Reference to the dense matrix.
+// \exception std::invalid_argument Invalid scaling of restricted matrix.
+//
+// In case the matrix \a MT is restricted and the assignment would violate an invariant of the
+// matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline MT& operator>>=( DenseMatrix<MT,SO>&& mat, int count )
+{
+   return operator>>=( ~mat, count );
 }
 //*************************************************************************************************
 
