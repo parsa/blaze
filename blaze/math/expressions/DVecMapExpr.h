@@ -2564,6 +2564,34 @@ inline decltype(auto) operator<<( const DenseVector<VT,TF>& vec, int count )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Right-shift operator for the uniform right-shift of a dense vector
+//        (\f$ \vec{a}=\vec{b}>>s \f$).
+// \ingroup dense_vector
+//
+// \param vec The dense vector for the uniform right-shift operation.
+// \param count The number of bits to shift all vector elements.
+// \return The resulting vector.
+//
+// This operator represents the uniform right-shift of all elements of a dense vector:
+
+   \code
+   blaze::DynamicVector<unsigned int> a, b;
+   // ... Resizing and initialization
+   b = a >> 3;
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) operator>>( const DenseVector<VT,TF>& vec, int count )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~vec, blaze::ShiftRI( count ) );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
