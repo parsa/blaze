@@ -72,15 +72,17 @@ OperationTest::OperationTest()
    testIsNan();
    testIsUniform();
    testIsZero();
-   testLength();
    testNormalize();
    testMinimum();
    testMaximum();
+   testArgmin();
+   testArgmax();
    testL1Norm();
    testL2Norm();
    testL3Norm();
    testL4Norm();
    testLpNorm();
+   testLength();
    testMean();
    testVar();
    testStdDev();
@@ -403,117 +405,6 @@ void OperationTest::testIsZero()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c length() and \c sqrLength() functions for sparse vectors.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c length() and \c sqrLength() functions for sparse
-// vectors. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void OperationTest::testLength()
-{
-   test_ = "length() and sqrLength() functions";
-
-   {
-      // Initialization check
-      blaze::CompressedVector<double,blaze::rowVector> vec;
-
-      // Computing the vector length
-      const double len( length( vec ) );
-
-      if( !blaze::equal( len, 0.0 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Length computation failed\n"
-             << " Details:\n"
-             << "   Result: " << len << "\n"
-             << "   Expected result: 0\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Computing the vector square length
-      const double sqrlen( sqrLength( vec ) );
-
-      if( !blaze::equal( sqrLength( vec ), 0.0 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Square length computation failed\n"
-             << " Details:\n"
-             << "   Result: " << sqrlen << "\n"
-             << "   Expected result: 0\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      // Initialization check
-      blaze::CompressedVector<double,blaze::rowVector> vec( 5UL );
-
-      // Computing the vector length
-      const double len( length( vec ) );
-
-      if( !blaze::equal( len, 0.0 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Length computation failed\n"
-             << " Details:\n"
-             << "   Result: " << len << "\n"
-             << "   Expected result: 0\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Computing the vector square length
-      const double sqrlen( sqrLength( vec ) );
-
-      if( !blaze::equal( sqrLength( vec ), 0.0 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Square length computation failed\n"
-             << " Details:\n"
-             << "   Result: " << sqrlen << "\n"
-             << "   Expected result: 0\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      // Initialization check
-      blaze::CompressedVector<double,blaze::rowVector> vec( 5UL, 2UL );
-      vec[1] = 3.0;
-      vec[4] = 4.0;
-
-      // Computing the vector length
-      const double len( length( vec ) );
-
-      if( !blaze::equal( len, 5.0 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Length computation failed\n"
-             << " Details:\n"
-             << "   Result: " << len << "\n"
-             << "   Expected result: 5\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Computing the vector square length
-      const double sqrlen( sqrLength( vec ) );
-
-      if( !blaze::equal( sqrLength( vec ), 25.0 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Square length computation failed\n"
-             << " Details:\n"
-             << "   Result: " << sqrlen << "\n"
-             << "   Expected result: 25\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Test of the \c normalize() function for sparse vectors.
 //
 // \return void
@@ -590,10 +481,7 @@ void OperationTest::testMinimum()
    test_ = "min() function";
 
    {
-      blaze::CompressedVector<int,blaze::rowVector> vec( 8UL, 3UL );
-      vec[1] =  1;
-      vec[3] =  4;
-      vec[7] =  3;
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 0, 1, 0, 4, 0, 0, 0, 3 };
 
       const int minimum = min( vec );
 
@@ -609,11 +497,7 @@ void OperationTest::testMinimum()
    }
 
    {
-      blaze::CompressedVector<int,blaze::rowVector> vec( 8UL, 4UL );
-      vec[1] =  -4;
-      vec[3] =  -2;
-      vec[5] =   8;
-      vec[7] =  -3;
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 0, -4, 0, -2, 0, 8, 0, -3 };
 
       const int minimum = min( vec );
 
@@ -629,9 +513,7 @@ void OperationTest::testMinimum()
    }
 
    {
-      blaze::CompressedVector<int,blaze::rowVector> vec( 8UL, 2UL );
-      vec[5] =   8;
-      vec[6] =  -3;
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 0, 0, 0, 0, 0, 8, -3, 0 };
 
       const int minimum = min( vec );
 
@@ -663,10 +545,7 @@ void OperationTest::testMaximum()
    test_ = "max() function";
 
    {
-      blaze::CompressedVector<int,blaze::rowVector> vec( 8UL, 3UL );
-      vec[1] = -1;
-      vec[3] = -4;
-      vec[7] = -3;
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 0, -1, 0, -4, 0, 0, 0, -3 };
 
       const int maximum = max( vec );
 
@@ -682,11 +561,7 @@ void OperationTest::testMaximum()
    }
 
    {
-      blaze::CompressedVector<int,blaze::rowVector> vec( 8UL, 4UL );
-      vec[1] =  4;
-      vec[3] =  2;
-      vec[5] = -8;
-      vec[7] =  3;
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 0, 4, 0, 2, 0, -8, 0, 3 };
 
       const int maximum = max( vec );
 
@@ -702,9 +577,7 @@ void OperationTest::testMaximum()
    }
 
    {
-      blaze::CompressedVector<int,blaze::rowVector> vec( 8UL, 2UL );
-      vec[5] = -8;
-      vec[6] =  3;
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 0, 0, 0, 0, 0, -8, 3, 0 };
 
       const int maximum = max( vec );
 
@@ -715,6 +588,238 @@ void OperationTest::testMaximum()
              << " Details:\n"
              << "   Result: " << maximum << "\n"
              << "   Expected result: 3\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c argmin() function for sparse vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c argmin() function for sparse vectors template. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testArgmin()
+{
+   test_ = "argmin() function";
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec;
+
+      const size_t minimum = argmin( vec );
+
+      checkSize    ( vec, 0UL );
+      checkCapacity( vec, 0UL );
+      checkNonZeros( vec, 0UL );
+
+      if( minimum != 0UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Argmin evaluation failed\n"
+             << " Details:\n"
+             << "   Result: " << minimum << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 99 };
+
+      const size_t minimum = argmin( vec );
+
+      checkSize    ( vec, 1UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      if( minimum != 0UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Argmin evaluation failed\n"
+             << " Details:\n"
+             << "   Result: " << minimum << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 1, 0, 2, 0, 3, 0, 4, 0, 5 };
+
+      const size_t minimum = argmin( vec );
+
+      checkSize    ( vec, 9UL );
+      checkCapacity( vec, 5UL );
+      checkNonZeros( vec, 5UL );
+
+      if( minimum != 0UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Argmin evaluation failed\n"
+             << " Details:\n"
+             << "   Result: " << minimum << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 5, 0, 4, 0, 3, 0, 2, 0, 1 };
+
+      const size_t minimum = argmin( vec );
+
+      checkSize    ( vec, 9UL );
+      checkCapacity( vec, 5UL );
+      checkNonZeros( vec, 5UL );
+
+      if( minimum != 8UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Argmin evaluation failed\n"
+             << " Details:\n"
+             << "   Result: " << minimum << "\n"
+             << "   Expected result: 8\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 2, 0, 3, 0, 1, 0, 4, 0, 5 };
+
+      const size_t minimum = argmin( vec );
+
+      checkSize    ( vec, 9UL );
+      checkCapacity( vec, 5UL );
+      checkNonZeros( vec, 5UL );
+
+      if( minimum != 4UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Argmin evaluation failed\n"
+             << " Details:\n"
+             << "   Result: " << minimum << "\n"
+             << "   Expected result: 4\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c argmax() function for sparse vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c argmax() function for sparse vectors template. In case
+// an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testArgmax()
+{
+   test_ = "argmax() function";
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec;
+
+      const size_t maximum = argmax( vec );
+
+      checkSize    ( vec, 0UL );
+      checkCapacity( vec, 0UL );
+      checkNonZeros( vec, 0UL );
+
+      if( maximum != 0UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Argmax evaluation failed\n"
+             << " Details:\n"
+             << "   Result: " << maximum << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 99 };
+
+      const size_t maximum = argmax( vec );
+
+      checkSize    ( vec, 1UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      if( maximum != 0UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Argmax evaluation failed\n"
+             << " Details:\n"
+             << "   Result: " << maximum << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 5, 0, 4, 0, 3, 0, 2, 0, 1 };
+
+      const size_t maximum = argmax( vec );
+
+      checkSize    ( vec, 9UL );
+      checkCapacity( vec, 5UL );
+      checkNonZeros( vec, 5UL );
+
+      if( maximum != 0UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Argmax evaluation failed\n"
+             << " Details:\n"
+             << "   Result: " << maximum << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 1, 0, 2, 0, 3, 0, 4, 0, 5 };
+
+      const size_t maximum = argmax( vec );
+
+      checkSize    ( vec, 9UL );
+      checkCapacity( vec, 5UL );
+      checkNonZeros( vec, 5UL );
+
+      if( maximum != 8UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Argmax evaluation failed\n"
+             << " Details:\n"
+             << "   Result: " << maximum << "\n"
+             << "   Expected result: 8\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::CompressedVector<int,blaze::rowVector> vec{ 4, 0, 3, 0, 5, 0, 2, 0, 1 };
+
+      const size_t maximum = argmax( vec );
+
+      checkSize    ( vec, 9UL );
+      checkCapacity( vec, 5UL );
+      checkNonZeros( vec, 5UL );
+
+      if( maximum != 4UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Argmax evaluation failed\n"
+             << " Details:\n"
+             << "   Result: " << maximum << "\n"
+             << "   Expected result: 4\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1103,6 +1208,117 @@ void OperationTest::testLpNorm()
              << "   lpNorm<4>(): " << norm1 << "\n"
              << "   lpNorm(4): " << norm2 << "\n"
              << "   Expected result: " << norm3 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c length() and \c sqrLength() functions for sparse vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c length() and \c sqrLength() functions for sparse
+// vectors. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testLength()
+{
+   test_ = "length() and sqrLength() functions";
+
+   {
+      // Initialization check
+      blaze::CompressedVector<double,blaze::rowVector> vec;
+
+      // Computing the vector length
+      const double len( length( vec ) );
+
+      if( !blaze::equal( len, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Length computation failed\n"
+             << " Details:\n"
+             << "   Result: " << len << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Computing the vector square length
+      const double sqrlen( sqrLength( vec ) );
+
+      if( !blaze::equal( sqrLength( vec ), 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Square length computation failed\n"
+             << " Details:\n"
+             << "   Result: " << sqrlen << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      // Initialization check
+      blaze::CompressedVector<double,blaze::rowVector> vec( 5UL );
+
+      // Computing the vector length
+      const double len( length( vec ) );
+
+      if( !blaze::equal( len, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Length computation failed\n"
+             << " Details:\n"
+             << "   Result: " << len << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Computing the vector square length
+      const double sqrlen( sqrLength( vec ) );
+
+      if( !blaze::equal( sqrLength( vec ), 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Square length computation failed\n"
+             << " Details:\n"
+             << "   Result: " << sqrlen << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      // Initialization check
+      blaze::CompressedVector<double,blaze::rowVector> vec( 5UL, 2UL );
+      vec[1] = 3.0;
+      vec[4] = 4.0;
+
+      // Computing the vector length
+      const double len( length( vec ) );
+
+      if( !blaze::equal( len, 5.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Length computation failed\n"
+             << " Details:\n"
+             << "   Result: " << len << "\n"
+             << "   Expected result: 5\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Computing the vector square length
+      const double sqrlen( sqrLength( vec ) );
+
+      if( !blaze::equal( sqrLength( vec ), 25.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Square length computation failed\n"
+             << " Details:\n"
+             << "   Result: " << sqrlen << "\n"
+             << "   Expected result: 25\n";
          throw std::runtime_error( oss.str() );
       }
    }
