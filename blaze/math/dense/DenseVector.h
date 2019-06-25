@@ -119,6 +119,12 @@ auto operator/=( DenseVector<VT,TF>& vec, ST scalar )
 template< typename VT, bool TF, typename ST >
 auto operator/=( DenseVector<VT,TF>&& vec, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+
+template< typename VT, bool TF >
+VT& operator<<=( DenseVector<VT,TF>& vec, int count );
+
+template< typename VT, bool TF >
+VT& operator<<=( DenseVector<VT,TF>&& vec, int count );
 //@}
 //*************************************************************************************************
 
@@ -262,13 +268,13 @@ inline auto operator+=( DenseVector<VT,TF>& vec, ST scalar )
 
 //*************************************************************************************************
 /*!\brief Addition assignment operator for the addition of a temporary dense vector and a scalar
-//        (\f$ v+=s \f$).
+//        (\f$ \vec{v}+=s \f$).
 // \ingroup dense_vector
 //
 // \param vec The left-hand side temporary dense vector for the addition.
 // \param scalar The right-hand side scalar value for the addition.
 // \return Reference to the left-hand side dense vector.
-// \exception std::invalid_argument Invalid addition of restricted vector.
+// \exception std::invalid_argument Invalid addition to restricted vector.
 //
 // In case the vector \a VT is restricted and the assignment would violate an invariant of the
 // vector, a \a std::invalid_argument exception is thrown.
@@ -322,7 +328,7 @@ inline auto operator-=( DenseVector<VT,TF>& vec, ST scalar )
 
 //*************************************************************************************************
 /*!\brief Subtraction assignment operator for the subtraction of a temporary dense vector and a
-//        scalar (\f$ v-=s \f$).
+//        scalar (\f$ \vec{v}-=s \f$).
 // \ingroup dense_vector
 //
 // \param vec The left-hand side temporary dense vector for the subtraction.
@@ -382,7 +388,7 @@ inline auto operator*=( DenseVector<VT,TF>& vec, ST scalar )
 
 //*************************************************************************************************
 /*!\brief Multiplication assignment operator for the multiplication of a temporary dense vector
-//        and a scalar (\f$ v*=s \f$).
+//        and a scalar (\f$ \vec{v}*=s \f$).
 // \ingroup dense_vector
 //
 // \param vec The left-hand side temporary dense vector for the multiplication.
@@ -466,6 +472,62 @@ inline auto operator/=( DenseVector<VT,TF>&& vec, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, VT& >
 {
    return operator/=( ~vec, scalar );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Left-shift assignment operator for the uniform left-shift of a dense vector
+//        (\f$ \vec{a}<<=s \f$).
+// \ingroup dense_vector
+//
+// \param vec The dense vector for the uniform left-shift operation.
+// \param count The number of bits to shift all vector elements.
+// \return Reference to the dense vector.
+// \exception std::invalid_argument Invalid left-shift of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline VT& operator<<=( DenseVector<VT,TF>& vec, int count )
+{
+   if( IsRestricted_v<VT> ) {
+      if( !tryShift( ~vec, 0UL, (~vec).size(), count ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid left-shift of restricted vector" );
+      }
+   }
+
+   BLAZE_DECLTYPE_AUTO( left, derestrict( ~vec ) );
+
+   smpAssign( left, left << count );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~vec ), "Invariant violation detected" );
+
+   return ~vec;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Left-shift assignment operator for the uniform shift of a temporary dense vector
+//        (\f$ \vec{v}<<=s \f$).
+// \ingroup dense_vector
+//
+// \param vec The temporary dense vector for the uniform left-shift operation.
+// \param count The number of bits to shift all vector elements.
+// \return Reference to the dense vector.
+// \exception std::invalid_argument Invalid left-shift of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline VT& operator<<=( DenseVector<VT,TF>&& vec, int count )
+{
+   return operator<<=( ~vec, count );
 }
 //*************************************************************************************************
 
