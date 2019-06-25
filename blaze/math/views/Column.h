@@ -1394,6 +1394,69 @@ BLAZE_ALWAYS_INLINE bool
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by shifting a single element of a column.
+// \ingroup column
+//
+// \param sv The target column.
+// \param index The index of the element to be modified.
+// \param count The number of bits to shift the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , size_t... CCAs >  // Compile time column arguments
+inline bool tryShift( const Column<MT,SO,DF,SF,CCAs...>& column, size_t index, int count )
+{
+   BLAZE_INTERNAL_ASSERT( index < column.size(), "Invalid vector access index" );
+
+   return tryShift( column.operand(), index, column.column(), count );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by shifting a range of elements of a column.
+// \ingroup column
+//
+// \param column The target column.
+// \param index The index of the first element of the range to be modified.
+// \param size The number of elements of the range to be modified.
+// \param count The number of bits to shift the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , size_t... CCAs >  // Compile time column arguments
+BLAZE_ALWAYS_INLINE bool
+   tryShift( const Column<MT,SO,DF,SF,CCAs...>& column, size_t index, size_t size, int count )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (~column).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (~column).size(), "Invalid range size" );
+
+   return tryShift( column.operand(), index, column.column(), size, 1UL, count );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by the assignment of a vector to a column.
 // \ingroup column
 //
