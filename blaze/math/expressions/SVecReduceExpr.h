@@ -239,6 +239,104 @@ inline decltype(auto) max( const SparseVector<VT,TF>& sv )
 }
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Returns the index of the first smallest non-zero element of the sparse vector.
+// \ingroup sparse_vector
+//
+// \param sv The given sparse vector.
+// \return The index of the first smallest sparse vector element.
+//
+// This function returns the index of the first smallest non-zero element of the given sparse
+// vector. This function can only be used for element types that support the smaller-than
+// relationship. I case the given vector currently has a size of 0 or no non-zero elements,
+// the returned index is 0.
+
+   \code
+   blaze::CompressedVector<int> a{ 1, -2, 3, 0 };
+   const size_t minindex = argmin( a );  // Results in 1
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline size_t argmin( const SparseVector<VT,TF>& sv )
+{
+   if( (~sv).size() < 2UL )
+      return 0UL;
+
+   CompositeType_t<VT> a( ~sv );  // Evaluation of the sparse vector operand
+
+   if( a.nonZeros() == 0UL )
+      return 0UL;
+
+   const auto end( a.end() );
+   auto element( a.begin() );
+   size_t index( element->index() );
+   auto min( element->value() );
+
+   ++element;
+
+   for( ; element!=end; ++element ) {
+      auto cur( element->value() );
+      if( cur < min ) {
+         index = element->index();
+         min = std::move( cur );
+      }
+   }
+
+   return index;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the index of the first largest non-zero element of the sparse vector.
+// \ingroup sparse_vector
+//
+// \param sv The given sparse vector.
+// \return The index of the first largest sparse vector element.
+//
+// This function returns the index of the first largest non-zero element of the given sparse
+// vector. This function can only be used for element types that support the largest-than
+// relationship. I case the given vector currently has a size of 0 or no non-zero elements,
+// the returned index is 0.
+
+   \code
+   blaze::CompressedVector<int> a{ 1, -2, 3, 0 };
+   const size_t maxindex = argmax( a );  // Results in 2
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline size_t argmax( const SparseVector<VT,TF>& sv )
+{
+   if( (~sv).size() < 2UL )
+      return 0UL;
+
+   CompositeType_t<VT> a( ~sv );  // Evaluation of the sparse vector operand
+
+   if( a.nonZeros() == 0UL )
+      return 0UL;
+
+   const auto end( a.end() );
+   auto element( a.begin() );
+   size_t index( element->index() );
+   auto max( element->value() );
+
+   ++element;
+
+   for( ; element!=end; ++element ) {
+      auto cur( element->value() );
+      if( max < cur ) {
+         index = element->index();
+         max = std::move( cur );
+      }
+   }
+
+   return index;
+}
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
