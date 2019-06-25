@@ -2138,6 +2138,74 @@ BLAZE_ALWAYS_INLINE bool
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by shifting a single element of a selection of elements.
+// \ingroup elements
+//
+// \param e The target selection of elements.
+// \param index The index of the element to be modified.
+// \param count The number of bits to shift the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , typename... CEAs >  // Compile time element arguments
+inline bool tryShift( const Elements<VT,TF,DF,CEAs...>& e, size_t index, int count )
+{
+   BLAZE_INTERNAL_ASSERT( index < e.size(), "Invalid vector access index" );
+
+   return tryShift( e.operand(), e.idx(index), count );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by shifting a range of elements of a selection of elements.
+// \ingroup elements
+//
+// \param e The target selection of elements.
+// \param index The index of the first element of the range to be modified.
+// \param size The number of elements of the range to be modified.
+// \param count The number of bits to shift the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , typename... CEAs >  // Compile time element arguments
+BLAZE_ALWAYS_INLINE bool
+   tryShift( const Elements<VT,TF,DF,CEAs...>& e, size_t index, size_t size, int count )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (~e).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (~e).size(), "Invalid range size" );
+
+   const size_t iend( index + size );
+
+   for( size_t i=index; i<iend; ++i ) {
+      if( !tryShift( e.operand(), e.idx(i), count ) )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by the assignment of a vector to a selection of elements.
 // \ingroup elements
 //
