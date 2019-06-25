@@ -72,15 +72,17 @@ OperationTest::OperationTest()
    testIsNan();
    testIsUniform();
    testIsZero();
-   testLength();
    testNormalize();
    testMinimum();
    testMaximum();
+   testArgmin();
+   testArgmax();
    testL1Norm();
    testL2Norm();
    testL3Norm();
    testL4Norm();
    testLpNorm();
+   testLength();
    testMean();
    testVar();
    testStdDev();
@@ -304,116 +306,6 @@ void OperationTest::testIsZero()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c length() and \c sqrLength() functions for dense vectors.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the \c length() and \c sqrLength() functions for dense
-// vectors. In case an error is detected, a \a std::runtime_error exception is thrown.
-*/
-void OperationTest::testLength()
-{
-   test_ = "length() and sqrLength() functions";
-
-   {
-      blaze::DynamicVector<double,blaze::rowVector> vec;
-
-      // Computing the vector length
-      const double len( length( vec ) );
-
-      if( !blaze::equal( len, 0.0 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Length computation failed\n"
-             << " Details:\n"
-             << "   Result: " << len << "\n"
-             << "   Expected result: 0\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Computing the vector square length
-      const double sqrlen( sqrLength( vec ) );
-
-      if( !blaze::equal( sqrlen, 0.0 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Square length computation failed\n"
-             << " Details:\n"
-             << "   Result: " << sqrlen << "\n"
-             << "   Expected result: 0\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      blaze::DynamicVector<double,blaze::rowVector> vec( 2UL );
-      vec[0] = 0.0;
-      vec[1] = 0.0;
-
-      // Computing the vector length
-      const double len( length( vec ) );
-
-      if( !blaze::equal( len, 0.0 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Length computation failed\n"
-             << " Details:\n"
-             << "   Result: " << len << "\n"
-             << "   Expected result: 0\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Computing the vector square length
-      const double sqrlen( sqrLength( vec ) );
-
-      if( !blaze::equal( sqrlen, 0.0 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Square length computation failed\n"
-             << " Details:\n"
-             << "   Result: " << sqrlen << "\n"
-             << "   Expected result: 0\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-
-   {
-      blaze::DynamicVector<double,blaze::rowVector> vec( 2UL );
-      vec[0] = 3.0;
-      vec[1] = 4.0;
-
-      // Computing the vector length
-      const double len( length( vec ) );
-
-      if( !blaze::equal( len, 5.0 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Length computation failed\n"
-             << " Details:\n"
-             << "   Result: " << len << "\n"
-             << "   Expected result: 5\n";
-         throw std::runtime_error( oss.str() );
-      }
-
-      // Computing the vector square length
-      const double sqrlen( sqrLength( vec ) );
-
-      if( !blaze::equal( sqrlen, 25.0 ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Square length computation failed\n"
-             << " Details:\n"
-             << "   Result: " << sqrlen << "\n"
-             << "   Expected result: 25\n";
-         throw std::runtime_error( oss.str() );
-      }
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
 /*!\brief Test of the \c normalize() function for dense vectors.
 //
 // \return void
@@ -491,11 +383,7 @@ void OperationTest::testMinimum()
 
    {
       // Initialization check
-      blaze::DynamicVector<int,blaze::rowVector> vec( 4UL );
-      vec[0] =  1;
-      vec[1] = -2;
-      vec[2] =  3;
-      vec[3] = -4;
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 1, -2, 3, -4 };
 
       checkSize    ( vec, 4UL );
       checkCapacity( vec, 4UL );
@@ -527,7 +415,7 @@ void OperationTest::testMinimum()
 
    {
       // Initialization check
-      blaze::DynamicVector<int,blaze::rowVector> vec( 4UL );
+      blaze::DynamicVector<int,blaze::rowVector> vec{ -1, 2, 3, 4 };
       vec[0] = -1;
       vec[1] =  2;
       vec[2] =  3;
@@ -579,11 +467,7 @@ void OperationTest::testMaximum()
 
    {
       // Initialization check
-      blaze::DynamicVector<int,blaze::rowVector> vec( 4UL );
-      vec[0] =  1;
-      vec[1] = -2;
-      vec[2] = -3;
-      vec[3] = -4;
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 1, -2, -3, -4 };
 
       checkSize    ( vec, 4UL );
       checkCapacity( vec, 4UL );
@@ -615,11 +499,7 @@ void OperationTest::testMaximum()
 
    {
       // Initialization check
-      blaze::DynamicVector<int,blaze::rowVector> vec( 4UL );
-      vec[0] = -1;
-      vec[1] =  2;
-      vec[2] =  3;
-      vec[3] =  4;
+      blaze::DynamicVector<int,blaze::rowVector> vec{ -1, 2, 3, 4 };
 
       checkSize    ( vec, 4UL );
       checkCapacity( vec, 4UL );
@@ -642,6 +522,238 @@ void OperationTest::testMaximum()
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Second computation failed\n"
+             << " Details:\n"
+             << "   Result: " << maximum << "\n"
+             << "   Expected result: 4\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c argmin() function for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c argmin() function for dense vectors. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testArgmin()
+{
+   test_ = "argmin() function";
+
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec;
+
+      const size_t minimum = argmin( vec );
+
+      checkSize    ( vec, 0UL );
+      checkCapacity( vec, 0UL );
+      checkNonZeros( vec, 0UL );
+
+      if( minimum != 0UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Argmin evaluation failed\n"
+             << " Details:\n"
+             << "   Result: " << minimum << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 99 };
+
+      const size_t minimum = argmin( vec );
+
+      checkSize    ( vec, 1UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      if( minimum != 0UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Argmin evaluation failed\n"
+             << " Details:\n"
+             << "   Result: " << minimum << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      const size_t minimum = argmin( vec );
+
+      checkSize    ( vec, 9UL );
+      checkCapacity( vec, 9UL );
+      checkNonZeros( vec, 9UL );
+
+      if( minimum != 0UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Argmin evaluation failed\n"
+             << " Details:\n"
+             << "   Result: " << minimum << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+
+      const size_t minimum = argmin( vec );
+
+      checkSize    ( vec, 9UL );
+      checkCapacity( vec, 9UL );
+      checkNonZeros( vec, 9UL );
+
+      if( minimum != 8UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Argmin evaluation failed\n"
+             << " Details:\n"
+             << "   Result: " << minimum << "\n"
+             << "   Expected result: 8\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 2, 3, 4, 5, 1, 6, 7, 8, 9 };
+
+      const size_t minimum = argmin( vec );
+
+      checkSize    ( vec, 9UL );
+      checkCapacity( vec, 9UL );
+      checkNonZeros( vec, 9UL );
+
+      if( minimum != 4UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Argmin evaluation failed\n"
+             << " Details:\n"
+             << "   Result: " << minimum << "\n"
+             << "   Expected result: 4\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c argmax() function for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c argmax() function for dense vectors. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testArgmax()
+{
+   test_ = "argmax() function";
+
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec;
+
+      const size_t maximum = argmax( vec );
+
+      checkSize    ( vec, 0UL );
+      checkCapacity( vec, 0UL );
+      checkNonZeros( vec, 0UL );
+
+      if( maximum != 0UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Argmax evaluation failed\n"
+             << " Details:\n"
+             << "   Result: " << maximum << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 99 };
+
+      const size_t maximum = argmax( vec );
+
+      checkSize    ( vec, 1UL );
+      checkCapacity( vec, 1UL );
+      checkNonZeros( vec, 1UL );
+
+      if( maximum != 0UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Argmax evaluation failed\n"
+             << " Details:\n"
+             << "   Result: " << maximum << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+
+      const size_t maximum = argmax( vec );
+
+      checkSize    ( vec, 9UL );
+      checkCapacity( vec, 9UL );
+      checkNonZeros( vec, 9UL );
+
+      if( maximum != 0UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Argmax evaluation failed\n"
+             << " Details:\n"
+             << "   Result: " << maximum << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+      const size_t maximum = argmax( vec );
+
+      checkSize    ( vec, 9UL );
+      checkCapacity( vec, 9UL );
+      checkNonZeros( vec, 9UL );
+
+      if( maximum != 8UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Argmax evaluation failed\n"
+             << " Details:\n"
+             << "   Result: " << maximum << "\n"
+             << "   Expected result: 8\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec{ 8, 7, 6, 5, 9, 4, 3, 2, 1 };
+
+      const size_t maximum = argmax( vec );
+
+      checkSize    ( vec, 9UL );
+      checkCapacity( vec, 9UL );
+      checkNonZeros( vec, 9UL );
+
+      if( maximum != 4UL ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Argmax evaluation failed\n"
              << " Details:\n"
              << "   Result: " << maximum << "\n"
              << "   Expected result: 4\n";
@@ -1033,6 +1145,116 @@ void OperationTest::testLpNorm()
              << "   lpNorm<4>(): " << norm1 << "\n"
              << "   lpNorm(4): " << norm2 << "\n"
              << "   Expected result: " << norm3 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c length() and \c sqrLength() functions for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c length() and \c sqrLength() functions for dense
+// vectors. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testLength()
+{
+   test_ = "length() and sqrLength() functions";
+
+   {
+      blaze::DynamicVector<double,blaze::rowVector> vec;
+
+      // Computing the vector length
+      const double len( length( vec ) );
+
+      if( !blaze::equal( len, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Length computation failed\n"
+             << " Details:\n"
+             << "   Result: " << len << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Computing the vector square length
+      const double sqrlen( sqrLength( vec ) );
+
+      if( !blaze::equal( sqrlen, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Square length computation failed\n"
+             << " Details:\n"
+             << "   Result: " << sqrlen << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::DynamicVector<double,blaze::rowVector> vec( 2UL );
+      vec[0] = 0.0;
+      vec[1] = 0.0;
+
+      // Computing the vector length
+      const double len( length( vec ) );
+
+      if( !blaze::equal( len, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Length computation failed\n"
+             << " Details:\n"
+             << "   Result: " << len << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Computing the vector square length
+      const double sqrlen( sqrLength( vec ) );
+
+      if( !blaze::equal( sqrlen, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Square length computation failed\n"
+             << " Details:\n"
+             << "   Result: " << sqrlen << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::DynamicVector<double,blaze::rowVector> vec( 2UL );
+      vec[0] = 3.0;
+      vec[1] = 4.0;
+
+      // Computing the vector length
+      const double len( length( vec ) );
+
+      if( !blaze::equal( len, 5.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Length computation failed\n"
+             << " Details:\n"
+             << "   Result: " << len << "\n"
+             << "   Expected result: 5\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Computing the vector square length
+      const double sqrlen( sqrLength( vec ) );
+
+      if( !blaze::equal( sqrlen, 25.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Square length computation failed\n"
+             << " Details:\n"
+             << "   Result: " << sqrlen << "\n"
+             << "   Expected result: 25\n";
          throw std::runtime_error( oss.str() );
       }
    }

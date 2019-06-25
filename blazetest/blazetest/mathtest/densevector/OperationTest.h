@@ -85,15 +85,17 @@ class OperationTest
    void testIsNan();
    void testIsUniform();
    void testIsZero();
-   void testLength();
    void testNormalize();
    void testMinimum();
    void testMaximum();
+   void testArgmin();
+   void testArgmax();
    void testL1Norm();
    void testL2Norm();
    void testL3Norm();
    void testL4Norm();
    void testLpNorm();
+   void testLength();
    void testMean();
    void testVar();
    void testStdDev();
