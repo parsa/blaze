@@ -518,6 +518,90 @@ inline decltype(auto) max( const DenseVector<VT,TF>& dv )
 }
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Returns the index of the first smallest element of the dense vector.
+// \ingroup dense_vector
+//
+// \param dv The given dense vector.
+// \return The index of the first smallest dense vector element.
+//
+// This function returns the index of the first smallest element of the given dense vector. This
+// function can only be used for element types that support the smaller-than relationship. In
+// case the given vector currently has a size of 0, the returned index is 0.
+
+   \code
+   blaze::DynamicVector<int> a{ 1, -2, 3, 0 };
+   const size_t minindex = argmin( a );  // Results in 1
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline size_t argmin( const DenseVector<VT,TF>& dv )
+{
+   if( (~dv).size() < 2UL )
+      return 0UL;
+
+   CompositeType_t<VT> a( ~dv );  // Evaluation of the dense vector operand
+
+   const size_t size( a.size() );
+   size_t index( 0UL );
+   auto min( a[0UL] );
+
+   for( size_t i=1UL; i<size; ++i ) {
+      auto cur( a[i] );
+      if( cur < min ) {
+         index = i;
+         min = std::move( cur );
+      }
+   }
+
+   return index;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the index of the first largest element of the dense vector.
+// \ingroup dense_vector
+//
+// \param dv The given dense vector.
+// \return The index of the first largest dense vector element.
+//
+// This function returns the index of the first largest element of the given dense vector. This
+// function can only be used for element types that support the smaller-than relationship. In
+// case the given vector currently has a size of 0, the returned index is 0.
+
+   \code
+   blaze::DynamicVector<int> a{ 1, -2, 3, 0 };
+   const size_t maxindex = argmax( a );  // Results in 2
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline size_t argmax( const DenseVector<VT,TF>& dv )
+{
+   if( (~dv).size() < 2UL )
+      return 0UL;
+
+   CompositeType_t<VT> a( ~dv );  // Evaluation of the dense vector operand
+
+   const size_t size( a.size() );
+   size_t index( 0UL );
+   auto max( a[0UL] );
+
+   for( size_t i=1UL; i<size; ++i ) {
+      auto cur( a[i] );
+      if( max < cur ) {
+         index = i;
+         max = std::move( cur );
+      }
+   }
+
+   return index;
+}
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
