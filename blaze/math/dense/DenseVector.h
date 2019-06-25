@@ -125,6 +125,12 @@ VT& operator<<=( DenseVector<VT,TF>& vec, int count );
 
 template< typename VT, bool TF >
 VT& operator<<=( DenseVector<VT,TF>&& vec, int count );
+
+template< typename VT, bool TF >
+VT& operator>>=( DenseVector<VT,TF>& vec, int count );
+
+template< typename VT, bool TF >
+VT& operator>>=( DenseVector<VT,TF>&& vec, int count );
 //@}
 //*************************************************************************************************
 
@@ -528,6 +534,62 @@ template< typename VT  // Type of the dense vector
 inline VT& operator<<=( DenseVector<VT,TF>&& vec, int count )
 {
    return operator<<=( ~vec, count );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Right-shift assignment operator for the uniform right-shift of a dense vector
+//        (\f$ \vec{a}>>=s \f$).
+// \ingroup dense_vector
+//
+// \param vec The dense vector for the uniform right-shift operation.
+// \param count The number of bits to shift all vector elements.
+// \return Reference to the dense vector.
+// \exception std::invalid_argument Invalid right-shift of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline VT& operator>>=( DenseVector<VT,TF>& vec, int count )
+{
+   if( IsRestricted_v<VT> ) {
+      if( !tryShift( ~vec, 0UL, (~vec).size(), count ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-shift of restricted vector" );
+      }
+   }
+
+   BLAZE_DECLTYPE_AUTO( left, derestrict( ~vec ) );
+
+   smpAssign( left, left >> count );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~vec ), "Invariant violation detected" );
+
+   return ~vec;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Right-shift assignment operator for the uniform shift of a temporary dense vector
+//        (\f$ \vec{v}>>=s \f$).
+// \ingroup dense_vector
+//
+// \param vec The temporary dense vector for the uniform right-shift operation.
+// \param count The number of bits to shift all vector elements.
+// \return Reference to the dense vector.
+// \exception std::invalid_argument Invalid right-shift of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline VT& operator>>=( DenseVector<VT,TF>&& vec, int count )
+{
+   return operator>>=( ~vec, count );
 }
 //*************************************************************************************************
 
