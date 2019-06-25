@@ -2561,6 +2561,33 @@ inline decltype(auto) operator<<( const DenseMatrix<MT,SO>& mat, int count )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Right-shift operator for the uniform right-shift of a dense matrix (\f$ A=B>>s \f$).
+// \ingroup dense_matrix
+//
+// \param mat The dense matrix for the uniform right-shift operation.
+// \param count The number of bits to shift all matrix elements.
+// \return The resulting matrix.
+//
+// This operator represents the uniform right-shift of all elements of a dense matrix:
+
+   \code
+   blaze::DynamicMatrix<unsigned int> A, B;
+   // ... Resizing and initialization
+   B = A >> 3;
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Transpose flag
+inline decltype(auto) operator>>( const DenseMatrix<MT,SO>& mat, int count )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~mat, blaze::ShiftRI( count ) );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
