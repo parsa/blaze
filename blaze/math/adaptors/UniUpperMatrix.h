@@ -529,10 +529,7 @@ inline bool tryAdd( const UniUpperMatrix<MT,SO,DF>& mat, size_t i, size_t j, con
 
    MAYBE_UNUSED( mat );
 
-   if( i < j )
-      return true;
-   else
-      return isDefault( value );
+   return ( i < j ) || isDefault( value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -703,7 +700,11 @@ BLAZE_ALWAYS_INLINE bool
 
    MAYBE_UNUSED( mat );
 
-   return ( row >= column + n ) || ( column >= row + m ) || isOne( value );
+   return ( m == 0UL ) ||
+          ( n == 0UL ) ||
+          ( row >= column + n ) ||
+          ( column >= row + m ) ||
+          isOne( value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -770,6 +771,79 @@ BLAZE_ALWAYS_INLINE bool
    MAYBE_UNUSED( mat );
 
    return ( row >= column + n ) || ( column >= row + m ) || isOne( value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by shifting a single element of an uniupper matrix.
+// \ingroup uniupper_matrix
+//
+// \param mat The target uniupper matrix.
+// \param i The row index of the element to be modified.
+// \param j The column index of the element to be modified.
+// \param count The number of bits to shift the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the adapted matrix
+        , bool SO      // Storage order of the adapted matrix
+        , bool DF >    // Density flag
+inline bool tryShift( const UniUpperMatrix<MT,SO,DF>& mat, size_t i, size_t j, int count )
+{
+   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
+
+   MAYBE_UNUSED( mat );
+
+   return ( i != j || isDefault( count ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by shifting a range of elements of an uniupper matrix.
+// \ingroup uniupper_matrix
+//
+// \param mat The target uniupper matrix.
+// \param row The index of the first row of the range to be multiplied.
+// \param column The index of the first column of the range to be multiplied.
+// \param m The number of rows of the range to be multiplied.
+// \param n The number of columns of the range to be multiplied.
+// \param count The number of bits to shift the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the adapted matrix
+        , bool SO      // Storage order of the adapted matrix
+        , bool DF >    // Density flag
+BLAZE_ALWAYS_INLINE bool
+   tryShift( const UniUpperMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, int count )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
+
+   MAYBE_UNUSED( mat );
+
+   return ( m == 0UL ) ||
+          ( n == 0UL ) ||
+          ( row >= column + n ) ||
+          ( column >= row + m ) ||
+          isDefault( count );
 }
 /*! \endcond */
 //*************************************************************************************************
