@@ -277,7 +277,7 @@ template< typename VT      // Type of the dense vector
         , typename Abs     // Type of the abs operation
         , typename Power   // Type of the power operation
         , typename Root >  // Type of the root operation
-decltype(auto) norm_backend( const DenseVector<VT,TF>& dv, Abs abs, Power power, Root root )
+inline decltype(auto) norm_backend( const DenseVector<VT,TF>& dv, Abs abs, Power power, Root root )
 {
    return norm_backend( ~dv, abs, power, root, Bool< DVecNormHelper<VT,Abs,Power>::value >() );
 }
@@ -302,7 +302,7 @@ decltype(auto) norm_backend( const DenseVector<VT,TF>& dv, Abs abs, Power power,
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-decltype(auto) norm( const DenseVector<VT,TF>& dv )
+inline decltype(auto) norm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -328,7 +328,7 @@ decltype(auto) norm( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-decltype(auto) sqrNorm( const DenseVector<VT,TF>& dv )
+inline decltype(auto) sqrNorm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -354,7 +354,7 @@ decltype(auto) sqrNorm( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-decltype(auto) l1Norm( const DenseVector<VT,TF>& dv )
+inline decltype(auto) l1Norm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -380,7 +380,7 @@ decltype(auto) l1Norm( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-decltype(auto) l2Norm( const DenseVector<VT,TF>& dv )
+inline decltype(auto) l2Norm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -406,7 +406,7 @@ decltype(auto) l2Norm( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-decltype(auto) l3Norm( const DenseVector<VT,TF>& dv )
+inline decltype(auto) l3Norm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -432,7 +432,7 @@ decltype(auto) l3Norm( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-decltype(auto) l4Norm( const DenseVector<VT,TF>& dv )
+inline decltype(auto) l4Norm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -464,7 +464,7 @@ decltype(auto) l4Norm( const DenseVector<VT,TF>& dv )
 template< typename VT    // Type of the dense vector
         , bool TF        // Transpose flag
         , typename ST >  // Type of the norm parameter
-decltype(auto) lpNorm( const DenseVector<VT,TF>& dv, ST p )
+inline decltype(auto) lpNorm( const DenseVector<VT,TF>& dv, ST p )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -527,11 +527,49 @@ inline decltype(auto) lpNorm( const DenseVector<VT,TF>& dv )
 */
 template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
-decltype(auto) maxNorm( const DenseVector<VT,TF>& dv )
+inline decltype(auto) maxNorm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
    return max( abs( ~dv ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculation of the square length (magnitude) of the dense vector \f$|\vec{a}|^2\f$.
+// \ingroup dense_vector
+//
+// \param dv The given dense vector.
+// \return The square length (magnitude) of the dense vector.
+//
+// This function calculates the actual square length (magnitude) of the dense vector. The
+// function has the same effect as calling the \a sqrNorm() function on the dense vector.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) sqrLength( const DenseVector<VT,TF>& dv )
+{
+   return sqrNorm( ~dv );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculation of the length (magnitude) of the dense vector \f$|\vec{a}|\f$.
+// \ingroup dense_vector
+//
+// \param dv The given dense vector.
+// \return The length (magnitude) of the dense vector.
+//
+// This function calculates the actual length (magnitude) of the dense vector. The function has
+// the same effect as calling the \a norm() function on the dense vector.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) length( const DenseVector<VT,TF>& dv )
+{
+   return norm( ~dv );
 }
 //*************************************************************************************************
 

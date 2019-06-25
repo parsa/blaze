@@ -489,12 +489,6 @@ bool isDivisor( const DenseVector<VT,TF>& dv );
 
 template< bool RF, typename VT, bool TF >
 bool isUniform( const DenseVector<VT,TF>& dv );
-
-template< typename VT, bool TF >
-const ElementType_t<VT> sqrLength( const DenseVector<VT,TF>& dv );
-
-template< typename VT, bool TF >
-auto length( const DenseVector<VT,TF>& dv ) -> decltype( sqrt( sqrLength( ~dv ) ) );
 //@}
 //*************************************************************************************************
 
@@ -667,81 +661,6 @@ bool isZero( const DenseVector<VT,TF>& dv )
    }
 
    return true;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Calculation of the square length (magnitude) of the dense vector \f$|\vec{a}|^2\f$.
-// \ingroup dense_vector
-//
-// \param dv The given dense vector.
-// \return The square length (magnitude) of the dense vector.
-//
-// This function calculates the actual square length (magnitude) of the dense vector.
-//
-// \note This operation is only defined for numeric data types. In case the element type is
-// not a numeric data type (i.e. a user defined data type or boolean) the attempt to use the
-// sqrLength() function results in a compile time error!
-*/
-template< typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
-const ElementType_t<VT> sqrLength( const DenseVector<VT,TF>& dv )
-{
-   using ElementType = ElementType_t<VT>;
-
-   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ElementType );
-
-   ElementType sum( 0 );
-   for( size_t i=0UL; i<(~dv).size(); ++i )
-      sum += pow2( (~dv)[i] );
-   return sum;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Calculation of the length (magnitude) of the dense vector \f$|\vec{a}|\f$.
-// \ingroup dense_vector
-//
-// \param dv The given dense vector.
-// \return The length (magnitude) of the dense vector.
-//
-// This function calculates the actual length (magnitude) of the dense vector. The return type
-// of the length() function depends on the actual element type of the vector instance:
-//
-// <table border="0" cellspacing="0" cellpadding="1">
-//    <tr>
-//       <td width="250px"> \b Type </td>
-//       <td width="100px"> \b LengthType </td>
-//    </tr>
-//    <tr>
-//       <td>float</td>
-//       <td>float</td>
-//    </tr>
-//    <tr>
-//       <td>integral data types and double</td>
-//       <td>double</td>
-//    </tr>
-//    <tr>
-//       <td>long double</td>
-//       <td>long double</td>
-//    </tr>
-//    <tr>
-//       <td>complex<T></td>
-//       <td>complex<T></td>
-//    </tr>
-// </table>
-//
-// \note This operation is only defined for numeric data types. In case the element type is
-// not a numeric data type (i.e. a user defined data type or boolean) the attempt to use the
-// sqrLength() function results in a compile time error!
-*/
-template< typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
-inline auto length( const DenseVector<VT,TF>& dv ) -> decltype( sqrt( sqrLength( ~dv ) ) )
-{
-   return sqrt( sqrLength( ~dv ) );
 }
 //*************************************************************************************************
 
