@@ -1391,6 +1391,69 @@ BLAZE_ALWAYS_INLINE bool
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by shifting a single element of a row.
+// \ingroup row
+//
+// \param row The target row.
+// \param index The index of the element to be modified.
+// \param count The number of bits to shift the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , size_t... CRAs >  // Compile time row arguments
+inline bool tryShift( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, int count )
+{
+   BLAZE_INTERNAL_ASSERT( index < row.size(), "Invalid vector access index" );
+
+   return tryShift( row.operand(), row.row(), index, count );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by shifting a range of elements of a row.
+// \ingroup row
+//
+// \param row The target row.
+// \param index The index of the first element of the range to be modified.
+// \param size The number of elements of the range to be modified.
+// \param count The number of bits to shift the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , size_t... CRAs >  // Compile time row arguments
+BLAZE_ALWAYS_INLINE bool
+   tryShift( const Row<MT,SO,DF,SF,CRAs...>& row, size_t index, size_t size, int count )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (~row).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (~row).size(), "Invalid range size" );
+
+   return tryShift( row.operand(), row.row(), index, 1UL, size, count );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by the assignment of a vector to a row.
 // \ingroup row
 //
