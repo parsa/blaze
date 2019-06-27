@@ -53,6 +53,7 @@
 #include <blaze/math/lapack/getrf.h>
 #include <blaze/math/lapack/getri.h>
 #include <blaze/math/lapack/getrs.h>
+#include <blaze/math/lapack/gges.h>
 #include <blaze/math/lapack/heev.h>
 #include <blaze/math/lapack/heevd.h>
 #include <blaze/math/lapack/heevx.h>

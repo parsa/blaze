@@ -98,6 +98,8 @@ class EigenvalueTest
    /*!\name Test functions */
    //@{
    template< typename Type > void testGeev();
+   template< typename Type, bool SOA, bool SOB, bool SOL, bool SOR > void testGges();
+   template< typename Type, bool SOA, bool SOB, bool SOL, bool SOR > void testGgesSelect();
    template< typename Type > void testSyev();
    template< typename Type > void testSyevd();
    template< typename Type > void testSyevx();
@@ -117,6 +119,11 @@ class EigenvalueTest
    template< typename VT, typename MT, bool SO, typename ST >
    void checkEigenvector( const blaze::DenseVector<VT,true>& u,
                           const blaze::DenseMatrix<MT,SO>& A, ST w );
+
+   template< typename MT1, bool SO1, typename MT2, bool SO2, typename ST1, typename ST2 >
+   void checkEigenvalue( const blaze::DenseMatrix<MT1, SO1>& A,
+                         const blaze::DenseMatrix<MT2, SO2>& B, 
+                         ST1 alpha, ST2 beta );
    //@}
    //**********************************************************************************************
 
@@ -130,6 +137,74 @@ class EigenvalueTest
 //*************************************************************************************************
 
 
+//=================================================================================================
+//
+//  HELPER FUNCTIONS / CLASSES
+//
+//=================================================================================================
+namespace detail {
+
+template < bool TF >
+struct ConditionalTranspose;
+
+template <>
+struct ConditionalTranspose<true>
+{
+   template < typename MT, bool SO >
+   decltype(auto) operator()( blaze::Matrix<MT,SO> const& A ) const
+   {
+      return trans( ~A );
+   }   
+};
+
+
+template <>
+struct ConditionalTranspose<false>
+{
+   template < typename MT, bool SO >
+   MT const& operator()( blaze::Matrix<MT,SO> const& A ) const
+   {
+      return ~A;
+   }   
+};
+
+
+template < typename ST >
+inline ST singularEigenvalueThreshold();
+
+
+template <>
+inline double singularEigenvalueThreshold<double>()
+{
+   return 1e-12;
+}
+
+
+template <>
+inline float singularEigenvalueThreshold<float>()
+{
+   return 1e-4f;
+}
+
+
+template < typename ST >
+inline ST schurFactorizationTolerance();
+
+
+template <>
+inline double schurFactorizationTolerance<double>()
+{
+   return 1e-14;
+}
+
+
+template <>
+inline float schurFactorizationTolerance<float>()
+{
+   return 1e-5f;
+}
+
+}
 
 
 //=================================================================================================
@@ -1103,7 +1178,173 @@ void EigenvalueTest::testHeevx()
 }
 //*************************************************************************************************
 
+//*************************************************************************************************
+/*!\brief Test of generalized Schur factorization functions for general matrices (gges).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the eigenvalue functions for general matrices for various
+// data types. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type, bool SOA, bool SOB, bool SOL, bool SOR >
+void EigenvalueTest::testGges()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
 
+   test_ = "General matrix eigenvalue and Schur form computation (gges)";
+
+   using CT = blaze::If_t< blaze::IsComplex_v<Type>, Type, blaze::complex<Type> >;
+   using detail::ConditionalTranspose;
+
+   {
+      blaze::StaticMatrix<Type,3UL,3UL,SOA> A;
+      blaze::StaticMatrix<Type,3UL,3UL,SOB> B;
+      randomize( A );
+      randomize( B );
+
+      blaze::StaticMatrix<Type,3UL,3UL,SOL> VL;
+      blaze::StaticMatrix<Type,3UL,3UL,SOR> VR;
+      
+      blaze::StaticMatrix<Type,3UL,3UL,SOA> S(A);
+      blaze::StaticMatrix<Type,3UL,3UL,SOB> T(B);
+      blaze::StaticVector<CT,3UL,blaze::rowVector> alpha;
+      blaze::StaticVector<Type,3UL,blaze::rowVector> beta;
+
+      blaze::gges( S, T, alpha, beta, VL, VR );
+
+      ConditionalTranspose<SOA == blaze::rowMajor> const CTA;
+      ConditionalTranspose<SOB == blaze::rowMajor> const CTB;
+      ConditionalTranspose<SOL == blaze::rowMajor> const CTL;
+      ConditionalTranspose<SOR == blaze::rowMajor> const CTR;
+
+      for (std::size_t i = 0; i < alpha.size(); ++i)
+         checkEigenvalue(CTA(A), CTB(B), alpha[i], beta[i]);
+
+      if( !( maxNorm(CTL(VL) * CTA(S) * CTR(trans(VR)) - CTA(A)) < detail::schurFactorizationTolerance<Type>() )
+         || !( maxNorm(CTL(VL) * CTB(T) * CTR(trans(VR)) - CTB(B)) < detail::schurFactorizationTolerance<Type>() ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Matrix generalized Schur factorization failed\n"
+             << " Details:\n"
+             << "   Random seed = " << blaze::getSeed() << "\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Left Schur vectors:\n" << VL << "\n"
+             << "   Right Schur vectors:\n" << VR << "\n"
+             << "   alpha:\n" << alpha << "\n"
+             << "   beta:\n" << beta << "\n"
+             << "   Residual A:\n" << CTL(VL) * CTA(S) * CTR(trans(VR)) - CTA(A) << "\n"
+             << "   Residual B:\n" << CTL(VL) * CTB(T) * CTR(trans(VR)) - CTB(B) << "\n"
+             << "   ";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of generalized Schur factorization functions for general matrices (gges) 
+// with eigenvalue selection.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the eigenvalue functions for general matrices for various
+// data types. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type, bool SOA, bool SOB, bool SOL, bool SOR >
+void EigenvalueTest::testGgesSelect()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   test_ = "General matrix eigenvalue and Schur form computation (gges)";
+
+   using CT = blaze::If_t< blaze::IsComplex_v<Type>, Type, blaze::complex<Type> >;
+   using RT = typename CT::value_type;
+   using detail::ConditionalTranspose;
+
+   blaze::StaticMatrix<Type,3UL,3UL,SOA> A;
+   blaze::StaticMatrix<Type,3UL,3UL,SOB> B;
+   randomize( A );
+   randomize( B );
+
+   blaze::StaticMatrix<Type,3UL,3UL,SOL> VL;
+   blaze::StaticMatrix<Type,3UL,3UL,SOR> VR;
+   
+   blaze::StaticMatrix<Type,3UL,3UL,SOA> S(A);
+   blaze::StaticMatrix<Type,3UL,3UL,SOB> T(B);
+   blaze::StaticVector<CT,3UL,blaze::rowVector> alpha;
+   blaze::StaticVector<Type,3UL,blaze::rowVector> beta;
+
+   auto selctg = [] (RT const * alphar, RT const * alphai, RT const * beta) -> int
+   {
+      return *alphar > 0.;
+   };
+
+   blaze::gges( selctg, S, T, alpha, beta, VL, VR );
+
+   ConditionalTranspose<SOA == blaze::rowMajor> const CTA;
+   ConditionalTranspose<SOB == blaze::rowMajor> const CTB;
+   ConditionalTranspose<SOL == blaze::rowMajor> const CTL;
+   ConditionalTranspose<SOR == blaze::rowMajor> const CTR;
+
+   for (std::size_t i = 0; i < alpha.size(); ++i)
+      checkEigenvalue(CTA(A), CTB(B), alpha[i], beta[i]);
+
+   if( !( maxNorm(CTL(VL) * CTA(S) * CTR(trans(VR)) - CTA(A)) < detail::schurFactorizationTolerance<Type>() )
+      || !( maxNorm(CTL(VL) * CTB(T) * CTR(trans(VR)) - CTB(B)) < detail::schurFactorizationTolerance<Type>() ) ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+            << " Error: Matrix generalized Schur factorization failed\n"
+            << " Details:\n"
+            << "   Random seed = " << blaze::getSeed() << "\n"
+            << "   Element type:\n"
+            << "     " << typeid( Type ).name() << "\n"
+            << "   Left Schur vectors:\n" << VL << "\n"
+            << "   Right Schur vectors:\n" << VR << "\n"
+            << "   alpha:\n" << alpha << "\n"
+            << "   beta:\n" << beta << "\n"
+            << "   Residual A:\n" << CTL(VL) * CTA(S) * CTR(trans(VR)) - CTA(A) << "\n"
+            << "   Residual B:\n" << CTL(VL) * CTB(T) * CTR(trans(VR)) - CTB(B) << "\n"
+            << "   ";
+      throw std::runtime_error( oss.str() );
+   }
+
+   // Check eigenvalue order: the values selected by selctg should go first.
+   std::vector<bool> selected(size(alpha));
+   for (std::size_t i = 0; i < size(alpha); ++i)
+   {
+      RT const alphar = real(alpha[i]);
+      RT const alphai = imag(alpha[i]);
+      selected[i] = selctg(&alphar, &alphai, &beta[i]);
+
+      if (i > 0 && selected[i] && !selected[i - 1])
+      {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+            << " Error: wrong eigenvalue order\n"
+            << " Details:\n"
+            << "   Random seed = " << blaze::getSeed() << "\n"
+            << "   Element type:\n"
+            << "     " << typeid( Type ).name() << "\n"
+            << "   Left Schur vectors:\n" << VL << "\n"
+            << "   Right Schur vectors:\n" << VR << "\n"
+            << "   alpha:\n" << alpha << "\n"
+            << "   beta:\n" << beta << "\n"
+            << "   Residual A:\n" << CTL(VL) * CTA(S) * CTR(trans(VR)) - CTA(A) << "\n"
+            << "   Residual B:\n" << CTL(VL) * CTB(T) * CTR(trans(VR)) - CTB(B) << "\n"
+            << "   ";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
 
 
 //=================================================================================================
@@ -1189,6 +1430,72 @@ void EigenvalueTest::checkEigenvector( const blaze::DenseVector<VT,true>& u,
 }
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Checking the given generalized eigenvalue.
+//
+// \param A The first corresponding dense matrix.
+// \param B The second corresponding dense matrix.
+// \param alpha The numerator of the generalized eigenvalue.
+// \param beta The denominator of the generalized eigenvalue.
+// \return void
+// \exception std::runtime_error Invalid generalized eigenvalue detected.
+//
+// This function checks the given generalized eigenvalue \f$\lambda=\frac{\alpha}{\beta}\f$ by testing if it satisfies
+
+                       \f[\det(\beta A - \alpha B) = 0 \f]
+
+// where \f$\lambda=\frac{\alpha}{\beta}\f$ is the corresponding eigenvalue.
+*/
+template< typename MT1, bool SO1, typename MT2, bool SO2, typename ST1, typename ST2 >
+void EigenvalueTest::checkEigenvalue( const blaze::DenseMatrix<MT1, SO1>& A,
+                        const blaze::DenseMatrix<MT2, SO2>& B, 
+                        ST1 alpha, ST2 beta )
+{
+   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ST1 );
+
+   // M must be singular
+   auto M = evaluate(beta * A - alpha * B);
+
+   // Determine the type of M an the type of M elements
+   using MType = decltype(M);
+   using MElementType = blaze::ElementType_t<MType>;
+   
+   // M must be complex, because alpha is complex.
+   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( MElementType );
+   using MElementScalarType = typename MElementType::value_type;
+
+   // Evaluate eigenvalues of M
+   // The initial content of M is destroyed by geev().
+   blaze::DynamicVector<MElementType, blaze::rowVector> w;
+   geev(M, w);
+
+   // Check that at least one of the eigenvalues of M is close to 0 with specified tolerance.
+   if (std::find_if(begin(w), end(w), 
+      [] (MElementType w_i) { return abs(w_i) < detail::singularEigenvalueThreshold<MElementScalarType>(); }) == end(w))
+   {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Invalid generalized eigenvalue detected (test matrix M=beta*A-alpha*B is not singular)\n"
+          << " Details:\n"
+          << "   Random seed = " << blaze::getSeed() << "\n"
+          << "   Element type A:\n"
+          << "     " << typeid( typename MT1::ElementType ).name() << "\n"
+          << "   Element type B:\n"
+          << "     " << typeid( typename MT2::ElementType ).name() << "\n"
+          << "   Type alpha:\n"
+          << "     " << typeid( ST1 ).name() << "\n"
+          << "   Type beta:\n"
+          << "     " << typeid( ST2 ).name() << "\n"
+          << "   System matrix A:\n" << (~A) << "\n"
+          << "   System matrix B:\n" << (~B) << "\n"
+          << "   Eigenvalue numerator = " << alpha << "\n"
+          << "   Eigenvalue denominator = " << beta << "\n"
+          << "   Test matrix M = " << beta * A - alpha * B << "\n"
+          << "   Eigenvalues of M = " << w << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
 
 
 
