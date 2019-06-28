@@ -81,6 +81,7 @@
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsBLASCompatible.h>
+#include <blaze/math/typetraits/IsCUDAAssignable.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsContiguous.h>
@@ -217,7 +218,8 @@ class DMatDMatMultExpr
         IsContiguous_v<T2> && HasConstDataAccess_v<T2> &&
         IsContiguous_v<T3> && HasConstDataAccess_v<T3> &&
         !IsDiagonal_v<T2> && !IsDiagonal_v<T3> &&
-        //T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
+        (  ( T1::simdEnabled && T2::simdEnabled && T3::simdEnabled )
+        || ( IsCUDAAssignable_v<T1> && IsCUDAAssignable_v<T2> && IsCUDAAssignable_v<T3> ) ) &&
         IsBLASCompatible_v< ElementType_t<T1> > &&
         IsBLASCompatible_v< ElementType_t<T2> > &&
         IsBLASCompatible_v< ElementType_t<T3> > &&
