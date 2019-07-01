@@ -83,7 +83,6 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
-#include <blaze/util/DecltypeAuto.h>
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TypeList.h>
@@ -671,7 +670,7 @@ inline Columns<MT,true,false,SF,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    left.reset();
    smpAssign( left, tmp );
@@ -724,7 +723,7 @@ inline Columns<MT,true,false,SF,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -787,7 +786,7 @@ inline Columns<MT,true,false,SF,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<MT2> tmp( right );
@@ -854,7 +853,7 @@ inline Columns<MT,true,false,SF,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    left.reset();
    smpAssign( left, tmp );
@@ -914,7 +913,7 @@ inline Columns<MT,true,false,SF,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    left.reset();
    smpAssign( left, tmp );
@@ -974,7 +973,7 @@ inline Columns<MT,true,false,SF,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    left.reset();
    smpAssign( left, tmp );
@@ -1804,7 +1803,7 @@ inline Columns<MT,true,false,SF,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    left.reset();
    smpAssign( left, tmp );
@@ -1848,7 +1847,7 @@ inline Columns<MT,true,false,SF,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    left.reset();
    smpAssign( left, tmp );
@@ -3097,7 +3096,7 @@ inline Columns<MT,false,false,false,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -3148,7 +3147,7 @@ inline Columns<MT,false,false,false,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -3210,7 +3209,7 @@ inline Columns<MT,false,false,false,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
       const ResultType_t<MT2> tmp( right );
@@ -3278,7 +3277,7 @@ inline Columns<MT,false,false,false,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsSparseMatrix_v<AddType> ) {
       left.reset();
@@ -3340,7 +3339,7 @@ inline Columns<MT,false,false,false,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsSparseMatrix_v<SubType> ) {
       left.reset();
@@ -3402,7 +3401,7 @@ inline Columns<MT,false,false,false,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsSparseMatrix_v<SchurType> ) {
       left.reset();
@@ -4260,7 +4259,7 @@ inline Columns<MT,false,false,false,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    left.reset();
    smpAssign( left, tmp );
@@ -4306,7 +4305,7 @@ inline Columns<MT,false,false,false,CCAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    left.reset();
    smpAssign( left, tmp );

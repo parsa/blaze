@@ -77,7 +77,6 @@
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DecltypeAuto.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/mpl/If.h>
@@ -152,7 +151,7 @@ inline auto operator*=( SparseMatrix<MT,SO>& mat, ST scalar )
    }
    else
    {
-      BLAZE_DECLTYPE_AUTO( left, derestrict( ~mat ) );
+      decltype(auto) left( derestrict( ~mat ) );
 
       const size_t iend( SO == rowMajor ? (~mat).rows() : (~mat).columns() );
       for( size_t i=0UL; i<iend; ++i ) {
@@ -232,7 +231,7 @@ inline auto operator/=( SparseMatrix<MT,SO>& mat, ST scalar )
                                 , DivTrait_t< UnderlyingNumeric_t<MT>, ST > >
                           , ST >;
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( ~mat ) );
+   decltype(auto) left( derestrict( ~mat ) );
 
    if( IsInvertible_v<ScalarType> ) {
       const ScalarType tmp( ScalarType(1)/static_cast<ScalarType>( scalar ) );

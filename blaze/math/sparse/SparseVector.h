@@ -60,7 +60,6 @@
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DecltypeAuto.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
@@ -130,7 +129,7 @@ inline auto operator*=( SparseVector<VT,TF>& vec, ST scalar )
    }
    else
    {
-      BLAZE_DECLTYPE_AUTO( left, derestrict( ~vec ) );
+      decltype(auto) left( derestrict( ~vec ) );
 
       const auto last( left.end() );
       for( auto element=left.begin(); element!=last; ++element ) {
@@ -205,7 +204,7 @@ inline auto operator/=( SparseVector<VT,TF>& vec, ST scalar )
                                 , DivTrait_t< UnderlyingNumeric_t<VT>, ST > >
                           , ST >;
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( ~vec ) );
+   decltype(auto) left( derestrict( ~vec ) );
 
    if( IsInvertible_v<ScalarType> ) {
       const ScalarType tmp( ScalarType(1)/static_cast<ScalarType>( scalar ) );

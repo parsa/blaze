@@ -94,7 +94,6 @@
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DecltypeAuto.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
@@ -977,8 +976,8 @@ inline decltype(auto) submatrix( const MatMatMultExpr<MT>& matrix, RSAs... args 
 
    const SubmatrixData<CSAs...> sd( args... );
 
-   BLAZE_DECLTYPE_AUTO( left , (~matrix).leftOperand()  );
-   BLAZE_DECLTYPE_AUTO( right, (~matrix).rightOperand() );
+   decltype(auto) left ( (~matrix).leftOperand()  );
+   decltype(auto) right( (~matrix).rightOperand() );
 
    const size_t begin( max( ( IsUpper_v<MT1> )
                             ?( ( !AF && IsStrictlyUpper_v<MT1> )
@@ -1613,8 +1612,8 @@ inline decltype(auto) subvector( const MatVecMultExpr<VT>& vector, RSAs... args 
 
    const SubvectorData<CSAs...> sd( args... );
 
-   BLAZE_DECLTYPE_AUTO( left , (~vector).leftOperand()  );
-   BLAZE_DECLTYPE_AUTO( right, (~vector).rightOperand() );
+   decltype(auto) left ( (~vector).leftOperand()  );
+   decltype(auto) right( (~vector).rightOperand() );
 
    const size_t column( ( IsUpper_v<MT> )
                         ?( ( !AF && IsStrictlyUpper_v<MT> )?( sd.offset() + 1UL ):( sd.offset() ) )
@@ -1657,8 +1656,8 @@ inline decltype(auto) subvector( const TVecMatMultExpr<VT>& vector, RSAs... args
 
    const SubvectorData<CSAs...> sd( args... );
 
-   BLAZE_DECLTYPE_AUTO( left , (~vector).leftOperand()  );
-   BLAZE_DECLTYPE_AUTO( right, (~vector).rightOperand() );
+   decltype(auto) left ( (~vector).leftOperand()  );
+   decltype(auto) right( (~vector).rightOperand() );
 
    const size_t row( ( IsLower_v<MT> )
                      ?( ( !AF && IsStrictlyLower_v<MT> )?( sd.offset() + 1UL ):( sd.offset() ) )

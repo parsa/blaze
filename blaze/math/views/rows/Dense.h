@@ -90,7 +90,6 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Vectorizable.h>
-#include <blaze/util/DecltypeAuto.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/MaybeUnused.h>
@@ -890,7 +889,7 @@ inline Rows<MT,true,true,SF,CRAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    size_t i( 0UL );
 
    for( const auto& rowList : list ) {
@@ -946,7 +945,7 @@ inline Rows<MT,true,true,SF,CRAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -1007,7 +1006,7 @@ inline Rows<MT,true,true,SF,CRAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsSparseMatrix_v<MT2> ) {
       reset();
@@ -1075,7 +1074,7 @@ inline auto Rows<MT,true,true,SF,CRAs...>::operator+=( const Matrix<MT2,SO2>& rh
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const AddType tmp( *this + (~rhs) );
@@ -1141,7 +1140,7 @@ inline auto Rows<MT,true,true,SF,CRAs...>::operator+=( const Matrix<MT2,SO2>& rh
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -1199,7 +1198,7 @@ inline auto Rows<MT,true,true,SF,CRAs...>::operator-=( const Matrix<MT2,SO2>& rh
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const SubType tmp( *this - (~rhs ) );
@@ -1265,7 +1264,7 @@ inline auto Rows<MT,true,true,SF,CRAs...>::operator-=( const Matrix<MT2,SO2>& rh
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -1322,7 +1321,7 @@ inline auto Rows<MT,true,true,SF,CRAs...>::operator%=( const Matrix<MT2,SO2>& rh
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const SchurType tmp( *this % (~rhs) );
@@ -1389,7 +1388,7 @@ inline auto Rows<MT,true,true,SF,CRAs...>::operator%=( const Matrix<MT2,SO2>& rh
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsSparseMatrix_v<SchurType> ) {
       reset();
@@ -1653,7 +1652,7 @@ inline Rows<MT,true,true,SF,CRAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -1699,7 +1698,7 @@ inline Rows<MT,true,true,SF,CRAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -4110,7 +4109,7 @@ inline Rows<MT,false,true,false,CRAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
    size_t i( 0UL );
 
    for( const auto& rowList : list ) {
@@ -4165,7 +4164,7 @@ inline Rows<MT,false,true,false,CRAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( rhs.canAlias( &matrix_ ) ) {
       const ResultType tmp( rhs );
@@ -4225,7 +4224,7 @@ inline Rows<MT,false,true,false,CRAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsSparseMatrix_v<MT2> ) {
       reset();
@@ -4292,7 +4291,7 @@ inline auto Rows<MT,false,true,false,CRAs...>::operator+=( const Matrix<MT2,SO2>
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const AddType tmp( *this + (~rhs) );
@@ -4357,7 +4356,7 @@ inline auto Rows<MT,false,true,false,CRAs...>::operator+=( const Matrix<MT2,SO2>
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -4414,7 +4413,7 @@ inline auto Rows<MT,false,true,false,CRAs...>::operator-=( const Matrix<MT2,SO2>
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const SubType tmp( *this - (~rhs ) );
@@ -4479,7 +4478,7 @@ inline auto Rows<MT,false,true,false,CRAs...>::operator-=( const Matrix<MT2,SO2>
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -4535,7 +4534,7 @@ inline auto Rows<MT,false,true,false,CRAs...>::operator%=( const Matrix<MT2,SO2>
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( (~rhs).canAlias( &matrix_ ) ) {
       const SchurType tmp( *this % (~rhs) );
@@ -4601,7 +4600,7 @@ inline auto Rows<MT,false,true,false,CRAs...>::operator%=( const Matrix<MT2,SO2>
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsSparseMatrix_v<SchurType> ) {
       reset();
@@ -4867,7 +4866,7 @@ inline Rows<MT,false,true,false,CRAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 
@@ -4912,7 +4911,7 @@ inline Rows<MT,false,true,false,CRAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    smpAssign( left, tmp );
 

@@ -69,7 +69,6 @@
 #include <blaze/system/Blocking.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DecltypeAuto.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
@@ -1171,7 +1170,7 @@ void lmmm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
    DynamicMatrix<ET2,false> A2( M, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, JBLOCK );
 
-   BLAZE_DECLTYPE_AUTO( c, derestrict( ~C ) );
+   decltype(auto) c( derestrict( ~C ) );
 
    if( isDefault( beta ) ) {
       reset( c );
@@ -1697,7 +1696,7 @@ void lmmm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
    DynamicMatrix<ET2,false> A2( IBLOCK, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, N );
 
-   BLAZE_DECLTYPE_AUTO( c, derestrict( ~C ) );
+   decltype(auto) c( derestrict( ~C ) );
 
    if( isDefault( beta ) ) {
       reset( c );
@@ -2241,7 +2240,7 @@ void ummm( DenseMatrix<MT1,false>& C, const MT2& A, const MT3& B, ST alpha, ST b
    DynamicMatrix<ET2,false> A2( M, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, JBLOCK );
 
-   BLAZE_DECLTYPE_AUTO( c, derestrict( ~C ) );
+   decltype(auto) c( derestrict( ~C ) );
 
    if( isDefault( beta ) ) {
       reset( c );
@@ -2759,7 +2758,7 @@ void ummm( DenseMatrix<MT1,true>& C, const MT2& A, const MT3& B, ST alpha, ST be
    DynamicMatrix<ET2,false> A2( IBLOCK, KBLOCK );
    DynamicMatrix<ET3,true>  B2( KBLOCK, N );
 
-   BLAZE_DECLTYPE_AUTO( c, derestrict( ~C ) );
+   decltype(auto) c( derestrict( ~C ) );
 
    if( isDefault( beta ) ) {
       reset( c );

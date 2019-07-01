@@ -69,7 +69,6 @@
 #include <blaze/math/views/elements/ElementsData.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DecltypeAuto.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/typetraits/IsConst.h>
@@ -1015,7 +1014,7 @@ inline Elements<VT,TF,true,CEAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( rhs.canAlias( &vector_ ) ) {
       const ResultType tmp( rhs );
@@ -1070,7 +1069,7 @@ inline Elements<VT,TF,true,CEAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
@@ -1127,7 +1126,7 @@ inline Elements<VT,TF,true,CEAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
@@ -1182,7 +1181,7 @@ inline Elements<VT,TF,true,CEAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
@@ -1238,7 +1237,7 @@ inline Elements<VT,TF,true,CEAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
@@ -1293,7 +1292,7 @@ inline Elements<VT,TF,true,CEAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
       const ResultType_t<VT2> tmp( right );
@@ -1356,7 +1355,7 @@ inline Elements<VT,TF,true,CEAs...>&
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( *this ) );
+   decltype(auto) left( derestrict( *this ) );
 
    assign( left, tmp );
 

@@ -72,7 +72,6 @@
 #include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DecltypeAuto.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/mpl/If.h>
@@ -326,7 +325,7 @@ inline auto operator+=( DenseMatrix<MT,SO>& mat, ST scalar )
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( ~mat ) );
+   decltype(auto) left( derestrict( ~mat ) );
 
    smpAssign( left, left + scalar );
 
@@ -388,7 +387,7 @@ inline auto operator-=( DenseMatrix<MT,SO>& mat, ST scalar )
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( ~mat ) );
+   decltype(auto) left( derestrict( ~mat ) );
 
    smpAssign( left, left - scalar );
 
@@ -450,7 +449,7 @@ inline auto operator*=( DenseMatrix<MT,SO>& mat, ST scalar )
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( ~mat ) );
+   decltype(auto) left( derestrict( ~mat ) );
 
    smpAssign( left, left * scalar );
 
@@ -516,7 +515,7 @@ inline auto operator/=( DenseMatrix<MT,SO>& mat, ST scalar )
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( ~mat ) );
+   decltype(auto) left( derestrict( ~mat ) );
 
    smpAssign( left, left / scalar );
 
@@ -578,7 +577,7 @@ inline MT& operator<<=( DenseMatrix<MT,SO>& mat, int count )
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( ~mat ) );
+   decltype(auto) left( derestrict( ~mat ) );
 
    smpAssign( left, left << count );
 
@@ -636,7 +635,7 @@ inline MT& operator>>=( DenseMatrix<MT,SO>& mat, int count )
       }
    }
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( ~mat ) );
+   decltype(auto) left( derestrict( ~mat ) );
 
    smpAssign( left, left >> count );
 
