@@ -44,6 +44,7 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/functors/Abs.h>
+#include <blaze/math/functors/Bind2nd.h>
 #include <blaze/math/functors/Cbrt.h>
 #include <blaze/math/functors/L1Norm.h>
 #include <blaze/math/functors/L2Norm.h>
@@ -51,12 +52,12 @@
 #include <blaze/math/functors/L4Norm.h>
 #include <blaze/math/functors/LpNorm.h>
 #include <blaze/math/functors/Noop.h>
+#include <blaze/math/functors/Pow.h>
 #include <blaze/math/functors/Pow2.h>
 #include <blaze/math/functors/Pow3.h>
 #include <blaze/math/functors/Qdrt.h>
 #include <blaze/math/functors/SqrAbs.h>
 #include <blaze/math/functors/Sqrt.h>
-#include <blaze/math/functors/UnaryPow.h>
 #include <blaze/math/shims/Evaluate.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -317,7 +318,8 @@ decltype(auto) lpNorm( const SparseMatrix<MT,SO>& sm, ST p )
    BLAZE_USER_ASSERT( !isZero( p ), "Invalid p for Lp norm detected" );
 
    using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, decltype( inv( p ) ) >;
-   return norm_backend( ~sm, Abs(), UnaryPow<ScalarType>( p ), UnaryPow<ScalarType>( inv( p ) ) );
+   using UnaryPow = Bind2nd<Pow,ScalarType>;
+   return norm_backend( ~sm, Abs(), UnaryPow( Pow(), p ), UnaryPow( Pow(), inv( p ) ) );
 }
 //*************************************************************************************************
 

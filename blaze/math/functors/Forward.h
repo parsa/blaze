@@ -136,7 +136,6 @@ struct Tan;
 struct Tanh;
 struct Trans;
 struct Trunc;
-template< typename > struct UnaryPow;
 
 } // namespace blaze
 

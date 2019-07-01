@@ -125,6 +125,5 @@
 #include <blaze/math/functors/Tanh.h>
 #include <blaze/math/functors/Trans.h>
 #include <blaze/math/functors/Trunc.h>
-#include <blaze/math/functors/UnaryPow.h>
 
 #endif
