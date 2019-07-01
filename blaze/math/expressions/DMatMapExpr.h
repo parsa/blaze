@@ -1126,8 +1126,7 @@ inline decltype(auto) forEach( const DenseMatrix<MT,SO>& dm, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,OP,SO>;
-   return ReturnType( ~dm, op );
+   return map( ~dm, op );
 }
 //*************************************************************************************************
 
@@ -1155,8 +1154,7 @@ inline decltype(auto) abs( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Abs,SO>;
-   return ReturnType( ~dm, Abs() );
+   return map( ~dm, Abs() );
 }
 //*************************************************************************************************
 
@@ -1184,8 +1182,7 @@ inline decltype(auto) sign( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Sign,SO>;
-   return ReturnType( ~dm, Sign() );
+   return map( ~dm, Sign() );
 }
 //*************************************************************************************************
 
@@ -1213,8 +1210,7 @@ inline decltype(auto) floor( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Floor,SO>;
-   return ReturnType( ~dm, Floor() );
+   return map( ~dm, Floor() );
 }
 //*************************************************************************************************
 
@@ -1242,8 +1238,7 @@ inline decltype(auto) ceil( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Ceil,SO>;
-   return ReturnType( ~dm, Ceil() );
+   return map( ~dm, Ceil() );
 }
 //*************************************************************************************************
 
@@ -1271,8 +1266,7 @@ inline decltype(auto) trunc( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Trunc,SO>;
-   return ReturnType( ~dm, Trunc() );
+   return map( ~dm, Trunc() );
 }
 //*************************************************************************************************
 
@@ -1300,8 +1294,7 @@ inline decltype(auto) round( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Round,SO>;
-   return ReturnType( ~dm, Round() );
+   return map( ~dm, Round() );
 }
 //*************************************************************************************************
 
@@ -1329,8 +1322,7 @@ inline decltype(auto) conj( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Conj,SO>;
-   return ReturnType( ~dm, Conj() );
+   return map( ~dm, Conj() );
 }
 //*************************************************************************************************
 
@@ -1395,8 +1387,7 @@ inline decltype(auto) real( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Real,SO>;
-   return ReturnType( ~dm, Real() );
+   return map( ~dm, Real() );
 }
 //*************************************************************************************************
 
@@ -1424,8 +1415,7 @@ inline decltype(auto) imag( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Imag,SO>;
-   return ReturnType( ~dm, Imag() );
+   return map( ~dm, Imag() );
 }
 //*************************************************************************************************
 
@@ -1456,8 +1446,7 @@ inline decltype(auto) sqrt( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Sqrt,SO>;
-   return ReturnType( ~dm, Sqrt() );
+   return map( ~dm, Sqrt() );
 }
 //*************************************************************************************************
 
@@ -1488,8 +1477,7 @@ inline decltype(auto) invsqrt( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,InvSqrt,SO>;
-   return ReturnType( ~dm, InvSqrt() );
+   return map( ~dm, InvSqrt() );
 }
 //*************************************************************************************************
 
@@ -1520,8 +1508,7 @@ inline decltype(auto) cbrt( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Cbrt,SO>;
-   return ReturnType( ~dm, Cbrt() );
+   return map( ~dm, Cbrt() );
 }
 //*************************************************************************************************
 
@@ -1552,8 +1539,7 @@ inline decltype(auto) invcbrt( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,InvCbrt,SO>;
-   return ReturnType( ~dm, InvCbrt() );
+   return map( ~dm, InvCbrt() );
 }
 //*************************************************************************************************
 
@@ -1584,8 +1570,7 @@ inline decltype(auto) clamp( const DenseMatrix<MT,SO>& dm, const DT& min, const 
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Clamp<DT>,SO>;
-   return ReturnType( ~dm, Clamp<DT>( min, max ) );
+   return map( ~dm, Clamp<DT>( min, max ) );
 }
 //*************************************************************************************************
 
@@ -1617,8 +1602,7 @@ inline decltype(auto) pow( const DenseMatrix<MT,SO>& dm, ST exp )
    BLAZE_FUNCTION_TRACE;
 
    using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, ST >;
-   using ReturnType = const DMatMapExpr<MT,UnaryPow<ScalarType>,SO>;
-   return ReturnType( ~dm, UnaryPow<ScalarType>( exp ) );
+   return map( ~dm, blaze::bind2nd( Pow(), ScalarType( exp ) ) );
 }
 //*************************************************************************************************
 
@@ -1646,8 +1630,7 @@ inline decltype(auto) exp( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Exp,SO>;
-   return ReturnType( ~dm, Exp() );
+   return map( ~dm, Exp() );
 }
 //*************************************************************************************************
 
@@ -1675,8 +1658,7 @@ inline decltype(auto) exp2( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Exp2,SO>;
-   return ReturnType( ~dm, Exp2() );
+   return map( ~dm, Exp2() );
 }
 //*************************************************************************************************
 
@@ -1704,8 +1686,7 @@ inline decltype(auto) exp10( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Exp10,SO>;
-   return ReturnType( ~dm, Exp10() );
+   return map( ~dm, Exp10() );
 }
 //*************************************************************************************************
 
@@ -1736,8 +1717,7 @@ inline decltype(auto) log( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Log,SO>;
-   return ReturnType( ~dm, Log() );
+   return map( ~dm, Log() );
 }
 //*************************************************************************************************
 
@@ -1768,8 +1748,7 @@ inline decltype(auto) log2( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Log2,SO>;
-   return ReturnType( ~dm, Log2() );
+   return map( ~dm, Log2() );
 }
 //*************************************************************************************************
 
@@ -1800,8 +1779,7 @@ inline decltype(auto) log10( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Log10,SO>;
-   return ReturnType( ~dm, Log10() );
+   return map( ~dm, Log10() );
 }
 //*************************************************************************************************
 
@@ -1829,8 +1807,7 @@ inline decltype(auto) sin( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Sin,SO>;
-   return ReturnType( ~dm, Sin() );
+   return map( ~dm, Sin() );
 }
 //*************************************************************************************************
 
@@ -1861,8 +1838,7 @@ inline decltype(auto) asin( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Asin,SO>;
-   return ReturnType( ~dm, Asin() );
+   return map( ~dm, Asin() );
 }
 //*************************************************************************************************
 
@@ -1890,8 +1866,7 @@ inline decltype(auto) sinh( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Sinh,SO>;
-   return ReturnType( ~dm, Sinh() );
+   return map( ~dm, Sinh() );
 }
 //*************************************************************************************************
 
@@ -1919,8 +1894,7 @@ inline decltype(auto) asinh( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Asinh,SO>;
-   return ReturnType( ~dm, Asinh() );
+   return map( ~dm, Asinh() );
 }
 //*************************************************************************************************
 
@@ -1948,8 +1922,7 @@ inline decltype(auto) cos( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Cos,SO>;
-   return ReturnType( ~dm, Cos() );
+   return map( ~dm, Cos() );
 }
 //*************************************************************************************************
 
@@ -1980,8 +1953,7 @@ inline decltype(auto) acos( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Acos,SO>;
-   return ReturnType( ~dm, Acos() );
+   return map( ~dm, Acos() );
 }
 //*************************************************************************************************
 
@@ -2009,8 +1981,7 @@ inline decltype(auto) cosh( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Cosh,SO>;
-   return ReturnType( ~dm, Cosh() );
+   return map( ~dm, Cosh() );
 }
 //*************************************************************************************************
 
@@ -2041,8 +2012,7 @@ inline decltype(auto) acosh( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Acosh,SO>;
-   return ReturnType( ~dm, Acosh() );
+   return map( ~dm, Acosh() );
 }
 //*************************************************************************************************
 
@@ -2070,8 +2040,7 @@ inline decltype(auto) tan( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Tan,SO>;
-   return ReturnType( ~dm, Tan() );
+   return map( ~dm, Tan() );
 }
 //*************************************************************************************************
 
@@ -2099,8 +2068,7 @@ inline decltype(auto) atan( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Atan,SO>;
-   return ReturnType( ~dm, Atan() );
+   return map( ~dm, Atan() );
 }
 //*************************************************************************************************
 
@@ -2131,8 +2099,7 @@ inline decltype(auto) tanh( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Tanh,SO>;
-   return ReturnType( ~dm, Tanh() );
+   return map( ~dm, Tanh() );
 }
 //*************************************************************************************************
 
@@ -2163,8 +2130,7 @@ inline decltype(auto) atanh( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Atanh,SO>;
-   return ReturnType( ~dm, Atanh() );
+   return map( ~dm, Atanh() );
 }
 //*************************************************************************************************
 
@@ -2192,8 +2158,7 @@ inline decltype(auto) erf( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Erf,SO>;
-   return ReturnType( ~dm, Erf() );
+   return map( ~dm, Erf() );
 }
 //*************************************************************************************************
 
@@ -2221,8 +2186,7 @@ inline decltype(auto) erfc( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatMapExpr<MT,Erfc,SO>;
-   return ReturnType( ~dm, Erfc() );
+   return map( ~dm, Erfc() );
 }
 //*************************************************************************************************
 
@@ -2427,8 +2391,7 @@ inline decltype(auto) conj( const DMatTransExpr<DMatMapExpr<MT,Conj,SO>,!SO>& dm
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatTransExpr<MT,!SO>;
-   return ReturnType( dm.operand().operand() );
+   return trans( dm.operand().operand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2494,7 +2457,7 @@ inline decltype(auto) operator+( const DenseMatrix<MT,SO>& mat, ST scalar )
    BLAZE_FUNCTION_TRACE;
 
    using ScalarType = AddTrait_t< UnderlyingBuiltin_t<MT>, ST >;
-   return map( ~mat, blaze::bind2nd( blaze::Add{}, ScalarType( scalar ) ) );
+   return map( ~mat, blaze::bind2nd( Add{}, ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
 
@@ -2529,7 +2492,7 @@ inline decltype(auto) operator-( const DenseMatrix<MT,SO>& mat, ST scalar )
    BLAZE_FUNCTION_TRACE;
 
    using ScalarType = SubTrait_t< UnderlyingBuiltin_t<MT>, ST >;
-   return map( ~mat, blaze::bind2nd( blaze::Sub{}, ScalarType( scalar ) ) );
+   return map( ~mat, blaze::bind2nd( Sub{}, ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
 
@@ -2556,7 +2519,7 @@ inline decltype(auto) operator<<( const DenseMatrix<MT,SO>& mat, int count )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~mat, blaze::ShiftLI( count ) );
+   return map( ~mat, ShiftLI( count ) );
 }
 //*************************************************************************************************
 
@@ -2583,7 +2546,7 @@ inline decltype(auto) operator>>( const DenseMatrix<MT,SO>& mat, int count )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~mat, blaze::ShiftRI( count ) );
+   return map( ~mat, ShiftRI( count ) );
 }
 //*************************************************************************************************
 

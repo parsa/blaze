@@ -1002,8 +1002,7 @@ inline decltype(auto) forEach( const SparseMatrix<MT,SO>& sm, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,OP,SO>;
-   return ReturnType( ~sm, op );
+   return map( ~sm, op );
 }
 //*************************************************************************************************
 
@@ -1031,8 +1030,7 @@ inline decltype(auto) abs( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Abs,SO>;
-   return ReturnType( ~sm, Abs() );
+   return map( ~sm, Abs() );
 }
 //*************************************************************************************************
 
@@ -1060,8 +1058,7 @@ inline decltype(auto) sign( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Sign,SO>;
-   return ReturnType( ~sm, Sign() );
+   return map( ~sm, Sign() );
 }
 //*************************************************************************************************
 
@@ -1089,8 +1086,7 @@ inline decltype(auto) floor( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Floor,SO>;
-   return ReturnType( ~sm, Floor() );
+   return map( ~sm, Floor() );
 }
 //*************************************************************************************************
 
@@ -1118,8 +1114,7 @@ inline decltype(auto) ceil( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Ceil,SO>;
-   return ReturnType( ~sm, Ceil() );
+   return map( ~sm, Ceil() );
 }
 //*************************************************************************************************
 
@@ -1147,8 +1142,7 @@ inline decltype(auto) trunc( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Trunc,SO>;
-   return ReturnType( ~sm, Trunc() );
+   return map( ~sm, Trunc() );
 }
 //*************************************************************************************************
 
@@ -1176,8 +1170,7 @@ inline decltype(auto) round( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Round,SO>;
-   return ReturnType( ~sm, Round() );
+   return map( ~sm, Round() );
 }
 //*************************************************************************************************
 
@@ -1205,8 +1198,7 @@ inline decltype(auto) conj( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Conj,SO>;
-   return ReturnType( ~sm, Conj() );
+   return map( ~sm, Conj() );
 }
 //*************************************************************************************************
 
@@ -1271,8 +1263,7 @@ inline decltype(auto) real( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Real,SO>;
-   return ReturnType( ~sm, Real() );
+   return map( ~sm, Real() );
 }
 //*************************************************************************************************
 
@@ -1300,8 +1291,7 @@ inline decltype(auto) imag( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Imag,SO>;
-   return ReturnType( ~sm, Imag() );
+   return map( ~sm, Imag() );
 }
 //*************************************************************************************************
 
@@ -1332,8 +1322,7 @@ inline decltype(auto) sqrt( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Sqrt,SO>;
-   return ReturnType( ~sm, Sqrt() );
+   return map( ~sm, Sqrt() );
 }
 //*************************************************************************************************
 
@@ -1364,8 +1353,7 @@ inline decltype(auto) invsqrt( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,InvSqrt,SO>;
-   return ReturnType( ~sm, InvSqrt() );
+   return map( ~sm, InvSqrt() );
 }
 //*************************************************************************************************
 
@@ -1396,8 +1384,7 @@ inline decltype(auto) cbrt( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Cbrt,SO>;
-   return ReturnType( ~sm, Cbrt() );
+   return map( ~sm, Cbrt() );
 }
 //*************************************************************************************************
 
@@ -1428,8 +1415,7 @@ inline decltype(auto) invcbrt( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,InvCbrt,SO>;
-   return ReturnType( ~sm, InvCbrt() );
+   return map( ~sm, InvCbrt() );
 }
 //*************************************************************************************************
 
@@ -1460,8 +1446,7 @@ inline decltype(auto) clamp( const SparseMatrix<MT,SO>& sm, const DT& min, const
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Clamp<DT>,SO>;
-   return ReturnType( ~sm, Clamp<DT>( min, max ) );
+   return map( ~sm, Clamp<DT>( min, max ) );
 }
 //*************************************************************************************************
 
@@ -1493,8 +1478,7 @@ inline decltype(auto) pow( const SparseMatrix<MT,SO>& sm, ST exp )
    BLAZE_FUNCTION_TRACE;
 
    using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, ST >;
-   using ReturnType = const SMatMapExpr<MT,UnaryPow<ScalarType>,SO>;
-   return ReturnType( ~sm, UnaryPow<ScalarType>( exp ) );
+   return map( ~sm, blaze::bind2nd( Pow(), ScalarType( exp ) ) );
 }
 //*************************************************************************************************
 
@@ -1522,8 +1506,7 @@ inline decltype(auto) exp( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Exp,SO>;
-   return ReturnType( ~sm, Exp() );
+   return map( ~sm, Exp() );
 }
 //*************************************************************************************************
 
@@ -1551,8 +1534,7 @@ inline decltype(auto) exp2( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Exp2,SO>;
-   return ReturnType( ~sm, Exp2() );
+   return map( ~sm, Exp2() );
 }
 //*************************************************************************************************
 
@@ -1580,8 +1562,7 @@ inline decltype(auto) exp10( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Exp10,SO>;
-   return ReturnType( ~sm, Exp10() );
+   return map( ~sm, Exp10() );
 }
 //*************************************************************************************************
 
@@ -1612,8 +1593,7 @@ inline decltype(auto) log( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Log,SO>;
-   return ReturnType( ~sm, Log() );
+   return map( ~sm, Log() );
 }
 //*************************************************************************************************
 
@@ -1644,8 +1624,7 @@ inline decltype(auto) log2( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Log2,SO>;
-   return ReturnType( ~sm, Log2() );
+   return map( ~sm, Log2() );
 }
 //*************************************************************************************************
 
@@ -1676,8 +1655,7 @@ inline decltype(auto) log10( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Log10,SO>;
-   return ReturnType( ~sm, Log10() );
+   return map( ~sm, Log10() );
 }
 //*************************************************************************************************
 
@@ -1705,8 +1683,7 @@ inline decltype(auto) sin( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Sin,SO>;
-   return ReturnType( ~sm, Sin() );
+   return map( ~sm, Sin() );
 }
 //*************************************************************************************************
 
@@ -1737,8 +1714,7 @@ inline decltype(auto) asin( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Asin,SO>;
-   return ReturnType( ~sm, Asin() );
+   return map( ~sm, Asin() );
 }
 //*************************************************************************************************
 
@@ -1766,8 +1742,7 @@ inline decltype(auto) sinh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Sinh,SO>;
-   return ReturnType( ~sm, Sinh() );
+   return map( ~sm, Sinh() );
 }
 //*************************************************************************************************
 
@@ -1795,8 +1770,7 @@ inline decltype(auto) asinh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Asinh,SO>;
-   return ReturnType( ~sm, Asinh() );
+   return map( ~sm, Asinh() );
 }
 //*************************************************************************************************
 
@@ -1824,8 +1798,7 @@ inline decltype(auto) cos( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Cos,SO>;
-   return ReturnType( ~sm, Cos() );
+   return map( ~sm, Cos() );
 }
 //*************************************************************************************************
 
@@ -1856,8 +1829,7 @@ inline decltype(auto) acos( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Acos,SO>;
-   return ReturnType( ~sm, Acos() );
+   return map( ~sm, Acos() );
 }
 //*************************************************************************************************
 
@@ -1885,8 +1857,7 @@ inline decltype(auto) cosh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Cosh,SO>;
-   return ReturnType( ~sm, Cosh() );
+   return map( ~sm, Cosh() );
 }
 //*************************************************************************************************
 
@@ -1917,8 +1888,7 @@ inline decltype(auto) acosh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Acosh,SO>;
-   return ReturnType( ~sm, Acosh() );
+   return map( ~sm, Acosh() );
 }
 //*************************************************************************************************
 
@@ -1946,8 +1916,7 @@ inline decltype(auto) tan( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Tan,SO>;
-   return ReturnType( ~sm, Tan() );
+   return map( ~sm, Tan() );
 }
 //*************************************************************************************************
 
@@ -1975,8 +1944,7 @@ inline decltype(auto) atan( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Atan,SO>;
-   return ReturnType( ~sm, Atan() );
+   return map( ~sm, Atan() );
 }
 //*************************************************************************************************
 
@@ -2007,8 +1975,7 @@ inline decltype(auto) tanh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Tanh,SO>;
-   return ReturnType( ~sm, Tanh() );
+   return map( ~sm, Tanh() );
 }
 //*************************************************************************************************
 
@@ -2039,8 +2006,7 @@ inline decltype(auto) atanh( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Atanh,SO>;
-   return ReturnType( ~sm, Atanh() );
+   return map( ~sm, Atanh() );
 }
 //*************************************************************************************************
 
@@ -2068,8 +2034,7 @@ inline decltype(auto) erf( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Erf,SO>;
-   return ReturnType( ~sm, Erf() );
+   return map( ~sm, Erf() );
 }
 //*************************************************************************************************
 
@@ -2098,8 +2063,7 @@ inline decltype(auto) erfc( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatMapExpr<MT,Erfc,SO>;
-   return ReturnType( ~sm, Erfc() );
+   return map( ~sm, Erfc() );
 }
 //*************************************************************************************************
 
@@ -2304,8 +2268,7 @@ inline decltype(auto) conj( const SMatTransExpr<SMatMapExpr<MT,Conj,SO>,!SO>& sm
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const SMatTransExpr<MT,!SO>;
-   return ReturnType( sm.operand().operand() );
+   return trans( sm.operand().operand() );
 }
 /*! \endcond */
 //*************************************************************************************************

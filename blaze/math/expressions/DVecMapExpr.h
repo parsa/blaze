@@ -1125,8 +1125,7 @@ inline decltype(auto) forEach( const DenseVector<VT,TF>& dv, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,OP,TF>;
-   return ReturnType( ~dv, op );
+   return map( ~dv, op );
 }
 //*************************************************************************************************
 
@@ -1154,8 +1153,7 @@ inline decltype(auto) abs( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Abs,TF>;
-   return ReturnType( ~dv, Abs() );
+   return map( ~dv, Abs() );
 }
 //*************************************************************************************************
 
@@ -1183,8 +1181,7 @@ inline decltype(auto) sign( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Sign,TF>;
-   return ReturnType( ~dv, Sign() );
+   return map( ~dv, Sign() );
 }
 //*************************************************************************************************
 
@@ -1212,8 +1209,7 @@ inline decltype(auto) floor( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Floor,TF>;
-   return ReturnType( ~dv, Floor() );
+   return map( ~dv, Floor() );
 }
 //*************************************************************************************************
 
@@ -1241,8 +1237,7 @@ inline decltype(auto) ceil( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Ceil,TF>;
-   return ReturnType( ~dv, Ceil() );
+   return map( ~dv, Ceil() );
 }
 //*************************************************************************************************
 
@@ -1270,8 +1265,7 @@ inline decltype(auto) trunc( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Trunc,TF>;
-   return ReturnType( ~dv, Trunc() );
+   return map( ~dv, Trunc() );
 }
 //*************************************************************************************************
 
@@ -1299,8 +1293,7 @@ inline decltype(auto) round( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Round,TF>;
-   return ReturnType( ~dv, Round() );
+   return map( ~dv, Round() );
 }
 //*************************************************************************************************
 
@@ -1328,8 +1321,7 @@ inline decltype(auto) conj( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Conj,TF>;
-   return ReturnType( ~dv, Conj() );
+   return map( ~dv, Conj() );
 }
 //*************************************************************************************************
 
@@ -1394,8 +1386,7 @@ inline decltype(auto) real( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Real,TF>;
-   return ReturnType( ~dv, Real() );
+   return map( ~dv, Real() );
 }
 //*************************************************************************************************
 
@@ -1423,8 +1414,7 @@ inline decltype(auto) imag( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Imag,TF>;
-   return ReturnType( ~dv, Imag() );
+   return map( ~dv, Imag() );
 }
 //*************************************************************************************************
 
@@ -1455,8 +1445,7 @@ inline decltype(auto) sqrt( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Sqrt,TF>;
-   return ReturnType( ~dv, Sqrt() );
+   return map( ~dv, Sqrt() );
 }
 //*************************************************************************************************
 
@@ -1487,8 +1476,7 @@ inline decltype(auto) invsqrt( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,InvSqrt,TF>;
-   return ReturnType( ~dv, InvSqrt() );
+   return map( ~dv, InvSqrt() );
 }
 //*************************************************************************************************
 
@@ -1519,8 +1507,7 @@ inline decltype(auto) cbrt( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Cbrt,TF>;
-   return ReturnType( ~dv, Cbrt() );
+   return map( ~dv, Cbrt() );
 }
 //*************************************************************************************************
 
@@ -1551,8 +1538,7 @@ inline decltype(auto) invcbrt( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,InvCbrt,TF>;
-   return ReturnType( ~dv, InvCbrt() );
+   return map( ~dv, InvCbrt() );
 }
 //*************************************************************************************************
 
@@ -1583,8 +1569,7 @@ inline decltype(auto) clamp( const DenseVector<VT,TF>& dv, const DT& min, const 
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Clamp<DT>,TF>;
-   return ReturnType( ~dv, Clamp<DT>( min, max ) );
+   return map( ~dv, Clamp<DT>( min, max ) );
 }
 //*************************************************************************************************
 
@@ -1616,8 +1601,7 @@ inline decltype(auto) pow( const DenseVector<VT,TF>& dv, ST exp )
    BLAZE_FUNCTION_TRACE;
 
    using ScalarType = MultTrait_t< UnderlyingBuiltin_t<VT>, ST >;
-   using ReturnType = const DVecMapExpr<VT,UnaryPow<ScalarType>,TF>;
-   return ReturnType( ~dv, UnaryPow<ScalarType>( exp ) );
+   return map( ~dv, blaze::bind2nd( Pow(), ScalarType( exp ) ) );
 }
 //*************************************************************************************************
 
@@ -1645,8 +1629,7 @@ inline decltype(auto) exp( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Exp,TF>;
-   return ReturnType( ~dv, Exp() );
+   return map( ~dv, Exp() );
 }
 //*************************************************************************************************
 
@@ -1674,8 +1657,7 @@ inline decltype(auto) exp2( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Exp2,TF>;
-   return ReturnType( ~dv, Exp2() );
+   return map( ~dv, Exp2() );
 }
 //*************************************************************************************************
 
@@ -1703,8 +1685,7 @@ inline decltype(auto) exp10( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Exp10,TF>;
-   return ReturnType( ~dv, Exp10() );
+   return map( ~dv, Exp10() );
 }
 //*************************************************************************************************
 
@@ -1735,8 +1716,7 @@ inline decltype(auto) log( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Log,TF>;
-   return ReturnType( ~dv, Log() );
+   return map( ~dv, Log() );
 }
 //*************************************************************************************************
 
@@ -1767,8 +1747,7 @@ inline decltype(auto) log2( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Log2,TF>;
-   return ReturnType( ~dv, Log2() );
+   return map( ~dv, Log2() );
 }
 //*************************************************************************************************
 
@@ -1799,8 +1778,7 @@ inline decltype(auto) log10( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Log10,TF>;
-   return ReturnType( ~dv, Log10() );
+   return map( ~dv, Log10() );
 }
 //*************************************************************************************************
 
@@ -1828,8 +1806,7 @@ inline decltype(auto) sin( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Sin,TF>;
-   return ReturnType( ~dv, Sin() );
+   return map( ~dv, Sin() );
 }
 //*************************************************************************************************
 
@@ -1860,8 +1837,7 @@ inline decltype(auto) asin( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Asin,TF>;
-   return ReturnType( ~dv, Asin() );
+   return map( ~dv, Asin() );
 }
 //*************************************************************************************************
 
@@ -1889,8 +1865,7 @@ inline decltype(auto) sinh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Sinh,TF>;
-   return ReturnType( ~dv, Sinh() );
+   return map( ~dv, Sinh() );
 }
 //*************************************************************************************************
 
@@ -1918,8 +1893,7 @@ inline decltype(auto) asinh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Asinh,TF>;
-   return ReturnType( ~dv, Asinh() );
+   return map( ~dv, Asinh() );
 }
 //*************************************************************************************************
 
@@ -1947,8 +1921,7 @@ inline decltype(auto) cos( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Cos,TF>;
-   return ReturnType( ~dv, Cos() );
+   return map( ~dv, Cos() );
 }
 //*************************************************************************************************
 
@@ -1979,8 +1952,7 @@ inline decltype(auto) acos( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Acos,TF>;
-   return ReturnType( ~dv, Acos() );
+   return map( ~dv, Acos() );
 }
 //*************************************************************************************************
 
@@ -2008,8 +1980,7 @@ inline decltype(auto) cosh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Cosh,TF>;
-   return ReturnType( ~dv, Cosh() );
+   return map( ~dv, Cosh() );
 }
 //*************************************************************************************************
 
@@ -2040,8 +2011,7 @@ inline decltype(auto) acosh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Acosh,TF>;
-   return ReturnType( ~dv, Acosh() );
+   return map( ~dv, Acosh() );
 }
 //*************************************************************************************************
 
@@ -2069,8 +2039,7 @@ inline decltype(auto) tan( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Tan,TF>;
-   return ReturnType( ~dv, Tan() );
+   return map( ~dv, Tan() );
 }
 //*************************************************************************************************
 
@@ -2098,8 +2067,7 @@ inline decltype(auto) atan( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Atan,TF>;
-   return ReturnType( ~dv, Atan() );
+   return map( ~dv, Atan() );
 }
 //*************************************************************************************************
 
@@ -2130,8 +2098,7 @@ inline decltype(auto) tanh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Tanh,TF>;
-   return ReturnType( ~dv, Tanh() );
+   return map( ~dv, Tanh() );
 }
 //*************************************************************************************************
 
@@ -2162,8 +2129,7 @@ inline decltype(auto) atanh( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Atanh,TF>;
-   return ReturnType( ~dv, Atanh() );
+   return map( ~dv, Atanh() );
 }
 //*************************************************************************************************
 
@@ -2191,8 +2157,7 @@ inline decltype(auto) erf( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Erf,TF>;
-   return ReturnType( ~dv, Erf() );
+   return map( ~dv, Erf() );
 }
 //*************************************************************************************************
 
@@ -2220,8 +2185,7 @@ inline decltype(auto) erfc( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecMapExpr<VT,Erfc,TF>;
-   return ReturnType( ~dv, Erfc() );
+   return map( ~dv, Erfc() );
 }
 //*************************************************************************************************
 
@@ -2426,8 +2390,7 @@ inline decltype(auto) conj( const DVecTransExpr<DVecMapExpr<VT,Conj,TF>,!TF>& dv
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DVecTransExpr<VT,!TF>;
-   return ReturnType( dv.operand().operand() );
+   return trans( dv.operand().operand() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2495,7 +2458,7 @@ inline decltype(auto) operator+( const DenseVector<VT,TF>& vec, ST scalar )
    BLAZE_FUNCTION_TRACE;
 
    using ScalarType = AddTrait_t< UnderlyingBuiltin_t<VT>, ST >;
-   return map( ~vec, blaze::bind2nd( blaze::Add{}, ScalarType( scalar ) ) );
+   return map( ~vec, blaze::bind2nd( Add{}, ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
 
@@ -2531,7 +2494,7 @@ inline decltype(auto) operator-( const DenseVector<VT,TF>& vec, ST scalar )
    BLAZE_FUNCTION_TRACE;
 
    using ScalarType = SubTrait_t< UnderlyingBuiltin_t<VT>, ST >;
-   return map( ~vec, blaze::bind2nd( blaze::Sub{}, ScalarType( scalar ) ) );
+   return map( ~vec, blaze::bind2nd( Sub{}, ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
 
@@ -2559,7 +2522,7 @@ inline decltype(auto) operator<<( const DenseVector<VT,TF>& vec, int count )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~vec, blaze::ShiftLI( count ) );
+   return map( ~vec, ShiftLI( count ) );
 }
 //*************************************************************************************************
 
@@ -2587,7 +2550,7 @@ inline decltype(auto) operator>>( const DenseVector<VT,TF>& vec, int count )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~vec, blaze::ShiftRI( count ) );
+   return map( ~vec, ShiftRI( count ) );
 }
 //*************************************************************************************************
 
