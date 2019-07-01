@@ -50,12 +50,14 @@
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/YieldsLower.h>
 #include <blaze/math/typetraits/YieldsStrictlyLower.h>
 #include <blaze/math/typetraits/YieldsStrictlyUpper.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/math/typetraits/YieldsUniform.h>
 #include <blaze/math/typetraits/YieldsUpper.h>
+#include <blaze/math/typetraits/YieldsZero.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -234,6 +236,24 @@ struct YieldsUpper<Atan2,MT1,MT2>
 template< typename MT1, typename MT2 >
 struct YieldsStrictlyUpper<Atan2,MT1,MT2>
    : public BoolConstant< IsStrictlyUpper_v<MT1> && IsStrictlyUpper_v<MT2> >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSZERO SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+struct YieldsZero<Atan2,T1,T2>
+   : public BoolConstant< IsZero_v<T1> && IsZero_v<T2> >
 {};
 /*! \endcond */
 //*************************************************************************************************

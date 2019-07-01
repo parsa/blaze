@@ -49,18 +49,16 @@
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsUniform.h>
-#include <blaze/math/typetraits/IsUniLower.h>
-#include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsLower.h>
 #include <blaze/math/typetraits/YieldsStrictlyLower.h>
 #include <blaze/math/typetraits/YieldsStrictlyUpper.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/math/typetraits/YieldsUniform.h>
-#include <blaze/math/typetraits/YieldsUniLower.h>
-#include <blaze/math/typetraits/YieldsUniUpper.h>
 #include <blaze/math/typetraits/YieldsUpper.h>
+#include <blaze/math/typetraits/YieldsZero.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -202,26 +200,7 @@ struct YieldsHermitian<Div,MT1,MT2>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct YieldsLower<Div,MT1,MT2>
-   : public BoolConstant< IsLower_v<MT1> && IsLower_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  YIELDSUNILOWER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct YieldsUniLower<Div,MT1,MT2>
-   : public BoolConstant< ( IsUniLower_v<MT1> && IsStrictlyLower_v<MT2> ) ||
-                          ( IsUniLower_v<MT2> && IsStrictlyLower_v<MT1> ) >
+   : public BoolConstant< IsLower_v<MT1> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -239,7 +218,7 @@ struct YieldsUniLower<Div,MT1,MT2>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct YieldsStrictlyLower<Div,MT1,MT2>
-   : public BoolConstant< IsStrictlyLower_v<MT1> && IsStrictlyLower_v<MT2> >
+   : public BoolConstant< IsStrictlyLower_v<MT1> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -257,26 +236,7 @@ struct YieldsStrictlyLower<Div,MT1,MT2>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct YieldsUpper<Div,MT1,MT2>
-   : public BoolConstant< IsUpper_v<MT1> && IsUpper_v<MT2> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  YIELDSUNIUPPER SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct YieldsUniUpper<Div,MT1,MT2>
-   : public BoolConstant< ( IsUniUpper_v<MT1> && IsStrictlyUpper_v<MT2> ) ||
-                          ( IsUniUpper_v<MT2> && IsStrictlyUpper_v<MT1> ) >
+   : public BoolConstant< IsUpper_v<MT1> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -294,7 +254,25 @@ struct YieldsUniUpper<Div,MT1,MT2>
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct YieldsStrictlyUpper<Div,MT1,MT2>
-   : public BoolConstant< IsStrictlyUpper_v<MT1> && IsStrictlyUpper_v<MT2> >
+   : public BoolConstant< IsStrictlyUpper_v<MT1> >
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  YIELDSZERO SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+struct YieldsZero<Div,T1,T2>
+   : public BoolConstant< IsZero_v<T1> >
 {};
 /*! \endcond */
 //*************************************************************************************************
