@@ -56,6 +56,8 @@
 #include <blaze/math/functors/Max.h>
 #include <blaze/math/functors/Min.h>
 #include <blaze/math/functors/Pow.h>
+#include <blaze/math/functors/ShiftLV.h>
+#include <blaze/math/functors/ShiftRV.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/MapTrait.h>
@@ -1315,6 +1317,40 @@ inline decltype(auto)
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Right-shift operator for the elementwise right-shift of a dense vector
+//        (\f$ \vec{a}=\vec{b}>>\vec{c} \f$).
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector to be shifted.
+// \param rhs The right-hand side dense vector of bits to shift.
+// \return The right-shifted dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// This operator represents the elementwise right-shift of a given dense vector:
+
+   \code
+   blaze::DynamicVector<unsigned int> a, b, c;
+   // ... Resizing and initialization
+   c = a >> b;
+   \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline decltype(auto)
+   operator>>( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~lhs, ~rhs, ShiftRV() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -1343,6 +1379,35 @@ template< typename VT1  // Type of the left-hand side dense vector
         , bool TF >     // Transpose flag
 inline decltype(auto)
    operator<<( const DVecDVecMapExpr<VT1,VT2,ShiftLV,TF>& lhs, const DenseVector<VT3,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( lhs.leftOperand(), lhs.rightOperand() + (~rhs), lhs.operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Right-shift operator for the elementwise right-shift of an elementwise right-shift
+//        expression (\f$ \vec{a}=\vec{b}>>\vec{c}>>\vec{d} \f$).
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side right-shift expression to be shifted.
+// \param rhs The right-hand side dense vector of bits to shift.
+// \return The right-shifted dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// This function implements a performance optimized treatment of the elementwise right-shift
+// operation on an elementwise right-shift expression.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the middle dense vector
+        , typename VT3  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline decltype(auto)
+   operator>>( const DVecDVecMapExpr<VT1,VT2,ShiftRV,TF>& lhs, const DenseVector<VT3,TF>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
