@@ -1874,6 +1874,39 @@ inline bool tryDivAssign( const Band<MT,TF,DF,MF,CBAs...>& lhs,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the shift assignment of a vector to a band.
+// \ingroup band
+//
+// \param lhs The target left-hand side band.
+// \param rhs The right-hand side vector of bits to shift.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT        // Type of the matrix
+        , bool TF            // Transpose flag
+        , bool DF            // Density flag
+        , bool MF            // Multiplication flag
+        , ptrdiff_t... CBAs  // Compile time band arguments
+        , typename VT >      // Type of the right-hand side vector
+inline bool tryShiftAssign( const Band<MT,TF,DF,MF,CBAs...>& lhs,
+                            const Vector<VT,TF>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+
+   return tryShiftAssign( lhs.operand(), ~rhs, lhs.band(), lhs.row()+index, lhs.column()+index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Removal of all restrictions on the data access to the given band.
 // \ingroup band
 //
