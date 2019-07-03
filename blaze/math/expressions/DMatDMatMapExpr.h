@@ -1101,6 +1101,9 @@ class DMatDMatMapExpr
    // ... Resizing and initialization
    C = map( A, B, []( double x, double y ){ return std::min( x, y ); } );
    \endcode
+
+// In case the current number of rows and columns of the two given matrices don't match, a
+// \a std::invalid_argument is thrown.
 */
 template< typename MT1   // Type of the left-hand side dense matrix
         , typename MT2   // Type of the right-hand side dense matrix
@@ -1128,6 +1131,7 @@ inline decltype(auto)
 // \param lhs The left-hand side dense matrix operand.
 // \param rhs The right-hand side dense matrix operand.
 // \return The resulting dense matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
 //
 // This function computes the componentwise minimum of the two dense matrices \a lhs and \a rhs.
 // The function returns an expression representing this operation.\n
@@ -1138,6 +1142,9 @@ inline decltype(auto)
    // ... Resizing and initialization
    C = min( A, B );
    \endcode
+
+// In case the current number of rows and columns of the two given matrices don't match, a
+// \a std::invalid_argument is thrown.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side dense matrix
@@ -1160,6 +1167,7 @@ inline decltype(auto)
 // \param lhs The left-hand side dense matrix operand.
 // \param rhs The right-hand side dense matrix operand.
 // \return The resulting dense matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
 //
 // This function computes the componentwise maximum of the two dense matrices \a lhs and \a rhs.
 // The function returns an expression representing this operation.\n
@@ -1170,6 +1178,9 @@ inline decltype(auto)
    // ... Resizing and initialization
    C = max( A, B );
    \endcode
+
+// In case the current number of rows and columns of the two given matrices don't match, a
+// \a std::invalid_argument is thrown.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side dense matrix
@@ -1192,6 +1203,7 @@ inline decltype(auto)
 // \param lhs The left-hand side dense matrix operand.
 // \param rhs The right-hand side dense matrix operand.
 // \return The resulting dense matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
 //
 // The \a hypot() function computes the componentwise hypotenous for the two dense matrices
 // \a lhs and \a rhs. The function returns an expression representing this operation.\n
@@ -1202,6 +1214,10 @@ inline decltype(auto)
    // ... Resizing and initialization
    C = hypot( A, B );
    \endcode
+
+// In case the current number of rows and columns of the two given matrices don't match, a
+// \a std::invalid_argument is thrown.
+
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side dense matrix
@@ -1224,6 +1240,7 @@ inline decltype(auto)
 // \param lhs The left-hand side dense matrix operand.
 // \param rhs The right-hand side dense matrix operand.
 // \return The resulting dense matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
 //
 // The \a pow() function computes the componentwise exponential value for the two dense matrices
 // \a lhs and \a rhs. The function returns an expression representing this operation.\n
@@ -1234,6 +1251,9 @@ inline decltype(auto)
    // ... Resizing and initialization
    C = pow( A, B );
    \endcode
+
+// In case the current number of rows and columns of the two given matrices don't match, a
+// \a std::invalid_argument is thrown.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side dense matrix
@@ -1256,6 +1276,7 @@ inline decltype(auto)
 // \param lhs The left-hand side dense matrix operand.
 // \param rhs The right-hand side dense matrix operand.
 // \return The resulting dense matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
 //
 // This function computes the multi-valued inverse tangent of the two dense matrix \a lhs and
 // \a rhs. The function returns an expression representing this operation.\n
@@ -1266,6 +1287,9 @@ inline decltype(auto)
    // ... Resizing and initialization
    C = atan2( A, B );
    \endcode
+
+// In case the current number of rows and columns of the two given matrices don't match, a
+// \a std::invalid_argument is thrown.
 */
 template< typename MT1  // Type of the left-hand side dense matrix
         , bool SO1      // Storage order of the left-hand side dense matrix
@@ -1278,6 +1302,87 @@ inline decltype(auto)
 
    return map( ~lhs, ~rhs, Atan2() );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL BINARY ARITHMETIC OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Left-shift operator for the elementwise left-shift of a dense matrix
+//        (\f$ A=B<<C \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix to be shifted.
+// \param rhs The right-hand side dense matrix of bits to shift.
+// \return The left-shifted dense matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// This operator represents the elementwise left-shift of a given dense matrix:
+
+   \code
+   blaze::DynamicMatrix<unsigned int> A, B, C;
+   // ... Resizing and initialization
+   C = A << B;
+   \endcode
+
+// In case the current number of rows and columns of the two given matrices don't match, a
+// \a std::invalid_argument is thrown.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , bool SO1      // Storage order of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , bool SO2 >    // Storage order of the right-hand side dense matrix
+inline decltype(auto)
+   operator<<( const DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~lhs, ~rhs, ShiftLV() );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING BINARY ARITHMETIC OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Left-shift operator for the elementwise left-shift of an elementwise left-shift expression
+//        (\f$ A=B<<C<<D \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side left-shift expression to be shifted.
+// \param rhs The right-hand side dense matrix of bits to shift.
+// \return The left-shifted dense matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// This function implements a performance optimized treatment of the elementwise left-shift
+// operation on an elementwise left-shift expression.
+*/
+template< typename MT1  // Type of the left-hand side dense vector
+        , typename MT2  // Type of the middle dense vector
+        , bool SO1      // Storage order of the left-hand side left-shift expression
+        , typename MT3  // Type of the right-hand side dense vector
+        , bool SO2 >    // Storage order of the right-hand side dense matrix
+inline decltype(auto)
+   operator<<( const DMatDMatMapExpr<MT1,MT2,ShiftLV,SO1>& lhs, const DenseMatrix<MT3,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( lhs.leftOperand(), lhs.rightOperand() + (~rhs), lhs.operation() );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
