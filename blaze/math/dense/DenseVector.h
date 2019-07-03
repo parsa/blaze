@@ -125,6 +125,12 @@ VT& operator<<=( DenseVector<VT,TF>& vec, int count );
 template< typename VT, bool TF >
 VT& operator<<=( DenseVector<VT,TF>&& vec, int count );
 
+template< typename VT1, typename VT2, bool TF >
+VT1& operator<<=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs );
+
+template< typename VT1, typename VT2, bool TF >
+VT1& operator<<=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rhs );
+
 template< typename VT, bool TF >
 VT& operator>>=( DenseVector<VT,TF>& vec, int count );
 
@@ -533,6 +539,64 @@ template< typename VT  // Type of the dense vector
 inline VT& operator<<=( DenseVector<VT,TF>&& vec, int count )
 {
    return operator<<=( ~vec, count );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Left-shift assignment operator for the elementwise left-shift of a dense vector
+//        (\f$ \vec{a}<<=\vec{b} \f$).
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector to be shifted.
+// \param rhs The right-hand side dense vector of bits to shift.
+// \return Reference to the dense vector.
+// \exception std::invalid_argument Invalid left-shift of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline VT1& operator<<=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   if( IsRestricted_v<VT1> ) {
+      if( !tryShiftAssign( ~lhs, ~rhs, 0UL ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid left-shift of restricted vector" );
+      }
+   }
+
+   decltype(auto) left( derestrict( ~lhs ) );
+
+   smpAssign( left, left << (~rhs) );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~lhs ), "Invariant violation detected" );
+
+   return ~lhs;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Left-shift assignment operator for the elementwise left-shift of a temporary dense vector
+//        (\f$ \vec{a}<<=\vec{b} \f$).
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side temporary dense vector to be shifted.
+// \param rhs The right-hand side dense vector of bits to shift.
+// \return Reference to the dense vector.
+// \exception std::invalid_argument Invalid left-shift of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline VT1& operator<<=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   return operator<<=( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
