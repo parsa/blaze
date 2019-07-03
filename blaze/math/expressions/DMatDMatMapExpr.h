@@ -56,6 +56,8 @@
 #include <blaze/math/functors/Max.h>
 #include <blaze/math/functors/Min.h>
 #include <blaze/math/functors/Pow.h>
+#include <blaze/math/functors/ShiftLV.h>
+#include <blaze/math/functors/ShiftRV.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/MapTrait.h>
@@ -1348,6 +1350,41 @@ inline decltype(auto)
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Right-shift operator for the elementwise right-shift of a dense matrix
+//        (\f$ A=B>>C \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix to be shifted.
+// \param rhs The right-hand side dense matrix of bits to shift.
+// \return The right-shifted dense matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// This operator represents the elementwise right-shift of a given dense matrix:
+
+   \code
+   blaze::DynamicMatrix<unsigned int> A, B, C;
+   // ... Resizing and initialization
+   C = A >> B;
+   \endcode
+
+// In case the current number of rows and columns of the two given matrices don't match, a
+// \a std::invalid_argument is thrown.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , bool SO1      // Storage order of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , bool SO2 >    // Storage order of the right-hand side dense matrix
+inline decltype(auto)
+   operator>>( const DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~lhs, ~rhs, ShiftRV() );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
@@ -1370,13 +1407,43 @@ inline decltype(auto)
 // This function implements a performance optimized treatment of the elementwise left-shift
 // operation on an elementwise left-shift expression.
 */
-template< typename MT1  // Type of the left-hand side dense vector
-        , typename MT2  // Type of the middle dense vector
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the middle dense matrix
         , bool SO1      // Storage order of the left-hand side left-shift expression
-        , typename MT3  // Type of the right-hand side dense vector
+        , typename MT3  // Type of the right-hand side dense matrix
         , bool SO2 >    // Storage order of the right-hand side dense matrix
 inline decltype(auto)
    operator<<( const DMatDMatMapExpr<MT1,MT2,ShiftLV,SO1>& lhs, const DenseMatrix<MT3,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( lhs.leftOperand(), lhs.rightOperand() + (~rhs), lhs.operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Right-shift operator for the elementwise right-shift of an elementwise right-shift
+//        expression (\f$ A=B>>C>>D \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side right-shift expression to be shifted.
+// \param rhs The right-hand side dense matrix of bits to shift.
+// \return The right-shifted dense matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// This function implements a performance optimized treatment of the elementwise right-shift
+// operation on an elementwise right-shift expression.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the middle dense matrix
+        , bool SO1      // Storage order of the left-hand side right-shift expression
+        , typename MT3  // Type of the right-hand side dense matrix
+        , bool SO2 >    // Storage order of the right-hand side dense matrix
+inline decltype(auto)
+   operator>>( const DMatDMatMapExpr<MT1,MT2,ShiftRV,SO1>& lhs, const DenseMatrix<MT3,SO2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
