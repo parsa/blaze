@@ -1075,6 +1075,9 @@ class DVecDVecMapExpr
    // ... Resizing and initialization
    c = map( a, b, []( double x, double y ){ return std::min( x, y ); } );
    \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
 */
 template< typename VT1   // Type of the left-hand side dense vector
         , typename VT2   // Type of the right-hand side dense vector
@@ -1102,6 +1105,7 @@ inline decltype(auto)
 // \param lhs The left-hand side dense vector operand.
 // \param rhs The right-hand side dense vector operand.
 // \return The resulting dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
 //
 // This function computes the componentwise minimum of the two dense vectors \a lhs and \a rhs.
 // The function returns an expression representing this operation.\n
@@ -1112,6 +1116,9 @@ inline decltype(auto)
    // ... Resizing and initialization
    c = min( a, b );
    \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
 */
 template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
@@ -1133,6 +1140,7 @@ inline decltype(auto)
 // \param lhs The left-hand side dense vector operand.
 // \param rhs The right-hand side dense vector operand.
 // \return The resulting dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
 //
 // This function computes the componentwise maximum of the two dense vectors \a lhs and \a rhs.
 // The function returns an expression representing this operation.\n
@@ -1143,6 +1151,9 @@ inline decltype(auto)
    // ... Resizing and initialization
    c = max( a, b );
    \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
 */
 template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
@@ -1164,6 +1175,7 @@ inline decltype(auto)
 // \param lhs The left-hand side dense vector operand.
 // \param rhs The right-hand side dense vector operand.
 // \return The resulting dense vector
+// \exception std::invalid_argument Vector sizes do not match.
 //
 // The \a hypot() function computes the componentwise hypotenous for the two dense vectors
 // \a lhs and \a rhs. The function returns an expression representing this operation.\n
@@ -1174,6 +1186,9 @@ inline decltype(auto)
    // ... Resizing and initialization
    c = hypot( a, b );
    \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
 */
 template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
@@ -1195,6 +1210,7 @@ inline decltype(auto)
 // \param lhs The left-hand side dense vector operand.
 // \param rhs The right-hand side dense vector operand.
 // \return The resulting dense vector
+// \exception std::invalid_argument Vector sizes do not match.
 //
 // The \a pow() function computes the componentwise exponential value for the two dense vectors
 // \a lhs and \a rhs. The function returns an expression representing this operation.\n
@@ -1205,6 +1221,9 @@ inline decltype(auto)
    // ... Resizing and initialization
    c = pow( a, b );
    \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
 */
 template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
@@ -1226,6 +1245,7 @@ inline decltype(auto)
 // \param lhs The left-hand side dense vector operand.
 // \param rhs The right-hand side dense vector operand.
 // \return The resulting dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
 //
 // This function computes the multi-valued inverse tangent of the two dense vectors \a lhs and
 // \a rhs. The function returns an expression representing this operation.\n
@@ -1236,6 +1256,9 @@ inline decltype(auto)
    // ... Resizing and initialization
    c = atan2( a, b );
    \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
 */
 template< typename VT1  // Type of the left-hand side dense vector
         , typename VT2  // Type of the right-hand side dense vector
@@ -1247,6 +1270,85 @@ inline decltype(auto)
 
    return map( ~lhs, ~rhs, Atan2() );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL BINARY ARITHMETIC OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Left-shift operator for the elementwise left-shift of a dense vector
+//        (\f$ \vec{a}=\vec{b}<<\vec{c} \f$).
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector to be shifted.
+// \param rhs The right-hand side dense vector of bits to shift.
+// \return The left-shifted dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// This operator represents the elementwise left-shift of a given dense vector:
+
+   \code
+   blaze::DynamicVector<unsigned int> a, b, c;
+   // ... Resizing and initialization
+   c = a << b;
+   \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline decltype(auto)
+   operator<<( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~lhs, ~rhs, ShiftLV() );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING BINARY ARITHMETIC OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Left-shift operator for the elementwise left-shift of an elementwise left-shift expression
+//        (\f$ \vec{a}=\vec{b}<<\vec{c}<<\vec{d} \f$).
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side left-shift expression to be shifted.
+// \param rhs The right-hand side dense vector of bits to shift.
+// \return The left-shifted dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// This function implements a performance optimized treatment of the elementwise left-shift
+// operation on an elementwise left-shift expression.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the middle dense vector
+        , typename VT3  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline decltype(auto)
+   operator<<( const DVecDVecMapExpr<VT1,VT2,ShiftLV,TF>& lhs, const DenseVector<VT3,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( lhs.leftOperand(), lhs.rightOperand() + (~rhs), lhs.operation() );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
