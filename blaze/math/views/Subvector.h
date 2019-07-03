@@ -2325,6 +2325,39 @@ inline bool tryDivAssign( const Subvector<VT1,AF,TF,DF,CSAs...>& lhs,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the shift assignment of a vector to a subvector.
+// \ingroup subvector
+//
+// \param lhs The target left-hand side subvector.
+// \param rhs The right-hand side vector of bits to shift.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1      // Type of the vector
+        , AlignmentFlag AF  // Alignment flag
+        , bool TF           // Transpose flag
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time subvector arguments
+        , typename VT2 >    // Type of the right-hand side vector
+inline bool tryShiftAssign( const Subvector<VT1,AF,TF,DF,CSAs...>& lhs,
+                            const Vector<VT2,TF>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+
+   return tryShiftAssign( lhs.operand(), ~rhs, lhs.offset() + index );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Removal of all restrictions on the data access to the given subvector.
 // \ingroup subvector
 //
