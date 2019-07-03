@@ -161,6 +161,12 @@ MT& operator>>=( DenseMatrix<MT,SO>& mat, int count );
 
 template< typename MT, bool SO >
 MT& operator>>=( DenseMatrix<MT,SO>&& mat, int count );
+
+template< typename MT1, bool SO1, typename MT2, bool SO2 >
+MT1& operator>>=( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs );
+
+template< typename MT1, bool SO1, typename MT2, bool SO2 >
+MT1& operator>>=( DenseMatrix<MT1,SO1>&& lhs, const DenseMatrix<MT2,SO2>& rhs );
 //@}
 //*************************************************************************************************
 
@@ -730,6 +736,66 @@ template< typename MT  // Type of the dense matrix
 inline MT& operator>>=( DenseMatrix<MT,SO>&& mat, int count )
 {
    return operator>>=( ~mat, count );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Right-shift assignment operator for the elementwise right-shift of a dense matrix
+//        (\f$ A>>=B \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix to be shifted.
+// \param rhs The right-hand side dense matrix of bits to shift.
+// \return Reference to the dense matrix.
+// \exception std::invalid_argument Invalid right-shift of restricted matrix.
+//
+// In case the matrix \a MT is restricted and the assignment would violate an invariant of the
+// matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , bool SO1      // Storage order of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , bool SO2 >    // Storage order of the right-hand side dense matrix
+inline MT1& operator>>=( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
+{
+   if( IsRestricted_v<MT1> ) {
+      if( !tryShiftAssign( ~lhs, ~rhs, 0UL, 0UL ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-shift of restricted matrix" );
+      }
+   }
+
+   decltype(auto) left( derestrict( ~lhs ) );
+
+   smpAssign( left, left >> (~rhs) );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~lhs ), "Invariant violation detected" );
+
+   return ~lhs;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Right-shift assignment operator for the elementwise right-shift of a temporary dense
+//        matrix (\f$ A>>=B \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side temporary dense matrix to be shifted.
+// \param rhs The right-hand side dense matrix of bits to shift.
+// \return Reference to the dense matrix.
+// \exception std::invalid_argument Invalid right-shift of restricted matrix.
+//
+// In case the matrix \a MT is restricted and the assignment would violate an invariant of the
+// matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , bool SO1      // Storage order of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , bool SO2 >    // Storage order of the right-hand side dense matrix
+inline MT1& operator>>=( DenseMatrix<MT1,SO1>&& lhs, const DenseMatrix<MT2,SO2>& rhs )
+{
+   return operator>>=( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
