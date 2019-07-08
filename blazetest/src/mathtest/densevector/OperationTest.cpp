@@ -87,6 +87,8 @@ OperationTest::OperationTest()
    testVar();
    testStdDev();
    testSoftmax();
+   testLeftShift();
+   testRightShift();
 }
 //*************************************************************************************************
 
@@ -1506,6 +1508,289 @@ void OperationTest::testSoftmax()
           << "   Result: " << sum( b ) << "\n"
           << "   Expected result: 1\n";
       throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the left-shift operator for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the left-shift operator for dense vectors. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testLeftShift()
+{
+   test_ = "Left-shift operator";
+
+
+   //=====================================================================================
+   // Uniform left-shift tests
+   //=====================================================================================
+
+   // Uniform left-shift of an empty vector
+   {
+      blaze::DynamicVector<unsigned int> a;
+
+      blaze::DynamicVector<unsigned int> b( a << 2U );
+
+      checkSize    ( b, 0UL );
+      checkCapacity( b, 0UL );
+      checkNonZeros( b, 0UL );
+   }
+
+   // Uniform left-shift of a general vector
+   {
+      blaze::DynamicVector<unsigned int> a{ 1U, 2U, 4U, 8U, 16U, 32U, 64U, 128U, 256U };
+
+      blaze::DynamicVector<unsigned int> b( a << 2U );
+
+      checkSize    ( b, 9UL );
+      checkCapacity( b, 9UL );
+      checkNonZeros( b, 9UL );
+
+      if( b[0] !=   4U || b[1] !=   8U || b[2] !=  16U || b[3] !=   32U || b[4] != 64U ||
+          b[5] != 128U || b[6] != 256U || b[7] != 512U || b[8] != 1024U ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Uniform left-shift operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << b << "\n"
+             << "   Expected result:\n( 4 8 16 32 64 128 256 512 1024 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Uniform left-shift assignment
+   {
+      blaze::DynamicVector<unsigned int> a{ 1U, 2U, 4U, 8U, 16U, 32U, 64U, 128U, 256U };
+
+      a <<= 2U;
+
+      checkSize    ( a, 9UL );
+      checkCapacity( a, 9UL );
+      checkNonZeros( a, 9UL );
+
+      if( a[0] !=   4U || a[1] !=   8U || a[2] !=  16U || a[3] !=   32U || a[4] != 64U ||
+          a[5] != 128U || a[6] != 256U || a[7] != 512U || a[8] != 1024U ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Uniform left-shift assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << a << "\n"
+             << "   Expected result:\n( 4 8 16 32 64 128 256 512 1024 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Elementwise left-shift tests
+   //=====================================================================================
+
+   // Elementwise left-shift of an empty vector
+   {
+      blaze::DynamicVector<unsigned int> a;
+      blaze::DynamicVector<unsigned int> b;
+
+      blaze::DynamicVector<unsigned int> c( a << b );
+
+      checkSize    ( b, 0UL );
+      checkCapacity( b, 0UL );
+      checkNonZeros( b, 0UL );
+   }
+
+   // Elementwise left-shift of a general vector
+   {
+      blaze::DynamicVector<unsigned int> a{ 1U, 2U, 4U, 8U, 16U, 32U, 64U, 128U, 256U };
+      blaze::DynamicVector<unsigned int> b{ 1U, 2U, 1U, 2U, 1U, 2U, 1U, 2U, 1U };
+
+      blaze::DynamicVector<unsigned int> c( a << b );
+
+      checkSize    ( c, 9UL );
+      checkCapacity( c, 9UL );
+      checkNonZeros( c, 9UL );
+
+      if( c[0] !=   2U || c[1] !=   8U || c[2] !=   8U || c[3] !=  32U || c[4] != 32U ||
+          c[5] != 128U || c[6] != 128U || c[7] != 512U || c[8] != 512U ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Elementwise left-shift operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << c << "\n"
+             << "   Expected result:\n( 2 8 8 32 32 128 128 512 512 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   // Elementwise left-shift assignment
+   {
+      blaze::DynamicVector<unsigned int> a{ 1U, 2U, 4U, 8U, 16U, 32U, 64U, 128U, 256U };
+      blaze::DynamicVector<unsigned int> b{ 1U, 2U, 1U, 2U, 1U, 2U, 1U, 2U, 1U };
+
+      a <<= b;
+
+      checkSize    ( a, 9UL );
+      checkCapacity( a, 9UL );
+      checkNonZeros( a, 9UL );
+
+      if( a[0] !=   2U || a[1] !=   8U || a[2] !=   8U || a[3] !=  32U || a[4] != 32U ||
+          a[5] != 128U || a[6] != 128U || a[7] != 512U || a[8] != 512U ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Elementwise left-shift assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << a << "\n"
+             << "   Expected result:\n( 2 8 8 32 32 128 128 512 512 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the right-shift operator for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the right-shift operator for dense vectors. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testRightShift()
+{
+   //=====================================================================================
+   // Uniform right-shift tests
+   //=====================================================================================
+
+   {
+      test_ = "Uniform right-shift operator";
+
+      // Uniform right-shift of an empty vector
+      {
+         blaze::DynamicVector<unsigned int> a;
+
+         blaze::DynamicVector<unsigned int> b( a >> 2U );
+
+         checkSize    ( b, 0UL );
+         checkCapacity( b, 0UL );
+         checkNonZeros( b, 0UL );
+      }
+
+      // Uniform right-shift of a general vector
+      {
+         blaze::DynamicVector<unsigned int> a{ 4U, 8U, 16U, 32U, 64U, 128U, 256U, 512U, 1024U };
+
+         blaze::DynamicVector<unsigned int> b( a >> 2U );
+
+         checkSize    ( b, 9UL );
+         checkCapacity( b, 9UL );
+         checkNonZeros( b, 9UL );
+
+         if( b[0] !=  1U || b[1] !=  2U || b[2] !=   4U || b[3] !=   8U || b[4] != 16U ||
+             b[5] != 32U || b[6] != 64U || b[7] != 128U || b[8] != 256U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Uniform right-shift operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << b << "\n"
+                << "   Expected result:\n( 1 2 4 8 16 32 64 128 256 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniform right-shift assignment
+      {
+         blaze::DynamicVector<unsigned int> a{ 4U, 8U, 16U, 32U, 64U, 128U, 256U, 512U, 1024U };
+
+         a >>= 2U;
+
+         checkSize    ( a, 9UL );
+         checkCapacity( a, 9UL );
+         checkNonZeros( a, 9UL );
+
+         if( a[0] !=  1U || a[1] !=  2U || a[2] !=   4U || a[3] !=   8U || a[4] != 16U ||
+             a[5] != 32U || a[6] != 64U || a[7] != 128U || a[8] != 256U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Uniform right-shift assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << a << "\n"
+                << "   Expected result:\n( 1 2 4 8 16 32 64 128 256 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Elementwise right-shift tests
+   //=====================================================================================
+
+   {
+      test_ = "Elementwise right-shift operator";
+
+      // Elementwise right-shift of an empty vector
+      {
+         blaze::DynamicVector<unsigned int> a;
+         blaze::DynamicVector<unsigned int> b;
+
+         blaze::DynamicVector<unsigned int> c( a >> b );
+
+         checkSize    ( b, 0UL );
+         checkCapacity( b, 0UL );
+         checkNonZeros( b, 0UL );
+      }
+
+      // Elementwise right-shift of a general vector
+      {
+         blaze::DynamicVector<unsigned int> a{ 4U, 8U, 16U, 32U, 64U, 128U, 256U, 512U, 1024U };
+         blaze::DynamicVector<unsigned int> b{ 1U, 2U,  1U, 2U, 1U, 2U, 1U, 2U, 1U };
+
+         blaze::DynamicVector<unsigned int> c( a >> b );
+
+         checkSize    ( c, 9UL );
+         checkCapacity( c, 9UL );
+         checkNonZeros( c, 9UL );
+
+         if( c[0] !=  2U || c[1] !=   2U || c[2] !=   8U || c[3] !=   8U || c[4] != 32U ||
+             c[5] != 32U || c[6] != 128U || c[7] != 128U || c[8] != 512U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Elementwise right-shift operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << c << "\n"
+                << "   Expected result:\n( 2 2 8 8 32 32 128 128 512 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Elementwise right-shift assignment
+      {
+         blaze::DynamicVector<unsigned int> a{ 4U, 8U, 16U, 32U, 64U, 128U, 256U, 512U, 1024U };
+         blaze::DynamicVector<unsigned int> b{ 1U, 2U,  1U, 2U, 1U, 2U, 1U, 2U, 1U };
+
+         a >>= b;
+
+         checkSize    ( a, 9UL );
+         checkCapacity( a, 9UL );
+         checkNonZeros( a, 9UL );
+
+         if( a[0] !=  2U || a[1] !=   2U || a[2] !=   8U || a[3] !=   8U || a[4] != 32U ||
+             a[5] != 32U || a[6] != 128U || a[7] != 128U || a[8] != 512U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Elementwise right-shift assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << a << "\n"
+                << "   Expected result:\n( 2 2 8 8 32 32 128 128 512 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
    }
 }
 //*************************************************************************************************
