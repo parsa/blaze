@@ -2993,7 +2993,6 @@ class CompressedMatrix<Type,true>
    //**********************************************************************************************
 
    //**Private class Element***********************************************************************
-   /*! \cond BLAZE_INTERNAL */
    /*!\brief Value-index-pair for the CompressedMatrix class.
    //
    // This struct grants access to the data members of the base class and adapts the copy and
@@ -3060,15 +3059,12 @@ class CompressedMatrix<Type,true>
       friend class CompressedMatrix;
       //*******************************************************************************************
    };
-   /*! \endcond */
    //**********************************************************************************************
 
    //**Private class Uninitialized*****************************************************************
-   /*! \cond BLAZE_INTERNAL */
    /*!\brief Auxiliary helper class for the construction of compressed matrices.
    */
    struct Uninitialized {};
-   /*! \endcond */
    //**********************************************************************************************
 
  public:
@@ -3298,13 +3294,11 @@ class CompressedMatrix<Type,true>
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
-   /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE  ( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST         ( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE      ( Type );
    BLAZE_CONSTRAINT_MUST_HAVE_SAME_SIZE       ( ElementBase, Element );
-   /*! \endcond */
    //**********************************************************************************************
 };
 /*! \endcond */
