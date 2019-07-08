@@ -3510,7 +3510,7 @@ void OperationTest<VT1,VT2>::testElementsOperation( blaze::TrueType )
 #if BLAZETEST_MATHTEST_TEST_ELEMENTS_OPERATION
    if( BLAZETEST_MATHTEST_TEST_ELEMENTS_OPERATION > 1 )
    {
-      if( lhs_.size() == 0UL || rhs_.size() == 0UL )
+      if( lhs_.size() == 0UL || rhs_.size() == 0UL )
          return;
 
 
