@@ -2498,7 +2498,7 @@ inline decltype(auto) operator-( const DenseMatrix<MT,SO>& mat, ST scalar )
 
 
 //*************************************************************************************************
-/*!\brief Left-shift operator for the uniform left-shift of a dense matrix (\f$ A=B<<s \f$).
+/*!\brief Left-shift operator for the uniform left-shift of a dense matrix (\f$ A=B\ll s \f$).
 // \ingroup dense_matrix
 //
 // \param mat The dense matrix for the uniform left-shift operation.
@@ -2525,7 +2525,7 @@ inline decltype(auto) operator<<( const DenseMatrix<MT,SO>& mat, int count )
 
 
 //*************************************************************************************************
-/*!\brief Right-shift operator for the uniform right-shift of a dense matrix (\f$ A=B>>s \f$).
+/*!\brief Right-shift operator for the uniform right-shift of a dense matrix (\f$ A=B\gg s \f$).
 // \ingroup dense_matrix
 //
 // \param mat The dense matrix for the uniform right-shift operation.

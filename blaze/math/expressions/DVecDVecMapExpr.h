@@ -1285,7 +1285,7 @@ inline decltype(auto)
 
 //*************************************************************************************************
 /*!\brief Left-shift operator for the elementwise left-shift of a dense vector
-//        (\f$ \vec{a}=\vec{b}<<\vec{c} \f$).
+//        (\f$ \vec{a}=\vec{b}\ll\vec{c} \f$).
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side dense vector to be shifted.
@@ -1319,7 +1319,7 @@ inline decltype(auto)
 
 //*************************************************************************************************
 /*!\brief Right-shift operator for the elementwise right-shift of a dense vector
-//        (\f$ \vec{a}=\vec{b}>>\vec{c} \f$).
+//        (\f$ \vec{a}=\vec{b}\gg\vec{c} \f$).
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side dense vector to be shifted.
@@ -1362,7 +1362,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Left-shift operator for the elementwise left-shift of an elementwise left-shift expression
-//        (\f$ \vec{a}=\vec{b}<<\vec{c}<<\vec{d} \f$).
+//        (\f$ \vec{a}=\vec{b}\ll\vec{c}\ll\vec{d} \f$).
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side left-shift expression to be shifted.
@@ -1391,7 +1391,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Right-shift operator for the elementwise right-shift of an elementwise right-shift
-//        expression (\f$ \vec{a}=\vec{b}>>\vec{c}>>\vec{d} \f$).
+//        expression (\f$ \vec{a}=\vec{b}\gg\vec{c}\gg\vec{d} \f$).
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side right-shift expression to be shifted.

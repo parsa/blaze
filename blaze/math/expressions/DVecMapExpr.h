@@ -2501,7 +2501,7 @@ inline decltype(auto) operator-( const DenseVector<VT,TF>& vec, ST scalar )
 
 //*************************************************************************************************
 /*!\brief Left-shift operator for the uniform left-shift of a dense vector
-//        (\f$ \vec{a}=\vec{b}<<s \f$).
+//        (\f$ \vec{a}=\vec{b}\ll s \f$).
 // \ingroup dense_vector
 //
 // \param vec The dense vector for the uniform left-shift operation.
@@ -2529,7 +2529,7 @@ inline decltype(auto) operator<<( const DenseVector<VT,TF>& vec, int count )
 
 //*************************************************************************************************
 /*!\brief Right-shift operator for the uniform right-shift of a dense vector
-//        (\f$ \vec{a}=\vec{b}>>s \f$).
+//        (\f$ \vec{a}=\vec{b}\gg s \f$).
 // \ingroup dense_vector
 //
 // \param vec The dense vector for the uniform right-shift operation.

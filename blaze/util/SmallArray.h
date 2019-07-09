@@ -1452,7 +1452,7 @@ inline typename SmallArray<T,N,A>::ConstIterator end( const SmallArray<T,N,A>& s
 // \return Iterator just past the last element of the given small array.
 */
 template< typename T, size_t N, typename A >
-inline typename SmallArray<T,N,A>::ConstIterator cend( SmallArray<T,N,A>& sa )
+inline typename SmallArray<T,N,A>::ConstIterator cend( const SmallArray<T,N,A>& sa )
 {
    return sa.end();
 }

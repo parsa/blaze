@@ -1317,7 +1317,7 @@ inline decltype(auto)
 
 //*************************************************************************************************
 /*!\brief Left-shift operator for the elementwise left-shift of a dense matrix
-//        (\f$ A=B<<C \f$).
+//        (\f$ A=B\ll C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix to be shifted.
@@ -1352,7 +1352,7 @@ inline decltype(auto)
 
 //*************************************************************************************************
 /*!\brief Right-shift operator for the elementwise right-shift of a dense matrix
-//        (\f$ A=B>>C \f$).
+//        (\f$ A=B\gg C \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix to be shifted.
@@ -1396,7 +1396,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Left-shift operator for the elementwise left-shift of an elementwise left-shift expression
-//        (\f$ A=B<<C<<D \f$).
+//        (\f$ A=B\ll C\ll D \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side left-shift expression to be shifted.
@@ -1426,7 +1426,7 @@ inline decltype(auto)
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Right-shift operator for the elementwise right-shift of an elementwise right-shift
-//        expression (\f$ A=B>>C>>D \f$).
+//        expression (\f$ A=B\gg C\gg D \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side right-shift expression to be shifted.

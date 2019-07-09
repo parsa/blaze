@@ -495,7 +495,7 @@ inline auto operator/=( DenseVector<VT,TF>&& vec, ST scalar )
 
 //*************************************************************************************************
 /*!\brief Left-shift assignment operator for the uniform left-shift of a dense vector
-//        (\f$ \vec{a}<<=s \f$).
+//        (\f$ \vec{a}\ll=s \f$).
 // \ingroup dense_vector
 //
 // \param vec The dense vector for the uniform left-shift operation.
@@ -529,7 +529,7 @@ inline VT& operator<<=( DenseVector<VT,TF>& vec, int count )
 
 //*************************************************************************************************
 /*!\brief Left-shift assignment operator for the uniform shift of a temporary dense vector
-//        (\f$ \vec{v}<<=s \f$).
+//        (\f$ \vec{v}\ll=s \f$).
 // \ingroup dense_vector
 //
 // \param vec The temporary dense vector for the uniform left-shift operation.
@@ -551,7 +551,7 @@ inline VT& operator<<=( DenseVector<VT,TF>&& vec, int count )
 
 //*************************************************************************************************
 /*!\brief Left-shift assignment operator for the elementwise left-shift of a dense vector
-//        (\f$ \vec{a}<<=\vec{b} \f$).
+//        (\f$ \vec{a}\ll=\vec{b} \f$).
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side dense vector to be shifted.
@@ -586,7 +586,7 @@ inline VT1& operator<<=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rh
 
 //*************************************************************************************************
 /*!\brief Left-shift assignment operator for the elementwise left-shift of a temporary dense vector
-//        (\f$ \vec{a}<<=\vec{b} \f$).
+//        (\f$ \vec{a}\ll=\vec{b} \f$).
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side temporary dense vector to be shifted.
@@ -609,7 +609,7 @@ inline VT1& operator<<=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& r
 
 //*************************************************************************************************
 /*!\brief Right-shift assignment operator for the uniform right-shift of a dense vector
-//        (\f$ \vec{a}>>=s \f$).
+//        (\f$ \vec{a}\gg=s \f$).
 // \ingroup dense_vector
 //
 // \param vec The dense vector for the uniform right-shift operation.
@@ -643,7 +643,7 @@ inline VT& operator>>=( DenseVector<VT,TF>& vec, int count )
 
 //*************************************************************************************************
 /*!\brief Right-shift assignment operator for the uniform shift of a temporary dense vector
-//        (\f$ \vec{v}>>=s \f$).
+//        (\f$ \vec{v}\gg=s \f$).
 // \ingroup dense_vector
 //
 // \param vec The temporary dense vector for the uniform right-shift operation.
@@ -665,7 +665,7 @@ inline VT& operator>>=( DenseVector<VT,TF>&& vec, int count )
 
 //*************************************************************************************************
 /*!\brief Right-shift assignment operator for the elementwise right-shift of a dense vector
-//        (\f$ \vec{a}>>=\vec{b} \f$).
+//        (\f$ \vec{a}\gg=\vec{b} \f$).
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side dense vector to be shifted.
@@ -700,7 +700,7 @@ inline VT1& operator>>=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rh
 
 //*************************************************************************************************
 /*!\brief Right-shift assignment operator for the elementwise right-shift of a temporary dense
-//        vector (\f$ \vec{a}>>=\vec{b} \f$).
+//        vector (\f$ \vec{a}\gg=\vec{b} \f$).
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side temporary dense vector to be shifted.

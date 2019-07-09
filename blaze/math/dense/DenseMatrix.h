@@ -566,7 +566,7 @@ inline auto operator/=( DenseMatrix<MT,SO>&& mat, ST scalar )
 
 //*************************************************************************************************
 /*!\brief Left-shift assignment operator for the uniform left-shift of a dense matrix
-//        (\f$ A<<=s \f$).
+//        (\f$ A\ll=s \f$).
 // \ingroup dense_matrix
 //
 // \param mat The dense matrix for the uniform left-shift operation.
@@ -602,7 +602,7 @@ inline MT& operator<<=( DenseMatrix<MT,SO>& mat, int count )
 
 //*************************************************************************************************
 /*!\brief Left-shift assignment operator for the uniform left-shift of a temporary dense matrix
-//        (\f$ A<<=s \f$).
+//        (\f$ A\ll=s \f$).
 // \ingroup dense_matrix
 //
 // \param mat The temporary dense matrix for the uniform left-shift operation.
@@ -624,7 +624,7 @@ inline MT& operator<<=( DenseMatrix<MT,SO>&& mat, int count )
 
 //*************************************************************************************************
 /*!\brief Left-shift assignment operator for the elementwise left-shift of a dense matrix
-//        (\f$ A<<=B \f$).
+//        (\f$ A\ll=B \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix to be shifted.
@@ -660,7 +660,7 @@ inline MT1& operator<<=( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& 
 
 //*************************************************************************************************
 /*!\brief Left-shift assignment operator for the elementwise left-shift of a temporary dense matrix
-//        (\f$ A<<=B \f$).
+//        (\f$ A\ll=B \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side temporary dense matrix to be shifted.
@@ -684,7 +684,7 @@ inline MT1& operator<<=( DenseMatrix<MT1,SO1>&& lhs, const DenseMatrix<MT2,SO2>&
 
 //*************************************************************************************************
 /*!\brief Right-shift assignment operator for the uniform right-shift of a dense matrix
-//        (\f$ A>>=s \f$).
+//        (\f$ A\gg=s \f$).
 // \ingroup dense_matrix
 //
 // \param mat The dense matrix for the uniform right-shift operation.
@@ -720,7 +720,7 @@ inline MT& operator>>=( DenseMatrix<MT,SO>& mat, int count )
 
 //*************************************************************************************************
 /*!\brief Right-shift assignment operator for the uniform right-shift of a temporary dense matrix
-//        (\f$ A>>=s \f$).
+//        (\f$ A\gg=s \f$).
 // \ingroup dense_matrix
 //
 // \param mat The temporary dense matrix for the uniform right-shift operation.
@@ -742,7 +742,7 @@ inline MT& operator>>=( DenseMatrix<MT,SO>&& mat, int count )
 
 //*************************************************************************************************
 /*!\brief Right-shift assignment operator for the elementwise right-shift of a dense matrix
-//        (\f$ A>>=B \f$).
+//        (\f$ A\gg=B \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix to be shifted.
@@ -778,7 +778,7 @@ inline MT1& operator>>=( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& 
 
 //*************************************************************************************************
 /*!\brief Right-shift assignment operator for the elementwise right-shift of a temporary dense
-//        matrix (\f$ A>>=B \f$).
+//        matrix (\f$ A\gg=B \f$).
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side temporary dense matrix to be shifted.
