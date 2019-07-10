@@ -101,7 +101,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\defgroup uniform_vector UniforVector
+/*!\defgroup uniform_vector UniformVector
 // \ingroup dense_vector
 */
 /*!\brief Efficient implementation of a uniform vector.
