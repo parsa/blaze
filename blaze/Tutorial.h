@@ -6100,12 +6100,13 @@
 // that complex conjugate pairs of eigenvalues appear consecutively with the eigenvalue having
 // the positive imaginary part first.
 //
-// In case \a A is a row-major matrix, the left eigenvectors are returned in the rows of \a V,
-// in case \a A is a column-major matrix, the right eigenvectors are returned in the columns of
-// \a V. In case the given matrix is a compile time symmetric matrix with floating point elements,
-// the resulting eigenvectors will be of floating point type and therefore the elements of the
-// given eigenvector matrix are expected to be of floating point type. In all other cases they
-// are expected to be of complex type.
+// In case \a A is a row-major matrix, \a V will contain the left eigenvectors, otherwise \a V
+// will contain the right eigenvectors. In case \a V is a row-major matrix the eigenvectors are
+// returned in the rows of \a V, in case \a V is a column-major matrix the eigenvectors are
+// returned in the columns of \a V. In case the given matrix is a compile time symmetric matrix
+// with floating point elements, the resulting eigenvectors will be of floating point type and
+// therefore the elements of the given eigenvector matrix are expected to be of floating point
+// type. In all other cases they are expected to be of complex type.
 //
 // The following examples give an impression of the computation of eigenvalues and eigenvectors
 // for a general, a symmetric, and an Hermitian matrix:
