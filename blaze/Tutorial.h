@@ -127,6 +127,17 @@
 //          </li>
 //       </ul>
 //    </li>
+//    <li> \ref bitwise_operations
+//       <ul>
+//          <li> \ref bitwise_shift
+//             <ul>
+//                <li> \ref vector_vector_shift </li>
+//                <li> \ref matrix_matrix_shift </li>
+//                <li> \ref scalar_shift </li>
+//             </ul>
+//          </li>
+//       </ul>
+//    </li>
 //    <li> \ref shared_memory_parallelization
 //       <ul>
 //          <li> \ref hpx_parallelization </li>
@@ -11809,7 +11820,147 @@
 // possible to multiply two matrices with different element type, as long as the element types
 // themselves can be multiplied.
 //
-// \n Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref shared_memory_parallelization
+// \n Previous: \ref matrix_vector_multiplication &nbsp; &nbsp; Next: \ref bitwise_operations
+*/
+//*************************************************************************************************
+
+
+//**Bitwise Operations*****************************************************************************
+/*!\page bitwise_operations Bitwise Operations
+//
+// \tableofcontents
+//
+//
+// \b Blaze provides the following bitwise operations for vectors and matrices:
+//
+// <ul>
+//    <li> \ref bitwise_shift
+//       <ul>
+//          <li> \ref vector_vector_shift </li>
+//          <li> \ref matrix_matrix_shift </li>
+//          <li> \ref scalar_shift </li>
+//       </ul>
+//    </li>
+// </ul>
+//
+// \n Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref bitwise_shift
+*/
+//*************************************************************************************************
+
+
+//**Bitwise Shift**********************************************************************************
+/*!\page bitwise_shift Bitwise Shift
+//
+// \n \section vector_vector_shift Vector/Vector Shift
+// <hr>
+//
+// Via the left-shift operator (i.e. operator<<()) and the right-shift operator (i.e. operator>>())
+// it is possible to perform an elementwise shift of a dense vector:
+
+   \code
+   blaze::DynamicVector<unsigned int> v1( 5UL ), v3;
+   blaze::DynamicVector<unsigned short> v2( 5UL );
+
+   // ... Initializing the vectors
+
+   v3 = v1 << v2;  // Elementwise left-shift of a dense column vector
+   v3 = v1 >> v2;  // Elementwise right-shift of a dense column vector
+   \endcode
+
+// Note that it is necessary that both operands have exactly the same dimensions. Violating this
+// precondition results in an exception. Also note that it is only possible to shift vectors with
+// the same transpose flag:
+
+   \code
+   using blaze::columnVector;
+   using blaze::rowVector;
+
+   blaze::DynamicVector<unsigned int,columnVector> v1( 5UL );
+   blaze::DynamicVector<unsigned int,rowVector>    v2( 5UL );
+
+   v1 << v2;           // Compilation error: Cannot shift a column vector by a row vector
+   v1 << trans( v2 );  // OK: Shifting a column vector by another column vector
+   \endcode
+
+// Furthermore, it is possible to use different element types in the two vector operands, but
+// shifting two vectors with the same element type is favorable due to possible vectorization
+// of the operation:
+
+   \code
+   blaze::DynamicVector<unsigned int> v1( 100UL ), v2( 100UL ), v3;
+
+   // ... Initialization of the vectors
+
+   v3 = v1 << v2;  // Vectorized left-shift of an unsigned int vector
+   \endcode
+
+// \n \section matrix_matrix_shift Matrix/Matrix Shift
+// <hr>
+//
+// The left-shift operator (i.e. operator<<()) and the right-shift operator (i.e. operator>>())
+// can also be used to perform an elementwise shift of a dense matrix:
+
+   \code
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   blaze::DynamicMatrix<unsigned int,columnMajor> M1( 7UL, 3UL );
+   blaze::DynamicMatrix<unsigned short,rowMajor>  M2( 7UL, 3UL ), M3;
+
+   // ... Initializing the matrices
+
+   M3 = M1 << M2;  // Elementwise left-shift of a dense column-major matrix
+   M3 = M1 >> M2;  // Elementwise right-shift of a dense column-major matrix
+   \endcode
+
+// Note that it is necessary that both operands have exactly the same dimensions. Violating this
+// precondition results in an exception. It is possible to use any combination of row-major and
+// column-major matrices. Note however that in favor of performance using two matrices with the
+// same storage order is favorable. The same argument holds for the element type: While it is
+// possible to use matrices with different element type, using two matrices with the same element
+// type potentially leads to better performance due to vectorization of the operation.
+
+   \code
+   blaze::DynamicMatrix<unsigned int> M1( 50UL, 70UL ), M2( 50UL, 70UL ), M3;
+
+   // ... Initialization of the matrices
+
+   M3 = M1 << M2;  // Vectorized left-shift of an unsigned int matrix
+   \endcode
+
+// \n \section scalar_shift Scalar Shift
+// <hr>
+//
+// It is also possible to uniformly shift all elements of a dense vector or dense matrix by means
+// of a scalar, which has the same effect as shifting by means of a uniform vector or matrix (see
+// \ref vector_types_uniform_vector and \ref matrix_types_uniform_matrix). In \b Blaze it is
+// possible to use all built-in/fundamental data types except bool as scalar values. Additionally,
+// it is possible to use std::complex values with the same built-in data types as element type.
+// Examples:
+
+   \code
+   blaze::DynamicVector<unsigned int> v1{ 3, 2, 5, 4, 1, 6 };
+
+   // Uniform left-shift by one bit of all elements of v1; Results in
+   //
+   //    ( 6, 4, 10, 8, 2, 12 )
+   //
+   blaze::DynamicVector<int> v2( v1 << 1U );
+   \endcode
+
+   \code
+   blaze::DynamicMatrix<unsigned int> M1{ { 3, 2, 5 },
+                                          { 4, 1, 6 } };
+
+   // Uniform left-shift by one bit of all elements of M1; Results in
+   //
+   //    ( 6, 4, 10 )
+   //    ( 8, 2, 12 )
+   //
+   blaze::DynamicMatrix<unsigned int> M2( M1 << 1U );
+   \endcode
+
+// \n Previous: \ref bitwise_operations &nbsp; &nbsp; Next: \ref shared_memory_parallelization
 */
 //*************************************************************************************************
 
@@ -11836,7 +11987,7 @@
 //
 //  - \ref serial_execution
 //
-// \n Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref hpx_parallelization
+// \n Previous: \ref bitwise_shift &nbsp; &nbsp; Next: \ref hpx_parallelization
 */
 //*************************************************************************************************
 
