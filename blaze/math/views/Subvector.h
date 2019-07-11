@@ -2160,6 +2160,71 @@ BLAZE_ALWAYS_INLINE bool
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by a bitwise AND on a single element of a subvector.
+// \ingroup subvector
+//
+// \param sv The target subvector.
+// \param index The index of the element to be modified.
+// \param value The bit pattern to be used on the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT       // Type of the vector
+        , AlignmentFlag AF  // Alignment flag
+        , bool TF           // Transpose flag
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time subvector arguments
+        , typename ET >     // Type of the element
+inline bool tryBitand( const Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index < sv.size(), "Invalid vector access index" );
+
+   return tryBitand( sv.operand(), sv.offset()+index, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by a bitwise AND on a range of elements of a subvector.
+// \ingroup subvector
+//
+// \param sv The target subvector.
+// \param index The index of the first element of the range to be modified.
+// \param size The number of elements of the range to be modified.
+// \param value The bit pattern to be used on the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT       // Type of the vector
+        , AlignmentFlag AF  // Alignment flag
+        , bool TF           // Transpose flag
+        , bool DF           // Density flag
+        , size_t... CSAs    // Compile time subvector arguments
+        , typename ET >     // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryBitand( const Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, size_t size, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (~sv).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (~sv).size(), "Invalid range size" );
+
+   return tryBitand( sv.operand(), sv.offset()+index, size, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by the assignment of a vector to a subvector.
 // \ingroup subvector
 //
