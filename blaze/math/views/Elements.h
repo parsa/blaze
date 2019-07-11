@@ -2206,6 +2206,78 @@ BLAZE_ALWAYS_INLINE bool
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by a bitwise AND on a single element of a selection of
+//        elements.
+// \ingroup elements
+//
+// \param e The target selection of elements.
+// \param index The index of the element to be modified.
+// \param value The bit pattern to be used on the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT       // Type of the vector
+        , bool TF           // Transpose flag
+        , bool DF           // Density flag
+        , typename... CEAs  // Compile time element arguments
+        , typename ET >     // Type of the element
+inline bool tryBitand( const Elements<VT,TF,DF,CEAs...>& e, size_t index, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index < e.size(), "Invalid vector access index" );
+
+   return tryBitand( e.operand(), e.idx(index), value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by a bitwise AND on a range of elements of a selection of
+//        elements.
+// \ingroup elements
+//
+// \param e The target selection of elements.
+// \param index The index of the first element of the range to be modified.
+// \param size The number of elements of the range to be modified.
+// \param value The bit pattern to be used on the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT       // Type of the vector
+        , bool TF           // Transpose flag
+        , bool DF           // Density flag
+        , typename... CEAs  // Compile time element arguments
+        , typename ET >     // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryBitand( const Elements<VT,TF,DF,CEAs...>& e, size_t index, size_t size, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( index <= (~e).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (~e).size(), "Invalid range size" );
+
+   const size_t iend( index + size );
+
+   for( size_t i=index; i<iend; ++i ) {
+      if( !tryBitand( e.operand(), e.idx(i), value ) )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Predict invariant violations by the assignment of a vector to a selection of elements.
 // \ingroup elements
 //
