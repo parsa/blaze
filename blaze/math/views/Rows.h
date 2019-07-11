@@ -2237,7 +2237,7 @@ BLAZE_ALWAYS_INLINE bool
    const size_t iend( row + m );
 
    for( size_t i=row; i<iend; ++i ) {
-      if( !trySet( r.operand(), r.idx(i), column, m, n, value ) )
+      if( !trySet( r.operand(), r.idx(i), column, 1UL, n, value ) )
          return false;
    }
 
@@ -2315,7 +2315,7 @@ BLAZE_ALWAYS_INLINE bool
    const size_t iend( row + m );
 
    for( size_t i=row; i<iend; ++i ) {
-      if( !tryAdd( r.operand(), r.idx(i), column, m, n, value ) )
+      if( !tryAdd( r.operand(), r.idx(i), column, 1UL, n, value ) )
          return false;
    }
 
@@ -2393,7 +2393,7 @@ BLAZE_ALWAYS_INLINE bool
    const size_t iend( row + m );
 
    for( size_t i=row; i<iend; ++i ) {
-      if( !trySub( r.operand(), r.idx(i), column, m, n, value ) )
+      if( !trySub( r.operand(), r.idx(i), column, 1UL, n, value ) )
          return false;
    }
 
@@ -2471,7 +2471,7 @@ BLAZE_ALWAYS_INLINE bool
    const size_t iend( row + m );
 
    for( size_t i=row; i<iend; ++i ) {
-      if( !tryMult( r.operand(), r.idx(i), column, m, n, value ) )
+      if( !tryMult( r.operand(), r.idx(i), column, 1UL, n, value ) )
          return false;
    }
 
@@ -2549,7 +2549,7 @@ BLAZE_ALWAYS_INLINE bool
    const size_t iend( row + m );
 
    for( size_t i=row; i<iend; ++i ) {
-      if( !tryDiv( r.operand(), r.idx(i), column, m, n, value ) )
+      if( !tryDiv( r.operand(), r.idx(i), column, 1UL, n, value ) )
          return false;
    }
 
@@ -2625,7 +2625,85 @@ BLAZE_ALWAYS_INLINE bool
    const size_t iend( row + m );
 
    for( size_t i=row; i<iend; ++i ) {
-      if( !tryShift( r.operand(), r.idx(i), column, m, n, count ) )
+      if( !tryShift( r.operand(), r.idx(i), column, 1UL, n, count ) )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by a bitwise AND on a single element of a row selection.
+// \ingroup rows
+//
+// \param r The target row selection.
+// \param i The row index of the element to be modified.
+// \param j The column index of the element to be modified.
+// \param value The bit pattern to be used on the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CRAs  // Compile time row arguments
+        , typename ET >     // Type of the element
+inline bool tryBitand( const Rows<MT,SO,DF,SF,CRAs...>& r, size_t i, size_t j, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( i < r.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < r.columns(), "Invalid column access index" );
+
+   return tryBitand( r.operand(), r.idx(i), j, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by a bitwise AND on a range of elements of a row selection.
+// \ingroup rows
+//
+// \param r The target row selection.
+// \param row The index of the first row of the range to be modified.
+// \param column The index of the first column of the range to be modified.
+// \param m The number of rows of the range to be modified.
+// \param n The number of columns of the range to be modified.
+// \param value The bit pattern to be used on the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CRAs  // Compile time row arguments
+        , typename ET >     // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryBitand( const Rows<MT,SO,DF,SF,CRAs...>& r, size_t row, size_t column, size_t m, size_t n, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~r).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~r).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (~r).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (~r).columns(), "Invalid number of columns" );
+
+   const size_t iend( row + m );
+
+   for( size_t i=row; i<iend; ++i ) {
+      if( !tryBitand( r.operand(), r.idx(i), column, 1UL, n, value ) )
          return false;
    }
 
