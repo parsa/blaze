@@ -2551,6 +2551,36 @@ inline decltype(auto) operator>>( const DenseMatrix<MT,SO>& mat, int count )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Bitwise AND operator for the bitwise AND of a dense matrix and a scalar value
+//        (\f$ A=B&s \f$).
+// \ingroup dense_matrix
+//
+// \param mat The left-hand side dense matrix for the bitwise AND.
+// \param scalar The right-hand side scalar value for the bitwise AND.
+// \return The resulting matrix.
+//
+// This operator represents the bitwise AND between a dense matrix and a scalar value:
+
+   \code
+   blaze::DynamicMatrix<unsigned int> A, B;
+   // ... Resizing and initialization
+   B = A & 7U;
+   \endcode
+*/
+template< typename MT  // Type of the left-hand side dense matrix
+        , bool SO      // Storage order of the left-hand side dense matrix
+        , typename ST  // Type of the right-hand side scalar
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+inline decltype(auto) operator&( const DenseMatrix<MT,SO>& mat, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~mat, blaze::bind2nd( Bitand{}, scalar ) );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
