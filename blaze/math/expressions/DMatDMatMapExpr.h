@@ -52,6 +52,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatMatMapExpr.h>
 #include <blaze/math/functors/Atan2.h>
+#include <blaze/math/functors/Bitand.h>
 #include <blaze/math/functors/Hypot.h>
 #include <blaze/math/functors/Max.h>
 #include <blaze/math/functors/Min.h>
@@ -1381,6 +1382,40 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    return map( ~lhs, ~rhs, ShiftRV() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise AND operator for two dense matrices (\f$ A=B&C \f$).
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix for the bitwise AND operation.
+// \param rhs The right-hand side dense matrix for the bitwise AND operation.
+// \return The resulting dense matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// This operator represents the bitwise AND of the given two dense matrices:
+
+   \code
+   blaze::DynamicMatrix<unsigned int> A, B, C;
+   // ... Resizing and initialization
+   C = A & B;
+   \endcode
+
+// In case the current number of rows and columns of the two given matrices don't match, a
+// \a std::invalid_argument is thrown.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , bool SO1      // Storage order of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , bool SO2 >    // Storage order of the right-hand side dense matrix
+inline decltype(auto)
+   operator&( const DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~lhs, ~rhs, Bitand() );
 }
 //*************************************************************************************************
 
