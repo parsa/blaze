@@ -89,6 +89,7 @@ OperationTest::OperationTest()
    testSoftmax();
    testLeftShift();
    testRightShift();
+   testBitand();
 }
 //*************************************************************************************************
 
@@ -1528,10 +1529,10 @@ void OperationTest::testLeftShift()
 
 
    //=====================================================================================
-   // Uniform left-shift tests
+   // Vector/scalar left-shift tests
    //=====================================================================================
 
-   // Uniform left-shift of an empty vector
+   // Vector/scalar left-shift of an empty vector
    {
       blaze::DynamicVector<unsigned int> a;
 
@@ -1542,7 +1543,7 @@ void OperationTest::testLeftShift()
       checkNonZeros( b, 0UL );
    }
 
-   // Uniform left-shift of a general vector
+   // Vector/scalar left-shift of a general vector
    {
       blaze::DynamicVector<unsigned int> a{ 1U, 2U, 4U, 8U, 16U, 32U, 64U, 128U, 256U };
 
@@ -1556,7 +1557,7 @@ void OperationTest::testLeftShift()
           b[5] != 128U || b[6] != 256U || b[7] != 512U || b[8] != 1024U ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Uniform left-shift operation failed\n"
+             << " Error: Vector/scalar left-shift operation failed\n"
              << " Details:\n"
              << "   Result:\n" << b << "\n"
              << "   Expected result:\n( 4 8 16 32 64 128 256 512 1024 )\n";
@@ -1564,7 +1565,7 @@ void OperationTest::testLeftShift()
       }
    }
 
-   // Uniform left-shift assignment
+   // Vector/scalar left-shift assignment
    {
       blaze::DynamicVector<unsigned int> a{ 1U, 2U, 4U, 8U, 16U, 32U, 64U, 128U, 256U };
 
@@ -1578,7 +1579,7 @@ void OperationTest::testLeftShift()
           a[5] != 128U || a[6] != 256U || a[7] != 512U || a[8] != 1024U ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Uniform left-shift assignment failed\n"
+             << " Error: Vector/scalar left-shift assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << a << "\n"
              << "   Expected result:\n( 4 8 16 32 64 128 256 512 1024 )\n";
@@ -1588,10 +1589,10 @@ void OperationTest::testLeftShift()
 
 
    //=====================================================================================
-   // Elementwise left-shift tests
+   // Vector/vector left-shift tests
    //=====================================================================================
 
-   // Elementwise left-shift of an empty vector
+   // Vector/vector left-shift of an empty vector
    {
       blaze::DynamicVector<unsigned int> a;
       blaze::DynamicVector<unsigned int> b;
@@ -1603,7 +1604,7 @@ void OperationTest::testLeftShift()
       checkNonZeros( b, 0UL );
    }
 
-   // Elementwise left-shift of a general vector
+   // Vector/vector left-shift of a general vector
    {
       blaze::DynamicVector<unsigned int> a{ 1U, 2U, 4U, 8U, 16U, 32U, 64U, 128U, 256U };
       blaze::DynamicVector<unsigned int> b{ 1U, 2U, 1U, 2U, 1U, 2U, 1U, 2U, 1U };
@@ -1618,7 +1619,7 @@ void OperationTest::testLeftShift()
           c[5] != 128U || c[6] != 128U || c[7] != 512U || c[8] != 512U ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Elementwise left-shift operation failed\n"
+             << " Error: Vector/vector left-shift operation failed\n"
              << " Details:\n"
              << "   Result:\n" << c << "\n"
              << "   Expected result:\n( 2 8 8 32 32 128 128 512 512 )\n";
@@ -1626,7 +1627,7 @@ void OperationTest::testLeftShift()
       }
    }
 
-   // Elementwise left-shift assignment
+   // Vector/vector left-shift assignment
    {
       blaze::DynamicVector<unsigned int> a{ 1U, 2U, 4U, 8U, 16U, 32U, 64U, 128U, 256U };
       blaze::DynamicVector<unsigned int> b{ 1U, 2U, 1U, 2U, 1U, 2U, 1U, 2U, 1U };
@@ -1641,7 +1642,7 @@ void OperationTest::testLeftShift()
           a[5] != 128U || a[6] != 128U || a[7] != 512U || a[8] != 512U ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Elementwise left-shift assignment failed\n"
+             << " Error: Vector/vector left-shift assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << a << "\n"
              << "   Expected result:\n( 2 8 8 32 32 128 128 512 512 )\n";
@@ -1664,13 +1665,13 @@ void OperationTest::testLeftShift()
 void OperationTest::testRightShift()
 {
    //=====================================================================================
-   // Uniform right-shift tests
+   // Vector/scalar right-shift tests
    //=====================================================================================
 
    {
-      test_ = "Uniform right-shift operator";
+      test_ = "Vector/scalar right-shift operator";
 
-      // Uniform right-shift of an empty vector
+      // Vector/scalar right-shift of an empty vector
       {
          blaze::DynamicVector<unsigned int> a;
 
@@ -1681,7 +1682,7 @@ void OperationTest::testRightShift()
          checkNonZeros( b, 0UL );
       }
 
-      // Uniform right-shift of a general vector
+      // Vector/scalar right-shift of a general vector
       {
          blaze::DynamicVector<unsigned int> a{ 4U, 8U, 16U, 32U, 64U, 128U, 256U, 512U, 1024U };
 
@@ -1695,7 +1696,7 @@ void OperationTest::testRightShift()
              b[5] != 32U || b[6] != 64U || b[7] != 128U || b[8] != 256U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Uniform right-shift operation failed\n"
+                << " Error: Vector/scalar right-shift operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << b << "\n"
                 << "   Expected result:\n( 1 2 4 8 16 32 64 128 256 )\n";
@@ -1703,7 +1704,7 @@ void OperationTest::testRightShift()
          }
       }
 
-      // Uniform right-shift assignment
+      // Vector/scalar right-shift assignment
       {
          blaze::DynamicVector<unsigned int> a{ 4U, 8U, 16U, 32U, 64U, 128U, 256U, 512U, 1024U };
 
@@ -1717,7 +1718,7 @@ void OperationTest::testRightShift()
              a[5] != 32U || a[6] != 64U || a[7] != 128U || a[8] != 256U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Uniform right-shift assignment failed\n"
+                << " Error: Vector/scalar right-shift assignment failed\n"
                 << " Details:\n"
                 << "   Result:\n" << a << "\n"
                 << "   Expected result:\n( 1 2 4 8 16 32 64 128 256 )\n";
@@ -1728,13 +1729,13 @@ void OperationTest::testRightShift()
 
 
    //=====================================================================================
-   // Elementwise right-shift tests
+   // Vector/vector right-shift tests
    //=====================================================================================
 
    {
-      test_ = "Elementwise right-shift operator";
+      test_ = "Vector/vector right-shift operator";
 
-      // Elementwise right-shift of an empty vector
+      // Vector/vector right-shift of an empty vector
       {
          blaze::DynamicVector<unsigned int> a;
          blaze::DynamicVector<unsigned int> b;
@@ -1746,7 +1747,7 @@ void OperationTest::testRightShift()
          checkNonZeros( b, 0UL );
       }
 
-      // Elementwise right-shift of a general vector
+      // Vector/vector right-shift of a general vector
       {
          blaze::DynamicVector<unsigned int> a{ 4U, 8U, 16U, 32U, 64U, 128U, 256U, 512U, 1024U };
          blaze::DynamicVector<unsigned int> b{ 1U, 2U,  1U, 2U, 1U, 2U, 1U, 2U, 1U };
@@ -1761,7 +1762,7 @@ void OperationTest::testRightShift()
              c[5] != 32U || c[6] != 128U || c[7] != 128U || c[8] != 512U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Elementwise right-shift operation failed\n"
+                << " Error: Vector/vector right-shift operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << c << "\n"
                 << "   Expected result:\n( 2 2 8 8 32 32 128 128 512 )\n";
@@ -1769,7 +1770,7 @@ void OperationTest::testRightShift()
          }
       }
 
-      // Elementwise right-shift assignment
+      // Vector/vector right-shift assignment
       {
          blaze::DynamicVector<unsigned int> a{ 4U, 8U, 16U, 32U, 64U, 128U, 256U, 512U, 1024U };
          blaze::DynamicVector<unsigned int> b{ 1U, 2U,  1U, 2U, 1U, 2U, 1U, 2U, 1U };
@@ -1784,10 +1785,154 @@ void OperationTest::testRightShift()
              a[5] != 32U || a[6] != 128U || a[7] != 128U || a[8] != 512U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Elementwise right-shift assignment failed\n"
+                << " Error: Vector/vector right-shift assignment failed\n"
                 << " Details:\n"
                 << "   Result:\n" << a << "\n"
                 << "   Expected result:\n( 2 2 8 8 32 32 128 128 512 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the bitwise AND operator for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the bitwise AND operator for dense vectors. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testBitand()
+{
+   //=====================================================================================
+   // Vector/scalar bitwise AND tests
+   //=====================================================================================
+
+   {
+      test_ = "Vector/scalar bitwise AND operator";
+
+      // Vector/scalar bitwise AND of an empty vector
+      {
+         blaze::DynamicVector<unsigned int> a;
+
+         blaze::DynamicVector<unsigned int> b( a & 7U );
+
+         checkSize    ( b, 0UL );
+         checkCapacity( b, 0UL );
+         checkNonZeros( b, 0UL );
+      }
+
+      // Vector/scalar bitwise AND of a general vector
+      {
+         blaze::DynamicVector<unsigned int> a{ 8U, 9U, 10U, 11U, 12U, 13U, 14U, 15U, 16U };
+
+         blaze::DynamicVector<unsigned int> b( a & 7U );
+
+         checkSize    ( b, 9UL );
+         checkCapacity( b, 9UL );
+         checkNonZeros( b, 7UL );
+
+         if( b[0] != 0U || b[1] != 1U || b[2] != 2U || b[3] != 3U || b[4] != 4U ||
+             b[5] != 5U || b[6] != 6U || b[7] != 7U || b[8] != 0U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Vector/scalar bitwise AND operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << b << "\n"
+                << "   Expected result:\n( 0 1 2 3 4 5 6 7 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Vector/scalar bitwise AND assignment
+      {
+         blaze::DynamicVector<unsigned int> a{ 8U, 9U, 10U, 11U, 12U, 13U, 14U, 15U, 16U };
+
+         a &= 7U;
+
+         checkSize    ( a, 9UL );
+         checkCapacity( a, 9UL );
+         checkNonZeros( a, 7UL );
+
+         if( a[0] != 0U || a[1] != 1U || a[2] != 2U || a[3] != 3U || a[4] != 4U ||
+             a[5] != 5U || a[6] != 6U || a[7] != 7U || a[8] != 0U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Vector/scalar bitwise AND assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << a << "\n"
+                << "   Expected result:\n( 0 1 2 3 4 5 6 7 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Vector/vector bitwise AND tests
+   //=====================================================================================
+
+   {
+      test_ = "Vector/vector bitwise AND operator";
+
+      // Vector/vector bitwise AND of an empty vector
+      {
+         blaze::DynamicVector<unsigned int> a;
+         blaze::DynamicVector<unsigned int> b;
+
+         blaze::DynamicVector<unsigned int> c( a & b );
+
+         checkSize    ( b, 0UL );
+         checkCapacity( b, 0UL );
+         checkNonZeros( b, 0UL );
+      }
+
+      // Vector/vector bitwise AND of a general vector
+      {
+         blaze::DynamicVector<unsigned int> a{ 8U, 9U, 10U, 11U, 12U, 13U, 14U, 15U, 16U };
+         blaze::DynamicVector<unsigned int> b{ 7U, 5U,  7U, 5U, 7U, 5U, 7U, 5U, 7U };
+
+         blaze::DynamicVector<unsigned int> c( a & b );
+
+         checkSize    ( c, 9UL );
+         checkCapacity( c, 9UL );
+         checkNonZeros( c, 7UL );
+
+         if( c[0] != 0U || c[1] != 1U || c[2] != 2U || c[3] != 1U || c[4] != 4U ||
+             c[5] != 5U || c[6] != 6U || c[7] != 5U || c[8] != 0U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Vector/vector bitwise AND operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << c << "\n"
+                << "   Expected result:\n( 0 1 2 1 4 5 6 5 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Vector/vector bitwise AND assignment
+      {
+         blaze::DynamicVector<unsigned int> a{ 8U, 9U, 10U, 11U, 12U, 13U, 14U, 15U, 16U };
+         blaze::DynamicVector<unsigned int> b{ 7U, 5U,  7U, 5U, 7U, 5U, 7U, 5U, 7U };
+
+         a &= b;
+
+         checkSize    ( a, 9UL );
+         checkCapacity( a, 9UL );
+         checkNonZeros( a, 7UL );
+
+         if( a[0] != 0U || a[1] != 1U || a[2] != 2U || a[3] != 1U || a[4] != 4U ||
+             a[5] != 5U || a[6] != 6U || a[7] != 5U || a[8] != 0U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Vector/vector bitwise AND assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << a << "\n"
+                << "   Expected result:\n( 0 1 2 1 4 5 6 5 0 )\n";
             throw std::runtime_error( oss.str() );
          }
       }

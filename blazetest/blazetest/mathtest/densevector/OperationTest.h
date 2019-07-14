@@ -102,6 +102,7 @@ class OperationTest
    void testSoftmax();
    void testLeftShift();
    void testRightShift();
+   void testBitand();
 
    template< typename Type >
    void checkSize( const Type& vector, size_t expectedSize ) const;
