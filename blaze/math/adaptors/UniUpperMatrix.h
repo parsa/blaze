@@ -702,8 +702,8 @@ BLAZE_ALWAYS_INLINE bool
 
    return ( m == 0UL ) ||
           ( n == 0UL ) ||
-          ( row >= column + n ) ||
           ( column >= row + m ) ||
+          ( row >= column + n ) ||
           isOne( value );
 }
 /*! \endcond */
@@ -770,7 +770,7 @@ BLAZE_ALWAYS_INLINE bool
 
    MAYBE_UNUSED( mat );
 
-   return ( row >= column + n ) || ( column >= row + m ) || isOne( value );
+   return ( column >= row + m ) || ( row >= column + n ) || isOne( value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -841,8 +841,8 @@ BLAZE_ALWAYS_INLINE bool
 
    return ( m == 0UL ) ||
           ( n == 0UL ) ||
-          ( row >= column + n ) ||
           ( column >= row + m ) ||
+          ( row >= column + n ) ||
           isDefault( count );
 }
 /*! \endcond */
@@ -916,9 +916,76 @@ BLAZE_ALWAYS_INLINE bool
 
    return ( m == 0UL ) ||
           ( n == 0UL ) ||
-          ( row >= column + n ) ||
           ( column >= row + m ) ||
+          ( row >= column + n ) ||
           ( ElementType_t<MT>(1) & value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by a bitwise OR on a single element of an uniupper matrix.
+// \ingroup uniupper_matrix
+//
+// \param mat The target uniupper matrix.
+// \param i The row index of the element to be modified.
+// \param j The column index of the element to be modified.
+// \param value The bit pattern to be used on the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+inline bool tryBitor( const UniUpperMatrix<MT,SO,DF>& mat, size_t i, size_t j, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
+
+   return trySet( mat, i, j, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by a bitwise OR on a range of elements of an uniupper matrix.
+// \ingroup uniupper_matrix
+//
+// \param mat The target uniupper matrix.
+// \param row The index of the first row of the range to be multiplied.
+// \param column The index of the first column of the range to be multiplied.
+// \param m The number of rows of the range to be multiplied.
+// \param n The number of columns of the range to be multiplied.
+// \param value The bit pattern to be used on the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryBitor( const UniUpperMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
+
+   return trySet( mat, row, column, m, n, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2320,7 +2387,7 @@ inline bool trySchurAssign( const UniUpperMatrix<MT1,SO1,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( ( row >= column + N ) || ( column >= row + M ) )
+   if( ( column >= row + M ) || ( row >= column + N ) )
       return true;
 
    size_t i( row < column ? column - row : 0UL );
@@ -2609,7 +2676,7 @@ inline bool tryShiftAssign( const UniUpperMatrix<MT1,SO1,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( ( row >= column + N ) || ( column >= row + M ) )
+   if( ( column >= row + M ) || ( row >= column + N ) )
       return true;
 
    size_t i( row < column ? column - row : 0UL );
@@ -2840,7 +2907,7 @@ inline bool tryBitandAssign( const UniUpperMatrix<MT1,SO1,DF>& lhs,
    const size_t M( (~rhs).rows()    );
    const size_t N( (~rhs).columns() );
 
-   if( ( row >= column + N ) || ( column >= row + M ) )
+   if( ( column >= row + M ) || ( row >= column + N ) )
       return true;
 
    size_t i( row < column ? column - row : 0UL );
