@@ -181,6 +181,14 @@ MT1& operator&=( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
 MT1& operator&=( DenseMatrix<MT1,SO1>&& lhs, const DenseMatrix<MT2,SO2>& rhs );
+
+template< typename MT, bool SO, typename ST >
+auto operator|=( DenseMatrix<MT,SO>& mat, ST scalar )
+   -> EnableIf_t< IsNumeric_v<ST>, MT& >;
+
+template< typename MT, bool SO, typename ST >
+auto operator|=( DenseMatrix<MT,SO>&& mat, ST scalar )
+   -> EnableIf_t< IsNumeric_v<ST>, MT& >;
 //@}
 //*************************************************************************************************
 
@@ -931,6 +939,68 @@ template< typename MT1  // Type of the left-hand side dense matrix
 inline MT1& operator&=( DenseMatrix<MT1,SO1>&& lhs, const DenseMatrix<MT2,SO2>& rhs )
 {
    return operator&=( ~lhs, ~rhs );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise OR assignment operator for the bitwise OR of a dense matrix and a scalar value
+//        (\f$ A|=s \f$).
+// \ingroup dense_matrix
+//
+// \param mat The left-hand side dense matrix for the bitwise OR.
+// \param scalar The right-hand side scalar value for the bitwise OR.
+// \return Reference to the left-hand side dense matrix.
+// \exception std::invalid_argument Invalid bitwise OR of restricted matrix.
+//
+// In case the matrix \a MT is restricted and the assignment would violate an invariant of the
+// matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT    // Type of the left-hand side dense matrix
+        , bool SO        // Storage order
+        , typename ST >  // Data type of the right-hand side scalar
+inline auto operator|=( DenseMatrix<MT,SO>& mat, ST scalar )
+   -> EnableIf_t< IsNumeric_v<ST>, MT& >
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
+
+   if( IsRestricted_v<MT> ) {
+      if( !tryBitor( ~mat, 0UL, 0UL, (~mat).rows(), (~mat).columns(), scalar ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid bitwise OR of restricted matrix" );
+      }
+   }
+
+   decltype(auto) left( derestrict( ~mat ) );
+
+   smpAssign( left, left | scalar );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~mat ), "Invariant violation detected" );
+
+   return ~mat;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise OR assignment operator for the bitwise OR of a temporary dense matrix and a
+//        scalar value (\f$ A|=s \f$).
+// \ingroup dense_matrix
+//
+// \param mat The left-hand side temporary dense matrix for the bitwise OR.
+// \param scalar The right-hand side scalar value for the bitwise OR.
+// \return Reference to the left-hand side dense matrix.
+// \exception std::invalid_argument Invalid bitwise OR of restricted matrix.
+//
+// In case the matrix \a MT is restricted and the assignment would violate an invariant of the
+// matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT    // Type of the left-hand side dense matrix
+        , bool SO        // Storage order
+        , typename ST >  // Data type of the right-hand side scalar
+inline auto operator|=( DenseMatrix<MT,SO>&& mat, ST scalar )
+   -> EnableIf_t< IsNumeric_v<ST>, MT& >
+{
+   return operator|=( ~mat, scalar );
 }
 //*************************************************************************************************
 
