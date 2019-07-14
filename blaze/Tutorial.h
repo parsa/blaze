@@ -136,6 +136,13 @@
 //                <li> \ref scalar_shift </li>
 //             </ul>
 //          </li>
+//          <li> \ref bitwise_and
+//             <ul>
+//                <li> \ref vector_vector_and </li>
+//                <li> \ref matrix_matrix_and </li>
+//                <li> \ref scalar_and </li>
+//             </ul>
+//          </li>
 //       </ul>
 //    </li>
 //    <li> \ref shared_memory_parallelization
@@ -11842,6 +11849,13 @@
 //          <li> \ref scalar_shift </li>
 //       </ul>
 //    </li>
+//    <li> \ref bitwise_and
+//       <ul>
+//          <li> \ref vector_vector_and </li>
+//          <li> \ref matrix_matrix_and </li>
+//          <li> \ref scalar_and </li>
+//       </ul>
+//    </li>
 // </ul>
 //
 // \n Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref bitwise_shift
@@ -11935,9 +11949,7 @@
 // It is also possible to uniformly shift all elements of a dense vector or dense matrix by means
 // of a scalar, which has the same effect as shifting by means of a uniform vector or matrix (see
 // \ref vector_types_uniform_vector and \ref matrix_types_uniform_matrix). In \b Blaze it is
-// possible to use all built-in/fundamental data types except bool as scalar values. Additionally,
-// it is possible to use std::complex values with the same built-in data types as element type.
-// Examples:
+// possible to use all built-in/fundamental data types except bool as scalar values. Examples:
 
    \code
    blaze::DynamicVector<unsigned int> v1{ 3, 2, 5, 4, 1, 6 };
@@ -11961,7 +11973,121 @@
    blaze::DynamicMatrix<unsigned int> M2( M1 << 1U );
    \endcode
 
-// \n Previous: \ref bitwise_operations &nbsp; &nbsp; Next: \ref shared_memory_parallelization
+// \n Previous: \ref bitwise_operations &nbsp; &nbsp; Next: \ref bitwise_and
+*/
+//*************************************************************************************************
+
+
+//**Bitwise And************************************************************************************
+/*!\page bitwise_and Bitwise AND
+//
+// \n \section vector_vector_and Vector/Vector Bitwise AND
+// <hr>
+//
+// Via the bitwise AND operator (i.e. operator&()) it is possible to perform a elementwise bitwise
+// AND with dense vectors:
+
+   \code
+   blaze::DynamicVector<unsigned int> v1( 5UL ), v3;
+   blaze::DynamicVector<unsigned short> v2( 5UL );
+
+   // ... Initializing the vectors
+
+   v3 = v1 & v2;  // Elementwise bitwise AND of two dense column vectors of different data type
+   \endcode
+
+// Note that it is necessary that both operands have exactly the same dimensions. Violating this
+// precondition results in an exception. Also note that it is only possible to use vectors with
+// the same transpose flag:
+
+   \code
+   using blaze::columnVector;
+   using blaze::rowVector;
+
+   blaze::DynamicVector<unsigned int,columnVector> v1( 5UL );
+   blaze::DynamicVector<unsigned int,rowVector>    v2( 5UL );
+
+   v1 & v2;           // Compilation error: Cannot AND a column vector and a row vector
+   v1 & trans( v2 );  // OK: Bitwise AND of two column vectors
+   \endcode
+
+// Furthermore, it is possible to use different element types in the two vector operands, but a
+// bitwise AND of two vectors with the same element type is favorable due to possible vectorization
+// of the operation:
+
+   \code
+   blaze::DynamicVector<unsigned int> v1( 100UL ), v2( 100UL ), v3;
+
+   // ... Initialization of the vectors
+
+   v3 = v1 & v2;  // Vectorized bitwise AND of an unsigned int vector
+   \endcode
+
+// \n \section matrix_matrix_and Matrix/Matrix Bitwise AND
+// <hr>
+//
+// The bitwise AND operator (i.e. operator&()) can also be used to perform an elementwise bitwise
+// AND with dense matrices:
+
+   \code
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   blaze::DynamicMatrix<unsigned int,columnMajor> M1( 7UL, 3UL );
+   blaze::DynamicMatrix<unsigned short,rowMajor>  M2( 7UL, 3UL ), M3;
+
+   // ... Initializing the matrices
+
+   M3 = M1 & M2;  // Elementwise bitwise AND of two dense matrices of different data type
+   \endcode
+
+// Note that it is necessary that both operands have exactly the same dimensions. Violating this
+// precondition results in an exception. It is possible to use any combination of row-major and
+// column-major matrices. Note however that in favor of performance using two matrices with the
+// same storage order is favorable. The same argument holds for the element type: While it is
+// possible to use matrices with different element type, using two matrices with the same element
+// type potentially leads to better performance due to vectorization of the operation.
+
+   \code
+   blaze::DynamicMatrix<unsigned int> M1( 50UL, 70UL ), M2( 50UL, 70UL ), M3;
+
+   // ... Initialization of the matrices
+
+   M3 = M1 & M2;  // Vectorized bitwise AND of two row-major, unsigned int dense matrices
+   \endcode
+
+// \n \section scalar_and Scalar Bitwise AND
+// <hr>
+//
+// Is is also possible to perform a bitwise AND between a dense vector or dense matrix and a
+// scalar value, which has the same effect as performing a bitwise AND by means of a uniform
+// vector or matrix (see \ref vector_types_uniform_vector and \ref matrix_types_uniform_matrix).
+// In \b Blaze it is possible to use all built-in/fundamental data types except bool as scalar
+// values. Examples:
+
+   \code
+   blaze::DynamicVector<unsigned int> v1{ 3U, 2U, 5U, 4U, 1U, 6U };
+
+   // Perform a bitwise AND with all elements of v1; Results in
+   //
+   //    ( 3, 2, 1, 0, 1, 2 )
+   //
+   blaze::DynamicVector<int> v2( v1 & 3U );
+   \endcode
+
+   \code
+   blaze::DynamicMatrix<unsigned int> M1{ { 3U, 2U, 5U },
+                                          { 4U, 1U, 6U } };
+
+   // Perform a bitwise AND with all elements of M1; Results in
+   //
+   //    ( 3, 2, 1 )
+   //    ( 0, 1, 2 )
+   //
+   blaze::DynamicMatrix<unsigned int> M2( M1 & 3U );
+   \endcode
+
+// \n Previous: \ref bitwise_shift &nbsp; &nbsp; Next: \ref shared_memory_parallelization
 */
 //*************************************************************************************************
 
@@ -11988,7 +12114,7 @@
 //
 //  - \ref serial_execution
 //
-// \n Previous: \ref bitwise_shift &nbsp; &nbsp; Next: \ref hpx_parallelization
+// \n Previous: \ref bitwise_and &nbsp; &nbsp; Next: \ref hpx_parallelization
 */
 //*************************************************************************************************
 
