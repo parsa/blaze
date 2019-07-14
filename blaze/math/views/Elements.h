@@ -2505,6 +2505,44 @@ inline bool tryShiftAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the bitwise AND assignment of a vector to a selection of
+//        elements.
+// \ingroup elements
+//
+// \param lhs The target left-hand side selection of elements.
+// \param rhs The right-hand side vector for the bitwise AND operation.
+// \param index The index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename VT1      // Type of the vector
+        , bool TF           // Transpose flag
+        , bool DF           // Density flag
+        , typename... CEAs  // Compile time element arguments
+        , typename VT2 >    // Type of the right-hand side vector
+inline bool tryBitandAssign( const Elements<VT1,TF,DF,CEAs...>& lhs,
+                             const Vector<VT2,TF>& rhs, size_t index )
+{
+   BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+
+   for( size_t i=0UL; i<(~rhs).size(); ++i ) {
+      if( !tryBitand( lhs.operand(), lhs.idx(i+index), (~rhs)[i] ) )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Removal of all restrictions on the data access to the given element selection.
 // \ingroup elements
 //
