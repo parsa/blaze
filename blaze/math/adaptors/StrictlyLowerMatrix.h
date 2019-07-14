@@ -369,7 +369,7 @@ inline bool trySet( const StrictlyLowerMatrix<MT,SO,DF>& mat, size_t i, size_t j
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by setting a range of elements of an strictly lower matrix.
+/*!\brief Predict invariant violations by setting a range of elements of a strictly lower matrix.
 // \ingroup strictly_lower_matrix
 //
 // \param mat The target strictly lower matrix.
@@ -438,7 +438,7 @@ inline bool tryAdd( const StrictlyLowerMatrix<MT,SO,DF>& mat, size_t i, size_t j
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by adding to a range of elements of an strictly lower matrix.
+/*!\brief Predict invariant violations by adding to a range of elements of a strictly lower matrix.
 // \ingroup strictly_lower_matrix
 //
 // \param mat The target strictly lower matrix.
@@ -498,7 +498,7 @@ inline bool trySub( const StrictlyLowerMatrix<MT,SO,DF>& mat, size_t i, size_t j
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by subtracting from a range of elements of an strictly
+/*!\brief Predict invariant violations by subtracting from a range of elements of a strictly
 //        lower matrix.
 // \ingroup strictly_lower_matrix
 //
@@ -522,6 +522,73 @@ template< typename MT    // Type of the adapted matrix
 BLAZE_ALWAYS_INLINE bool
    trySub( const StrictlyLowerMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
 {
+   return trySet( mat, row, column, m, n, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by a bitwise OR on a single element of a strictly lower matrix.
+// \ingroup strictly_lower_matrix
+//
+// \param mat The target strictly lower matrix.
+// \param i The row index of the element to be modified.
+// \param j The column index of the element to be modified.
+// \param value The bit pattern to be used on the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+inline bool tryBitor( const StrictlyLowerMatrix<MT,SO,DF>& mat, size_t i, size_t j, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
+
+   return trySet( mat, i, j, value );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by a bitwise OR on a range of elements of a strictly lower matrix.
+// \ingroup strictly_lower_matrix
+//
+// \param mat The target strictly lower matrix.
+// \param row The index of the first row of the range to be modified.
+// \param column The index of the first column of the range to be modified.
+// \param m The number of rows of the range to be modified.
+// \param n The number of columns of the range to be modified.
+// \param value The bit pattern to be used on the range of elements.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the adapted matrix
+        , bool SO        // Storage order of the adapted matrix
+        , bool DF        // Density flag
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool
+   tryBitor( const StrictlyLowerMatrix<MT,SO,DF>& mat, size_t row, size_t column, size_t m, size_t n, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (~mat).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (~mat).columns(), "Invalid number of columns" );
+
    return trySet( mat, row, column, m, n, value );
 }
 /*! \endcond */
