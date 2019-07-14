@@ -116,6 +116,7 @@ class GeneralTest
    void testSoftmax();
    void testLeftShift();
    void testRightShift();
+   void testBitand();
 
    template< typename Type >
    void checkRows( const Type& matrix, size_t expectedRows ) const;

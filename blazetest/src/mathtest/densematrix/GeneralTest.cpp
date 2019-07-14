@@ -98,6 +98,7 @@ GeneralTest::GeneralTest()
    testSoftmax();
    testLeftShift();
    testRightShift();
+   testBitand();
 }
 //*************************************************************************************************
 
@@ -7103,13 +7104,13 @@ void GeneralTest::testSoftmax()
 void GeneralTest::testLeftShift()
 {
    //=====================================================================================
-   // Row-major uniform left-shift tests
+   // Row-major matrix/scalar left-shift tests
    //=====================================================================================
 
    {
-      test_ = "Row-major uniform left-shift operator";
+      test_ = "Row-major matrix/scalar left-shift operator";
 
-      // Uniform left-shift of an empty matrix
+      // Matrix/scalar left-shift of an empty matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A;
 
@@ -7121,7 +7122,7 @@ void GeneralTest::testLeftShift()
          checkNonZeros( B, 0UL );
       }
 
-      // Uniform left-shift of a general matrix
+      // Matrix/scalar left-shift of a general matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ { 1U, 2U,  4U,  8U, 16U },
                                                                { 2U, 4U,  8U, 16U, 32U },
@@ -7139,7 +7140,7 @@ void GeneralTest::testLeftShift()
              B(2,0) != 16U || B(2,1) != 32U || B(2,2) != 64U || B(2,3) != 128U || B(2,4) != 256U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Uniform left-shift operation failed\n"
+                << " Error: Matrix/scalar left-shift operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << B << "\n"
                 << "   Expected result:\n(  4  8 16  32  64 )\n"
@@ -7149,7 +7150,7 @@ void GeneralTest::testLeftShift()
          }
       }
 
-      // Uniform left-shift assignment
+      // Matrix/scalar left-shift assignment
       {
          blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ { 1U, 2U,  4U,  8U, 16U },
                                                                { 2U, 4U,  8U, 16U, 32U },
@@ -7167,7 +7168,7 @@ void GeneralTest::testLeftShift()
              A(2,0) != 16U || A(2,1) != 32U || A(2,2) != 64U || A(2,3) != 128U || A(2,4) != 256U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Uniform left-shift assignment failed\n"
+                << " Error: Matrix/scalar left-shift assignment failed\n"
                 << " Details:\n"
                 << "   Result:\n" << A << "\n"
                 << "   Expected result:\n(  4  8 16  32  64 )\n"
@@ -7180,13 +7181,13 @@ void GeneralTest::testLeftShift()
 
 
    //=====================================================================================
-   // Row-major/row-major elementwise left-shift tests
+   // Row-major matrix/row-major matrix left-shift tests
    //=====================================================================================
 
    {
-      test_ = "Row-major/row-major elementwise left-shift operator";
+      test_ = "Row-major matrix/row-major matrix left-shift operator";
 
-      // Elementwise left-shift of an empty matrix
+      // Matrix/matrix left-shift of an empty matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A;
          blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B;
@@ -7199,7 +7200,7 @@ void GeneralTest::testLeftShift()
          checkNonZeros( C, 0UL );
       }
 
-      // Elementwise left-shift of a general matrix
+      // Matrix/matrix left-shift of a general matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ { 1U, 2U,  4U,  8U, 16U },
                                                                { 2U, 4U,  8U, 16U, 32U },
@@ -7221,7 +7222,7 @@ void GeneralTest::testLeftShift()
              C(2,0) != 8U || C(2,1) != 32U || C(2,2) != 32U || C(2,3) != 128U || C(2,4) != 128U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Elementwise left-shift operation failed\n"
+                << " Error: Matrix/matrix left-shift operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << C << "\n"
                 << "   Expected result:\n( 2  8  8  32  32 )\n"
@@ -7231,7 +7232,7 @@ void GeneralTest::testLeftShift()
          }
       }
 
-      // Elementwise left-shift assignment
+      // Matrix/matrix left-shift assignment
       {
          blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ { 1U, 2U,  4U,  8U, 16U },
                                                                { 2U, 4U,  8U, 16U, 32U },
@@ -7253,7 +7254,7 @@ void GeneralTest::testLeftShift()
              A(2,0) != 8U || A(2,1) != 32U || A(2,2) != 32U || A(2,3) != 128U || A(2,4) != 128U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Elementwise left-shift assignment failed\n"
+                << " Error: Matrix/matrix left-shift assignment failed\n"
                 << " Details:\n"
                 << "   Result:\n" << A << "\n"
                 << "   Expected result:\n( 2  8  8  32  32 )\n"
@@ -7266,13 +7267,13 @@ void GeneralTest::testLeftShift()
 
 
    //=====================================================================================
-   // Row-major/column-major elementwise left-shift tests
+   // Row-major matrix/column-major matrix left-shift tests
    //=====================================================================================
 
    {
-      test_ = "Row-major/column-major elementwise left-shift operator";
+      test_ = "Row-major matrix/column-major matrix left-shift operator";
 
-      // Elementwise left-shift of an empty matrix
+      // Matrix/matrix left-shift of an empty matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A;
          blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B;
@@ -7285,7 +7286,7 @@ void GeneralTest::testLeftShift()
          checkNonZeros( C, 0UL );
       }
 
-      // Elementwise left-shift of a general matrix
+      // Matrix/matrix left-shift of a general matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ { 1U, 2U,  4U,  8U, 16U },
                                                                { 2U, 4U,  8U, 16U, 32U },
@@ -7307,7 +7308,7 @@ void GeneralTest::testLeftShift()
              C(2,0) != 8U || C(2,1) != 32U || C(2,2) != 32U || C(2,3) != 128U || C(2,4) != 128U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Elementwise left-shift operation failed\n"
+                << " Error: Matrix/matrix left-shift operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << C << "\n"
                 << "   Expected result:\n( 2  8  8  32  32 )\n"
@@ -7317,7 +7318,7 @@ void GeneralTest::testLeftShift()
          }
       }
 
-      // Elementwise left-shift assignment
+      // Matrix/matrix left-shift assignment
       {
          blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ { 1U, 2U,  4U,  8U, 16U },
                                                                { 2U, 4U,  8U, 16U, 32U },
@@ -7339,7 +7340,7 @@ void GeneralTest::testLeftShift()
              A(2,0) != 8U || A(2,1) != 32U || A(2,2) != 32U || A(2,3) != 128U || A(2,4) != 128U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Elementwise left-shift assignment failed\n"
+                << " Error: Matrix/matrix left-shift assignment failed\n"
                 << " Details:\n"
                 << "   Result:\n" << A << "\n"
                 << "   Expected result:\n( 2  8  8  32  32 )\n"
@@ -7352,13 +7353,13 @@ void GeneralTest::testLeftShift()
 
 
    //=====================================================================================
-   // Column-major uniform left-shift tests
+   // Column-major matrix/scalar left-shift tests
    //=====================================================================================
 
    {
-      test_ = "Column-major uniform left-shift operator";
+      test_ = "Column-major matrix/scalar left-shift operator";
 
-      // Uniform left-shift of an empty matrix
+      // Matrix/scalar left-shift of an empty matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A;
 
@@ -7370,7 +7371,7 @@ void GeneralTest::testLeftShift()
          checkNonZeros( B, 0UL );
       }
 
-      // Uniform left-shift of a general matrix
+      // Matrix/scalar left-shift of a general matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ { 1U, 2U,  4U,  8U, 16U },
                                                                   { 2U, 4U,  8U, 16U, 32U },
@@ -7388,7 +7389,7 @@ void GeneralTest::testLeftShift()
              B(2,0) != 16U || B(2,1) != 32U || B(2,2) != 64U || B(2,3) != 128U || B(2,4) != 256U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Uniform left-shift operation failed\n"
+                << " Error: Matrix/scalar left-shift operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << B << "\n"
                 << "   Expected result:\n(  4  8 16  32  64 )\n"
@@ -7398,7 +7399,7 @@ void GeneralTest::testLeftShift()
          }
       }
 
-      // Uniform left-shift assignment
+      // Matrix/scalar left-shift assignment
       {
          blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ { 1U, 2U,  4U,  8U, 16U },
                                                                   { 2U, 4U,  8U, 16U, 32U },
@@ -7416,7 +7417,7 @@ void GeneralTest::testLeftShift()
              A(2,0) != 16U || A(2,1) != 32U || A(2,2) != 64U || A(2,3) != 128U || A(2,4) != 256U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Uniform left-shift assignment failed\n"
+                << " Error: Matrix/scalar left-shift assignment failed\n"
                 << " Details:\n"
                 << "   Result:\n" << A << "\n"
                 << "   Expected result:\n(  4  8 16  32  64 )\n"
@@ -7429,13 +7430,13 @@ void GeneralTest::testLeftShift()
 
 
    //=====================================================================================
-   // Column-major/row-major elementwise left-shift tests
+   // Column-major matrix/row-major matrix left-shift tests
    //=====================================================================================
 
    {
-      test_ = "Column-major/row-major elementwise left-shift operator";
+      test_ = "Column-major matrix/row-major matrix left-shift operator";
 
-      // Elementwise left-shift of an empty matrix
+      // Matrix/matrix left-shift of an empty matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A;
          blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B;
@@ -7448,7 +7449,7 @@ void GeneralTest::testLeftShift()
          checkNonZeros( C, 0UL );
       }
 
-      // Elementwise left-shift of a general matrix
+      // Matrix/matrix left-shift of a general matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ { 1U, 2U,  4U,  8U, 16U },
                                                                   { 2U, 4U,  8U, 16U, 32U },
@@ -7470,7 +7471,7 @@ void GeneralTest::testLeftShift()
              C(2,0) != 8U || C(2,1) != 32U || C(2,2) != 32U || C(2,3) != 128U || C(2,4) != 128U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Elementwise left-shift operation failed\n"
+                << " Error: Matrix/matrix left-shift operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << C << "\n"
                 << "   Expected result:\n( 2  8  8  32  32 )\n"
@@ -7480,7 +7481,7 @@ void GeneralTest::testLeftShift()
          }
       }
 
-      // Elementwise left-shift assignment
+      // Matrix/matrix left-shift assignment
       {
          blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ { 1U, 2U,  4U,  8U, 16U },
                                                                   { 2U, 4U,  8U, 16U, 32U },
@@ -7502,7 +7503,7 @@ void GeneralTest::testLeftShift()
              A(2,0) != 8U || A(2,1) != 32U || A(2,2) != 32U || A(2,3) != 128U || A(2,4) != 128U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Elementwise left-shift assignment failed\n"
+                << " Error: Matrix/matrix left-shift assignment failed\n"
                 << " Details:\n"
                 << "   Result:\n" << A << "\n"
                 << "   Expected result:\n( 2  8  8  32  32 )\n"
@@ -7515,13 +7516,13 @@ void GeneralTest::testLeftShift()
 
 
    //=====================================================================================
-   // Column-major/column-major elementwise left-shift tests
+   // Column-major matrix/column-major matrix left-shift tests
    //=====================================================================================
 
    {
-      test_ = "Column-major/column-major elementwise left-shift operator";
+      test_ = "Column-major matrix/column-major matrix left-shift operator";
 
-      // Elementwise left-shift of an empty matrix
+      // Matrix/matrix left-shift of an empty matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A;
          blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B;
@@ -7534,7 +7535,7 @@ void GeneralTest::testLeftShift()
          checkNonZeros( C, 0UL );
       }
 
-      // Elementwise left-shift of a general matrix
+      // Matrix/matrix left-shift of a general matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ { 1U, 2U,  4U,  8U, 16U },
                                                                   { 2U, 4U,  8U, 16U, 32U },
@@ -7556,7 +7557,7 @@ void GeneralTest::testLeftShift()
              C(2,0) != 8U || C(2,1) != 32U || C(2,2) != 32U || C(2,3) != 128U || C(2,4) != 128U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Elementwise left-shift operation failed\n"
+                << " Error: Matrix/matrix left-shift operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << C << "\n"
                 << "   Expected result:\n( 2  8  8  32  32 )\n"
@@ -7566,7 +7567,7 @@ void GeneralTest::testLeftShift()
          }
       }
 
-      // Elementwise left-shift assignment
+      // Matrix/matrix left-shift assignment
       {
          blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ { 1U, 2U,  4U,  8U, 16U },
                                                                   { 2U, 4U,  8U, 16U, 32U },
@@ -7588,7 +7589,7 @@ void GeneralTest::testLeftShift()
              A(2,0) != 8U || A(2,1) != 32U || A(2,2) != 32U || A(2,3) != 128U || A(2,4) != 128U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Elementwise left-shift assignment failed\n"
+                << " Error: Matrix/matrix left-shift assignment failed\n"
                 << " Details:\n"
                 << "   Result:\n" << A << "\n"
                 << "   Expected result:\n( 2  8  8  32  32 )\n"
@@ -7614,13 +7615,13 @@ void GeneralTest::testLeftShift()
 void GeneralTest::testRightShift()
 {
    //=====================================================================================
-   // Row-major uniform right-shift tests
+   // Row-major matrix/scalar right-shift tests
    //=====================================================================================
 
    {
-      test_ = "Row-major uniform right-shift operator";
+      test_ = "Row-major matrix/scalar right-shift operator";
 
-      // Uniform right-shift of an empty matrix
+      // Matrix/scalar right-shift of an empty matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A;
 
@@ -7632,7 +7633,7 @@ void GeneralTest::testRightShift()
          checkNonZeros( B, 0UL );
       }
 
-      // Uniform right-shift of a general matrix
+      // Matrix/scalar right-shift of a general matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  4U,  8U, 16U,  32U,  64U },
                                                                {  8U, 16U, 32U,  64U, 128U },
@@ -7650,7 +7651,7 @@ void GeneralTest::testRightShift()
              B(2,0) != 4U || B(2,1) != 8U || B(2,2) != 16U || B(2,3) != 32U || B(2,4) != 64U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Uniform right-shift operation failed\n"
+                << " Error: Matrix/scalar right-shift operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << B << "\n"
                 << "   Expected result:\n( 1  2  4  8 16 )\n"
@@ -7660,7 +7661,7 @@ void GeneralTest::testRightShift()
          }
       }
 
-      // Uniform right-shift assignment
+      // Matrix/scalar right-shift assignment
       {
          blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  4U,  8U, 16U,  32U,  64U },
                                                                {  8U, 16U, 32U,  64U, 128U },
@@ -7678,7 +7679,7 @@ void GeneralTest::testRightShift()
              A(2,0) != 4U || A(2,1) != 8U || A(2,2) != 16U || A(2,3) != 32U || A(2,4) != 64U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Uniform right-shift assignment failed\n"
+                << " Error: Matrix/scalar right-shift assignment failed\n"
                 << " Details:\n"
                 << "   Result:\n" << A << "\n"
                 << "   Expected result:\n( 1  2  4  8 16 )\n"
@@ -7691,13 +7692,13 @@ void GeneralTest::testRightShift()
 
 
    //=====================================================================================
-   // Row-major/row-major elementwise right-shift tests
+   // Row-major matrix/row-major matrix right-shift tests
    //=====================================================================================
 
    {
-      test_ = "Row-major/row-major elementwise right-shift operator";
+      test_ = "Row-major matrix/row-major matrix right-shift operator";
 
-      // Elementwise right-shift of an empty matrix
+      // Matrix/matrix right-shift of an empty matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A;
          blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B;
@@ -7710,7 +7711,7 @@ void GeneralTest::testRightShift()
          checkNonZeros( C, 0UL );
       }
 
-      // Elementwise right-shift of a general matrix
+      // Matrix/matrix right-shift of a general matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  4U,  8U, 16U,  32U,  64U },
                                                                {  8U, 16U, 32U,  64U, 128U },
@@ -7732,7 +7733,7 @@ void GeneralTest::testRightShift()
              C(2,0) != 8U || C(2,1) != 8U || C(2,2) != 32U || C(2,3) != 32U || C(2,4) != 128U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Elementwise right-shift operation failed\n"
+                << " Error: Matrix/matrix right-shift operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << C << "\n"
                 << "   Expected result:\n( 2 2  8  8  32 )\n"
@@ -7742,7 +7743,7 @@ void GeneralTest::testRightShift()
          }
       }
 
-      // Elementwise right-shift assignment
+      // Matrix/matrix right-shift assignment
       {
          blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  4U,  8U, 16U,  32U,  64U },
                                                                {  8U, 16U, 32U,  64U, 128U },
@@ -7764,7 +7765,7 @@ void GeneralTest::testRightShift()
              A(2,0) != 8U || A(2,1) != 8U || A(2,2) != 32U || A(2,3) != 32U || A(2,4) != 128U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Elementwise right-shift assignment failed\n"
+                << " Error: Matrix/matrix right-shift assignment failed\n"
                 << " Details:\n"
                 << "   Result:\n" << A << "\n"
                 << "   Expected result:\n( 2 2  8  8  32 )\n"
@@ -7777,13 +7778,13 @@ void GeneralTest::testRightShift()
 
 
    //=====================================================================================
-   // Row-major/column-major elementwise right-shift tests
+   // Row-major matrix/column-major matrix right-shift tests
    //=====================================================================================
 
    {
-      test_ = "Row-major/column-major elementwise right-shift operator";
+      test_ = "Row-major matrix/column-major matrix right-shift operator";
 
-      // Elementwise right-shift of an empty matrix
+      // Matrix/matrix right-shift of an empty matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A;
          blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B;
@@ -7796,7 +7797,7 @@ void GeneralTest::testRightShift()
          checkNonZeros( C, 0UL );
       }
 
-      // Elementwise right-shift of a general matrix
+      // Matrix/matrix right-shift of a general matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  4U,  8U, 16U,  32U,  64U },
                                                                {  8U, 16U, 32U,  64U, 128U },
@@ -7818,7 +7819,7 @@ void GeneralTest::testRightShift()
              C(2,0) != 8U || C(2,1) != 8U || C(2,2) != 32U || C(2,3) != 32U || C(2,4) != 128U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Elementwise right-shift operation failed\n"
+                << " Error: Matrix/matrix right-shift operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << C << "\n"
                 << "   Expected result:\n( 2 2  8  8  32 )\n"
@@ -7828,7 +7829,7 @@ void GeneralTest::testRightShift()
          }
       }
 
-      // Elementwise right-shift assignment
+      // Matrix/matrix right-shift assignment
       {
          blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  4U,  8U, 16U,  32U,  64U },
                                                                {  8U, 16U, 32U,  64U, 128U },
@@ -7850,7 +7851,7 @@ void GeneralTest::testRightShift()
              A(2,0) != 8U || A(2,1) != 8U || A(2,2) != 32U || A(2,3) != 32U || A(2,4) != 128U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Elementwise right-shift assignment failed\n"
+                << " Error: Matrix/matrix right-shift assignment failed\n"
                 << " Details:\n"
                 << "   Result:\n" << A << "\n"
                 << "   Expected result:\n( 2 2  8  8  32 )\n"
@@ -7863,13 +7864,13 @@ void GeneralTest::testRightShift()
 
 
    //=====================================================================================
-   // Column-major uniform right-shift tests
+   // Column-major matrix/scalar right-shift tests
    //=====================================================================================
 
    {
-      test_ = "Column-major uniform right-shift operator";
+      test_ = "Column-major matrix/scalar right-shift operator";
 
-      // Uniform right-shift of an empty matrix
+      // Matrix/scalar right-shift of an empty matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A;
 
@@ -7881,7 +7882,7 @@ void GeneralTest::testRightShift()
          checkNonZeros( B, 0UL );
       }
 
-      // Uniform right-shift of a general matrix
+      // Matrix/scalar right-shift of a general matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  4U,  8U, 16U,  32U,  64U },
                                                                   {  8U, 16U, 32U,  64U, 128U },
@@ -7899,7 +7900,7 @@ void GeneralTest::testRightShift()
              B(2,0) != 4U || B(2,1) != 8U || B(2,2) != 16U || B(2,3) != 32U || B(2,4) != 64U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Uniform right-shift operation failed\n"
+                << " Error: Matrix/scalar right-shift operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << B << "\n"
                 << "   Expected result:\n( 1  2  4  8 16 )\n"
@@ -7909,7 +7910,7 @@ void GeneralTest::testRightShift()
          }
       }
 
-      // Uniform right-shift assignment
+      // Matrix/scalar right-shift assignment
       {
          blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  4U,  8U, 16U,  32U,  64U },
                                                                   {  8U, 16U, 32U,  64U, 128U },
@@ -7927,7 +7928,7 @@ void GeneralTest::testRightShift()
              A(2,0) != 4U || A(2,1) != 8U || A(2,2) != 16U || A(2,3) != 32U || A(2,4) != 64U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Uniform right-shift assignment failed\n"
+                << " Error: Matrix/scalar right-shift assignment failed\n"
                 << " Details:\n"
                 << "   Result:\n" << A << "\n"
                 << "   Expected result:\n( 1  2  4  8 16 )\n"
@@ -7940,13 +7941,13 @@ void GeneralTest::testRightShift()
 
 
    //=====================================================================================
-   // Column-major/row-major elementwise right-shift tests
+   // Column-major matrix/row-major matrix right-shift tests
    //=====================================================================================
 
    {
-      test_ = "Column-major/row-major elementwise right-shift operator";
+      test_ = "Column-major matrix/row-major matrix right-shift operator";
 
-      // Elementwise right-shift of an empty matrix
+      // Matrix/matrix right-shift of an empty matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A;
          blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B;
@@ -7959,7 +7960,7 @@ void GeneralTest::testRightShift()
          checkNonZeros( C, 0UL );
       }
 
-      // Elementwise right-shift of a general matrix
+      // Matrix/matrix right-shift of a general matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  4U,  8U, 16U,  32U,  64U },
                                                                   {  8U, 16U, 32U,  64U, 128U },
@@ -7981,7 +7982,7 @@ void GeneralTest::testRightShift()
              C(2,0) != 8U || C(2,1) != 8U || C(2,2) != 32U || C(2,3) != 32U || C(2,4) != 128U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Elementwise right-shift operation failed\n"
+                << " Error: Matrix/matrix right-shift operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << C << "\n"
                 << "   Expected result:\n( 2 2  8  8  32 )\n"
@@ -7991,7 +7992,7 @@ void GeneralTest::testRightShift()
          }
       }
 
-      // Elementwise right-shift assignment
+      // Matrix/matrix right-shift assignment
       {
          blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  4U,  8U, 16U,  32U,  64U },
                                                                   {  8U, 16U, 32U,  64U, 128U },
@@ -8013,7 +8014,7 @@ void GeneralTest::testRightShift()
              A(2,0) != 8U || A(2,1) != 8U || A(2,2) != 32U || A(2,3) != 32U || A(2,4) != 128U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Elementwise right-shift assignment failed\n"
+                << " Error: Matrix/matrix right-shift assignment failed\n"
                 << " Details:\n"
                 << "   Result:\n" << A << "\n"
                 << "   Expected result:\n( 2 2  8  8  32 )\n"
@@ -8026,13 +8027,13 @@ void GeneralTest::testRightShift()
 
 
    //=====================================================================================
-   // Column-major/column-major elementwise right-shift tests
+   // Column-major matrix/column-major matrix right-shift tests
    //=====================================================================================
 
    {
-      test_ = "Column-major/column-major elementwise right-shift operator";
+      test_ = "Column-major matrix/column-major matrix right-shift operator";
 
-      // Elementwise right-shift of an empty matrix
+      // Matrix/matrix right-shift of an empty matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A;
          blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B;
@@ -8045,7 +8046,7 @@ void GeneralTest::testRightShift()
          checkNonZeros( C, 0UL );
       }
 
-      // Elementwise right-shift of a general matrix
+      // Matrix/matrix right-shift of a general matrix
       {
          blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  4U,  8U, 16U,  32U,  64U },
                                                                   {  8U, 16U, 32U,  64U, 128U },
@@ -8067,7 +8068,7 @@ void GeneralTest::testRightShift()
              C(2,0) != 8U || C(2,1) != 8U || C(2,2) != 32U || C(2,3) != 32U || C(2,4) != 128U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Elementwise right-shift operation failed\n"
+                << " Error: Matrix/matrix right-shift operation failed\n"
                 << " Details:\n"
                 << "   Result:\n" << C << "\n"
                 << "   Expected result:\n( 2 2  8  8  32 )\n"
@@ -8077,7 +8078,7 @@ void GeneralTest::testRightShift()
          }
       }
 
-      // Elementwise right-shift assignment
+      // Matrix/matrix right-shift assignment
       {
          blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  4U,  8U, 16U,  32U,  64U },
                                                                   {  8U, 16U, 32U,  64U, 128U },
@@ -8099,12 +8100,523 @@ void GeneralTest::testRightShift()
              A(2,0) != 8U || A(2,1) != 8U || A(2,2) != 32U || A(2,3) != 32U || A(2,4) != 128U ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Elementwise right-shift assignment failed\n"
+                << " Error: Matrix/matrix right-shift assignment failed\n"
                 << " Details:\n"
                 << "   Result:\n" << A << "\n"
                 << "   Expected result:\n( 2 2  8  8  32 )\n"
                                         "( 2 8  8 32  32 )\n"
                                         "( 8 8 32 32 128 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the bitwise AND operator for dense matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the bitwise AND operator for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testBitand()
+{
+   //=====================================================================================
+   // Row-major matrix/scalar bitwise AND tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major matrix/scalar bitwise AND operator";
+
+      // Matrix/scalar bitwise AND of an empty matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A;
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B( A & 7U );
+
+         checkRows    ( B, 0UL );
+         checkColumns ( B, 0UL );
+         checkCapacity( B, 0UL );
+         checkNonZeros( B, 0UL );
+      }
+
+      // Matrix/scalar bitwise AND of a general matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                               { 13U, 14U, 15U, 16U, 17U },
+                                                               { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B( A & 7U );
+
+         checkRows    ( B,  3UL );
+         checkColumns ( B,  5UL );
+         checkCapacity( B, 15UL );
+         checkNonZeros( B, 13UL );
+
+         if( B(0,0) != 0U || B(0,1) != 1U || B(0,2) != 2U || B(0,3) != 3U || B(0,4) != 4U ||
+             B(1,0) != 5U || B(1,1) != 6U || B(1,2) != 7U || B(1,3) != 0U || B(1,4) != 1U ||
+             B(2,0) != 2U || B(2,1) != 3U || B(2,2) != 4U || B(2,3) != 5U || B(2,4) != 6U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/scalar bitwise AND operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << B << "\n"
+                << "   Expected result:\n( 0 1 2 3 4 )\n"
+                                        "( 5 6 7 0 1 )\n"
+                                        "( 2 3 4 5 6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Matrix/scalar bitwise AND assignment
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                               { 13U, 14U, 15U, 16U, 17U },
+                                                               { 18U, 19U, 20U, 21U, 22U } };
+
+         A &= 7U;
+
+         checkRows    ( A,  3UL );
+         checkColumns ( A,  5UL );
+         checkCapacity( A, 15UL );
+         checkNonZeros( A, 13UL );
+
+         if( A(0,0) != 0U || A(0,1) != 1U || A(0,2) != 2U || A(0,3) != 3U || A(0,4) != 4U ||
+             A(1,0) != 5U || A(1,1) != 6U || A(1,2) != 7U || A(1,3) != 0U || A(1,4) != 1U ||
+             A(2,0) != 2U || A(2,1) != 3U || A(2,2) != 4U || A(2,3) != 5U || A(2,4) != 6U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/scalar bitwise AND assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << A << "\n"
+                << "   Expected result:\n( 0 1 2 3 4 )\n"
+                                        "( 5 6 7 0 1 )\n"
+                                        "( 2 3 4 5 6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major matrix/row-major matrix bitwise AND tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major matrix/row-major matrix bitwise AND operator";
+
+      // Matrix/matrix bitwise AND of an empty matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A;
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B;
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> C( A & B );
+
+         checkRows    ( C, 0UL );
+         checkColumns ( C, 0UL );
+         checkCapacity( C, 0UL );
+         checkNonZeros( C, 0UL );
+      }
+
+      // Matrix/matrix bitwise AND of a general matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                               { 13U, 14U, 15U, 16U, 17U },
+                                                               { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                               { 5U, 7U, 5U, 7U, 5U },
+                                                               { 7U, 5U, 7U, 5U, 7U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> C( A & B );
+
+         checkRows    ( C,  3UL );
+         checkColumns ( C,  5UL );
+         checkCapacity( C, 15UL );
+         checkNonZeros( C, 13UL );
+
+         if( C(0,0) != 0U || C(0,1) != 1U || C(0,2) != 2U || C(0,3) != 1U || C(0,4) != 4U ||
+             C(1,0) != 5U || C(1,1) != 6U || C(1,2) != 5U || C(1,3) != 0U || C(1,4) != 1U ||
+             C(2,0) != 2U || C(2,1) != 1U || C(2,2) != 4U || C(2,3) != 5U || C(2,4) != 6U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise AND operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << C << "\n"
+                << "   Expected result:\n( 0 1 2 1 4 )\n"
+                                        "( 5 6 5 0 1 )\n"
+                                        "( 2 1 4 5 6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Matrix/matrix bitwise AND assignment
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                               { 13U, 14U, 15U, 16U, 17U },
+                                                               { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                               { 5U, 7U, 5U, 7U, 5U },
+                                                               { 7U, 5U, 7U, 5U, 7U } };
+
+         A &= B;
+
+         checkRows    ( A,  3UL );
+         checkColumns ( A,  5UL );
+         checkCapacity( A, 15UL );
+         checkNonZeros( A, 13UL );
+
+         if( A(0,0) != 0U || A(0,1) != 1U || A(0,2) != 2U || A(0,3) != 1U || A(0,4) != 4U ||
+             A(1,0) != 5U || A(1,1) != 6U || A(1,2) != 5U || A(1,3) != 0U || A(1,4) != 1U ||
+             A(2,0) != 2U || A(2,1) != 1U || A(2,2) != 4U || A(2,3) != 5U || A(2,4) != 6U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise AND assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << A << "\n"
+                << "   Expected result:\n( 0 1 2 1 4 )\n"
+                                        "( 5 6 5 0 1 )\n"
+                                        "( 2 1 4 5 6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major matrix/column-major matrix bitwise AND tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major matrix/column-major matrix bitwise AND operator";
+
+      // Matrix/matrix bitwise AND of an empty matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A;
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B;
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> C( A & B );
+
+         checkRows    ( C, 0UL );
+         checkColumns ( C, 0UL );
+         checkCapacity( C, 0UL );
+         checkNonZeros( C, 0UL );
+      }
+
+      // Matrix/matrix bitwise AND of a general matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                               { 13U, 14U, 15U, 16U, 17U },
+                                                               { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                                  { 5U, 7U, 5U, 7U, 5U },
+                                                                  { 7U, 5U, 7U, 5U, 7U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> C( A & B );
+
+         checkRows    ( C,  3UL );
+         checkColumns ( C,  5UL );
+         checkCapacity( C, 15UL );
+         checkNonZeros( C, 13UL );
+
+         if( C(0,0) != 0U || C(0,1) != 1U || C(0,2) != 2U || C(0,3) != 1U || C(0,4) != 4U ||
+             C(1,0) != 5U || C(1,1) != 6U || C(1,2) != 5U || C(1,3) != 0U || C(1,4) != 1U ||
+             C(2,0) != 2U || C(2,1) != 1U || C(2,2) != 4U || C(2,3) != 5U || C(2,4) != 6U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise AND operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << C << "\n"
+                << "   Expected result:\n( 0 1 2 1 4 )\n"
+                                        "( 5 6 5 0 1 )\n"
+                                        "( 2 1 4 5 6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Matrix/matrix bitwise AND assignment
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                               { 13U, 14U, 15U, 16U, 17U },
+                                                               { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                                  { 5U, 7U, 5U, 7U, 5U },
+                                                                  { 7U, 5U, 7U, 5U, 7U } };
+
+         A &= B;
+
+         checkRows    ( A,  3UL );
+         checkColumns ( A,  5UL );
+         checkCapacity( A, 15UL );
+         checkNonZeros( A, 13UL );
+
+         if( A(0,0) != 0U || A(0,1) != 1U || A(0,2) != 2U || A(0,3) != 1U || A(0,4) != 4U ||
+             A(1,0) != 5U || A(1,1) != 6U || A(1,2) != 5U || A(1,3) != 0U || A(1,4) != 1U ||
+             A(2,0) != 2U || A(2,1) != 1U || A(2,2) != 4U || A(2,3) != 5U || A(2,4) != 6U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise AND assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << A << "\n"
+                << "   Expected result:\n( 0 1 2 1 4 )\n"
+                                        "( 5 6 5 0 1 )\n"
+                                        "( 2 1 4 5 6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix/scalar bitwise AND tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major matrix/scalar bitwise AND operator";
+
+      // Matrix/scalar bitwise AND of an empty matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A;
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B( A & 7U );
+
+         checkRows    ( B, 0UL );
+         checkColumns ( B, 0UL );
+         checkCapacity( B, 0UL );
+         checkNonZeros( B, 0UL );
+      }
+
+      // Matrix/scalar bitwise AND of a general matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                                  { 13U, 14U, 15U, 16U, 17U },
+                                                                  { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B( A & 7U );
+
+         checkRows    ( B,  3UL );
+         checkColumns ( B,  5UL );
+         checkCapacity( B, 15UL );
+         checkNonZeros( B, 13UL );
+
+         if( B(0,0) != 0U || B(0,1) != 1U || B(0,2) != 2U || B(0,3) != 3U || B(0,4) != 4U ||
+             B(1,0) != 5U || B(1,1) != 6U || B(1,2) != 7U || B(1,3) != 0U || B(1,4) != 1U ||
+             B(2,0) != 2U || B(2,1) != 3U || B(2,2) != 4U || B(2,3) != 5U || B(2,4) != 6U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/scalar bitwise AND operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << B << "\n"
+                << "   Expected result:\n( 0 1 2 3 4 )\n"
+                                        "( 5 6 7 0 1 )\n"
+                                        "( 2 3 4 5 6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Matrix/scalar bitwise AND assignment
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                                  { 13U, 14U, 15U, 16U, 17U },
+                                                                  { 18U, 19U, 20U, 21U, 22U } };
+
+         A &= 7U;
+
+         checkRows    ( A,  3UL );
+         checkColumns ( A,  5UL );
+         checkCapacity( A, 15UL );
+         checkNonZeros( A, 13UL );
+
+         if( A(0,0) != 0U || A(0,1) != 1U || A(0,2) != 2U || A(0,3) != 3U || A(0,4) != 4U ||
+             A(1,0) != 5U || A(1,1) != 6U || A(1,2) != 7U || A(1,3) != 0U || A(1,4) != 1U ||
+             A(2,0) != 2U || A(2,1) != 3U || A(2,2) != 4U || A(2,3) != 5U || A(2,4) != 6U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/scalar bitwise AND assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << A << "\n"
+                << "   Expected result:\n( 0 1 2 3 4 )\n"
+                                        "( 5 6 7 0 1 )\n"
+                                        "( 2 3 4 5 6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix/row-major matrix bitwise AND tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major matrix/row-major matrix bitwise AND operator";
+
+      // Matrix/matrix bitwise AND of an empty matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A;
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B;
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> C( A & B );
+
+         checkRows    ( C, 0UL );
+         checkColumns ( C, 0UL );
+         checkCapacity( C, 0UL );
+         checkNonZeros( C, 0UL );
+      }
+
+      // Matrix/matrix bitwise AND of a general matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                                  { 13U, 14U, 15U, 16U, 17U },
+                                                                  { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                               { 5U, 7U, 5U, 7U, 5U },
+                                                               { 7U, 5U, 7U, 5U, 7U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> C( A & B );
+
+         checkRows    ( C,  3UL );
+         checkColumns ( C,  5UL );
+         checkCapacity( C, 15UL );
+         checkNonZeros( C, 13UL );
+
+         if( C(0,0) != 0U || C(0,1) != 1U || C(0,2) != 2U || C(0,3) != 1U || C(0,4) != 4U ||
+             C(1,0) != 5U || C(1,1) != 6U || C(1,2) != 5U || C(1,3) != 0U || C(1,4) != 1U ||
+             C(2,0) != 2U || C(2,1) != 1U || C(2,2) != 4U || C(2,3) != 5U || C(2,4) != 6U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise AND operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << C << "\n"
+                << "   Expected result:\n( 0 1 2 1 4 )\n"
+                                        "( 5 6 5 0 1 )\n"
+                                        "( 2 1 4 5 6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Matrix/matrix bitwise AND assignment
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                                  { 13U, 14U, 15U, 16U, 17U },
+                                                                  { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                               { 5U, 7U, 5U, 7U, 5U },
+                                                               { 7U, 5U, 7U, 5U, 7U } };
+
+         A &= B;
+
+         checkRows    ( A,  3UL );
+         checkColumns ( A,  5UL );
+         checkCapacity( A, 15UL );
+         checkNonZeros( A, 13UL );
+
+         if( A(0,0) != 0U || A(0,1) != 1U || A(0,2) != 2U || A(0,3) != 1U || A(0,4) != 4U ||
+             A(1,0) != 5U || A(1,1) != 6U || A(1,2) != 5U || A(1,3) != 0U || A(1,4) != 1U ||
+             A(2,0) != 2U || A(2,1) != 1U || A(2,2) != 4U || A(2,3) != 5U || A(2,4) != 6U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise AND assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << A << "\n"
+                << "   Expected result:\n( 0 1 2 1 4 )\n"
+                                        "( 5 6 5 0 1 )\n"
+                                        "( 2 1 4 5 6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix/column-major matrix bitwise AND tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major matrix/column-major matrix bitwise AND operator";
+
+      // Matrix/matrix bitwise AND of an empty matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A;
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B;
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> C( A & B );
+
+         checkRows    ( C, 0UL );
+         checkColumns ( C, 0UL );
+         checkCapacity( C, 0UL );
+         checkNonZeros( C, 0UL );
+      }
+
+      // Matrix/matrix bitwise AND of a general matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                                  { 13U, 14U, 15U, 16U, 17U },
+                                                                  { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                                  { 5U, 7U, 5U, 7U, 5U },
+                                                                  { 7U, 5U, 7U, 5U, 7U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> C( A & B );
+
+         checkRows    ( C,  3UL );
+         checkColumns ( C,  5UL );
+         checkCapacity( C, 15UL );
+         checkNonZeros( C, 13UL );
+
+         if( C(0,0) != 0U || C(0,1) != 1U || C(0,2) != 2U || C(0,3) != 1U || C(0,4) != 4U ||
+             C(1,0) != 5U || C(1,1) != 6U || C(1,2) != 5U || C(1,3) != 0U || C(1,4) != 1U ||
+             C(2,0) != 2U || C(2,1) != 1U || C(2,2) != 4U || C(2,3) != 5U || C(2,4) != 6U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise AND operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << C << "\n"
+                << "   Expected result:\n( 0 1 2 1 4 )\n"
+                                        "( 5 6 5 0 1 )\n"
+                                        "( 2 1 4 5 6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Matrix/matrix bitwise AND assignment
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                                  { 13U, 14U, 15U, 16U, 17U },
+                                                                  { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                                  { 5U, 7U, 5U, 7U, 5U },
+                                                                  { 7U, 5U, 7U, 5U, 7U } };
+
+         A &= B;
+
+         checkRows    ( A,  3UL );
+         checkColumns ( A,  5UL );
+         checkCapacity( A, 15UL );
+         checkNonZeros( A, 13UL );
+
+         if( A(0,0) != 0U || A(0,1) != 1U || A(0,2) != 2U || A(0,3) != 1U || A(0,4) != 4U ||
+             A(1,0) != 5U || A(1,1) != 6U || A(1,2) != 5U || A(1,3) != 0U || A(1,4) != 1U ||
+             A(2,0) != 2U || A(2,1) != 1U || A(2,2) != 4U || A(2,3) != 5U || A(2,4) != 6U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise AND assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << A << "\n"
+                << "   Expected result:\n( 0 1 2 1 4 )\n"
+                                        "( 5 6 5 0 1 )\n"
+                                        "( 2 1 4 5 6 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
