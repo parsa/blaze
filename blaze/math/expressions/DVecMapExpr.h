@@ -2585,6 +2585,36 @@ inline decltype(auto) operator&( const DenseVector<VT,TF>& vec, ST scalar )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Bitwise OR operator for the bitwise OR of a dense vector and a scalar value
+//        (\f$ \vec{a}=\vec{b}&s \f$).
+// \ingroup dense_vector
+//
+// \param vec The left-hand side dense vector for the bitwise OR.
+// \param scalar The right-hand side scalar value for the bitwise OR.
+// \return The resulting vector.
+//
+// This operator represents the bitwise OR of a scalar value with all elements of a dense vector:
+
+   \code
+   blaze::DynamicVector<unsigned int> a, b;
+   // ... Resizing and initialization
+   b = a | 7U;
+   \endcode
+*/
+template< typename VT  // Type of the left-hand side dense vector
+        , typename ST  // Type of the right-hand side scalar
+        , bool TF      // Transpose flag
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+inline decltype(auto) operator|( const DenseVector<VT,TF>& vec, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~vec, blaze::bind2nd( Bitor{}, scalar ) );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
