@@ -99,6 +99,7 @@ GeneralTest::GeneralTest()
    testLeftShift();
    testRightShift();
    testBitand();
+   testBitor();
 }
 //*************************************************************************************************
 
@@ -8617,6 +8618,518 @@ void GeneralTest::testBitand()
                 << "   Expected result:\n( 0 1 2 1 4 )\n"
                                         "( 5 6 5 0 1 )\n"
                                         "( 2 1 4 5 6 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the bitwise OR operator for dense matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the bitwise OR operator for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testBitor()
+{
+   //=====================================================================================
+   // Row-major matrix/scalar bitwise OR tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major matrix/scalar bitwise OR operator";
+
+      // Matrix/scalar bitwise OR of an empty matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A;
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B( A | 7U );
+
+         checkRows    ( B, 0UL );
+         checkColumns ( B, 0UL );
+         checkCapacity( B, 0UL );
+         checkNonZeros( B, 0UL );
+      }
+
+      // Matrix/scalar bitwise OR of a general matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                               { 13U, 14U, 15U, 16U, 17U },
+                                                               { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B( A | 7U );
+
+         checkRows    ( B,  3UL );
+         checkColumns ( B,  5UL );
+         checkCapacity( B, 15UL );
+         checkNonZeros( B, 15UL );
+
+         if( B(0,0) != 15U || B(0,1) != 15U || B(0,2) != 15U || B(0,3) != 15U || B(0,4) != 15U ||
+             B(1,0) != 15U || B(1,1) != 15U || B(1,2) != 15U || B(1,3) != 23U || B(1,4) != 23U ||
+             B(2,0) != 23U || B(2,1) != 23U || B(2,2) != 23U || B(2,3) != 23U || B(2,4) != 23U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/scalar bitwise OR operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << B << "\n"
+                << "   Expected result:\n( 15 15 15 15 15 )\n"
+                                        "( 15 15 15 23 23 )\n"
+                                        "( 23 23 23 23 23 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Matrix/scalar bitwise OR assignment
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                               { 13U, 14U, 15U, 16U, 17U },
+                                                               { 18U, 19U, 20U, 21U, 22U } };
+
+         A |= 7U;
+
+         checkRows    ( A,  3UL );
+         checkColumns ( A,  5UL );
+         checkCapacity( A, 15UL );
+         checkNonZeros( A, 15UL );
+
+         if( A(0,0) != 15U || A(0,1) != 15U || A(0,2) != 15U || A(0,3) != 15U || A(0,4) != 15U ||
+             A(1,0) != 15U || A(1,1) != 15U || A(1,2) != 15U || A(1,3) != 23U || A(1,4) != 23U ||
+             A(2,0) != 23U || A(2,1) != 23U || A(2,2) != 23U || A(2,3) != 23U || A(2,4) != 23U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/scalar bitwise OR assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << A << "\n"
+                << "   Expected result:\n( 15 15 15 15 15 )\n"
+                                        "( 15 15 15 23 23 )\n"
+                                        "( 23 23 23 23 23 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major matrix/row-major matrix bitwise OR tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major matrix/row-major matrix bitwise OR operator";
+
+      // Matrix/matrix bitwise OR of an empty matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A;
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B;
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> C( A | B );
+
+         checkRows    ( C, 0UL );
+         checkColumns ( C, 0UL );
+         checkCapacity( C, 0UL );
+         checkNonZeros( C, 0UL );
+      }
+
+      // Matrix/matrix bitwise OR of a general matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                               { 13U, 14U, 15U, 16U, 17U },
+                                                               { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                               { 5U, 7U, 5U, 7U, 5U },
+                                                               { 7U, 5U, 7U, 5U, 7U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> C( A | B );
+
+         checkRows    ( C,  3UL );
+         checkColumns ( C,  5UL );
+         checkCapacity( C, 15UL );
+         checkNonZeros( C, 15UL );
+
+         if( C(0,0) != 15U || C(0,1) != 13U || C(0,2) != 15U || C(0,3) != 15U || C(0,4) != 15U ||
+             C(1,0) != 13U || C(1,1) != 15U || C(1,2) != 15U || C(1,3) != 23U || C(1,4) != 21U ||
+             C(2,0) != 23U || C(2,1) != 23U || C(2,2) != 23U || C(2,3) != 21U || C(2,4) != 23U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise OR operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << C << "\n"
+                << "   Expected result:\n( 15 13 15 15 15 )\n"
+                                        "( 13 15 15 23 21 )\n"
+                                        "( 23 23 23 21 23 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Matrix/matrix bitwise OR assignment
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                               { 13U, 14U, 15U, 16U, 17U },
+                                                               { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                               { 5U, 7U, 5U, 7U, 5U },
+                                                               { 7U, 5U, 7U, 5U, 7U } };
+
+         A |= B;
+
+         checkRows    ( A,  3UL );
+         checkColumns ( A,  5UL );
+         checkCapacity( A, 15UL );
+         checkNonZeros( A, 15UL );
+
+         if( A(0,0) != 15U || A(0,1) != 13U || A(0,2) != 15U || A(0,3) != 15U || A(0,4) != 15U ||
+             A(1,0) != 13U || A(1,1) != 15U || A(1,2) != 15U || A(1,3) != 23U || A(1,4) != 21U ||
+             A(2,0) != 23U || A(2,1) != 23U || A(2,2) != 23U || A(2,3) != 21U || A(2,4) != 23U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise OR assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << A << "\n"
+                << "   Expected result:\n( 15 13 15 15 15 )\n"
+                                        "( 13 15 15 23 21 )\n"
+                                        "( 23 23 23 21 23 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major matrix/column-major matrix bitwise OR tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major matrix/column-major matrix bitwise OR operator";
+
+      // Matrix/matrix bitwise OR of an empty matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A;
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B;
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> C( A | B );
+
+         checkRows    ( C, 0UL );
+         checkColumns ( C, 0UL );
+         checkCapacity( C, 0UL );
+         checkNonZeros( C, 0UL );
+      }
+
+      // Matrix/matrix bitwise OR of a general matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                               { 13U, 14U, 15U, 16U, 17U },
+                                                               { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                                  { 5U, 7U, 5U, 7U, 5U },
+                                                                  { 7U, 5U, 7U, 5U, 7U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> C( A | B );
+
+         checkRows    ( C,  3UL );
+         checkColumns ( C,  5UL );
+         checkCapacity( C, 15UL );
+         checkNonZeros( C, 15UL );
+
+         if( C(0,0) != 15U || C(0,1) != 13U || C(0,2) != 15U || C(0,3) != 15U || C(0,4) != 15U ||
+             C(1,0) != 13U || C(1,1) != 15U || C(1,2) != 15U || C(1,3) != 23U || C(1,4) != 21U ||
+             C(2,0) != 23U || C(2,1) != 23U || C(2,2) != 23U || C(2,3) != 21U || C(2,4) != 23U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise OR operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << C << "\n"
+                << "   Expected result:\n( 15 13 15 15 15 )\n"
+                                        "( 13 15 15 23 21 )\n"
+                                        "( 23 23 23 21 23 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Matrix/matrix bitwise OR assignment
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                               { 13U, 14U, 15U, 16U, 17U },
+                                                               { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                                  { 5U, 7U, 5U, 7U, 5U },
+                                                                  { 7U, 5U, 7U, 5U, 7U } };
+
+         A |= B;
+
+         checkRows    ( A,  3UL );
+         checkColumns ( A,  5UL );
+         checkCapacity( A, 15UL );
+         checkNonZeros( A, 15UL );
+
+         if( A(0,0) != 15U || A(0,1) != 13U || A(0,2) != 15U || A(0,3) != 15U || A(0,4) != 15U ||
+             A(1,0) != 13U || A(1,1) != 15U || A(1,2) != 15U || A(1,3) != 23U || A(1,4) != 21U ||
+             A(2,0) != 23U || A(2,1) != 23U || A(2,2) != 23U || A(2,3) != 21U || A(2,4) != 23U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise OR assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << A << "\n"
+                << "   Expected result:\n( 15 13 15 15 15 )\n"
+                                        "( 13 15 15 23 21 )\n"
+                                        "( 23 23 23 21 23 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix/scalar bitwise OR tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major matrix/scalar bitwise OR operator";
+
+      // Matrix/scalar bitwise OR of an empty matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A;
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B( A | 7U );
+
+         checkRows    ( B, 0UL );
+         checkColumns ( B, 0UL );
+         checkCapacity( B, 0UL );
+         checkNonZeros( B, 0UL );
+      }
+
+      // Matrix/scalar bitwise OR of a general matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                                  { 13U, 14U, 15U, 16U, 17U },
+                                                                  { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B( A | 7U );
+
+         checkRows    ( B,  3UL );
+         checkColumns ( B,  5UL );
+         checkCapacity( B, 15UL );
+         checkNonZeros( B, 15UL );
+
+         if( B(0,0) != 15U || B(0,1) != 15U || B(0,2) != 15U || B(0,3) != 15U || B(0,4) != 15U ||
+             B(1,0) != 15U || B(1,1) != 15U || B(1,2) != 15U || B(1,3) != 23U || B(1,4) != 23U ||
+             B(2,0) != 23U || B(2,1) != 23U || B(2,2) != 23U || B(2,3) != 23U || B(2,4) != 23U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/scalar bitwise OR operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << B << "\n"
+                << "   Expected result:\n( 15 15 15 15 15 )\n"
+                                        "( 15 15 15 23 23 )\n"
+                                        "( 23 23 23 23 23 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Matrix/scalar bitwise OR assignment
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                                  { 13U, 14U, 15U, 16U, 17U },
+                                                                  { 18U, 19U, 20U, 21U, 22U } };
+
+         A |= 7U;
+
+         checkRows    ( A,  3UL );
+         checkColumns ( A,  5UL );
+         checkCapacity( A, 15UL );
+         checkNonZeros( A, 15UL );
+
+         if( A(0,0) != 15U || A(0,1) != 15U || A(0,2) != 15U || A(0,3) != 15U || A(0,4) != 15U ||
+             A(1,0) != 15U || A(1,1) != 15U || A(1,2) != 15U || A(1,3) != 23U || A(1,4) != 23U ||
+             A(2,0) != 23U || A(2,1) != 23U || A(2,2) != 23U || A(2,3) != 23U || A(2,4) != 23U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/scalar bitwise OR assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << A << "\n"
+                << "   Expected result:\n( 15 15 15 15 15 )\n"
+                                        "( 15 15 15 23 23 )\n"
+                                        "( 23 23 23 23 23 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix/row-major matrix bitwise OR tests
+   //=====================================================================================
+
+
+   {
+      test_ = "Column-major matrix/row-major matrix bitwise OR operator";
+
+      // Matrix/matrix bitwise OR of an empty matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A;
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B;
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> C( A | B );
+
+         checkRows    ( C, 0UL );
+         checkColumns ( C, 0UL );
+         checkCapacity( C, 0UL );
+         checkNonZeros( C, 0UL );
+      }
+
+      // Matrix/matrix bitwise OR of a general matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                                  { 13U, 14U, 15U, 16U, 17U },
+                                                                  { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                               { 5U, 7U, 5U, 7U, 5U },
+                                                               { 7U, 5U, 7U, 5U, 7U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> C( A | B );
+
+         checkRows    ( C,  3UL );
+         checkColumns ( C,  5UL );
+         checkCapacity( C, 15UL );
+         checkNonZeros( C, 15UL );
+
+         if( C(0,0) != 15U || C(0,1) != 13U || C(0,2) != 15U || C(0,3) != 15U || C(0,4) != 15U ||
+             C(1,0) != 13U || C(1,1) != 15U || C(1,2) != 15U || C(1,3) != 23U || C(1,4) != 21U ||
+             C(2,0) != 23U || C(2,1) != 23U || C(2,2) != 23U || C(2,3) != 21U || C(2,4) != 23U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise OR operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << C << "\n"
+                << "   Expected result:\n( 15 13 15 15 15 )\n"
+                                        "( 13 15 15 23 21 )\n"
+                                        "( 23 23 23 21 23 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Matrix/matrix bitwise OR assignment
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                                  { 13U, 14U, 15U, 16U, 17U },
+                                                                  { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                               { 5U, 7U, 5U, 7U, 5U },
+                                                               { 7U, 5U, 7U, 5U, 7U } };
+
+         A |= B;
+
+         checkRows    ( A,  3UL );
+         checkColumns ( A,  5UL );
+         checkCapacity( A, 15UL );
+         checkNonZeros( A, 15UL );
+
+         if( A(0,0) != 15U || A(0,1) != 13U || A(0,2) != 15U || A(0,3) != 15U || A(0,4) != 15U ||
+             A(1,0) != 13U || A(1,1) != 15U || A(1,2) != 15U || A(1,3) != 23U || A(1,4) != 21U ||
+             A(2,0) != 23U || A(2,1) != 23U || A(2,2) != 23U || A(2,3) != 21U || A(2,4) != 23U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise OR assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << A << "\n"
+                << "   Expected result:\n( 15 13 15 15 15 )\n"
+                                        "( 13 15 15 23 21 )\n"
+                                        "( 23 23 23 21 23 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix/column-major matrix bitwise OR tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major matrix/column-major matrix bitwise OR operator";
+
+      // Matrix/matrix bitwise OR of an empty matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A;
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B;
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> C( A | B );
+
+         checkRows    ( C, 0UL );
+         checkColumns ( C, 0UL );
+         checkCapacity( C, 0UL );
+         checkNonZeros( C, 0UL );
+      }
+
+      // Matrix/matrix bitwise OR of a general matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                                  { 13U, 14U, 15U, 16U, 17U },
+                                                                  { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                                  { 5U, 7U, 5U, 7U, 5U },
+                                                                  { 7U, 5U, 7U, 5U, 7U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> C( A | B );
+
+         checkRows    ( C,  3UL );
+         checkColumns ( C,  5UL );
+         checkCapacity( C, 15UL );
+         checkNonZeros( C, 15UL );
+
+         if( C(0,0) != 15U || C(0,1) != 13U || C(0,2) != 15U || C(0,3) != 15U || C(0,4) != 15U ||
+             C(1,0) != 13U || C(1,1) != 15U || C(1,2) != 15U || C(1,3) != 23U || C(1,4) != 21U ||
+             C(2,0) != 23U || C(2,1) != 23U || C(2,2) != 23U || C(2,3) != 21U || C(2,4) != 23U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise OR operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << C << "\n"
+                << "   Expected result:\n( 15 13 15 15 15 )\n"
+                                        "( 13 15 15 23 21 )\n"
+                                        "( 23 23 23 21 23 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Matrix/matrix bitwise OR assignment
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                                  { 13U, 14U, 15U, 16U, 17U },
+                                                                  { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                                  { 5U, 7U, 5U, 7U, 5U },
+                                                                  { 7U, 5U, 7U, 5U, 7U } };
+
+         A |= B;
+
+         checkRows    ( A,  3UL );
+         checkColumns ( A,  5UL );
+         checkCapacity( A, 15UL );
+         checkNonZeros( A, 15UL );
+
+         if( A(0,0) != 15U || A(0,1) != 13U || A(0,2) != 15U || A(0,3) != 15U || A(0,4) != 15U ||
+             A(1,0) != 13U || A(1,1) != 15U || A(1,2) != 15U || A(1,3) != 23U || A(1,4) != 21U ||
+             A(2,0) != 23U || A(2,1) != 23U || A(2,2) != 23U || A(2,3) != 21U || A(2,4) != 23U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise OR assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << A << "\n"
+                << "   Expected result:\n( 15 13 15 15 15 )\n"
+                                        "( 13 15 15 23 21 )\n"
+                                        "( 23 23 23 21 23 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
