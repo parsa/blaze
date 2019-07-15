@@ -120,6 +120,7 @@ class DMatDMatAddExpr
    using ExprReturnType = decltype( std::declval<RN1>() + std::declval<RN2>() );
    //**********************************************************************************************
 
+public:
    //**Serial evaluation strategy******************************************************************
    //! Compilation switch for the serial evaluation strategy of the addition expression.
    /*! The \a useAssign compile time constant expression represents a compilation switch for
@@ -138,6 +139,7 @@ class DMatDMatAddExpr
    /*! \endcond */
    //**********************************************************************************************
 
+private:
    //**Parallel evaluation strategy****************************************************************
    /*! \cond BLAZE_INTERNAL */
    //! Helper variable template for the explicit application of the SFINAE principle.
