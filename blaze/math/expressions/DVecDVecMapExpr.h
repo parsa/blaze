@@ -53,6 +53,7 @@
 #include <blaze/math/expressions/VecVecMapExpr.h>
 #include <blaze/math/functors/Atan2.h>
 #include <blaze/math/functors/Bitand.h>
+#include <blaze/math/functors/Bitor.h>
 #include <blaze/math/functors/Hypot.h>
 #include <blaze/math/functors/Max.h>
 #include <blaze/math/functors/Min.h>
@@ -1381,6 +1382,39 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    return map( ~lhs, ~rhs, Bitand() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise OR operator for two dense vectors (\f$ \vec{a}=\vec{b}|\vec{c} \f$).
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector for the bitwise OR operation.
+// \param rhs The right-hand side dense vector for the bitwise OR operation.
+// \return The resulting dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// This operator represents the bitwise OR of the given two dense vectors:
+
+   \code
+   blaze::DynamicVector<unsigned int> a, b, c;
+   // ... Resizing and initialization
+   c = a | b;
+   \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline decltype(auto)
+   operator|( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~lhs, ~rhs, Bitor() );
 }
 //*************************************************************************************************
 
