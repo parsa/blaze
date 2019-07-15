@@ -90,6 +90,7 @@ OperationTest::OperationTest()
    testLeftShift();
    testRightShift();
    testBitand();
+   testBitor();
 }
 //*************************************************************************************************
 
@@ -1933,6 +1934,150 @@ void OperationTest::testBitand()
                 << " Details:\n"
                 << "   Result:\n" << a << "\n"
                 << "   Expected result:\n( 0 1 2 1 4 5 6 5 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the bitwise OR operator for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the bitwise OR operator for dense vectors. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testBitor()
+{
+   //=====================================================================================
+   // Vector/scalar bitwise OR tests
+   //=====================================================================================
+
+   {
+      test_ = "Vector/scalar bitwise OR operator";
+
+      // Vector/scalar bitwise OR of an empty vector
+      {
+         blaze::DynamicVector<unsigned int> a;
+
+         blaze::DynamicVector<unsigned int> b( a | 7U );
+
+         checkSize    ( b, 0UL );
+         checkCapacity( b, 0UL );
+         checkNonZeros( b, 0UL );
+      }
+
+      // Vector/scalar bitwise OR of a general vector
+      {
+         blaze::DynamicVector<unsigned int> a{ 8U, 9U, 10U, 11U, 12U, 13U, 14U, 15U, 16U };
+
+         blaze::DynamicVector<unsigned int> b( a | 7U );
+
+         checkSize    ( b, 9UL );
+         checkCapacity( b, 9UL );
+         checkNonZeros( b, 9UL );
+
+         if( b[0] != 15U || b[1] != 15U || b[2] != 15U || b[3] != 15U || b[4] != 15U ||
+             b[5] != 15U || b[6] != 15U || b[7] != 15U || b[8] != 23U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Vector/scalar bitwise OR operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << b << "\n"
+                << "   Expected result:\n( 15 15 15 15 15 15 15 15 23 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Vector/scalar bitwise OR assignment
+      {
+         blaze::DynamicVector<unsigned int> a{ 8U, 9U, 10U, 11U, 12U, 13U, 14U, 15U, 16U };
+
+         a |= 7U;
+
+         checkSize    ( a, 9UL );
+         checkCapacity( a, 9UL );
+         checkNonZeros( a, 9UL );
+
+         if( a[0] != 15U || a[1] != 15U || a[2] != 15U || a[3] != 15U || a[4] != 15U ||
+             a[5] != 15U || a[6] != 15U || a[7] != 15U || a[8] != 23U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Vector/scalar bitwise OR assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << a << "\n"
+                << "   Expected result:\n( 15 15 15 15 15 15 15 15 23 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Vector/vector bitwise AND tests
+   //=====================================================================================
+
+   {
+      test_ = "Vector/vector bitwise OR operator";
+
+      // Vector/vector bitwise OR of an empty vector
+      {
+         blaze::DynamicVector<unsigned int> a;
+         blaze::DynamicVector<unsigned int> b;
+
+         blaze::DynamicVector<unsigned int> c( a | b );
+
+         checkSize    ( b, 0UL );
+         checkCapacity( b, 0UL );
+         checkNonZeros( b, 0UL );
+      }
+
+      // Vector/vector bitwise OR of a general vector
+      {
+         blaze::DynamicVector<unsigned int> a{ 8U, 9U, 10U, 11U, 12U, 13U, 14U, 15U, 16U };
+         blaze::DynamicVector<unsigned int> b{ 7U, 5U,  7U, 5U, 7U, 5U, 7U, 5U, 7U };
+
+         blaze::DynamicVector<unsigned int> c( a | b );
+
+         checkSize    ( c, 9UL );
+         checkCapacity( c, 9UL );
+         checkNonZeros( c, 9UL );
+
+         if( c[0] != 15U || c[1] != 13U || c[2] != 15U || c[3] != 15U || c[4] != 15U ||
+             c[5] != 13U || c[6] != 15U || c[7] != 15U || c[8] != 23U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Vector/vector bitwise OR operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << c << "\n"
+                << "   Expected result:\n( 15 13 15 15 15 13 15 15 23 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Vector/vector bitwise OR assignment
+      {
+         blaze::DynamicVector<unsigned int> a{ 8U, 9U, 10U, 11U, 12U, 13U, 14U, 15U, 16U };
+         blaze::DynamicVector<unsigned int> b{ 7U, 5U,  7U, 5U, 7U, 5U, 7U, 5U, 7U };
+
+         a |= b;
+
+         checkSize    ( a, 9UL );
+         checkCapacity( a, 9UL );
+         checkNonZeros( a, 9UL );
+
+         if( a[0] != 15U || a[1] != 13U || a[2] != 15U || a[3] != 15U || a[4] != 15U ||
+             a[5] != 13U || a[6] != 15U || a[7] != 15U || a[8] != 23U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Vector/vector bitwise OR assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << a << "\n"
+                << "   Expected result:\n( 15 13 15 15 15 13 15 15 23 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
