@@ -143,6 +143,13 @@
 //                <li> \ref scalar_and </li>
 //             </ul>
 //          </li>
+//          <li> \ref bitwise_or
+//             <ul>
+//                <li> \ref vector_vector_or </li>
+//                <li> \ref matrix_matrix_or </li>
+//                <li> \ref scalar_or </li>
+//             </ul>
+//          </li>
 //       </ul>
 //    </li>
 //    <li> \ref shared_memory_parallelization
@@ -11856,6 +11863,13 @@
 //          <li> \ref scalar_and </li>
 //       </ul>
 //    </li>
+//    <li> \ref bitwise_or
+//       <ul>
+//          <li> \ref vector_vector_or </li>
+//          <li> \ref matrix_matrix_or </li>
+//          <li> \ref scalar_or </li>
+//       </ul>
+//    </li>
 // </ul>
 //
 // \n Previous: \ref matrix_matrix_multiplication &nbsp; &nbsp; Next: \ref bitwise_shift
@@ -11978,7 +11992,7 @@
 //*************************************************************************************************
 
 
-//**Bitwise And************************************************************************************
+//**Bitwise AND************************************************************************************
 /*!\page bitwise_and Bitwise AND
 //
 // \n \section vector_vector_and Vector/Vector Bitwise AND
@@ -12087,7 +12101,121 @@
    blaze::DynamicMatrix<unsigned int> M2( M1 & 3U );
    \endcode
 
-// \n Previous: \ref bitwise_shift &nbsp; &nbsp; Next: \ref shared_memory_parallelization
+// \n Previous: \ref bitwise_shift &nbsp; &nbsp; Next: \ref bitwise_or
+*/
+//*************************************************************************************************
+
+
+//**Bitwise OR*************************************************************************************
+/*!\page bitwise_or Bitwise OR
+//
+// \n \section vector_vector_or Vector/Vector Bitwise OR
+// <hr>
+//
+// Via the bitwise OR operator (i.e. operator|()) it is possible to perform a elementwise bitwise
+// OR with dense vectors:
+
+   \code
+   blaze::DynamicVector<unsigned int> v1( 5UL ), v3;
+   blaze::DynamicVector<unsigned short> v2( 5UL );
+
+   // ... Initializing the vectors
+
+   v3 = v1 | v2;  // Elementwise bitwise OR of two dense column vectors of different data type
+   \endcode
+
+// Note that it is necessary that both operands have exactly the same dimensions. Violating this
+// precondition results in an exception. Also note that it is only possible to use vectors with
+// the same transpose flag:
+
+   \code
+   using blaze::columnVector;
+   using blaze::rowVector;
+
+   blaze::DynamicVector<unsigned int,columnVector> v1( 5UL );
+   blaze::DynamicVector<unsigned int,rowVector>    v2( 5UL );
+
+   v1 | v2;           // Compilation error: Cannot OR a column vector and a row vector
+   v1 | trans( v2 );  // OK: Bitwise OR of two column vectors
+   \endcode
+
+// Furthermore, it is possible to use different element types in the two vector operands, but a
+// bitwise OR of two vectors with the same element type is favorable due to possible vectorization
+// of the operation:
+
+   \code
+   blaze::DynamicVector<unsigned int> v1( 100UL ), v2( 100UL ), v3;
+
+   // ... Initialization of the vectors
+
+   v3 = v1 | v2;  // Vectorized bitwise OR of an unsigned int vector
+   \endcode
+
+// \n \section matrix_matrix_or Matrix/Matrix Bitwise OR
+// <hr>
+//
+// The bitwise OR operator (i.e. operator|()) can also be used to perform an elementwise bitwise
+// OR with dense matrices:
+
+   \code
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   blaze::DynamicMatrix<unsigned int,columnMajor> M1( 7UL, 3UL );
+   blaze::DynamicMatrix<unsigned short,rowMajor>  M2( 7UL, 3UL ), M3;
+
+   // ... Initializing the matrices
+
+   M3 = M1 | M2;  // Elementwise bitwise OR of two dense matrices of different data type
+   \endcode
+
+// Note that it is necessary that both operands have exactly the same dimensions. Violating this
+// precondition results in an exception. It is possible to use any combination of row-major and
+// column-major matrices. Note however that in favor of performance using two matrices with the
+// same storage order is favorable. The same argument holds for the element type: While it is
+// possible to use matrices with different element type, using two matrices with the same element
+// type potentially leads to better performance due to vectorization of the operation.
+
+   \code
+   blaze::DynamicMatrix<unsigned int> M1( 50UL, 70UL ), M2( 50UL, 70UL ), M3;
+
+   // ... Initialization of the matrices
+
+   M3 = M1 | M2;  // Vectorized bitwise OR of two row-major, unsigned int dense matrices
+   \endcode
+
+// \n \section scalar_or Scalar Bitwise OR
+// <hr>
+//
+// Is is also possible to perform a bitwise OR between a dense vector or dense matrix and a
+// scalar value, which has the same effect as performing a bitwise OR by means of a uniform
+// vector or matrix (see \ref vector_types_uniform_vector and \ref matrix_types_uniform_matrix).
+// In \b Blaze it is possible to use all built-in/fundamental data types except bool as scalar
+// values. Examples:
+
+   \code
+   blaze::DynamicVector<unsigned int> v1{ 3U, 2U, 5U, 4U, 1U, 6U };
+
+   // Perform a bitwise OR with all elements of v1; Results in
+   //
+   //    ( 3, 3, 7, 7, 3, 3 )
+   //
+   blaze::DynamicVector<int> v2( v1 | 3U );
+   \endcode
+
+   \code
+   blaze::DynamicMatrix<unsigned int> M1{ { 3U, 2U, 5U },
+                                          { 4U, 1U, 6U } };
+
+   // Perform a bitwise OR with all elements of M1; Results in
+   //
+   //    ( 3, 3, 7 )
+   //    ( 7, 3, 3 )
+   //
+   blaze::DynamicMatrix<unsigned int> M2( M1 | 3U );
+   \endcode
+
+// \n Previous: \ref bitwise_and &nbsp; &nbsp; Next: \ref shared_memory_parallelization
 */
 //*************************************************************************************************
 
@@ -12114,7 +12242,7 @@
 //
 //  - \ref serial_execution
 //
-// \n Previous: \ref bitwise_and &nbsp; &nbsp; Next: \ref hpx_parallelization
+// \n Previous: \ref bitwise_or &nbsp; &nbsp; Next: \ref hpx_parallelization
 */
 //*************************************************************************************************
 
