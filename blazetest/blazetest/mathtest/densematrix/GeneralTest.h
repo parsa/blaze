@@ -121,6 +121,7 @@ class GeneralTest
    void testBitxor();
    void testNot();
    void testAnd();
+   void testOr();
 
    template< typename Type >
    void checkRows( const Type& matrix, size_t expectedRows ) const;

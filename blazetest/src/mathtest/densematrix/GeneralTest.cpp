@@ -102,6 +102,8 @@ GeneralTest::GeneralTest()
    testBitor();
    testBitxor();
    testNot();
+   testAnd();
+   testOr();
 }
 //*************************************************************************************************
 
@@ -9807,7 +9809,7 @@ void GeneralTest::testAnd()
          checkRows    ( C,  3UL );
          checkColumns ( C,  4UL );
          checkCapacity( C, 12UL );
-         checkNonZeros( C,  6UL );
+         checkNonZeros( C,  3UL );
 
          if( C(0,0) != true  || C(0,1) != false || C(0,2) != false || C(0,3) != false ||
              C(1,0) != false || C(1,1) != false || C(1,2) != false || C(1,3) != true  ||
@@ -9861,7 +9863,7 @@ void GeneralTest::testAnd()
          checkRows    ( C,  3UL );
          checkColumns ( C,  4UL );
          checkCapacity( C, 12UL );
-         checkNonZeros( C,  6UL );
+         checkNonZeros( C,  3UL );
 
          if( C(0,0) != true  || C(0,1) != false || C(0,2) != false || C(0,3) != false ||
              C(1,0) != false || C(1,1) != false || C(1,2) != false || C(1,3) != true  ||
@@ -9915,7 +9917,7 @@ void GeneralTest::testAnd()
          checkRows    ( C,  3UL );
          checkColumns ( C,  4UL );
          checkCapacity( C, 12UL );
-         checkNonZeros( C,  6UL );
+         checkNonZeros( C,  3UL );
 
          if( C(0,0) != true  || C(0,1) != false || C(0,2) != false || C(0,3) != false ||
              C(1,0) != false || C(1,1) != false || C(1,2) != false || C(1,3) != true  ||
@@ -9969,7 +9971,7 @@ void GeneralTest::testAnd()
          checkRows    ( C,  3UL );
          checkColumns ( C,  4UL );
          checkCapacity( C, 12UL );
-         checkNonZeros( C,  6UL );
+         checkNonZeros( C,  3UL );
 
          if( C(0,0) != true  || C(0,1) != false || C(0,2) != false || C(0,3) != false ||
              C(1,0) != false || C(1,1) != false || C(1,2) != false || C(1,3) != true  ||
@@ -9982,6 +9984,235 @@ void GeneralTest::testAnd()
                 << "   Expected result:\n( 1 0 0 0 )\n"
                                         "( 0 0 0 1 )\n"
                                         "( 1 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the logical OR operator for dense matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the logical OR operator for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testOr()
+{
+   //=====================================================================================
+   // Row-major matrix/row-major matrix logical OR tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major matrix/row-major matrix logical OR operator";
+
+      // Matrix/matrix logical OR of an empty matrix
+      {
+         blaze::DynamicMatrix<bool,blaze::rowMajor> A;
+         blaze::DynamicMatrix<bool,blaze::rowMajor> B;
+
+         blaze::DynamicMatrix<bool,blaze::rowMajor> C( A || B );
+
+         checkRows    ( C, 0UL );
+         checkColumns ( C, 0UL );
+         checkCapacity( C, 0UL );
+         checkNonZeros( C, 0UL );
+      }
+
+      // Matrix/matrix logical OR of a general matrix
+      {
+         blaze::DynamicMatrix<bool,blaze::rowMajor> A{ { true, false, true, false },
+                                                       { false, true, false, true },
+                                                       { true, false, true, false } };
+
+         blaze::DynamicMatrix<bool,blaze::rowMajor> B{ { true, true, false, false },
+                                                       { false, false, true, true },
+                                                       { true, true, false, false } };
+
+         blaze::DynamicMatrix<bool,blaze::rowMajor> C( A || B );
+
+         checkRows    ( C,  3UL );
+         checkColumns ( C,  4UL );
+         checkCapacity( C, 12UL );
+         checkNonZeros( C,  9UL );
+
+         if( C(0,0) != true  || C(0,1) != true || C(0,2) != true || C(0,3) != false ||
+             C(1,0) != false || C(1,1) != true || C(1,2) != true || C(1,3) != true  ||
+             C(2,0) != true  || C(2,1) != true || C(2,2) != true || C(2,3) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix logical OR operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << C << "\n"
+                << "   Expected result:\n( 1 1 1 0 )\n"
+                                        "( 0 1 1 1 )\n"
+                                        "( 1 1 1 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major matrix/column-major matrix logical OR tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major matrix/column-major matrix logical OR operator";
+
+      // Matrix/matrix logical OR of an empty matrix
+      {
+         blaze::DynamicMatrix<bool,blaze::rowMajor> A;
+         blaze::DynamicMatrix<bool,blaze::columnMajor> B;
+
+         blaze::DynamicMatrix<bool,blaze::rowMajor> C( A || B );
+
+         checkRows    ( C, 0UL );
+         checkColumns ( C, 0UL );
+         checkCapacity( C, 0UL );
+         checkNonZeros( C, 0UL );
+      }
+
+      // Matrix/matrix logical OR of a general matrix
+      {
+         blaze::DynamicMatrix<bool,blaze::rowMajor> A{ { true, false, true, false },
+                                                       { false, true, false, true },
+                                                       { true, false, true, false } };
+
+         blaze::DynamicMatrix<bool,blaze::columnMajor> B{ { true, true, false, false },
+                                                          { false, false, true, true },
+                                                          { true, true, false, false } };
+
+         blaze::DynamicMatrix<bool,blaze::rowMajor> C( A || B );
+
+         checkRows    ( C,  3UL );
+         checkColumns ( C,  4UL );
+         checkCapacity( C, 12UL );
+         checkNonZeros( C,  9UL );
+
+         if( C(0,0) != true  || C(0,1) != true || C(0,2) != true || C(0,3) != false ||
+             C(1,0) != false || C(1,1) != true || C(1,2) != true || C(1,3) != true  ||
+             C(2,0) != true  || C(2,1) != true || C(2,2) != true || C(2,3) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix logical OR operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << C << "\n"
+                << "   Expected result:\n( 1 1 1 0 )\n"
+                                        "( 0 1 1 1 )\n"
+                                        "( 1 1 1 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix/row-major matrix logical OR tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major matrix/row-major matrix logical OR operator";
+
+      // Matrix/matrix logical OR of an empty matrix
+      {
+         blaze::DynamicMatrix<bool,blaze::columnMajor> A;
+         blaze::DynamicMatrix<bool,blaze::rowMajor> B;
+
+         blaze::DynamicMatrix<bool,blaze::columnMajor> C( A || B );
+
+         checkRows    ( C, 0UL );
+         checkColumns ( C, 0UL );
+         checkCapacity( C, 0UL );
+         checkNonZeros( C, 0UL );
+      }
+
+      // Matrix/matrix logical OR of a general matrix
+      {
+         blaze::DynamicMatrix<bool,blaze::columnMajor> A{ { true, false, true, false },
+                                                          { false, true, false, true },
+                                                          { true, false, true, false } };
+
+         blaze::DynamicMatrix<bool,blaze::rowMajor> B{ { true, true, false, false },
+                                                       { false, false, true, true },
+                                                       { true, true, false, false } };
+
+         blaze::DynamicMatrix<bool,blaze::columnMajor> C( A || B );
+
+         checkRows    ( C,  3UL );
+         checkColumns ( C,  4UL );
+         checkCapacity( C, 12UL );
+         checkNonZeros( C,  9UL );
+
+         if( C(0,0) != true  || C(0,1) != true || C(0,2) != true || C(0,3) != false ||
+             C(1,0) != false || C(1,1) != true || C(1,2) != true || C(1,3) != true  ||
+             C(2,0) != true  || C(2,1) != true || C(2,2) != true || C(2,3) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix logical OR operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << C << "\n"
+                << "   Expected result:\n( 1 1 1 0 )\n"
+                                        "( 0 1 1 1 )\n"
+                                        "( 1 1 1 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix/column-major matrix logical OR tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major matrix/column-major matrix logical OR operator";
+
+      // Matrix/matrix logical OR of an empty matrix
+      {
+         blaze::DynamicMatrix<bool,blaze::columnMajor> A;
+         blaze::DynamicMatrix<bool,blaze::columnMajor> B;
+
+         blaze::DynamicMatrix<bool,blaze::columnMajor> C( A || B );
+
+         checkRows    ( C, 0UL );
+         checkColumns ( C, 0UL );
+         checkCapacity( C, 0UL );
+         checkNonZeros( C, 0UL );
+      }
+
+      // Matrix/matrix logical OR of a general matrix
+      {
+         blaze::DynamicMatrix<bool,blaze::columnMajor> A{ { true, false, true, false },
+                                                          { false, true, false, true },
+                                                          { true, false, true, false } };
+
+         blaze::DynamicMatrix<bool,blaze::columnMajor> B{ { true, true, false, false },
+                                                          { false, false, true, true },
+                                                          { true, true, false, false } };
+
+         blaze::DynamicMatrix<bool,blaze::columnMajor> C( A || B );
+
+         checkRows    ( C,  3UL );
+         checkColumns ( C,  4UL );
+         checkCapacity( C, 12UL );
+         checkNonZeros( C,  9UL );
+
+         if( C(0,0) != true  || C(0,1) != true || C(0,2) != true || C(0,3) != false ||
+             C(1,0) != false || C(1,1) != true || C(1,2) != true || C(1,3) != true  ||
+             C(2,0) != true  || C(2,1) != true || C(2,2) != true || C(2,3) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix logical OR operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << C << "\n"
+                << "   Expected result:\n( 1 1 1 0 )\n"
+                                        "( 0 1 1 1 )\n"
+                                        "( 1 1 1 0 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
