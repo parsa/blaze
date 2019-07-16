@@ -54,6 +54,7 @@
 #include <blaze/math/functors/Atan2.h>
 #include <blaze/math/functors/Bitand.h>
 #include <blaze/math/functors/Bitor.h>
+#include <blaze/math/functors/Bitxor.h>
 #include <blaze/math/functors/Hypot.h>
 #include <blaze/math/functors/Max.h>
 #include <blaze/math/functors/Min.h>
@@ -1318,8 +1319,7 @@ inline decltype(auto)
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Left-shift operator for the elementwise left-shift of a dense matrix
-//        (\f$ A=B\ll C \f$).
+/*!\brief Left-shift operator for the elementwise left-shift of a dense matrix.
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix to be shifted.
@@ -1353,8 +1353,7 @@ inline decltype(auto)
 
 
 //*************************************************************************************************
-/*!\brief Right-shift operator for the elementwise right-shift of a dense matrix
-//        (\f$ A=B\gg C \f$).
+/*!\brief Right-shift operator for the elementwise right-shift of a dense matrix.
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix to be shifted.
@@ -1388,7 +1387,7 @@ inline decltype(auto)
 
 
 //*************************************************************************************************
-/*!\brief Bitwise AND operator for two dense matrices (\f$ A=B&C \f$).
+/*!\brief Bitwise AND operator for two dense matrices.
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the bitwise AND operation.
@@ -1422,7 +1421,7 @@ inline decltype(auto)
 
 
 //*************************************************************************************************
-/*!\brief Bitwise OR operator for two dense matrices (\f$ A=B|C \f$).
+/*!\brief Bitwise OR operator for two dense matrices.
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the bitwise OR operation.
@@ -1451,6 +1450,40 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    return map( ~lhs, ~rhs, Bitor() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise XOR operator for two dense matrices.
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix for the bitwise XOR operation.
+// \param rhs The right-hand side dense matrix for the bitwise XOR operation.
+// \return The resulting dense matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// This operator represents the bitwise XOR of the given two dense matrices:
+
+   \code
+   blaze::DynamicMatrix<unsigned int> A, B, C;
+   // ... Resizing and initialization
+   C = A ^ B;
+   \endcode
+
+// In case the current number of rows and columns of the two given matrices don't match, a
+// \a std::invalid_argument is thrown.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , bool SO1      // Storage order of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , bool SO2 >    // Storage order of the right-hand side dense matrix
+inline decltype(auto)
+   operator^( const DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~lhs, ~rhs, Bitxor() );
 }
 //*************************************************************************************************
 
