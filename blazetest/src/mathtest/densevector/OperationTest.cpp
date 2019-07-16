@@ -93,6 +93,8 @@ OperationTest::OperationTest()
    testBitor();
    testBitxor();
    testNot();
+   testAnd();
+   testOr();
 }
 //*************************************************************************************************
 
@@ -2321,6 +2323,56 @@ void OperationTest::testAnd()
              << " Details:\n"
              << "   Result:\n" << c << "\n"
              << "   Expected result:\n( 1 0 0 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the logical OR operator for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the logical OR operator for dense vectors. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testOr()
+{
+   test_ = "Vector/vector logical OR operator";
+
+   // Vector/vector logical OR of an empty vector
+   {
+      blaze::DynamicVector<bool> a;
+      blaze::DynamicVector<bool> b;
+
+      blaze::DynamicVector<bool> c( a || b );
+
+      checkSize    ( c, 0UL );
+      checkCapacity( c, 0UL );
+      checkNonZeros( c, 0UL );
+   }
+
+   // Vector/vector logical OR of a general vector
+   {
+      blaze::DynamicVector<bool> a{ true, false, true, false, true };
+      blaze::DynamicVector<bool> b{ true, true, false, false, true };
+
+      blaze::DynamicVector<bool> c( a || b );
+
+      checkSize    ( c, 5UL );
+      checkCapacity( c, 5UL );
+      checkNonZeros( c, 4UL );
+
+      if( c[0] != true || c[1] != true || c[2] != true || c[3] != false || c[4] != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Vector/vector logical OR operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << c << "\n"
+             << "   Expected result:\n( 1 1 1 0 1 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
