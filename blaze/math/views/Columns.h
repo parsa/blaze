@@ -4161,6 +4161,172 @@ inline bool tryBitorAssign( const Columns<MT1,SO1,DF,SF,CCAs...>& lhs,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the bitwise XOR assignment of a column vector to a
+//        column selection.
+// \ingroup columns
+//
+// \param lhs The target left-hand side column selection.
+// \param rhs The right-hand side column vector for the bitwise XOR operation.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename VT >     // Type of the right-hand side vector
+inline bool tryBitxorAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
+                             const Vector<VT,false>& rhs, size_t row, size_t column )
+{
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
+
+   return tryBitxorAssign( lhs.operand(), ~rhs, row, lhs.idx( column ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the bitwise XOR assignment of a row vector to a column
+//        selection.
+// \ingroup columns
+//
+// \param lhs The target left-hand side column selection.
+// \param rhs The right-hand side row vector for the bitwise XOR operation.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename VT >     // Type of the right-hand side vector
+inline bool tryBitxorAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
+                             const Vector<VT,true>& rhs, size_t row, size_t column )
+{
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+
+   for( size_t i=0UL; i<(~rhs).size(); ++i ) {
+      if( !tryBitxor( lhs.operand(), row, lhs.idx( column+i ), (~rhs)[i] ) )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the bitwise XOR assignment of a vector to the band of
+//        a column selection.
+// \ingroup columns
+//
+// \param lhs The target left-hand side column selection.
+// \param rhs The right-hand side vector for the bitwise XOR operation.
+// \param band The index of the band the right-hand side vector is assigned to.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename VT       // Type of the right-hand side vector
+        , bool TF >         // Transpose flag of the right-hand side vector
+inline bool tryBitxorAssign( const Columns<MT,SO,DF,SF,CCAs...>& lhs,
+                             const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
+{
+   MAYBE_UNUSED( band );
+
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+
+   for( size_t i=0UL; i<(~rhs).size(); ++i ) {
+      if( !tryBitxor( lhs.operand(), row+i, lhs.idx( column+i ), (~rhs)[i] ) )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the bitwise XOR assignment of a matrix to a column
+//        selection.
+// \ingroup columns
+//
+// \param lhs The target left-hand side column selection.
+// \param rhs The right-hand side matrix for the bitwise XOR operation.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1      // Type of the matrix
+        , bool SO1          // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , typename... CCAs  // Compile time column arguments
+        , typename MT2      // Type of the right-hand side matrix
+        , bool SO2 >        // Storage order of the right-hand side matrix
+inline bool tryBitxorAssign( const Columns<MT1,SO1,DF,SF,CCAs...>& lhs,
+                             const Matrix<MT2,SO2>& rhs, size_t row, size_t column )
+{
+   BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+
+   for( size_t j=0UL; j<(~rhs).columns(); ++j ) {
+      if( !tryBitxorAssign( lhs.operand(), blaze::column( ~rhs, j, unchecked ), row, lhs.idx( column+j ) ) )
+         return false;
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Removal of all restrictions on the data access to the given column selection.
 // \ingroup columns
 //
