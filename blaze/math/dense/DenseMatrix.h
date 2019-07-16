@@ -203,6 +203,12 @@ auto operator^=( DenseMatrix<MT,SO>& mat, ST scalar )
 template< typename MT, bool SO, typename ST >
 auto operator^=( DenseMatrix<MT,SO>&& mat, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, MT& >;
+
+template< typename MT1, bool SO1, typename MT2, bool SO2 >
+MT1& operator^=( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs );
+
+template< typename MT1, bool SO1, typename MT2, bool SO2 >
+MT1& operator^=( DenseMatrix<MT1,SO1>&& lhs, const DenseMatrix<MT2,SO2>& rhs );
 //@}
 //*************************************************************************************************
 
@@ -601,8 +607,7 @@ inline auto operator/=( DenseMatrix<MT,SO>&& mat, ST scalar )
 
 
 //*************************************************************************************************
-/*!\brief Left-shift assignment operator for the uniform left-shift of a dense matrix
-//        (\f$ A\ll=s \f$).
+/*!\brief Left-shift assignment operator for the uniform left-shift of a dense matrix.
 // \ingroup dense_matrix
 //
 // \param mat The dense matrix for the uniform left-shift operation.
@@ -637,8 +642,7 @@ inline MT& operator<<=( DenseMatrix<MT,SO>& mat, int count )
 
 
 //*************************************************************************************************
-/*!\brief Left-shift assignment operator for the uniform left-shift of a temporary dense matrix
-//        (\f$ A\ll=s \f$).
+/*!\brief Left-shift assignment operator for the uniform left-shift of a temporary dense matrix.
 // \ingroup dense_matrix
 //
 // \param mat The temporary dense matrix for the uniform left-shift operation.
@@ -659,8 +663,7 @@ inline MT& operator<<=( DenseMatrix<MT,SO>&& mat, int count )
 
 
 //*************************************************************************************************
-/*!\brief Left-shift assignment operator for the elementwise left-shift of a dense matrix
-//        (\f$ A\ll=B \f$).
+/*!\brief Left-shift assignment operator for the elementwise left-shift of a dense matrix.
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix to be shifted.
@@ -695,8 +698,7 @@ inline MT1& operator<<=( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& 
 
 
 //*************************************************************************************************
-/*!\brief Left-shift assignment operator for the elementwise left-shift of a temporary dense matrix
-//        (\f$ A\ll=B \f$).
+/*!\brief Left-shift assignment operator for the elementwise left-shift of a temporary dense matrix.
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side temporary dense matrix to be shifted.
@@ -719,8 +721,7 @@ inline MT1& operator<<=( DenseMatrix<MT1,SO1>&& lhs, const DenseMatrix<MT2,SO2>&
 
 
 //*************************************************************************************************
-/*!\brief Right-shift assignment operator for the uniform right-shift of a dense matrix
-//        (\f$ A\gg=s \f$).
+/*!\brief Right-shift assignment operator for the uniform right-shift of a dense matrix.
 // \ingroup dense_matrix
 //
 // \param mat The dense matrix for the uniform right-shift operation.
@@ -755,8 +756,7 @@ inline MT& operator>>=( DenseMatrix<MT,SO>& mat, int count )
 
 
 //*************************************************************************************************
-/*!\brief Right-shift assignment operator for the uniform right-shift of a temporary dense matrix
-//        (\f$ A\gg=s \f$).
+/*!\brief Right-shift assignment operator for the uniform right-shift of a temporary dense matrix.
 // \ingroup dense_matrix
 //
 // \param mat The temporary dense matrix for the uniform right-shift operation.
@@ -777,8 +777,7 @@ inline MT& operator>>=( DenseMatrix<MT,SO>&& mat, int count )
 
 
 //*************************************************************************************************
-/*!\brief Right-shift assignment operator for the elementwise right-shift of a dense matrix
-//        (\f$ A\gg=B \f$).
+/*!\brief Right-shift assignment operator for the elementwise right-shift of a dense matrix.
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix to be shifted.
@@ -813,8 +812,7 @@ inline MT1& operator>>=( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& 
 
 
 //*************************************************************************************************
-/*!\brief Right-shift assignment operator for the elementwise right-shift of a temporary dense
-//        matrix (\f$ A\gg=B \f$).
+/*!\brief Right-shift assignment operator for the elementwise right-shift of a temporary dense.
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side temporary dense matrix to be shifted.
@@ -837,8 +835,7 @@ inline MT1& operator>>=( DenseMatrix<MT1,SO1>&& lhs, const DenseMatrix<MT2,SO2>&
 
 
 //*************************************************************************************************
-/*!\brief Bitwise AND assignment operator for the bitwise AND of a dense matrix and a scalar value
-//        (\f$ A\&=s \f$).
+/*!\brief Bitwise AND assignment operator for the bitwise AND of a dense matrix and a scalar value.
 // \ingroup dense_matrix
 //
 // \param mat The left-hand side dense matrix for the bitwise AND.
@@ -876,7 +873,7 @@ inline auto operator&=( DenseMatrix<MT,SO>& mat, ST scalar )
 
 //*************************************************************************************************
 /*!\brief Bitwise AND assignment operator for the bitwise AND of a temporary dense matrix and a
-//        scalar value (\f$ A\&=s \f$).
+//        scalar value.
 // \ingroup dense_matrix
 //
 // \param mat The left-hand side temporary dense matrix for the bitwise AND.
@@ -899,7 +896,7 @@ inline auto operator&=( DenseMatrix<MT,SO>&& mat, ST scalar )
 
 
 //*************************************************************************************************
-/*!\brief Bitwise AND assignment operator for the bitwise AND of a dense matrix (\f$ A\&=B \f$).
+/*!\brief Bitwise AND assignment operator for the bitwise AND of a dense matrix.
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the bitwise AND operation.
@@ -934,8 +931,7 @@ inline MT1& operator&=( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& r
 
 
 //*************************************************************************************************
-/*!\brief Bitwise AND assignment operator for the bitwise AND of a temporary dense matrix
-//        (\f$ A\&=B \f$).
+/*!\brief Bitwise AND assignment operator for the bitwise AND of a temporary dense matrix.
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side temporary dense matrix for the bitwise AND operation.
@@ -958,8 +954,7 @@ inline MT1& operator&=( DenseMatrix<MT1,SO1>&& lhs, const DenseMatrix<MT2,SO2>& 
 
 
 //*************************************************************************************************
-/*!\brief Bitwise OR assignment operator for the bitwise OR of a dense matrix and a scalar value
-//        (\f$ A|=s \f$).
+/*!\brief Bitwise OR assignment operator for the bitwise OR of a dense matrix and a scalar value.
 // \ingroup dense_matrix
 //
 // \param mat The left-hand side dense matrix for the bitwise OR.
@@ -997,7 +992,7 @@ inline auto operator|=( DenseMatrix<MT,SO>& mat, ST scalar )
 
 //*************************************************************************************************
 /*!\brief Bitwise OR assignment operator for the bitwise OR of a temporary dense matrix and a
-//        scalar value (\f$ A|=s \f$).
+//        scalar value.
 // \ingroup dense_matrix
 //
 // \param mat The left-hand side temporary dense matrix for the bitwise OR.
@@ -1020,7 +1015,7 @@ inline auto operator|=( DenseMatrix<MT,SO>&& mat, ST scalar )
 
 
 //*************************************************************************************************
-/*!\brief Bitwise OR assignment operator for the bitwise OR of a dense matrix (\f$ A|=B \f$).
+/*!\brief Bitwise OR assignment operator for the bitwise OR of a dense matrix.
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side dense matrix for the bitwise OR operation.
@@ -1055,8 +1050,7 @@ inline MT1& operator|=( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& r
 
 
 //*************************************************************************************************
-/*!\brief Bitwise OR assignment operator for the bitwise OR of a temporary dense matrix
-//        (\f$ A|=B \f$).
+/*!\brief Bitwise OR assignment operator for the bitwise OR of a temporary dense matrix.
 // \ingroup dense_matrix
 //
 // \param lhs The left-hand side temporary dense matrix for the bitwise OR operation.
@@ -1079,8 +1073,7 @@ inline MT1& operator|=( DenseMatrix<MT1,SO1>&& lhs, const DenseMatrix<MT2,SO2>& 
 
 
 //*************************************************************************************************
-/*!\brief Bitwise XOR assignment operator for the bitwise XOR of a dense matrix and a scalar value
-//        (\f$ A^=s \f$).
+/*!\brief Bitwise XOR assignment operator for the bitwise XOR of a dense matrix and a scalar value.
 // \ingroup dense_matrix
 //
 // \param mat The left-hand side dense matrix for the bitwise XOR.
@@ -1100,7 +1093,7 @@ inline auto operator^=( DenseMatrix<MT,SO>& mat, ST scalar )
    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
 
    if( IsRestricted_v<MT> ) {
-      if( !tryBitor( ~mat, 0UL, 0UL, (~mat).rows(), (~mat).columns(), scalar ) ) {
+      if( !tryBitxor( ~mat, 0UL, 0UL, (~mat).rows(), (~mat).columns(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid bitwise XOR of restricted matrix" );
       }
    }
@@ -1118,7 +1111,7 @@ inline auto operator^=( DenseMatrix<MT,SO>& mat, ST scalar )
 
 //*************************************************************************************************
 /*!\brief Bitwise XOR assignment operator for the bitwise XOR of a temporary dense matrix and a
-//        scalar value (\f$ A^=s \f$).
+//        scalar value.
 // \ingroup dense_matrix
 //
 // \param mat The left-hand side temporary dense matrix for the bitwise XOR.
@@ -1136,6 +1129,64 @@ inline auto operator^=( DenseMatrix<MT,SO>&& mat, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, MT& >
 {
    return operator^=( ~mat, scalar );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise XOR assignment operator for the bitwise XOR of a dense matrix.
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix for the bitwise XOR operation.
+// \param rhs The right-hand side dense matrix for the bitwise XOR operation.
+// \return Reference to the dense matrix.
+// \exception std::invalid_argument Invalid bitwise XOR of restricted matrix.
+//
+// In case the matrix \a MT is restricted and the assignment would violate an invariant of the
+// matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , bool SO1      // Storage order of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , bool SO2 >    // Storage order of the right-hand side dense matrix
+inline MT1& operator^=( DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
+{
+   if( IsRestricted_v<MT1> ) {
+      if( !tryBitxorAssign( ~lhs, ~rhs, 0UL, 0UL ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid bitwise XOR of restricted matrix" );
+      }
+   }
+
+   decltype(auto) left( derestrict( ~lhs ) );
+
+   smpAssign( left, left ^ (~rhs) );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~lhs ), "Invariant violation detected" );
+
+   return ~lhs;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise XOR assignment operator for the bitwise XOR of a temporary dense matrix.
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side temporary dense matrix for the bitwise XOR operation.
+// \param rhs The right-hand side dense matrix for the bitwise XOR operation.
+// \return Reference to the dense matrix.
+// \exception std::invalid_argument Invalid bitwise XOR of restricted matrix.
+//
+// In case the matrix \a MT is restricted and the assignment would violate an invariant of the
+// matrix, a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , bool SO1      // Storage order of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , bool SO2 >    // Storage order of the right-hand side dense matrix
+inline MT1& operator^=( DenseMatrix<MT1,SO1>&& lhs, const DenseMatrix<MT2,SO2>& rhs )
+{
+   return operator^=( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
