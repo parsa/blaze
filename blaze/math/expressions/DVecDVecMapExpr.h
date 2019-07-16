@@ -54,6 +54,7 @@
 #include <blaze/math/functors/Atan2.h>
 #include <blaze/math/functors/Bitand.h>
 #include <blaze/math/functors/Bitor.h>
+#include <blaze/math/functors/Bitxor.h>
 #include <blaze/math/functors/Hypot.h>
 #include <blaze/math/functors/Max.h>
 #include <blaze/math/functors/Min.h>
@@ -1286,8 +1287,7 @@ inline decltype(auto)
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Left-shift operator for the elementwise left-shift of a dense vector
-//        (\f$ \vec{a}=\vec{b}\ll\vec{c} \f$).
+/*!\brief Left-shift operator for the elementwise left-shift of a dense vector.
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side dense vector to be shifted.
@@ -1320,8 +1320,7 @@ inline decltype(auto)
 
 
 //*************************************************************************************************
-/*!\brief Right-shift operator for the elementwise right-shift of a dense vector
-//        (\f$ \vec{a}=\vec{b}\gg\vec{c} \f$).
+/*!\brief Right-shift operator for the elementwise right-shift of a dense vector.
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side dense vector to be shifted.
@@ -1354,7 +1353,7 @@ inline decltype(auto)
 
 
 //*************************************************************************************************
-/*!\brief Bitwise AND operator for two dense vectors (\f$ \vec{a}=\vec{b}&\vec{c} \f$).
+/*!\brief Bitwise AND operator for two dense vectors.
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side dense vector for the bitwise AND operation.
@@ -1387,7 +1386,7 @@ inline decltype(auto)
 
 
 //*************************************************************************************************
-/*!\brief Bitwise OR operator for two dense vectors (\f$ \vec{a}=\vec{b}|\vec{c} \f$).
+/*!\brief Bitwise OR operator for two dense vectors.
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side dense vector for the bitwise OR operation.
@@ -1415,6 +1414,39 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    return map( ~lhs, ~rhs, Bitor() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise XOR operator for two dense vectors.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector for the bitwise XOR operation.
+// \param rhs The right-hand side dense vector for the bitwise XOR operation.
+// \return The resulting dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// This operator represents the bitwise XOR of the given two dense vectors:
+
+   \code
+   blaze::DynamicVector<unsigned int> a, b, c;
+   // ... Resizing and initialization
+   c = a ^ b;
+   \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline decltype(auto)
+   operator^( const DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~lhs, ~rhs, Bitxor() );
 }
 //*************************************************************************************************
 
