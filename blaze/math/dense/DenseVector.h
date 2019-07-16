@@ -178,6 +178,12 @@ auto operator^=( DenseVector<VT,TF>& vec, ST scalar )
 template< typename VT, bool TF, typename ST >
 auto operator^=( DenseVector<VT,TF>&& vec, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, VT& >;
+
+template< typename VT1, typename VT2, bool TF >
+VT1& operator^=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs );
+
+template< typename VT1, typename VT2, bool TF >
+VT1& operator^=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rhs );
 //@}
 //*************************************************************************************************
 
@@ -321,7 +327,7 @@ inline auto operator+=( DenseVector<VT,TF>& vec, ST scalar )
 
 //*************************************************************************************************
 /*!\brief Addition assignment operator for the addition of a temporary dense vector and a scalar
-//        (\f$ \vec{v}+=s \f$).
+//        value (\f$ \vec{v}+=s \f$).
 // \ingroup dense_vector
 //
 // \param vec The left-hand side temporary dense vector for the addition.
@@ -381,7 +387,7 @@ inline auto operator-=( DenseVector<VT,TF>& vec, ST scalar )
 
 //*************************************************************************************************
 /*!\brief Subtraction assignment operator for the subtraction of a temporary dense vector and a
-//        scalar (\f$ \vec{v}-=s \f$).
+//        scalar value (\f$ \vec{v}-=s \f$).
 // \ingroup dense_vector
 //
 // \param vec The left-hand side temporary dense vector for the subtraction.
@@ -441,7 +447,7 @@ inline auto operator*=( DenseVector<VT,TF>& vec, ST scalar )
 
 //*************************************************************************************************
 /*!\brief Multiplication assignment operator for the multiplication of a temporary dense vector
-//        and a scalar (\f$ \vec{v}*=s \f$).
+//        and a scalar value (\f$ \vec{v}*=s \f$).
 // \ingroup dense_vector
 //
 // \param vec The left-hand side temporary dense vector for the multiplication.
@@ -530,8 +536,7 @@ inline auto operator/=( DenseVector<VT,TF>&& vec, ST scalar )
 
 
 //*************************************************************************************************
-/*!\brief Left-shift assignment operator for the uniform left-shift of a dense vector
-//        (\f$ \vec{a}\ll=s \f$).
+/*!\brief Left-shift assignment operator for the uniform left-shift of a dense vector.
 // \ingroup dense_vector
 //
 // \param vec The dense vector for the uniform left-shift operation.
@@ -564,8 +569,7 @@ inline VT& operator<<=( DenseVector<VT,TF>& vec, int count )
 
 
 //*************************************************************************************************
-/*!\brief Left-shift assignment operator for the uniform shift of a temporary dense vector
-//        (\f$ \vec{v}\ll=s \f$).
+/*!\brief Left-shift assignment operator for the uniform shift of a temporary dense vector.
 // \ingroup dense_vector
 //
 // \param vec The temporary dense vector for the uniform left-shift operation.
@@ -586,8 +590,7 @@ inline VT& operator<<=( DenseVector<VT,TF>&& vec, int count )
 
 
 //*************************************************************************************************
-/*!\brief Left-shift assignment operator for the elementwise left-shift of a dense vector
-//        (\f$ \vec{a}\ll=\vec{b} \f$).
+/*!\brief Left-shift assignment operator for the elementwise left-shift of a dense vector.
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side dense vector to be shifted.
@@ -621,8 +624,8 @@ inline VT1& operator<<=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rh
 
 
 //*************************************************************************************************
-/*!\brief Left-shift assignment operator for the elementwise left-shift of a temporary dense vector
-//        (\f$ \vec{a}\ll=\vec{b} \f$).
+/*!\brief Left-shift assignment operator for the elementwise left-shift of a temporary dense
+//        vector.
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side temporary dense vector to be shifted.
@@ -644,8 +647,7 @@ inline VT1& operator<<=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& r
 
 
 //*************************************************************************************************
-/*!\brief Right-shift assignment operator for the uniform right-shift of a dense vector
-//        (\f$ \vec{a}\gg=s \f$).
+/*!\brief Right-shift assignment operator for the uniform right-shift of a dense vector.
 // \ingroup dense_vector
 //
 // \param vec The dense vector for the uniform right-shift operation.
@@ -678,8 +680,7 @@ inline VT& operator>>=( DenseVector<VT,TF>& vec, int count )
 
 
 //*************************************************************************************************
-/*!\brief Right-shift assignment operator for the uniform shift of a temporary dense vector
-//        (\f$ \vec{v}\gg=s \f$).
+/*!\brief Right-shift assignment operator for the uniform shift of a temporary dense vector.
 // \ingroup dense_vector
 //
 // \param vec The temporary dense vector for the uniform right-shift operation.
@@ -700,8 +701,7 @@ inline VT& operator>>=( DenseVector<VT,TF>&& vec, int count )
 
 
 //*************************************************************************************************
-/*!\brief Right-shift assignment operator for the elementwise right-shift of a dense vector
-//        (\f$ \vec{a}\gg=\vec{b} \f$).
+/*!\brief Right-shift assignment operator for the elementwise right-shift of a dense vector.
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side dense vector to be shifted.
@@ -735,8 +735,7 @@ inline VT1& operator>>=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rh
 
 
 //*************************************************************************************************
-/*!\brief Right-shift assignment operator for the elementwise right-shift of a temporary dense
-//        vector (\f$ \vec{a}\gg=\vec{b} \f$).
+/*!\brief Right-shift assignment operator for the elementwise right-shift of a temporary dense.
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side temporary dense vector to be shifted.
@@ -758,8 +757,7 @@ inline VT1& operator>>=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& r
 
 
 //*************************************************************************************************
-/*!\brief Bitwise AND assignment operator for the bitwise AND of a dense vector and a scalar value
-//        (\f$ \vec{a}\&=s \f$).
+/*!\brief Bitwise AND assignment operator for the bitwise AND of a dense vector and a scalar value.
 // \ingroup dense_vector
 //
 // \param vec The left-hand side dense vector for the bitwise AND.
@@ -795,7 +793,7 @@ inline auto operator&=( DenseVector<VT,TF>& vec, ST scalar )
 
 //*************************************************************************************************
 /*!\brief Bitwise AND assignment operator for the bitwise AND of a temporary dense vector and
-//        a scalar (\f$ \vec{v}\&=s \f$).
+//        a scalar value.
 // \ingroup dense_vector
 //
 // \param vec The left-hand side temporary dense vector for the bitwise AND.
@@ -818,8 +816,7 @@ inline auto operator&=( DenseVector<VT,TF>&& vec, ST scalar )
 
 
 //*************************************************************************************************
-/*!\brief Bitwise AND assignment operator for the bitwise AND of a dense vector
-//        (\f$ \vec{a}\&=\vec{b} \f$).
+/*!\brief Bitwise AND assignment operator for the bitwise AND of a dense vector.
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side dense vector for the bitwise AND operation.
@@ -853,8 +850,7 @@ inline VT1& operator&=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs
 
 
 //*************************************************************************************************
-/*!\brief Bitwise AND assignment operator for the bitwise AND of a temporary dense vector
-//        (\f$ \vec{a}\&=\vec{b} \f$).
+/*!\brief Bitwise AND assignment operator for the bitwise AND of a temporary dense vector.
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side temporary dense vector for the bitwise AND operation.
@@ -876,8 +872,7 @@ inline VT1& operator&=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rh
 
 
 //*************************************************************************************************
-/*!\brief Bitwise OR assignment operator for the bitwise OR of a dense vector and a scalar value
-//        (\f$ \vec{a}|=s \f$).
+/*!\brief Bitwise OR assignment operator for the bitwise OR of a dense vector and a scalar value.
 // \ingroup dense_vector
 //
 // \param vec The left-hand side dense vector for the bitwise OR.
@@ -913,7 +908,7 @@ inline auto operator|=( DenseVector<VT,TF>& vec, ST scalar )
 
 //*************************************************************************************************
 /*!\brief Bitwise OR assignment operator for the bitwise OR of a temporary dense vector and
-//        a scalar (\f$ \vec{v}|=s \f$).
+//        a scalar value.
 // \ingroup dense_vector
 //
 // \param vec The left-hand side temporary dense vector for the bitwise OR.
@@ -936,8 +931,7 @@ inline auto operator|=( DenseVector<VT,TF>&& vec, ST scalar )
 
 
 //*************************************************************************************************
-/*!\brief Bitwise OR assignment operator for the bitwise OR of a dense vector
-//        (\f$ \vec{a}|=\vec{b} \f$).
+/*!\brief Bitwise OR assignment operator for the bitwise OR of a dense vector.
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side dense vector for the bitwise OR operation.
@@ -971,8 +965,7 @@ inline VT1& operator|=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs
 
 
 //*************************************************************************************************
-/*!\brief Bitwise OR assignment operator for the bitwise OR of a temporary dense vector
-//        (\f$ \vec{a}|=\vec{b} \f$).
+/*!\brief Bitwise OR assignment operator for the bitwise OR of a temporary dense vector.
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side temporary dense vector for the bitwise OR operation.
@@ -994,8 +987,7 @@ inline VT1& operator|=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rh
 
 
 //*************************************************************************************************
-/*!\brief Bitwise XOR assignment operator for the bitwise XOR of a dense vector and a scalar value
-//        (\f$ \vec{a}^=s \f$).
+/*!\brief Bitwise XOR assignment operator for the bitwise XOR of a dense vector and a scalar value.
 // \ingroup dense_vector
 //
 // \param vec The left-hand side dense vector for the bitwise XOR.
@@ -1013,7 +1005,7 @@ inline auto operator^=( DenseVector<VT,TF>& vec, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, VT& >
 {
    if( IsRestricted_v<VT> ) {
-      if( !tryBitor( ~vec, 0UL, (~vec).size(), scalar ) ) {
+      if( !tryBitxor( ~vec, 0UL, (~vec).size(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid bitwise XOR of restricted vector" );
       }
    }
@@ -1031,7 +1023,7 @@ inline auto operator^=( DenseVector<VT,TF>& vec, ST scalar )
 
 //*************************************************************************************************
 /*!\brief Bitwise XOR assignment operator for the bitwise XOR of a temporary dense vector and
-//        a scalar (\f$ \vec{v}^=s \f$).
+//        a scalar value.
 // \ingroup dense_vector
 //
 // \param vec The left-hand side temporary dense vector for the bitwise XOR.
@@ -1049,6 +1041,62 @@ inline auto operator^=( DenseVector<VT,TF>&& vec, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, VT& >
 {
    return operator^=( ~vec, scalar );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise XOR assignment operator for the bitwise XOR of a dense vector.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side dense vector for the bitwise XOR operation.
+// \param rhs The right-hand side dense vector for the bitwise XOR operation.
+// \return Reference to the dense vector.
+// \exception std::invalid_argument Invalid bitwise XOR of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline VT1& operator^=( DenseVector<VT1,TF>& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   if( IsRestricted_v<VT1> ) {
+      if( !tryBitxorAssign( ~lhs, ~rhs, 0UL ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid bitwise XOR of restricted vector" );
+      }
+   }
+
+   decltype(auto) left( derestrict( ~lhs ) );
+
+   smpAssign( left, left ^ (~rhs) );
+
+   BLAZE_INTERNAL_ASSERT( isIntact( ~lhs ), "Invariant violation detected" );
+
+   return ~lhs;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise XOR assignment operator for the bitwise XOR of a temporary dense vector.
+// \ingroup dense_vector
+//
+// \param lhs The left-hand side temporary dense vector for the bitwise XOR operation.
+// \param rhs The right-hand side dense vector for the bitwise XOR operation.
+// \return Reference to the dense vector.
+// \exception std::invalid_argument Invalid bitwise XOR of restricted vector.
+//
+// In case the vector \a VT is restricted and the assignment would violate an invariant of the
+// vector, a \a std::invalid_argument exception is thrown.
+*/
+template< typename VT1  // Type of the left-hand side dense vector
+        , typename VT2  // Type of the right-hand side dense vector
+        , bool TF >     // Transpose flag
+inline VT1& operator^=( DenseVector<VT1,TF>&& lhs, const DenseVector<VT2,TF>& rhs )
+{
+   return operator^=( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
