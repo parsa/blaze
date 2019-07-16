@@ -91,6 +91,7 @@ OperationTest::OperationTest()
    testRightShift();
    testBitand();
    testBitor();
+   testBitxor();
 }
 //*************************************************************************************************
 
@@ -2018,7 +2019,7 @@ void OperationTest::testBitor()
 
 
    //=====================================================================================
-   // Vector/vector bitwise AND tests
+   // Vector/vector bitwise OR tests
    //=====================================================================================
 
    {
@@ -2078,6 +2079,150 @@ void OperationTest::testBitor()
                 << " Details:\n"
                 << "   Result:\n" << a << "\n"
                 << "   Expected result:\n( 15 13 15 15 15 13 15 15 23 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the bitwise XOR operator for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the bitwise XOR operator for dense vectors. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testBitxor()
+{
+   //=====================================================================================
+   // Vector/scalar bitwise XOR tests
+   //=====================================================================================
+
+   {
+      test_ = "Vector/scalar bitwise XOR operator";
+
+      // Vector/scalar bitwise XOR of an empty vector
+      {
+         blaze::DynamicVector<unsigned int> a;
+
+         blaze::DynamicVector<unsigned int> b( a ^ 7U );
+
+         checkSize    ( b, 0UL );
+         checkCapacity( b, 0UL );
+         checkNonZeros( b, 0UL );
+      }
+
+      // Vector/scalar bitwise XOR of a general vector
+      {
+         blaze::DynamicVector<unsigned int> a{ 8U, 9U, 10U, 11U, 12U, 13U, 14U, 15U, 16U };
+
+         blaze::DynamicVector<unsigned int> b( a ^ 7U );
+
+         checkSize    ( b, 9UL );
+         checkCapacity( b, 9UL );
+         checkNonZeros( b, 9UL );
+
+         if( b[0] != 15U || b[1] != 14U || b[2] != 13U || b[3] != 12U || b[4] != 11U ||
+             b[5] != 10U || b[6] !=  9U || b[7] !=  8U || b[8] != 23U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Vector/scalar bitwise XOR operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << b << "\n"
+                << "   Expected result:\n( 15 14 13 12 11 10 9 8 23 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Vector/scalar bitwise XOR assignment
+      {
+         blaze::DynamicVector<unsigned int> a{ 8U, 9U, 10U, 11U, 12U, 13U, 14U, 15U, 16U };
+
+         a ^= 7U;
+
+         checkSize    ( a, 9UL );
+         checkCapacity( a, 9UL );
+         checkNonZeros( a, 9UL );
+
+         if( a[0] != 15U || a[1] != 14U || a[2] != 13U || a[3] != 12U || a[4] != 11U ||
+             a[5] != 10U || a[6] !=  9U || a[7] !=  8U || a[8] != 23U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Vector/scalar bitwise XOR assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << a << "\n"
+                << "   Expected result:\n( 15 14 13 12 11 10 9 8 23 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Vector/vector bitwise XOR tests
+   //=====================================================================================
+
+   {
+      test_ = "Vector/vector bitwise XOR operator";
+
+      // Vector/vector bitwise XOR of an empty vector
+      {
+         blaze::DynamicVector<unsigned int> a;
+         blaze::DynamicVector<unsigned int> b;
+
+         blaze::DynamicVector<unsigned int> c( a ^ b );
+
+         checkSize    ( b, 0UL );
+         checkCapacity( b, 0UL );
+         checkNonZeros( b, 0UL );
+      }
+
+      // Vector/vector bitwise XOR of a general vector
+      {
+         blaze::DynamicVector<unsigned int> a{ 8U, 9U, 10U, 11U, 12U, 13U, 14U, 15U, 16U };
+         blaze::DynamicVector<unsigned int> b{ 7U, 5U,  7U, 5U, 7U, 5U, 7U, 5U, 7U };
+
+         blaze::DynamicVector<unsigned int> c( a ^ b );
+
+         checkSize    ( c, 9UL );
+         checkCapacity( c, 9UL );
+         checkNonZeros( c, 9UL );
+
+         if( c[0] != 15U || c[1] != 12U || c[2] != 13U || c[3] != 14U || c[4] != 11U ||
+             c[5] !=  8U || c[6] !=  9U || c[7] != 10U || c[8] != 23U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Vector/vector bitwise XOR operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << c << "\n"
+                << "   Expected result:\n( 15 12 13 14 11 8 9 10 23 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Vector/vector bitwise XOR assignment
+      {
+         blaze::DynamicVector<unsigned int> a{ 8U, 9U, 10U, 11U, 12U, 13U, 14U, 15U, 16U };
+         blaze::DynamicVector<unsigned int> b{ 7U, 5U,  7U, 5U, 7U, 5U, 7U, 5U, 7U };
+
+         a ^= b;
+
+         checkSize    ( a, 9UL );
+         checkCapacity( a, 9UL );
+         checkNonZeros( a, 9UL );
+
+         if( a[0] != 15U || a[1] != 12U || a[2] != 13U || a[3] != 14U || a[4] != 11U ||
+             a[5] !=  8U || a[6] !=  9U || a[7] != 10U || a[8] != 23U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Vector/vector bitwise XOR assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << a << "\n"
+                << "   Expected result:\n( 15 12 13 14 11 8 9 10 23 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
