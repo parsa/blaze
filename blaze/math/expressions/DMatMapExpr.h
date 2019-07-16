@@ -2436,7 +2436,7 @@ inline decltype(auto) real( const DMatMapExpr<MT,Real,SO>& dm )
 // \param scalar The right-hand side scalar value for the addition.
 // \return The resulting matrix.
 //
-// This operator represents the addition between a dense matrix and a scalar value:
+// This operator represents the addition of a scalar value to all elements of a dense matrix:
 
    \code
    blaze::DynamicMatrix<double> A, B;
@@ -2471,7 +2471,7 @@ inline decltype(auto) operator+( const DenseMatrix<MT,SO>& mat, ST scalar )
 // \param scalar The right-hand side scalar value for the subtraction.
 // \return The resulting matrix.
 //
-// This operator represents the subtraction between a dense matrix and a scalar value:
+// This operator represents the subtraction of a scalar value from all elements of a dense matrix:
 
    \code
    blaze::DynamicMatrix<double> A, B;
@@ -2559,7 +2559,7 @@ inline decltype(auto) operator>>( const DenseMatrix<MT,SO>& mat, int count )
 // \param scalar The right-hand side scalar value for the bitwise AND.
 // \return The resulting matrix.
 //
-// This operator represents the bitwise AND between a dense matrix and a scalar value:
+// This operator represents the bitwise AND of a scalar value with all elements of a dense matrix:
 
    \code
    blaze::DynamicMatrix<unsigned int> A, B;
@@ -2588,7 +2588,7 @@ inline decltype(auto) operator&( const DenseMatrix<MT,SO>& mat, ST scalar )
 // \param scalar The right-hand side scalar value for the bitwise OR.
 // \return The resulting matrix.
 //
-// This operator represents the bitwise OR between a dense matrix and a scalar value:
+// This operator represents the bitwise OR of a scalar value with all elements of a dense matrix:
 
    \code
    blaze::DynamicMatrix<unsigned int> A, B;
@@ -2617,7 +2617,7 @@ inline decltype(auto) operator|( const DenseMatrix<MT,SO>& mat, ST scalar )
 // \param scalar The right-hand side scalar value for the bitwise XOR.
 // \return The resulting matrix.
 //
-// This operator represents the bitwise XOR between a dense matrix and a scalar value:
+// This operator represents the bitwise XOR of a scalar value with all elements of a dense matrix:
 
    \code
    blaze::DynamicMatrix<unsigned int> A, B;
@@ -2634,6 +2634,40 @@ inline decltype(auto) operator^( const DenseMatrix<MT,SO>& mat, ST scalar )
    BLAZE_FUNCTION_TRACE;
 
    return map( ~mat, blaze::bind2nd( Bitxor{}, scalar ) );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL LOGICAL OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Logical NOT operator for the logical NOT of a dense matrix.
+// \ingroup dense_matrix
+//
+// \param mat The dense matrix for the logical NOT.
+// \return The negated matrix.
+//
+// This operator represents the logical NOT of all elements of a dense matrix:
+
+   \code
+   blaze::DynamicMatrix<bool> A, B;
+   // ... Resizing and initialization
+   B = !A;
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order of the dense matrix
+inline decltype(auto) operator!( const DenseMatrix<MT,SO>& mat )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~mat, []( bool b ){ return !b; } );
 }
 //*************************************************************************************************
 
