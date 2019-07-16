@@ -92,6 +92,7 @@ OperationTest::OperationTest()
    testBitand();
    testBitor();
    testBitxor();
+   testNot();
 }
 //*************************************************************************************************
 
@@ -2225,6 +2226,52 @@ void OperationTest::testBitxor()
                 << "   Expected result:\n( 15 12 13 14 11 8 9 10 23 )\n";
             throw std::runtime_error( oss.str() );
          }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the logical NOT operator for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the logical NOT operator for dense vectors. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testNot()
+{
+   test_ = "Vector/vector logical NOT operator";
+
+   // Vector/vector logical NOT of an empty vector
+   {
+      blaze::DynamicVector<bool> a;
+      blaze::DynamicVector<bool> b( !a );
+
+      checkSize    ( b, 0UL );
+      checkCapacity( b, 0UL );
+      checkNonZeros( b, 0UL );
+   }
+
+   // Vector/vector logical NOT of a general vector
+   {
+      blaze::DynamicVector<bool> a{ false, true, false, true, false };
+      blaze::DynamicVector<bool> b{ !a };
+
+      checkSize    ( b, 5UL );
+      checkCapacity( b, 5UL );
+      checkNonZeros( b, 3UL );
+
+      if( b[0] != true || b[1] != false || b[2] != true || b[3] != false || b[4] != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Vector logical NOT operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << b << "\n"
+             << "   Expected result:\n( 1 0 1 0 1 )\n";
+         throw std::runtime_error( oss.str() );
       }
    }
 }
