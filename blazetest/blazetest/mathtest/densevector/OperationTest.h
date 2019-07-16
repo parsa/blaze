@@ -106,6 +106,7 @@ class OperationTest
    void testBitor();
    void testBitxor();
    void testNot();
+   void testAnd();
 
    template< typename Type >
    void checkSize( const Type& vector, size_t expectedSize ) const;

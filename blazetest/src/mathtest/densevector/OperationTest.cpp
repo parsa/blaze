@@ -1889,9 +1889,9 @@ void OperationTest::testBitand()
 
          blaze::DynamicVector<unsigned int> c( a & b );
 
-         checkSize    ( b, 0UL );
-         checkCapacity( b, 0UL );
-         checkNonZeros( b, 0UL );
+         checkSize    ( c, 0UL );
+         checkCapacity( c, 0UL );
+         checkNonZeros( c, 0UL );
       }
 
       // Vector/vector bitwise AND of a general vector
@@ -2033,9 +2033,9 @@ void OperationTest::testBitor()
 
          blaze::DynamicVector<unsigned int> c( a | b );
 
-         checkSize    ( b, 0UL );
-         checkCapacity( b, 0UL );
-         checkNonZeros( b, 0UL );
+         checkSize    ( c, 0UL );
+         checkCapacity( c, 0UL );
+         checkNonZeros( c, 0UL );
       }
 
       // Vector/vector bitwise OR of a general vector
@@ -2177,9 +2177,9 @@ void OperationTest::testBitxor()
 
          blaze::DynamicVector<unsigned int> c( a ^ b );
 
-         checkSize    ( b, 0UL );
-         checkCapacity( b, 0UL );
-         checkNonZeros( b, 0UL );
+         checkSize    ( c, 0UL );
+         checkCapacity( c, 0UL );
+         checkNonZeros( c, 0UL );
       }
 
       // Vector/vector bitwise XOR of a general vector
@@ -2271,6 +2271,56 @@ void OperationTest::testNot()
              << " Details:\n"
              << "   Result:\n" << b << "\n"
              << "   Expected result:\n( 1 0 1 0 1 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the logical AND operator for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the logical AND operator for dense vectors. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
+*/
+void OperationTest::testAnd()
+{
+   test_ = "Vector/vector logical AND operator";
+
+   // Vector/vector logical AND of an empty vector
+   {
+      blaze::DynamicVector<bool> a;
+      blaze::DynamicVector<bool> b;
+
+      blaze::DynamicVector<bool> c( a && b );
+
+      checkSize    ( c, 0UL );
+      checkCapacity( c, 0UL );
+      checkNonZeros( c, 0UL );
+   }
+
+   // Vector/vector logical AND of a general vector
+   {
+      blaze::DynamicVector<bool> a{ true, false, true, false, true };
+      blaze::DynamicVector<bool> b{ true, true, false, false, true };
+
+      blaze::DynamicVector<bool> c( a && b );
+
+      checkSize    ( c, 5UL );
+      checkCapacity( c, 5UL );
+      checkNonZeros( c, 2UL );
+
+      if( c[0] != true || c[1] != false || c[2] != false || c[3] != false || c[4] != true ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Vector/vector logical AND operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << c << "\n"
+             << "   Expected result:\n( 1 0 0 0 1 )\n";
          throw std::runtime_error( oss.str() );
       }
    }
