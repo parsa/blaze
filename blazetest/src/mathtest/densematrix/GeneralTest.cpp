@@ -101,6 +101,7 @@ GeneralTest::GeneralTest()
    testBitand();
    testBitor();
    testBitxor();
+   testNot();
 }
 //*************************************************************************************************
 
@@ -9643,6 +9644,115 @@ void GeneralTest::testBitxor()
                 << "   Expected result:\n( 15 12 13 14 11 )\n"
                                         "(  8  9 10 23 20 )\n"
                                         "( 21 22 19 16 17 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the logical NOT operator for dense matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the logical NOT operator for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testNot()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major logical NOT operator";
+
+      // Matrix logical NOT of an empty matrix
+      {
+         blaze::DynamicMatrix<bool,blaze::rowMajor> A;
+         blaze::DynamicMatrix<bool,blaze::rowMajor> B( !A );
+
+         checkRows    ( B, 0UL );
+         checkColumns ( B, 0UL );
+         checkCapacity( B, 0UL );
+         checkNonZeros( B, 0UL );
+      }
+
+      // Matrix logical NOT of a general matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ { true , false, true , false },
+                                                               { false, true , false, true  },
+                                                               { true , false, true , false } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B( !A );
+
+         checkRows    ( B,  3UL );
+         checkColumns ( B,  4UL );
+         checkCapacity( B, 12UL );
+         checkNonZeros( B,  6UL );
+
+         if( B(0,0) != false || B(0,1) != true  || B(0,2) != false || B(0,3) != true  ||
+             B(1,0) != true  || B(1,1) != false || B(1,2) != true  || B(1,3) != false ||
+             B(2,0) != false || B(2,1) != true  || B(2,2) != false || B(2,3) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix logical NOT operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << B << "\n"
+                << "   Expected result:\n( 0 1 0 1 )\n"
+                                        "( 1 0 1 0 )\n"
+                                        "( 0 1 0 1 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major logical NOT operator";
+
+      // Matrix logical NOT of an empty matrix
+      {
+         blaze::DynamicMatrix<bool,blaze::columnMajor> A;
+         blaze::DynamicMatrix<bool,blaze::columnMajor> B( !A );
+
+         checkRows    ( B, 0UL );
+         checkColumns ( B, 0UL );
+         checkCapacity( B, 0UL );
+         checkNonZeros( B, 0UL );
+      }
+
+      // Matrix logical NOT of a general matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ { true , false, true , false },
+                                                                  { false, true , false, true  },
+                                                                  { true , false, true , false } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B( !A );
+
+         checkRows    ( B,  3UL );
+         checkColumns ( B,  4UL );
+         checkCapacity( B, 12UL );
+         checkNonZeros( B,  6UL );
+
+         if( B(0,0) != false || B(0,1) != true  || B(0,2) != false || B(0,3) != true  ||
+             B(1,0) != true  || B(1,1) != false || B(1,2) != true  || B(1,3) != false ||
+             B(2,0) != false || B(2,1) != true  || B(2,2) != false || B(2,3) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix logical NOT operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << B << "\n"
+                << "   Expected result:\n( 0 1 0 1 )\n"
+                                        "( 1 0 1 0 )\n"
+                                        "( 0 1 0 1 )\n";
             throw std::runtime_error( oss.str() );
          }
       }
