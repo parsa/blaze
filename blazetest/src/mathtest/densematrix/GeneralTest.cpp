@@ -100,6 +100,7 @@ GeneralTest::GeneralTest()
    testRightShift();
    testBitand();
    testBitor();
+   testBitxor();
 }
 //*************************************************************************************************
 
@@ -9130,6 +9131,518 @@ void GeneralTest::testBitor()
                 << "   Expected result:\n( 15 13 15 15 15 )\n"
                                         "( 13 15 15 23 21 )\n"
                                         "( 23 23 23 21 23 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the bitwise XOR operator for dense matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the bitwise XOR operator for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testBitxor()
+{
+   //=====================================================================================
+   // Row-major matrix/scalar bitwise XOR tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major matrix/scalar bitwise XOR operator";
+
+      // Matrix/scalar bitwise XOR of an empty matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A;
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B( A ^ 7U );
+
+         checkRows    ( B, 0UL );
+         checkColumns ( B, 0UL );
+         checkCapacity( B, 0UL );
+         checkNonZeros( B, 0UL );
+      }
+
+      // Matrix/scalar bitwise XOR of a general matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                               { 13U, 14U, 15U, 16U, 17U },
+                                                               { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B( A ^ 7U );
+
+         checkRows    ( B,  3UL );
+         checkColumns ( B,  5UL );
+         checkCapacity( B, 15UL );
+         checkNonZeros( B, 15UL );
+
+         if( B(0,0) != 15U || B(0,1) != 14U || B(0,2) != 13U || B(0,3) != 12U || B(0,4) != 11U ||
+             B(1,0) != 10U || B(1,1) !=  9U || B(1,2) !=  8U || B(1,3) != 23U || B(1,4) != 22U ||
+             B(2,0) != 21U || B(2,1) != 20U || B(2,2) != 19U || B(2,3) != 18U || B(2,4) != 17U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/scalar bitwise XOR operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << B << "\n"
+                << "   Expected result:\n( 15 14 13 12 11 )\n"
+                                        "( 10  9  8 23 22 )\n"
+                                        "( 21 20 19 18 17 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Matrix/scalar bitwise XOR assignment
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                               { 13U, 14U, 15U, 16U, 17U },
+                                                               { 18U, 19U, 20U, 21U, 22U } };
+
+         A ^= 7U;
+
+         checkRows    ( A,  3UL );
+         checkColumns ( A,  5UL );
+         checkCapacity( A, 15UL );
+         checkNonZeros( A, 15UL );
+
+         if( A(0,0) != 15U || A(0,1) != 14U || A(0,2) != 13U || A(0,3) != 12U || A(0,4) != 11U ||
+             A(1,0) != 10U || A(1,1) !=  9U || A(1,2) !=  8U || A(1,3) != 23U || A(1,4) != 22U ||
+             A(2,0) != 21U || A(2,1) != 20U || A(2,2) != 19U || A(2,3) != 18U || A(2,4) != 17U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/scalar bitwise XOR assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << A << "\n"
+                << "   Expected result:\n( 15 14 13 12 11 )\n"
+                                        "( 10  9  8 23 22 )\n"
+                                        "( 21 20 19 18 17 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major matrix/row-major matrix bitwise XOR tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major matrix/row-major matrix bitwise XOR operator";
+
+      // Matrix/matrix bitwise XOR of an empty matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A;
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B;
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> C( A ^ B );
+
+         checkRows    ( C, 0UL );
+         checkColumns ( C, 0UL );
+         checkCapacity( C, 0UL );
+         checkNonZeros( C, 0UL );
+      }
+
+      // Matrix/matrix bitwise XOR of a general matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                               { 13U, 14U, 15U, 16U, 17U },
+                                                               { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                               { 5U, 7U, 5U, 7U, 5U },
+                                                               { 7U, 5U, 7U, 5U, 7U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> C( A ^ B );
+
+         checkRows    ( C,  3UL );
+         checkColumns ( C,  5UL );
+         checkCapacity( C, 15UL );
+         checkNonZeros( C, 15UL );
+
+         if( C(0,0) != 15U || C(0,1) != 12U || C(0,2) != 13U || C(0,3) != 14U || C(0,4) != 11U ||
+             C(1,0) !=  8U || C(1,1) !=  9U || C(1,2) != 10U || C(1,3) != 23U || C(1,4) != 20U ||
+             C(2,0) != 21U || C(2,1) != 22U || C(2,2) != 19U || C(2,3) != 16U || C(2,4) != 17U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise XOR operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << C << "\n"
+                << "   Expected result:\n( 15 12 13 14 11 )\n"
+                                        "(  8  9 10 23 20 )\n"
+                                        "( 21 22 19 16 17 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Matrix/matrix bitwise XOR assignment
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                               { 13U, 14U, 15U, 16U, 17U },
+                                                               { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                               { 5U, 7U, 5U, 7U, 5U },
+                                                               { 7U, 5U, 7U, 5U, 7U } };
+
+         A ^= B;
+
+         checkRows    ( A,  3UL );
+         checkColumns ( A,  5UL );
+         checkCapacity( A, 15UL );
+         checkNonZeros( A, 15UL );
+
+         if( A(0,0) != 15U || A(0,1) != 12U || A(0,2) != 13U || A(0,3) != 14U || A(0,4) != 11U ||
+             A(1,0) !=  8U || A(1,1) !=  9U || A(1,2) != 10U || A(1,3) != 23U || A(1,4) != 20U ||
+             A(2,0) != 21U || A(2,1) != 22U || A(2,2) != 19U || A(2,3) != 16U || A(2,4) != 17U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise XOR assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << A << "\n"
+                << "   Expected result:\n( 15 12 13 14 11 )\n"
+                                        "(  8  9 10 23 20 )\n"
+                                        "( 21 22 19 16 17 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major matrix/column-major matrix bitwise XOR tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major matrix/column-major matrix bitwise XOR operator";
+
+      // Matrix/matrix bitwise XOR of an empty matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A;
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B;
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> C( A ^ B );
+
+         checkRows    ( C, 0UL );
+         checkColumns ( C, 0UL );
+         checkCapacity( C, 0UL );
+         checkNonZeros( C, 0UL );
+      }
+
+      // Matrix/matrix bitwise XOR of a general matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                               { 13U, 14U, 15U, 16U, 17U },
+                                                               { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                                  { 5U, 7U, 5U, 7U, 5U },
+                                                                  { 7U, 5U, 7U, 5U, 7U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> C( A ^ B );
+
+         checkRows    ( C,  3UL );
+         checkColumns ( C,  5UL );
+         checkCapacity( C, 15UL );
+         checkNonZeros( C, 15UL );
+
+         if( C(0,0) != 15U || C(0,1) != 12U || C(0,2) != 13U || C(0,3) != 14U || C(0,4) != 11U ||
+             C(1,0) !=  8U || C(1,1) !=  9U || C(1,2) != 10U || C(1,3) != 23U || C(1,4) != 20U ||
+             C(2,0) != 21U || C(2,1) != 22U || C(2,2) != 19U || C(2,3) != 16U || C(2,4) != 17U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise XOR operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << C << "\n"
+                << "   Expected result:\n( 15 12 13 14 11 )\n"
+                                        "(  8  9 10 23 20 )\n"
+                                        "( 21 22 19 16 17 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Matrix/matrix bitwise XOR assignment
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                               { 13U, 14U, 15U, 16U, 17U },
+                                                               { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                                  { 5U, 7U, 5U, 7U, 5U },
+                                                                  { 7U, 5U, 7U, 5U, 7U } };
+
+         A ^= B;
+
+         checkRows    ( A,  3UL );
+         checkColumns ( A,  5UL );
+         checkCapacity( A, 15UL );
+         checkNonZeros( A, 15UL );
+
+         if( A(0,0) != 15U || A(0,1) != 12U || A(0,2) != 13U || A(0,3) != 14U || A(0,4) != 11U ||
+             A(1,0) !=  8U || A(1,1) !=  9U || A(1,2) != 10U || A(1,3) != 23U || A(1,4) != 20U ||
+             A(2,0) != 21U || A(2,1) != 22U || A(2,2) != 19U || A(2,3) != 16U || A(2,4) != 17U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise XOR assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << A << "\n"
+                << "   Expected result:\n( 15 12 13 14 11 )\n"
+                                        "(  8  9 10 23 20 )\n"
+                                        "( 21 22 19 16 17 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix/scalar bitwise XOR tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major matrix/scalar bitwise XOR operator";
+
+      // Matrix/scalar bitwise XOR of an empty matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A;
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B( A ^ 7U );
+
+         checkRows    ( B, 0UL );
+         checkColumns ( B, 0UL );
+         checkCapacity( B, 0UL );
+         checkNonZeros( B, 0UL );
+      }
+
+      // Matrix/scalar bitwise XOR of a general matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                                  { 13U, 14U, 15U, 16U, 17U },
+                                                                  { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B( A ^ 7U );
+
+         checkRows    ( B,  3UL );
+         checkColumns ( B,  5UL );
+         checkCapacity( B, 15UL );
+         checkNonZeros( B, 15UL );
+
+         if( B(0,0) != 15U || B(0,1) != 14U || B(0,2) != 13U || B(0,3) != 12U || B(0,4) != 11U ||
+             B(1,0) != 10U || B(1,1) !=  9U || B(1,2) !=  8U || B(1,3) != 23U || B(1,4) != 22U ||
+             B(2,0) != 21U || B(2,1) != 20U || B(2,2) != 19U || B(2,3) != 18U || B(2,4) != 17U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/scalar bitwise XOR operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << B << "\n"
+                << "   Expected result:\n( 15 14 13 12 11 )\n"
+                                        "( 10  9  8 23 22 )\n"
+                                        "( 21 20 19 18 17 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Matrix/scalar bitwise XOR assignment
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                                  { 13U, 14U, 15U, 16U, 17U },
+                                                                  { 18U, 19U, 20U, 21U, 22U } };
+
+         A ^= 7U;
+
+         checkRows    ( A,  3UL );
+         checkColumns ( A,  5UL );
+         checkCapacity( A, 15UL );
+         checkNonZeros( A, 15UL );
+
+         if( A(0,0) != 15U || A(0,1) != 14U || A(0,2) != 13U || A(0,3) != 12U || A(0,4) != 11U ||
+             A(1,0) != 10U || A(1,1) !=  9U || A(1,2) !=  8U || A(1,3) != 23U || A(1,4) != 22U ||
+             A(2,0) != 21U || A(2,1) != 20U || A(2,2) != 19U || A(2,3) != 18U || A(2,4) != 17U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/scalar bitwise XOR assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << A << "\n"
+                << "   Expected result:\n( 15 14 13 12 11 )\n"
+                                        "( 10  9  8 23 22 )\n"
+                                        "( 21 20 19 18 17 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix/row-major matrix bitwise XOR tests
+   //=====================================================================================
+
+
+   {
+      test_ = "Column-major matrix/row-major matrix bitwise XOR operator";
+
+      // Matrix/matrix bitwise XOR of an empty matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A;
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B;
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> C( A ^ B );
+
+         checkRows    ( C, 0UL );
+         checkColumns ( C, 0UL );
+         checkCapacity( C, 0UL );
+         checkNonZeros( C, 0UL );
+      }
+
+      // Matrix/matrix bitwise XOR of a general matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                                  { 13U, 14U, 15U, 16U, 17U },
+                                                                  { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                               { 5U, 7U, 5U, 7U, 5U },
+                                                               { 7U, 5U, 7U, 5U, 7U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> C( A ^ B );
+
+         checkRows    ( C,  3UL );
+         checkColumns ( C,  5UL );
+         checkCapacity( C, 15UL );
+         checkNonZeros( C, 15UL );
+
+         if( C(0,0) != 15U || C(0,1) != 12U || C(0,2) != 13U || C(0,3) != 14U || C(0,4) != 11U ||
+             C(1,0) !=  8U || C(1,1) !=  9U || C(1,2) != 10U || C(1,3) != 23U || C(1,4) != 20U ||
+             C(2,0) != 21U || C(2,1) != 22U || C(2,2) != 19U || C(2,3) != 16U || C(2,4) != 17U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise XOR operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << C << "\n"
+                << "   Expected result:\n( 15 12 13 14 11 )\n"
+                                        "(  8  9 10 23 20 )\n"
+                                        "( 21 22 19 16 17 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Matrix/matrix bitwise XOR assignment
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                                  { 13U, 14U, 15U, 16U, 17U },
+                                                                  { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                               { 5U, 7U, 5U, 7U, 5U },
+                                                               { 7U, 5U, 7U, 5U, 7U } };
+
+         A ^= B;
+
+         checkRows    ( A,  3UL );
+         checkColumns ( A,  5UL );
+         checkCapacity( A, 15UL );
+         checkNonZeros( A, 15UL );
+
+         if( A(0,0) != 15U || A(0,1) != 12U || A(0,2) != 13U || A(0,3) != 14U || A(0,4) != 11U ||
+             A(1,0) !=  8U || A(1,1) !=  9U || A(1,2) != 10U || A(1,3) != 23U || A(1,4) != 20U ||
+             A(2,0) != 21U || A(2,1) != 22U || A(2,2) != 19U || A(2,3) != 16U || A(2,4) != 17U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise XOR assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << A << "\n"
+                << "   Expected result:\n( 15 12 13 14 11 )\n"
+                                        "(  8  9 10 23 20 )\n"
+                                        "( 21 22 19 16 17 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix/column-major matrix bitwise XOR tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major matrix/column-major matrix bitwise XOR operator";
+
+      // Matrix/matrix bitwise XOR of an empty matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A;
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B;
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> C( A ^ B );
+
+         checkRows    ( C, 0UL );
+         checkColumns ( C, 0UL );
+         checkCapacity( C, 0UL );
+         checkNonZeros( C, 0UL );
+      }
+
+      // Matrix/matrix bitwise XOR of a general matrix
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                                  { 13U, 14U, 15U, 16U, 17U },
+                                                                  { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                                  { 5U, 7U, 5U, 7U, 5U },
+                                                                  { 7U, 5U, 7U, 5U, 7U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> C( A ^ B );
+
+         checkRows    ( C,  3UL );
+         checkColumns ( C,  5UL );
+         checkCapacity( C, 15UL );
+         checkNonZeros( C, 15UL );
+
+         if( C(0,0) != 15U || C(0,1) != 12U || C(0,2) != 13U || C(0,3) != 14U || C(0,4) != 11U ||
+             C(1,0) !=  8U || C(1,1) !=  9U || C(1,2) != 10U || C(1,3) != 23U || C(1,4) != 20U ||
+             C(2,0) != 21U || C(2,1) != 22U || C(2,2) != 19U || C(2,3) != 16U || C(2,4) != 17U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise XOR operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << C << "\n"
+                << "   Expected result:\n( 15 12 13 14 11 )\n"
+                                        "(  8  9 10 23 20 )\n"
+                                        "( 21 22 19 16 17 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Matrix/matrix bitwise XOR assignment
+      {
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ {  8U,  9U, 10U, 11U, 12U },
+                                                                  { 13U, 14U, 15U, 16U, 17U },
+                                                                  { 18U, 19U, 20U, 21U, 22U } };
+
+         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B{ { 7U, 5U, 7U, 5U, 7U },
+                                                                  { 5U, 7U, 5U, 7U, 5U },
+                                                                  { 7U, 5U, 7U, 5U, 7U } };
+
+         A ^= B;
+
+         checkRows    ( A,  3UL );
+         checkColumns ( A,  5UL );
+         checkCapacity( A, 15UL );
+         checkNonZeros( A, 15UL );
+
+         if( A(0,0) != 15U || A(0,1) != 12U || A(0,2) != 13U || A(0,3) != 14U || A(0,4) != 11U ||
+             A(1,0) !=  8U || A(1,1) !=  9U || A(1,2) != 10U || A(1,3) != 23U || A(1,4) != 20U ||
+             A(2,0) != 21U || A(2,1) != 22U || A(2,2) != 19U || A(2,3) != 16U || A(2,4) != 17U ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Matrix/matrix bitwise XOR assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << A << "\n"
+                << "   Expected result:\n( 15 12 13 14 11 )\n"
+                                        "(  8  9 10 23 20 )\n"
+                                        "( 21 22 19 16 17 )\n";
             throw std::runtime_error( oss.str() );
          }
       }

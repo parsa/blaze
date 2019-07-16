@@ -118,6 +118,7 @@ class GeneralTest
    void testRightShift();
    void testBitand();
    void testBitor();
+   void testBitxor();
 
    template< typename Type >
    void checkRows( const Type& matrix, size_t expectedRows ) const;
