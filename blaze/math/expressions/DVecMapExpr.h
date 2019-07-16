@@ -2450,8 +2450,8 @@ inline decltype(auto) real( const DVecMapExpr<VT,Real,TF>& dv )
 // for scalar values of built-in data type.
 */
 template< typename VT  // Type of the left-hand side dense vector
-        , typename ST  // Type of the right-hand side scalar
         , bool TF      // Transpose flag
+        , typename ST  // Type of the right-hand side scalar
         , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
 inline decltype(auto) operator+( const DenseVector<VT,TF>& vec, ST scalar )
 {
@@ -2472,7 +2472,7 @@ inline decltype(auto) operator+( const DenseVector<VT,TF>& vec, ST scalar )
 // \param scalar The right-hand side scalar value for the subtraction.
 // \return The resulting vector.
 //
-// This operator represents the subtraction of a scalar value to all elements of a dense vector:
+// This operator represents the subtraction of a scalar value from all elements of a dense vector:
 
    \code
    blaze::DynamicVector<double> a, b;
@@ -2486,8 +2486,8 @@ inline decltype(auto) operator+( const DenseVector<VT,TF>& vec, ST scalar )
 // for scalar values of built-in data type.
 */
 template< typename VT  // Type of the left-hand side dense vector
-        , typename ST  // Type of the right-hand side scalar
         , bool TF      // Transpose flag
+        , typename ST  // Type of the right-hand side scalar
         , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
 inline decltype(auto) operator-( const DenseVector<VT,TF>& vec, ST scalar )
 {
@@ -2570,8 +2570,8 @@ inline decltype(auto) operator>>( const DenseVector<VT,TF>& vec, int count )
    \endcode
 */
 template< typename VT  // Type of the left-hand side dense vector
-        , typename ST  // Type of the right-hand side scalar
         , bool TF      // Transpose flag
+        , typename ST  // Type of the right-hand side scalar
         , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
 inline decltype(auto) operator&( const DenseVector<VT,TF>& vec, ST scalar )
 {
@@ -2599,8 +2599,8 @@ inline decltype(auto) operator&( const DenseVector<VT,TF>& vec, ST scalar )
    \endcode
 */
 template< typename VT  // Type of the left-hand side dense vector
-        , typename ST  // Type of the right-hand side scalar
         , bool TF      // Transpose flag
+        , typename ST  // Type of the right-hand side scalar
         , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
 inline decltype(auto) operator|( const DenseVector<VT,TF>& vec, ST scalar )
 {
@@ -2628,14 +2628,48 @@ inline decltype(auto) operator|( const DenseVector<VT,TF>& vec, ST scalar )
    \endcode
 */
 template< typename VT  // Type of the left-hand side dense vector
-        , typename ST  // Type of the right-hand side scalar
         , bool TF      // Transpose flag
+        , typename ST  // Type of the right-hand side scalar
         , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
 inline decltype(auto) operator^( const DenseVector<VT,TF>& vec, ST scalar )
 {
    BLAZE_FUNCTION_TRACE;
 
    return map( ~vec, blaze::bind2nd( Bitxor{}, scalar ) );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL LOGICAL OPERATORS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Logical NOT operator for the logical NOT of a dense vector.
+// \ingroup dense_vector
+//
+// \param vec The dense vector for the logical NOT.
+// \return The negated vector.
+//
+// This operator represents the logical NOT of all elements of a dense vector:
+
+   \code
+   blaze::DynamicVector<bool> a, b;
+   // ... Resizing and initialization
+   b = !a;
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) operator!( const DenseVector<VT,TF>& vec )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~vec, []( bool b ){ return !b; } );
 }
 //*************************************************************************************************
 
