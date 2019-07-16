@@ -2498,7 +2498,7 @@ inline decltype(auto) operator-( const DenseMatrix<MT,SO>& mat, ST scalar )
 
 
 //*************************************************************************************************
-/*!\brief Left-shift operator for the uniform left-shift of a dense matrix (\f$ A=B\ll s \f$).
+/*!\brief Left-shift operator for the uniform left-shift of a dense matrix.
 // \ingroup dense_matrix
 //
 // \param mat The dense matrix for the uniform left-shift operation.
@@ -2525,7 +2525,7 @@ inline decltype(auto) operator<<( const DenseMatrix<MT,SO>& mat, int count )
 
 
 //*************************************************************************************************
-/*!\brief Right-shift operator for the uniform right-shift of a dense matrix (\f$ A=B\gg s \f$).
+/*!\brief Right-shift operator for the uniform right-shift of a dense matrix.
 // \ingroup dense_matrix
 //
 // \param mat The dense matrix for the uniform right-shift operation.
@@ -2552,8 +2552,7 @@ inline decltype(auto) operator>>( const DenseMatrix<MT,SO>& mat, int count )
 
 
 //*************************************************************************************************
-/*!\brief Bitwise AND operator for the bitwise AND of a dense matrix and a scalar value
-//        (\f$ A=B&s \f$).
+/*!\brief Bitwise AND operator for the bitwise AND of a dense matrix and a scalar value.
 // \ingroup dense_matrix
 //
 // \param mat The left-hand side dense matrix for the bitwise AND.
@@ -2582,8 +2581,7 @@ inline decltype(auto) operator&( const DenseMatrix<MT,SO>& mat, ST scalar )
 
 
 //*************************************************************************************************
-/*!\brief Bitwise OR operator for the bitwise OR of a dense matrix and a scalar value
-//        (\f$ A=B&s \f$).
+/*!\brief Bitwise OR operator for the bitwise OR of a dense matrix and a scalar value.
 // \ingroup dense_matrix
 //
 // \param mat The left-hand side dense matrix for the bitwise OR.
@@ -2607,6 +2605,35 @@ inline decltype(auto) operator|( const DenseMatrix<MT,SO>& mat, ST scalar )
    BLAZE_FUNCTION_TRACE;
 
    return map( ~mat, blaze::bind2nd( Bitor{}, scalar ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise XOR operator for the bitwise XOR of a dense matrix and a scalar value.
+// \ingroup dense_matrix
+//
+// \param mat The left-hand side dense matrix for the bitwise XOR.
+// \param scalar The right-hand side scalar value for the bitwise XOR.
+// \return The resulting matrix.
+//
+// This operator represents the bitwise XOR between a dense matrix and a scalar value:
+
+   \code
+   blaze::DynamicMatrix<unsigned int> A, B;
+   // ... Resizing and initialization
+   B = A ^ 7U;
+   \endcode
+*/
+template< typename MT  // Type of the left-hand side dense matrix
+        , bool SO      // Storage order of the left-hand side dense matrix
+        , typename ST  // Type of the right-hand side scalar
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+inline decltype(auto) operator^( const DenseMatrix<MT,SO>& mat, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~mat, blaze::bind2nd( Bitxor{}, scalar ) );
 }
 //*************************************************************************************************
 
