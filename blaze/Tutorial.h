@@ -138,23 +138,45 @@
 //          </li>
 //          <li> \ref bitwise_and
 //             <ul>
-//                <li> \ref vector_vector_and </li>
-//                <li> \ref matrix_matrix_and </li>
-//                <li> \ref scalar_and </li>
+//                <li> \ref vector_vector_bitand </li>
+//                <li> \ref matrix_matrix_bitand </li>
+//                <li> \ref scalar_bitand </li>
 //             </ul>
 //          </li>
 //          <li> \ref bitwise_or
 //             <ul>
-//                <li> \ref vector_vector_or </li>
-//                <li> \ref matrix_matrix_or </li>
-//                <li> \ref scalar_or </li>
+//                <li> \ref vector_vector_bitor </li>
+//                <li> \ref matrix_matrix_bitor </li>
+//                <li> \ref scalar_bitor </li>
 //             </ul>
 //          </li>
 //          <li> \ref bitwise_xor
 //             <ul>
-//                <li> \ref vector_vector_xor </li>
-//                <li> \ref matrix_matrix_xor </li>
-//                <li> \ref scalar_xor </li>
+//                <li> \ref vector_vector_bitxor </li>
+//                <li> \ref matrix_matrix_bitxor </li>
+//                <li> \ref scalar_bitxor </li>
+//             </ul>
+//          </li>
+//       </ul>
+//    </li>
+//    <li> \ref logical_operations
+//       <ul>
+//          <li> \ref logical_not
+//             <ul>
+//                <li> \ref vector_vector_not </li>
+//                <li> \ref matrix_matrix_not </li>
+//             </ul>
+//          </li>
+//          <li> \ref logical_and
+//             <ul>
+//                <li> \ref vector_vector_and </li>
+//                <li> \ref matrix_matrix_and </li>
+//             </ul>
+//          </li>
+//          <li> \ref logical_or
+//             <ul>
+//                <li> \ref vector_vector_or </li>
+//                <li> \ref matrix_matrix_or </li>
 //             </ul>
 //          </li>
 //       </ul>
@@ -11865,23 +11887,23 @@
 //    </li>
 //    <li> \ref bitwise_and
 //       <ul>
-//          <li> \ref vector_vector_and </li>
-//          <li> \ref matrix_matrix_and </li>
-//          <li> \ref scalar_and </li>
+//          <li> \ref vector_vector_bitand </li>
+//          <li> \ref matrix_matrix_bitand </li>
+//          <li> \ref scalar_bitand </li>
 //       </ul>
 //    </li>
 //    <li> \ref bitwise_or
 //       <ul>
-//          <li> \ref vector_vector_or </li>
-//          <li> \ref matrix_matrix_or </li>
-//          <li> \ref scalar_or </li>
+//          <li> \ref vector_vector_bitor </li>
+//          <li> \ref matrix_matrix_bitor </li>
+//          <li> \ref scalar_bitor </li>
 //       </ul>
 //    </li>
 //    <li> \ref bitwise_xor
 //       <ul>
-//          <li> \ref vector_vector_xor </li>
-//          <li> \ref matrix_matrix_xor </li>
-//          <li> \ref scalar_xor </li>
+//          <li> \ref vector_vector_bitxor </li>
+//          <li> \ref matrix_matrix_bitxor </li>
+//          <li> \ref scalar_bitxor </li>
 //       </ul>
 //    </li>
 // </ul>
@@ -12009,11 +12031,11 @@
 //**Bitwise AND************************************************************************************
 /*!\page bitwise_and Bitwise AND
 //
-// \n \section vector_vector_and Vector/Vector Bitwise AND
+// \n \section vector_vector_bitand Vector/Vector Bitwise AND
 // <hr>
 //
-// Via the bitwise AND operator (i.e. operator&()) it is possible to perform a elementwise bitwise
-// AND with dense vectors:
+// Via the bitwise AND operator (i.e. operator&()) it is possible to perform an elementwise
+// bitwise AND with dense vectors:
 
    \code
    blaze::DynamicVector<unsigned int> v1( 5UL ), v3;
@@ -12051,7 +12073,7 @@
    v3 = v1 & v2;  // Vectorized bitwise AND of an unsigned int vector
    \endcode
 
-// \n \section matrix_matrix_and Matrix/Matrix Bitwise AND
+// \n \section matrix_matrix_bitand Matrix/Matrix Bitwise AND
 // <hr>
 //
 // The bitwise AND operator (i.e. operator&()) can also be used to perform an elementwise bitwise
@@ -12084,7 +12106,7 @@
    M3 = M1 & M2;  // Vectorized bitwise AND of two row-major, unsigned int dense matrices
    \endcode
 
-// \n \section scalar_and Scalar Bitwise AND
+// \n \section scalar_bitand Scalar Bitwise AND
 // <hr>
 //
 // Is is also possible to perform a bitwise AND between a dense vector or dense matrix and a
@@ -12123,11 +12145,11 @@
 //**Bitwise OR*************************************************************************************
 /*!\page bitwise_or Bitwise OR
 //
-// \n \section vector_vector_or Vector/Vector Bitwise OR
+// \n \section vector_vector_bitor Vector/Vector Bitwise OR
 // <hr>
 //
-// Via the bitwise OR operator (i.e. operator|()) it is possible to perform a elementwise bitwise
-// OR with dense vectors:
+// Via the bitwise OR operator (i.e. operator|()) it is possible to perform an elementwise
+// bitwise OR with dense vectors:
 
    \code
    blaze::DynamicVector<unsigned int> v1( 5UL ), v3;
@@ -12165,7 +12187,7 @@
    v3 = v1 | v2;  // Vectorized bitwise OR of an unsigned int vector
    \endcode
 
-// \n \section matrix_matrix_or Matrix/Matrix Bitwise OR
+// \n \section matrix_matrix_bitor Matrix/Matrix Bitwise OR
 // <hr>
 //
 // The bitwise OR operator (i.e. operator|()) can also be used to perform an elementwise bitwise
@@ -12198,7 +12220,7 @@
    M3 = M1 | M2;  // Vectorized bitwise OR of two row-major, unsigned int dense matrices
    \endcode
 
-// \n \section scalar_or Scalar Bitwise OR
+// \n \section scalar_bitor Scalar Bitwise OR
 // <hr>
 //
 // Is is also possible to perform a bitwise OR between a dense vector or dense matrix and a
@@ -12237,11 +12259,11 @@
 //**Bitwise XOR************************************************************************************
 /*!\page bitwise_xor Bitwise XOR
 //
-// \n \section vector_vector_xor Vector/Vector Bitwise XOR
+// \n \section vector_vector_bitxor Vector/Vector Bitwise XOR
 // <hr>
 //
-// Via the bitwise XOR operator (i.e. operator^()) it is possible to perform a elementwise bitwise
-// XOR with dense vectors:
+// Via the bitwise XOR operator (i.e. operator^()) it is possible to perform an elementwise
+// bitwise XOR with dense vectors:
 
    \code
    blaze::DynamicVector<unsigned int> v1( 5UL ), v3;
@@ -12279,7 +12301,7 @@
    v3 = v1 ^ v2;  // Vectorized bitwise XOR of an unsigned int vector
    \endcode
 
-// \n \section matrix_matrix_xor Matrix/Matrix Bitwise XOR
+// \n \section matrix_matrix_bitxor Matrix/Matrix Bitwise XOR
 // <hr>
 //
 // The bitwise XOR operator (i.e. operator^()) can also be used to perform an elementwise bitwise
@@ -12312,7 +12334,7 @@
    M3 = M1 ^ M2;  // Vectorized bitwise XOR of two row-major, unsigned int dense matrices
    \endcode
 
-// \n \section scalar_xor Scalar Bitwise XOR
+// \n \section scalar_bitxor Scalar Bitwise XOR
 // <hr>
 //
 // Is is also possible to perform a bitwise XOR between a dense vector or dense matrix and a
@@ -12343,7 +12365,202 @@
    blaze::DynamicMatrix<unsigned int> M2( M1 ^ 3U );
    \endcode
 
-// \n Previous: \ref bitwise_or &nbsp; &nbsp; Next: \ref shared_memory_parallelization
+// \n Previous: \ref bitwise_or &nbsp; &nbsp; Next: \ref logical_operations
+*/
+//*************************************************************************************************
+
+
+//**Logical Operations*****************************************************************************
+/*!\page logical_operations Logical Operations
+//
+// \tableofcontents
+//
+//
+// \b Blaze provides the following logical operations for vectors and matrices:
+//
+// <ul>
+//    <li> \ref logical_not
+//       <ul>
+//          <li> \ref vector_vector_not </li>
+//          <li> \ref matrix_matrix_not </li>
+//       </ul>
+//    </li>
+//    <li> \ref logical_and
+//       <ul>
+//          <li> \ref vector_vector_and </li>
+//          <li> \ref matrix_matrix_and </li>
+//       </ul>
+//    </li>
+//    <li> \ref logical_or
+//       <ul>
+//          <li> \ref vector_vector_or </li>
+//          <li> \ref matrix_matrix_or </li>
+//       </ul>
+//    </li>
+// </ul>
+//
+// \n Previous: \ref bitwise_xor &nbsp; &nbsp; Next: \ref logical_not
+*/
+//*************************************************************************************************
+
+
+//**Logical NOT************************************************************************************
+/*!\page logical_not Logical NOT
+//
+// \n \section vector_vector_not Vector/Vector Logical NOT
+// <hr>
+//
+// Via the logical NOT operator (i.e. operator!()) it is possible to compute an elementwise
+// logical NOT of a dense vector:
+
+   \code
+   blaze::DynamicVector<bool> v1( 5UL ), v2;
+
+   // ... Initializing the vectors
+
+   v2 = !v1;  // Elementwise logical NOT of a dense column vector
+   \endcode
+
+// \n \section matrix_matrix_not Matrix/Matrix Logical NOT
+// <hr>
+//
+// The logical NOT operator (i.e. operator!()) can also be used to compute an elementwise logical
+// NOT with dense matrices:
+
+   \code
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   blaze::DynamicMatrix<bool,rowMajor> M1( 7UL, 3UL ), M2;
+
+   // ... Initializing the matrices
+
+   M2 = !M1;  // Elementwise logical NOT of a dense row-major matrix
+   \endcode
+
+// \n Previous: \ref logical_operations &nbsp; &nbsp; Next: \ref logical_and
+*/
+//*************************************************************************************************
+
+
+//**Logical AND************************************************************************************
+/*!\page logical_and Logical AND
+//
+// \n \section vector_vector_and Vector/Vector Logical AND
+// <hr>
+//
+// Via the logical AND operator (i.e. operator&&()) it is possible to compute an elementwise
+// logical AND with dense vectors:
+
+   \code
+   blaze::DynamicVector<bool> v1( 5UL ), v3;
+   blaze::DynamicVector<bool> v2( 5UL );
+
+   // ... Initializing the vectors
+
+   v3 = v1 && v2;  // Elementwise logical AND of two dense column vectors
+   \endcode
+
+// Note that it is necessary that both operands have exactly the same dimensions. Violating this
+// precondition results in an exception. Also note that it is only possible to use vectors with
+// the same transpose flag:
+
+   \code
+   using blaze::columnVector;
+   using blaze::rowVector;
+
+   blaze::DynamicVector<bool,columnVector> v1( 5UL );
+   blaze::DynamicVector<bool,rowVector>    v2( 5UL );
+
+   v1 && v2;           // Compilation error: Cannot AND a column vector and a row vector
+   v1 && trans( v2 );  // OK: Logical AND of two column vectors
+   \endcode
+
+// \n \section matrix_matrix_and Matrix/Matrix Logical AND
+// <hr>
+//
+// The logical AND operator (i.e. operator&&()) can also be used to compute an elementwise logical
+// AND with dense matrices:
+
+   \code
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   blaze::DynamicMatrix<bool,columnMajor> M1( 7UL, 3UL );
+   blaze::DynamicMatrix<bool,rowMajor>    M2( 7UL, 3UL ), M3;
+
+   // ... Initializing the matrices
+
+   M3 = M1 && M2;  // Elementwise logical AND of two dense matrices
+   \endcode
+
+// Note that it is necessary that both operands have exactly the same dimensions. Violating this
+// precondition results in an exception. It is possible to use any combination of row-major and
+// column-major matrices. Note however that in favor of performance using two matrices with the
+// same storage order is favorable.
+//
+// \n Previous: \ref logical_not &nbsp; &nbsp; Next: \ref logical_or
+*/
+//*************************************************************************************************
+
+
+//**Logical OR*************************************************************************************
+/*!\page logical_or Logical OR
+//
+// \n \section vector_vector_or Vector/Vector Logical OR
+// <hr>
+//
+// Via the logical OR operator (i.e. operator||()) it is possible to perform an elementwise
+// logical OR with dense vectors:
+
+   \code
+   blaze::DynamicVector<bool> v1( 5UL ), v3;
+   blaze::DynamicVector<bool> v2( 5UL );
+
+   // ... Initializing the vectors
+
+   v3 = v1 || v2;  // Elementwise logical OR of two dense column vectors
+   \endcode
+
+// Note that it is necessary that both operands have exactly the same dimensions. Violating this
+// precondition results in an exception. Also note that it is only possible to use vectors with
+// the same transpose flag:
+
+   \code
+   using blaze::columnVector;
+   using blaze::rowVector;
+
+   blaze::DynamicVector<unsigned int,columnVector> v1( 5UL );
+   blaze::DynamicVector<unsigned int,rowVector>    v2( 5UL );
+
+   v1 || v2;           // Compilation error: Cannot OR a column vector and a row vector
+   v1 || trans( v2 );  // OK: Logical OR of two column vectors
+   \endcode
+
+// \n \section matrix_matrix_or Matrix/Matrix Logical OR
+// <hr>
+//
+// The logical OR operator (i.e. operator||()) can also be used to perform an elementwise logical
+// OR with dense matrices:
+
+   \code
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   blaze::DynamicMatrix<bool,columnMajor> M1( 7UL, 3UL );
+   blaze::DynamicMatrix<bool,rowMajor>    M2( 7UL, 3UL ), M3;
+
+   // ... Initializing the matrices
+
+   M3 = M1 || M2;  // Elementwise logical OR of two dense matrices
+   \endcode
+
+// Note that it is necessary that both operands have exactly the same dimensions. Violating this
+// precondition results in an exception. It is possible to use any combination of row-major and
+// column-major matrices. Note however that in favor of performance using two matrices with the
+// same storage order is favorable.
+//
+// \n Previous: \ref logical_and &nbsp; &nbsp; Next: \ref shared_memory_parallelization
 */
 //*************************************************************************************************
 
@@ -12370,7 +12587,7 @@
 //
 //  - \ref serial_execution
 //
-// \n Previous: \ref bitwise_xor &nbsp; &nbsp; Next: \ref hpx_parallelization
+// \n Previous: \ref logical_or &nbsp; &nbsp; Next: \ref hpx_parallelization
 */
 //*************************************************************************************************
 
