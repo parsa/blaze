@@ -1598,6 +1598,40 @@ inline decltype(auto)
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Logical OR operator for two dense matrices.
+// \ingroup dense_matrix
+//
+// \param lhs The left-hand side dense matrix for the logical OR operation.
+// \param rhs The right-hand side dense matrix for the logical OR operation.
+// \return The resulting dense matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// This operator represents the logical OR of the given two dense matrices:
+
+   \code
+   blaze::DynamicMatrix<bool> A, B, C;
+   // ... Resizing and initialization
+   C = A || B;
+   \endcode
+
+// In case the current number of rows and columns of the two given matrices don't match, a
+// \a std::invalid_argument is thrown.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , bool SO1      // Storage order of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , bool SO2 >    // Storage order of the right-hand side dense matrix
+inline decltype(auto)
+   operator||( const DenseMatrix<MT1,SO1>& lhs, const DenseMatrix<MT2,SO2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~lhs, ~rhs, []( bool b1, bool b2 ){ return b1 || b2; } );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
