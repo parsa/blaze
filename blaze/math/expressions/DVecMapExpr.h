@@ -2500,8 +2500,7 @@ inline decltype(auto) operator-( const DenseVector<VT,TF>& vec, ST scalar )
 
 
 //*************************************************************************************************
-/*!\brief Left-shift operator for the uniform left-shift of a dense vector
-//        (\f$ \vec{a}=\vec{b}\ll s \f$).
+/*!\brief Left-shift operator for the uniform left-shift of a dense vector.
 // \ingroup dense_vector
 //
 // \param vec The dense vector for the uniform left-shift operation.
@@ -2528,8 +2527,7 @@ inline decltype(auto) operator<<( const DenseVector<VT,TF>& vec, int count )
 
 
 //*************************************************************************************************
-/*!\brief Right-shift operator for the uniform right-shift of a dense vector
-//        (\f$ \vec{a}=\vec{b}\gg s \f$).
+/*!\brief Right-shift operator for the uniform right-shift of a dense vector.
 // \ingroup dense_vector
 //
 // \param vec The dense vector for the uniform right-shift operation.
@@ -2556,8 +2554,7 @@ inline decltype(auto) operator>>( const DenseVector<VT,TF>& vec, int count )
 
 
 //*************************************************************************************************
-/*!\brief Bitwise AND operator for the bitwise AND of a dense vector and a scalar value
-//        (\f$ \vec{a}=\vec{b}&s \f$).
+/*!\brief Bitwise AND operator for the bitwise AND of a dense vector and a scalar value.
 // \ingroup dense_vector
 //
 // \param vec The left-hand side dense vector for the bitwise AND.
@@ -2586,8 +2583,7 @@ inline decltype(auto) operator&( const DenseVector<VT,TF>& vec, ST scalar )
 
 
 //*************************************************************************************************
-/*!\brief Bitwise OR operator for the bitwise OR of a dense vector and a scalar value
-//        (\f$ \vec{a}=\vec{b}&s \f$).
+/*!\brief Bitwise OR operator for the bitwise OR of a dense vector and a scalar value.
 // \ingroup dense_vector
 //
 // \param vec The left-hand side dense vector for the bitwise OR.
@@ -2611,6 +2607,35 @@ inline decltype(auto) operator|( const DenseVector<VT,TF>& vec, ST scalar )
    BLAZE_FUNCTION_TRACE;
 
    return map( ~vec, blaze::bind2nd( Bitor{}, scalar ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Bitwise XOR operator for the bitwise XOR of a dense vector and a scalar value.
+// \ingroup dense_vector
+//
+// \param vec The left-hand side dense vector for the bitwise XOR.
+// \param scalar The right-hand side scalar value for the bitwise XOR.
+// \return The resulting vector.
+//
+// This operator represents the bitwise XOR of a scalar value with all elements of a dense vector:
+
+   \code
+   blaze::DynamicVector<unsigned int> a, b;
+   // ... Resizing and initialization
+   b = a ^ 7U;
+   \endcode
+*/
+template< typename VT  // Type of the left-hand side dense vector
+        , typename ST  // Type of the right-hand side scalar
+        , bool TF      // Transpose flag
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+inline decltype(auto) operator^( const DenseVector<VT,TF>& vec, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~vec, blaze::bind2nd( Bitxor{}, scalar ) );
 }
 //*************************************************************************************************
 
