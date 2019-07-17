@@ -64,6 +64,7 @@
 #include <blaze/math/lapack/orglq.h>
 #include <blaze/math/lapack/orgql.h>
 #include <blaze/math/lapack/orgqr.h>
+#include <blaze/math/lapack/orgr2.h>
 #include <blaze/math/lapack/orgrq.h>
 #include <blaze/math/lapack/ormlq.h>
 #include <blaze/math/lapack/ormql.h>
