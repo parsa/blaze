@@ -82,6 +82,7 @@ DecompositionTest::DecompositionTest()
    //testOrmqr< float >();
    //testGerqf< float >();
    //testOrgrq< float >();
+   //testOrgr2< float >();
    //testOrmrq< float >();
    //testGeqlf< float >();
    //testOrgql< float >();
@@ -104,6 +105,7 @@ DecompositionTest::DecompositionTest()
    testOrmqr< double >();
    testGerqf< double >();
    testOrgrq< double >();
+   testOrgr2< double >();
    testOrmrq< double >();
    testGeqlf< double >();
    testOrgql< double >();
