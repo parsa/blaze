@@ -86,6 +86,7 @@
 #include <blaze/math/lapack/trsv.h>
 #include <blaze/math/lapack/trtri.h>
 #include <blaze/math/lapack/trtrs.h>
+#include <blaze/math/lapack/ung2l.h>
 #include <blaze/math/lapack/ung2r.h>
 #include <blaze/math/lapack/unglq.h>
 #include <blaze/math/lapack/ungql.h>
