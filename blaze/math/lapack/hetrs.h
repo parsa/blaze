@@ -69,11 +69,10 @@ namespace blaze {
 /*!\name LAPACK LDLH-based substitution functions (hetrs) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-inline void hetrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, const int* ipiv );
+void hetrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, const int* ipiv );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline void hetrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
-                   char uplo, const int* ipiv );
+void hetrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, const int* ipiv );
 //@}
 //*************************************************************************************************
 

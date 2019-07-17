@@ -66,7 +66,7 @@ namespace blaze {
 /*!\name LAPACK RQ decomposition functions (gerqf) */
 //@{
 template< typename MT, bool SO >
-inline void gerqf( DenseMatrix<MT,SO>& A, ElementType_t<MT>* tau );
+void gerqf( DenseMatrix<MT,SO>& A, ElementType_t<MT>* tau );
 //@}
 //*************************************************************************************************
 

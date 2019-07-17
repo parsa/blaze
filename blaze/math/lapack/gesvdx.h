@@ -78,32 +78,32 @@ namespace blaze {
 /*!\name LAPACK SVD functions (gesvdx) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-inline size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s );
+size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s );
 
 template< typename MT, bool SO, typename VT, bool TF, typename ST >
-inline size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, ST low, ST upp );
+size_t gesvdx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, ST low, ST upp );
 
 template< typename MT1, bool SO, typename MT2, typename VT, bool TF >
-inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s );
+size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s );
 
 template< typename MT1, bool SO, typename MT2, typename VT, bool TF, typename ST >
-inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
-                      DenseVector<VT,TF>& s, ST low, ST upp );
+size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
+               DenseVector<VT,TF>& s, ST low, ST upp );
 
 template< typename MT1, bool SO, typename VT, bool TF, typename MT2 >
-inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V );
+size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V );
 
 template< typename MT1, bool SO, typename VT, bool TF, typename MT2, typename ST >
-inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
-                      DenseMatrix<MT2,SO>& V, ST low, ST upp );
+size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
+               DenseMatrix<MT2,SO>& V, ST low, ST upp );
 
 template< typename MT1, bool SO, typename MT2, typename VT, bool TF, typename MT3 >
-inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
-                      DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V );
+size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
+               DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V );
 
 template< typename MT1, bool SO, typename MT2, typename VT, bool TF, typename MT3, typename ST >
-inline size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
-                      DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, ST low, ST upp );
+size_t gesvdx( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
+               DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, ST low, ST upp );
 //@}
 //*************************************************************************************************
 

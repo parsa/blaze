@@ -68,8 +68,7 @@ namespace blaze {
 /*!\name LAPACK triangular linear system functions (trsv) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-inline void trsv( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
-                  char uplo, char trans, char diag );
+void trsv( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, char trans, char diag );
 //@}
 //*************************************************************************************************
 

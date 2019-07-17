@@ -67,7 +67,7 @@ namespace blaze {
 /*!\name LAPACK functions to reconstruct Q from a LQ decomposition (unglq) */
 //@{
 template< typename MT, bool SO >
-inline void unglq( DenseMatrix<MT,SO>& A, const ElementType_t<MT>* tau );
+void unglq( DenseMatrix<MT,SO>& A, const ElementType_t<MT>* tau );
 //@}
 //*************************************************************************************************
 

@@ -67,7 +67,7 @@ namespace blaze {
 /*!\name LAPACK LDLH decomposition functions (hetrf) */
 //@{
 template< typename MT, bool SO >
-inline void hetrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
+void hetrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
 //@}
 //*************************************************************************************************
 

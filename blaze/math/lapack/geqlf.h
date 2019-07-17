@@ -66,7 +66,7 @@ namespace blaze {
 /*!\name LAPACK QL decomposition functions (geqlf) */
 //@{
 template< typename MT, bool SO >
-inline void geqlf( DenseMatrix<MT,SO>& A, ElementType_t<MT>* tau );
+void geqlf( DenseMatrix<MT,SO>& A, ElementType_t<MT>* tau );
 //@}
 //*************************************************************************************************
 

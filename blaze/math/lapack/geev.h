@@ -75,17 +75,17 @@ namespace blaze {
 /*!\name LAPACK general matrix eigenvalue functions (geev) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-inline void geev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w );
+void geev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2, typename VT, bool TF >
-inline void geev( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, DenseVector<VT,TF>& w );
+void geev( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL, DenseVector<VT,TF>& w );
 
 template< typename MT1, bool SO1, typename VT, bool TF, typename MT2, bool SO2 >
-inline void geev( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& VR );
+void geev( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& VR );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2, typename VT, bool TF, typename MT3, bool SO3 >
-inline void geev( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL,
-                  DenseVector<VT,TF>& w, DenseMatrix<MT3,SO3>& VR );
+void geev( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& VL,
+           DenseVector<VT,TF>& w, DenseMatrix<MT3,SO3>& VR );
 //@}
 //*************************************************************************************************
 

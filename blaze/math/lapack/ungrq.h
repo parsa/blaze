@@ -48,6 +48,7 @@
 #include <blaze/math/constraints/Contiguous.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/lapack/clapack/ungql.h>
 #include <blaze/math/lapack/clapack/ungrq.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Complex.h>
@@ -66,7 +67,7 @@ namespace blaze {
 /*!\name LAPACK functions to reconstruct Q from a RQ decomposition (ungrq) */
 //@{
 template< typename MT, bool SO >
-inline void ungrq( DenseMatrix<MT,SO>& A, const ElementType_t<MT>* tau );
+void ungrq( DenseMatrix<MT,SO>& A, const ElementType_t<MT>* tau );
 //@}
 //*************************************************************************************************
 

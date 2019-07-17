@@ -66,7 +66,7 @@ namespace blaze {
 /*!\name LAPACK triangular matrix inversion functions (trtri) */
 //@{
 template< typename MT, bool SO >
-inline void trtri( DenseMatrix<MT,SO>& A, char uplo, char diag );
+void trtri( DenseMatrix<MT,SO>& A, char uplo, char diag );
 //@}
 //*************************************************************************************************
 

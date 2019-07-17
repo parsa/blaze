@@ -69,10 +69,10 @@ namespace blaze {
 /*!\name LAPACK LLH-based substitution functions (potrs) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-inline void potrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo );
+void potrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline void potrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo );
+void potrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo );
 //@}
 //*************************************************************************************************
 

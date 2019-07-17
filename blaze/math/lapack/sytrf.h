@@ -67,7 +67,7 @@ namespace blaze {
 /*!\name LAPACK LDLT decomposition functions (sytrf) */
 //@{
 template< typename MT, bool SO >
-inline void sytrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
+void sytrf( DenseMatrix<MT,SO>& A, char uplo, int* ipiv );
 //@}
 //*************************************************************************************************
 

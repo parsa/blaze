@@ -69,7 +69,7 @@ namespace blaze {
 /*!\name LAPACK Hermitian matrix eigenvalue functions (heev) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-inline void heev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char uplo );
+void heev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char uplo );
 //@}
 //*************************************************************************************************
 

@@ -66,7 +66,7 @@ namespace blaze {
 /*!\name LAPACK LLH-based inversion functions (potri) */
 //@{
 template< typename MT, bool SO >
-inline void potri( DenseMatrix<MT,SO>& A, char uplo );
+void potri( DenseMatrix<MT,SO>& A, char uplo );
 //@}
 //*************************************************************************************************
 

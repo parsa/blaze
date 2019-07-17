@@ -64,7 +64,7 @@ namespace blaze {
 /*!\name LAPACK LU decomposition functions (getrf) */
 //@{
 template< typename MT, bool SO >
-inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
+void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
 //@}
 //*************************************************************************************************
 

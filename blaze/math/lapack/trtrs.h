@@ -69,12 +69,10 @@ namespace blaze {
 /*!\name LAPACK triangular substitution functions (trtrs) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-inline void trtrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
-                   char uplo, char trans, char diag );
+void trtrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, char trans, char diag );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline void trtrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
-                   char uplo, char trans, char diag );
+void trtrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, char trans, char diag );
 //@}
 //*************************************************************************************************
 

@@ -69,7 +69,7 @@ namespace blaze {
 /*!\name LAPACK symmetric matrix eigenvalue functions (syevd) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-inline void syevd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char uplo );
+void syevd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char uplo );
 //@}
 //*************************************************************************************************
 

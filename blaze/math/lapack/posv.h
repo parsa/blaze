@@ -68,10 +68,10 @@ namespace blaze {
 /*!\name LAPACK positive definite linear system functions (posv) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-inline void posv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo );
+void posv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline void posv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo );
+void posv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo );
 //@}
 //*************************************************************************************************
 

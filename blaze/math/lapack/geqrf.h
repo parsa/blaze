@@ -66,7 +66,7 @@ namespace blaze {
 /*!\name LAPACK QR decomposition functions (geqrf) */
 //@{
 template< typename MT, bool SO >
-inline void geqrf( DenseMatrix<MT,SO>& A, ElementType_t<MT>* tau );
+void geqrf( DenseMatrix<MT,SO>& A, ElementType_t<MT>* tau );
 //@}
 //*************************************************************************************************
 

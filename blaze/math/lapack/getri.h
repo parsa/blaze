@@ -66,7 +66,7 @@ namespace blaze {
 /*!\name LAPACK LU-based inversion functions (getri) */
 //@{
 template< typename MT, bool SO >
-inline void getri( DenseMatrix<MT,SO>& A, const int* ipiv );
+void getri( DenseMatrix<MT,SO>& A, const int* ipiv );
 //@}
 //*************************************************************************************************
 

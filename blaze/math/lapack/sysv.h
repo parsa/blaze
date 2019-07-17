@@ -69,10 +69,10 @@ namespace blaze {
 /*!\name LAPACK symmetric indefinite linear system functions (sysv) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-inline void sysv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* ipiv );
+void sysv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* ipiv );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline void sysv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, int* ipiv );
+void sysv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, int* ipiv );
 //@}
 //*************************************************************************************************
 

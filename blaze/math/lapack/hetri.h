@@ -68,7 +68,7 @@ namespace blaze {
 /*!\name LAPACK LDLH-based inversion functions (hetri) */
 //@{
 template< typename MT, bool SO >
-inline void hetri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv );
+void hetri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv );
 //@}
 //*************************************************************************************************
 

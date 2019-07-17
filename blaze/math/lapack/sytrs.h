@@ -69,11 +69,10 @@ namespace blaze {
 /*!\name LAPACK LDLT-based substitution functions (sytrs) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-inline void sytrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, const int* ipiv );
+void sytrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, const int* ipiv );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline void sytrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
-                   char uplo, const int* ipiv );
+void sytrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, const int* ipiv );
 //@}
 //*************************************************************************************************
 

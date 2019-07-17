@@ -73,19 +73,17 @@ namespace blaze {
 /*!\name LAPACK SVD functions (gesdd) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-inline void gesdd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s );
+void gesdd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s );
 
 template< typename MT1, bool SO, typename MT2, typename VT, bool TF >
-inline void gesdd( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
-                   DenseVector<VT,TF>& s, char jobz );
+void gesdd( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s, char jobz );
 
 template< typename MT1, bool SO, typename MT2, typename VT, bool TF >
-inline void gesdd( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
-                   DenseMatrix<MT2,SO>& V, char jobz );
+void gesdd( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s, DenseMatrix<MT2,SO>& V, char jobz );
 
 template< typename MT1, bool SO, typename MT2, typename VT, bool TF, typename MT3 >
-inline void gesdd( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
-                   DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, char jobz );
+void gesdd( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
+            DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, char jobz );
 //@}
 //*************************************************************************************************
 

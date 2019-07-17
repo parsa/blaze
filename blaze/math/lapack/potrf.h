@@ -66,7 +66,7 @@ namespace blaze {
 /*!\name LAPACK LLH (Cholesky) decomposition functions (potrf) */
 //@{
 template< typename MT, bool SO >
-inline void potrf( DenseMatrix<MT,SO>& A, char uplo );
+void potrf( DenseMatrix<MT,SO>& A, char uplo );
 //@}
 //*************************************************************************************************
 

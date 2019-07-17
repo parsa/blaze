@@ -67,10 +67,10 @@ namespace blaze {
 /*!\name LAPACK general linear system functions (gesv) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-inline void gesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, int* ipiv );
+void gesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, int* ipiv );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline void gesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, int* ipiv );
+void gesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, int* ipiv );
 //@}
 //*************************************************************************************************
 

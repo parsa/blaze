@@ -71,18 +71,18 @@ namespace blaze {
 /*!\name LAPACK symmetric matrix eigenvalue functions (syevx) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-inline size_t syevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo );
+size_t syevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo );
 
 template< typename MT, bool SO, typename VT, bool TF, typename ST >
-inline size_t syevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo, ST low, ST upp );
+size_t syevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo, ST low, ST upp );
 
 template< typename MT1, bool SO1, typename VT, bool TF, typename MT2, bool SO2 >
-inline size_t syevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
-                     DenseMatrix<MT2,SO2>& Z, char uplo );
+size_t syevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
+              DenseMatrix<MT2,SO2>& Z, char uplo );
 
 template< typename MT1, bool SO1, typename VT, bool TF, typename MT2, bool SO2, typename ST >
-inline size_t syevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
-                     DenseMatrix<MT2,SO2>& Z, char uplo, ST low, ST upp );
+size_t syevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
+              DenseMatrix<MT2,SO2>& Z, char uplo, ST low, ST upp );
 //@}
 //*************************************************************************************************
 

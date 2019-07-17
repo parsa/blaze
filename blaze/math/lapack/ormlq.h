@@ -70,8 +70,8 @@ namespace blaze {
 /*!\name LAPACK functions to multiply Q from a LQ decomposition with a matrix (ormlq) */
 //@{
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline void ormlq( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
-                   char side, char trans, const ElementType_t<MT2>* tau );
+void ormlq( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
+            char side, char trans, const ElementType_t<MT2>* tau );
 //@}
 //*************************************************************************************************
 

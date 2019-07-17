@@ -67,7 +67,7 @@ namespace blaze {
 /*!\name LAPACK LDLT-based inversion functions (sytri) */
 //@{
 template< typename MT, bool SO >
-inline void sytri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv );
+void sytri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv );
 //@}
 //*************************************************************************************************
 

@@ -69,8 +69,8 @@ namespace blaze {
 /*!\name LAPACK functions to multiply Q from a QR decomposition with a matrix (unmqr) */
 //@{
 template< typename MT1, bool SO, typename MT2 >
-inline void unmqr( DenseMatrix<MT1,SO>& C, DenseMatrix<MT2,SO>& A,
-                   char side, char trans, ElementType_t<MT2>* tau );
+void unmqr( DenseMatrix<MT1,SO>& C, DenseMatrix<MT2,SO>& A,
+            char side, char trans, ElementType_t<MT2>* tau );
 //@}
 //*************************************************************************************************
 

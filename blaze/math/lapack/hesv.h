@@ -68,10 +68,10 @@ namespace blaze {
 /*!\name LAPACK Hermitian indefinite linear system functions (hesv) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-inline void hesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* ipiv );
+void hesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* ipiv );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-inline void hesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, int* ipiv );
+void hesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, int* ipiv );
 //@}
 //*************************************************************************************************
 

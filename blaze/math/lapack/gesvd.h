@@ -73,19 +73,19 @@ namespace blaze {
 /*!\name LAPACK SVD functions (gesvd) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-inline void gesvd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, char jobu, char jobv );
+void gesvd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, char jobu, char jobv );
 
 template< typename MT1, bool SO, typename MT2, typename VT, bool TF >
-inline void gesvd( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
-                   DenseVector<VT,TF>& s, char jobu, char jobv );
+void gesvd( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
+            DenseVector<VT,TF>& s, char jobu, char jobv );
 
 template< typename MT1, bool SO, typename VT, bool TF, typename MT2 >
-inline void gesvd( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
-                   DenseMatrix<MT2,SO>& V, char jobu, char jobv );
+void gesvd( DenseMatrix<MT1,SO>& A, DenseVector<VT,TF>& s,
+            DenseMatrix<MT2,SO>& V, char jobu, char jobv );
 
 template< typename MT1, bool SO, typename MT2, typename VT, bool TF, typename MT3 >
-inline void gesvd( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
-                   DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, char jobu, char jobv );
+void gesvd( DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U,
+            DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, char jobu, char jobv );
 //@}
 //*************************************************************************************************
 
