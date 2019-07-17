@@ -80,11 +80,11 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK LDLH decomposition functions (hetrf) */
 //@{
-inline void hetrf( char uplo, int n, complex<float>* A, int lda, int* ipiv,
-                   complex<float>* work, int lwork, int* info );
+void hetrf( char uplo, int n, complex<float>* A, int lda, int* ipiv,
+            complex<float>* work, int lwork, int* info );
 
-inline void hetrf( char uplo, int n, complex<double>* A, int lda, int* ipiv,
-                   complex<double>* work, int lwork, int* info );
+void hetrf( char uplo, int n, complex<double>* A, int lda, int* ipiv,
+            complex<double>* work, int lwork, int* info );
 //@}
 //*************************************************************************************************
 

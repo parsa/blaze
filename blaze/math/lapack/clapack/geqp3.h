@@ -78,11 +78,11 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK QR decomposition functions (geqp3) */
 //@{
-inline void geqp3( int m, int n, float* A, int lda, int* jpvt, float* tau,
-                   float* work, int lwork, int* info );
+void geqp3( int m, int n, float* A, int lda, int* jpvt, float* tau,
+            float* work, int lwork, int* info );
 
-inline void geqp3( int m, int n, double* A, int lda, int* jpvt, double* tau,
-                   double* work, int lwork, int* info );
+void geqp3( int m, int n, double* A, int lda, int* jpvt, double* tau,
+            double* work, int lwork, int* info );
 //@}
 //*************************************************************************************************
 

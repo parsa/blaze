@@ -84,17 +84,17 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK LDLT decomposition functions (sytrf) */
 //@{
-inline void sytrf( char uplo, int n, float* A, int lda, int* ipiv,
-                   float* work, int lwork, int* info );
+void sytrf( char uplo, int n, float* A, int lda, int* ipiv,
+            float* work, int lwork, int* info );
 
-inline void sytrf( char uplo, int n, double* A, int lda, int* ipiv,
-                   double* work, int lwork, int* info );
+void sytrf( char uplo, int n, double* A, int lda, int* ipiv,
+            double* work, int lwork, int* info );
 
-inline void sytrf( char uplo, int n, complex<float>* A, int lda, int* ipiv,
-                   complex<float>* work, int lwork, int* info );
+void sytrf( char uplo, int n, complex<float>* A, int lda, int* ipiv,
+            complex<float>* work, int lwork, int* info );
 
-inline void sytrf( char uplo, int n, complex<double>* A, int lda, int* ipiv,
-                   complex<double>* work, int lwork, int* info );
+void sytrf( char uplo, int n, complex<double>* A, int lda, int* ipiv,
+            complex<double>* work, int lwork, int* info );
 //@}
 //*************************************************************************************************
 

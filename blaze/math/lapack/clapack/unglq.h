@@ -79,11 +79,11 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK functions to reconstruct Q from a LQ decomposition (unglq) */
 //@{
-inline void unglq( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau,
-                   complex<float>* work, int lwork, int* info );
+void unglq( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau,
+            complex<float>* work, int lwork, int* info );
 
-inline void unglq( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau,
-                   complex<double>* work, int lwork, int* info );
+void unglq( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau,
+            complex<double>* work, int lwork, int* info );
 //@}
 //*************************************************************************************************
 

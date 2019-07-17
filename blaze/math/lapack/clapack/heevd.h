@@ -82,13 +82,13 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK Hermitian matrix eigenvalue functions (heevd) */
 //@{
-inline void heevd( char jobz, char uplo, int n, complex<float>* A, int lda, float* w,
-                   complex<float>* work, int lwork, float* rwork, int lrwork,
-                   int* iwork, int liwork, int* info );
+void heevd( char jobz, char uplo, int n, complex<float>* A, int lda, float* w,
+            complex<float>* work, int lwork, float* rwork, int lrwork,
+            int* iwork, int liwork, int* info );
 
-inline void heevd( char jobz, char uplo, int n, complex<double>* A, int lda, double* w,
-                   complex<double>* work, int lwork, double* rwork, int lrwork,
-                   int* iwork, int liwork, int* info );
+void heevd( char jobz, char uplo, int n, complex<double>* A, int lda, double* w,
+            complex<double>* work, int lwork, double* rwork, int lrwork,
+            int* iwork, int liwork, int* info );
 //@}
 //*************************************************************************************************
 

@@ -84,13 +84,13 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK positive definite linear system functions (posv) */
 //@{
-inline void posv( char uplo, int n, int nrhs, float* A, int lda, float* B, int ldb, int* info );
+void posv( char uplo, int n, int nrhs, float* A, int lda, float* B, int ldb, int* info );
 
-inline void posv( char uplo, int n, int nrhs, double* A, int lda, double* B, int ldb, int* info );
+void posv( char uplo, int n, int nrhs, double* A, int lda, double* B, int ldb, int* info );
 
-inline void posv( char uplo, int n, int nrhs, complex<float>* A, int lda, complex<float>* B, int ldb, int* info );
+void posv( char uplo, int n, int nrhs, complex<float>* A, int lda, complex<float>* B, int ldb, int* info );
 
-inline void posv( char uplo, int n, int nrhs, complex<double>* A, int lda, complex<double>* B, int ldb, int* info );
+void posv( char uplo, int n, int nrhs, complex<double>* A, int lda, complex<double>* B, int ldb, int* info );
 //@}
 //*************************************************************************************************
 

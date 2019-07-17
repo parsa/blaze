@@ -82,13 +82,13 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK functions to multiply Q from a LQ decomposition with a matrix (unmlq) */
 //@{
-inline void unmlq( char side, char trans, int m, int n, int k, const complex<float>* A, int lda,
-                   const complex<float>* tau, complex<float>* C, int ldc, complex<float>* work,
-                   int lwork, int* info );
+void unmlq( char side, char trans, int m, int n, int k, const complex<float>* A, int lda,
+            const complex<float>* tau, complex<float>* C, int ldc, complex<float>* work,
+            int lwork, int* info );
 
-inline void unmlq( char side, char trans, int m, int n, int k, const complex<double>* A, int lda,
-                   const complex<double>* tau, complex<double>* C, int ldc, complex<double>* work,
-                   int lwork, int* info );
+void unmlq( char side, char trans, int m, int n, int k, const complex<double>* A, int lda,
+            const complex<double>* tau, complex<double>* C, int ldc, complex<double>* work,
+            int lwork, int* info );
 //@}
 //*************************************************************************************************
 

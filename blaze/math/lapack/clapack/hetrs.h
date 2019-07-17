@@ -80,11 +80,11 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK LDLH-based substitution functions (hetrs) */
 //@{
-inline void hetrs( char uplo, int n, int nrhs, const complex<float>* A, int lda, const int* ipiv,
-                   complex<float>* B, int ldb, int* info );
+void hetrs( char uplo, int n, int nrhs, const complex<float>* A, int lda, const int* ipiv,
+            complex<float>* B, int ldb, int* info );
 
-inline void hetrs( char uplo, int n, int nrhs, const complex<double>* A, int lda, const int* ipiv,
-                   complex<double>* B, int ldb, int* info );
+void hetrs( char uplo, int n, int nrhs, const complex<double>* A, int lda, const int* ipiv,
+            complex<double>* B, int ldb, int* info );
 //@}
 //*************************************************************************************************
 

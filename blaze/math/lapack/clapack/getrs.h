@@ -84,17 +84,17 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK LU-based substitution functions (getrs) */
 //@{
-inline void getrs( char trans, int n, int nrhs, const float* A, int lda, const int* ipiv,
-                   float* B, int ldb, int* info );
+void getrs( char trans, int n, int nrhs, const float* A, int lda, const int* ipiv,
+            float* B, int ldb, int* info );
 
-inline void getrs( char trans, int n, int nrhs, const double* A, int lda, const int* ipiv,
-                   double* B, int ldb, int* info );
+void getrs( char trans, int n, int nrhs, const double* A, int lda, const int* ipiv,
+            double* B, int ldb, int* info );
 
-inline void getrs( char trans, int n, int nrhs, const complex<float>* A, int lda,
-                   const int* ipiv, complex<float>* B, int ldb, int* info );
+void getrs( char trans, int n, int nrhs, const complex<float>* A, int lda,
+            const int* ipiv, complex<float>* B, int ldb, int* info );
 
-inline void getrs( char trans, int n, int nrhs, const complex<double>* A, int lda,
-                   const int* ipiv, complex<double>* B, int ldb, int* info );
+void getrs( char trans, int n, int nrhs, const complex<double>* A, int lda,
+            const int* ipiv, complex<double>* B, int ldb, int* info );
 //@}
 //*************************************************************************************************
 

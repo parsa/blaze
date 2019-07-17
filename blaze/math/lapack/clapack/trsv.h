@@ -88,17 +88,17 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK triangular linear system functions (trsv) */
 //@{
-inline void trsv( char uplo, char trans, char diag, int n, const float* A,
-                  int lda, float* x, int incX );
+void trsv( char uplo, char trans, char diag, int n, const float* A,
+           int lda, float* x, int incX );
 
-inline void trsv( char uplo, char trans, char diag, int n, const double* A,
-                  int lda, double* x, int incX );
+void trsv( char uplo, char trans, char diag, int n, const double* A,
+           int lda, double* x, int incX );
 
-inline void trsv( char uplo, char trans, char diag, int n, const complex<float>* A,
-                  int lda, complex<float>* x, int incX );
+void trsv( char uplo, char trans, char diag, int n, const complex<float>* A,
+           int lda, complex<float>* x, int incX );
 
-inline void trsv( char uplo, char trans, char diag, int n, const complex<double>* A,
-                  int lda, complex<double>* x, int incX );
+void trsv( char uplo, char trans, char diag, int n, const complex<double>* A,
+           int lda, complex<double>* x, int incX );
 //@}
 //*************************************************************************************************
 

@@ -80,13 +80,13 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK LLH (Cholesky) decomposition functions (potrf) */
 //@{
-inline void potrf( char uplo, int n, float* A, int lda, int* info );
+void potrf( char uplo, int n, float* A, int lda, int* info );
 
-inline void potrf( char uplo, int n, double* A, int lda, int* info );
+void potrf( char uplo, int n, double* A, int lda, int* info );
 
-inline void potrf( char uplo, int n, complex<float>* A, int lda, int* info );
+void potrf( char uplo, int n, complex<float>* A, int lda, int* info );
 
-inline void potrf( char uplo, int n, complex<double>* A, int lda, int* info );
+void potrf( char uplo, int n, complex<double>* A, int lda, int* info );
 //@}
 //*************************************************************************************************
 

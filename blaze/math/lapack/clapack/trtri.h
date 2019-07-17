@@ -84,13 +84,13 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK triangular matrix inversion functions (trtri) */
 //@{
-inline void trtri( char uplo, char diag, int n, float* A, int lda, int* info );
+void trtri( char uplo, char diag, int n, float* A, int lda, int* info );
 
-inline void trtri( char uplo, char diag, int n, double* A, int lda, int* info );
+void trtri( char uplo, char diag, int n, double* A, int lda, int* info );
 
-inline void trtri( char uplo, char diag, int n, complex<float>* A, int lda, int* info );
+void trtri( char uplo, char diag, int n, complex<float>* A, int lda, int* info );
 
-inline void trtri( char uplo, char diag, int n, complex<double>* A, int lda, int* info );
+void trtri( char uplo, char diag, int n, complex<double>* A, int lda, int* info );
 //@}
 //*************************************************************************************************
 

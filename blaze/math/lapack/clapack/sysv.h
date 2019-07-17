@@ -84,17 +84,17 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK symmetric indefinite linear system functions (sysv) */
 //@{
-inline void sysv( char uplo, int n, int nrhs, float* A, int lda, int* ipiv,
-                  float* B, int ldb, float* work, int lwork, int* info );
+void sysv( char uplo, int n, int nrhs, float* A, int lda, int* ipiv,
+           float* B, int ldb, float* work, int lwork, int* info );
 
-inline void sysv( char uplo, int n, int nrhs, double* A, int lda, int* ipiv,
-                  double* B, int ldb, double* work, int lwork, int* info );
+void sysv( char uplo, int n, int nrhs, double* A, int lda, int* ipiv,
+           double* B, int ldb, double* work, int lwork, int* info );
 
-inline void sysv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* ipiv,
-                  complex<float>* B, int ldb, complex<float>* work, int lwork, int* info );
+void sysv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* ipiv,
+           complex<float>* B, int ldb, complex<float>* work, int lwork, int* info );
 
-inline void sysv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* ipiv,
-                  complex<double>* B, int ldb, complex<double>* work, int lwork, int* info );
+void sysv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* ipiv,
+           complex<double>* B, int ldb, complex<double>* work, int lwork, int* info );
 //@}
 //*************************************************************************************************
 

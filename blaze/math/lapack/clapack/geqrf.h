@@ -79,17 +79,17 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK QR decomposition functions (geqrf) */
 //@{
-inline void geqrf( int m, int n, float* A, int lda, float* tau,
-                   float* work, int lwork, int* info );
+void geqrf( int m, int n, float* A, int lda, float* tau,
+            float* work, int lwork, int* info );
 
-inline void geqrf( int m, int n, double* A, int lda, double* tau,
-                   double* work, int lwork, int* info );
+void geqrf( int m, int n, double* A, int lda, double* tau,
+            double* work, int lwork, int* info );
 
-inline void geqrf( int m, int n, complex<float>* A, int lda, complex<float>* tau,
-                   complex<float>* work, int lwork, int* info );
+void geqrf( int m, int n, complex<float>* A, int lda, complex<float>* tau,
+            complex<float>* work, int lwork, int* info );
 
-inline void geqrf( int m, int n, complex<double>* A, int lda, complex<double>* tau,
-                   complex<double>* work, int lwork, int* info );
+void geqrf( int m, int n, complex<double>* A, int lda, complex<double>* tau,
+            complex<double>* work, int lwork, int* info );
 //@}
 //*************************************************************************************************
 

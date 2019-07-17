@@ -84,17 +84,17 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK LDLT-based substitution functions (sytrs) */
 //@{
-inline void sytrs( char uplo, int n, int nrhs, const float* A, int lda, const int* ipiv,
-                   float* B, int ldb, int* info );
+void sytrs( char uplo, int n, int nrhs, const float* A, int lda, const int* ipiv,
+            float* B, int ldb, int* info );
 
-inline void sytrs( char uplo, int n, int nrhs, const double* A, int lda, const int* ipiv,
-                   double* B, int ldb, int* info );
+void sytrs( char uplo, int n, int nrhs, const double* A, int lda, const int* ipiv,
+            double* B, int ldb, int* info );
 
-inline void sytrs( char uplo, int n, int nrhs, const complex<float>* A, int lda, const int* ipiv,
-                   complex<float>* B, int ldb, int* info );
+void sytrs( char uplo, int n, int nrhs, const complex<float>* A, int lda, const int* ipiv,
+            complex<float>* B, int ldb, int* info );
 
-inline void sytrs( char uplo, int n, int nrhs, const complex<double>* A, int lda, const int* ipiv,
-                   complex<double>* B, int ldb, int* info );
+void sytrs( char uplo, int n, int nrhs, const complex<double>* A, int lda, const int* ipiv,
+            complex<double>* B, int ldb, int* info );
 //@}
 //*************************************************************************************************
 

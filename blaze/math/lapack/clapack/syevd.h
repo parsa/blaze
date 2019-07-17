@@ -82,11 +82,11 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK symmetric matrix eigenvalue functions (syevd) */
 //@{
-inline void syevd( char jobz, char uplo, int n, float* A, int lda, float* w,
-                   float* work, int lwork, int* iwork, int liwork, int* info );
+void syevd( char jobz, char uplo, int n, float* A, int lda, float* w,
+            float* work, int lwork, int* iwork, int liwork, int* info );
 
-inline void syevd( char jobz, char uplo, int n, double* A, int lda, double* w,
-                   double* work, int lwork, int* iwork, int liwork, int* info );
+void syevd( char jobz, char uplo, int n, double* A, int lda, double* w,
+            double* work, int lwork, int* iwork, int liwork, int* info );
 //@}
 //*************************************************************************************************
 

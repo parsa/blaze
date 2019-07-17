@@ -80,13 +80,13 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK LLH-based inversion functions (potri) */
 //@{
-inline void potri( char uplo, int n, float* A, int lda, int* info );
+void potri( char uplo, int n, float* A, int lda, int* info );
 
-inline void potri( char uplo, int n, double* A, int lda, int* info );
+void potri( char uplo, int n, double* A, int lda, int* info );
 
-inline void potri( char uplo, int n, complex<float>* A, int lda, int* info );
+void potri( char uplo, int n, complex<float>* A, int lda, int* info );
 
-inline void potri( char uplo, int n, complex<double>* A, int lda, int* info );
+void potri( char uplo, int n, complex<double>* A, int lda, int* info );
 //@}
 //*************************************************************************************************
 

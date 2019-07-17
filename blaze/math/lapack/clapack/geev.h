@@ -88,21 +88,21 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK general matrix eigenvalue functions (geev) */
 //@{
-inline void geev( char jobvl, char jobvr, int n, float* A, int lda,
-                  float* wr, float* wi, float* VL, int ldvl, float* VR, int ldvr,
-                  float* work, int lwork, int* info );
+void geev( char jobvl, char jobvr, int n, float* A, int lda,
+           float* wr, float* wi, float* VL, int ldvl, float* VR, int ldvr,
+           float* work, int lwork, int* info );
 
-inline void geev( char jobvl, char jobvr, int n, double* A, int lda,
-                  double* wr, double* wi, double* VL, int ldvl, double* VR, int ldvr,
-                  double* work, int lwork, int* info );
+void geev( char jobvl, char jobvr, int n, double* A, int lda,
+           double* wr, double* wi, double* VL, int ldvl, double* VR, int ldvr,
+           double* work, int lwork, int* info );
 
-inline void geev( char jobvl, char jobvr, int n, complex<float>* A, int lda,
-                  complex<float>* w, complex<float>* VL, int ldvl, complex<float>* VR, int ldvr,
-                  complex<float>* work, int lwork, float* rwork, int* info );
+void geev( char jobvl, char jobvr, int n, complex<float>* A, int lda,
+           complex<float>* w, complex<float>* VL, int ldvl, complex<float>* VR, int ldvr,
+           complex<float>* work, int lwork, float* rwork, int* info );
 
-inline void geev( char jobvl, char jobvr, int n, complex<double>* A, int lda,
-                  complex<double>* w, complex<double>* VL, int ldvl, complex<double>* VR, int ldvr,
-                  complex<double>* work, int lwork, double* rwork, int* info );
+void geev( char jobvl, char jobvr, int n, complex<double>* A, int lda,
+           complex<double>* w, complex<double>* VL, int ldvl, complex<double>* VR, int ldvr,
+           complex<double>* work, int lwork, double* rwork, int* info );
 //@}
 //*************************************************************************************************
 

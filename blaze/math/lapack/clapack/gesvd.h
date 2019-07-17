@@ -88,21 +88,21 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK SVD functions (gesvd) */
 //@{
-inline void gesvd( char jobu, char jobv, int m, int n, float* A, int lda,
-                   float* s, float* U, int ldu, float* V, int ldv,
-                   float* work, int lwork, int* info );
+void gesvd( char jobu, char jobv, int m, int n, float* A, int lda,
+            float* s, float* U, int ldu, float* V, int ldv,
+            float* work, int lwork, int* info );
 
-inline void gesvd( char jobu, char jobv, int m, int n, double* A, int lda,
-                   double* s, double* U, int ldu, double* V, int ldv,
-                   double* work, int lwork, int* info );
+void gesvd( char jobu, char jobv, int m, int n, double* A, int lda,
+            double* s, double* U, int ldu, double* V, int ldv,
+            double* work, int lwork, int* info );
 
-inline void gesvd( char jobu, char jobv, int m, int n, complex<float>* A, int lda,
-                   float* s, complex<float>* U, int ldu, complex<float>* V, int ldv,
-                   complex<float>* work, int lwork, float* rwork, int* info );
+void gesvd( char jobu, char jobv, int m, int n, complex<float>* A, int lda,
+            float* s, complex<float>* U, int ldu, complex<float>* V, int ldv,
+            complex<float>* work, int lwork, float* rwork, int* info );
 
-inline void gesvd( char jobu, char jobv, int m, int n, complex<double>* A, int lda,
-                   double* s, complex<double>* U, int ldu, complex<double>* V, int ldv,
-                   complex<double>* work, int lwork, double* rwork, int* info );
+void gesvd( char jobu, char jobv, int m, int n, complex<double>* A, int lda,
+            double* s, complex<double>* U, int ldu, complex<double>* V, int ldv,
+            complex<double>* work, int lwork, double* rwork, int* info );
 //@}
 //*************************************************************************************************
 

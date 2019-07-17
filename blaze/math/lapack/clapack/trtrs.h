@@ -88,17 +88,17 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK triangular substitution functions (trtrs) */
 //@{
-inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const float* A,
-                   int lda, float* B, int ldb, int* info );
+void trtrs( char uplo, char trans, char diag, int n, int nrhs, const float* A,
+            int lda, float* B, int ldb, int* info );
 
-inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const double* A,
-                   int lda, double* B, int ldb, int* info );
+void trtrs( char uplo, char trans, char diag, int n, int nrhs, const double* A,
+            int lda, double* B, int ldb, int* info );
 
-inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const complex<float>* A,
-                   int lda, complex<float>* B, int ldb, int* info );
+void trtrs( char uplo, char trans, char diag, int n, int nrhs, const complex<float>* A,
+            int lda, complex<float>* B, int ldb, int* info );
 
-inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const complex<double>* A,
-                   int lda, complex<double>* B, int ldb, int* info );
+void trtrs( char uplo, char trans, char diag, int n, int nrhs, const complex<double>* A,
+            int lda, complex<double>* B, int ldb, int* info );
 //@}
 //*************************************************************************************************
 

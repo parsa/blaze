@@ -81,11 +81,11 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK functions to multiply Q from a LQ decomposition with a matrix (ormlq) */
 //@{
-inline void ormlq( char side, char trans, int m, int n, int k, const float* A, int lda,
-                   const float* tau, float* C, int ldc, float* work, int lwork, int* info );
+void ormlq( char side, char trans, int m, int n, int k, const float* A, int lda,
+            const float* tau, float* C, int ldc, float* work, int lwork, int* info );
 
-inline void ormlq( char side, char trans, int m, int n, int k, const double* A, int lda,
-                   const double* tau, double* C, int ldc, double* work, int lwork, int* info );
+void ormlq( char side, char trans, int m, int n, int k, const double* A, int lda,
+            const double* tau, double* C, int ldc, double* work, int lwork, int* info );
 //@}
 //*************************************************************************************************
 

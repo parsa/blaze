@@ -79,11 +79,11 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK functions to reconstruct Q from a QR decomposition (orgqr) */
 //@{
-inline void orgqr( int m, int n, int k, float* A, int lda, const float* tau,
-                   float* work, int lwork, int* info );
+void orgqr( int m, int n, int k, float* A, int lda, const float* tau,
+            float* work, int lwork, int* info );
 
-inline void orgqr( int m, int n, int k, double* A, int lda, const double* tau,
-                   double* work, int lwork, int* info );
+void orgqr( int m, int n, int k, double* A, int lda, const double* tau,
+            double* work, int lwork, int* info );
 //@}
 //*************************************************************************************************
 

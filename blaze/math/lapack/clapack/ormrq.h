@@ -81,11 +81,11 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK functions to multiply Q from a RQ decomposition with a matrix (ormrq) */
 //@{
-inline void ormrq( char side, char trans, int m, int n, int k, const float* A, int lda,
-                   const float* tau, float* C, int ldc, float* work, int lwork, int* info );
+void ormrq( char side, char trans, int m, int n, int k, const float* A, int lda,
+            const float* tau, float* C, int ldc, float* work, int lwork, int* info );
 
-inline void ormrq( char side, char trans, int m, int n, int k, const double* A, int lda,
-                   const double* tau, double* C, int ldc, double* work, int lwork, int* info );
+void ormrq( char side, char trans, int m, int n, int k, const double* A, int lda,
+            const double* tau, double* C, int ldc, double* work, int lwork, int* info );
 //@}
 //*************************************************************************************************
 

@@ -79,13 +79,13 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK LU decomposition functions (getrf) */
 //@{
-inline void getrf( int m, int n, float* A, int lda, int* ipiv, int* info );
+void getrf( int m, int n, float* A, int lda, int* ipiv, int* info );
 
-inline void getrf( int m, int n, double* A, int lda, int* ipiv, int* info );
+void getrf( int m, int n, double* A, int lda, int* ipiv, int* info );
 
-inline void getrf( int m, int n, complex<float>* A, int lda, int* ipiv, int* info );
+void getrf( int m, int n, complex<float>* A, int lda, int* ipiv, int* info );
 
-inline void getrf( int m, int n, complex<double>* A, int lda, int* ipiv, int* info );
+void getrf( int m, int n, complex<double>* A, int lda, int* ipiv, int* info );
 //@}
 //*************************************************************************************************
 

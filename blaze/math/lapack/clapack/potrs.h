@@ -84,17 +84,17 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK LLH-based substitution functions (potrs) */
 //@{
-inline void potrs( char uplo, int n, int nrhs, const float* A, int lda,
-                   float* B, int ldb, int* info );
+void potrs( char uplo, int n, int nrhs, const float* A, int lda,
+            float* B, int ldb, int* info );
 
-inline void potrs( char uplo, int n, int nrhs, const double* A, int lda,
-                   double* B, int ldb, int* info );
+void potrs( char uplo, int n, int nrhs, const double* A, int lda,
+            double* B, int ldb, int* info );
 
-inline void potrs( char uplo, int n, int nrhs, const complex<float>* A, int lda,
-                   complex<float>* B, int ldb, int* info );
+void potrs( char uplo, int n, int nrhs, const complex<float>* A, int lda,
+            complex<float>* B, int ldb, int* info );
 
-inline void potrs( char uplo, int n, int nrhs, const complex<double>* A, int lda,
-                   complex<double>* B, int ldb, int* info );
+void potrs( char uplo, int n, int nrhs, const complex<double>* A, int lda,
+            complex<double>* B, int ldb, int* info );
 //@}
 //*************************************************************************************************
 

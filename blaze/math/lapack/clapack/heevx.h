@@ -86,15 +86,15 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK Hermitian matrix eigenvalue functions (heevx) */
 //@{
-inline void heevx( char jobz, char range, char uplo, int n, complex<float>* A, int lda,
-                   float vl, float vu, int il, int iu, float abstol, int* m, float* w,
-                   complex<float>* Z, int ldz, complex<float>* work, int lwork,
-                   float* rwork, int* iwork, int* ifail, int* info );
+void heevx( char jobz, char range, char uplo, int n, complex<float>* A, int lda,
+            float vl, float vu, int il, int iu, float abstol, int* m, float* w,
+            complex<float>* Z, int ldz, complex<float>* work, int lwork,
+            float* rwork, int* iwork, int* ifail, int* info );
 
-inline void heevx( char jobz, char range, char uplo, int n, complex<double>* A, int lda,
-                   double vl, double vu, int il, int iu, double abstol, int* m, double* w,
-                   complex<double>* Z, int ldz, complex<double>* work, int lwork,
-                   double* rwork, int* iwork, int* ifail, int* info );
+void heevx( char jobz, char range, char uplo, int n, complex<double>* A, int lda,
+            double vl, double vu, int il, int iu, double abstol, int* m, double* w,
+            complex<double>* Z, int ldz, complex<double>* work, int lwork,
+            double* rwork, int* iwork, int* ifail, int* info );
 //@}
 //*************************************************************************************************
 

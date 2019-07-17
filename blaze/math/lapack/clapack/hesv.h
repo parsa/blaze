@@ -80,11 +80,11 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK Hermitian indefinite linear system functions (hesv) */
 //@{
-inline void hesv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* ipiv,
-                  complex<float>* B, int ldb, complex<float>* work, int lwork, int* info );
+void hesv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* ipiv,
+           complex<float>* B, int ldb, complex<float>* work, int lwork, int* info );
 
-inline void hesv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* ipiv,
-                  complex<double>* B, int ldb, complex<double>* work, int lwork, int* info );
+void hesv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* ipiv,
+           complex<double>* B, int ldb, complex<double>* work, int lwork, int* info );
 //@}
 //*************************************************************************************************
 

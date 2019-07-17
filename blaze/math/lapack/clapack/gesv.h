@@ -79,13 +79,13 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK general linear system functions (gesv) */
 //@{
-inline void gesv( int n, int nrhs, float* A, int lda, int* ipiv, float* B, int ldb, int* info );
+void gesv( int n, int nrhs, float* A, int lda, int* ipiv, float* B, int ldb, int* info );
 
-inline void gesv( int n, int nrhs, double* A, int lda, int* ipiv, double* B, int ldb, int* info );
+void gesv( int n, int nrhs, double* A, int lda, int* ipiv, double* B, int ldb, int* info );
 
-inline void gesv( int n, int nrhs, complex<float>* A, int lda, int* ipiv, complex<float>* B, int ldb, int* info );
+void gesv( int n, int nrhs, complex<float>* A, int lda, int* ipiv, complex<float>* B, int ldb, int* info );
 
-inline void gesv( int n, int nrhs, complex<double>* A, int lda, int* ipiv, complex<double>* B, int ldb, int* info );
+void gesv( int n, int nrhs, complex<double>* A, int lda, int* ipiv, complex<double>* B, int ldb, int* info );
 //@}
 //*************************************************************************************************
 

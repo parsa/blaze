@@ -79,15 +79,15 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK LU-based inversion functions (getri) */
 //@{
-inline void getri( int n, float* A, int lda, const int* ipiv, float* work, int lwork, int* info );
+void getri( int n, float* A, int lda, const int* ipiv, float* work, int lwork, int* info );
 
-inline void getri( int n, double* A, int lda, const int* ipiv, double* work, int lwork, int* info );
+void getri( int n, double* A, int lda, const int* ipiv, double* work, int lwork, int* info );
 
-inline void getri( int n, complex<float>* A, int lda, const int* ipiv,
-                   complex<float>* work, int lwork, int* info );
+void getri( int n, complex<float>* A, int lda, const int* ipiv,
+            complex<float>* work, int lwork, int* info );
 
-inline void getri( int n, complex<double>* A, int lda, const int* ipiv,
-                   complex<double>* work, int lwork, int* info );
+void getri( int n, complex<double>* A, int lda, const int* ipiv,
+            complex<double>* work, int lwork, int* info );
 //@}
 //*************************************************************************************************
 

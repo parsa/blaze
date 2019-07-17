@@ -80,11 +80,11 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK LDLH-based inversion functions (hetri) */
 //@{
-inline void hetri( char uplo, int n, complex<float>* A, int lda,
-                   const int* ipiv, complex<float>* work, int* info );
+void hetri( char uplo, int n, complex<float>* A, int lda,
+            const int* ipiv, complex<float>* work, int* info );
 
-inline void hetri( char uplo, int n, complex<double>* A, int lda,
-                   const int* ipiv, complex<double>* work, int* info );
+void hetri( char uplo, int n, complex<double>* A, int lda,
+            const int* ipiv, complex<double>* work, int* info );
 //@}
 //*************************************************************************************************
 

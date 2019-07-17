@@ -84,15 +84,15 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK LDLT-based inversion functions (sytri) */
 //@{
-inline void sytri( char uplo, int n, float* A, int lda, const int* ipiv, float* work, int* info );
+void sytri( char uplo, int n, float* A, int lda, const int* ipiv, float* work, int* info );
 
-inline void sytri( char uplo, int n, double* A, int lda, const int* ipiv, double* work, int* info );
+void sytri( char uplo, int n, double* A, int lda, const int* ipiv, double* work, int* info );
 
-inline void sytri( char uplo, int n, complex<float>* A, int lda,
-                   const int* ipiv, complex<float>* work, int* info );
+void sytri( char uplo, int n, complex<float>* A, int lda,
+            const int* ipiv, complex<float>* work, int* info );
 
-inline void sytri( char uplo, int n, complex<double>* A, int lda,
-                   const int* ipiv, complex<double>* work, int* info );
+void sytri( char uplo, int n, complex<double>* A, int lda,
+            const int* ipiv, complex<double>* work, int* info );
 //@}
 //*************************************************************************************************
 
