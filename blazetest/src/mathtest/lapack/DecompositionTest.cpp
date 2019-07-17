@@ -137,6 +137,7 @@ DecompositionTest::DecompositionTest()
    //testUnmrq< complex<float> >();
    //testGeqlf< complex<float> >();
    //testUngql< complex<float> >();
+   //testUng2l< complex<float> >();
    //testUnmql< complex<float> >();
    //testGelqf< complex<float> >();
    //testUnglq< complex<float> >();
@@ -161,6 +162,7 @@ DecompositionTest::DecompositionTest()
    testUnmrq< complex<double> >();
    testGeqlf< complex<double> >();
    testUngql< complex<double> >();
+   testUng2l< complex<double> >();
    testUnmql< complex<double> >();
    testGelqf< complex<double> >();
    testUnglq< complex<double> >();
