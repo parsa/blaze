@@ -127,6 +127,7 @@ class DecompositionTest
    template< typename Type > void testOrglq();
    template< typename Type > void testOrgl2();
    template< typename Type > void testUnglq();
+   template< typename Type > void testUngl2();
    template< typename Type > void testOrmlq();
    template< typename Type > void testUnmlq();
    //@}
@@ -2830,7 +2831,7 @@ void DecompositionTest::testUnglq()
 {
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
-   test_ = "Reconstruction of Q from a LQ decomposition";
+   test_ = "Reconstruction of Q from a LQ decomposition (unglq)";
 
    {
       blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> A;
@@ -2874,6 +2875,83 @@ void DecompositionTest::testUnglq()
 
       blaze::unglq( A, tauA.data() );
       blaze::unglq( B, tauB.data() );
+
+      if( A != B ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q reconstruction failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major reconstruction:\n" << A << "\n"
+             << "   Column-major reconstruction:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the Q reconstruction from a LQ decomposition (ungl2).
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the Q reconstruction from a LQ decomposition for various data
+// types. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >
+void DecompositionTest::testUngl2()
+{
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
+   test_ = "Reconstruction of Q from a LQ decomposition (ungl2)";
+
+   {
+      blaze::StaticMatrix<Type,2UL,5UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
+
+      blaze::gelqf( A, tauA.data() );
+      blaze::gelqf( B, tauB.data() );
+
+      blaze::ungl2( A, tauA.data() );
+      blaze::ungl2( B, tauB.data() );
+
+      if( A != B ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Q reconstruction failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   Row-major reconstruction:\n" << A << "\n"
+             << "   Column-major reconstruction:\n" << B << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::StaticMatrix<Type,5UL,2UL,blaze::rowMajor> A;
+      randomize( A );
+
+      blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( A );
+
+      blaze::StaticVector<Type,2UL,blaze::rowVector> tauA;
+      blaze::StaticVector<Type,2UL,blaze::rowVector> tauB;
+
+      blaze::gelqf( A, tauA.data() );
+      blaze::gelqf( B, tauB.data() );
+
+      blaze::ungl2( A, tauA.data() );
+      blaze::ungl2( B, tauB.data() );
 
       if( A != B ) {
          std::ostringstream oss;
