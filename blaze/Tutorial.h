@@ -2505,7 +2505,28 @@
 // taken into account. In the previous example the compressed vector has only 2 non-zero elements.
 // However, the maximum of the vector is -1.
 //
+// \n \subsection vector_operations_reduction_operations_argmin argmin()
 //
+// The \c argmin() function returns the index of the first smallest element of the given dense
+// vector. This function can only be used for element types that support the smaller-than
+// relationship. In case the given vector currently has a size of 0, the returned index is 0.
+
+   \code
+   blaze::DynamicVector<int> a{ 1, -2, 3, 0 };
+   const size_t minindex = argmin( a );  // Results in 1
+   \endcode
+
+// \n \subsection vector_operations_reduction_operations_argmax argmax()
+//
+// The \c argmax() function returns the index of the first largest element of the given dense
+// vector. This function can only be used for element types that support the smaller-than
+// relationship. In case the given vector currently has a size of 0, the returned index is 0.
+
+   \code
+   blaze::DynamicVector<int> a{ 1, -2, 3, 0 };
+   const size_t maxindex = argmax( a );  // Results in 2
+   \endcode
+
 // \n \section vector_operations_norms Norms
 // <hr>
 //
