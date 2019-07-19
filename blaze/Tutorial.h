@@ -14757,7 +14757,8 @@
 // a product of min(\a m,\a n) elementary reflectors.
 //
 // The following functions provide an interface for the LAPACK functions \c sorgqr(), \c dorgqr(),
-// \c cungqr(), and \c zunqqr(), which reconstruct the \c Q matrix from a QR decomposition:
+// \c sorg2r(), \c dorg2r(), \c cungqr(), \c zunqqr(), \c cung2r(), and \c zung2r(), which
+// reconstruct the \c Q matrix from a QR decomposition:
 
    \code
    namespace blaze {
@@ -14766,15 +14767,32 @@
 
    void orgqr( int m, int n, int k, double* A, int lda, const double* tau, double* work, int lwork, int* info );
 
+   template< typename MT, bool SO >
+   void orgqr( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+
+
+   void org2r( int m, int n, int k, float* A, int lda, const float* tau, float* work, int* info );
+
+   void org2r( int m, int n, int k, double* A, int lda, const double* tau, double* work, int* info );
+
+   template< typename MT, bool SO >
+   void org2r( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+
+
    void ungqr( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau, complex<float>* work, int lwork, int* info );
 
    void ungqr( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau, complex<double>* work, int lwork, int* info );
 
    template< typename MT, bool SO >
-   void orgqr( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+   void ungqr( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+
+
+   void ung2r( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau, complex<float>* work, int* info );
+
+   void ung2r( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau, complex<double>* work, int* info );
 
    template< typename MT, bool SO >
-   void ungqr( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+   void ung2r( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
 
    } // namespace blaze
    \endcode
@@ -14790,12 +14808,13 @@
 
    void ormqr( char side, char trans, int m, int n, int k, const double* A, int lda, const double* tau, double* C, int ldc, double* work, int lwork, int* info );
 
+   template< typename MT1, bool SO1, typename MT2, bool SO2 >
+   void ormqr( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A, char side, char trans, const ElementType_<MT2>* tau );
+
+
    void unmqr( char side, char trans, int m, int n, int k, const complex<float>* A, int lda, const complex<float>* tau, complex<float>* C, int ldc, complex<float>* work, int lwork, int* info );
 
    void unmqr( char side, char trans, int m, int n, int k, const complex<double>* A, int lda, const complex<double>* tau, complex<double>* C, int ldc, complex<double>* work, int lwork, int* info );
-
-   template< typename MT1, bool SO1, typename MT2, bool SO2 >
-   void ormqr( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A, char side, char trans, const ElementType_<MT2>* tau );
 
    template< typename MT1, bool SO, typename MT2 >
    void unmqr( DenseMatrix<MT1,SO>& C, DenseMatrix<MT2,SO>& A, char side, char trans, ElementType_<MT2>* tau );
@@ -14846,7 +14865,8 @@
 // represent the orthogonal matrix \c Q as a product of min(\a m,\a n) elementary reflectors.
 //
 // The following functions provide an interface for the LAPACK functions \c sorgrq(), \c dorgrq(),
-// \c cungrq(), and \c zunqrq(), which reconstruct the \c Q matrix from a RQ decomposition:
+// \c sorgr2(), \c dorgr2(), \c cungrq(), \c zunqrq(), \c cungr2(), and \c zunqr2(), which
+// reconstruct the \c Q matrix from a RQ decomposition:
 
    \code
    namespace blaze {
@@ -14855,15 +14875,32 @@
 
    void orgrq( int m, int n, int k, double* A, int lda, const double* tau, double* work, int lwork, int* info );
 
+   template< typename MT, bool SO >
+   void orgrq( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+
+
+   void orgr2( int m, int n, int k, float* A, int lda, const float* tau, float* work, int* info );
+
+   void orgr2( int m, int n, int k, double* A, int lda, const double* tau, double* work, int* info );
+
+   template< typename MT, bool SO >
+   void orgr2( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+
+
    void ungrq( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau, complex<float>* work, int lwork, int* info );
 
    void ungrq( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau, complex<double>* work, int lwork, int* info );
 
    template< typename MT, bool SO >
-   void orgrq( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+   void ungrq( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+
+
+   void ungr2( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau, complex<float>* work, int* info );
+
+   void ungr2( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau, complex<double>* work, int* info );
 
    template< typename MT, bool SO >
-   void ungrq( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+   void ungr2( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
 
    } // namespace blaze
    \endcode
@@ -14879,12 +14916,13 @@
 
    void ormrq( char side, char trans, int m, int n, int k, const double* A, int lda, const double* tau, double* C, int ldc, double* work, int lwork, int* info );
 
+   template< typename MT1, bool SO1, typename MT2, bool SO2 >
+   void ormrq( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A, char side, char trans, const ElementType_<MT2>* tau );
+
+
    void unmrq( char side, char trans, int m, int n, int k, const complex<float>* A, int lda, const complex<float>* tau, complex<float>* C, int ldc, complex<float>* work, int lwork, int* info );
 
    void unmrq( char side, char trans, int m, int n, int k, const complex<double>* A, int lda, const complex<double>* tau, complex<double>* C, int ldc, complex<double>* work, int lwork, int* info );
-
-   template< typename MT1, bool SO1, typename MT2, bool SO2 >
-   void ormrq( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A, char side, char trans, const ElementType_<MT2>* tau );
 
    template< typename MT1, bool SO, typename MT2 >
    void unmrq( DenseMatrix<MT1,SO>& C, DenseMatrix<MT2,SO>& A, char side, char trans, ElementType_<MT2>* tau );
@@ -14935,7 +14973,8 @@
 // the orthogonal matrix \c Q as a product of min(\a m,\a n) elementary reflectors.
 //
 // The following functions provide an interface for the LAPACK functions \c sorgql(), \c dorgql(),
-// \c cungql(), and \c zunqql(), which reconstruct the \c Q matrix from an QL decomposition:
+// \c sorg2l(), \c dorg2l(), \c cungql(), \c zungql(), \c cung2l(), and \c zung2l(), which
+// reconstruct the \c Q matrix from an QL decomposition:
 
    \code
    namespace blaze {
@@ -14944,15 +14983,32 @@
 
    void orgql( int m, int n, int k, double* A, int lda, const double* tau, double* work, int lwork, int* info );
 
+   template< typename MT, bool SO >
+   void orgql( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+
+
+   void org2l( int m, int n, int k, float* A, int lda, const float* tau, float* work, int* info );
+
+   void org2l( int m, int n, int k, double* A, int lda, const double* tau, double* work, int* info );
+
+   template< typename MT, bool SO >
+   void org2l( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+
+
    void ungql( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau, complex<float>* work, int lwork, int* info );
 
    void ungql( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau, complex<double>* work, int lwork, int* info );
 
    template< typename MT, bool SO >
-   void orgql( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+   void ungql( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+
+
+   void ung2l( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau, complex<float>* work, int* info );
+
+   void ung2l( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau, complex<double>* work, int* info );
 
    template< typename MT, bool SO >
-   void ungql( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+   void ung2l( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
 
    } // namespace blaze
    \endcode
@@ -14968,12 +15024,13 @@
 
    void ormql( char side, char trans, int m, int n, int k, const double* A, int lda, const double* tau, double* C, int ldc, double* work, int lwork, int* info );
 
+   template< typename MT1, bool SO1, typename MT2, bool SO2 >
+   void ormql( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A, char side, char trans, const ElementType_<MT2>* tau );
+
+
    void unmql( char side, char trans, int m, int n, int k, const complex<float>* A, int lda, const complex<float>* tau, complex<float>* C, int ldc, complex<float>* work, int lwork, int* info );
 
    void unmql( char side, char trans, int m, int n, int k, const complex<double>* A, int lda, const complex<double>* tau, complex<double>* C, int ldc, complex<double>* work, int lwork, int* info );
-
-   template< typename MT1, bool SO1, typename MT2, bool SO2 >
-   void ormql( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A, char side, char trans, const ElementType_<MT2>* tau );
 
    template< typename MT1, bool SO, typename MT2 >
    void unmql( DenseMatrix<MT1,SO>& C, DenseMatrix<MT2,SO>& A, char side, char trans, ElementType_<MT2>* tau );
@@ -15023,7 +15080,8 @@
 // as a product of min(\a m,\a n) elementary reflectors.
 //
 // The following functions provide an interface for the LAPACK functions \c sorglq(), \c dorglq(),
-// \c cunglq(), and \c zunqlq(), which reconstruct the \c Q matrix from an LQ decomposition:
+// \c sorgl2(), \c dorgl2(), \c cunglq(), \c zunqlq(), \c cungl2(), and \c zunql2(), which
+// reconstruct the \c Q matrix from an LQ decomposition:
 
    \code
    namespace blaze {
@@ -15032,15 +15090,32 @@
 
    void orglq( int m, int n, int k, double* A, int lda, const double* tau, double* work, int lwork, int* info );
 
+   template< typename MT, bool SO >
+   void orglq( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+
+
+   void orgl2( int m, int n, int k, float* A, int lda, const float* tau, float* work, int* info );
+
+   void orgl2( int m, int n, int k, double* A, int lda, const double* tau, double* work, int* info );
+
+   template< typename MT, bool SO >
+   void orgl2( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+
+
    void unglq( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau, complex<float>* work, int lwork, int* info );
 
    void unglq( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau, complex<double>* work, int lwork, int* info );
 
    template< typename MT, bool SO >
-   void orglq( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+   void unglq( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+
+
+   void ungl2( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau, complex<float>* work, int* info );
+
+   void ungl2( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau, complex<double>* work, int* info );
 
    template< typename MT, bool SO >
-   void unglq( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
+   void ungl2( DenseMatrix<MT,SO>& A, const typename MT::ElementType* tau );
 
    } // namespace blaze
    \endcode
@@ -15056,12 +15131,13 @@
 
    void ormlq( char side, char trans, int m, int n, int k, const double* A, int lda, const double* tau, double* C, int ldc, double* work, int lwork, int* info );
 
+   template< typename MT1, bool SO1, typename MT2, bool SO2 >
+   void ormlq( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A, char side, char trans, const ElementType_<MT2>* tau );
+
+
    void unmlq( char side, char trans, int m, int n, int k, const complex<float>* A, int lda, const complex<float>* tau, complex<float>* C, int ldc, complex<float>* work, int lwork, int* info );
 
    void unmlq( char side, char trans, int m, int n, int k, const complex<double>* A, int lda, const complex<double>* tau, complex<double>* C, int ldc, complex<double>* work, int lwork, int* info );
-
-   template< typename MT1, bool SO1, typename MT2, bool SO2 >
-   void ormlq( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A, char side, char trans, const ElementType_<MT2>* tau );
 
    template< typename MT1, bool SO, typename MT2 >
    void unmlq( DenseMatrix<MT1,SO>& C, DenseMatrix<MT2,SO>& A, char side, char trans, ElementType_<MT2>* tau );
