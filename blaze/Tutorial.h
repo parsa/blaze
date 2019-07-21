@@ -11378,26 +11378,19 @@
 // possible to use std::complex values with the same built-in data types as element type.
 // Examples:
 
-      \code
-   blaze::DynamicVector<int> v1{ 3, 2, 5, -4, 1, 6 };
+   \code
+   blaze::StaticVector<int,3UL> v1{ 3, 2, 5, -4, 1, 6 };
 
-   // Add 3 to all elements of v1; Results in
-   //
-   //    ( 6, 5, 8, -1, 4, 9 )
-   //
-   blaze::DynamicVector<int> v2( v1 + 3 );
+   blaze::DynamicVector<int>    v2 = v1 + 2;  // Results in { 5, 4, 7, -2, 3, 8 }
+   blaze::CompressedVector<int> v3 = 3 + v1;  // Results in { 6, 5, 8, -1, 4, 9 }
    \endcode
 
    \code
-   blaze::DynamicMatrix<int> M1{ {  3, 2, 5 },
-                                 { -4, 1, 6 } };
+   blaze::StaticMatrix<int,2UL,3UL> M1{ {  3, 2, 5 },
+                                        { -4, 1, 6 } };
 
-   // Add 3 to all elements of M1; Results in
-   //
-   //    (  6, 5, 8 )
-   //    ( -1, 4, 9 )
-   //
-   blaze::DynamicMatrix<int> M2( M1 + 3 );
+   blaze::DynamicMatrix<int>    M2 = M1 + 2;  // Results in { { 5, 4, 7 }, { -2, 3, 8 } }
+   blaze::CompressedMatrix<int> M3 = 3 + M1;  // Results in { { 6, 5, 8 }, { -1, 4, 9 } }
    \endcode
 
 // \n Previous: \ref arithmetic_operations &nbsp; &nbsp; Next: \ref subtraction
@@ -11486,25 +11479,18 @@
 // Examples:
 
    \code
-   blaze::DynamicVector<int> v1{ 3, 2, 5, -4, 1, 6 };
+   blaze::StaticVector<int,3UL> v1{ 3, 2, 5, -4, 1, 6 };
 
-   // Subtract 3 from all elements of v1; Results in
-   //
-   //    ( 0, -1, 2, -7, -2, 3 )
-   //
-   blaze::DynamicVector<int> v2( v1 - 3 );
+   blaze::DynamicVector<int>    v2 = v1 - 2;  // Results in { 1, 0, 3, -6, -1, 4 }
+   blaze::CompressedVector<int> v3 = 3 - v1;  // Results in { 0, 1, -2, 7, 2, -3 }
    \endcode
 
    \code
-   blaze::DynamicMatrix<int> M1{ {  3, 2, 5 },
-                                 { -4, 1, 6 } };
+   blaze::StaticMatrix<int,2UL,3UL> M1{ {  3, 2, 5 },
+                                        { -4, 1, 6 } };
 
-   // Subtract 3 from all elements of M1; Results in
-   //
-   //    (  0, -1, 2 )
-   //    ( -7, -2, 3 )
-   //
-   blaze::DynamicMatrix<int> M2( M1 - 3 );
+   blaze::DynamicMatrix<int>    M2 = M1 - 2;  // Results in { { 1, 0, 3 }, { -6, -1, 4 } }
+   blaze::CompressedMatrix<int> M3 = 3 - M1;  // Results in { { 0, 1, -2 }, { 7, 2, -3 } }
    \endcode
 
 // \n Previous: \ref addition &nbsp; &nbsp; Next: \ref scalar_multiplication
