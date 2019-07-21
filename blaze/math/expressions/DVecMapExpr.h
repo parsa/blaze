@@ -2436,7 +2436,8 @@ inline decltype(auto) real( const DVecMapExpr<VT,Real,TF>& dv )
 // \param scalar The right-hand side scalar value for the addition.
 // \return The resulting vector.
 //
-// This operator represents the addition of a scalar value to all elements of a dense vector:
+// This operator represents the elementwise addition of a dense vector and a uniform vector
+// represented by a scalar value:
 
    \code
    blaze::DynamicVector<double> a, b;
@@ -2450,7 +2451,7 @@ inline decltype(auto) real( const DVecMapExpr<VT,Real,TF>& dv )
 // for scalar values of built-in data type.
 */
 template< typename VT  // Type of the left-hand side dense vector
-        , bool TF      // Transpose flag
+        , bool TF      // Transpose flag of the left-hand side dense vector
         , typename ST  // Type of the right-hand side scalar
         , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
 inline decltype(auto) operator+( const DenseVector<VT,TF>& vec, ST scalar )
@@ -2464,6 +2465,43 @@ inline decltype(auto) operator+( const DenseVector<VT,TF>& vec, ST scalar )
 
 
 //*************************************************************************************************
+/*!\brief Addition operator for the addition of a scalar value and a dense vector
+//        (\f$ \vec{a}=s+\vec{b} \f$).
+// \ingroup dense_vector
+//
+// \param scalar The left-hand side scalar value for the addition.
+// \param vec The right-hand side dense vector for the addition.
+// \return The resulting vector.
+//
+// This operator represents the elementwise addition of a uniform vector represented by a scalar
+// value and a dense vector:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = 1.25 + a;
+   \endcode
+
+// The operator returns an expression representing a dense vector of the higher-order element type
+// of the involved data types \a VT::ElementType and \a ST. Both data types \a VT::ElementType and
+// \a ST have to be supported by the AddTrait class template. Note that this operator only works
+// for scalar values of built-in data type.
+*/
+template< typename ST  // Type of the left-hand side scalar
+        , typename VT  // Type of the right-hand side dense vector
+        , bool TF      // Transpose flag of the right-hand side dense vector
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+inline decltype(auto) operator+( ST scalar, const DenseVector<VT,TF>& vec )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = AddTrait_t< UnderlyingBuiltin_t<VT>, ST >;
+   return map( ~vec, blaze::bind1st( Add{}, ScalarType( scalar ) ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Subtraction operator for the subtraction of a dense vector and a scalar value
 //        (\f$ \vec{a}=\vec{b}-s \f$).
 // \ingroup dense_vector
@@ -2472,7 +2510,8 @@ inline decltype(auto) operator+( const DenseVector<VT,TF>& vec, ST scalar )
 // \param scalar The right-hand side scalar value for the subtraction.
 // \return The resulting vector.
 //
-// This operator represents the subtraction of a scalar value from all elements of a dense vector:
+// This operator represents the elementwise subtraction of a uniform vector represented by a
+// scalar value from a dense vector:
 
    \code
    blaze::DynamicVector<double> a, b;
@@ -2486,7 +2525,7 @@ inline decltype(auto) operator+( const DenseVector<VT,TF>& vec, ST scalar )
 // for scalar values of built-in data type.
 */
 template< typename VT  // Type of the left-hand side dense vector
-        , bool TF      // Transpose flag
+        , bool TF      // Transpose flag of the left-hand side dense vector
         , typename ST  // Type of the right-hand side scalar
         , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
 inline decltype(auto) operator-( const DenseVector<VT,TF>& vec, ST scalar )
@@ -2495,6 +2534,43 @@ inline decltype(auto) operator-( const DenseVector<VT,TF>& vec, ST scalar )
 
    using ScalarType = SubTrait_t< UnderlyingBuiltin_t<VT>, ST >;
    return map( ~vec, blaze::bind2nd( Sub{}, ScalarType( scalar ) ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Subtraction operator for the subtraction of a scalar value and a dense vector
+//        (\f$ \vec{a}=s-\vec{b} \f$).
+// \ingroup dense_vector
+//
+// \param scalar The left-hand side scalar value for the subtraction.
+// \param vec The right-hand side dense vector for the subtraction.
+// \return The resulting vector.
+//
+// This operator represents the elementwise subtraction of a dense vector from a uniform vector
+// represented by a scalar value:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = 1.25 - a;
+   \endcode
+
+// The operator returns an expression representing a dense vector of the higher-order element type
+// of the involved data types \a VT::ElementType and \a ST. Both data types \a VT::ElementType and
+// \a ST have to be supported by the SubTrait class template. Note that this operator only works
+// for scalar values of built-in data type.
+*/
+template< typename ST  // Type of the left-hand side scalar
+        , typename VT  // Type of the right-hand side dense vector
+        , bool TF      // Transpose flag of the right-hand side dense vector
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+inline decltype(auto) operator-( ST scalar, const DenseVector<VT,TF>& vec )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = SubTrait_t< UnderlyingBuiltin_t<VT>, ST >;
+   return map( ~vec, blaze::bind1st( Sub{}, ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
 
