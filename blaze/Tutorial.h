@@ -4912,7 +4912,7 @@
    C = pow( A, B );    // Computes the componentwise exponential value
    \endcode
 
-// \n \subsection matrix_operators_exp exp()
+// \n \subsection matrix_operators_exp exp() / exp2() / exp10()
 //
 // \c exp(), \c exp2() and \c exp10() compute the base e/2/10 exponential of each element of a
 // matrix, respectively:
@@ -5848,7 +5848,7 @@
 
    invert<asGeneral>  ( A );  // In-place inversion of a general matrix
    invert<asSymmetric>( A );  // In-place inversion of a symmetric matrix
-   invert<asHermitian>( A );  // In-place inversion of a Hermitian matrix
+   invert<asHermitian>( A );  // In-place inversion of an Hermitian matrix
    invert<asLower>    ( A );  // In-place inversion of a lower triangular matrix
    invert<asUniLower> ( A );  // In-place inversion of a lower unitriangular matrix
    invert<asUpper>    ( A );  // In-place inversion of an upper triangular matrix
@@ -5871,7 +5871,7 @@
    // In-place inversion of a symmetric indefinite matrix by means of a Bunch-Kaufman decomposition
    invert<byLDLT>( A );
 
-   // In-place inversion of a Hermitian indefinite matrix by means of a Bunch-Kaufman decomposition
+   // In-place inversion of an Hermitian indefinite matrix by means of a Bunch-Kaufman decomposition
    invert<byLDLH>( A );
 
    // In-place inversion of a positive definite matrix by means of a Cholesky decomposition
@@ -7049,7 +7049,7 @@
    blaze::HermitianMatrix< blaze::CompressedMatrix<std::complex<float>,rowMajor> > E;
    \endcode
 
-// The storage order of a Hermitian matrix is depending on the storage order of the adapted matrix
+// The storage order of an Hermitian matrix is depending on the storage order of the adapted matrix
 // type \c MT. In case the adapted matrix is stored in a row-wise fashion (i.e. is specified as
 // blaze::rowMajor), the Hermitian matrix will also be a row-major matrix. Otherwise, if the
 // adapted matrix is column-major (i.e. is specified as blaze::columnMajor), the Hermitian matrix
@@ -7144,12 +7144,12 @@
 
 // \n \subsection adaptors_hermitian_matrices_hermitian The Hermitian Property is Always Enforced!
 //
-// This means that the following properties of a Hermitian matrix are always guaranteed:
+// This means that the following properties of an Hermitian matrix are always guaranteed:
 //
 //  - The diagonal elements are real numbers, i.e. the imaginary part is zero
 //  - Element \f$ a_{ij} \f$ is always the complex conjugate of element \f$ a_{ji} \f$
 //
-// Thus modifying the element \f$ a_{ij} \f$ of a Hermitian matrix also modifies its
+// Thus modifying the element \f$ a_{ij} \f$ of an Hermitian matrix also modifies its
 // counterpart element \f$ a_{ji} \f$. Also, it is only possible to assign matrices that
 // are Hermitian themselves:
 
@@ -7200,7 +7200,7 @@
    A.erase( 0, 0 );  // Erasing the diagonal element (0,0)
    A.erase( 0, 2 );  // Erasing the elements (0,2) and (2,0)
 
-   // Construction from a Hermitian dense matrix
+   // Construction from an Hermitian dense matrix
    StaticMatrix<cplx,3UL,3UL> B{ { cplx(  3.0,  0.0 ), cplx(  8.0, 2.0 ), cplx( -2.0,  2.0 ) },
                                  { cplx(  8.0,  1.0 ), cplx(  0.0, 0.0 ), cplx( -1.0, -1.0 ) },
                                  { cplx( -2.0, -2.0 ), cplx( -1.0, 1.0 ), cplx(  4.0,  0.0 ) } };
@@ -7218,7 +7218,7 @@
 // The same restriction also applies to the \c append() function for sparse matrices: Appending
 // the element \f$ a_{ij} \f$ additionally inserts the element \f$ a_{ji} \f$ into the matrix.
 // Despite the additional insertion, the \c append() function still provides the most efficient
-// way to set up a Hermitian sparse matrix. In order to achieve the maximum efficiency, the
+// way to set up an Hermitian sparse matrix. In order to achieve the maximum efficiency, the
 // capacity of the individual rows/columns of the matrix should to be specifically prepared with
 // \c reserve() calls:
 
@@ -7248,7 +7248,7 @@
    \endcode
 
 // The Hermitian property is also enforced for Hermitian custom matrices: In case the given array
-// of elements does not represent a Hermitian matrix, a \c std::invalid_argument exception is
+// of elements does not represent an Hermitian matrix, a \c std::invalid_argument exception is
 // thrown:
 
    \code
@@ -7307,7 +7307,7 @@
    \endcode
 
 // The next example demonstrates the (compound) assignment to submatrices of Hermitian matrices.
-// Since the modification of element \f$ a_{ij} \f$ of a Hermitian matrix also modifies the
+// Since the modification of element \f$ a_{ij} \f$ of an Hermitian matrix also modifies the
 // element \f$ a_{ji} \f$, the matrix to be assigned must be structured such that the Hermitian
 // symmetry of the matrix is preserved. Otherwise a \c std::invalid_argument exception is thrown:
 
@@ -7412,7 +7412,7 @@
    F *= A * D;    // Multiplication assignment (includes runtime check)
    \endcode
 
-// Note that it is possible to assign any kind of matrix to a Hermitian matrix. In case the matrix
+// Note that it is possible to assign any kind of matrix to an Hermitian matrix. In case the matrix
 // to be assigned is not Hermitian at compile time, a runtime check is performed.
 //
 //
@@ -7423,7 +7423,7 @@
 // instead of a general matrix can be a considerable performance advantage. This is particularly
 // true in case the Hermitian matrix is also symmetric (i.e. has built-in element types). The
 // \b Blaze library tries to exploit the properties of Hermitian (symmetric) matrices whenever
-// possible. However, there are also situations when using a Hermitian matrix introduces some
+// possible. However, there are also situations when using an Hermitian matrix introduces some
 // overhead. The following examples demonstrate several situations where Hermitian matrices can
 // positively or negatively impact performance.
 //
@@ -7515,8 +7515,8 @@
 //
 // \n \subsection adaptors_hermitian_matrices_assignment Negative Impact: Assignment of a General Matrix
 //
-// In contrast to using a Hermitian matrix on the right-hand side of an assignment (i.e. for read
-// access), which introduces absolutely no performance penalty, using a Hermitian matrix on the
+// In contrast to using an Hermitian matrix on the right-hand side of an assignment (i.e. for read
+// access), which introduces absolutely no performance penalty, using an Hermitian matrix on the
 // left-hand side of an assignment (i.e. for write access) may introduce additional overhead when
 // it is assigned a general matrix, which is not Hermitian at compile time:
 
@@ -7528,11 +7528,11 @@
    DynamicMatrix<double> B;
 
    B = A;  // Only read-access to the Hermitian matrix; no performance penalty
-   C = A;  // Assignment of a Hermitian matrix to another Hermitian matrix; no runtime overhead
-   C = B;  // Assignment of a general matrix to a Hermitian matrix; some runtime overhead
+   C = A;  // Assignment of an Hermitian matrix to another Hermitian matrix; no runtime overhead
+   C = B;  // Assignment of a general matrix to an Hermitian matrix; some runtime overhead
    \endcode
 
-// When assigning a general, potentially not Hermitian matrix to a Hermitian matrix it is necessary
+// When assigning a general, potentially not Hermitian matrix to an Hermitian matrix it is necessary
 // to check whether the matrix is Hermitian at runtime in order to guarantee the Hermitian property
 // of the Hermitian matrix. In case it turns out to be Hermitian, it is assigned as efficiently as
 // possible, if it is not, an exception is thrown. In order to prevent this runtime overhead it is
@@ -7543,9 +7543,9 @@
    \code
    HermitianMatrix< DynamicMatrix<double> > A, B, C;
 
-   C = A + B;  // Results in a Hermitian matrix; no runtime overhead
-   C = A - B;  // Results in a Hermitian matrix; no runtime overhead
-   C = A * B;  // Is not guaranteed to result in a Hermitian matrix; some runtime overhead
+   C = A + B;  // Results in an Hermitian matrix; no runtime overhead
+   C = A - B;  // Results in an Hermitian matrix; no runtime overhead
+   C = A * B;  // Is not guaranteed to result in an Hermitian matrix; some runtime overhead
    \endcode
 
 // \n Previous: \ref adaptors_symmetric_matrices &nbsp; &nbsp; Next: \ref adaptors_triangular_matrices
@@ -11378,7 +11378,7 @@
 // possible to use std::complex values with the same built-in data types as element type.
 // Examples:
 
-   \code
+      \code
    blaze::DynamicVector<int> v1{ 3, 2, 5, -4, 1, 6 };
 
    // Add 3 to all elements of v1; Results in
@@ -11534,7 +11534,7 @@
 
    blaze::DynamicMatrix<double>   M2 = M1 * 1.2;    // Scalar multiplication
    blaze::CompressedMatrix<float> M3 = -0.3F * M1;  // Scalar multiplication
-   blaze::DynamicVector<double>   M4 = M1 / 1.2;    // Scalar division
+   blaze::DynamicMatrix<double>   M4 = M1 / 1.2;    // Scalar division
    \endcode
 
 // Vectors and matrices cannot be used for as scalar value for scalar multiplications or divisions
