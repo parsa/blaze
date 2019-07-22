@@ -55,6 +55,7 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SubTrait.h>
@@ -2434,7 +2435,7 @@ inline decltype(auto) real( const DVecMapExpr<VT,Real,TF>& dv )
 //
 // \param vec The left-hand side dense vector for the addition.
 // \param scalar The right-hand side scalar value for the addition.
-// \return The resulting vector.
+// \return The vector sum.
 //
 // This operator represents the elementwise addition of a dense vector and a uniform vector
 // represented by a scalar value:
@@ -2471,7 +2472,7 @@ inline decltype(auto) operator+( const DenseVector<VT,TF>& vec, ST scalar )
 //
 // \param scalar The left-hand side scalar value for the addition.
 // \param vec The right-hand side dense vector for the addition.
-// \return The resulting vector.
+// \return The vector sum.
 //
 // This operator represents the elementwise addition of a uniform vector represented by a scalar
 // value and a dense vector:
@@ -2495,7 +2496,7 @@ inline decltype(auto) operator+( ST scalar, const DenseVector<VT,TF>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = AddTrait_t< UnderlyingBuiltin_t<VT>, ST >;
+   using ScalarType = AddTrait_t< ST, UnderlyingBuiltin_t<VT> >;
    return map( ~vec, blaze::bind1st( Add{}, ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
@@ -2508,7 +2509,7 @@ inline decltype(auto) operator+( ST scalar, const DenseVector<VT,TF>& vec )
 //
 // \param vec The left-hand side dense vector for the subtraction.
 // \param scalar The right-hand side scalar value for the subtraction.
-// \return The resulting vector.
+// \return The vector difference.
 //
 // This operator represents the elementwise subtraction of a uniform vector represented by a
 // scalar value from a dense vector:
@@ -2545,7 +2546,7 @@ inline decltype(auto) operator-( const DenseVector<VT,TF>& vec, ST scalar )
 //
 // \param scalar The left-hand side scalar value for the subtraction.
 // \param vec The right-hand side dense vector for the subtraction.
-// \return The resulting vector.
+// \return The vector difference.
 //
 // This operator represents the elementwise subtraction of a dense vector from a uniform vector
 // represented by a scalar value:
@@ -2569,8 +2570,45 @@ inline decltype(auto) operator-( ST scalar, const DenseVector<VT,TF>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = SubTrait_t< UnderlyingBuiltin_t<VT>, ST >;
+   using ScalarType = SubTrait_t< ST, UnderlyingBuiltin_t<VT> >;
    return map( ~vec, blaze::bind1st( Sub{}, ScalarType( scalar ) ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division operator for the division of a scalar value and a dense vector
+//        (\f$ \vec{a}=s/\vec{b} \f$).
+// \ingroup dense_vector
+//
+// \param scalar The left-hand side scalar value for the division.
+// \param vec The right-hand side dense vector for the division.
+// \return The vector quotient.
+//
+// This operator represents the elementwise division of a uniform vector represented by a scalar
+// value and a dense vector:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = 1.25 / a;
+   \endcode
+
+// The operator returns an expression representing a dense vector of the higher-order element type
+// of the involved data types \a VT::ElementType and \a ST. Both data types \a VT::ElementType and
+// \a ST have to be supported by the DivTrait class template. Note that this operator only works
+// for scalar values of built-in data type.
+*/
+template< typename ST  // Type of the left-hand side scalar
+        , typename VT  // Type of the right-hand side dense vector
+        , bool TF      // Transpose flag of the right-hand side dense vector
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+inline decltype(auto) operator/( ST scalar, const DenseVector<VT,TF>& vec )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = DivTrait_t< UnderlyingBuiltin_t<VT>, ST >;
+   return map( ~vec, blaze::bind1st( Div{}, ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
 
