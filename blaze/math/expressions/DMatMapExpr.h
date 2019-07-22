@@ -55,8 +55,10 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/traits/AddTrait.h>
+#include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/HasLoad.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsComputation.h>
@@ -2434,7 +2436,7 @@ inline decltype(auto) real( const DMatMapExpr<MT,Real,SO>& dm )
 //
 // \param mat The left-hand side dense matrix for the addition.
 // \param scalar The right-hand side scalar value for the addition.
-// \return The resulting matrix.
+// \return The matrix sum.
 //
 // This operator represents the elementwise addition of a dense matrix and a uniform matrix
 // represented by a scalar value:
@@ -2469,7 +2471,7 @@ inline decltype(auto) operator+( const DenseMatrix<MT,SO>& mat, ST scalar )
 //
 // \param scalar The left-hand side scalar value for the addition.
 // \param mat The right-hand side dense matrix for the addition.
-// \return The resulting matrix.
+// \return The matrix sum.
 //
 // This operator represents the elementwise addition of a uniform matrix represented by a scalar
 // value and a dense matrix:
@@ -2492,7 +2494,7 @@ inline decltype(auto) operator+( ST scalar, const DenseMatrix<MT,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = AddTrait_t< UnderlyingBuiltin_t<MT>, ST >;
+   using ScalarType = AddTrait_t< ST, UnderlyingBuiltin_t<MT> >;
    return map( ~mat, blaze::bind1st( Add{}, ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
@@ -2505,7 +2507,7 @@ inline decltype(auto) operator+( ST scalar, const DenseMatrix<MT,SO>& mat )
 //
 // \param mat The left-hand side dense matrix for the subtraction.
 // \param scalar The right-hand side scalar value for the subtraction.
-// \return The resulting matrix.
+// \return The matrix difference.
 //
 // This operator represents the elementwise subtraction of a uniform matrix represented by a
 // scalar value from a dense matrix:
@@ -2541,7 +2543,7 @@ inline decltype(auto) operator-( const DenseMatrix<MT,SO>& mat, ST scalar )
 //
 // \param scalar The left-hand side scalar value for the subtraction.
 // \param mat The right-hand side dense matrix for the subtraction.
-// \return The resulting matrix.
+// \return The matrix difference.
 //
 // This operator represents the elementwise subtraction of a dense matrix from a uniform matrix
 // represented by a scalar value:
@@ -2564,8 +2566,43 @@ inline decltype(auto) operator-( ST scalar, const DenseMatrix<MT,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ScalarType = SubTrait_t< UnderlyingBuiltin_t<MT>, ST >;
+   using ScalarType = SubTrait_t< ST, UnderlyingBuiltin_t<MT> >;
    return map( ~mat, blaze::bind1st( Sub{}, ScalarType( scalar ) ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Division operator for the division of a scalar value and a dense matrix (\f$ A=s/B \f$).
+// \ingroup dense_matrix
+//
+// \param scalar The left-hand side scalar value for the division.
+// \param mat The right-hand side dense matrix for the division.
+// \return The matrix quotient.
+//
+// This operator represents the elementwise division of a uniform matrix represented by a scalar
+// value and a dense matrix:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = 1.25 / A;
+   \endcode
+
+// The operator returns an expression representing a dense matrix of the higher-order element
+// type of the involved data types \a MT::ElementType and \a ST. Note that this operator only
+// works for scalar values of built-in data type.
+*/
+template< typename ST  // Type of the left-hand side scalar
+        , typename MT  // Type of the right-hand side dense matrix
+        , bool SO      // Storage order of the right-hand side dense matrix
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+inline decltype(auto) operator/( ST scalar, const DenseMatrix<MT,SO>& mat )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = DivTrait_t< ST, UnderlyingBuiltin_t<MT> >;
+   return map( ~mat, blaze::bind1st( Div{}, ScalarType( scalar ) ) );
 }
 //*************************************************************************************************
 
