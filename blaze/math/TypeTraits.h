@@ -150,6 +150,7 @@
 #include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsCrossExpr.h>
+#include <blaze/math/typetraits/IsCUDAAssignable.h>
 #include <blaze/math/typetraits/IsCustom.h>
 #include <blaze/math/typetraits/IsDeclaration.h>
 #include <blaze/math/typetraits/IsDeclDiagExpr.h>
