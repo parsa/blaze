@@ -94,7 +94,7 @@ BLAZE_ALWAYS_INLINE void setNumThreads( size_t number )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of threads" );
    }
 
-   omp_set_num_threads( number );
+   omp_set_num_threads( static_cast<int>( number ) );
 }
 /*! \endcond */
 //*************************************************************************************************
