@@ -11513,6 +11513,7 @@
    blaze::DynamicVector<double>   v2 = v1 * 1.2;    // Scalar multiplication
    blaze::CompressedVector<float> v3 = -0.3F * v1;  // Scalar multiplication
    blaze::DynamicVector<double>   v4 = v1 / 1.2;    // Scalar division
+   blaze::CompressedVector<float> v5 = 12.0F / v1;  // Scalar division (only dense vectors)
    \endcode
 
    \code
@@ -11521,6 +11522,7 @@
    blaze::DynamicMatrix<double>   M2 = M1 * 1.2;    // Scalar multiplication
    blaze::CompressedMatrix<float> M3 = -0.3F * M1;  // Scalar multiplication
    blaze::DynamicMatrix<double>   M4 = M1 / 1.2;    // Scalar division
+   blaze::CompressedMatrix<float> M5 = 12.0F / M1;  // Scalar division (only dense matrices)
    \endcode
 
 // Vectors and matrices cannot be used for as scalar value for scalar multiplications or divisions
