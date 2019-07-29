@@ -83,6 +83,7 @@
 #include <blaze/math/functors/Hypot.h>
 #include <blaze/math/functors/Imag.h>
 #include <blaze/math/functors/Inv.h>
+#include <blaze/math/functors/InvAdd.h>
 #include <blaze/math/functors/InvCbrt.h>
 #include <blaze/math/functors/InvSqrt.h>
 #include <blaze/math/functors/Kron.h>
