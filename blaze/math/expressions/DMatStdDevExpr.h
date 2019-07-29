@@ -43,6 +43,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DMatMapExpr.h>
 #include <blaze/math/expressions/DMatVarExpr.h>
+#include <blaze/util/FunctionTrace.h>
 
 
 namespace blaze {
@@ -81,6 +82,8 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline decltype(auto) stddev( const DenseMatrix<MT,SO>& dm )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return sqrt( var( ~dm ) );
 }
 //*************************************************************************************************
@@ -122,11 +125,13 @@ inline decltype(auto) stddev( const DenseMatrix<MT,SO>& dm )
 // than 2 or in case \a RF is set to \a columnwise and the number of rows of the given matrix is
 // smaller than 2, a \a std::invalid_argument is thrown.
 */
-template< bool RF      // Reduction flag
+template< size_t RF    // Reduction flag
         , typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline decltype(auto) stddev( const DenseMatrix<MT,SO>& dm )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return sqrt( var<RF>( ~dm ) );
 }
 //*************************************************************************************************
