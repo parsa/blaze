@@ -66,6 +66,7 @@ template< typename, typename, bool > class DMatDMatSchurExpr;
 template< typename, typename, bool > class DMatDMatSubExpr;
 template< typename, typename > class DMatDVecMultExpr;
 template< typename, bool > class DMatEvalExpr;
+template< typename, bool > class DMatExpExpr;
 template< typename, typename, bool > class DMatMapExpr;
 template< typename, bool > class DMatInvExpr;
 template< typename, typename, bool > class DMatScalarDivExpr;
@@ -629,6 +630,63 @@ decltype(auto) expand( const SparseVector<VT,TF>&, size_t );
 
 template< size_t E, typename VT, bool TF >
 decltype(auto) expand( const SparseVector<VT,TF>& );
+
+
+template< typename VT, bool TF >
+decltype(auto) mean( const DenseVector<VT,TF>& );
+
+template< typename VT, bool TF >
+decltype(auto) mean( const SparseVector<VT,TF>& );
+
+template< typename MT, bool SO >
+decltype(auto) mean( const DenseMatrix<MT,SO>& );
+
+template< size_t RF, typename MT, bool SO >
+decltype(auto) mean( const DenseMatrix<MT,SO>& );
+
+template< typename MT, bool SO >
+decltype(auto) mean( const SparseMatrix<MT,SO>& );
+
+template< size_t RF, typename MT, bool SO >
+decltype(auto) mean( const SparseMatrix<MT,SO>& );
+
+
+template< typename VT, bool TF >
+decltype(auto) var( const DenseVector<VT,TF>& );
+
+template< typename VT, bool TF >
+decltype(auto) var( const SparseVector<VT,TF>& );
+
+template< typename MT, bool SO >
+decltype(auto) var( const DenseMatrix<MT,SO>& );
+
+template< size_t RF, typename MT, bool SO >
+decltype(auto) var( const DenseMatrix<MT,SO>& );
+
+template< typename MT, bool SO >
+decltype(auto) var( const SparseMatrix<MT,SO>& );
+
+template< size_t RF, typename MT, bool SO >
+decltype(auto) var( const SparseMatrix<MT,SO>& );
+
+
+template< typename VT, bool TF >
+decltype(auto) stddev( const DenseVector<VT,TF>& );
+
+template< typename VT, bool TF >
+decltype(auto) stddev( const SparseVector<VT,TF>& );
+
+template< typename MT, bool SO >
+decltype(auto) stddev( const DenseMatrix<MT,SO>& );
+
+template< size_t RF, typename MT, bool SO >
+decltype(auto) stddev( const DenseMatrix<MT,SO>& );
+
+template< typename MT, bool SO >
+decltype(auto) stddev( const SparseMatrix<MT,SO>& );
+
+template< size_t RF, typename MT, bool SO >
+decltype(auto) stddev( const SparseMatrix<MT,SO>& );
 
 
 template< typename MT, bool SO >
