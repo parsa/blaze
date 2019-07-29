@@ -43,6 +43,7 @@
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/expressions/SMatMapExpr.h>
 #include <blaze/math/expressions/SMatVarExpr.h>
+#include <blaze/util/FunctionTrace.h>
 
 
 namespace blaze {
@@ -82,6 +83,8 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline decltype(auto) stddev( const SparseMatrix<MT,SO>& sm )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return sqrt( var( ~sm ) );
 }
 //*************************************************************************************************
@@ -124,11 +127,13 @@ inline decltype(auto) stddev( const SparseMatrix<MT,SO>& sm )
 // than 2 or in case \a RF is set to \a columnwise and the number of rows of the given matrix is
 // smaller than 2, a \a std::invalid_argument is thrown.
 */
-template< bool RF      // Reduction flag
+template< size_t RF    // Reduction flag
         , typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline decltype(auto) stddev( const SparseMatrix<MT,SO>& sm )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return sqrt( var<RF>( ~sm ) );
 }
 //*************************************************************************************************
