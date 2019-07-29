@@ -40,9 +40,13 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Exception.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/shims/Invert.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/util/Assert.h>
+#include <blaze/util/FunctionTrace.h>
 #include <blaze/util/Types.h>
 
 
@@ -53,6 +57,48 @@ namespace blaze {
 //  GLOBAL FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c mean() function for general sparse vectors.
+// \ingroup sparse_vector
+//
+// \param sv The given general sparse vector for the mean computation.
+// \return The mean of the given vector.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) mean_backend( const SparseVector<VT,TF>& sv, FalseType )
+{
+   using BT = UnderlyingBuiltin_t<VT>;
+
+   BLAZE_INTERNAL_ASSERT( size( ~sv ) > 0UL, "Invalid vector size detected" );
+
+   return sum( ~sv ) * inv( BT( size( ~sv ) ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c mean() function for uniform sparse vectors.
+// \ingroup sparse_vector
+//
+// \param sv The given uniform sparse vector for the mean computation.
+// \return The mean of the given vector.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) mean_backend( const SparseVector<VT,TF>& sv, TrueType )
+{
+   BLAZE_INTERNAL_ASSERT( size( ~sv ) > 0UL, "Invalid vector size detected" );
+
+   return ElementType_t<VT>();
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Computes the (arithmetic) mean for the given sparse vector.
@@ -81,15 +127,13 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 inline decltype(auto) mean( const SparseVector<VT,TF>& sv )
 {
-   using BT = UnderlyingBuiltin_t<VT>;
+   BLAZE_FUNCTION_TRACE;
 
-   const size_t n( size( ~sv ) );
-
-   if( n == 0UL ) {
+   if( size( ~sv ) == 0UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input vector" );
    }
 
-   return sum( ~sv ) * inv( BT( n ) );
+   return mean_backend( ~sv, IsZero<VT>() );
 }
 //*************************************************************************************************
 
