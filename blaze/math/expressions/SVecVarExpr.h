@@ -41,15 +41,15 @@
 //*************************************************************************************************
 
 #include <blaze/math/Exception.h>
-#include <blaze/math/expressions/DVecMapExpr.h>
-#include <blaze/math/expressions/DVecReduceExpr.h>
-#include <blaze/math/expressions/DVecScalarMultExpr.h>
-#include <blaze/math/expressions/ScalarExpandExpr.h>
 #include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/expressions/SVecDVecSubExpr.h>
-#include <blaze/math/functors/Pow2.h>
 #include <blaze/math/shims/Invert.h>
+#include <blaze/math/shims/Pow2.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/util/Assert.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/FunctionTrace.h>
+#include <blaze/util/TrueType.h>
+#include <blaze/util/Types.h>
 
 
 namespace blaze {
@@ -59,6 +59,60 @@ namespace blaze {
 //  GLOBAL FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c var() function for general sparse vectors.
+// \ingroup sparse_vector
+//
+// \param sv The given general sparse vector for the variance computation.
+// \return The variance of the given sparse.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+decltype(auto) var_backend( const SparseVector<VT,TF>& sv, FalseType )
+{
+   using BT = UnderlyingBuiltin_t<VT>;
+
+   const size_t n ( size( ~sv ) );
+   const size_t nz( nonZeros( ~sv ) );
+
+   BLAZE_INTERNAL_ASSERT( n > 1UL, "Invalid vector size detected" );
+   BLAZE_INTERNAL_ASSERT( n >= nz, "Invalid number of non-zero elements detected" );
+
+   const auto meanValue( mean( ~sv ) );
+   auto variance( ( n - nz ) * pow2( meanValue ) );
+
+   const auto end( (~sv).end() );
+   for( auto element=(~sv).begin(); element!=end; ++element ) {
+      variance += pow2( element->value() - meanValue );
+   }
+
+   return variance * inv( BT( n-1UL ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c var() function for uniform sparse vectors.
+// \ingroup sparse_vector
+//
+// \param sv The given uniform sparse vector for the variance computation.
+// \return The variance of the given vector.
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+decltype(auto) var_backend( const SparseVector<VT,TF>& sv, TrueType )
+{
+   BLAZE_INTERNAL_ASSERT( size( ~sv ) > 1UL, "Invalid vector size detected" );
+
+   return ElementType_t<VT>();
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Computes the variance for the given sparse vector.
@@ -86,17 +140,13 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 decltype(auto) var( const SparseVector<VT,TF>& sv )
 {
-   using BT = UnderlyingBuiltin_t<VT>;
+   BLAZE_FUNCTION_TRACE;
 
-   const size_t n( size( ~sv ) );
-
-   if( n < 2UL ) {
+   if( (~sv).size() < 2UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input vector" );
    }
 
-   const auto m( expandTo<TF>( mean( ~sv ), n ) );
-
-   return sum( map( (~sv) - m, Pow2() ) ) * inv( BT( n-1UL ) );
+   return var_backend( ~sv, IsZero<VT>() );
 }
 //*************************************************************************************************
 
