@@ -92,7 +92,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Base template for row-major dense matrix reduction operations.
+/*!\brief Base template for row-major dense matrix partial reduction operations.
 // \ingroup dense_vector_expression
 //
 // The DMatReduceExpr class represents the compile time expression for partial reduction operations
