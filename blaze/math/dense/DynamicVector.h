@@ -3002,9 +3002,12 @@ struct PartialReduceTraitEval2< T, OP, RF
                                             ( MaxSize_v<T,0UL> == DefaultMaxSize_v ||
                                               MaxSize_v<T,1UL> == DefaultMaxSize_v ) > >
 {
+   using ET = ElementType_t<T>;
+   using RT = decltype( std::declval<OP>()( std::declval<ET>(), std::declval<ET>() ) );
+
    static constexpr bool TF = ( RF == 0UL );
 
-   using Type = DynamicVector< ElementType_t<T>, TF >;
+   using Type = DynamicVector<RT,TF>;
 };
 /*! \endcond */
 //*************************************************************************************************
