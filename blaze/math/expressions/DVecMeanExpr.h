@@ -43,7 +43,12 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/shims/Invert.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/util/Assert.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/FunctionTrace.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 
 
@@ -54,6 +59,48 @@ namespace blaze {
 //  GLOBAL FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c mean() function for general dense vectors.
+// \ingroup dense_vector
+//
+// \param dv The given general dense vector for the mean computation.
+// \return The mean of the given vector.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) mean_backend( const DenseVector<VT,TF>& dv, FalseType )
+{
+   using BT = UnderlyingBuiltin_t<VT>;
+
+   BLAZE_INTERNAL_ASSERT( size( ~dv ) > 0UL, "Invalid vector size detected" );
+
+   return sum( ~dv ) * inv( BT( size( ~dv ) ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c mean() function for uniform dense vectors.
+// \ingroup dense_vector
+//
+// \param dv The given uniform dense vector for the mean computation.
+// \return The mean of the given vector.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) mean_backend( const DenseVector<VT,TF>& dv, TrueType )
+{
+   BLAZE_INTERNAL_ASSERT( size( ~dv ) > 0UL, "Invalid vector size detected" );
+
+   return (~dv)[0];
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Computes the (arithmetic) mean for the given dense vector.
@@ -81,15 +128,13 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 inline decltype(auto) mean( const DenseVector<VT,TF>& dv )
 {
-   using BT = UnderlyingBuiltin_t<VT>;
+   BLAZE_FUNCTION_TRACE;
 
-   const size_t n( size( ~dv ) );
-
-   if( n == 0UL ) {
+   if( size( ~dv ) == 0UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input vector" );
    }
 
-   return sum( ~dv ) * inv( BT( n ) );
+   return mean_backend( ~dv, IsUniform<VT>() );
 }
 //*************************************************************************************************
 
