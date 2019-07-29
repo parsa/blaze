@@ -43,6 +43,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/DVecMapExpr.h>
 #include <blaze/math/expressions/DVecVarExpr.h>
+#include <blaze/util/FunctionTrace.h>
 
 
 namespace blaze {
@@ -79,6 +80,8 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 decltype(auto) stddev( const DenseVector<VT,TF>& dv )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return sqrt( var( ~dv ) );
 }
 //*************************************************************************************************
