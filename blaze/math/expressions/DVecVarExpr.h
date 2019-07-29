@@ -45,7 +45,13 @@
 #include <blaze/math/expressions/ScalarExpandExpr.h>
 #include <blaze/math/functors/Pow2.h>
 #include <blaze/math/shims/Invert.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/util/Assert.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/FunctionTrace.h>
+#include <blaze/util/TrueType.h>
+#include <blaze/util/Types.h>
 
 
 namespace blaze {
@@ -55,6 +61,52 @@ namespace blaze {
 //  GLOBAL FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c var() function for general dense vectors.
+// \ingroup dense_vector
+//
+// \param dv The given general dense vector for the variance computation.
+// \return The variance of the given vector.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+decltype(auto) var_backend( const DenseVector<VT,TF>& dv, FalseType )
+{
+   using BT = UnderlyingBuiltin_t<VT>;
+
+   const size_t n( size( ~dv ) );
+
+   BLAZE_INTERNAL_ASSERT( n > 1UL, "Invalid vector size detected" );
+
+   const auto m( expandTo<TF>( mean( ~dv ), n ) );
+
+   return sum( map( (~dv) - m, Pow2() ) ) * inv( BT( n-1UL ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c var() function for uniform dense vectors.
+// \ingroup dense_vector
+//
+// \param dv The given uniform dense vector for the variance computation.
+// \return The variance of the given vector.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+decltype(auto) var_backend( const DenseVector<VT,TF>& dv, TrueType )
+{
+   BLAZE_INTERNAL_ASSERT( size( ~dv ) > 1UL, "Invalid vector size detected" );
+
+   return ElementType_t<VT>();
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Computes the variance for the given dense vector.
@@ -81,7 +133,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 decltype(auto) var( const DenseVector<VT,TF>& dv )
 {
-   using BT = UnderlyingBuiltin_t<VT>;
+   BLAZE_FUNCTION_TRACE;
 
    const size_t n( size( ~dv ) );
 
@@ -89,9 +141,7 @@ decltype(auto) var( const DenseVector<VT,TF>& dv )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input vector" );
    }
 
-   const auto m( expandTo<TF>( mean( ~dv ), n ) );
-
-   return sum( map( (~dv) - m, Pow2() ) ) * inv( BT( n-1UL ) );
+   return var_backend( ~dv, IsUniform<VT>() );
 }
 //*************************************************************************************************
 
