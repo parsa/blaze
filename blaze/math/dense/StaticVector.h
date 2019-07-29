@@ -3112,11 +3112,14 @@ struct PartialReduceTraitEval2< T, OP, RF
                                             Size_v<T,0UL> != DefaultSize_v &&
                                             Size_v<T,1UL> != DefaultSize_v > >
 {
+   using ET = ElementType_t<T>;
+   using RT = decltype( std::declval<OP>()( std::declval<ET>(), std::declval<ET>() ) );
+
    static constexpr bool TF = ( RF == 0UL );
 
    static constexpr size_t N = Size_v< T, TF ? 1UL : 0UL >;
 
-   using Type = StaticVector< ElementType_t<T>, N, TF >;
+   using Type = StaticVector<RT,N,TF>;
 };
 /*! \endcond */
 //*************************************************************************************************
