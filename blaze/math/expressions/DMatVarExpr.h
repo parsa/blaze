@@ -42,9 +42,13 @@
 
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/expressions/ScalarExpandExpr.h>
+#include <blaze/math/functors/Pow2.h>
 #include <blaze/math/ReductionFlag.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/util/FunctionTrace.h>
+#include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
 
 
@@ -55,6 +59,50 @@ namespace blaze {
 //  GLOBAL FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c var() function for general dense matrices.
+// \ingroup dense_matrix
+//
+// \param dm The given general dense matrix for the variance computation.
+// \return The variance of the given matrix.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline decltype(auto) var_backend( const DenseMatrix<MT,SO>& dm, FalseType )
+{
+   using BT = UnderlyingBuiltin_t<MT>;
+
+   BLAZE_INTERNAL_ASSERT( size( ~dm ) > 1UL, "Invalid matrix size detected" );
+
+   const auto m( expand( mean( ~dm ), rows( ~dm ), columns( ~dm ) ) );
+
+   return sum( map( (~dm) - m, Pow2() ) ) * inv( BT( size( ~dm )-1UL ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c var() function for uniform dense matrices.
+// \ingroup dense_matrix
+//
+// \param dm The given uniform dense matrix for the variance computation.
+// \return The var of the given matrix.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline decltype(auto) var_backend( const DenseMatrix<MT,SO>& dm, TrueType )
+{
+   BLAZE_INTERNAL_ASSERT( size( ~dm ) > 1UL, "Invalid matrix size detected" );
+
+   return ElementType_t<MT>();
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Computes the variance for the given dense matrix.
@@ -83,30 +131,78 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline decltype(auto) var( const DenseMatrix<MT,SO>& dm )
 {
-   using BT = UnderlyingBuiltin_t<MT>;
+   BLAZE_FUNCTION_TRACE;
 
-   const size_t n( size( ~dm ) );
-
-   if( n < 2UL ) {
+   if( size( ~dm ) < 2UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input matrix" );
    }
 
-   const auto m( expand( mean( ~dm ), rows( ~dm ), columns( ~dm ) ) );
-
-   return sum( map( (~dm) - m, Pow2() ) ) * inv( BT( n-1UL ) );
+   return var_backend( ~dm, IsUniform<MT>() );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Computes the row-/columnwise variance function for the given dense matrix.
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the row-/column-wise \c var() function for general dense matrices.
+// \ingroup dense_matrix
+//
+// \param dm The given general dense matrix for the variance computation.
+// \return The row-/column-wise variance of the given matrix.
+*/
+template< size_t RF    // Reduction flag
+        , typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+decltype(auto) var_backend( const DenseMatrix<MT,SO>& dm, FalseType )
+{
+   using BT = UnderlyingBuiltin_t<MT>;
+
+   const size_t n( RF == rowwise ? columns( ~dm ) : rows( ~dm ) );
+
+   BLAZE_INTERNAL_ASSERT( n > 1UL, "Invalid matrix size detected" );
+
+   const auto m( expand( mean<RF>( ~dm ), n ) );
+
+   return sum<RF>( map( (~dm) - m, Pow2() ) ) * inv( BT( n-1UL ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the row-/column-wise \c var() function for uniform dense matrices.
+// \ingroup dense_matrix
+//
+// \param dm The given general dense matrix for the variance computation.
+// \return The row-/column-wise variance of the given matrix.
+*/
+template< size_t RF    // Reduction flag
+        , typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+decltype(auto) var_backend( const DenseMatrix<MT,SO>& dm, TrueType )
+{
+   const size_t n( RF == rowwise ? rows( ~dm ) : columns( ~dm ) );
+
+   BLAZE_INTERNAL_ASSERT( n > 0UL, "Invalid matrix size detected" );
+
+   constexpr bool TF( ( RF == rowwise ? columnVector : rowVector ) );
+
+   return expandTo<TF>( ElementType_t<MT>(), n );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the row-/column-wise variance function for the given dense matrix.
 // \ingroup dense_matrix
 //
 // \param dm The given dense matrix for the variance computation.
-// \return The row-/columnwise variance of the given matrix.
+// \return The row-/column-wise variance of the given matrix.
 // \exception std::invalid_argument Invalid input matrix.
 //
-// This function computes the row-/columnwise
+// This function computes the row-/column-wise
 // <a href="https://en.wikipedia.org/wiki/Variance">variance</a> for the given dense matrix
 // \a dm. In case \a RF is set to \a rowwise, the function returns a column vector containing
 // the variance of each row of \a dm. In case \a RF is set to \a columnwise, the function
@@ -133,12 +229,14 @@ inline decltype(auto) var( const DenseMatrix<MT,SO>& dm )
 // than 2 or in case \a RF is set to \a columnwise and the number of rows of the given matrix is
 // smaller than 2, a \a std::invalid_argument is thrown.
 */
-template< bool RF      // Reduction flag
+template< size_t RF    // Reduction flag
         , typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline decltype(auto) var( const DenseMatrix<MT,SO>& dm )
 {
-   using BT = UnderlyingBuiltin_t<MT>;
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_STATIC_ASSERT_MSG( RF < 2UL, "Invalid reduction flag" );
 
    const size_t n( RF == rowwise ? columns( ~dm ) : rows( ~dm ) );
 
@@ -146,9 +244,7 @@ inline decltype(auto) var( const DenseMatrix<MT,SO>& dm )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input matrix" );
    }
 
-   const auto m( expand( mean<RF>( ~dm ), n ) );
-
-   return sum<RF>( map( (~dm) - m, Pow2() ) ) * inv( BT( n-1UL ) );
+   return var_backend<RF>( ~dm, IsUniform<MT>() );
 }
 //*************************************************************************************************
 
