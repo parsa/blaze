@@ -1619,9 +1619,12 @@ template< typename T, typename OP, size_t RF >
 struct PartialReduceTraitEval1< T, OP, RF
                               , EnableIf_t< IsMatrix_v<T> && IsUniform_v<T> > >
 {
+   using ET = ElementType_t<T>;
+   using RT = decltype( std::declval<OP>()( std::declval<ET>(), std::declval<ET>() ) );
+
    static constexpr bool TF = ( RF == 0UL );
 
-   using Type = UniformVector< ElementType_t<T>, TF >;
+   using Type = UniformVector<RT,TF>;
 };
 /*! \endcond */
 //*************************************************************************************************
