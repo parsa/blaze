@@ -43,6 +43,7 @@
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/expressions/SVecMapExpr.h>
 #include <blaze/math/expressions/SVecVarExpr.h>
+#include <blaze/util/FunctionTrace.h>
 
 
 namespace blaze {
@@ -80,6 +81,8 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 decltype(auto) stddev( const SparseVector<VT,TF>& sv )
 {
+   BLAZE_FUNCTION_TRACE;
+
    return sqrt( var( ~sv ) );
 }
 //*************************************************************************************************
