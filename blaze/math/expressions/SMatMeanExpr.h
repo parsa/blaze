@@ -40,10 +40,18 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Exception.h>
+#include <blaze/math/dense/UniformVector.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/ReductionFlag.h>
 #include <blaze/math/shims/Invert.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/util/Assert.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/FunctionTrace.h>
+#include <blaze/util/StaticAssert.h>
+#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 
 
@@ -54,6 +62,48 @@ namespace blaze {
 //  GLOBAL FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c mean() function for general sparse matrices.
+// \ingroup sparse_matrix
+//
+// \param sm The given general sparse matrix for the mean computation.
+// \return The mean of the given matrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline decltype(auto) mean_backend( const SparseMatrix<MT,SO>& sm, FalseType )
+{
+   using BT = UnderlyingBuiltin_t<MT>;
+
+   BLAZE_INTERNAL_ASSERT( size( ~sm ) > 0UL, "Invalid matrix size detected" );
+
+   return sum( ~sm ) * inv( BT( size( ~sm ) ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c mean() function for uniform sparse matrices.
+// \ingroup sparse_matrix
+//
+// \param sm The given uniform sparse matrix for the mean computation.
+// \return The mean of the given matrix.
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline decltype(auto) mean_backend( const SparseMatrix<MT,SO>& sm, TrueType )
+{
+   BLAZE_INTERNAL_ASSERT( size( ~sm ) > 0UL, "Invalid matrix size detected" );
+
+   return ElementType_t<MT>();
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Computes the (arithmetic) mean for the given sparse matrix.
@@ -85,16 +135,66 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline decltype(auto) mean( const SparseMatrix<MT,SO>& sm )
 {
-   using BT = UnderlyingBuiltin_t<MT>;
+   BLAZE_FUNCTION_TRACE;
 
-   const size_t n( size( ~sm ) );
-
-   if( n == 0UL ) {
+   if( size( ~sm ) == 0UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input matrix" );
    }
 
-   return sum( ~sm ) * inv( BT( n ) );
+   return mean_backend( ~sm, IsZero<MT>() );
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the row-/column-wise \c mean() function for general sparse
+//        matrices.
+// \ingroup sparse_matrix
+//
+// \param sm The given general sparse matrix for the mean computation.
+// \return The row-/column-wise mean of the given matrix.
+*/
+template< size_t RF    // Reduction flag
+        , typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+decltype(auto) mean_backend( const SparseMatrix<MT,SO>& sm, FalseType )
+{
+   using BT = UnderlyingBuiltin_t<MT>;
+
+   const size_t n( RF == rowwise ? columns( ~sm ) : rows( ~sm ) );
+
+   BLAZE_INTERNAL_ASSERT( n > 0UL, "Invalid matrix size detected" );
+
+   return sum<RF>( ~sm ) * inv( BT( n ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the row-/column-wise \c mean() function for uniform sparse
+//        matrices.
+// \ingroup sparse_matrix
+//
+// \param sm The given general sparse matrix for the mean computation.
+// \return The row-/column-wise mean of the given matrix.
+*/
+template< size_t RF    // Reduction flag
+        , typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+decltype(auto) mean_backend( const SparseMatrix<MT,SO>& sm, TrueType )
+{
+   const size_t n( RF == rowwise ? rows( ~sm ) : columns( ~sm ) );
+
+   BLAZE_INTERNAL_ASSERT( n > 0UL, "Invalid matrix size detected" );
+
+   constexpr bool TF( ( RF == rowwise ? columnVector : rowVector ) );
+
+   return UniformVector<ElementType_t<MT>,TF>( n );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 
@@ -134,12 +234,14 @@ inline decltype(auto) mean( const SparseMatrix<MT,SO>& sm )
 // case \a RF is set to \a columnwise and the number of rows of the given matrix is 0, a
 // \a std::invalid_argument is thrown.
 */
-template< bool RF      // Reduction flag
+template< size_t RF    // Reduction flag
         , typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 decltype(auto) mean( const SparseMatrix<MT,SO>& sm )
 {
-   using BT = UnderlyingBuiltin_t<MT>;
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_STATIC_ASSERT_MSG( RF < 2UL, "Invalid reduction flag" );
 
    const size_t n( RF == rowwise ? columns( ~sm ) : rows( ~sm ) );
 
@@ -147,7 +249,7 @@ decltype(auto) mean( const SparseMatrix<MT,SO>& sm )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid input matrix" );
    }
 
-   return sum<RF>( ~sm ) * inv( BT( n ) );
+   return mean_backend<RF>( ~sm, IsZero<MT>() );
 }
 //*************************************************************************************************
 
