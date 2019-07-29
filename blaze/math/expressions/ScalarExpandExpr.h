@@ -45,6 +45,7 @@
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseVector.h>
+#include <blaze/math/expressions/DVecExpandExpr.h>
 #include <blaze/math/expressions/ExpandExpr.h>
 #include <blaze/math/expressions/ExpandExprData.h>
 #include <blaze/math/expressions/Forward.h>
