@@ -45,11 +45,6 @@
 #include <blaze/math/constraints/SMPAssignable.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/functors/AddAssign.h>
-#include <blaze/math/functors/Assign.h>
-#include <blaze/math/functors/DivAssign.h>
-#include <blaze/math/functors/MultAssign.h>
-#include <blaze/math/functors/SubAssign.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/smp/SerialSection.h>
 #include <blaze/math/smp/Functions.h>
@@ -282,7 +277,7 @@ inline auto smpAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
       assign( ~lhs, ~rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, Assign() );
+      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ assign( a, b ); } );
    }
 }
 /*! \endcond */
@@ -368,7 +363,7 @@ inline auto smpAddAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
       addAssign( ~lhs, ~rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, AddAssign() );
+      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ addAssign( a, b ); } );
    }
 }
 /*! \endcond */
@@ -454,7 +449,7 @@ inline auto smpSubAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
       subAssign( ~lhs, ~rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, SubAssign() );
+      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ subAssign( a, b ); } );
    }
 }
 /*! \endcond */
@@ -540,7 +535,7 @@ inline auto smpMultAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
       multAssign( ~lhs, ~rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, MultAssign() );
+      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ multAssign( a, b ); } );
    }
 }
 /*! \endcond */
@@ -626,7 +621,7 @@ inline auto smpDivAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
       divAssign( ~lhs, ~rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, DivAssign() );
+      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ divAssign( a, b ); } );
    }
 }
 /*! \endcond */

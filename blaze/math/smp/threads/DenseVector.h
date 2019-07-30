@@ -44,11 +44,6 @@
 #include <blaze/math/constraints/SMPAssignable.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/functors/AddAssign.h>
-#include <blaze/math/functors/Assign.h>
-#include <blaze/math/functors/DivAssign.h>
-#include <blaze/math/functors/MultAssign.h>
-#include <blaze/math/functors/SubAssign.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/smp/ParallelSection.h>
 #include <blaze/math/smp/SerialSection.h>
@@ -288,7 +283,7 @@ inline auto smpAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
          assign( ~lhs, ~rhs );
       }
       else {
-         threadAssign( ~lhs, ~rhs, Assign() );
+         threadAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ assign( a, b ); } );
       }
    }
 }
@@ -378,7 +373,7 @@ inline auto smpAddAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
          addAssign( ~lhs, ~rhs );
       }
       else {
-         threadAssign( ~lhs, ~rhs, AddAssign() );
+         threadAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ addAssign( a, b ); } );
       }
    }
 }
@@ -469,7 +464,7 @@ inline auto smpSubAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
          subAssign( ~lhs, ~rhs );
       }
       else {
-         threadAssign( ~lhs, ~rhs, SubAssign() );
+         threadAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ subAssign( a, b ); } );
       }
    }
 }
@@ -560,7 +555,7 @@ inline auto smpMultAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
          multAssign( ~lhs, ~rhs );
       }
       else {
-         threadAssign( ~lhs, ~rhs, MultAssign() );
+         threadAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ multAssign( a, b ); } );
       }
    }
 }
@@ -650,7 +645,7 @@ inline auto smpDivAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
          divAssign( ~lhs, ~rhs );
       }
       else {
-         threadAssign( ~lhs, ~rhs, DivAssign() );
+         threadAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ divAssign( a, b ); } );
       }
    }
 }

@@ -46,11 +46,6 @@
 #include <blaze/math/constraints/SMPAssignable.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
-#include <blaze/math/functors/AddAssign.h>
-#include <blaze/math/functors/Assign.h>
-#include <blaze/math/functors/MultAssign.h>
-#include <blaze/math/functors/SchurAssign.h>
-#include <blaze/math/functors/SubAssign.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/smp/ParallelSection.h>
 #include <blaze/math/smp/SerialSection.h>
@@ -307,7 +302,7 @@ inline auto smpAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
-         openmpAssign( ~lhs, ~rhs, Assign() );
+         openmpAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ assign( a, b ); } );
       }
    }
 }
@@ -399,7 +394,7 @@ inline auto smpAddAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
-         openmpAssign( ~lhs, ~rhs, AddAssign() );
+         openmpAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ addAssign( a, b ); } );
       }
    }
 }
@@ -491,7 +486,7 @@ inline auto smpSubAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
-         openmpAssign( ~lhs, ~rhs, SubAssign() );
+         openmpAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ subAssign( a, b ); } );
       }
    }
 }
@@ -583,7 +578,7 @@ inline auto smpSchurAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
-         openmpAssign( ~lhs, ~rhs, SchurAssign() );
+         openmpAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ schurAssign( a, b ); } );
       }
    }
 }

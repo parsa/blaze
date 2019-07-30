@@ -46,11 +46,6 @@
 #include <blaze/math/constraints/SMPAssignable.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/SparseMatrix.h>
-#include <blaze/math/functors/AddAssign.h>
-#include <blaze/math/functors/Assign.h>
-#include <blaze/math/functors/MultAssign.h>
-#include <blaze/math/functors/SchurAssign.h>
-#include <blaze/math/functors/SubAssign.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/smp/SerialSection.h>
 #include <blaze/math/smp/ThreadMapping.h>
@@ -304,7 +299,7 @@ inline auto smpAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
       assign( ~lhs, ~rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, Assign() );
+      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ assign( a, b ); } );
    }
 }
 /*! \endcond */
@@ -392,7 +387,7 @@ inline auto smpAddAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
       addAssign( ~lhs, ~rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, AddAssign() );
+      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ addAssign( a, b ); } );
    }
 }
 /*! \endcond */
@@ -480,7 +475,7 @@ inline auto smpSubAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
       subAssign( ~lhs, ~rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, SubAssign() );
+      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ subAssign( a, b ); } );
    }
 }
 /*! \endcond */
@@ -568,7 +563,7 @@ inline auto smpSchurAssign( Matrix<MT1,SO1>& lhs, const Matrix<MT2,SO2>& rhs )
       schurAssign( ~lhs, ~rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, SchurAssign() );
+      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ schurAssign( a, b ); } );
    }
 }
 /*! \endcond */

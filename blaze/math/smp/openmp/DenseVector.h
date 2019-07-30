@@ -45,11 +45,6 @@
 #include <blaze/math/constraints/SMPAssignable.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/functors/AddAssign.h>
-#include <blaze/math/functors/Assign.h>
-#include <blaze/math/functors/DivAssign.h>
-#include <blaze/math/functors/MultAssign.h>
-#include <blaze/math/functors/SubAssign.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/smp/ParallelSection.h>
 #include <blaze/math/smp/SerialSection.h>
@@ -285,7 +280,7 @@ inline auto smpAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
-         openmpAssign( ~lhs, ~rhs, Assign() );
+         openmpAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ assign( a, b ); } );
       }
    }
 }
@@ -375,7 +370,7 @@ inline auto smpAddAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
-         openmpAssign( ~lhs, ~rhs, AddAssign() );
+         openmpAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ addAssign( a, b ); } );
       }
    }
 }
@@ -465,7 +460,7 @@ inline auto smpSubAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
-         openmpAssign( ~lhs, ~rhs, SubAssign() );
+         openmpAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ subAssign( a, b ); } );
       }
    }
 }
@@ -555,7 +550,7 @@ inline auto smpMultAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
-         openmpAssign( ~lhs, ~rhs, MultAssign() );
+         openmpAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ multAssign( a, b ); } );
       }
    }
 }
@@ -645,7 +640,7 @@ inline auto smpDivAssign( Vector<VT1,TF1>& lhs, const Vector<VT2,TF2>& rhs )
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
-         openmpAssign( ~lhs, ~rhs, DivAssign() );
+         openmpAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ divAssign( a, b ); } );
       }
    }
 }
