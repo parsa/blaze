@@ -52,7 +52,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Generic wrapper for the divAssign() function.
+/*!\brief Generic wrapper for division assignment.
 // \ingroup functors
 */
 struct DivAssign
@@ -65,7 +65,7 @@ struct DivAssign
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*!\brief Calls the divAssign() function with the given objects/values.
+   /*!\brief Performs a division assignment with the given objects/values.
    //
    // \param a The target left-hand side object/value.
    // \param b The right-hand side object/value divisor.
@@ -74,7 +74,7 @@ struct DivAssign
    template< typename T1, typename T2 >
    BLAZE_ALWAYS_INLINE void operator()( T1& a, const T2& b ) const
    {
-      divAssign( a, b );
+      a /= b;
    }
    //**********************************************************************************************
 };
