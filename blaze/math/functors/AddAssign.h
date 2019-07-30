@@ -52,7 +52,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Generic wrapper for the addAssign() function.
+/*!\brief Generic wrapper for addition assignment.
 // \ingroup functors
 */
 struct AddAssign
@@ -65,7 +65,7 @@ struct AddAssign
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*!\brief Calls the addAssign() function with the given objects/values.
+   /*!\brief Performs an addition assignment with the given objects/values.
    //
    // \param a The target left-hand side object/value.
    // \param b The right-hand side object/value to be added.
@@ -74,7 +74,7 @@ struct AddAssign
    template< typename T1, typename T2 >
    BLAZE_ALWAYS_INLINE void operator()( T1& a, const T2& b ) const
    {
-      addAssign( a, b );
+      a += b;
    }
    //**********************************************************************************************
 };
