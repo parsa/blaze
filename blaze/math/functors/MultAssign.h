@@ -52,7 +52,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Generic wrapper for the multAssign() function.
+/*!\brief Generic wrapper for multiplication assignment.
 // \ingroup functors
 */
 struct MultAssign
@@ -65,7 +65,7 @@ struct MultAssign
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*!\brief Calls the multAssign() function with the given objects/values.
+   /*!\brief Performs a multiplication assignment with the given objects/values.
    //
    // \param a The target left-hand side object/value.
    // \param b The right-hand side object/value to be multiplied.
@@ -74,7 +74,7 @@ struct MultAssign
    template< typename T1, typename T2 >
    BLAZE_ALWAYS_INLINE void operator()( T1& a, const T2& b ) const
    {
-      multAssign( a, b );
+      a *= b;
    }
    //**********************************************************************************************
 };
