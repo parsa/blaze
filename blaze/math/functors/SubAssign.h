@@ -52,7 +52,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Generic wrapper for the subAssign() function.
+/*!\brief Generic wrapper for subtraction assignment.
 // \ingroup functors
 */
 struct SubAssign
@@ -65,7 +65,7 @@ struct SubAssign
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*!\brief Calls the subAssign() function with the given objects/values.
+   /*!\brief Performs a subtraction assignment with the given objects/values.
    //
    // \param a The target left-hand side object/value.
    // \param b The right-hand side object/value to be subtracted.
@@ -74,7 +74,7 @@ struct SubAssign
    template< typename T1, typename T2 >
    BLAZE_ALWAYS_INLINE void operator()( T1& a, const T2& b ) const
    {
-      subAssign( a, b );
+      a -= b;
    }
    //**********************************************************************************************
 };
