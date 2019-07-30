@@ -91,6 +91,7 @@
 #include <blaze/math/functors/L2Norm.h>
 #include <blaze/math/functors/L3Norm.h>
 #include <blaze/math/functors/L4Norm.h>
+#include <blaze/math/functors/LeftShiftAssign.h>
 #include <blaze/math/functors/Log.h>
 #include <blaze/math/functors/Log2.h>
 #include <blaze/math/functors/Log10.h>
