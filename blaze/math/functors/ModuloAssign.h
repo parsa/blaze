@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/functors/SchurAssign.h
-//  \brief Header file for the SchurAssign functor
+//  \file blaze/math/functors/ModuloAssign.h
+//  \brief Header file for the ModuloAssign functor
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_FUNCTORS_SCHURASSIGN_H_
-#define _BLAZE_MATH_FUNCTORS_SCHURASSIGN_H_
+#ifndef _BLAZE_MATH_FUNCTORS_MODULOASSIGN_H_
+#define _BLAZE_MATH_FUNCTORS_MODULOASSIGN_H_
 
 
 //*************************************************************************************************
@@ -52,29 +52,29 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Generic wrapper for the schurAssign() function.
+/*!\brief Generic wrapper for modulo assignment.
 // \ingroup functors
 */
-struct SchurAssign
+struct ModuloAssign
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the SchurAssign functor.
+   /*!\brief Default constructor of the ModuloAssign functor.
    */
-   explicit inline SchurAssign()
+   explicit inline ModuloAssign()
    {}
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*!\brief Calls the schurAssign() function with the given objects/values.
+   /*!\brief Performs a modulo assignment with the given objects/values.
    //
    // \param a The target left-hand side object/value.
-   // \param b The right-hand side object/value to be multiplied.
+   // \param b The right-hand side object/value divisor.
    // \return void
    */
    template< typename T1, typename T2 >
    BLAZE_ALWAYS_INLINE void operator()( T1& a, const T2& b ) const
    {
-      schurAssign( a, b );
+      a %= b;
    }
    //**********************************************************************************************
 };

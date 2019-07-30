@@ -97,6 +97,7 @@
 #include <blaze/math/functors/LpNorm.h>
 #include <blaze/math/functors/Max.h>
 #include <blaze/math/functors/Min.h>
+#include <blaze/math/functors/ModuloAssign.h>
 #include <blaze/math/functors/Mult.h>
 #include <blaze/math/functors/MultAssign.h>
 #include <blaze/math/functors/Noop.h>
@@ -109,7 +110,6 @@
 #include <blaze/math/functors/Reset.h>
 #include <blaze/math/functors/Round.h>
 #include <blaze/math/functors/Schur.h>
-#include <blaze/math/functors/SchurAssign.h>
 #include <blaze/math/functors/Serial.h>
 #include <blaze/math/functors/ShiftLI.h>
 #include <blaze/math/functors/ShiftLV.h>
