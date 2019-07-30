@@ -52,7 +52,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Generic wrapper for the assign() function.
+/*!\brief Generic wrapper for plain assignment.
 // \ingroup functors
 */
 struct Assign
@@ -65,7 +65,7 @@ struct Assign
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*!\brief Calls the assign() function with the given objects/values.
+   /*!\brief Performs a plain assignment with the given objects/values.
    //
    // \param a The target left-hand side object/value.
    // \param b The right-hand side object/value to be assigned.
@@ -74,7 +74,7 @@ struct Assign
    template< typename T1, typename T2 >
    BLAZE_ALWAYS_INLINE void operator()( T1& a, const T2& b ) const
    {
-      assign( a, b );
+      a = b;
    }
    //**********************************************************************************************
 };
