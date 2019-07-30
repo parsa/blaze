@@ -109,6 +109,7 @@
 #include <blaze/math/functors/Qdrt.h>
 #include <blaze/math/functors/Real.h>
 #include <blaze/math/functors/Reset.h>
+#include <blaze/math/functors/RightShiftAssign.h>
 #include <blaze/math/functors/Round.h>
 #include <blaze/math/functors/Schur.h>
 #include <blaze/math/functors/Serial.h>
