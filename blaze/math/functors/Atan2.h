@@ -77,13 +77,6 @@ namespace blaze {
 struct Atan2
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Atan2 functor.
-   */
-   explicit inline Atan2()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the atan2() function for the given objects/values.
    //
    // \param a The left-hand side object/value.

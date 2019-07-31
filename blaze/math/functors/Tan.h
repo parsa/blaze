@@ -78,13 +78,6 @@ namespace blaze {
 struct Tan
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Tan functor.
-   */
-   explicit inline Tan()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the tan() function for the given object/value.
    //
    // \param a The given object/value.

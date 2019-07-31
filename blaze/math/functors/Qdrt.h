@@ -81,13 +81,6 @@ namespace blaze {
 struct Qdrt
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Qdrt functor.
-   */
-   explicit inline Qdrt()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the qdrt() function for the given object/value.
    //
    // \param a The given object/value.

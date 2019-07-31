@@ -77,13 +77,6 @@ namespace blaze {
 struct Pow2
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Pow2 functor.
-   */
-   explicit inline Pow2()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the pow2() function for the given object/value.
    //
    // \param a The given object/value.

@@ -77,13 +77,6 @@ namespace blaze {
 struct Schur
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Schur functor.
-   */
-   explicit inline Schur()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the Schur product for the given objects/values.
    //
    // \param a The left-hand side object/value.

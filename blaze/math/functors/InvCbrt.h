@@ -66,13 +66,6 @@ namespace blaze {
 struct InvCbrt
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the InvCbrt functor.
-   */
-   explicit inline InvCbrt()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the invcbrt() function for the given object/value.
    //
    // \param a The given object/value.

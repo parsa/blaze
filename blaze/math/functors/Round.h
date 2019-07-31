@@ -80,13 +80,6 @@ namespace blaze {
 struct Round
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Round functor.
-   */
-   explicit inline Round()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the round() function for the given object/value.
    //
    // \param a The given object/value.

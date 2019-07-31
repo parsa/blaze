@@ -58,13 +58,6 @@ namespace blaze {
 struct Trans
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Trans functor.
-   */
-   explicit inline Trans()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the trans() function for the given object/value.
    //
    // \param a The given object/value.

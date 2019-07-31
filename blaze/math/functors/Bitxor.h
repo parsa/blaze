@@ -66,13 +66,6 @@ namespace blaze {
 struct Bitxor
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Bitxor functor.
-   */
-   explicit inline Bitxor()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the bitwise XOR operator for the given objects/values.
    //
    // \param a The left-hand side object/value.

@@ -79,13 +79,6 @@ namespace blaze {
 struct Real
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Real functor.
-   */
-   explicit inline Real()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the real() function for the given object/value.
    //
    // \param a The given object/value.

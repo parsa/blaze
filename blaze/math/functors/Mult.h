@@ -79,13 +79,6 @@ namespace blaze {
 struct Mult
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Mult functor.
-   */
-   explicit inline Mult()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the multiplication operator for the given objects/values.
    //
    // \param a The left-hand side object/value.

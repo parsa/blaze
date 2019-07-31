@@ -80,13 +80,6 @@ namespace blaze {
 struct Ceil
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Ceil functor.
-   */
-   explicit inline Ceil()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the ceil() function for the given object/value.
    //
    // \param a The given object/value.

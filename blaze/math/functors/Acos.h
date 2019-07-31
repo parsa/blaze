@@ -68,13 +68,6 @@ namespace blaze {
 struct Acos
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Acos functor.
-   */
-   explicit inline Acos()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the acos() function for the given object/value.
    //
    // \param a The given object/value.

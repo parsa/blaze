@@ -58,13 +58,6 @@ namespace blaze {
 struct SubAssign
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the SubAssign functor.
-   */
-   explicit inline SubAssign()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Performs a subtraction assignment with the given objects/values.
    //
    // \param a The target left-hand side object/value.

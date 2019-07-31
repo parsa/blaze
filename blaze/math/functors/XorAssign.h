@@ -58,13 +58,6 @@ namespace blaze {
 struct XorAssign
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the XorAssign functor.
-   */
-   explicit inline XorAssign()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Performs a bitwise XOR assignment with the given objects/values.
    //
    // \param a The target left-hand side object/value.

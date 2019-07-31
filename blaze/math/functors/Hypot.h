@@ -77,13 +77,6 @@ namespace blaze {
 struct Hypot
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Hypot functor.
-   */
-   explicit inline Hypot()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the hypot() function for the given objects/values.
    //
    // \param a The left-hand side object/value.

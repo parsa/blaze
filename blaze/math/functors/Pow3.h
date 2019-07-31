@@ -77,13 +77,6 @@ namespace blaze {
 struct Pow3
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Pow3 functor.
-   */
-   explicit inline Pow3()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the pow3() function for the given object/value.
    //
    // \param a The given object/value.

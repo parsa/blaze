@@ -58,13 +58,6 @@ namespace blaze {
 struct AddAssign
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the AddAssign functor.
-   */
-   explicit inline AddAssign()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Performs an addition assignment with the given objects/values.
    //
    // \param a The target left-hand side object/value.

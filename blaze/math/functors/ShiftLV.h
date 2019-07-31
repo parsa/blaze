@@ -74,14 +74,6 @@ namespace blaze {
 */
 struct ShiftLV
 {
- public:
-   //**********************************************************************************************
-   /*!\brief Constructor of the ShiftLV functor.
-   */
-   explicit inline ShiftLV()
-   {}
-   //**********************************************************************************************
-
    //**********************************************************************************************
    /*!\brief Returns the result of the elementwise left-shift operation for the given objects/values.
    //

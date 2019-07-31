@@ -80,13 +80,6 @@ namespace blaze {
 struct Sign
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Sign functor.
-   */
-   explicit inline Sign()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the sign() function for the given object/value.
    //
    // \param a The given object/value.

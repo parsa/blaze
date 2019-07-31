@@ -68,13 +68,6 @@ namespace blaze {
 struct InvSqrt
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the InvSqrt functor.
-   */
-   explicit inline InvSqrt()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the invsqrt() function for the given object/value.
    //
    // \param a The given object/value.

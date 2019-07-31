@@ -58,13 +58,6 @@ namespace blaze {
 struct OrAssign
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the OrAssign functor.
-   */
-   explicit inline OrAssign()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Performs a bitwise OR assignment with the given objects/values.
    //
    // \param a The target left-hand side object/value.

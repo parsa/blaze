@@ -58,13 +58,6 @@ namespace blaze {
 struct DeclId
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the DeclId functor.
-   */
-   explicit inline DeclId()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the declid() function for the given object/value.
    //
    // \param a The given object/value.

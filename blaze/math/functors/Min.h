@@ -79,13 +79,6 @@ namespace blaze {
 struct Min
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Min functor.
-   */
-   explicit inline Min()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the min() function for the given objects/values.
    //
    // \param a The left-hand side object/value.

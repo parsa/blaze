@@ -66,13 +66,6 @@ namespace blaze {
 struct Erfc
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Erfc functor.
-   */
-   explicit inline Erfc()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the erfc() function for the given object/value.
    //
    // \param a The given object/value.

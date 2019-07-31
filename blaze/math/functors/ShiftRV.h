@@ -74,14 +74,6 @@ namespace blaze {
 */
 struct ShiftRV
 {
- public:
-   //**********************************************************************************************
-   /*!\brief Constructor of the ShiftRV functor.
-   */
-   explicit inline ShiftRV()
-   {}
-   //**********************************************************************************************
-
    //**********************************************************************************************
    /*!\brief Returns the result of the elementwise right-shift operation for the given objects/values.
    //

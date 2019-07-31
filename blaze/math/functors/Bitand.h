@@ -80,13 +80,6 @@ namespace blaze {
 struct Bitand
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Bitand functor.
-   */
-   explicit inline Bitand()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the bitwise AND operator for the given objects/values.
    //
    // \param a The left-hand side object/value.

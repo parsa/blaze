@@ -58,13 +58,6 @@ namespace blaze {
 struct Assign
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Assign functor.
-   */
-   explicit inline Assign()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Performs a plain assignment with the given objects/values.
    //
    // \param a The target left-hand side object/value.

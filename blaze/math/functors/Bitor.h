@@ -80,13 +80,6 @@ namespace blaze {
 struct Bitor
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Bitor functor.
-   */
-   explicit inline Bitor()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the bitwise OR operator for the given objects/values.
    //
    // \param a The left-hand side object/value.

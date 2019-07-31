@@ -78,13 +78,6 @@ namespace blaze {
 struct Atan
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Atan functor.
-   */
-   explicit inline Atan()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the atan() function for the given object/value.
    //
    // \param a The given object/value.

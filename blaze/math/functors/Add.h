@@ -82,13 +82,6 @@ namespace blaze {
 struct Add
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Add functor.
-   */
-   explicit inline Add()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the addition operator for the given objects/values.
    //
    // \param a The left-hand side object/value.

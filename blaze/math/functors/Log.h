@@ -68,13 +68,6 @@ namespace blaze {
 struct Log
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Log functor.
-   */
-   explicit inline Log()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the log() function for the given object/value.
    //
    // \param a The given object/value.

@@ -58,13 +58,6 @@ namespace blaze {
 struct DivAssign
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the DivAssign functor.
-   */
-   explicit inline DivAssign()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Performs a division assignment with the given objects/values.
    //
    // \param a The target left-hand side object/value.

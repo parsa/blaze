@@ -58,13 +58,6 @@ namespace blaze {
 struct MultAssign
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the MultAssign functor.
-   */
-   explicit inline MultAssign()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Performs a multiplication assignment with the given objects/values.
    //
    // \param a The target left-hand side object/value.

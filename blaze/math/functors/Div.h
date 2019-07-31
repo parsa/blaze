@@ -78,13 +78,6 @@ namespace blaze {
 struct Div
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Div functor.
-   */
-   explicit inline Div()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the division operator for the given objects/values.
    //
    // \param a The left-hand side object/value.

@@ -58,13 +58,6 @@ namespace blaze {
 struct DeclZero
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the DeclZero functor.
-   */
-   explicit inline DeclZero()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the declzero() function for the given object/value.
    //
    // \param a The given object/value.

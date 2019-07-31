@@ -58,13 +58,6 @@ namespace blaze {
 struct L3Norm
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the L3Norm functor.
-   */
-   explicit inline L3Norm()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Calls the l3Norm() function with the given object/value.
    //
    // \param a The given object/value.

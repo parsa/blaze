@@ -68,13 +68,6 @@ namespace blaze {
 struct Acosh
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Acosh functor.
-   */
-   explicit inline Acosh()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the acosh() function for the given object/value.
    //
    // \param a The given object/value.

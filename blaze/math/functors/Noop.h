@@ -59,13 +59,6 @@ namespace blaze {
 struct Noop
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Noop functor.
-   */
-   explicit inline Noop()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the given object/value without modifications.
    //
    // \param a The given object/value.

@@ -60,13 +60,6 @@ template< size_t... P >  // Compile time norm parameter
 struct LpNorm
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the LpNorm functor.
-   */
-   explicit inline LpNorm()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Calls the lpNorm() function with the given object/value.
    //
    // \param a The given object/value.

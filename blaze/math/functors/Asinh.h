@@ -78,13 +78,6 @@ namespace blaze {
 struct Asinh
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Asinh functor.
-   */
-   explicit inline Asinh()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the asinh() function for the given object/value.
    //
    // \param a The given object/value.

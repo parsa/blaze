@@ -59,13 +59,6 @@ namespace blaze {
 struct Reset
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Reset functor.
-   */
-   explicit inline Reset()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the reset() function for the given object/value.
    //
    // \param a The object/value to be resetted.

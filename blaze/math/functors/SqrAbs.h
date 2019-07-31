@@ -84,13 +84,6 @@ namespace blaze {
 struct SqrAbs
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the SqrAbs functor.
-   */
-   explicit inline SqrAbs()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the squared abs() function for the given object/value.
    //
    // \param a The given object/value.

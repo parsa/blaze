@@ -82,13 +82,6 @@ namespace blaze {
 struct Sub
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Sub functor.
-   */
-   explicit inline Sub()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the subtraction operator for the given objects/values.
    //
    // \param a The left-hand side object/value.

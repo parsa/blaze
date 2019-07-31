@@ -59,13 +59,6 @@ namespace blaze {
 struct Clear
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Clear functor.
-   */
-   explicit inline Clear()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the clear() function for the given object/value.
    //
    // \param a The object/value to be cleared.

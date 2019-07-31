@@ -58,13 +58,6 @@ namespace blaze {
 struct AndAssign
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the AndAssign functor.
-   */
-   explicit inline AndAssign()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Performs a bitwise AND assignment with the given objects/values.
    //
    // \param a The target left-hand side object/value.

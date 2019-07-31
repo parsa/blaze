@@ -77,13 +77,6 @@ namespace blaze {
 struct Kron
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Kron functor.
-   */
-   explicit inline Kron()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the Kronecker product for the given objects/values.
    //
    // \param a The left-hand side object/value.

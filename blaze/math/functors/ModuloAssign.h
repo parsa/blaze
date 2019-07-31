@@ -58,13 +58,6 @@ namespace blaze {
 struct ModuloAssign
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the ModuloAssign functor.
-   */
-   explicit inline ModuloAssign()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Performs a modulo assignment with the given objects/values.
    //
    // \param a The target left-hand side object/value.

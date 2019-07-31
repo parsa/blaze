@@ -79,13 +79,6 @@ namespace blaze {
 struct Max
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the Max functor.
-   */
-   explicit inline Max()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the max() function for the given objects/values.
    //
    // \param a The left-hand side object/value.

@@ -58,13 +58,6 @@ namespace blaze {
 struct LeftShiftAssign
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the LeftShiftAssign functor.
-   */
-   explicit inline LeftShiftAssign()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Performs a bitwise left-shift assignment with the given objects/values.
    //
    // \param a The target left-hand side object/value.

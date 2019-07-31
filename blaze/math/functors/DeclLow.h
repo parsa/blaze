@@ -58,13 +58,6 @@ namespace blaze {
 struct DeclLow
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the DeclLow functor.
-   */
-   explicit inline DeclLow()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Returns the result of the decllow() function for the given object/value.
    //
    // \param a The given object/value.
