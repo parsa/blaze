@@ -44,6 +44,7 @@
 #include <blaze/math/typetraits/IsZero.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FalseType.h>
+#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -73,7 +74,7 @@ struct IsUniformHelper
 {};
 
 template< typename T >  // Type of the operand
-struct IsUniformHelper< T, EnableIf_t< IsExpression_v<T> > >
+struct IsUniformHelper< T, EnableIf_t< IsExpression_v<T> && !IsSame_v<T,typename T::ResultType> > >
    : public IsUniform< typename T::ResultType >::Type
 {};
 /*! \endcond */
