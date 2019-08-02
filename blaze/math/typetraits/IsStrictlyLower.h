@@ -43,6 +43,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FalseType.h>
+#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -72,7 +73,7 @@ struct IsStrictlyLowerHelper
 {};
 
 template< typename T >  // Type of the operand
-struct IsStrictlyLowerHelper< T, EnableIf_t< IsExpression_v<T> > >
+struct IsStrictlyLowerHelper< T, EnableIf_t< IsExpression_v<T> && !IsSame_v<T,typename T::ResultType> > >
    : public IsStrictlyLower< typename T::ResultType >::Type
 {};
 /*! \endcond */
