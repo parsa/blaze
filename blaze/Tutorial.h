@@ -407,22 +407,25 @@
    using blaze::StaticVector;
    using blaze::DynamicVector;
 
-   // Instantiation of a static 3D column vector. The vector is directly initialized as
-   //   ( 4 -2  5 )
-   StaticVector<int,3UL> a{ 4, -2, 5 };
+   int main()
+   {
+      // Instantiation of a static 3D column vector. The vector is directly initialized as
+      //   ( 4 -2  5 )
+      StaticVector<int,3UL> a{ 4, -2, 5 };
 
-   // Instantiation of a dynamic 3D column vector. Via the subscript operator the values are set to
-   //   ( 2  5 -3 )
-   DynamicVector<int> b( 3UL );
-   b[0] = 2;
-   b[1] = 5;
-   b[2] = -3;
+      // Instantiation of a dynamic 3D column vector. Via the subscript operator the values are set to
+      //   ( 2  5 -3 )
+      DynamicVector<int> b( 3UL );
+      b[0] = 2;
+      b[1] = 5;
+      b[2] = -3;
 
-   // Adding the vectors a and b
-   DynamicVector<int> c = a + b;
+      // Adding the vectors a and b
+      DynamicVector<int> c = a + b;
 
-   // Printing the result of the vector addition
-   std::cout << "c =\n" << c << "\n";
+      // Printing the result of the vector addition
+      std::cout << "c =\n" << c << "\n";
+   }
    \endcode
 
 // Note that the entire \b Blaze math library can be included via the \c blaze/Math.h header
@@ -434,7 +437,7 @@
 // compiled for instance via the GNU C++ compiler:
 
    \code
-   g++ -ansi -O3 -DNDEBUG -mavx -o FirstExample FirstExample.cpp
+   g++ -std=c++14 -O3 -DNDEBUG -mavx -o FirstExample FirstExample.cpp
    \endcode
 
 // Note the definition of the \c NDEBUG preprocessor symbol. In order to achieve maximum
@@ -449,9 +452,9 @@
 
    \code
    c =
-   6
-   3
-   2
+   (           6 )
+   (           3 )
+   (           2 )
    \endcode
 
 // \n \section getting_started_matrix_example An Example Involving Matrices
@@ -459,51 +462,55 @@
 // Similarly easy and intuitive are expressions involving matrices:
 
    \code
+   #include <iostream>
    #include <blaze/Math.h>
 
    using namespace blaze;
 
-   // Instantiating a dynamic 3D column vector
-   DynamicVector<int> x{ 4, -1, 3 };
+   int main()
+   {
+      // Instantiating a dynamic 3D column vector
+      DynamicVector<int> x{ 4, -1, 3 };
 
-   // Instantiating a dynamic 2x3 row-major matrix, preinitialized with 0. Via the function call
-   // operator three values of the matrix are explicitly set to get the matrix
-   //   ( 1  0  4 )
-   //   ( 0 -2  0 )
-   DynamicMatrix<int> A( 2UL, 3UL, 0 );
-   A(0,0) =  1;
-   A(0,2) =  4;
-   A(1,1) = -2;
+      // Instantiating a dynamic 2x3 row-major matrix, preinitialized with 0. Via the function call
+      // operator three values of the matrix are explicitly set to get the matrix
+      //   ( 1  0  4 )
+      //   ( 0 -2  0 )
+      DynamicMatrix<int> A( 2UL, 3UL, 0 );
+      A(0,0) =  1;
+      A(0,2) =  4;
+      A(1,1) = -2;
 
-   // Performing a matrix/vector multiplication
-   DynamicVector<int> y = A * x;
+      // Performing a matrix/vector multiplication
+      DynamicVector<int> y = A * x;
 
-   // Printing the resulting vector
-   std::cout << "y =\n" << y << "\n";
+      // Printing the resulting vector
+      std::cout << "y =\n" << y << "\n";
 
-   // Instantiating a static column-major matrix. The matrix is directly initialized as
-   //   (  3 -1 )
-   //   (  0  2 )
-   //   ( -1  0 )
-   StaticMatrix<int,3UL,2UL,columnMajor> B{ { 3, -1 }, { 0, 2 }, { -1, 0 } };
+      // Instantiating a static column-major matrix. The matrix is directly initialized as
+      //   (  3 -1 )
+      //   (  0  2 )
+      //   ( -1  0 )
+      StaticMatrix<int,3UL,2UL,columnMajor> B{ { 3, -1 }, { 0, 2 }, { -1, 0 } };
 
-   // Performing a matrix/matrix multiplication
-   DynamicMatrix<int> C = A * B;
+      // Performing a matrix/matrix multiplication
+      DynamicMatrix<int> C = A * B;
 
-   // Printing the resulting matrix
-   std::cout << "C =\n" << C << "\n";
+      // Printing the resulting matrix
+      std::cout << "C =\n" << C << "\n";
+   }
    \endcode
 
 // The output of this program is
 
    \code
    y =
-   16
-   2
+   (          16 )
+   (           2 )
 
    C =
-   ( -1 -1 )
-   (  0 -4 )
+   (           -1           -1 )
+   (            0           -4 )
    \endcode
 
 // \n \section getting_started_complex_example A Complex Example
@@ -522,29 +529,37 @@
 // while the performance of the code is close to the expected theoretical peak performance:
 
    \code
-   const size_t NN( N*N );
+   #include <blaze/Math.h>
 
-   blaze::CompressedMatrix<double,rowMajor> A( NN, NN );
-   blaze::DynamicVector<double,columnVector> x( NN, 1.0 ), b( NN, 0.0 ), r( NN ), p( NN ), Ap( NN );
-   double alpha, beta, delta;
-
-   // ... Initializing the sparse matrix A
-
-   // Performing the CG algorithm
-   r = b - A * x;
-   p = r;
-   delta = (r,r);
-
-   for( size_t iteration=0UL; iteration<iterations; ++iteration )
+   int main()
    {
-      Ap = A * p;
-      alpha = delta / (p,Ap);
-      x += alpha * p;
-      r -= alpha * Ap;
-      beta = (r,r);
-      if( std::sqrt( beta ) < 1E-8 ) break;
-      p = r + ( beta / delta ) * p;
-      delta = beta;
+      const size_t N ( 1000UL );
+      const size_t iterations( 10UL );
+
+      const size_t NN( N*N );
+
+      blaze::CompressedMatrix<double,rowMajor> A( NN, NN );
+      blaze::DynamicVector<double,columnVector> x( NN, 1.0 ), b( NN, 0.0 ), r( NN ), p( NN ), Ap( NN );
+      double alpha, beta, delta;
+
+      // ... Initializing the sparse matrix A
+
+      // Performing the CG algorithm
+      r = b - A * x;
+      p = r;
+      delta = (r,r);
+
+      for( size_t iteration=0UL; iteration<iterations; ++iteration )
+      {
+         Ap = A * p;
+         alpha = delta / (p,Ap);
+         x += alpha * p;
+         r -= alpha * Ap;
+         beta = (r,r);
+         if( std::sqrt( beta ) < 1E-8 ) break;
+         p = r + ( beta / delta ) * p;
+         delta = beta;
+      }
    }
    \endcode
 
