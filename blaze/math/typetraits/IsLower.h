@@ -45,6 +45,7 @@
 #include <blaze/math/typetraits/IsUniLower.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -74,7 +75,7 @@ struct IsLowerHelper
 {};
 
 template< typename T >  // Type of the operand
-struct IsLowerHelper< T, EnableIf_t< IsExpression_v<T> > >
+struct IsLowerHelper< T, EnableIf_t< IsExpression_v<T> && !IsSame_v<T,typename T::ResultType> > >
    : public IsLower< typename T::ResultType >::Type
 {};
 /*! \endcond */
