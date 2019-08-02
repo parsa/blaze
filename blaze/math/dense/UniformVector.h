@@ -46,6 +46,7 @@
 #include <blaze/math/dense/UniformIterator.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseVector.h>
+#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/SIMD.h>
@@ -166,7 +167,7 @@ namespace blaze {
 template< typename Type                     // Data type of the vector
         , bool TF = defaultTransposeFlag >  // Transpose flag
 class UniformVector
-   : public DenseVector< UniformVector<Type,TF>, TF >
+   : public Expression< DenseVector< UniformVector<Type,TF>, TF > >
 {
  public:
    //**Type definitions****************************************************************************
