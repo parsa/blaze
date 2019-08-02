@@ -42,12 +42,14 @@
 
 #include <blaze/math/Aliases.h>
 #include <blaze/math/adaptors/uniuppermatrix/UniUpperValue.h>
-#include <blaze/math/constraints/Expression.h>
+#include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Lower.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/constraints/Transformation.h>
 #include <blaze/math/constraints/Upper.h>
+#include <blaze/math/constraints/View.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/sparse/SparseElement.h>
 #include <blaze/util/constraints/Const.h>
@@ -157,7 +159,9 @@ class UniUpperElement
    BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE         ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST                ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE             ( MT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_EXPRESSION_TYPE      ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_VIEW_TYPE            ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE     ( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSFORMATION_TYPE  ( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_HERMITIAN_MATRIX_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_LOWER_MATRIX_TYPE    ( MT );
