@@ -42,6 +42,7 @@
 
 #include <blaze/math/Aliases.h>
 #include <blaze/math/Exception.h>
+#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/shims/IsZero.h>
@@ -167,7 +168,7 @@ namespace blaze {
 template< typename Type                     // Data type of the vector
         , bool TF = defaultTransposeFlag >  // Transpose flag
 class ZeroVector
-   : public SparseVector< ZeroVector<Type,TF>, TF >
+   : public Expression< SparseVector< ZeroVector<Type,TF>, TF > >
 {
  private:
    //**Type definitions****************************************************************************
