@@ -40,6 +40,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <blaze/math/sparse/SparseMatrix.h>
+#include <blaze/math/UniformVector.h>
 #include <blaze/math/ZeroMatrix.h>
 #include <blazetest/mathtest/sparsematrix/ZeroTest.h>
 
@@ -79,6 +80,9 @@ ZeroTest::ZeroTest()
    testIsStrictlyUpper();
    testIsDiagonal();
    testIsIdentity();
+   testMean();
+   testVar();
+   testStdDev();
 }
 //*************************************************************************************************
 
@@ -1898,6 +1902,971 @@ void ZeroTest::testIsIdentity()
             throw std::runtime_error( oss.str() );
          }
       }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c mean() function for dense matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c mean() function for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ZeroTest::testMean()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major mean()";
+
+      {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 3UL, 3UL );
+
+         const double mean = blaze::mean( mat );
+
+         if( mean != 0.0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Mean computation failed\n"
+                << " Details:\n"
+                << "   Result: " << mean << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 3UL, 0UL );
+
+         const double mean = blaze::mean( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Mean computation of matrix with zero columns succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << mean << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 0UL, 3UL );
+
+         const double mean = blaze::mean( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Mean computation of matrix with zero rows succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << mean << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Row-major mean<rowwise>()";
+
+      {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 3UL, 3UL );
+
+         blaze::UniformVector<double,blaze::columnVector> mean;
+         mean = blaze::mean<blaze::rowwise>( mat );
+
+         if( mean[0] != 0.0 || mean[1] != 0.0 || mean[2] != 0.0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Mean computation failed\n"
+                << " Details:\n"
+                << "   Result: " << trans( mean ) << "\n"
+                << "   Expected result: ( 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 3UL, 0UL );
+
+         blaze::UniformVector<double,blaze::columnVector> mean;
+         mean = blaze::mean<blaze::rowwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Mean computation of matrix with zero columns succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << trans( mean ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Row-major mean<columnwise>()";
+
+      {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 3UL, 3UL );
+
+         blaze::UniformVector<double,blaze::rowVector> mean;
+         mean = blaze::mean<blaze::columnwise>( mat );
+
+         if( mean[0] != 0.0 || mean[1] != 0.0 || mean[2] != 0.0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Mean computation failed\n"
+                << " Details:\n"
+                << "   Result: " << mean << "\n"
+                << "   Expected result: ( 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 0UL, 3UL );
+
+         blaze::UniformVector<double,blaze::rowVector> mean;
+         mean = blaze::mean<blaze::columnwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Mean computation of matrix with zero rows succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << mean << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major mean()";
+
+      {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 3UL, 3UL );
+
+         const double mean = blaze::mean( mat );
+
+         if( mean != 0.0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Mean computation failed\n"
+                << " Details:\n"
+                << "   Result: " << mean << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 3UL, 0UL );
+
+         const double mean = blaze::mean( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Mean computation of matrix with zero columns succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << mean << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 0UL, 3UL );
+
+         const double mean = blaze::mean( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Mean computation of matrix with zero rows succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << mean << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Column-major mean<rowwise>()";
+
+      {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 3UL, 3UL );
+
+         blaze::UniformVector<double,blaze::columnVector> mean;
+         mean = blaze::mean<blaze::rowwise>( mat );
+
+         if( mean[0] != 0.0 || mean[1] != 0.0 || mean[2] != 0.0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Mean computation failed\n"
+                << " Details:\n"
+                << "   Result: " << trans( mean ) << "\n"
+                << "   Expected result: ( 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 3UL, 0UL );
+
+         blaze::UniformVector<double,blaze::columnVector> mean;
+         mean = blaze::mean<blaze::rowwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Mean computation of matrix with zero columns succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << trans( mean ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Column-major mean<columnwise>()";
+
+      {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 3UL, 3UL );
+
+         blaze::UniformVector<double,blaze::rowVector> mean;
+         mean = blaze::mean<blaze::columnwise>( mat );
+
+         if( mean[0] != 0.0 || mean[1] != 0.0 || mean[2] != 0.0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Mean computation failed\n"
+                << " Details:\n"
+                << "   Result: " << mean << "\n"
+                << "   Expected result: ( 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 0UL, 3UL );
+
+         blaze::UniformVector<double,blaze::rowVector> mean;
+         mean = blaze::mean<blaze::columnwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Mean computation of matrix with zero rows succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << mean << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c var() function for dense matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c var() function for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ZeroTest::testVar()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major var()";
+
+      {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 3UL, 3UL );
+
+         const double var = blaze::var( mat );
+
+         if( var != 0.0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Variance computation failed\n"
+                << " Details:\n"
+                << "   Result: " << var << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 3UL, 0UL );
+
+         const double var = blaze::var( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Variance computation of matrix with zero columns succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << var << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 0UL, 3UL );
+
+         const double var = blaze::var( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Variance computation of matrix with zero rows succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << var << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 1UL, 1UL );
+
+         const double var = blaze::var( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Variance computation of 1x1 matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << var << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Row-major var<rowwise>()";
+
+      {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 3UL, 3UL );
+
+         blaze::UniformVector<double,blaze::columnVector> var;
+         var = blaze::var<blaze::rowwise>( mat );
+
+         if( var[0] != 0.0 || var[1] != 0.0 || var[2] != 0.0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Variance computation failed\n"
+                << " Details:\n"
+                << "   Result: " << trans( var ) << "\n"
+                << "   Expected result: ( 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 3UL, 0UL );
+
+         blaze::UniformVector<double,blaze::columnVector> var;
+         var = blaze::var<blaze::rowwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Variance computation of matrix with zero columns succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << trans( var ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 3UL, 1UL );
+
+         blaze::UniformVector<double,blaze::columnVector> var;
+         var = blaze::var<blaze::rowwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Variance computation of matrix with one column succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << trans( var ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Row-major var<columnwise>()";
+
+      {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 3UL, 3UL );
+
+         blaze::UniformVector<double,blaze::rowVector> var;
+         var = blaze::var<blaze::columnwise>( mat );
+
+         if( var[0] != 0.0 || var[1] != 0.0 || var[2] != 0.0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Variance computation failed\n"
+                << " Details:\n"
+                << "   Result: " << var << "\n"
+                << "   Expected result: ( 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 0UL, 3UL );
+
+         blaze::UniformVector<double,blaze::rowVector> var;
+         var = blaze::var<blaze::columnwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Variance computation of matrix with zero rows succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << var << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 1UL, 3UL );
+
+         blaze::UniformVector<double,blaze::rowVector> var;
+         var = blaze::var<blaze::columnwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Variance computation of matrix with one row succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << var << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major var()";
+
+      {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 3UL, 3UL );
+
+         const double var = blaze::var( mat );
+
+         if( var != 0.0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Variance computation failed\n"
+                << " Details:\n"
+                << "   Result: " << var << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 3UL, 0UL );
+
+         const double var = blaze::var( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Variance computation of matrix with zero columns succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << var << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 0UL, 3UL );
+
+         const double var = blaze::var( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Variance computation of matrix with zero rows succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << var << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 1UL, 1UL );
+
+         const double var = blaze::var( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Variance computation of 1x1 matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << var << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Column-major var<rowwise>()";
+
+      {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 3UL, 3UL );
+
+         blaze::UniformVector<double,blaze::columnVector> var;
+         var = blaze::var<blaze::rowwise>( mat );
+
+         if( var[0] != 0.0 || var[1] != 0.0 || var[2] != 0.0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Variance computation failed\n"
+                << " Details:\n"
+                << "   Result: " << trans( var ) << "\n"
+                << "   Expected result: ( 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 3UL, 0UL );
+
+         blaze::UniformVector<double,blaze::columnVector> var;
+         var = blaze::var<blaze::rowwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Variance computation of matrix with zero columns succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << trans( var ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 3UL, 1UL );
+
+         blaze::UniformVector<double,blaze::columnVector> var;
+         var = blaze::var<blaze::rowwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Variance computation of matrix with one column succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << trans( var ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Column-major var<columnwise>()";
+
+      {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 3UL, 3UL );
+
+         blaze::UniformVector<double,blaze::rowVector> var;
+         var = blaze::var<blaze::columnwise>( mat );
+
+         if( var[0] != 0.0 || var[1] != 0.0 || var[2] != 0.0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Variance computation failed\n"
+                << " Details:\n"
+                << "   Result: " << var << "\n"
+                << "   Expected result: ( 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 0UL, 3UL );
+
+         blaze::UniformVector<double,blaze::rowVector> var;
+         var = blaze::var<blaze::columnwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Variance computation of matrix with zero rows succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << var << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 1UL, 3UL );
+
+         blaze::UniformVector<double,blaze::rowVector> var;
+         var = blaze::var<blaze::columnwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Variance computation of matrix with one row succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << var << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c stddev() function for dense matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c stddev() function for dense matrices. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void ZeroTest::testStdDev()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major stddev()";
+
+      {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 3UL, 3UL );
+
+         const double stddev = blaze::stddev( mat );
+
+         if( stddev != 0.0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Standard deviation computation failed\n"
+                << " Details:\n"
+                << "   Result: " << stddev << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 3UL, 0UL );
+
+         const double stddev = blaze::stddev( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of matrix with zero columns succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << stddev << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 0UL, 3UL );
+
+         const double stddev = blaze::stddev( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of matrix with zero rows succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << stddev << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 1UL, 1UL );
+
+         const double stddev = blaze::stddev( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of 1x1 matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << stddev << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Row-major stddev<rowwise>()";
+
+      {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 3UL, 3UL );
+
+         blaze::UniformVector<double,blaze::columnVector> stddev;
+         stddev = blaze::stddev<blaze::rowwise>( mat );
+
+         if( stddev[0] != 0.0 || stddev[1] != 0.0 || stddev[2] != 0.0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Standard deviation computation failed\n"
+                << " Details:\n"
+                << "   Result: " << trans( stddev ) << "\n"
+                << "   Expected result: ( 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 3UL, 0UL );
+
+         blaze::UniformVector<double,blaze::columnVector> stddev;
+         stddev = blaze::stddev<blaze::rowwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of matrix with zero columns succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << trans( stddev ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 3UL, 1UL );
+
+         blaze::UniformVector<double,blaze::columnVector> stddev;
+         stddev = blaze::stddev<blaze::rowwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of matrix with one column succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << trans( stddev ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Row-major stddev<columnwise>()";
+
+      {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 3UL, 3UL );
+
+         blaze::UniformVector<double,blaze::rowVector> stddev;
+         stddev = blaze::stddev<blaze::columnwise>( mat );
+
+         if( stddev[0] != 0.0 || stddev[1] != 0.0 || stddev[2] != 0.0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Standard deviation computation failed\n"
+                << " Details:\n"
+                << "   Result: " << stddev << "\n"
+                << "   Expected result: ( 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 0UL, 3UL );
+
+         blaze::UniformVector<double,blaze::rowVector> stddev;
+         stddev = blaze::stddev<blaze::columnwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of matrix with zero rows succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << stddev << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::ZeroMatrix<int,blaze::rowMajor> mat( 1UL, 3UL );
+
+         blaze::UniformVector<double,blaze::rowVector> stddev;
+         stddev = blaze::stddev<blaze::columnwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of matrix with one row succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << stddev << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major stddev()";
+
+      {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 3UL, 3UL );
+
+         const double stddev = blaze::stddev( mat );
+
+         if( stddev != 0.0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Standard deviation computation failed\n"
+                << " Details:\n"
+                << "   Result: " << stddev << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 3UL, 0UL );
+
+         const double stddev = blaze::stddev( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of matrix with zero columns succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << stddev << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 0UL, 3UL );
+
+         const double stddev = blaze::stddev( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of matrix with zero rows succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << stddev << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 1UL, 1UL );
+
+         const double stddev = blaze::stddev( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of 1x1 matrix succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << stddev << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Column-major stddev<rowwise>()";
+
+      {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 3UL, 3UL );
+
+         blaze::UniformVector<double,blaze::columnVector> stddev;
+         stddev = blaze::stddev<blaze::rowwise>( mat );
+
+         if( stddev[0] != 0.0 || stddev[1] != 0.0 || stddev[2] != 0.0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Standard deviation computation failed\n"
+                << " Details:\n"
+                << "   Result: " << trans( stddev ) << "\n"
+                << "   Expected result: ( 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 3UL, 0UL );
+
+         blaze::UniformVector<double,blaze::columnVector> stddev;
+         stddev = blaze::stddev<blaze::rowwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of matrix with zero columns succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << trans( stddev ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 3UL, 1UL );
+
+         blaze::UniformVector<double,blaze::columnVector> stddev;
+         stddev = blaze::stddev<blaze::rowwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of matrix with one column succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << trans( stddev ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
+
+   {
+      test_ = "Column-major stddev<columnwise>()";
+
+      {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 3UL, 3UL );
+
+         blaze::UniformVector<double,blaze::rowVector> stddev;
+         stddev = blaze::stddev<blaze::columnwise>( mat );
+
+         if( stddev[0] != 0.0 || stddev[1] != 0.0 || stddev[2] != 0.0 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Standard deviation computation failed\n"
+                << " Details:\n"
+                << "   Result: " << stddev << "\n"
+                << "   Expected result: ( 0 0 0 )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      try {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 0UL, 3UL );
+
+         blaze::UniformVector<double,blaze::rowVector> stddev;
+         stddev = blaze::stddev<blaze::columnwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of matrix with zero rows succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << stddev << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::ZeroMatrix<int,blaze::columnMajor> mat( 1UL, 3UL );
+
+         blaze::UniformVector<double,blaze::rowVector> stddev;
+         stddev = blaze::stddev<blaze::columnwise>( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of matrix with one row succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << stddev << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************
