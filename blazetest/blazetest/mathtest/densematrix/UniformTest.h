@@ -100,6 +100,9 @@ class UniformTest
    void testIsStrictlyUpper();
    void testIsDiagonal();
    void testIsIdentity();
+   void testMean();
+   void testVar();
+   void testStdDev();
 
    template< typename Type >
    void checkRows( const Type& matrix, size_t expectedRows ) const;

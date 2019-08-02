@@ -5918,13 +5918,27 @@ void GeneralTest::testMean()
       }
 
       try {
-         blaze::DynamicMatrix<int,blaze::rowMajor> mat;
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 0UL );
 
          const double mean = blaze::mean( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Mean computation of empty matrix succeeded\n"
+             << " Error: Mean computation of matrix with zero columns succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << mean << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 0UL, 3UL );
+
+         const double mean = blaze::mean( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Mean computation of matrix with zero rows succeeded\n"
              << " Details:\n"
              << "   Result:\n" << mean << "\n";
          throw std::runtime_error( oss.str() );
@@ -6085,13 +6099,27 @@ void GeneralTest::testMean()
       }
 
       try {
-         blaze::DynamicMatrix<int,blaze::columnMajor> mat;
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 0UL );
 
          const double mean = blaze::mean( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Mean computation of empty matrix succeeded\n"
+             << " Error: Mean computation of matrix with zero columns succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << mean << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 0UL, 3UL );
+
+         const double mean = blaze::mean( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Mean computation of matrix with zero rows succeeded\n"
              << " Details:\n"
              << "   Result:\n" << mean << "\n";
          throw std::runtime_error( oss.str() );
@@ -6265,13 +6293,41 @@ void GeneralTest::testVar()
       }
 
       try {
-         blaze::DynamicMatrix<int,blaze::rowMajor> mat;
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 0UL );
 
          const double var = blaze::var( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Variance computation of empty matrix succeeded\n"
+             << " Error: Variance computation of matrix with zero columns succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << var << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 0UL, 3UL );
+
+         const double var = blaze::var( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Variance computation of matrix with zero rows succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << var << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 1UL, 1UL );
+
+         const double var = blaze::var( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Variance computation of 1x1 matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << var << "\n";
          throw std::runtime_error( oss.str() );
@@ -6462,13 +6518,41 @@ void GeneralTest::testVar()
       }
 
       try {
-         blaze::DynamicMatrix<int,blaze::columnMajor> mat;
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 0UL );
 
          const double var = blaze::var( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Variance computation of empty matrix succeeded\n"
+             << " Error: Variance computation of matrix with zero columns succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << var << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 0UL, 3UL );
+
+         const double var = blaze::var( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Variance computation of matrix with zero rows succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << var << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 1UL, 1UL );
+
+         const double var = blaze::var( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Variance computation of 1x1 matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << var << "\n";
          throw std::runtime_error( oss.str() );
@@ -6672,13 +6756,41 @@ void GeneralTest::testStdDev()
       }
 
       try {
-         blaze::DynamicMatrix<int,blaze::rowMajor> mat;
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 3UL, 0UL );
 
          const double stddev = blaze::stddev( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Standard deviation computation of empty matrix succeeded\n"
+             << " Error: Standard deviation computation of matrix with zero columns succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << stddev << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 0UL, 3UL );
+
+         const double stddev = blaze::stddev( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of matrix with zero rows succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << stddev << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::DynamicMatrix<int,blaze::rowMajor> mat( 1UL, 1UL );
+
+         const double stddev = blaze::stddev( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of 1x1 matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << stddev << "\n";
          throw std::runtime_error( oss.str() );
@@ -6870,13 +6982,41 @@ void GeneralTest::testStdDev()
       }
 
       try {
-         blaze::DynamicMatrix<int,blaze::columnMajor> mat;
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 3UL, 0UL );
 
          const double stddev = blaze::stddev( mat );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
-             << " Error: Standard deviation computation of empty matrix succeeded\n"
+             << " Error: Standard deviation computation of matrix with zero columns succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << stddev << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 0UL, 3UL );
+
+         const double stddev = blaze::stddev( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of matrix with zero rows succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << stddev << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         blaze::DynamicMatrix<int,blaze::columnMajor> mat( 1UL, 1UL );
+
+         const double stddev = blaze::stddev( mat );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Standard deviation computation of 1x1 matrix succeeded\n"
              << " Details:\n"
              << "   Result:\n" << stddev << "\n";
          throw std::runtime_error( oss.str() );
