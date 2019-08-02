@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/sparsevector/OperationTest.cpp
-//  \brief Source file for the SparseVector functionality operation test
+//  \file src/mathtest/sparsevector/GeneralTest.cpp
+//  \brief Source file for the general SparseVector operation test
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -43,7 +43,7 @@
 #include <blaze/math/sparse/SparseVector.h>
 #include <blaze/math/CompressedVector.h>
 #include <blazetest/mathtest/IsEqual.h>
-#include <blazetest/mathtest/sparsevector/OperationTest.h>
+#include <blazetest/mathtest/sparsevector/GeneralTest.h>
 
 #ifdef BLAZE_USE_HPX_THREADS
 #  include <hpx/hpx_main.hpp>
@@ -63,11 +63,11 @@ namespace sparsevector {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the OperationTest class test.
+/*!\brief Constructor for the GeneralTest class test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-OperationTest::OperationTest()
+GeneralTest::GeneralTest()
 {
    testIsNan();
    testIsUniform();
@@ -107,7 +107,7 @@ OperationTest::OperationTest()
 // This function performs a test of the \c isnan() function for sparse vectors. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testIsNan()
+void GeneralTest::testIsNan()
 {
    test_ = "isnan() function";
 
@@ -169,7 +169,7 @@ void OperationTest::testIsNan()
 // This function performs a test of the \c isUniform() function for sparse vectors. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testIsUniform()
+void GeneralTest::testIsUniform()
 {
    test_ = "isUniform() function";
 
@@ -284,7 +284,7 @@ void OperationTest::testIsUniform()
 // This function performs a test of the \c isZero() function for sparse vectors. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testIsZero()
+void GeneralTest::testIsZero()
 {
    test_ = "isZero() function";
 
@@ -413,7 +413,7 @@ void OperationTest::testIsZero()
 // This function performs a test of the \c normalize() function for sparse vectors. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testNormalize()
+void GeneralTest::testNormalize()
 {
    test_ = "normalize() function";
 
@@ -476,7 +476,7 @@ void OperationTest::testNormalize()
 // This function performs a test of the \c min() function for sparse vectors template. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testMinimum()
+void GeneralTest::testMinimum()
 {
    test_ = "min() function";
 
@@ -540,7 +540,7 @@ void OperationTest::testMinimum()
 // This function performs a test of the \c max() function for sparse vectors template. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testMaximum()
+void GeneralTest::testMaximum()
 {
    test_ = "max() function";
 
@@ -604,7 +604,7 @@ void OperationTest::testMaximum()
 // This function performs a test of the \c argmin() function for sparse vectors template. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testArgmin()
+void GeneralTest::testArgmin()
 {
    test_ = "argmin() function";
 
@@ -720,7 +720,7 @@ void OperationTest::testArgmin()
 // This function performs a test of the \c argmax() function for sparse vectors template. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testArgmax()
+void GeneralTest::testArgmax()
 {
    test_ = "argmax() function";
 
@@ -836,7 +836,7 @@ void OperationTest::testArgmax()
 // This function performs a test of the \c l1Norm() function for sparse vectors template. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testL1Norm()
+void GeneralTest::testL1Norm()
 {
    test_ = "l1Norm() function";
 
@@ -900,7 +900,7 @@ void OperationTest::testL1Norm()
 // This function performs a test of the \c l2Norm() function for sparse vectors template. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testL2Norm()
+void GeneralTest::testL2Norm()
 {
    test_ = "l2Norm() function";
 
@@ -964,7 +964,7 @@ void OperationTest::testL2Norm()
 // This function performs a test of the \c l3Norm() function for sparse vectors template. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testL3Norm()
+void GeneralTest::testL3Norm()
 {
    test_ = "l3Norm() function";
 
@@ -1028,7 +1028,7 @@ void OperationTest::testL3Norm()
 // This function performs a test of the \c l4Norm() function for sparse vectors template. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testL4Norm()
+void GeneralTest::testL4Norm()
 {
    test_ = "l4Norm() function";
 
@@ -1092,7 +1092,7 @@ void OperationTest::testL4Norm()
 // This function performs a test of the \c lpNorm() function for sparse vectors template. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testLpNorm()
+void GeneralTest::testLpNorm()
 {
    test_ = "lpNorm() function";
 
@@ -1224,7 +1224,7 @@ void OperationTest::testLpNorm()
 // This function performs a test of the \c length() and \c sqrLength() functions for sparse
 // vectors. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testLength()
+void GeneralTest::testLength()
 {
    test_ = "length() and sqrLength() functions";
 
@@ -1335,7 +1335,7 @@ void OperationTest::testLength()
 // This function performs a test of the \c mean() function for sparse vectors. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testMean()
+void GeneralTest::testMean()
 {
    test_ = "mean() function";
 
@@ -1397,7 +1397,7 @@ void OperationTest::testMean()
 // This function performs a test of the \c var() function for sparse vectors. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testVar()
+void GeneralTest::testVar()
 {
    test_ = "var() function";
 
@@ -1473,7 +1473,7 @@ void OperationTest::testVar()
 // This function performs a test of the \c stddev() function for sparse vectors. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testStdDev()
+void GeneralTest::testStdDev()
 {
    test_ = "stddev() function";
 
@@ -1557,14 +1557,14 @@ void OperationTest::testStdDev()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running SparseVector operation test..." << std::endl;
+   std::cout << "   Running general SparseVector operation test..." << std::endl;
 
    try
    {
-      RUN_SPARSEVECTOR_OPERATION_TEST;
+      RUN_SPARSEVECTOR_GENERAL_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during SparseVector operation test:\n"
+      std::cerr << "\n\n ERROR DETECTED during general SparseVector operation test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

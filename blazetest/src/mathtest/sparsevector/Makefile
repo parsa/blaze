@@ -56,7 +56,9 @@ noop: $(BIN)
 
 
 # Build rules
-OperationTest: OperationTest.o
+GeneralTest: GeneralTest.o
+	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
+ZeroTest: ZeroTest.o
 	@$(CXX) $(CXXFLAGS) -o $@ $< $(LIBRARIES)
 
 

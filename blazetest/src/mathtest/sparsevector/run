@@ -37,4 +37,5 @@ PATH_SPARSEVECTOR=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running SparseVector functionality tests..."
 
-EXE=$PATH_SPARSEVECTOR/OperationTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SPARSEVECTOR/GeneralTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_SPARSEVECTOR/ZeroTest;    if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi

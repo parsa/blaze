@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/sparsevector/OperationTest.h
-//  \brief Header file for the SparseVector functionality operation test
+//  \file blazetest/mathtest/sparsevector/ZeroTest.h
+//  \brief Header file for the zero SparseVector operation test
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_SPARSEVECTOR_OPERATIONTEST_H_
-#define _BLAZETEST_MATHTEST_SPARSEVECTOR_OPERATIONTEST_H_
+#ifndef _BLAZETEST_MATHTEST_SPARSEVECTOR_ZEROTEST_H_
+#define _BLAZETEST_MATHTEST_SPARSEVECTOR_ZEROTEST_H_
 
 
 //*************************************************************************************************
@@ -61,15 +61,16 @@ namespace sparsevector {
 /*!\brief Auxiliary class for all tests of the SparseVector functionality.
 //
 // This class represents a test suite for the SparseVector functionality contained in the
-// <em><blaze/math/sparse/SparseVector.h></em> header file.
+// <em><blaze/math/sparse/SparseVector.h></em> header file. It performs a series of runtime
+// tests with zero vectors.
 */
-class OperationTest
+class ZeroTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit OperationTest();
+   explicit ZeroTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -82,20 +83,8 @@ class OperationTest
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
-   void testIsNan();
    void testIsUniform();
    void testIsZero();
-   void testNormalize();
-   void testMinimum();
-   void testMaximum();
-   void testArgmin();
-   void testArgmax();
-   void testL1Norm();
-   void testL2Norm();
-   void testL3Norm();
-   void testL4Norm();
-   void testLpNorm();
-   void testLength();
    void testMean();
    void testVar();
    void testStdDev();
@@ -142,7 +131,7 @@ class OperationTest
 // thrown.
 */
 template< typename Type >  // Type of the sparse vector
-void OperationTest::checkSize( const Type& vector, size_t expectedSize ) const
+void ZeroTest::checkSize( const Type& vector, size_t expectedSize ) const
 {
    if( vector.size() != expectedSize ) {
       std::ostringstream oss;
@@ -170,7 +159,7 @@ void OperationTest::checkSize( const Type& vector, size_t expectedSize ) const
 // thrown.
 */
 template< typename Type >  // Type of the sparse vector
-void OperationTest::checkCapacity( const Type& vector, size_t minCapacity ) const
+void ZeroTest::checkCapacity( const Type& vector, size_t minCapacity ) const
 {
    if( vector.capacity() < minCapacity ) {
       std::ostringstream oss;
@@ -198,7 +187,7 @@ void OperationTest::checkCapacity( const Type& vector, size_t minCapacity ) cons
 // number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the sparse vector
-void OperationTest::checkNonZeros( const Type& vector, size_t expectedNonZeros ) const
+void ZeroTest::checkNonZeros( const Type& vector, size_t expectedNonZeros ) const
 {
    if( vector.nonZeros() != expectedNonZeros ) {
       std::ostringstream oss;
@@ -228,7 +217,7 @@ void OperationTest::checkNonZeros( const Type& vector, size_t expectedNonZeros )
 */
 void runTest()
 {
-   OperationTest();
+   ZeroTest();
 }
 //*************************************************************************************************
 
@@ -243,9 +232,9 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the SparseVector operation test.
+/*!\brief Macro for the execution of the zero SparseVector operation test.
 */
-#define RUN_SPARSEVECTOR_OPERATION_TEST \
+#define RUN_SPARSEVECTOR_ZERO_TEST \
    blazetest::mathtest::sparsevector::runTest()
 /*! \endcond */
 //*************************************************************************************************
