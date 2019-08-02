@@ -42,6 +42,7 @@
 
 #include <blaze/math/Aliases.h>
 #include <blaze/math/Exception.h>
+#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/shims/IsZero.h>
@@ -177,7 +178,7 @@ namespace blaze {
 template< typename Type                    // Data type of the matrix
         , bool SO = defaultStorageOrder >  // Storage order
 class ZeroMatrix
-   : public SparseMatrix< ZeroMatrix<Type,SO>, SO >
+   : public Expression< SparseMatrix< ZeroMatrix<Type,SO>, SO > >
 {
  private:
    //**Type definitions****************************************************************************
