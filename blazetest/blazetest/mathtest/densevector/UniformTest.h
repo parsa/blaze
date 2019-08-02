@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/densevector/OperationTest.h
-//  \brief Header file for the DenseVector functionality operation test
+//  \file blazetest/mathtest/densevector/UniformTest.h
+//  \brief Header file for the uniform DenseVector operation test
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DENSEVECTOR_OPERATIONTEST_H_
-#define _BLAZETEST_MATHTEST_DENSEVECTOR_OPERATIONTEST_H_
+#ifndef _BLAZETEST_MATHTEST_DENSEVECTOR_UNIFORMTEST_H_
+#define _BLAZETEST_MATHTEST_DENSEVECTOR_UNIFORMTEST_H_
 
 
 //*************************************************************************************************
@@ -61,15 +61,16 @@ namespace densevector {
 /*!\brief Auxiliary class for all tests of the DenseVector functionality.
 //
 // This class represents a test suite for the DenseVector functionality contained in the
-// <em><blaze/math/dense/DenseVector.h></em> header file.
+// <em><blaze/math/dense/DenseVector.h></em> header file. It performs a series of runtime
+// tests with uniform vectors.
 */
-class OperationTest
+class UniformTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit OperationTest();
+   explicit UniformTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -82,32 +83,11 @@ class OperationTest
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
-   void testIsNan();
    void testIsUniform();
    void testIsZero();
-   void testNormalize();
-   void testMinimum();
-   void testMaximum();
-   void testArgmin();
-   void testArgmax();
-   void testL1Norm();
-   void testL2Norm();
-   void testL3Norm();
-   void testL4Norm();
-   void testLpNorm();
-   void testLength();
    void testMean();
    void testVar();
    void testStdDev();
-   void testSoftmax();
-   void testLeftShift();
-   void testRightShift();
-   void testBitand();
-   void testBitor();
-   void testBitxor();
-   void testNot();
-   void testAnd();
-   void testOr();
 
    template< typename Type >
    void checkSize( const Type& vector, size_t expectedSize ) const;
@@ -151,7 +131,7 @@ class OperationTest
 // thrown.
 */
 template< typename Type >  // Type of the dense vector
-void OperationTest::checkSize( const Type& vector, size_t expectedSize ) const
+void UniformTest::checkSize( const Type& vector, size_t expectedSize ) const
 {
    if( vector.size() != expectedSize ) {
       std::ostringstream oss;
@@ -179,7 +159,7 @@ void OperationTest::checkSize( const Type& vector, size_t expectedSize ) const
 // thrown.
 */
 template< typename Type >  // Type of the dense vector
-void OperationTest::checkCapacity( const Type& vector, size_t minCapacity ) const
+void UniformTest::checkCapacity( const Type& vector, size_t minCapacity ) const
 {
    if( vector.capacity() < minCapacity ) {
       std::ostringstream oss;
@@ -207,7 +187,7 @@ void OperationTest::checkCapacity( const Type& vector, size_t minCapacity ) cons
 // number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense vector
-void OperationTest::checkNonZeros( const Type& vector, size_t expectedNonZeros ) const
+void UniformTest::checkNonZeros( const Type& vector, size_t expectedNonZeros ) const
 {
    if( vector.nonZeros() != expectedNonZeros ) {
       std::ostringstream oss;
@@ -237,7 +217,7 @@ void OperationTest::checkNonZeros( const Type& vector, size_t expectedNonZeros )
 */
 void runTest()
 {
-   OperationTest();
+   UniformTest();
 }
 //*************************************************************************************************
 
@@ -252,9 +232,9 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the DenseVector operation test.
+/*!\brief Macro for the execution of the uniform DenseVector operation test.
 */
-#define RUN_DENSEVECTOR_OPERATION_TEST \
+#define RUN_DENSEVECTOR_UNIFORM_TEST \
    blazetest::mathtest::densevector::runTest()
 /*! \endcond */
 //*************************************************************************************************

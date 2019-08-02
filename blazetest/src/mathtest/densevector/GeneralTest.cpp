@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/densevector/OperationTest.cpp
-//  \brief Source file for the DenseVector functionality operation test
+//  \file src/mathtest/densevector/GeneralTest.cpp
+//  \brief Source file for the general DenseVector operation test
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -42,7 +42,7 @@
 #include <iostream>
 #include <blaze/math/dense/DenseVector.h>
 #include <blaze/math/DynamicVector.h>
-#include <blazetest/mathtest/densevector/OperationTest.h>
+#include <blazetest/mathtest/densevector/GeneralTest.h>
 #include <blazetest/mathtest/IsEqual.h>
 
 #ifdef BLAZE_USE_HPX_THREADS
@@ -63,11 +63,11 @@ namespace densevector {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the OperationTest class test.
+/*!\brief Constructor for the GeneralTest class test.
 //
 // \exception std::runtime_error Operation error detected.
 */
-OperationTest::OperationTest()
+GeneralTest::GeneralTest()
 {
    testIsNan();
    testIsUniform();
@@ -116,7 +116,7 @@ OperationTest::OperationTest()
 // This function performs a test of the \c isnan() function for dense vectors. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testIsNan()
+void GeneralTest::testIsNan()
 {
    test_ = "isnan() function";
 
@@ -178,7 +178,7 @@ void OperationTest::testIsNan()
 // This function performs a test of the \c isUniform() function for dense vectors. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testIsUniform()
+void GeneralTest::testIsUniform()
 {
    test_ = "isUniform() function";
 
@@ -250,7 +250,7 @@ void OperationTest::testIsUniform()
 // This function performs a test of the \c isZero() function for dense vectors. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testIsZero()
+void GeneralTest::testIsZero()
 {
    test_ = "isZero() function";
 
@@ -322,7 +322,7 @@ void OperationTest::testIsZero()
 // This function performs a test of the \c normalize() function for dense vectors. In case
 // an error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testNormalize()
+void GeneralTest::testNormalize()
 {
    test_ = "normalize() function";
 
@@ -385,7 +385,7 @@ void OperationTest::testNormalize()
 // This function performs a test of the \c min() function for dense vectors. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testMinimum()
+void GeneralTest::testMinimum()
 {
    test_ = "min() function";
 
@@ -469,7 +469,7 @@ void OperationTest::testMinimum()
 // This function performs a test of the \c max() function for dense vectors. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testMaximum()
+void GeneralTest::testMaximum()
 {
    test_ = "max() function";
 
@@ -549,7 +549,7 @@ void OperationTest::testMaximum()
 // This function performs a test of the \c argmin() function for dense vectors. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testArgmin()
+void GeneralTest::testArgmin()
 {
    test_ = "argmin() function";
 
@@ -665,7 +665,7 @@ void OperationTest::testArgmin()
 // This function performs a test of the \c argmax() function for dense vectors. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testArgmax()
+void GeneralTest::testArgmax()
 {
    test_ = "argmax() function";
 
@@ -781,7 +781,7 @@ void OperationTest::testArgmax()
 // This function performs a test of the \c l1Norm() function for dense vectors. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testL1Norm()
+void GeneralTest::testL1Norm()
 {
    test_ = "l1Norm() function";
 
@@ -845,7 +845,7 @@ void OperationTest::testL1Norm()
 // This function performs a test of the \c l2Norm() function for dense vectors. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testL2Norm()
+void GeneralTest::testL2Norm()
 {
    test_ = "l2Norm() function";
 
@@ -909,7 +909,7 @@ void OperationTest::testL2Norm()
 // This function performs a test of the \c l3Norm() function for dense vectors. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testL3Norm()
+void GeneralTest::testL3Norm()
 {
    test_ = "l3Norm() function";
 
@@ -973,7 +973,7 @@ void OperationTest::testL3Norm()
 // This function performs a test of the \c l4Norm() function for dense vectors. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testL4Norm()
+void GeneralTest::testL4Norm()
 {
    test_ = "l4Norm() function";
 
@@ -1037,7 +1037,7 @@ void OperationTest::testL4Norm()
 // This function performs a test of the \c lpNorm() function for dense vectors. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testLpNorm()
+void GeneralTest::testLpNorm()
 {
    test_ = "lpNorm() function";
 
@@ -1169,7 +1169,7 @@ void OperationTest::testLpNorm()
 // This function performs a test of the \c length() and \c sqrLength() functions for dense
 // vectors. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testLength()
+void GeneralTest::testLength()
 {
    test_ = "length() and sqrLength() functions";
 
@@ -1279,7 +1279,7 @@ void OperationTest::testLength()
 // This function performs a test of the \c mean() function for dense vectors. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testMean()
+void GeneralTest::testMean()
 {
    test_ = "mean() function";
 
@@ -1341,7 +1341,7 @@ void OperationTest::testMean()
 // This function performs a test of the \c var() function for dense vectors. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testVar()
+void GeneralTest::testVar()
 {
    test_ = "var() function";
 
@@ -1417,7 +1417,7 @@ void OperationTest::testVar()
 // This function performs a test of the \c stddev() function for dense vectors. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testStdDev()
+void GeneralTest::testStdDev()
 {
    test_ = "stddev() function";
 
@@ -1493,7 +1493,7 @@ void OperationTest::testStdDev()
 // This function performs a test of the \c softmax() function for dense vectors. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testSoftmax()
+void GeneralTest::testSoftmax()
 {
    test_ = "softmax() function";
 
@@ -1528,7 +1528,7 @@ void OperationTest::testSoftmax()
 // This function performs a test of the left-shift operator for dense vectors. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testLeftShift()
+void GeneralTest::testLeftShift()
 {
    test_ = "Left-shift operator";
 
@@ -1667,7 +1667,7 @@ void OperationTest::testLeftShift()
 // This function performs a test of the right-shift operator for dense vectors. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testRightShift()
+void GeneralTest::testRightShift()
 {
    //=====================================================================================
    // Vector/scalar right-shift tests
@@ -1811,7 +1811,7 @@ void OperationTest::testRightShift()
 // This function performs a test of the bitwise AND operator for dense vectors. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testBitand()
+void GeneralTest::testBitand()
 {
    //=====================================================================================
    // Vector/scalar bitwise AND tests
@@ -1955,7 +1955,7 @@ void OperationTest::testBitand()
 // This function performs a test of the bitwise OR operator for dense vectors. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testBitor()
+void GeneralTest::testBitor()
 {
    //=====================================================================================
    // Vector/scalar bitwise OR tests
@@ -2099,7 +2099,7 @@ void OperationTest::testBitor()
 // This function performs a test of the bitwise XOR operator for dense vectors. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testBitxor()
+void GeneralTest::testBitxor()
 {
    //=====================================================================================
    // Vector/scalar bitwise XOR tests
@@ -2243,7 +2243,7 @@ void OperationTest::testBitxor()
 // This function performs a test of the logical NOT operator for dense vectors. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testNot()
+void GeneralTest::testNot()
 {
    test_ = "Vector/vector logical NOT operator";
 
@@ -2289,7 +2289,7 @@ void OperationTest::testNot()
 // This function performs a test of the logical AND operator for dense vectors. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testAnd()
+void GeneralTest::testAnd()
 {
    test_ = "Vector/vector logical AND operator";
 
@@ -2339,7 +2339,7 @@ void OperationTest::testAnd()
 // This function performs a test of the logical OR operator for dense vectors. In case an error
 // is detected, a \a std::runtime_error exception is thrown.
 */
-void OperationTest::testOr()
+void GeneralTest::testOr()
 {
    test_ = "Vector/vector logical OR operator";
 
@@ -2397,14 +2397,14 @@ void OperationTest::testOr()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running DenseVector operation test..." << std::endl;
+   std::cout << "   Running general DenseVector operation test..." << std::endl;
 
    try
    {
-      RUN_DENSEVECTOR_OPERATION_TEST;
+      RUN_DENSEVECTOR_GENERAL_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during DenseVector operation test:\n"
+      std::cerr << "\n\n ERROR DETECTED during general DenseVector operation test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }

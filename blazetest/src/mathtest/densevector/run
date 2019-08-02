@@ -37,4 +37,5 @@ PATH_DENSEVECTOR=$( dirname "${BASH_SOURCE[0]}" )
 
 echo " Running DenseVector functionality tests..."
 
-EXE=$PATH_DENSEVECTOR/OperationTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DENSEVECTOR/GeneralTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
+EXE=$PATH_DENSEVECTOR/UniformTest; if [ -x $EXE ]; then $EXE; if [ $? != 0 ]; then exit 1; fi fi
