@@ -45,6 +45,7 @@
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/typetraits/IsSame.h>
 
 
 namespace blaze {
@@ -74,7 +75,7 @@ struct IsZeroHelper
 {};
 
 template< typename T >  // Type of the operand
-struct IsZeroHelper< T, EnableIf_t< IsExpression_v<T> > >
+struct IsZeroHelper< T, EnableIf_t< IsExpression_v<T> && !IsSame_v<T,typename T::ResultType> > >
    : public IsZero< typename T::ResultType >::Type
 {};
 /*! \endcond */
