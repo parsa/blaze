@@ -46,6 +46,7 @@
 #include <blaze/math/dense/UniformIterator.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/Conjugate.h>
@@ -181,7 +182,7 @@ namespace blaze {
 template< typename Type                    // Data type of the matrix
         , bool SO = defaultStorageOrder >  // Storage order
 class UniformMatrix
-   : public DenseMatrix< UniformMatrix<Type,SO>, SO >
+   : public Expression< DenseMatrix< UniformMatrix<Type,SO>, SO > >
 {
  public:
    //**Type definitions****************************************************************************
