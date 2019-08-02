@@ -13512,12 +13512,20 @@
    #define BLAZE_BLAS_IS_PARALLEL 1
    \endcode
 
-// Alternatively, both settings can be specified via command line or by defining the symbols
+// Additionally, it is possible to specify the name of the BLAS include file via the
+// \c BLAZE_BLAS_INCLUDE_FILE switch. The default setting is <tt><cblas.h></tt>:
+
+   \code
+   #define BLAZE_BLAS_INCLUDE_FILE <cblas.h>
+   \endcode
+
+// Alternatively, all settings can be specified via command line or by defining the symbols
 // manually before including any \b Blaze header file:
 
    \code
    #define BLAZE_BLAS_MODE 1
    #define BLAZE_BLAS_IS_PARALLEL 1
+   #define BLAZE_BLAS_INCLUDE_FILE <cblas.h>
    #include <blaze/Blaze.h>
    \endcode
 
