@@ -41,8 +41,9 @@
 //*************************************************************************************************
 
 #include <blaze/math/Exception.h>
+#include <blaze/math/dense/UniformMatrix.h>
+#include <blaze/math/dense/UniformVector.h>
 #include <blaze/math/expressions/DenseMatrix.h>
-#include <blaze/math/expressions/ScalarExpandExpr.h>
 #include <blaze/math/functors/Pow2.h>
 #include <blaze/math/ReductionFlag.h>
 #include <blaze/math/shims/Invert.h>
@@ -76,7 +77,7 @@ inline decltype(auto) var_backend( const DenseMatrix<MT,SO>& dm, FalseType )
 
    BLAZE_INTERNAL_ASSERT( size( ~dm ) > 1UL, "Invalid matrix size detected" );
 
-   const auto m( expand( mean( ~dm ), rows( ~dm ), columns( ~dm ) ) );
+   const auto m( uniform<SO>( rows( ~dm ), columns( ~dm ), mean( ~dm ) ) );
 
    return sum( map( (~dm) - m, Pow2() ) ) * inv( BT( size( ~dm )-1UL ) );
 }
@@ -188,7 +189,7 @@ decltype(auto) var_backend( const DenseMatrix<MT,SO>& dm, TrueType )
 
    constexpr bool TF( ( RF == rowwise ? columnVector : rowVector ) );
 
-   return expandTo<TF>( ElementType_t<MT>(), n );
+   return uniform<TF>( n, ElementType_t<MT>() );
 }
 /*! \endcond */
 //*************************************************************************************************

@@ -41,8 +41,8 @@
 //*************************************************************************************************
 
 #include <blaze/math/Exception.h>
+#include <blaze/math/dense/UniformVector.h>
 #include <blaze/math/expressions/DenseVector.h>
-#include <blaze/math/expressions/ScalarExpandExpr.h>
 #include <blaze/math/functors/Pow2.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/typetraits/IsUniform.h>
@@ -80,7 +80,7 @@ decltype(auto) var_backend( const DenseVector<VT,TF>& dv, FalseType )
 
    BLAZE_INTERNAL_ASSERT( n > 1UL, "Invalid vector size detected" );
 
-   const auto m( expandTo<TF>( mean( ~dv ), n ) );
+   const auto m( uniform<TF>( n, mean( ~dv ) ) );
 
    return sum( map( (~dv) - m, Pow2() ) ) * inv( BT( n-1UL ) );
 }

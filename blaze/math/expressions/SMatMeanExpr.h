@@ -192,7 +192,7 @@ decltype(auto) mean_backend( const SparseMatrix<MT,SO>& sm, TrueType )
 
    constexpr bool TF( ( RF == rowwise ? columnVector : rowVector ) );
 
-   return UniformVector<ElementType_t<MT>,TF>( n );
+   return uniform<TF>( n, ElementType_t<MT>() );
 }
 /*! \endcond */
 //*************************************************************************************************

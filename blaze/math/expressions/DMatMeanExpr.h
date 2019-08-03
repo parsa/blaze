@@ -41,8 +41,8 @@
 //*************************************************************************************************
 
 #include <blaze/math/Exception.h>
+#include <blaze/math/dense/UniformVector.h>
 #include <blaze/math/expressions/DenseMatrix.h>
-#include <blaze/math/expressions/ScalarExpandExpr.h>
 #include <blaze/math/ReductionFlag.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/typetraits/IsUniform.h>
@@ -189,7 +189,7 @@ decltype(auto) mean_backend( const DenseMatrix<MT,SO>& dm, TrueType )
 
    constexpr bool TF( ( RF == rowwise ? columnVector : rowVector ) );
 
-   return expandTo<TF>( (~dm)(0UL,0UL), n );
+   return uniform<TF>( n, (~dm)(0UL,0UL) );
 }
 /*! \endcond */
 //*************************************************************************************************
