@@ -52,7 +52,6 @@
 #include <blaze/math/StaticVector.h>
 #include <blaze/math/traits/ExpandTrait.h>
 #include <blaze/math/typetraits/StorageOrder.h>
-#include <blaze/math/typetraits/TransposeFlag.h>
 #include <blaze/math/UniformMatrix.h>
 #include <blaze/math/UniformVector.h>
 #include <blaze/math/ZeroVector.h>
@@ -83,7 +82,6 @@ namespace expandtrait {
 */
 ClassTest::ClassTest()
 {
-   testScalarExpansion();
    testVectorExpansion();
 }
 //*************************************************************************************************
@@ -96,53 +94,6 @@ ClassTest::ClassTest()
 //  TEST FUNCTIONS
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Test of the 'ExpandTrait' class template for scalar expansions.
-//
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function performs a compile time test of the 'ExpandTrait' class template for scalar
-// expansions. In case an error is detected, a compilation error is created.
-*/
-void ClassTest::testScalarExpansion()
-{
-   using namespace blaze;
-
-
-   // int
-   {
-      using ST = int;
-      using RT = UniformVector<int>;
-      static_assert( IsSame_v< ExpandTrait_t<ST>, RT >, "Non-matching type detected" );
-
-      using Expr = Decay_t< decltype( expand( std::declval<ST>(), std::declval<size_t>() ) ) >;
-      static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
-   }
-
-   // double
-   {
-      using ST = double;
-      using RT = UniformVector<double>;
-      static_assert( IsSame_v< ExpandTrait_t<ST>, RT >, "Non-matching type detected" );
-
-      using Expr = Decay_t< decltype( expand( std::declval<ST>(), std::declval<size_t>() ) ) >;
-      static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
-   }
-
-   // complex<double>
-   {
-      using ST = complex<double>;
-      using RT = UniformVector< complex<double> >;
-      static_assert( IsSame_v< ExpandTrait_t<ST>, RT >, "Non-matching type detected" );
-
-      using Expr = Decay_t< decltype( expand( std::declval<ST>(), std::declval<size_t>() ) ) >;
-      static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
-   }
-}
-//*************************************************************************************************
-
 
 //*************************************************************************************************
 /*!\brief Test of the 'ExpandTrait' class template for vector expansions.
