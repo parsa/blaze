@@ -1076,6 +1076,40 @@ inline void erase( ZeroVector<Type,TF>& m, Iterator first, Iterator last, Pred p
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Creating a zero vector.
+// \ingroup zero_vector
+//
+// \param n The size of the zero vector.
+// \return A zero vector of the given size.
+//
+// This function creates a zero vector of the given element type and size. By default, the
+// resulting zero vector is a column vector, but it is possible to specify the transpose flag
+// explicitly:
+
+   \code
+   using blaze::zero;
+   using blaze::columnVector;
+   using blaze::rowVector;
+
+   // Creates the zero column vector ( 0 0 0 0 0 )
+   auto z1 = zero<int>( 5UL );
+
+   // Creates the zero column vector ( 0.0 0.0 0.0 )
+   auto z2 = zero<double,columnVector>( 3UL );
+
+   // Creates the zero row vector ( 0U 0U 0U 0U )
+   auto z3 = zero<unsigned int,rowVector>( 4UL );
+   \endcode
+*/
+template< typename T, bool TF = defaultTransposeFlag >
+inline constexpr decltype(auto) zero( size_t n ) noexcept
+{
+   return ZeroVector<T,TF>( n );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Declares the given vector expression \a v as zero vector.
 // \ingroup zero_vector
 //

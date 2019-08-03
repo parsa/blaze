@@ -1316,6 +1316,48 @@ inline void erase( ZeroMatrix<Type,SO>& m, size_t i, Iterator first, Iterator la
 //=================================================================================================
 
 //*************************************************************************************************
+/*!\brief Creating a zero matrix.
+// \ingroup zero_matrix
+//
+// \param m The number of rows of the zero matrix.
+// \param n The number of columns of the zero matrix.
+// \return A zero matrix of the given size.
+//
+// This function creates a zero matrix of the given element type and size. By default, the
+// resulting zero matrix is a row-major matrix, but it is possible to specify the storage order
+// explicitly:
+
+   \code
+   using blaze::zero;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   // Creates the row-major zero matrix
+   //    ( 0 0 0 0 0 )
+   //    ( 0 0 0 0 0 )
+   auto Z1 = zero<int>( 2UL, 5UL );
+
+   // Creates the row-major zero matrix
+   //    ( 0.0 0.0 )
+   //    ( 0.0 0.0 )
+   //    ( 0.0 0.0 )
+   auto Z2 = zero<double,rowMajor>( 3UL, 2UL );
+
+   // Creates the column-major zero matrix
+   //    ( 0U 0U 0U 0U 0U 0U 0U )
+   //    ( 0U 0U 0U 0U 0U 0U 0U )
+   auto Z3 = zero<unsigned int,columnMajor>( 2UL, 7UL );
+   \endcode
+*/
+template< typename T, bool SO = defaultStorageOrder >
+inline constexpr decltype(auto) zero( size_t m, size_t n ) noexcept
+{
+   return ZeroMatrix<T,SO>( m, n );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Declares the given matrix expression \a m as zero matrix.
 // \ingroup zero_matrix
 //
