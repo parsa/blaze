@@ -55,7 +55,6 @@
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ElementsTrait.h>
-#include <blaze/math/traits/ExpandTrait.h>
 #include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
@@ -1623,27 +1622,6 @@ struct BinaryMapTraitEval1< T1, T2, OP
    using ET2 = ElementType_t<T2>;
 
    using Type = UniformVector< MapTrait_t<ET1,ET2,OP>, TransposeFlag_v<T1> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  EXPANDTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T  // Type to be expanded
-        , size_t E >  // Compile time expansion
-struct ExpandTraitEval2< T, E
-                       , EnableIf_t< IsNumeric_v<T> > >
-{
-   using Type = UniformVector<T,defaultTransposeFlag>;
 };
 /*! \endcond */
 //*************************************************************************************************
