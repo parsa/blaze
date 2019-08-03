@@ -96,6 +96,7 @@
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/RemoveConst.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -1543,6 +1544,56 @@ template< typename Type  // Data type of the matrix
 inline constexpr void swap( UniformMatrix<Type,SO>& a, UniformMatrix<Type,SO>& b ) noexcept
 {
    a.swap( b );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Creating a uniform matrix.
+// \ingroup uniform_matrix
+//
+// \param m The number of rows of the uniform matrix.
+// \param n The number of columns of the uniform matrix.
+// \param init The initial value of the matrix elements.
+// \return A uniform matrix of the given size.
+//
+// This function creates a uniform matrix of the given size. By default, the resulting uniform
+// matrix is a row-major matrix, but it is possible to specify the storage order explicitly:
+
+   \code
+   using blaze::uniform;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   // Creates the uniform row-major matrix
+   //    ( 1 1 1 1 1 )
+   //    ( 1 1 1 1 1 )
+   auto U1 = uniform<int>( 2UL, 5UL, 1 );
+
+   // Creates the uniform row-major matrix
+   //    ( 1.2 1.2 )
+   //    ( 1.2 1.2 )
+   //    ( 1.2 1.2 )
+   auto U2 = uniform<int,rowMajor>( 3UL, 2UL, 1.2 );
+
+   // Creates the uniform column-major matrix
+   //   ( 5U 5U 5U 5U 5U 5U 5U )
+   //   ( 5U 5U 5U 5U 5U 5U 5U )
+   auto U3 = uniform<int,columnMajor>( 2UL, 7UL, 5U );
+   \endcode
+*/
+template< bool SO = defaultStorageOrder, typename T >
+inline constexpr decltype(auto) uniform( size_t m, size_t n, T&& init )
+{
+   return UniformMatrix< RemoveCVRef_t<T>, SO >( m, n, std::forward<T>( init ) );
 }
 //*************************************************************************************************
 

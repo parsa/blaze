@@ -91,6 +91,7 @@
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/RemoveConst.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -1296,6 +1297,48 @@ template< typename Type  // Data type of the vector
 inline constexpr void swap( UniformVector<Type,TF>& a, UniformVector<Type,TF>& b ) noexcept
 {
    a.swap( b );
+}
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Creating a uniform vector.
+// \ingroup uniform_vector
+//
+// \param n The size of the vector.
+// \param init The initial value of the vector elements.
+// \return A uniform vector of the given size.
+//
+// This function creates a uniform vector of the given size. By default, the resulting uniform
+// vector is a column vector, but it is possible to specify the transpose flag explicitly:
+
+   \code
+   using blaze::uniform;
+   using blaze::columnVector;
+   using blaze::rowVector;
+
+   // Creates the uniform column vector ( 1 1 1 1 1 )
+   auto u1 = uniform( 5UL, 1 );
+
+   // Creates the uniform column vector ( 1.2 1.2 1.2 )
+   auto u2 = uniform<columnVector>( 3UL, 1.2 );
+
+   // Creates the uniform row vector ( 5U 5U 5U 5U )
+   auto u3 = uniform<rowVector>( 4UL, 5U );
+   \endcode
+*/
+template< bool TF = defaultTransposeFlag, typename T >
+inline constexpr decltype(auto) uniform( size_t n, T&& init )
+{
+   return UniformVector< RemoveCVRef_t<T>, TF >( n, std::forward<T>( init ) );
 }
 //*************************************************************************************************
 
