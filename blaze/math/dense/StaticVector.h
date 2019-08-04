@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <tuple>
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseVector.h>
@@ -2513,6 +2514,18 @@ const StaticVector<Type,3UL,TF> perp( const StaticVector<Type,3UL,TF>& v );
 
 template< typename Type, size_t N, bool TF >
 void swap( StaticVector<Type,N,TF>& a, StaticVector<Type,N,TF>& b ) noexcept;
+
+template< size_t I, typename Type, size_t N, bool TF >
+constexpr Type& get( StaticVector<Type,N,TF>& v ) noexcept;
+
+template< size_t I, typename Type, size_t N, bool TF >
+constexpr Type&& get( StaticVector<Type,N,TF>&& v ) noexcept;
+
+template< size_t I, typename Type, size_t N, bool TF >
+constexpr const Type& get( const StaticVector<Type,N,TF>& v) noexcept;
+
+template< size_t I, typename Type, size_t N, bool TF >
+constexpr const Type&& get( const StaticVector<Type,N,TF>&& v ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -2673,6 +2686,82 @@ template< typename Type  // Data type of the vector
 inline void swap( StaticVector<Type,N,TF>& a, StaticVector<Type,N,TF>& b ) noexcept
 {
    a.swap( b );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Tuple-like index-based access the contents of a static vector.
+// \ingroup static_vector
+//
+// \param v The vector to be accessed.
+// \return Reference to the accessed value.
+*/
+template< size_t I       // Compile time access index
+        , typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+constexpr Type& get( StaticVector<Type,N,TF>& v ) noexcept
+{
+   BLAZE_STATIC_ASSERT_MSG( I < N, "Invalid vector access index" );
+   return v[I];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Tuple-like index-based access the contents of a temporary static vector.
+// \ingroup static_vector
+//
+// \param v The vector to be accessed.
+// \return Reference to the accessed value.
+*/
+template< size_t I       // Compile time access index
+        , typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+constexpr Type&& get( StaticVector<Type,N,TF>&& v ) noexcept
+{
+   BLAZE_STATIC_ASSERT_MSG( I < N, "Invalid vector access index" );
+   return std::move( v[I] );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Tuple-like index-based access the contents of a constant static vector.
+// \ingroup static_vector
+//
+// \param v The vector to be accessed.
+// \return Reference to the accessed value.
+*/
+template< size_t I       // Compile time access index
+        , typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+constexpr const Type& get( const StaticVector<Type,N,TF>& v) noexcept
+{
+   BLAZE_STATIC_ASSERT_MSG( I < N, "Invalid vector access index" );
+   return v[I];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Tuple-like index-based access the contents of a constant temporary static vector.
+// \ingroup static_vector
+//
+// \param v The vector to be accessed.
+// \return Reference to the accessed value.
+*/
+template< size_t I       // Compile time access index
+        , typename Type  // Data type of the vector
+        , size_t N       // Number of elements
+        , bool TF >      // Transpose flag
+constexpr const Type&& get( const StaticVector<Type,N,TF>&& v ) noexcept
+{
+   BLAZE_STATIC_ASSERT_MSG( I < N, "Invalid vector access index" );
+   return std::move( v[I] );
 }
 //*************************************************************************************************
 
@@ -3273,5 +3362,32 @@ struct BandTraitEval2< MT, I
 //*************************************************************************************************
 
 } // namespace blaze
+
+
+
+
+//=================================================================================================
+//
+//  STD::TUPLE SUPPORT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+namespace std
+{
+   template< typename Type, size_t N, bool TF >
+   struct tuple_size< blaze::StaticVector<Type,N,TF> >
+      : integral_constant< size_t, N >
+   {};
+
+   template< size_t I, typename Type, size_t N, bool TF >
+   struct tuple_element< I, blaze::StaticVector<Type,N,TF> >
+   {
+      using type = Type;
+   };
+}
+/*! \endcond */
+//*************************************************************************************************
 
 #endif
