@@ -2630,9 +2630,9 @@
 // \n \section vector_operations_scalar_expansion Scalar Expansion
 // <hr>
 //
-// By means of the \c expand() function it is possible to expand a scalar value into a dense
-// vector. As demonstrated by the following examples, \c expand() can be used with both
-// runtime and compile time parameters:
+// By means of the \c uniform() function it is possible to expand a scalar value into a dense,
+// uniform vector. By default, the resulting uniform vector is a column vector, but it is possible
+// to specify the transpose flag explicitly:
 
    \code
    using blaze::columnVector;
@@ -2642,20 +2642,16 @@
    blaze::DynamicVector<int,columnVector> v;
    // ... Resizing and initialization
 
-   // Expansion of 'scalar' to a 3-dimensional column vector
+   // Expansion of 'scalar' to a 3-dimensional uniform column vector
    //
    //    ( 5 )
    //    ( 5 )
    //    ( 5 )
    //
-   v = expand( scalar, 3UL );
-   v = expand<3UL>( scalar );
+   v = uniform( 3UL, scalar );
+   v = uniform<columnVector>( 3UL, scalar );
    \endcode
 
-// By default, the resulting vector is a column vector, but this setting can be changed via the
-// \c BLAZE_DEFAULT_TRANSPOSE_FLAG switch (see \ref transpose_flag).
-//
-//
 // \n \section vector_operations_vector_expansion Vector Expansion
 // <hr>
 //
@@ -5411,9 +5407,9 @@
 // \n \section matrix_operations_scalar_expansion Scalar Expansion
 // <hr>
 //
-// By means of the \c expand() function it is possible to expand a scalar value into a dense
-// matrix. As demonstrated by the following examples, \c expand() can be used with both
-// runtime and compile time parameters:
+// By means of the \c uniform() function it is possible to expand a scalar value into a dense,
+// uniform matrix. By default, the resulting uniform matrix is a row-major matrix, but it is
+// possible to specify the storage order explicitly:
 
    \code
    using blaze::rowMajor;
@@ -5429,14 +5425,10 @@
    //    ( 5  5  5  5  5 )
    //    ( 5  5  5  5  5 )
    //
-   A = expand( scalar, 3UL, 5UL );
-   A = expand<3UL,5UL>( scalar );
+   A = uniform( 3UL, 5UL, scalar );
+   A = uniform<columnMajo>( 3UL, 5UL, scalar );
    \endcode
 
-// By default, the resulting matrix is a row-major matrix, but this setting can be changed via
-// the \c BLAZE_DEFAULT_STORAGE_ORDER switch (see \ref storage_order).
-//
-//
 // \n \section matrix_operations_statistic_operations Statistic Operations
 // <hr>
 //
@@ -5494,7 +5486,7 @@
 
 // In case the size of the given matrix is smaller than 2, a \a std::invalid_argument is thrown.
 //
-// Alternatively it is possible to compute the row- or columnwise mean:
+// Alternatively it is possible to compute the row- or columnwise variance:
 
    \code
    using blaze::columnVector;
@@ -5511,9 +5503,9 @@
    cv = var<columnwise>( A );  // Results in ( 19  3  1 )
    \endcode
 
-// In case the rowwise mean is computed and the number of columns of the given matrix is smaller
-// than 2 or in case the columnwise mean is computed and the number of rows of the given matrix
-// is smaller than 2, a \a std::invalid_argument is thrown.
+// In case the rowwise varoamce is computed and the number of columns of the given matrix is
+// smaller than 2 or in case the columnwise mean is computed and the number of rows of the given
+// matrix is smaller than 2, a \a std::invalid_argument is thrown.
 //
 // \n \subsection matrix_operations_stddev stddev()
 //
@@ -5532,7 +5524,7 @@
 
 // In case the size of the given matrix is smaller than 2, a \a std::invalid_argument is thrown.
 //
-// Alternatively it is possible to compute the row- or columnwise mean:
+// Alternatively it is possible to compute the row- or columnwise standard deviation:
 
    \code
    using blaze::columnVector;
@@ -5549,9 +5541,9 @@
    cs = stddev<columnwise>( A );  // Results in ( sqrt(19)  sqrt(3)  1 )
    \endcode
 
-// In case the rowwise mean is computed and the number of columns of the given matrix is smaller
-// than 2 or in case the columnwise mean is computed and the number of rows of the given matrix
-// is smaller than 2, a \a std::invalid_argument is thrown.
+// In case the rowwise standard deviation is computed and the number of columns of the given
+// matrix is smaller than 2 or in case the columnwise mean is computed and the number of rows of
+// the given matrix is smaller than 2, a \a std::invalid_argument is thrown.
 //
 //
 // \n \section matrix_operations_declaration_operations Declaration Operations
@@ -7112,7 +7104,7 @@
 // \n \section adaptors_hermitian_matrices_special_properties Special Properties of Hermitian Matrices
 // <hr>
 //
-// A Hermitian matrix is used exactly like a matrix of the underlying, adapted matrix type \c MT.
+// An Hermitian matrix is used exactly like a matrix of the underlying, adapted matrix type \c MT.
 // It also provides (nearly) the same interface as the underlying matrix type. However, there are
 // some important exceptions resulting from the Hermitian symmetry constraint:
 //
@@ -7389,7 +7381,7 @@
 // \n \section adaptors_hermitian_matrices_arithmetic_operations Arithmetic Operations
 // <hr>
 //
-// A HermitianMatrix can be used within all numerical operations in any way any other dense or
+// An HermitianMatrix can be used within all numerical operations in any way any other dense or
 // sparse matrix can be used. It can also be combined with any other dense or sparse vector or
 // matrix. The following code example gives an impression of the use of HermitianMatrix within
 // arithmetic operations:
@@ -11390,7 +11382,7 @@
 // For convenience it is also possible to add a scalar value to a dense vector or dense matrix,
 // which has the same effect as adding a uniform vector or matrix. In \b Blaze it is possible to
 // use all built-in/fundamental data types except bool as scalar values. Additionally, it is
-// possible to use std::complex values with the same built-in data types as element type.
+// possible to use \c std::complex values with the same built-in data types as element type.
 // Examples:
 
    \code
@@ -11490,7 +11482,7 @@
 // For convenience it is also possible to subtract a scalar value from a dense vector or dense
 // matrix, which has the same effect as subtracting a uniform vector or matrix. In \b Blaze it is
 // possible to use all built-in/fundamental data types except bool as scalar values. Additionally,
-// it is possible to use std::complex values with the same built-in data types as element type.
+// it is possible to use \c std::complex values with the same built-in data types as element type.
 // Examples:
 
    \code
@@ -11519,7 +11511,7 @@
 // The scalar multiplication is the multiplication of vector or a matrix with a scalar value.
 // Alternatively it is also possible to divide a vector or a matrix by a scalar value. In \b Blaze
 // it is possible to use all built-in/fundamental data types except bool as scalar values.
-// Additionally, it is possible to use std::complex values with the same built-in data types
+// Additionally, it is possible to use \c std::complex values with the same built-in data types
 // as element type.
 
    \code
