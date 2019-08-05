@@ -69,8 +69,8 @@
 #include <blaze/math/ZeroMatrix.h>
 #include <blaze/math/ZeroVector.h>
 #include <blaze/util/Complex.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsSame.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 #include <blazetest/mathtest/traits/maptrait/ClassTest.h>
 
 
@@ -182,7 +182,7 @@ void ClassTest::testUnaryVectorOperation()
          using RT = StaticVector<int,3UL,columnVector>;
          static_assert( IsSame_v< MapTrait_t<VT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
@@ -191,7 +191,7 @@ void ClassTest::testUnaryVectorOperation()
          using RT = StaticVector<int,3UL,rowVector>;
          static_assert( IsSame_v< MapTrait_t<VT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
@@ -204,7 +204,7 @@ void ClassTest::testUnaryVectorOperation()
          using RT = HybridVector<int,5UL,columnVector>;
          static_assert( IsSame_v< MapTrait_t<VT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
@@ -213,7 +213,7 @@ void ClassTest::testUnaryVectorOperation()
          using RT = HybridVector<int,5UL,rowVector>;
          static_assert( IsSame_v< MapTrait_t<VT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
@@ -226,7 +226,7 @@ void ClassTest::testUnaryVectorOperation()
          using RT = DynamicVector<int,columnVector>;
          static_assert( IsSame_v< MapTrait_t<VT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
@@ -235,7 +235,7 @@ void ClassTest::testUnaryVectorOperation()
          using RT = DynamicVector<int,rowVector>;
          static_assert( IsSame_v< MapTrait_t<VT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
@@ -248,7 +248,7 @@ void ClassTest::testUnaryVectorOperation()
          using RT = DynamicVector<int,columnVector>;
          static_assert( IsSame_v< MapTrait_t<VT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
@@ -257,7 +257,7 @@ void ClassTest::testUnaryVectorOperation()
          using RT = DynamicVector<int,rowVector>;
          static_assert( IsSame_v< MapTrait_t<VT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
@@ -270,7 +270,7 @@ void ClassTest::testUnaryVectorOperation()
          using RT = UniformVector<int,columnVector>;
          static_assert( IsSame_v< MapTrait_t<VT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
@@ -279,7 +279,7 @@ void ClassTest::testUnaryVectorOperation()
          using RT = UniformVector<int,rowVector>;
          static_assert( IsSame_v< MapTrait_t<VT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
@@ -292,7 +292,7 @@ void ClassTest::testUnaryVectorOperation()
          using RT = DynamicVector<int,columnVector>;
          static_assert( IsSame_v< MapTrait_t<VT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
@@ -301,7 +301,7 @@ void ClassTest::testUnaryVectorOperation()
          using RT = DynamicVector<int,rowVector>;
          static_assert( IsSame_v< MapTrait_t<VT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
@@ -314,7 +314,7 @@ void ClassTest::testUnaryVectorOperation()
          using RT = CompressedVector<int,columnVector>;
          static_assert( IsSame_v< MapTrait_t<VT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
@@ -323,7 +323,7 @@ void ClassTest::testUnaryVectorOperation()
          using RT = CompressedVector<int,rowVector>;
          static_assert( IsSame_v< MapTrait_t<VT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
@@ -336,7 +336,7 @@ void ClassTest::testUnaryVectorOperation()
          using RT = ZeroVector<int,columnVector>;
          static_assert( IsSame_v< MapTrait_t<VT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
@@ -345,7 +345,7 @@ void ClassTest::testUnaryVectorOperation()
          using RT = ZeroVector<int,rowVector>;
          static_assert( IsSame_v< MapTrait_t<VT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<VT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
@@ -376,7 +376,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = StaticMatrix<int,3UL,5UL,rowMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -385,7 +385,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = StaticMatrix<int,3UL,5UL,columnMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -398,7 +398,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = HybridMatrix<int,5UL,7UL,rowMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -407,7 +407,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = HybridMatrix<int,5UL,7UL,columnMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -420,7 +420,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = DynamicMatrix<int,rowMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -429,7 +429,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = DynamicMatrix<int,columnMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -442,7 +442,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = DynamicMatrix<int,rowMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -451,7 +451,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = DynamicMatrix<int,columnMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -464,7 +464,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = UniformMatrix<int,rowMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -473,7 +473,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = UniformMatrix<int,columnMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -486,7 +486,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = DynamicMatrix<int,rowMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -499,7 +499,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = CompressedMatrix<int,rowMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -508,7 +508,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = CompressedMatrix<int,columnMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -521,7 +521,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = IdentityMatrix<int,rowMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -530,7 +530,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = IdentityMatrix<int,columnMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -543,7 +543,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = ZeroMatrix<int,rowMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -552,7 +552,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = ZeroMatrix<int,columnMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -565,7 +565,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = DynamicMatrix<int,rowMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -574,7 +574,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = DynamicMatrix<int,columnMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -587,7 +587,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = DynamicMatrix<complex<int>,rowMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -596,7 +596,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = DynamicMatrix<complex<int>,columnMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -609,7 +609,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = UniformMatrix<int,rowMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -618,7 +618,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = UniformMatrix<int,columnMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -631,7 +631,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = ZeroMatrix<int,rowMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -640,7 +640,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = ZeroMatrix<int,columnMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -653,7 +653,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = DynamicMatrix<int,rowMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -662,7 +662,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = DynamicMatrix<int,columnMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -675,7 +675,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = DynamicMatrix<complex<int>,rowMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -684,7 +684,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = DynamicMatrix<complex<int>,columnMajor>;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -697,7 +697,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = LowerMatrix< DynamicMatrix<int,rowMajor> >;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -706,7 +706,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = LowerMatrix< DynamicMatrix<int,columnMajor> >;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -719,7 +719,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = UniLowerMatrix< DynamicMatrix<int,rowMajor> >;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -728,7 +728,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = UniLowerMatrix< DynamicMatrix<int,columnMajor> >;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -741,7 +741,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = StrictlyLowerMatrix< DynamicMatrix<int,rowMajor> >;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -750,7 +750,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = StrictlyLowerMatrix< DynamicMatrix<int,columnMajor> >;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -763,7 +763,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = UpperMatrix< DynamicMatrix<int,rowMajor> >;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -772,7 +772,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = UpperMatrix< DynamicMatrix<int,columnMajor> >;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -785,7 +785,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = UniUpperMatrix< DynamicMatrix<int,rowMajor> >;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -794,7 +794,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = UniUpperMatrix< DynamicMatrix<int,columnMajor> >;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -807,7 +807,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -816,7 +816,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -829,7 +829,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -838,7 +838,7 @@ void ClassTest::testUnaryMatrixOperation()
          using RT = DiagonalMatrix< DynamicMatrix<int,columnMajor> >;
          static_assert( IsSame_v< MapTrait_t<MT,OP>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( map( std::declval<MT>(), std::declval<OP>() ) ) >;
          static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
@@ -955,7 +955,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = StaticVector<double,3UL,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -965,7 +965,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -979,7 +979,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = StaticVector<double,3UL,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -989,7 +989,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1003,7 +1003,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = StaticVector<double,3UL,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1013,7 +1013,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1027,7 +1027,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = StaticVector<double,3UL,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1037,7 +1037,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1051,7 +1051,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = StaticVector<double,3UL,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1061,7 +1061,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1075,7 +1075,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = StaticVector<double,3UL,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1085,7 +1085,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1102,7 +1102,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = StaticVector<double,3UL,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1112,7 +1112,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1126,7 +1126,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = HybridVector<double,5UL,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1136,7 +1136,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = HybridVector<double,5UL,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1150,7 +1150,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = HybridVector<double,5UL,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1160,7 +1160,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = HybridVector<double,5UL,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1174,7 +1174,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = HybridVector<double,5UL,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1184,7 +1184,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = HybridVector<double,5UL,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1198,7 +1198,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = HybridVector<double,5UL,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1208,7 +1208,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = HybridVector<double,5UL,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1222,7 +1222,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = HybridVector<double,5UL,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1232,7 +1232,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = HybridVector<double,5UL,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1249,7 +1249,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = StaticVector<double,3UL,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1259,7 +1259,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1273,7 +1273,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = HybridVector<double,5UL,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1283,7 +1283,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = HybridVector<double,5UL,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1297,7 +1297,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1307,7 +1307,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1321,7 +1321,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1331,7 +1331,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1345,7 +1345,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1355,7 +1355,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1369,7 +1369,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1379,7 +1379,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1396,7 +1396,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = StaticVector<double,3UL,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1406,7 +1406,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1420,7 +1420,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = HybridVector<double,5UL,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1430,7 +1430,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = HybridVector<double,5UL,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1444,7 +1444,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1454,7 +1454,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1468,7 +1468,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1478,7 +1478,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1492,7 +1492,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1502,7 +1502,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1516,7 +1516,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1526,7 +1526,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1543,7 +1543,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = StaticVector<double,3UL,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1553,7 +1553,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1567,7 +1567,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = HybridVector<double,5UL,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1577,7 +1577,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = HybridVector<double,5UL,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1591,7 +1591,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1601,7 +1601,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1615,7 +1615,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1625,7 +1625,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1639,7 +1639,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = UniformVector<double,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1649,7 +1649,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = UniformVector<double,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1663,7 +1663,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1673,7 +1673,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1690,7 +1690,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = StaticVector<double,3UL,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1700,7 +1700,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1714,7 +1714,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = HybridVector<double,5UL,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1724,7 +1724,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = HybridVector<double,5UL,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1738,7 +1738,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1748,7 +1748,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1762,7 +1762,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1772,7 +1772,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1786,7 +1786,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1796,7 +1796,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1810,7 +1810,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1820,7 +1820,7 @@ void ClassTest::testBinaryVectorOperation()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
@@ -1855,7 +1855,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -1865,7 +1865,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -1875,7 +1875,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -1885,7 +1885,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -1899,7 +1899,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -1909,7 +1909,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -1919,7 +1919,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -1929,7 +1929,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -1943,7 +1943,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -1953,7 +1953,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -1963,7 +1963,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -1973,7 +1973,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -1987,7 +1987,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -1997,7 +1997,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2007,7 +2007,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2017,7 +2017,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2031,7 +2031,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2041,7 +2041,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2051,7 +2051,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2061,7 +2061,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2075,7 +2075,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2085,7 +2085,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2099,7 +2099,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,3UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2109,7 +2109,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,3UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2119,7 +2119,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,3UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2129,7 +2129,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,3UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2143,7 +2143,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<complex<int>,3UL,3UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2153,7 +2153,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<complex<int>,3UL,3UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2163,7 +2163,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<complex<int>,3UL,3UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2173,7 +2173,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<complex<int>,3UL,3UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2187,7 +2187,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,3UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2197,7 +2197,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,3UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2207,7 +2207,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,3UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2217,7 +2217,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,3UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2231,7 +2231,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<complex<int>,3UL,3UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2241,7 +2241,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<complex<int>,3UL,3UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2251,7 +2251,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<complex<int>,3UL,3UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2261,7 +2261,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<complex<int>,3UL,3UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2275,7 +2275,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2285,7 +2285,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2295,7 +2295,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2305,7 +2305,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< StaticMatrix<double,3UL,3UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2319,7 +2319,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2329,7 +2329,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2339,7 +2339,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2349,7 +2349,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< StaticMatrix<double,3UL,3UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2363,7 +2363,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2373,7 +2373,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2383,7 +2383,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2393,7 +2393,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< StaticMatrix<double,3UL,3UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2407,7 +2407,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2417,7 +2417,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2427,7 +2427,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2437,7 +2437,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< StaticMatrix<double,3UL,3UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2451,7 +2451,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2461,7 +2461,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2471,7 +2471,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2481,7 +2481,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< StaticMatrix<double,3UL,3UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2495,7 +2495,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2505,7 +2505,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2515,7 +2515,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2525,7 +2525,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< StaticMatrix<double,3UL,3UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2539,7 +2539,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2549,7 +2549,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2559,7 +2559,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< StaticMatrix<double,3UL,3UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2569,7 +2569,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< StaticMatrix<double,3UL,3UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2586,7 +2586,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2596,7 +2596,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2606,7 +2606,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2616,7 +2616,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2630,7 +2630,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2640,7 +2640,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2650,7 +2650,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2660,7 +2660,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,7UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2674,7 +2674,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2684,7 +2684,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2694,7 +2694,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2704,7 +2704,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,5UL,7UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2718,7 +2718,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2728,7 +2728,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2738,7 +2738,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2748,7 +2748,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,5UL,7UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2762,7 +2762,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2772,7 +2772,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2782,7 +2782,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2792,7 +2792,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,5UL,7UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2806,7 +2806,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2816,7 +2816,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2830,7 +2830,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2840,7 +2840,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2850,7 +2850,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,5UL,7UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2860,7 +2860,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,5UL,7UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2874,7 +2874,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<complex<int>,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2884,7 +2884,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<complex<int>,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2894,7 +2894,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<complex<int>,5UL,7UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2904,7 +2904,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<complex<int>,5UL,7UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2918,7 +2918,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2928,7 +2928,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2938,7 +2938,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,5UL,7UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2948,7 +2948,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,5UL,7UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2962,7 +2962,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<complex<int>,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2972,7 +2972,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<complex<int>,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2982,7 +2982,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<complex<int>,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -2992,7 +2992,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<complex<int>,5UL,7UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3006,7 +3006,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< HybridMatrix<double,5UL,7UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3016,7 +3016,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< HybridMatrix<double,5UL,7UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3026,7 +3026,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< HybridMatrix<double,5UL,7UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3036,7 +3036,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< HybridMatrix<double,5UL,7UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3050,7 +3050,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< HybridMatrix<double,5UL,7UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3060,7 +3060,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< HybridMatrix<double,5UL,7UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3070,7 +3070,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< HybridMatrix<double,5UL,7UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3080,7 +3080,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< HybridMatrix<double,5UL,7UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3094,7 +3094,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< HybridMatrix<double,5UL,7UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3104,7 +3104,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< HybridMatrix<double,5UL,7UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3114,7 +3114,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< HybridMatrix<double,5UL,7UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3124,7 +3124,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< HybridMatrix<double,5UL,7UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3138,7 +3138,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< HybridMatrix<double,5UL,7UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3148,7 +3148,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< HybridMatrix<double,5UL,7UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3158,7 +3158,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< HybridMatrix<double,5UL,7UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3168,7 +3168,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< HybridMatrix<double,5UL,7UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3182,7 +3182,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< HybridMatrix<double,5UL,7UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3192,7 +3192,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< HybridMatrix<double,5UL,7UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3202,7 +3202,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< HybridMatrix<double,5UL,7UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3212,7 +3212,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< HybridMatrix<double,5UL,7UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3226,7 +3226,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< HybridMatrix<double,5UL,7UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3236,7 +3236,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< HybridMatrix<double,5UL,7UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3246,7 +3246,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< HybridMatrix<double,5UL,7UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3256,7 +3256,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< HybridMatrix<double,5UL,7UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3270,7 +3270,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< HybridMatrix<double,5UL,7UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3280,7 +3280,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< HybridMatrix<double,5UL,7UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3290,7 +3290,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< HybridMatrix<double,5UL,7UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3300,7 +3300,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< HybridMatrix<double,5UL,7UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3317,7 +3317,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3327,7 +3327,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3337,7 +3337,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3347,7 +3347,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3361,7 +3361,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,8UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3371,7 +3371,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,8UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3381,7 +3381,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,8UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3391,7 +3391,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,8UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3405,7 +3405,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3415,7 +3415,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3425,7 +3425,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3435,7 +3435,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3449,7 +3449,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3459,7 +3459,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3469,7 +3469,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3479,7 +3479,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3493,7 +3493,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3503,7 +3503,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3513,7 +3513,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3523,7 +3523,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3537,7 +3537,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3547,7 +3547,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3561,7 +3561,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3571,7 +3571,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3581,7 +3581,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3591,7 +3591,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3605,7 +3605,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3615,7 +3615,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3625,7 +3625,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3635,7 +3635,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3649,7 +3649,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3659,7 +3659,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3669,7 +3669,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3679,7 +3679,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3693,7 +3693,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3703,7 +3703,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3713,7 +3713,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3723,7 +3723,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3737,7 +3737,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3747,7 +3747,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3757,7 +3757,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3767,7 +3767,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3781,7 +3781,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3791,7 +3791,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3801,7 +3801,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3811,7 +3811,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3825,7 +3825,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3835,7 +3835,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3845,7 +3845,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3855,7 +3855,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3869,7 +3869,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3879,7 +3879,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3889,7 +3889,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3899,7 +3899,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3913,7 +3913,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3923,7 +3923,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3933,7 +3933,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3943,7 +3943,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3957,7 +3957,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3967,7 +3967,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3977,7 +3977,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -3987,7 +3987,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4001,7 +4001,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4011,7 +4011,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4021,7 +4021,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4031,7 +4031,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4048,7 +4048,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4058,7 +4058,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4068,7 +4068,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4078,7 +4078,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4092,7 +4092,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,8UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4102,7 +4102,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,8UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4112,7 +4112,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,8UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4122,7 +4122,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,8UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4136,7 +4136,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4146,7 +4146,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4156,7 +4156,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4166,7 +4166,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4180,7 +4180,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4190,7 +4190,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4200,7 +4200,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4210,7 +4210,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4224,7 +4224,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4234,7 +4234,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4244,7 +4244,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4254,7 +4254,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4268,7 +4268,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4278,7 +4278,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4292,7 +4292,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4302,7 +4302,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4312,7 +4312,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4322,7 +4322,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4336,7 +4336,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4346,7 +4346,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4356,7 +4356,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4366,7 +4366,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4380,7 +4380,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4390,7 +4390,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4400,7 +4400,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4410,7 +4410,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4424,7 +4424,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4434,7 +4434,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4444,7 +4444,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4454,7 +4454,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4468,7 +4468,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4478,7 +4478,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4488,7 +4488,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4498,7 +4498,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4512,7 +4512,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4522,7 +4522,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4532,7 +4532,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4542,7 +4542,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4556,7 +4556,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4566,7 +4566,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4576,7 +4576,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4586,7 +4586,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4600,7 +4600,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4610,7 +4610,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4620,7 +4620,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4630,7 +4630,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4644,7 +4644,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4654,7 +4654,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4664,7 +4664,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4674,7 +4674,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4688,7 +4688,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4698,7 +4698,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4708,7 +4708,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4718,7 +4718,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4732,7 +4732,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4742,7 +4742,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4752,7 +4752,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4762,7 +4762,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4779,7 +4779,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4789,7 +4789,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4799,7 +4799,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4809,7 +4809,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4823,7 +4823,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,8UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4833,7 +4833,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,8UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4843,7 +4843,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,8UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4853,7 +4853,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,8UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4867,7 +4867,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4877,7 +4877,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4887,7 +4887,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4897,7 +4897,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4911,7 +4911,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4921,7 +4921,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4931,7 +4931,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4941,7 +4941,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4955,7 +4955,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UniformMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4965,7 +4965,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UniformMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4975,7 +4975,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UniformMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4985,7 +4985,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UniformMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -4999,7 +4999,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5009,7 +5009,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5023,7 +5023,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5033,7 +5033,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5043,7 +5043,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5053,7 +5053,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5067,7 +5067,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5077,7 +5077,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5087,7 +5087,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5097,7 +5097,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5111,7 +5111,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5121,7 +5121,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5131,7 +5131,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5141,7 +5141,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5155,7 +5155,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5165,7 +5165,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5175,7 +5175,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5185,7 +5185,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5199,7 +5199,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5209,7 +5209,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5219,7 +5219,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5229,7 +5229,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5243,7 +5243,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5253,7 +5253,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5263,7 +5263,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5273,7 +5273,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5287,7 +5287,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5297,7 +5297,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5307,7 +5307,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5317,7 +5317,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5331,7 +5331,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5341,7 +5341,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5351,7 +5351,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5361,7 +5361,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5375,7 +5375,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5385,7 +5385,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5395,7 +5395,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5405,7 +5405,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5419,7 +5419,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5429,7 +5429,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5439,7 +5439,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5449,7 +5449,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5463,7 +5463,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5473,7 +5473,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5483,7 +5483,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5493,7 +5493,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5510,7 +5510,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5520,7 +5520,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5534,7 +5534,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,8UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5544,7 +5544,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,8UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5558,7 +5558,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5568,7 +5568,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5582,7 +5582,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5592,7 +5592,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5606,7 +5606,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5616,7 +5616,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5630,7 +5630,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5644,7 +5644,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5654,7 +5654,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5668,7 +5668,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5678,7 +5678,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5692,7 +5692,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5702,7 +5702,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5716,7 +5716,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5726,7 +5726,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5740,7 +5740,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5750,7 +5750,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5764,7 +5764,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5774,7 +5774,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5788,7 +5788,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5798,7 +5798,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5812,7 +5812,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5822,7 +5822,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5836,7 +5836,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5846,7 +5846,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5860,7 +5860,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5870,7 +5870,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5884,7 +5884,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5894,7 +5894,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5911,7 +5911,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,3UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5921,7 +5921,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,3UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5931,7 +5931,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,3UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5941,7 +5941,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,3UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5955,7 +5955,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,8UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5965,7 +5965,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,8UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5975,7 +5975,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,8UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5985,7 +5985,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,8UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -5999,7 +5999,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6009,7 +6009,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6019,7 +6019,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6029,7 +6029,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6043,7 +6043,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6053,7 +6053,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6063,7 +6063,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6073,7 +6073,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6087,7 +6087,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6097,7 +6097,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6107,7 +6107,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6117,7 +6117,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6131,7 +6131,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6141,7 +6141,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6155,7 +6155,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6165,7 +6165,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6175,7 +6175,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6185,7 +6185,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6199,7 +6199,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6209,7 +6209,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6219,7 +6219,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6229,7 +6229,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6243,7 +6243,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6253,7 +6253,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6263,7 +6263,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6273,7 +6273,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6287,7 +6287,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6297,7 +6297,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6307,7 +6307,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6317,7 +6317,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6331,7 +6331,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6341,7 +6341,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6351,7 +6351,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6361,7 +6361,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6375,7 +6375,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6385,7 +6385,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6395,7 +6395,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6405,7 +6405,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6419,7 +6419,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6429,7 +6429,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6439,7 +6439,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6449,7 +6449,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6463,7 +6463,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6473,7 +6473,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6483,7 +6483,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6493,7 +6493,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6507,7 +6507,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6517,7 +6517,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6527,7 +6527,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6537,7 +6537,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6551,7 +6551,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6561,7 +6561,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6571,7 +6571,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6581,7 +6581,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6595,7 +6595,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6605,7 +6605,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6615,7 +6615,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6625,7 +6625,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6642,7 +6642,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<complex<int>,3UL,3UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6652,7 +6652,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<complex<int>,3UL,3UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6662,7 +6662,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<complex<int>,3UL,3UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6672,7 +6672,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<complex<int>,3UL,3UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6686,7 +6686,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<complex<int>,4UL,8UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6696,7 +6696,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<complex<int>,4UL,8UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6706,7 +6706,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<complex<int>,4UL,8UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6716,7 +6716,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<complex<int>,4UL,8UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6730,7 +6730,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6740,7 +6740,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6750,7 +6750,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6760,7 +6760,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6774,7 +6774,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6784,7 +6784,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6794,7 +6794,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6804,7 +6804,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6818,7 +6818,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6828,7 +6828,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6838,7 +6838,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6848,7 +6848,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6862,7 +6862,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6872,7 +6872,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6886,7 +6886,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6896,7 +6896,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6906,7 +6906,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6916,7 +6916,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6930,7 +6930,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6940,7 +6940,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6950,7 +6950,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6960,7 +6960,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6974,7 +6974,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6984,7 +6984,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -6994,7 +6994,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7004,7 +7004,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7018,7 +7018,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7028,7 +7028,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7038,7 +7038,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7048,7 +7048,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7062,7 +7062,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7072,7 +7072,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7082,7 +7082,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7092,7 +7092,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7106,7 +7106,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7116,7 +7116,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7126,7 +7126,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7136,7 +7136,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7150,7 +7150,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7160,7 +7160,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7170,7 +7170,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7180,7 +7180,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7194,7 +7194,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7204,7 +7204,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7214,7 +7214,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7224,7 +7224,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7238,7 +7238,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7248,7 +7248,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7258,7 +7258,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7268,7 +7268,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7282,7 +7282,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7292,7 +7292,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7302,7 +7302,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7312,7 +7312,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7326,7 +7326,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7336,7 +7336,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7346,7 +7346,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7356,7 +7356,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7373,7 +7373,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,3UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7383,7 +7383,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,3UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7393,7 +7393,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,3UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7403,7 +7403,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<double,3UL,3UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7417,7 +7417,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,8UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7427,7 +7427,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,8UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7437,7 +7437,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,8UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7447,7 +7447,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<double,4UL,8UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7461,7 +7461,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7471,7 +7471,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7481,7 +7481,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7491,7 +7491,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7505,7 +7505,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7515,7 +7515,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7525,7 +7525,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7535,7 +7535,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7549,7 +7549,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7559,7 +7559,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7569,7 +7569,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7579,7 +7579,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7593,7 +7593,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7603,7 +7603,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7617,7 +7617,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7627,7 +7627,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7637,7 +7637,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7647,7 +7647,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7661,7 +7661,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7671,7 +7671,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7681,7 +7681,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7691,7 +7691,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7705,7 +7705,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7715,7 +7715,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7725,7 +7725,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7735,7 +7735,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7749,7 +7749,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7759,7 +7759,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7769,7 +7769,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7779,7 +7779,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7793,7 +7793,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7803,7 +7803,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7813,7 +7813,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7823,7 +7823,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7837,7 +7837,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7847,7 +7847,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7857,7 +7857,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7867,7 +7867,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7881,7 +7881,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7891,7 +7891,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7901,7 +7901,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7911,7 +7911,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7925,7 +7925,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7935,7 +7935,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7945,7 +7945,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7955,7 +7955,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7969,7 +7969,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7979,7 +7979,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7989,7 +7989,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -7999,7 +7999,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8013,7 +8013,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8023,7 +8023,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8033,7 +8033,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8043,7 +8043,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8057,7 +8057,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8067,7 +8067,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8077,7 +8077,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8087,7 +8087,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8104,7 +8104,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<complex<int>,3UL,3UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8114,7 +8114,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<complex<int>,3UL,3UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8124,7 +8124,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<complex<int>,3UL,3UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8134,7 +8134,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StaticMatrix<complex<int>,3UL,3UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8148,7 +8148,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<complex<int>,4UL,8UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8158,7 +8158,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<complex<int>,4UL,8UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8168,7 +8168,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<complex<int>,4UL,8UL,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8178,7 +8178,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = HybridMatrix<complex<int>,4UL,8UL,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8192,7 +8192,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8202,7 +8202,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8212,7 +8212,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8222,7 +8222,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8236,7 +8236,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8246,7 +8246,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8256,7 +8256,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8266,7 +8266,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8280,7 +8280,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8290,7 +8290,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8300,7 +8300,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8310,7 +8310,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8324,7 +8324,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8334,7 +8334,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8348,7 +8348,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8358,7 +8358,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8368,7 +8368,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8378,7 +8378,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8392,7 +8392,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8402,7 +8402,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8412,7 +8412,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8422,7 +8422,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8436,7 +8436,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8446,7 +8446,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8456,7 +8456,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8466,7 +8466,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8480,7 +8480,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8490,7 +8490,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8500,7 +8500,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8510,7 +8510,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8524,7 +8524,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8534,7 +8534,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8544,7 +8544,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8554,7 +8554,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8568,7 +8568,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8578,7 +8578,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8588,7 +8588,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8598,7 +8598,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8612,7 +8612,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8622,7 +8622,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8632,7 +8632,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8642,7 +8642,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8656,7 +8656,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8666,7 +8666,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8676,7 +8676,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8686,7 +8686,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8700,7 +8700,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8710,7 +8710,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8720,7 +8720,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8730,7 +8730,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8744,7 +8744,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8754,7 +8754,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8764,7 +8764,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8774,7 +8774,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8788,7 +8788,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8798,7 +8798,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8808,7 +8808,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8818,7 +8818,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8835,7 +8835,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8845,7 +8845,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8855,7 +8855,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8865,7 +8865,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< StaticMatrix<double,3UL,3UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8879,7 +8879,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< HybridMatrix<double,4UL,8UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8889,7 +8889,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< HybridMatrix<double,4UL,8UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8899,7 +8899,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< HybridMatrix<double,4UL,8UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8909,7 +8909,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< HybridMatrix<double,4UL,8UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8923,7 +8923,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8933,7 +8933,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8943,7 +8943,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8953,7 +8953,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8967,7 +8967,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8977,7 +8977,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8987,7 +8987,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -8997,7 +8997,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9011,7 +9011,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9021,7 +9021,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9031,7 +9031,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9041,7 +9041,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9055,7 +9055,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9065,7 +9065,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9079,7 +9079,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9089,7 +9089,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9099,7 +9099,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9109,7 +9109,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9123,7 +9123,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9133,7 +9133,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9143,7 +9143,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9153,7 +9153,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9167,7 +9167,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9177,7 +9177,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9187,7 +9187,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9197,7 +9197,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9211,7 +9211,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9221,7 +9221,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9231,7 +9231,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9241,7 +9241,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9255,7 +9255,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9265,7 +9265,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9275,7 +9275,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9285,7 +9285,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9299,7 +9299,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9309,7 +9309,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9319,7 +9319,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9329,7 +9329,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9343,7 +9343,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9353,7 +9353,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9363,7 +9363,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9373,7 +9373,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9387,7 +9387,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9397,7 +9397,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9407,7 +9407,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9417,7 +9417,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9431,7 +9431,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9441,7 +9441,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9451,7 +9451,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9461,7 +9461,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9475,7 +9475,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9485,7 +9485,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9495,7 +9495,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9505,7 +9505,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9519,7 +9519,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9529,7 +9529,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9539,7 +9539,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9549,7 +9549,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9566,7 +9566,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9576,7 +9576,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9586,7 +9586,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9596,7 +9596,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< StaticMatrix<double,3UL,3UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9610,7 +9610,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< HybridMatrix<double,4UL,8UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9620,7 +9620,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< HybridMatrix<double,4UL,8UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9630,7 +9630,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< HybridMatrix<double,4UL,8UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9640,7 +9640,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< HybridMatrix<double,4UL,8UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9654,7 +9654,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9664,7 +9664,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9674,7 +9674,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9684,7 +9684,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9698,7 +9698,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9708,7 +9708,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9718,7 +9718,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9728,7 +9728,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9742,7 +9742,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9752,7 +9752,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9762,7 +9762,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9772,7 +9772,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9786,7 +9786,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9796,7 +9796,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9810,7 +9810,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9820,7 +9820,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9830,7 +9830,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9840,7 +9840,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9854,7 +9854,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9864,7 +9864,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9874,7 +9874,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9884,7 +9884,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9898,7 +9898,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9908,7 +9908,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9918,7 +9918,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9928,7 +9928,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9942,7 +9942,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9952,7 +9952,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9962,7 +9962,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9972,7 +9972,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9986,7 +9986,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -9996,7 +9996,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10006,7 +10006,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10016,7 +10016,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10030,7 +10030,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UniLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10040,7 +10040,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UniLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10050,7 +10050,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UniLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10060,7 +10060,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UniLowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10074,7 +10074,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10084,7 +10084,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10094,7 +10094,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10104,7 +10104,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10118,7 +10118,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10128,7 +10128,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10138,7 +10138,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10148,7 +10148,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10162,7 +10162,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = IdentityMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10172,7 +10172,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = IdentityMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10182,7 +10182,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = IdentityMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10192,7 +10192,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = IdentityMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10206,7 +10206,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10216,7 +10216,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10226,7 +10226,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10236,7 +10236,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10250,7 +10250,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10260,7 +10260,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10270,7 +10270,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10280,7 +10280,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10297,7 +10297,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10307,7 +10307,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10317,7 +10317,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10327,7 +10327,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< StaticMatrix<double,3UL,3UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10341,7 +10341,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< HybridMatrix<double,4UL,8UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10351,7 +10351,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< HybridMatrix<double,4UL,8UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10361,7 +10361,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< HybridMatrix<double,4UL,8UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10371,7 +10371,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< HybridMatrix<double,4UL,8UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10385,7 +10385,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10395,7 +10395,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10405,7 +10405,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10415,7 +10415,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10429,7 +10429,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10439,7 +10439,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10449,7 +10449,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10459,7 +10459,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10473,7 +10473,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10483,7 +10483,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10493,7 +10493,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10503,7 +10503,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10517,7 +10517,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10527,7 +10527,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10541,7 +10541,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10551,7 +10551,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10561,7 +10561,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10571,7 +10571,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10585,7 +10585,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10595,7 +10595,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10605,7 +10605,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10615,7 +10615,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10629,7 +10629,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10639,7 +10639,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10649,7 +10649,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10659,7 +10659,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10673,7 +10673,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10683,7 +10683,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10693,7 +10693,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10703,7 +10703,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10717,7 +10717,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10727,7 +10727,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10737,7 +10737,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10747,7 +10747,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10761,7 +10761,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10771,7 +10771,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10781,7 +10781,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10791,7 +10791,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10805,7 +10805,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10815,7 +10815,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10825,7 +10825,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10835,7 +10835,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10849,7 +10849,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10859,7 +10859,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10869,7 +10869,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10879,7 +10879,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10893,7 +10893,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10903,7 +10903,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10913,7 +10913,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10923,7 +10923,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10937,7 +10937,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10947,7 +10947,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10957,7 +10957,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10967,7 +10967,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10981,7 +10981,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -10991,7 +10991,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11001,7 +11001,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11011,7 +11011,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11028,7 +11028,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11038,7 +11038,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11048,7 +11048,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11058,7 +11058,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< StaticMatrix<double,3UL,3UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11072,7 +11072,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< HybridMatrix<double,4UL,8UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11082,7 +11082,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< HybridMatrix<double,4UL,8UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11092,7 +11092,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< HybridMatrix<double,4UL,8UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11102,7 +11102,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< HybridMatrix<double,4UL,8UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11116,7 +11116,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11126,7 +11126,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11136,7 +11136,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11146,7 +11146,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11160,7 +11160,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11170,7 +11170,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11180,7 +11180,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11190,7 +11190,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11204,7 +11204,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11214,7 +11214,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11224,7 +11224,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11234,7 +11234,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11248,7 +11248,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11258,7 +11258,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11272,7 +11272,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11282,7 +11282,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11292,7 +11292,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11302,7 +11302,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11316,7 +11316,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11326,7 +11326,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11336,7 +11336,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11346,7 +11346,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11360,7 +11360,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11370,7 +11370,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11380,7 +11380,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11390,7 +11390,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11404,7 +11404,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11414,7 +11414,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11424,7 +11424,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11434,7 +11434,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11448,7 +11448,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11458,7 +11458,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11468,7 +11468,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11478,7 +11478,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11492,7 +11492,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11502,7 +11502,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11512,7 +11512,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11522,7 +11522,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11536,7 +11536,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11546,7 +11546,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11556,7 +11556,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11566,7 +11566,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11580,7 +11580,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11590,7 +11590,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11600,7 +11600,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11610,7 +11610,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11624,7 +11624,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11634,7 +11634,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11644,7 +11644,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11654,7 +11654,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11668,7 +11668,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11678,7 +11678,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11688,7 +11688,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11698,7 +11698,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11712,7 +11712,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11722,7 +11722,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11732,7 +11732,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11742,7 +11742,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11759,7 +11759,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11769,7 +11769,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11779,7 +11779,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11789,7 +11789,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< StaticMatrix<double,3UL,3UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11803,7 +11803,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< HybridMatrix<double,4UL,8UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11813,7 +11813,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< HybridMatrix<double,4UL,8UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11823,7 +11823,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< HybridMatrix<double,4UL,8UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11833,7 +11833,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< HybridMatrix<double,4UL,8UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11847,7 +11847,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11857,7 +11857,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11867,7 +11867,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11877,7 +11877,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11891,7 +11891,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11901,7 +11901,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11911,7 +11911,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11921,7 +11921,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11935,7 +11935,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11945,7 +11945,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11955,7 +11955,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11965,7 +11965,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11979,7 +11979,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -11989,7 +11989,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12003,7 +12003,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12013,7 +12013,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12023,7 +12023,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12033,7 +12033,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12047,7 +12047,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12057,7 +12057,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12067,7 +12067,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12077,7 +12077,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12091,7 +12091,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12101,7 +12101,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12111,7 +12111,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12121,7 +12121,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12135,7 +12135,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12145,7 +12145,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12155,7 +12155,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12165,7 +12165,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12179,7 +12179,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12189,7 +12189,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12199,7 +12199,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12209,7 +12209,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12223,7 +12223,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = IdentityMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12233,7 +12233,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = IdentityMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12243,7 +12243,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = IdentityMatrix<double,rowMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12253,7 +12253,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = IdentityMatrix<double,columnMajor>;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12267,7 +12267,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12277,7 +12277,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12287,7 +12287,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12297,7 +12297,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12311,7 +12311,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12321,7 +12321,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12331,7 +12331,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12341,7 +12341,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12355,7 +12355,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UniUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12365,7 +12365,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UniUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12375,7 +12375,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UniUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12385,7 +12385,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = UniUpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12399,7 +12399,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12409,7 +12409,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12419,7 +12419,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12429,7 +12429,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12443,7 +12443,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12453,7 +12453,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12463,7 +12463,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12473,7 +12473,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12490,7 +12490,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12500,7 +12500,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12510,7 +12510,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12520,7 +12520,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< StaticMatrix<double,3UL,3UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12534,7 +12534,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< HybridMatrix<double,4UL,8UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12544,7 +12544,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< HybridMatrix<double,4UL,8UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12554,7 +12554,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< HybridMatrix<double,4UL,8UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12564,7 +12564,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< HybridMatrix<double,4UL,8UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12578,7 +12578,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12588,7 +12588,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12598,7 +12598,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12608,7 +12608,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12622,7 +12622,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12632,7 +12632,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12642,7 +12642,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12652,7 +12652,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12666,7 +12666,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12676,7 +12676,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12686,7 +12686,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12696,7 +12696,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12710,7 +12710,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12720,7 +12720,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12734,7 +12734,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12744,7 +12744,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12754,7 +12754,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12764,7 +12764,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12778,7 +12778,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12788,7 +12788,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12798,7 +12798,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12808,7 +12808,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12822,7 +12822,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12832,7 +12832,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12842,7 +12842,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12852,7 +12852,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12866,7 +12866,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12876,7 +12876,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12886,7 +12886,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12896,7 +12896,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12910,7 +12910,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12920,7 +12920,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12930,7 +12930,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12940,7 +12940,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12954,7 +12954,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12964,7 +12964,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12974,7 +12974,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12984,7 +12984,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -12998,7 +12998,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13008,7 +13008,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13018,7 +13018,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13028,7 +13028,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13042,7 +13042,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13052,7 +13052,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13062,7 +13062,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13072,7 +13072,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13086,7 +13086,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13096,7 +13096,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13106,7 +13106,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13116,7 +13116,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13130,7 +13130,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13140,7 +13140,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13150,7 +13150,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13160,7 +13160,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13174,7 +13174,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13184,7 +13184,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13194,7 +13194,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13204,7 +13204,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13221,7 +13221,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13231,7 +13231,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< StaticMatrix<double,3UL,3UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13241,7 +13241,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< StaticMatrix<double,3UL,3UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13251,7 +13251,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< StaticMatrix<double,3UL,3UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13265,7 +13265,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< HybridMatrix<double,4UL,8UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13275,7 +13275,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< HybridMatrix<double,4UL,8UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13285,7 +13285,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< HybridMatrix<double,4UL,8UL,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13295,7 +13295,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< HybridMatrix<double,4UL,8UL,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13309,7 +13309,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13319,7 +13319,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13329,7 +13329,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13339,7 +13339,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13353,7 +13353,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13363,7 +13363,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13373,7 +13373,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13383,7 +13383,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13397,7 +13397,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13407,7 +13407,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13417,7 +13417,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13427,7 +13427,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13441,7 +13441,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13451,7 +13451,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13465,7 +13465,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13475,7 +13475,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13485,7 +13485,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13495,7 +13495,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13509,7 +13509,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13519,7 +13519,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13529,7 +13529,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13539,7 +13539,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13553,7 +13553,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13563,7 +13563,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13573,7 +13573,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13583,7 +13583,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13597,7 +13597,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13607,7 +13607,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13617,7 +13617,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13627,7 +13627,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13641,7 +13641,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13651,7 +13651,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13661,7 +13661,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13671,7 +13671,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13685,7 +13685,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13695,7 +13695,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13705,7 +13705,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13715,7 +13715,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13729,7 +13729,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13739,7 +13739,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13749,7 +13749,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13759,7 +13759,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13773,7 +13773,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13783,7 +13783,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13793,7 +13793,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13803,7 +13803,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13817,7 +13817,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13827,7 +13827,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13837,7 +13837,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13847,7 +13847,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13861,7 +13861,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13871,7 +13871,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13881,7 +13881,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13891,7 +13891,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13905,7 +13905,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13915,7 +13915,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13925,7 +13925,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
@@ -13935,7 +13935,7 @@ void ClassTest::testBinaryMatrixOperation()
             using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }

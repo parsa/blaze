@@ -59,8 +59,8 @@
 #include <blaze/math/UpperMatrix.h>
 #include <blaze/math/ZeroMatrix.h>
 #include <blaze/util/Complex.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsSame.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 #include <blazetest/mathtest/traits/declupptrait/ClassTest.h>
 
 
@@ -119,7 +119,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = UpperMatrix< StaticMatrix<int,3UL,3UL,rowMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -127,7 +127,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = UpperMatrix< StaticMatrix<int,3UL,3UL,columnMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -139,7 +139,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = UpperMatrix< HybridMatrix<int,3UL,3UL,rowMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -147,7 +147,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = UpperMatrix< HybridMatrix<int,3UL,3UL,columnMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -159,7 +159,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = UpperMatrix< DynamicMatrix<int,rowMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -167,7 +167,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = UpperMatrix< DynamicMatrix<int,columnMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -179,7 +179,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = UpperMatrix< DynamicMatrix<int,rowMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -187,7 +187,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = UpperMatrix< DynamicMatrix<int,columnMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -199,7 +199,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = UpperMatrix< UniformMatrix<int,rowMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -207,7 +207,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = UpperMatrix< UniformMatrix<int,columnMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -219,7 +219,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = UpperMatrix< DynamicMatrix<int,rowMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -231,7 +231,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = UpperMatrix< CompressedMatrix<int,rowMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -239,7 +239,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = UpperMatrix< CompressedMatrix<int,columnMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -251,7 +251,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = IdentityMatrix<int,rowMajor>;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -259,7 +259,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = IdentityMatrix<int,columnMajor>;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -271,7 +271,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = UpperMatrix< ZeroMatrix<int,rowMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -279,7 +279,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = UpperMatrix< ZeroMatrix<int,columnMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -291,7 +291,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -299,7 +299,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = DiagonalMatrix< DynamicMatrix<int,columnMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -311,7 +311,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = DiagonalMatrix< DynamicMatrix<complex<int>,rowMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -319,7 +319,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = DiagonalMatrix< DynamicMatrix<complex<int>,columnMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -331,7 +331,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -339,7 +339,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = DiagonalMatrix< DynamicMatrix<int,columnMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -351,7 +351,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = DiagonalMatrix< DynamicMatrix<complex<int>,rowMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -359,7 +359,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = DiagonalMatrix< DynamicMatrix<complex<int>,columnMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -371,7 +371,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -379,7 +379,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = DiagonalMatrix< DynamicMatrix<int,columnMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -391,7 +391,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = IdentityMatrix<int,rowMajor>;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -399,7 +399,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = IdentityMatrix<int,columnMajor>;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -411,7 +411,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = ZeroMatrix<int,rowMajor>;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -419,7 +419,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = ZeroMatrix<int,columnMajor>;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -431,7 +431,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = UpperMatrix< DynamicMatrix<int,rowMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -439,7 +439,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = UpperMatrix< DynamicMatrix<int,columnMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -451,7 +451,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = UniUpperMatrix< DynamicMatrix<int,rowMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -459,7 +459,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = UniUpperMatrix< DynamicMatrix<int,columnMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -471,7 +471,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -479,7 +479,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -491,7 +491,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = DiagonalMatrix< DynamicMatrix<int,rowMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -499,7 +499,7 @@ void ClassTest::testMatrixDeclUpp()
          using RT = DiagonalMatrix< DynamicMatrix<int,columnMajor> >;
          static_assert( IsSame_v< DeclUppTrait_t<MT>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( declupp( std::declval<MT>() ) ) >;
+         using Expr = RemoveCVRef_t< decltype( declupp( std::declval<MT>() ) ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }

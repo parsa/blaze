@@ -72,7 +72,7 @@
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
-#include <blaze/util/typetraits/Decay.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/IsEqual.h>
@@ -127,16 +127,20 @@ class OperationTest
    using TRRE = blaze::ExpandTrait_t<TRT,E>;  //!< Transpose reference result type.
 
    //! Type of the vector expand expression (runtime argument)
-   using VecExpandExprType1 = blaze::Decay_t< decltype( blaze::expand( std::declval<VT>(), E ) ) >;
+   using VecExpandExprType1 =
+      blaze::RemoveCVRef_t< decltype( blaze::expand( std::declval<VT>(), E ) ) >;
 
    //! Type of the vector expand expression (compile time argument)
-   using VecExpandExprType2 = blaze::Decay_t< decltype( blaze::expand<E>( std::declval<VT>() ) ) >;
+   using VecExpandExprType2 =
+      blaze::RemoveCVRef_t< decltype( blaze::expand<E>( std::declval<VT>() ) ) >;
 
    //! Type of the transpose vector expand expression (runtime argument)
-   using TVecExpandExprType1 = blaze::Decay_t< decltype( blaze::expand( std::declval<TVT>(), E ) ) >;
+   using TVecExpandExprType1 =
+      blaze::RemoveCVRef_t< decltype( blaze::expand( std::declval<TVT>(), E ) ) >;
 
    //! Type of the transpose vector expand expression (compile time argument)
-   using TVecExpandExprType2 = blaze::Decay_t< decltype( blaze::expand<E>( std::declval<TVT>() ) ) >;
+   using TVecExpandExprType2 =
+      blaze::RemoveCVRef_t< decltype( blaze::expand<E>( std::declval<TVT>() ) ) >;
    //**********************************************************************************************
 
  public:

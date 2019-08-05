@@ -73,7 +73,7 @@
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
-#include <blaze/util/typetraits/Decay.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/IsEqual.h>
@@ -133,7 +133,8 @@ class OperationTest
    using RRE = blaze::MultTrait_t<RT1,RT2>;      //!< Reference result type
 
    //! Type of the outer product expression
-   using OuterExprType = blaze::Decay_t< decltype( std::declval<VT1>() * std::declval<TVT2>() ) >;
+   using OuterExprType =
+      blaze::RemoveCVRef_t< decltype( std::declval<VT1>() * std::declval<TVT2>() ) >;
    //**********************************************************************************************
 
  public:

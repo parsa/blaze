@@ -318,7 +318,6 @@ void OperationTest::testIsHermitian()
    using blaze::HermitianMatrix;
    using blaze::DiagonalMatrix;
    using blaze::IdentityMatrix;
-   using blaze::Decay_t;
 
    using Type1  = DynamicMatrix<int>;
    using Type2  = const DynamicMatrix<int>;
@@ -738,7 +737,6 @@ void OperationTest::testIsSymmetric()
    using blaze::HermitianMatrix;
    using blaze::DiagonalMatrix;
    using blaze::IdentityMatrix;
-   using blaze::Decay_t;
 
    using Type1  = DynamicMatrix<int>;
    using Type2  = const DynamicMatrix<int>;

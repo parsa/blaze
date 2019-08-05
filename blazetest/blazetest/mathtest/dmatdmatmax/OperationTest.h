@@ -82,8 +82,8 @@
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsComplex.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 #include <blazetest/system/LAPACK.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
@@ -149,16 +149,20 @@ class OperationTest
    using RT = MatchSymmetry_t< DRE, blaze::DynamicMatrix<blaze::ElementType_t<DRE>,false> >;
 
    //! Type of the matrix/matrix maximum expression
-   using MatMatMaxExprType = blaze::Decay_t< decltype( max( std::declval<MT1>(), std::declval<MT2>() ) ) >;
+   using MatMatMaxExprType =
+      blaze::RemoveCVRef_t< decltype( max( std::declval<MT1>(), std::declval<MT2>() ) ) >;
 
    //! Type of the matrix/transpose matrix maximum expression
-   using MatTMatMaxExprType = blaze::Decay_t< decltype( max( std::declval<MT1>(), std::declval<OMT2>() ) ) >;
+   using MatTMatMaxExprType =
+      blaze::RemoveCVRef_t< decltype( max( std::declval<MT1>(), std::declval<OMT2>() ) ) >;
 
    //! Type of the transpose matrix/matrix maximum expression
-   using TMatMatMaxExprType = blaze::Decay_t< decltype( max( std::declval<OMT1>(), std::declval<MT2>() ) ) >;
+   using TMatMatMaxExprType =
+      blaze::RemoveCVRef_t< decltype( max( std::declval<OMT1>(), std::declval<MT2>() ) ) >;
 
    //! Type of the transpose matrix/transpose matrix maximum expression
-   using TMatTMatMaxExprType = blaze::Decay_t< decltype( max( std::declval<OMT1>(), std::declval<OMT2>() ) ) >;
+   using TMatTMatMaxExprType =
+      blaze::RemoveCVRef_t< decltype( max( std::declval<OMT1>(), std::declval<OMT2>() ) ) >;
    //**********************************************************************************************
 
  public:

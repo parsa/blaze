@@ -75,7 +75,7 @@
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
-#include <blaze/util/typetraits/Decay.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/IsEqual.h>
@@ -134,10 +134,12 @@ class OperationTest
    using TRRE = blaze::TransposeType_t<RRE>;         //!< Transpose reference result type
 
    //! Type of the matrix/vector multiplication expression
-   using MatVecMultExprType = blaze::Decay_t< decltype( std::declval<MT>() * std::declval<VT>() ) >;
+   using MatVecMultExprType =
+      blaze::RemoveCVRef_t< decltype( std::declval<MT>() * std::declval<VT>() ) >;
 
    //! Type of the transpose matrix/vector multiplication expression
-   using TMatVecMultExprType = blaze::Decay_t< decltype( std::declval<OMT>() * std::declval<VT>() ) >;
+   using TMatVecMultExprType =
+      blaze::RemoveCVRef_t< decltype( std::declval<OMT>() * std::declval<VT>() ) >;
    //**********************************************************************************************
 
  public:

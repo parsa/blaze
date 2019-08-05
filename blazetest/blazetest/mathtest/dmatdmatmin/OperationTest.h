@@ -82,8 +82,8 @@
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsComplex.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 #include <blazetest/system/LAPACK.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
@@ -149,16 +149,20 @@ class OperationTest
    using RT = MatchSymmetry_t< DRE, blaze::DynamicMatrix<blaze::ElementType_t<DRE>,false> >;
 
    //! Type of the matrix/matrix minimum expression
-   using MatMatMinExprType = blaze::Decay_t< decltype( min( std::declval<MT1>(), std::declval<MT2>() ) ) >;
+   using MatMatMinExprType =
+      blaze::RemoveCVRef_t< decltype( min( std::declval<MT1>(), std::declval<MT2>() ) ) >;
 
    //! Type of the matrix/transpose matrix minimum expression
-   using MatTMatMinExprType = blaze::Decay_t< decltype( min( std::declval<MT1>(), std::declval<OMT2>() ) ) >;
+   using MatTMatMinExprType =
+      blaze::RemoveCVRef_t< decltype( min( std::declval<MT1>(), std::declval<OMT2>() ) ) >;
 
    //! Type of the transpose matrix/matrix minimum expression
-   using TMatMatMinExprType = blaze::Decay_t< decltype( min( std::declval<OMT1>(), std::declval<MT2>() ) ) >;
+   using TMatMatMinExprType =
+      blaze::RemoveCVRef_t< decltype( min( std::declval<OMT1>(), std::declval<MT2>() ) ) >;
 
    //! Type of the transpose matrix/transpose matrix minimum expression
-   using TMatTMatMinExprType = blaze::Decay_t< decltype( min( std::declval<OMT1>(), std::declval<OMT2>() ) ) >;
+   using TMatTMatMinExprType =
+      blaze::RemoveCVRef_t< decltype( min( std::declval<OMT1>(), std::declval<OMT2>() ) ) >;
    //**********************************************************************************************
 
  public:

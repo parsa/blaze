@@ -64,7 +64,7 @@
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/Random.h>
-#include <blaze/util/typetraits/Decay.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/IsEqual.h>
@@ -124,10 +124,12 @@ class OperationTest
    using TRRE = blaze::AddTrait_t<TRT1,TRT2>;  //!< Transpose reference result type
 
    //! Type of the vector/vector addition expression
-   using VecVecAddExprType = blaze::Decay_t< decltype( std::declval<VT1>() + std::declval<VT2>() ) >;
+   using VecVecAddExprType =
+      blaze::RemoveCVRef_t< decltype( std::declval<VT1>() + std::declval<VT2>() ) >;
 
    //! Type of the transpose vector/transpose vector addition expression
-   using TVecTVecAddExprType = blaze::Decay_t< decltype( std::declval<TVT1>() + std::declval<TVT2>() ) >;
+   using TVecTVecAddExprType =
+      blaze::RemoveCVRef_t< decltype( std::declval<TVT1>() + std::declval<TVT2>() ) >;
    //**********************************************************************************************
 
  public:

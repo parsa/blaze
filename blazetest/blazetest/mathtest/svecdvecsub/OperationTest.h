@@ -69,7 +69,7 @@
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
-#include <blaze/util/typetraits/Decay.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/IsEqual.h>
@@ -129,10 +129,12 @@ class OperationTest
    using TRRE = blaze::SubTrait_t<TRT1,TRT2>;  //!< Transpose reference result type
 
    //! Type of the vector/vector subtraction expression
-   using VecVecSubExprType = blaze::Decay_t< decltype( std::declval<VT1>() - std::declval<VT2>() ) >;
+   using VecVecSubExprType =
+      blaze::RemoveCVRef_t< decltype( std::declval<VT1>() - std::declval<VT2>() ) >;
 
    //! Type of the transpose vector/transpose vector subtraction expression
-   using TVecTVecSubExprType = blaze::Decay_t< decltype( std::declval<TVT1>() - std::declval<TVT2>() ) >;
+   using TVecTVecSubExprType =
+      blaze::RemoveCVRef_t< decltype( std::declval<TVT1>() - std::declval<TVT2>() ) >;
    //**********************************************************************************************
 
  public:

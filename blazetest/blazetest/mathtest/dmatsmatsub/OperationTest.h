@@ -80,8 +80,8 @@
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsComplex.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 #include <blazetest/system/LAPACK.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
@@ -150,16 +150,20 @@ class OperationTest
    using RRE = MatchSymmetry_t< DRE, blaze::SubTrait_t<RT1,RT2> >;
 
    //! Type of the matrix/matrix multiplication expression
-   using MatMatMultExprType = blaze::Decay_t< decltype( std::declval<MT1>() * std::declval<MT2>() ) >;
+   using MatMatMultExprType =
+      blaze::RemoveCVRef_t< decltype( std::declval<MT1>() * std::declval<MT2>() ) >;
 
    //! Type of the matrix/transpose matrix multiplication expression
-   using MatTMatMultExprType = blaze::Decay_t< decltype( std::declval<MT1>() * std::declval<OMT2>() ) >;
+   using MatTMatMultExprType =
+      blaze::RemoveCVRef_t< decltype( std::declval<MT1>() * std::declval<OMT2>() ) >;
 
    //! Type of the transpose matrix/matrix multiplication expression
-   using TMatMatMultExprType = blaze::Decay_t< decltype( std::declval<OMT1>() * std::declval<MT2>() ) >;
+   using TMatMatMultExprType =
+      blaze::RemoveCVRef_t< decltype( std::declval<OMT1>() * std::declval<MT2>() ) >;
 
    //! Type of the transpose matrix/transpose matrix multiplication expression
-   using TMatTMatMultExprType = blaze::Decay_t< decltype( std::declval<OMT1>() * std::declval<OMT2>() ) >;
+   using TMatTMatMultExprType =
+      blaze::RemoveCVRef_t< decltype( std::declval<OMT1>() * std::declval<OMT2>() ) >;
    //**********************************************************************************************
 
  public:

@@ -69,7 +69,7 @@
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
-#include <blaze/util/typetraits/Decay.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/IsEqual.h>
@@ -124,10 +124,12 @@ class OperationTest
    using TRT = blaze::TransposeType_t<RT>;                          //!< Transpose reference type
 
    //! Type of the vector/vector minimum expression
-   using VecVecMinExprType = blaze::Decay_t< decltype( min( std::declval<VT1>(), std::declval<VT2>() ) ) >;
+   using VecVecMinExprType =
+      blaze::RemoveCVRef_t< decltype( min( std::declval<VT1>(), std::declval<VT2>() ) ) >;
 
    //! Type of the transpose vector/transpose vector minimum expression
-   using TVecTVecMinExprType = blaze::Decay_t< decltype( min( std::declval<TVT1>(), std::declval<TVT2>() ) ) >;
+   using TVecTVecMinExprType =
+      blaze::RemoveCVRef_t< decltype( min( std::declval<TVT1>(), std::declval<TVT2>() ) ) >;
    //**********************************************************************************************
 
  public:

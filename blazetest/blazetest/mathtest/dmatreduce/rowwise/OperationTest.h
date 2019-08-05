@@ -64,7 +64,7 @@
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
-#include <blaze/util/typetraits/Decay.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
 #include <blazetest/mathtest/IsEqual.h>
@@ -121,10 +121,12 @@ class OperationTest
    using TRRE = blaze::TransposeType_t<RRE>;
 
    //! Type of the vector map expression
-   using MatReduceExprType = blaze::Decay_t< decltype( blaze::sum<1UL>( std::declval<MT>() ) ) >;
+   using MatReduceExprType =
+      blaze::RemoveCVRef_t< decltype( blaze::sum<1UL>( std::declval<MT>() ) ) >;
 
    //! Type of the transpose vector map expression
-   using TMatReduceExprType = blaze::Decay_t< decltype( blaze::sum<1UL>( std::declval<OMT>() ) ) >;
+   using TMatReduceExprType =
+      blaze::RemoveCVRef_t< decltype( blaze::sum<1UL>( std::declval<OMT>() ) ) >;
    //**********************************************************************************************
 
  public:

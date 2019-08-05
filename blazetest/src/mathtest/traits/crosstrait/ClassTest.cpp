@@ -51,8 +51,8 @@
 #include <blaze/math/UniformVector.h>
 #include <blaze/math/ZeroVector.h>
 #include <blaze/util/Complex.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsSame.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 #include <blazetest/mathtest/traits/crosstrait/ClassTest.h>
 
 
@@ -113,7 +113,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -124,7 +124,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -135,7 +135,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -146,7 +146,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -157,7 +157,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -168,7 +168,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -179,7 +179,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -190,7 +190,7 @@ void ClassTest::testCrossProduct()
          using RT = ZeroVector<double,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
    }
@@ -204,7 +204,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -215,7 +215,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -226,7 +226,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -237,7 +237,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -248,7 +248,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -259,7 +259,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -270,7 +270,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -281,7 +281,7 @@ void ClassTest::testCrossProduct()
          using RT = ZeroVector<double,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
    }
@@ -295,7 +295,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -306,7 +306,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -317,7 +317,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -328,7 +328,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -339,7 +339,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -350,7 +350,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -361,7 +361,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -372,7 +372,7 @@ void ClassTest::testCrossProduct()
          using RT = ZeroVector<double,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
    }
@@ -386,7 +386,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -397,7 +397,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -408,7 +408,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -419,7 +419,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -430,7 +430,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -441,7 +441,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -452,7 +452,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -463,7 +463,7 @@ void ClassTest::testCrossProduct()
          using RT = ZeroVector<double,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
    }
@@ -477,7 +477,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -488,7 +488,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -499,7 +499,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -510,7 +510,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -521,7 +521,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -532,7 +532,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -543,7 +543,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -554,7 +554,7 @@ void ClassTest::testCrossProduct()
          using RT = ZeroVector<double,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
    }
@@ -568,7 +568,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -579,7 +579,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -590,7 +590,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -601,7 +601,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -612,7 +612,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -623,7 +623,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -634,7 +634,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -645,7 +645,7 @@ void ClassTest::testCrossProduct()
          using RT = ZeroVector<double,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
    }
@@ -659,7 +659,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -670,7 +670,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -681,7 +681,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -692,7 +692,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -703,7 +703,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -714,7 +714,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -725,7 +725,7 @@ void ClassTest::testCrossProduct()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -736,7 +736,7 @@ void ClassTest::testCrossProduct()
          using RT = ZeroVector<double,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
    }
@@ -750,7 +750,7 @@ void ClassTest::testCrossProduct()
          using RT = ZeroVector<double,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -761,7 +761,7 @@ void ClassTest::testCrossProduct()
          using RT = ZeroVector<double,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -772,7 +772,7 @@ void ClassTest::testCrossProduct()
          using RT = ZeroVector<double,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -783,7 +783,7 @@ void ClassTest::testCrossProduct()
          using RT = ZeroVector<double,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -794,7 +794,7 @@ void ClassTest::testCrossProduct()
          using RT = ZeroVector<double,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -805,7 +805,7 @@ void ClassTest::testCrossProduct()
          using RT = ZeroVector<double,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -816,7 +816,7 @@ void ClassTest::testCrossProduct()
          using RT = ZeroVector<double,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
 
@@ -827,7 +827,7 @@ void ClassTest::testCrossProduct()
          using RT = ZeroVector<double,columnVector>;
          static_assert( IsSame_v< CrossTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() % std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
    }

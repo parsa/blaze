@@ -69,8 +69,8 @@
 #include <blaze/math/ZeroMatrix.h>
 #include <blaze/math/ZeroVector.h>
 #include <blaze/util/Complex.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsSame.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 #include <blazetest/mathtest/traits/divtrait/ClassTest.h>
 
 
@@ -215,7 +215,7 @@ void ClassTest::testVectorScalarDivision()
          using RT = StaticVector<double,3UL,columnVector>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
       {
@@ -224,7 +224,7 @@ void ClassTest::testVectorScalarDivision()
          using RT = StaticVector<double,3UL,rowVector>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
    }
@@ -237,7 +237,7 @@ void ClassTest::testVectorScalarDivision()
          using RT = HybridVector<double,5UL,columnVector>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
       {
@@ -246,7 +246,7 @@ void ClassTest::testVectorScalarDivision()
          using RT = HybridVector<double,5UL,rowVector>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
    }
@@ -259,7 +259,7 @@ void ClassTest::testVectorScalarDivision()
          using RT = DynamicVector<double,columnVector>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
       {
@@ -268,7 +268,7 @@ void ClassTest::testVectorScalarDivision()
          using RT = DynamicVector<double,rowVector>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
    }
@@ -281,7 +281,7 @@ void ClassTest::testVectorScalarDivision()
          using RT = DynamicVector<double,columnVector>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
       {
@@ -290,7 +290,7 @@ void ClassTest::testVectorScalarDivision()
          using RT = DynamicVector<double,rowVector>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
    }
@@ -303,7 +303,7 @@ void ClassTest::testVectorScalarDivision()
          using RT = UniformVector<double,columnVector>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
       {
@@ -312,7 +312,7 @@ void ClassTest::testVectorScalarDivision()
          using RT = UniformVector<double,rowVector>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
    }
@@ -325,7 +325,7 @@ void ClassTest::testVectorScalarDivision()
          using RT = DynamicVector<double,columnVector>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
       {
@@ -334,7 +334,7 @@ void ClassTest::testVectorScalarDivision()
          using RT = DynamicVector<double,rowVector>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
    }
@@ -347,7 +347,7 @@ void ClassTest::testVectorScalarDivision()
          using RT = CompressedVector<double,columnVector>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
       {
@@ -356,7 +356,7 @@ void ClassTest::testVectorScalarDivision()
          using RT = CompressedVector<double,rowVector>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
    }
@@ -369,7 +369,7 @@ void ClassTest::testVectorScalarDivision()
          using RT = ZeroVector<double,columnVector>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
       {
@@ -378,7 +378,7 @@ void ClassTest::testVectorScalarDivision()
          using RT = ZeroVector<double,rowVector>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
       }
    }
@@ -408,7 +408,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = StaticMatrix<double,3UL,5UL,rowMajor>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -417,7 +417,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = StaticMatrix<double,3UL,5UL,columnMajor>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -430,7 +430,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = HybridMatrix<double,5UL,7UL,rowMajor>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -439,7 +439,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = HybridMatrix<double,5UL,7UL,columnMajor>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -452,7 +452,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = DynamicMatrix<double,rowMajor>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -461,7 +461,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = DynamicMatrix<double,columnMajor>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -474,7 +474,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = DynamicMatrix<double,rowMajor>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -483,7 +483,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = DynamicMatrix<double,columnMajor>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -496,7 +496,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = UniformMatrix<double,rowMajor>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -505,7 +505,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = UniformMatrix<double,columnMajor>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -518,7 +518,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = DynamicMatrix<double,rowMajor>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -531,7 +531,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = CompressedMatrix<double,rowMajor>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -540,7 +540,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = CompressedMatrix<double,columnMajor>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -553,7 +553,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = DiagonalMatrix< CompressedMatrix<double,rowMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -562,7 +562,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = DiagonalMatrix< CompressedMatrix<double,columnMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -575,7 +575,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = ZeroMatrix<double,rowMajor>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -584,7 +584,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = ZeroMatrix<double,columnMajor>;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -597,7 +597,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -606,7 +606,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = SymmetricMatrix< DynamicMatrix<double,columnMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -619,7 +619,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -628,7 +628,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -641,7 +641,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -650,7 +650,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = SymmetricMatrix< DynamicMatrix<double,columnMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -663,7 +663,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -672,7 +672,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -685,7 +685,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -694,7 +694,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -707,7 +707,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = LowerMatrix< DynamicMatrix<double,rowMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -716,7 +716,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = LowerMatrix< DynamicMatrix<double,columnMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -729,7 +729,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -738,7 +738,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -751,7 +751,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -760,7 +760,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -773,7 +773,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -782,7 +782,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -795,7 +795,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -804,7 +804,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -817,7 +817,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
       {
@@ -826,7 +826,7 @@ void ClassTest::testMatrixScalarDivision()
          using RT = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
          static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-         using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+         using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
          static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
       }
    }
@@ -858,7 +858,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = StaticVector<double,3UL,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -867,7 +867,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -880,7 +880,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = StaticVector<double,3UL,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -889,7 +889,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -902,7 +902,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = StaticVector<double,3UL,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -911,7 +911,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -924,7 +924,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = StaticVector<double,3UL,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -933,7 +933,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -946,7 +946,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = StaticVector<double,3UL,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -955,7 +955,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -968,7 +968,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = StaticVector<double,3UL,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -977,7 +977,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -993,7 +993,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = StaticVector<double,3UL,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1002,7 +1002,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1015,7 +1015,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = HybridVector<double,5UL,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1024,7 +1024,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = HybridVector<double,5UL,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1037,7 +1037,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = HybridVector<double,5UL,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1046,7 +1046,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = HybridVector<double,5UL,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1059,7 +1059,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = HybridVector<double,5UL,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1068,7 +1068,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = HybridVector<double,5UL,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1081,7 +1081,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = HybridVector<double,5UL,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1090,7 +1090,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = HybridVector<double,5UL,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1103,7 +1103,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = HybridVector<double,5UL,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1112,7 +1112,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = HybridVector<double,5UL,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1128,7 +1128,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = StaticVector<double,3UL,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1137,7 +1137,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1150,7 +1150,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = HybridVector<double,7UL,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1159,7 +1159,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = HybridVector<double,7UL,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1172,7 +1172,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1181,7 +1181,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1194,7 +1194,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1203,7 +1203,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1216,7 +1216,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1225,7 +1225,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1238,7 +1238,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1247,7 +1247,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1263,7 +1263,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = StaticVector<double,3UL,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1272,7 +1272,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1285,7 +1285,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = HybridVector<double,7UL,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1294,7 +1294,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = HybridVector<double,7UL,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1307,7 +1307,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1316,7 +1316,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1329,7 +1329,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1338,7 +1338,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1351,7 +1351,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1360,7 +1360,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1373,7 +1373,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1382,7 +1382,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1398,7 +1398,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = StaticVector<double,3UL,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1407,7 +1407,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1420,7 +1420,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = HybridVector<double,7UL,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1429,7 +1429,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = HybridVector<double,7UL,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1442,7 +1442,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1451,7 +1451,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1464,7 +1464,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1473,7 +1473,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1486,7 +1486,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = UniformVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1495,7 +1495,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = UniformVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1508,7 +1508,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1517,7 +1517,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1533,7 +1533,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = StaticVector<double,3UL,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1542,7 +1542,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = StaticVector<double,3UL,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1555,7 +1555,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = HybridVector<double,7UL,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1564,7 +1564,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = HybridVector<double,7UL,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1577,7 +1577,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1586,7 +1586,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1599,7 +1599,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1608,7 +1608,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1621,7 +1621,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1630,7 +1630,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1643,7 +1643,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1652,7 +1652,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = DynamicVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1668,7 +1668,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = CompressedVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1677,7 +1677,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = CompressedVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1690,7 +1690,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = CompressedVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1699,7 +1699,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = CompressedVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1712,7 +1712,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = CompressedVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1721,7 +1721,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = CompressedVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1734,7 +1734,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = CompressedVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1743,7 +1743,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = CompressedVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1756,7 +1756,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = CompressedVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1765,7 +1765,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = CompressedVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1778,7 +1778,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = CompressedVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1787,7 +1787,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = CompressedVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1803,7 +1803,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1812,7 +1812,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1825,7 +1825,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1834,7 +1834,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1847,7 +1847,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1856,7 +1856,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1869,7 +1869,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1878,7 +1878,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1891,7 +1891,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1900,7 +1900,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
@@ -1913,7 +1913,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = ZeroVector<double,columnVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
          {
@@ -1922,7 +1922,7 @@ void ClassTest::testVectorVectorDivision()
             using RT = ZeroVector<double,rowVector>;
             static_assert( IsSame_v< DivTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
-            using Expr = Decay_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
+            using Expr = RemoveCVRef_t< decltype( std::declval<T1>() / std::declval<T2>() ) >;
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
       }
