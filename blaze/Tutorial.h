@@ -92,20 +92,8 @@
 //    </li>
 //    <li> \ref arithmetic_operations
 //       <ul>
-//          <li> \ref addition
-//             <ul>
-//                <li> \ref vector_vector_addition </li>
-//                <li> \ref matrix_matrix_addition </li>
-//                <li> \ref scalar_addition </li>
-//             </ul>
-//          </li>
-//          <li> \ref subtraction
-//             <ul>
-//                <li> \ref vector_vector_subtraction </li>
-//                <li> \ref matrix_matrix_subtraction </li>
-//                <li> \ref scalar_subtraction </li>
-//             </ul>
-//          </li>
+//          <li> \ref addition </li>
+//          <li> \ref subtraction </li>
 //          <li> \ref scalar_multiplication </li>
 //          <li> \ref vector_vector_multiplication
 //             <ul>
@@ -129,56 +117,17 @@
 //    </li>
 //    <li> \ref bitwise_operations
 //       <ul>
-//          <li> \ref bitwise_shift
-//             <ul>
-//                <li> \ref vector_vector_shift </li>
-//                <li> \ref matrix_matrix_shift </li>
-//                <li> \ref scalar_shift </li>
-//             </ul>
-//          </li>
-//          <li> \ref bitwise_and
-//             <ul>
-//                <li> \ref vector_vector_bitand </li>
-//                <li> \ref matrix_matrix_bitand </li>
-//                <li> \ref scalar_bitand </li>
-//             </ul>
-//          </li>
-//          <li> \ref bitwise_or
-//             <ul>
-//                <li> \ref vector_vector_bitor </li>
-//                <li> \ref matrix_matrix_bitor </li>
-//                <li> \ref scalar_bitor </li>
-//             </ul>
-//          </li>
-//          <li> \ref bitwise_xor
-//             <ul>
-//                <li> \ref vector_vector_bitxor </li>
-//                <li> \ref matrix_matrix_bitxor </li>
-//                <li> \ref scalar_bitxor </li>
-//             </ul>
-//          </li>
+//          <li> \ref bitwise_shift </li>
+//          <li> \ref bitwise_and </li>
+//          <li> \ref bitwise_or </li>
+//          <li> \ref bitwise_xor </li>
 //       </ul>
 //    </li>
 //    <li> \ref logical_operations
 //       <ul>
-//          <li> \ref logical_not
-//             <ul>
-//                <li> \ref vector_vector_not </li>
-//                <li> \ref matrix_matrix_not </li>
-//             </ul>
-//          </li>
-//          <li> \ref logical_and
-//             <ul>
-//                <li> \ref vector_vector_and </li>
-//                <li> \ref matrix_matrix_and </li>
-//             </ul>
-//          </li>
-//          <li> \ref logical_or
-//             <ul>
-//                <li> \ref vector_vector_or </li>
-//                <li> \ref matrix_matrix_or </li>
-//             </ul>
-//          </li>
+//          <li> \ref logical_not </li>
+//          <li> \ref logical_and </li>
+//          <li> \ref logical_or </li>
 //       </ul>
 //    </li>
 //    <li> \ref shared_memory_parallelization
@@ -5426,7 +5375,7 @@
    //    ( 5  5  5  5  5 )
    //
    A = uniform( 3UL, 5UL, scalar );
-   A = uniform<columnMajo>( 3UL, 5UL, scalar );
+   A = uniform<columnMajor>( 3UL, 5UL, scalar );
    \endcode
 
 // \n \section matrix_operations_statistic_operations Statistic Operations
