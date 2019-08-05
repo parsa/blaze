@@ -48,8 +48,8 @@
 #include <blaze/util/Complex.h>
 #include <blaze/util/NonCreatable.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/RemoveCV.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -928,7 +928,7 @@ inline T rand( Args&&... args )
 template< typename T >  // Type of the random number
 inline void randomize( T&& value )
 {
-   Rand< Decay_t<T> > tmp;
+   Rand< RemoveCVRef_t<T> > tmp;
    tmp.randomize( std::forward<T>( value ) );
 }
 //*************************************************************************************************
@@ -948,7 +948,7 @@ template< typename T          // Type of the random number
         , typename... Args >  // Types of the optional arguments
 inline void randomize( T&& value, Args&&... args )
 {
-   Rand< Decay_t<T> > tmp;
+   Rand< RemoveCVRef_t<T> > tmp;
    tmp.randomize( std::forward<T>( value ), std::forward<Args>( args )... );
 }
 //*************************************************************************************************
