@@ -42,10 +42,10 @@
 
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSigned.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -99,7 +99,7 @@ using HasSIMDShiftRIHelper =
 */
 template< typename T >  // Type of the operand
 struct HasSIMDShiftRI
-   : public BoolConstant< HasSIMDShiftRIHelper< Decay_t<T> >::value >
+   : public BoolConstant< HasSIMDShiftRIHelper< RemoveCVRef_t<T> >::value >
 {};
 //*************************************************************************************************
 

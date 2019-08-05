@@ -42,9 +42,9 @@
 
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -98,7 +98,7 @@ using HasSIMDBitorHelper =
 template< typename T1    // Type of the left-hand side operand
         , typename T2 >  // Type of the right-hand side operand
 struct HasSIMDBitor
-   : public BoolConstant< HasSIMDBitorHelper< Decay_t<T1>, Decay_t<T2> >::value >
+   : public BoolConstant< HasSIMDBitorHelper< RemoveCVRef_t<T1>, RemoveCVRef_t<T2> >::value >
 {};
 //*************************************************************************************************
 

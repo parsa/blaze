@@ -42,9 +42,9 @@
 
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsDouble.h>
 #include <blaze/util/typetraits/IsFloat.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -94,7 +94,7 @@ using HasSIMDInvCbrtHelper =
 */
 template< typename T >  // Type of the operand
 struct HasSIMDInvCbrt
-   : public BoolConstant< HasSIMDInvCbrtHelper< Decay_t<T> >::value >
+   : public BoolConstant< HasSIMDInvCbrtHelper< RemoveCVRef_t<T> >::value >
 {};
 //*************************************************************************************************
 

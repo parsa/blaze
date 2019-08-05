@@ -43,7 +43,7 @@
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/typetraits/Decay.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -97,7 +97,7 @@ using HasSIMDRoundHelper =
 */
 template< typename T >  // Type of the operand
 struct HasSIMDRound
-   : public BoolConstant< HasSIMDRoundHelper< Decay_t<T> >::value >
+   : public BoolConstant< HasSIMDRoundHelper< RemoveCVRef_t<T> >::value >
 {};
 //*************************************************************************************************
 

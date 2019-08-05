@@ -43,10 +43,10 @@
 #include <blaze/math/typetraits/HasSIMDMult.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSigned.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -108,7 +108,7 @@ struct HasSIMDConjHelper< complex<T> >
 */
 template< typename T >  // Type of the operand
 struct HasSIMDConj
-   : public BoolConstant< HasSIMDConjHelper< Decay_t<T> >::value >
+   : public BoolConstant< HasSIMDConjHelper< RemoveCVRef_t<T> >::value >
 {};
 //*************************************************************************************************
 

@@ -45,9 +45,9 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsNumeric.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -165,7 +165,7 @@ template< typename T1        // Type of the left-hand side operand
         , typename T2        // Type of the right-hand side operand
         , typename = void >  // Restricting condition
 struct HasSIMDSub
-   : public BoolConstant< HasSIMDSubHelper< Decay_t<T1>, Decay_t<T2> >::value >
+   : public BoolConstant< HasSIMDSubHelper< RemoveCVRef_t<T1>, RemoveCVRef_t<T2> >::value >
 {};
 //*************************************************************************************************
 

@@ -43,12 +43,12 @@
 #include <blaze/system/Compiler.h>
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsIntegral.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSigned.h>
 #include <blaze/util/typetraits/IsDouble.h>
 #include <blaze/util/typetraits/IsFloat.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -110,7 +110,7 @@ using HasSIMDAbsHelper =
 */
 template< typename T >  // Type of the operand
 struct HasSIMDAbs
-   : public BoolConstant< HasSIMDAbsHelper< Decay_t<T> >::value >
+   : public BoolConstant< HasSIMDAbsHelper< RemoveCVRef_t<T> >::value >
 {};
 //*************************************************************************************************
 

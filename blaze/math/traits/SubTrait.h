@@ -47,8 +47,8 @@
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/typetraits/CommonType.h>
-#include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -163,7 +163,7 @@ struct SubTrait< T, T, EnableIf_t< IsBuiltin_v<T> > >
 {
  public:
    //**********************************************************************************************
-   using Type = Decay_t<T>;
+   using Type = RemoveCVRef_t<T>;
    //**********************************************************************************************
 };
 /*! \endcond */

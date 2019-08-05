@@ -42,7 +42,7 @@
 
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/typetraits/Decay.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -97,7 +97,7 @@ using HasSIMDSqrtHelper =
 */
 template< typename T >  // Type of the operand
 struct HasSIMDSqrt
-   : public BoolConstant< HasSIMDSqrtHelper< Decay_t<T> >::value >
+   : public BoolConstant< HasSIMDSqrtHelper< RemoveCVRef_t<T> >::value >
 {};
 //*************************************************************************************************
 

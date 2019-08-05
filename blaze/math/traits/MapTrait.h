@@ -41,7 +41,7 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/util/typetraits/Decay.h>
+#include <blaze/util/typetraits/RemoveCVRef.h>
 
 
 namespace blaze {
@@ -192,7 +192,7 @@ struct UnaryMapTraitEval2
 {
  public:
    //**********************************************************************************************
-   using Type = Decay_t< decltype( std::declval<OP>()( std::declval<T>() ) ) >;
+   using Type = RemoveCVRef_t< decltype( std::declval<OP>()( std::declval<T>() ) ) >;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -232,7 +232,7 @@ struct BinaryMapTraitEval2
 {
  public:
    //**********************************************************************************************
-   using Type = Decay_t< decltype( std::declval<OP>()( std::declval<T1>(), std::declval<T2>() ) ) >;
+   using Type = RemoveCVRef_t< decltype( std::declval<OP>()( std::declval<T1>(), std::declval<T2>() ) ) >;
    //**********************************************************************************************
 };
 /*! \endcond */
