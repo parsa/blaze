@@ -100,7 +100,7 @@ BLAZE_ALWAYS_INLINE const EnableIf_t< IsIntegral_v<T> && HasSize_v<T,1UL>
    set( complex<T> value ) noexcept
 {
 #if BLAZE_AVX512F_MODE
-   return _m512_set1_epi16( reinterpret_cast<const int16_t>( value ) );
+   return _mm512_set1_epi16( reinterpret_cast<const int16_t&>( value ) );
 #elif BLAZE_AVX2_MODE
    return _mm256_set_epi8( value.imag(), value.real(), value.imag(), value.real(),
                            value.imag(), value.real(), value.imag(), value.real(),
