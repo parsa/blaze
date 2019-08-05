@@ -154,7 +154,7 @@ class DiagonalMatrix<MT,SO,false>
    explicit inline DiagonalMatrix( size_t n );
    explicit inline DiagonalMatrix( size_t n, size_t nonzeros );
    explicit inline DiagonalMatrix( size_t n, const std::vector<size_t>& nonzeros );
-   explicit inline DiagonalMatrix( initializer_list< initializer_list<ElementType> > list );
+            inline DiagonalMatrix( initializer_list< initializer_list<ElementType> > list );
 
    inline DiagonalMatrix( const DiagonalMatrix& m );
    inline DiagonalMatrix( DiagonalMatrix&& m ) noexcept;

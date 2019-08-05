@@ -332,7 +332,7 @@ class CompressedVector
    explicit inline CompressedVector() noexcept;
    explicit inline CompressedVector( size_t size ) noexcept;
    explicit inline CompressedVector( size_t size, size_t nonzeros );
-   explicit inline CompressedVector( initializer_list<Type> list );
+            inline CompressedVector( initializer_list<Type> list );
 
    inline CompressedVector( const CompressedVector& sv );
    inline CompressedVector( CompressedVector&& sv ) noexcept;

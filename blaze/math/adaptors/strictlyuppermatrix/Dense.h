@@ -645,7 +645,7 @@ class StrictlyUpperMatrix<MT,SO,true>
    template< typename A1 > explicit inline StrictlyUpperMatrix( const A1& a1 );
                            explicit inline StrictlyUpperMatrix( size_t n, const ElementType& init );
 
-   explicit inline StrictlyUpperMatrix( initializer_list< initializer_list<ElementType> > list );
+   inline StrictlyUpperMatrix( initializer_list< initializer_list<ElementType> > list );
 
    template< typename Other >
    explicit inline StrictlyUpperMatrix( size_t n, const Other* array );

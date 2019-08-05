@@ -282,7 +282,7 @@ class DynamicMatrix
    explicit inline DynamicMatrix() noexcept;
    explicit inline DynamicMatrix( size_t m, size_t n );
    explicit inline DynamicMatrix( size_t m, size_t n, const Type& init );
-   explicit inline DynamicMatrix( initializer_list< initializer_list<Type> > list );
+            inline DynamicMatrix( initializer_list< initializer_list<Type> > list );
 
    template< typename Other >
    explicit inline DynamicMatrix( size_t m, size_t n, const Other* array );
@@ -3239,7 +3239,7 @@ class DynamicMatrix<Type,true>
    explicit inline DynamicMatrix() noexcept;
    explicit inline DynamicMatrix( size_t m, size_t n );
    explicit inline DynamicMatrix( size_t m, size_t n, const Type& init );
-   explicit inline DynamicMatrix( initializer_list< initializer_list<Type> > list );
+            inline DynamicMatrix( initializer_list< initializer_list<Type> > list );
 
    template< typename Other > explicit inline DynamicMatrix( size_t m, size_t n, const Other* array );
 

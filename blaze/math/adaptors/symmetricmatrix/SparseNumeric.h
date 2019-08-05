@@ -314,7 +314,7 @@ class SymmetricMatrix<MT,SO,false,true>
    explicit inline SymmetricMatrix( size_t n );
    explicit inline SymmetricMatrix( size_t n, size_t nonzeros );
    explicit inline SymmetricMatrix( size_t n, const std::vector<size_t>& nonzeros );
-   explicit inline SymmetricMatrix( initializer_list< initializer_list<ElementType> > list );
+            inline SymmetricMatrix( initializer_list< initializer_list<ElementType> > list );
 
    inline SymmetricMatrix( const SymmetricMatrix& m );
    inline SymmetricMatrix( SymmetricMatrix&& m ) noexcept;

@@ -159,7 +159,7 @@ class StrictlyUpperMatrix<MT,SO,false>
    explicit inline StrictlyUpperMatrix( size_t n );
    explicit inline StrictlyUpperMatrix( size_t n, size_t nonzeros );
    explicit inline StrictlyUpperMatrix( size_t n, const std::vector<size_t>& nonzeros );
-   explicit inline StrictlyUpperMatrix( initializer_list< initializer_list<ElementType> > list );
+            inline StrictlyUpperMatrix( initializer_list< initializer_list<ElementType> > list );
 
    inline StrictlyUpperMatrix( const StrictlyUpperMatrix& m );
    inline StrictlyUpperMatrix( StrictlyUpperMatrix&& m ) noexcept;

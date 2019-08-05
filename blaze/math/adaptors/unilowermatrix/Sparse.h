@@ -315,7 +315,7 @@ class UniLowerMatrix<MT,SO,false>
    explicit inline UniLowerMatrix( size_t n );
    explicit inline UniLowerMatrix( size_t n, size_t nonzeros );
    explicit inline UniLowerMatrix( size_t n, const std::vector<size_t>& nonzeros );
-   explicit inline UniLowerMatrix( initializer_list< initializer_list<ElementType> > list );
+            inline UniLowerMatrix( initializer_list< initializer_list<ElementType> > list );
 
    inline UniLowerMatrix( const UniLowerMatrix& m );
    inline UniLowerMatrix( UniLowerMatrix&& m ) noexcept;

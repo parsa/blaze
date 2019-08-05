@@ -160,7 +160,7 @@ class StrictlyLowerMatrix<MT,SO,false>
    explicit inline StrictlyLowerMatrix( size_t n );
    explicit inline StrictlyLowerMatrix( size_t n, size_t nonzeros );
    explicit inline StrictlyLowerMatrix( size_t n, const std::vector<size_t>& nonzeros );
-   explicit inline StrictlyLowerMatrix( initializer_list< initializer_list<ElementType> > list );
+            inline StrictlyLowerMatrix( initializer_list< initializer_list<ElementType> > list );
 
    inline StrictlyLowerMatrix( const StrictlyLowerMatrix& m );
    inline StrictlyLowerMatrix( StrictlyLowerMatrix&& m ) noexcept;

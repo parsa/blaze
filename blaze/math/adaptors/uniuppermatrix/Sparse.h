@@ -315,7 +315,7 @@ class UniUpperMatrix<MT,SO,false>
    explicit inline UniUpperMatrix( size_t n );
    explicit inline UniUpperMatrix( size_t n, size_t nonzeros );
    explicit inline UniUpperMatrix( size_t n, const std::vector<size_t>& nonzeros );
-   explicit inline UniUpperMatrix( initializer_list< initializer_list<ElementType> > list );
+            inline UniUpperMatrix( initializer_list< initializer_list<ElementType> > list );
 
    inline UniUpperMatrix( const UniUpperMatrix& m );
    inline UniUpperMatrix( UniUpperMatrix&& m ) noexcept;

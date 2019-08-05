@@ -651,7 +651,7 @@ class DiagonalMatrix<MT,SO,true>
    template< typename A1 > explicit inline DiagonalMatrix( const A1& a1 );
                            explicit inline DiagonalMatrix( size_t n, const ElementType& init );
 
-   explicit inline DiagonalMatrix( initializer_list< initializer_list<ElementType> > list );
+   inline DiagonalMatrix( initializer_list< initializer_list<ElementType> > list );
 
    template< typename Other >
    explicit inline DiagonalMatrix( size_t n, const Other* array );

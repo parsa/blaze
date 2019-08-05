@@ -650,7 +650,7 @@ class UniUpperMatrix<MT,SO,true>
    template< typename A1 > explicit inline UniUpperMatrix( const A1& a1 );
                            explicit inline UniUpperMatrix( size_t n, const ElementType& init );
 
-   explicit inline UniUpperMatrix( initializer_list< initializer_list<ElementType> > list );
+   inline UniUpperMatrix( initializer_list< initializer_list<ElementType> > list );
 
    template< typename Other >
    explicit inline UniUpperMatrix( size_t n, const Other* array );

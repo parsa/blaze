@@ -268,7 +268,7 @@ class HybridVector
    explicit inline HybridVector();
    explicit inline HybridVector( size_t n );
    explicit inline HybridVector( size_t n, const Type& init );
-   explicit inline HybridVector( initializer_list<Type> list );
+            inline HybridVector( initializer_list<Type> list );
 
    template< typename Other >
    explicit inline HybridVector( size_t n, const Other* array );

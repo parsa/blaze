@@ -302,7 +302,7 @@ class HybridMatrix
    explicit inline HybridMatrix();
    explicit inline HybridMatrix( size_t m, size_t n );
    explicit inline HybridMatrix( size_t m, size_t n, const Type& init );
-   explicit inline HybridMatrix( initializer_list< initializer_list<Type> > list );
+            inline HybridMatrix( initializer_list< initializer_list<Type> > list );
 
    template< typename Other >
    explicit inline HybridMatrix( size_t m, size_t n, const Other* array );
@@ -3364,7 +3364,7 @@ class HybridMatrix<Type,M,N,true>
    explicit inline HybridMatrix();
    explicit inline HybridMatrix( size_t m, size_t n );
    explicit inline HybridMatrix( size_t m, size_t n, const Type& init );
-   explicit inline HybridMatrix( initializer_list< initializer_list<Type> > list );
+            inline HybridMatrix( initializer_list< initializer_list<Type> > list );
 
    template< typename Other >
    explicit inline HybridMatrix( size_t m, size_t n, const Other* array );

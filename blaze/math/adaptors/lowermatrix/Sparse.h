@@ -156,7 +156,7 @@ class LowerMatrix<MT,SO,false>
    explicit inline LowerMatrix( size_t n );
    explicit inline LowerMatrix( size_t n, size_t nonzeros );
    explicit inline LowerMatrix( size_t n, const std::vector<size_t>& nonzeros );
-   explicit inline LowerMatrix( initializer_list< initializer_list<ElementType> > list );
+            inline LowerMatrix( initializer_list< initializer_list<ElementType> > list );
 
    inline LowerMatrix( const LowerMatrix& m );
    inline LowerMatrix( LowerMatrix&& m ) noexcept;

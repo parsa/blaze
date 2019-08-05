@@ -650,7 +650,7 @@ class UniLowerMatrix<MT,SO,true>
    template< typename A1 > explicit inline UniLowerMatrix( const A1& a1 );
                            explicit inline UniLowerMatrix( size_t n, const ElementType& init );
 
-   explicit inline UniLowerMatrix( initializer_list< initializer_list<ElementType> > list );
+   inline UniLowerMatrix( initializer_list< initializer_list<ElementType> > list );
 
    template< typename Other >
    explicit inline UniLowerMatrix( size_t n, const Other* array );

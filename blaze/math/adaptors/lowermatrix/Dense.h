@@ -645,7 +645,7 @@ class LowerMatrix<MT,SO,true>
    template< typename A1 > explicit inline LowerMatrix( const A1& a1 );
                            explicit inline LowerMatrix( size_t n, const ElementType& init );
 
-   explicit inline LowerMatrix( initializer_list< initializer_list<ElementType> > list );
+   inline LowerMatrix( initializer_list< initializer_list<ElementType> > list );
 
    template< typename Other >
    explicit inline LowerMatrix( size_t n, const Other* array );

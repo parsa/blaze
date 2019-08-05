@@ -317,7 +317,7 @@ class HermitianMatrix<MT,SO,false>
    explicit inline HermitianMatrix( size_t n );
    explicit inline HermitianMatrix( size_t n, size_t nonzeros );
    explicit inline HermitianMatrix( size_t n, const std::vector<size_t>& nonzeros );
-   explicit inline HermitianMatrix( initializer_list< initializer_list<ElementType> > list );
+            inline HermitianMatrix( initializer_list< initializer_list<ElementType> > list );
 
    inline HermitianMatrix( const HermitianMatrix& m );
    inline HermitianMatrix( HermitianMatrix&& m ) noexcept;

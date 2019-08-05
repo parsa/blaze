@@ -733,7 +733,7 @@ class SymmetricMatrix<MT,SO,true,true>
    //@{
    explicit inline SymmetricMatrix();
    explicit inline SymmetricMatrix( size_t n );
-   explicit inline SymmetricMatrix( initializer_list< initializer_list<ElementType> > list );
+            inline SymmetricMatrix( initializer_list< initializer_list<ElementType> > list );
 
    template< typename Other >
    explicit inline SymmetricMatrix( size_t n, const Other* array );

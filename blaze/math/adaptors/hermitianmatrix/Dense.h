@@ -735,7 +735,7 @@ class HermitianMatrix<MT,SO,true>
    //@{
    explicit inline HermitianMatrix();
    explicit inline HermitianMatrix( size_t n );
-   explicit inline HermitianMatrix( initializer_list< initializer_list<ElementType> > list );
+            inline HermitianMatrix( initializer_list< initializer_list<ElementType> > list );
 
    template< typename Other >
    explicit inline HermitianMatrix( size_t n, const Other* array );

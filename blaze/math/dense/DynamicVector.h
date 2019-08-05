@@ -257,7 +257,7 @@ class DynamicVector
    explicit inline DynamicVector() noexcept;
    explicit inline DynamicVector( size_t n );
    explicit inline DynamicVector( size_t n, const Type& init );
-   explicit inline DynamicVector( initializer_list<Type> list );
+            inline DynamicVector( initializer_list<Type> list );
 
    template< typename Other >
    explicit inline DynamicVector( size_t n, const Other* array );

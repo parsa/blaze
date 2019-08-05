@@ -298,7 +298,7 @@ class StaticMatrix
    //@{
    explicit inline           StaticMatrix();
    explicit inline           StaticMatrix( const Type& init );
-   explicit inline constexpr StaticMatrix( initializer_list< initializer_list<Type> > list );
+            inline constexpr StaticMatrix( initializer_list< initializer_list<Type> > list );
 
    template< typename Other >
    explicit inline StaticMatrix( size_t m, size_t n, const Other* array );
@@ -3222,7 +3222,7 @@ class StaticMatrix<Type,M,N,true>
    //@{
    explicit inline           StaticMatrix();
    explicit inline           StaticMatrix( const Type& init );
-   explicit inline constexpr StaticMatrix( initializer_list< initializer_list<Type> > list );
+            inline constexpr StaticMatrix( initializer_list< initializer_list<Type> > list );
 
    template< typename Other >
    explicit inline StaticMatrix( size_t m, size_t n, const Other* array );

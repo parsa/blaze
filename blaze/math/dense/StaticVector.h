@@ -270,7 +270,7 @@ class StaticVector
    //@{
    explicit inline           StaticVector();
    explicit inline           StaticVector( const Type& init );
-   explicit inline constexpr StaticVector( initializer_list<Type> list );
+            inline constexpr StaticVector( initializer_list<Type> list );
 
    template< typename Other >
    explicit inline StaticVector( size_t n, const Other* array );
