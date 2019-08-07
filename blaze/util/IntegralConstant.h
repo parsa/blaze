@@ -164,6 +164,27 @@ template< int N >
 using Int_t = IntegralConstant<int,N>;
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Compile time integral constant wrapper for \a long.
+// \ingroup mpl
+//
+// The Long_t alias template represents an integral wrapper for a compile time constant
+// expression of type \a long. The value of an Long_t can be accessed via the nested \a value
+// (which is guaranteed to be of type \a long), the type can be accessed via the nested type
+// definition \a ValueType.
+
+   \code
+   using namespace blaze;
+
+   Long_t<3>::value      // Evaluates to 3
+   Long_t<5>::ValueType  // Results in long
+   \endcode
+*/
+template< long N >
+using Long_t = IntegralConstant<long,N>;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
