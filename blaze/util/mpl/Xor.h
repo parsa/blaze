@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/mpl/Xor.h
-//  \brief Header file for the Xor class template
+//  \brief Header file for the Xor_t alias template
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -52,10 +52,10 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Compile time logical 'xor' evaluation.
+/*!\brief Compile time bitwise XOR evaluation.
 // \ingroup mpl
 //
-// The Xor alias declaration performs at compile time a logical 'xor' evaluation of the two given
+// The Xor_t alias template performs at compile time a bitwise XOR evaluation of the two given
 // compile time conditions:
 
    \code
@@ -63,34 +63,34 @@ namespace blaze {
 
    using Type = int;
 
-   Xor< IsSigned<Type>  , IsUnsigned<Type>      >::value  // Evaluates to 1
-   Xor< IsIntegral<Type>, IsFloatingPoint<Type> >::value  // Evaluates to 1
-   Xor< IsSigned<Type>  , IsIntegral<Type>      >::value  // Evaluates to 0
-   Xor< IsUnsigned<Type>, IsFloatingPoint<Type> >::value  // Evaluates to 0
+   Xor_t< IsSigned<Type>  , IsUnsigned<Type>      >::value  // Evaluates to 1
+   Xor_t< IsIntegral<Type>, IsFloatingPoint<Type> >::value  // Evaluates to 1
+   Xor_t< IsSigned<Type>  , IsIntegral<Type>      >::value  // Evaluates to 0
+   Xor_t< IsUnsigned<Type>, IsFloatingPoint<Type> >::value  // Evaluates to 0
    \endcode
 */
 template< typename T1    // Type of the first operand
         , typename T2 >  // Type of the second operand
-using Xor = Bool< ( T1::value ^ T2::value ) >;
+using Xor_t = Bool< ( T1::value ^ T2::value ) >;
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary variable template for the Xor alias.
+/*!\brief Auxiliary variable template for the Xor_t alias.
 // \ingroup mpl
 //
 // The Xor_v variable template provides a convenient shortcut to access the nested \a value of
-// the Xor alias. For instance, given the types \a T1 and \a T2 the following two statements
+// the Xor_t alias. For instance, given the types \a T1 and \a T2 the following two statements
 // are identical:
 
    \code
-   constexpr bool value1 = Xor<T1,T2>::value;
+   constexpr bool value1 = Xor_t<T1,T2>::value;
    constexpr bool value2 = Xor_v<T1,T2>;
    \endcode
 */
 template< typename T1    // Type of the first operand
         , typename T2 >  // Type of the second operand
-constexpr bool Xor_v = Xor<T1,T2>::value;
+constexpr bool Xor_v = Xor_t<T1,T2>::value;
 //*************************************************************************************************
 
 } // namespace blaze
