@@ -63,9 +63,9 @@ namespace blaze {
    using namespace blaze;
 
    Less_t< Int_t<2> , Int_t<5>  >::value    // Evaluates to true
-   Less_t< Long<2>, Int_t<5>  >::value    // Evaluates to true
-   Less_t< Int_t<2> , Long<2> >::value    // Evaluates to false
-   Less_t< Long<5>, Int_t<2>  >::value    // Evaluates to false
+   Less_t< Long_t<2>, Int_t<5>  >::value    // Evaluates to true
+   Less_t< Int_t<2> , Long_t<2> >::value    // Evaluates to false
+   Less_t< Long_t<5>, Int_t<2>  >::value    // Evaluates to false
    Less_t< Int_t<2>, Int_t<5> >::ValueType  // Results in bool
    \endcode
 */

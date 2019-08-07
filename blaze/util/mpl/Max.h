@@ -64,8 +64,8 @@ namespace blaze {
 
    \code
    blaze::Max_t< Int_t<3> , Int_t<2>  >::value      // Results in 3
-   blaze::Max_t< Long<3>, Int_t<2>  >::ValueType  // Results in long
-   blaze::Max_t< Int_t<3> , Long<2> >::ValueType  // Results in int
+   blaze::Max_t< Long_t<3>, Int_t<2>  >::ValueType  // Results in long
+   blaze::Max_t< Int_t<3> , Long_t<2> >::ValueType  // Results in int
    \endcode
 */
 template< typename T1    // Type of the first compile time value

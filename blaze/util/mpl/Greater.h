@@ -63,9 +63,9 @@ namespace blaze {
    using namespace blaze;
 
    Greater_t< Int_t<5> , Int_t<2>  >::value      // Evaluates to true
-   Greater_t< Int_t<5> , Long<2> >::value      // Evaluates to true
-   Greater_t< Long<2>, Int_t<2>  >::value      // Evaluates to false
-   Greater_t< Int_t<2> , Long<5> >::value      // Evaluates to false
+   Greater_t< Int_t<5> , Long_t<2> >::value      // Evaluates to true
+   Greater_t< Long_t<2>, Int_t<2>  >::value      // Evaluates to false
+   Greater_t< Int_t<2> , Long_t<5> >::value      // Evaluates to false
    Greater_t< Int_t<5> , Int_t<2>  >::ValueType  // Results in bool
    \endcode
 */

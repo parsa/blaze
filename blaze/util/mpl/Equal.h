@@ -63,8 +63,8 @@ namespace blaze {
    using namespace blaze;
 
    Equal_t< Int_t<3>, Int_t<3>  >::value   // Evaluates to true
-   Equal_t< Int_t<5>, Long<5> >::value   // Evaluates to true
-   Equal_t< Long<0>, Int_t<4> >::value   // Evaluates to false
+   Equal_t< Int_t<5>, Long_t<5> >::value   // Evaluates to true
+   Equal_t< Long_t<0>, Int_t<4> >::value   // Evaluates to false
    Equal_t< Int_t<1>, Int_t<2>::ValueType  // Results in bool
    \endcode
 */

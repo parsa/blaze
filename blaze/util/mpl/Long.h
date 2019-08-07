@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/mpl/Long.h
-//  \brief Header file for the Long class template
+//  \brief Header file for the Long_t alias template
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -55,19 +55,20 @@ namespace blaze {
 /*!\brief Compile time integral constant wrapper for \a long.
 // \ingroup mpl
 //
-// The Long class template represents an integral wrapper for a compile time constant expression
-// of type \a long. The value of an Long can be accessed via the nested \a value (which is guaranteed
-// to be of type \a long), the type can be accessed via the nested type definition \a ValueType.
+// The Long_t alias template represents an integral wrapper for a compile time constant
+// expression of type \a long. The value of an Long_t can be accessed via the nested \a value
+// (which is guaranteed to be of type \a long), the type can be accessed via the nested type
+// definition \a ValueType.
 
    \code
    using namespace blaze;
 
-   Long<3>::value      // Evaluates to 3
-   Long<5>::ValueType  // Results in long
+   Long_t<3>::value      // Evaluates to 3
+   Long_t<5>::ValueType  // Results in long
    \endcode
 */
 template< long N >
-using Long = IntegralConstant<long,N>;
+using Long_t = IntegralConstant<long,N>;
 //*************************************************************************************************
 
 } // namespace blaze

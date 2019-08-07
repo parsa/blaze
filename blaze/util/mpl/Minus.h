@@ -64,8 +64,8 @@ namespace blaze {
 
    \code
    blaze::Minus_t< Int_t<3> , Int_t<2>  >::value      // Results in 5
-   blaze::Minus_t< Long<3>, Int_t<2>  >::ValueType  // Results in long
-   blaze::Minus_t< Int_t<3> , Long<2> >::ValueType  // Results in long
+   blaze::Minus_t< Long_t<3>, Int_t<2>  >::ValueType  // Results in long
+   blaze::Minus_t< Int_t<3> , Long_t<2> >::ValueType  // Results in long
    \endcode
 */
 template< typename T1    // Type of the first compile time value
