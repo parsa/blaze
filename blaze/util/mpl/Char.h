@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/mpl/Char.h
-//  \brief Header file for the Char class template
+//  \brief Header file for the Char_t alias template
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -55,19 +55,20 @@ namespace blaze {
 /*!\brief Compile time integral constant wrapper for \a char.
 // \ingroup mpl
 //
-// The Char class template represents an integral wrapper for a compile time constant expression
-// of type \a char. The value of an Char can be accessed via the nested \a value (which is guaranteed
-// to be of type \a char), the type can be accessed via the nested type definition \a ValueType.
+// The Char_t alias template represents an integral wrapper for a compile time constant
+// expression of type \a char. The value of an Char_t can be accessed via the nested \a value
+// (which is guaranteed to be of type \a char), the type can be accessed via the nested type
+// definition \a ValueType.
 
    \code
    using namespace blaze;
 
-   Char<3>::value      // Evaluates to 3
-   Char<5>::ValueType  // Results in char
+   Char_t<3>::value      // Evaluates to 3
+   Char_t<5>::ValueType  // Results in char
    \endcode
 */
 template< char N >
-using Char = IntegralConstant<char,N>;
+using Char_t = IntegralConstant<char,N>;
 //*************************************************************************************************
 
 } // namespace blaze
