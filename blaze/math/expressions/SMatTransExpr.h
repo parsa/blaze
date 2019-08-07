@@ -121,7 +121,7 @@ class SMatTransExpr
        strategy is selected. Otherwise the variable is set to 0 and the default strategy is
        chosen. */
    template< typename MT2 >
-    static constexpr bool UseSMPAssign_v = ( MT2::smpAssignable && useAssign );
+   static constexpr bool UseSMPAssign_v = ( MT2::smpAssignable && useAssign );
    /*! \endcond */
    //**********************************************************************************************
 
