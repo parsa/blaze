@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/mpl/Times.h
-//  \brief Header file for the Times class template
+//  \brief Header file for the Times_t alias template
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -56,20 +56,20 @@ namespace blaze {
 /*!\brief Compile time integral multiplication.
 // \ingroup mpl
 //
-// The Times alias declaration returns the product of the two given template arguments \a T1 and
-// \a T2. In order for Times to be able to multiply the two types, both arguments are required
+// The Times_t alias template returns the product of the two given template arguments \a T1 and
+// \a T2. In order for Times_t to be able to multiply the two types, both arguments are required
 // to have a nested member \a value. The result of the multiplication can be accessed via the
 // nested member \a value, the resulting type is available via the nested type \a ValueType.
 
    \code
-   blaze::Times< Int<3> , Int<2>  >::value      // Results in 6
-   blaze::Times< Long<3>, Int<2>  >::ValueType  // Results in long
-   blaze::Times< Int<3> , Long<2> >::ValueType  // Results in long
+   blaze::Times_t< Int<3> , Int<2>  >::value      // Results in 6
+   blaze::Times_t< Long<3>, Int<2>  >::ValueType  // Results in long
+   blaze::Times_t< Int<3> , Long<2> >::ValueType  // Results in long
    \endcode
 */
 template< typename T1    // Type of the first compile time value
         , typename T2 >  // Type of the second compile time value
-using Times =
+using Times_t =
    IntegralConstant< CommonType_t< typename T1::ValueType, typename T2::ValueType >
                    , ( T1::value * T2::value ) >;
 //*************************************************************************************************
