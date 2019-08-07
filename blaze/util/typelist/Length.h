@@ -79,7 +79,7 @@ struct Length;
 */
 template< typename... Ts >  // Type list elements
 struct Length< TypeList<Ts...> >
-   : public SizeT< sizeof...( Ts ) >
+   : public Size_t< sizeof...( Ts ) >
 {};
 /*! \endcond */
 //*************************************************************************************************
