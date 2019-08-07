@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/mpl/Equal.h
-//  \brief Header file for the Equal class template
+//  \brief Header file for the Equal_t alias template
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -55,41 +55,41 @@ namespace blaze {
 /*!\brief Compile time type comparison.
 // \ingroup mpl
 //
-// The Equal alias declaration compares the two given types using the equality operator ('==').
+// The Equal_t alias template compares the two given types using the equality operator ('==').
 // In case \a T1::value is equal to \a T2::value, the nested \a value member is set to \a true.
 // Otherwise it is set to \a false.
 
    \code
    using namespace blaze;
 
-   Equal< Int<3>, Int<3>  >::value   // Evaluates to true
-   Equal< Int<5>, Long<5> >::value   // Evaluates to true
-   Equal< Long<0>, Int<4> >::value   // Evaluates to false
-   Equal< Int<1>, Int<2>::ValueType  // Results in bool
+   Equal_t< Int<3>, Int<3>  >::value   // Evaluates to true
+   Equal_t< Int<5>, Long<5> >::value   // Evaluates to true
+   Equal_t< Long<0>, Int<4> >::value   // Evaluates to false
+   Equal_t< Int<1>, Int<2>::ValueType  // Results in bool
    \endcode
 */
 template< typename T1    // The type of the left-hand side operand
         , typename T2 >  // The type of the right-hand side operand
-using Equal = Bool< ( T1::value == T2::value ) >;
+using Equal_t = Bool< ( T1::value == T2::value ) >;
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary variable template for the Equal alias.
+/*!\brief Auxiliary variable template for the Equal_t alias.
 // \ingroup mpl
 //
 // The Equal_v variable template provides a convenient shortcut to access the nested \a value of
-// the Equal alias. For instance, given the types \a T1 and \a T2 the following two statements
+// the Equal_t alias. For instance, given the types \a T1 and \a T2 the following two statements
 // are identical:
 
    \code
-   constexpr bool value1 = Equal<T1,T2>::value;
+   constexpr bool value1 = Equal_t<T1,T2>::value;
    constexpr bool value2 = Equal_v<T1,T2>;
    \endcode
 */
 template< typename T1    // The type of the left-hand side operand
         , typename T2 >  // The type of the right-hand side operand
-constexpr bool Equal_v = Equal<T1,T2>::value;
+constexpr bool Equal_v = Equal_t<T1,T2>::value;
 //*************************************************************************************************
 
 } // namespace blaze
