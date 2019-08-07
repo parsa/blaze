@@ -50,7 +50,7 @@
 #include <blaze/util/mpl/Less.h>
 #include <blaze/util/mpl/Long.h>
 #include <blaze/util/mpl/Maximum.h>
-#include <blaze/util/mpl/Minimum.h>
+#include <blaze/util/mpl/Min.h>
 #include <blaze/util/mpl/Minus.h>
 #include <blaze/util/mpl/Modulo.h>
 #include <blaze/util/mpl/Nand.h>

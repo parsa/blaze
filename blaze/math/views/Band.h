@@ -80,7 +80,7 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Minimum.h>
+#include <blaze/util/mpl/Min.h>
 #include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
@@ -2343,8 +2343,8 @@ inline decltype(auto) derestrict( Band<MT,TF,DF,MF>&& b )
 template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t I >
 struct Size< Band<MT,TF,DF,MF,I>, 0UL >
    : public If_t< ( Size_v<MT,0UL> >= 0L && Size_v<MT,1UL> >= 0L )
-                , Minimum< PtrdiffT< Size_v<MT,0UL> - ( I >= 0L ? 0L : -I ) >
-                         , PtrdiffT< Size_v<MT,1UL> - ( I >= 0L ? I : 0L ) > >
+                , Min_t< PtrdiffT< Size_v<MT,0UL> - ( I >= 0L ? 0L : -I ) >
+                       , PtrdiffT< Size_v<MT,1UL> - ( I >= 0L ? I : 0L ) > >
                 , PtrdiffT<-1L> >
 {};
 /*! \endcond */
@@ -2364,8 +2364,8 @@ struct Size< Band<MT,TF,DF,MF,I>, 0UL >
 template< typename MT, bool TF, bool DF, bool MF, ptrdiff_t I >
 struct MaxSize< Band<MT,TF,DF,MF,I>, 0UL >
    : public If_t< ( MaxSize_v<MT,0UL> >= 0L && MaxSize_v<MT,1UL> >= 0L )
-                , Minimum< PtrdiffT< MaxSize_v<MT,0UL> - ( I >= 0L ? 0L : -I ) >
-                         , PtrdiffT< MaxSize_v<MT,1UL> - ( I >= 0L ? I : 0L ) > >
+                , Min_t< PtrdiffT< MaxSize_v<MT,0UL> - ( I >= 0L ? 0L : -I ) >
+                       , PtrdiffT< MaxSize_v<MT,1UL> - ( I >= 0L ? I : 0L ) > >
                 , PtrdiffT<-1L> >
 {};
 /*! \endcond */
