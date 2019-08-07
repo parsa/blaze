@@ -93,7 +93,7 @@ namespace blaze {
 template< typename MT  // Type of the sparse matrix
         , typename OP  // Type of the reduction operation
         , size_t RF >  // Reduction flag
-struct SMatReduceExpr
+class SMatReduceExpr
 {};
 //*************************************************************************************************
 
@@ -115,7 +115,7 @@ struct SMatReduceExpr
 */
 template< typename MT    // Type of the sparse matrix
         , typename OP >  // Type of the reduction operation
-struct SMatReduceExpr<MT,OP,columnwise>
+class SMatReduceExpr<MT,OP,columnwise>
    : public MatReduceExpr< DenseVector< SMatReduceExpr<MT,OP,columnwise>, true >, columnwise >
    , private Computation
 {
@@ -754,7 +754,7 @@ struct SMatReduceExpr<MT,OP,columnwise>
 */
 template< typename MT    // Type of the sparse matrix
         , typename OP >  // Type of the reduction operation
-struct SMatReduceExpr<MT,OP,rowwise>
+class SMatReduceExpr<MT,OP,rowwise>
    : public MatReduceExpr< DenseVector< SMatReduceExpr<MT,OP,rowwise>, false >, rowwise >
    , private Computation
 {
