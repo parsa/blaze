@@ -76,7 +76,7 @@
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
-#include <blaze/util/mpl/Maximum.h>
+#include <blaze/util/mpl/Max.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
@@ -1220,12 +1220,12 @@ inline decltype(auto)
 /*! \cond BLAZE_INTERNAL */
 template< typename MT1, typename MT2 >
 struct Size< SMatDMatSchurExpr<MT1,MT2>, 0UL >
-   : public Maximum< Size<MT1,0UL>, Size<MT2,0UL> >
+   : public Max_t< Size<MT1,0UL>, Size<MT2,0UL> >
 {};
 
 template< typename MT1, typename MT2 >
 struct Size< SMatDMatSchurExpr<MT1,MT2>, 1UL >
-   : public Maximum< Size<MT1,1UL>, Size<MT2,1UL> >
+   : public Max_t< Size<MT1,1UL>, Size<MT2,1UL> >
 {};
 /*! \endcond */
 //*************************************************************************************************
