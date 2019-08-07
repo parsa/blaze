@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/mpl/Bool.h
-//  \brief Header file for the Bool class template
+//  \brief Header file for the Bool_t alias template
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -55,19 +55,20 @@ namespace blaze {
 /*!\brief Compile time integral constant wrapper for \a bool.
 // \ingroup mpl
 //
-// The Bool class template represents an integral wrapper for a compile time constant expression
-// of type \a bool. The value of a Bool can be accessed via the nested \a value (which is guaranteed
-// to be of type \a bool), the type can be accessed via the nested type definition \a ValueType.
+// The Bool_t alias template represents an integral wrapper for a compile time constant
+// expression of type \a bool. The value of a Bool_t can be accessed via the nested \a value
+// (which is guaranteed to be of type \a bool), the type can be accessed via the nested type
+// definition \a ValueType.
 
    \code
    using namespace blaze;
 
-   Bool<true>::value       // Evaluates to true
-   Bool<false>::ValueType  // Results in bool
+   Bool_t<true>::value       // Evaluates to true
+   Bool_t<false>::ValueType  // Results in bool
    \endcode
 */
 template< bool C >
-using Bool = IntegralConstant<bool,C>;
+using Bool_t = IntegralConstant<bool,C>;
 //*************************************************************************************************
 
 } // namespace blaze

@@ -67,7 +67,7 @@ namespace blaze {
    \endcode
 */
 template< typename C >  // Condition to be negated
-using Not_t = Bool< !C::value >;
+using Not_t = Bool_t< !C::value >;
 //*************************************************************************************************
 
 

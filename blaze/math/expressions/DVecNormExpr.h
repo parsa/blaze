@@ -280,7 +280,7 @@ template< typename VT      // Type of the dense vector
         , typename Root >  // Type of the root operation
 inline decltype(auto) norm_backend( const DenseVector<VT,TF>& dv, Abs abs, Power power, Root root )
 {
-   return norm_backend( ~dv, abs, power, root, Bool< DVecNormHelper<VT,Abs,Power>::value >() );
+   return norm_backend( ~dv, abs, power, root, Bool_t< DVecNormHelper<VT,Abs,Power>::value >() );
 }
 /*! \endcond */
 //*************************************************************************************************

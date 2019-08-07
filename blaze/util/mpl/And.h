@@ -74,8 +74,8 @@ template< typename T1       // Type of the first mandatory operand
         , typename T2       // Type of the second mandatory operand
         , typename... Ts >  // Types of the optional operands
 using And_t =
-   Bool< IsSame< Bools< true, T1::value, T2::value, (Ts::value)... >
-               , Bools< T1::value, T2::value, (Ts::value)..., true > >::value >;
+   Bool_t< IsSame< Bools< true, T1::value, T2::value, (Ts::value)... >
+                 , Bools< T1::value, T2::value, (Ts::value)..., true > >::value >;
 //*************************************************************************************************
 
 

@@ -445,7 +445,7 @@ template< typename MT      // Type of the dense matrix
         , typename Root >  // Type of the root operation
 decltype(auto) norm_backend( const DenseMatrix<MT,SO>& dm, Abs abs, Power power, Root root )
 {
-   return norm_backend( ~dm, abs, power, root, Bool< DMatNormHelper<MT,Abs,Power>::value >() );
+   return norm_backend( ~dm, abs, power, root, Bool_t< DMatNormHelper<MT,Abs,Power>::value >() );
 }
 /*! \endcond */
 //*************************************************************************************************

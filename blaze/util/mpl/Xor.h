@@ -71,7 +71,7 @@ namespace blaze {
 */
 template< typename T1    // Type of the first operand
         , typename T2 >  // Type of the second operand
-using Xor_t = Bool< ( T1::value ^ T2::value ) >;
+using Xor_t = Bool_t< ( T1::value ^ T2::value ) >;
 //*************************************************************************************************
 
 

@@ -71,7 +71,7 @@ namespace blaze {
 */
 template< typename T1    // The type of the left-hand side operand
         , typename T2 >  // The type of the right-hand side operand
-using Greater_t = Bool< ( T1::value > T2::value ) >;
+using Greater_t = Bool_t< ( T1::value > T2::value ) >;
 //*************************************************************************************************
 
 
