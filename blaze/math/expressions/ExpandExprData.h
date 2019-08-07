@@ -83,7 +83,7 @@ class ExpandExprData
 // compile time expansion arguments.
 */
 template<>
-struct ExpandExprData<>
+class ExpandExprData<>
 {
  public:
    //**Constructors********************************************************************************
@@ -173,7 +173,7 @@ inline size_t ExpandExprData<>::expansion() const noexcept
 // single compile time expansion argument.
 */
 template< size_t E >  // Compile time expansion
-struct ExpandExprData<E>
+class ExpandExprData<E>
 {
  public:
    //**Constructors********************************************************************************
