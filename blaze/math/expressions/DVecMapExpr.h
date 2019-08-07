@@ -2783,7 +2783,7 @@ inline decltype(auto) operator!( const DenseVector<VT,TF>& vec )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~vec, []( bool b ){ return !b; } );
+   return map( ~vec, Not{} );
 }
 //*************************************************************************************************
 

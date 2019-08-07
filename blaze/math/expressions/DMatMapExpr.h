@@ -2777,7 +2777,7 @@ inline decltype(auto) operator!( const DenseMatrix<MT,SO>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~mat, []( bool b ){ return !b; } );
+   return map( ~mat, Not{} );
 }
 //*************************************************************************************************
 

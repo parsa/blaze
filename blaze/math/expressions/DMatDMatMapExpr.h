@@ -51,6 +51,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatMatMapExpr.h>
+#include <blaze/math/functors/And.h>
 #include <blaze/math/functors/Atan2.h>
 #include <blaze/math/functors/Bitand.h>
 #include <blaze/math/functors/Bitor.h>
@@ -58,6 +59,7 @@
 #include <blaze/math/functors/Hypot.h>
 #include <blaze/math/functors/Max.h>
 #include <blaze/math/functors/Min.h>
+#include <blaze/math/functors/Or.h>
 #include <blaze/math/functors/Pow.h>
 #include <blaze/math/functors/ShiftLV.h>
 #include <blaze/math/functors/ShiftRV.h>
@@ -1593,7 +1595,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, []( bool b1, bool b2 ){ return b1 && b2; } );
+   return map( ~lhs, ~rhs, And{} );
 }
 //*************************************************************************************************
 
@@ -1627,7 +1629,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, []( bool b1, bool b2 ){ return b1 || b2; } );
+   return map( ~lhs, ~rhs, Or{} );
 }
 //*************************************************************************************************
 
