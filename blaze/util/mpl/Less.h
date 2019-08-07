@@ -62,11 +62,11 @@ namespace blaze {
    \code
    using namespace blaze;
 
-   Less_t< Int<2> , Int<5>  >::value    // Evaluates to true
-   Less_t< Long<2>, Int<5>  >::value    // Evaluates to true
-   Less_t< Int<2> , Long<2> >::value    // Evaluates to false
-   Less_t< Long<5>, Int<2>  >::value    // Evaluates to false
-   Less_t< Int<2>, Int<5> >::ValueType  // Results in bool
+   Less_t< Int_t<2> , Int_t<5>  >::value    // Evaluates to true
+   Less_t< Long<2>, Int_t<5>  >::value    // Evaluates to true
+   Less_t< Int_t<2> , Long<2> >::value    // Evaluates to false
+   Less_t< Long<5>, Int_t<2>  >::value    // Evaluates to false
+   Less_t< Int_t<2>, Int_t<5> >::ValueType  // Results in bool
    \endcode
 */
 template< typename T1    // The type of the left-hand side operand

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/mpl/Int.h
-//  \brief Header file for the Int class template
+//  \brief Header file for the Int_t alias template
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -55,19 +55,20 @@ namespace blaze {
 /*!\brief Compile time integral constant wrapper for \a int.
 // \ingroup mpl
 //
-// The Int class template represents an integral wrapper for a compile time constant expression
-// of type \a int. The value of an Int can be accessed via the nested \a value (which is guaranteed
-// to be of type \a int), the type can be accessed via the nested type definition \a ValueType.
+// The Int_t alias template represents an integral wrapper for a compile time constant
+// expression of type \a int. The value of an Int_t can be accessed via the nested \a value
+// (which is guaranteed to be of type \a int), the type can be accessed via the nested type
+// definition \a ValueType.
 
    \code
    using namespace blaze;
 
-   Int<3>::value      // Evaluates to 3
-   Int<5>::ValueType  // Results in int
+   Int_t<3>::value      // Evaluates to 3
+   Int_t<5>::ValueType  // Results in int
    \endcode
 */
 template< int N >
-using Int = IntegralConstant<int,N>;
+using Int_t = IntegralConstant<int,N>;
 //*************************************************************************************************
 
 } // namespace blaze

@@ -63,9 +63,9 @@ namespace blaze {
 // type is available via the nested type \a ValueType.
 
    \code
-   blaze::Modulo_t< Int<3> , Int<2>  >::value      // Results in 1
-   blaze::Modulo_t< Long<3>, Int<2>  >::ValueType  // Results in long
-   blaze::Modulo_t< Int<3> , Long<2> >::ValueType  // Results in long
+   blaze::Modulo_t< Int_t<3> , Int_t<2>  >::value      // Results in 1
+   blaze::Modulo_t< Long<3>, Int_t<2>  >::ValueType  // Results in long
+   blaze::Modulo_t< Int_t<3> , Long<2> >::ValueType  // Results in long
    \endcode
 */
 template< typename T1    // Type of the first compile time value

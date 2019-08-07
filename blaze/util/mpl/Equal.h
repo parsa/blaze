@@ -62,10 +62,10 @@ namespace blaze {
    \code
    using namespace blaze;
 
-   Equal_t< Int<3>, Int<3>  >::value   // Evaluates to true
-   Equal_t< Int<5>, Long<5> >::value   // Evaluates to true
-   Equal_t< Long<0>, Int<4> >::value   // Evaluates to false
-   Equal_t< Int<1>, Int<2>::ValueType  // Results in bool
+   Equal_t< Int_t<3>, Int_t<3>  >::value   // Evaluates to true
+   Equal_t< Int_t<5>, Long<5> >::value   // Evaluates to true
+   Equal_t< Long<0>, Int_t<4> >::value   // Evaluates to false
+   Equal_t< Int_t<1>, Int_t<2>::ValueType  // Results in bool
    \endcode
 */
 template< typename T1    // The type of the left-hand side operand
