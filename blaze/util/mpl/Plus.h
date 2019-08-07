@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/mpl/Plus.h
-//  \brief Header file for the Plus class template
+//  \brief Header file for the Plus_t alias template
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -56,20 +56,20 @@ namespace blaze {
 /*!\brief Compile time integral addition.
 // \ingroup mpl
 //
-// The Plus alias declaration returns the sum of the two given template arguments \a T1 and \a T2.
-// In order for Plus to be able to add the two types, both arguments are required to have a nested
-// member \a value. The result of the addition can be accessed via the nested member \a value, the
-// resulting type is available via the nested type \a ValueType.
+// The Plus_t alias template returns the sum of the two given template arguments \a T1 and
+// \a T2. In order for Plus_t to be able to add the two types, both arguments are required
+// to have a nested member \a value. The result of the addition can be accessed via the
+// nested member \a value, the resulting type is available via the nested type \a ValueType.
 
    \code
-   blaze::Plus< Int<3> , Int<2>  >::value      // Results in 5
-   blaze::Plus< Long<3>, Int<2>  >::ValueType  // Results in long
-   blaze::Plus< Int<3> , Long<2> >::ValueType  // Results in long
+   blaze::Plus_t< Int<3> , Int<2>  >::value      // Results in 5
+   blaze::Plus_t< Long<3>, Int<2>  >::ValueType  // Results in long
+   blaze::Plus_t< Int<3> , Long<2> >::ValueType  // Results in long
    \endcode
 */
 template< typename T1    // Type of the first compile time value
         , typename T2 >  // Type of the second compile time value
-using Plus =
+using Plus_t =
    IntegralConstant< CommonType_t< typename T1::ValueType, typename T2::ValueType >
                    , ( T1::value + T2::value ) >;
 //*************************************************************************************************
