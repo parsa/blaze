@@ -61,7 +61,6 @@
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/views/Check.h>
-#include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FalseType.h>
@@ -89,7 +88,7 @@ namespace blaze {
 */
 template< typename MT  // Type of the sparse matrix
         , size_t RF >  // Reduction flag
-struct SMatVarExpr
+class SMatVarExpr
 {};
 //*************************************************************************************************
 
@@ -110,7 +109,7 @@ struct SMatVarExpr
 // for the column-wise variance function on row-major sparse matrices.
 */
 template< typename MT >  // Type of the sparse matrix
-struct SMatVarExpr<MT,columnwise>
+class SMatVarExpr<MT,columnwise>
    : public MatReduceExpr< DenseVector< SMatVarExpr<MT,columnwise>, true >, columnwise >
    , private Computation
 {
@@ -119,18 +118,6 @@ struct SMatVarExpr<MT,columnwise>
    using RT = ResultType_t<MT>;     //!< Result type of the sparse matrix expression.
    using OT = OppositeType_t<MT>;   //!< Opposite type of the sparse matrix expression.
    using CT = CompositeType_t<MT>;  //!< Composite type of the sparse matrix expression.
-   //**********************************************************************************************
-
-   //**Parallel evaluation strategy****************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   //! Helper variable template for the explicit application of the SFINAE principle.
-   /*! This variable template is a helper for the selection of the parallel evaluation strategy.
-       In case the sparse matrix operand is not SMP assignable and requires an intermediate
-       evaluation, the variable is set to 1 and the expression specific evaluation strategy is
-       selected. Otherwise the variable is set to 0 and the default strategy is chosen. */
-   template< typename VT >
-   static constexpr bool UseSMPAssign_v = ( !MT::smpAssignable && RequiresEvaluation_v<MT> );
-   /*! \endcond */
    //**********************************************************************************************
 
  public:
@@ -152,7 +139,7 @@ struct SMatVarExpr<MT,columnwise>
    static constexpr bool simdEnabled = false;
 
    //! Compilation switch for the expression template assignment strategy.
-   static constexpr bool smpAssignable = MT::smpAssignable;
+   static constexpr bool smpAssignable = false;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -243,16 +230,6 @@ struct SMatVarExpr<MT,columnwise>
    */
    inline bool isAligned() const noexcept {
       return false;
-   }
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*!\brief Returns whether the expression can be used in SMP assignments.
-   //
-   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
-   */
-   inline bool canSMPAssign() const noexcept {
-      return sm_.canSMPAssign() || ( size() > SMP_SMATREDUCE_THRESHOLD );
    }
    //**********************************************************************************************
 
@@ -560,150 +537,6 @@ struct SMatVarExpr<MT,columnwise>
    /*! \endcond */
    //**********************************************************************************************
 
-   //**SMP assignment to vectors*******************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP assignment of a column-wise row-major sparse matrix variance operation to a vector.
-   // \ingroup dense_vector
-   //
-   // \param lhs The target left-hand side vector.
-   // \param rhs The right-hand side variance expression to be assigned.
-   // \return void
-   //
-   // This function implements the performance optimized SMP assignment of a column-wise row-major
-   // sparse matrix variance expression to a vector. Due to the explicit application of the SFINAE
-   // principle, this function can only be selected by the compiler in case the expression specific
-   // parallel evaluation strategy is selected.
-   */
-   template< typename VT1 >  // Type of the target vector
-   friend inline auto smpAssign( Vector<VT1,true>& lhs, const SMatVarExpr& rhs )
-      -> EnableIf_t< UseSMPAssign_v<VT1> >
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      const RT tmp( rhs.sm_ );  // Evaluation of the sparse matrix operand
-      smpAssign( ~lhs, var<columnwise>( tmp ) );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**SMP addition assignment to vectors**********************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP addition assignment of a column-wise row-major sparse matrix variance operation
-   //        to a vector.
-   // \ingroup dense_vector
-   //
-   // \param lhs The target left-hand side vector.
-   // \param rhs The right-hand side variance expression to be added.
-   // \return void
-   //
-   // This function implements the performance optimized SMP addition assignment of a column-wise
-   // row-major sparse matrix variance expression to a vector. Due to the explicit application
-   // of the SFINAE principle, this function can only be selected by the compiler in case the
-   // expression specific parallel evaluation strategy is selected.
-   */
-   template< typename VT1 >  // Type of the target vector
-   friend inline auto smpAddAssign( Vector<VT1,true>& lhs, const SMatVarExpr& rhs )
-      -> EnableIf_t< UseSMPAssign_v<VT1> >
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      const RT tmp( rhs.sm_ );  // Evaluation of the sparse matrix operand
-      smpAddAssign( ~lhs, var<columnwise>( tmp ) );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**SMP subtraction assignment to vectors*******************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP subtraction assignment of a column-wise row-major sparse matrix variance operation
-   //        to a vector.
-   // \ingroup dense_vector
-   //
-   // \param lhs The target left-hand side vector.
-   // \param rhs The right-hand side variance expression to be subtracted.
-   // \return void
-   //
-   // This function implements the performance optimized SMP subtraction assignment of a column-wise
-   // row-major sparse matrix variance expression to a vector. Due to the explicit application
-   // of the SFINAE principle, this function can only be selected by the compiler in case the
-   // expression specific parallel evaluation strategy is selected.
-   */
-   template< typename VT1 >  // Type of the target vector
-   friend inline auto smpSubAssign( Vector<VT1,true>& lhs, const SMatVarExpr& rhs )
-      -> EnableIf_t< UseSMPAssign_v<VT1> >
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      const RT tmp( rhs.sm_ );  // Evaluation of the sparse matrix operand
-      smpSubAssign( ~lhs, var<columnwise>( tmp ) );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**SMP multiplication assignment to vectors****************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP multiplication assignment of a column-wise row-major sparse matrix variance
-   //        operation to a vector.
-   // \ingroup dense_vector
-   //
-   // \param lhs The target left-hand side vector.
-   // \param rhs The right-hand side variance expression to be multiplied.
-   // \return void
-   //
-   // This function implements the performance optimized SMP multiplication assignment of a
-   // column-wise row-major sparse matrix variance expression to a vector. Due to the explicit
-   // application of the SFINAE principle, this function can only be selected by the compiler
-   // in case the expression specific parallel evaluation strategy is selected.
-   */
-   template< typename VT1 >  // Type of the target vector
-   friend inline auto smpMultAssign( Vector<VT1,true>& lhs, const SMatVarExpr& rhs )
-      -> EnableIf_t< UseSMPAssign_v<VT1> >
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      const RT tmp( rhs.sm_ );  // Evaluation of the sparse matrix operand
-      smpMultAssign( ~lhs, var<columnwise>( tmp ) );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**SMP division assignment to vectors**********************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP division assignment of a column-wise row-major sparse matrix variance operation
-   //        to a vector.
-   // \ingroup dense_vector
-   //
-   // \param lhs The target left-hand side vector.
-   // \param rhs The right-hand side variance expression divisor.
-   // \return void
-   //
-   // This function implements the performance optimized SMP division assignment of a column-wise
-   // row-major sparse matrix variance expression to a vector. Due to the explicit application
-   // of the SFINAE principle, this function can only be selected by the compiler in case the
-   // expression specific parallel evaluation strategy is selected.
-   */
-   template< typename VT1 >  // Type of the target vector
-   friend inline auto smpDivAssign( Vector<VT1,true>& lhs, const SMatVarExpr& rhs )
-      -> EnableIf_t< UseSMPAssign_v<VT1> >
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      const RT tmp( rhs.sm_ );  // Evaluation of the sparse matrix operand
-      smpDivAssign( ~lhs, var<columnwise>( tmp ) );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_SPARSE_MATRIX_TYPE( MT );
@@ -730,7 +563,7 @@ struct SMatVarExpr<MT,columnwise>
 // for the row-wise variance function on row-major sparse matrices.
 */
 template< typename MT >  // Type of the sparse matrix
-struct SMatVarExpr<MT,rowwise>
+class SMatVarExpr<MT,rowwise>
    : public MatReduceExpr< DenseVector< SMatVarExpr<MT,rowwise>, false >, rowwise >
    , private Computation
 {
@@ -753,18 +586,6 @@ struct SMatVarExpr<MT,rowwise>
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
    static constexpr bool UseAssign_v = useAssign;
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Parallel evaluation strategy****************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   //! Helper variable template for the explicit application of the SFINAE principle.
-   /*! This variable template is a helper for the selection of the parallel evaluation strategy.
-       In case the sparse matrix operand is not SMP assignable and requires an intermediate
-       evaluation, the variable is set to 1 and the expression specific evaluation strategy is
-       selected. Otherwise the variable is set to 0 and the default strategy is chosen. */
-   template< typename VT >
-   static constexpr bool UseSMPAssign_v = ( !MT::smpAssignable && useAssign );
    /*! \endcond */
    //**********************************************************************************************
 
@@ -1019,7 +840,7 @@ struct SMatVarExpr<MT,rowwise>
    static constexpr bool simdEnabled = false;
 
    //! Compilation switch for the expression template assignment strategy.
-   static constexpr bool smpAssignable = MT::smpAssignable;
+   static constexpr bool smpAssignable = false;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -1130,16 +951,6 @@ struct SMatVarExpr<MT,rowwise>
    */
    inline bool isAligned() const noexcept {
       return false;
-   }
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   /*!\brief Returns whether the expression can be used in SMP assignments.
-   //
-   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
-   */
-   inline bool canSMPAssign() const noexcept {
-      return sm_.canSMPAssign() || ( size() > SMP_SMATREDUCE_THRESHOLD );
    }
    //**********************************************************************************************
 
@@ -1286,150 +1097,6 @@ struct SMatVarExpr<MT,rowwise>
 
       const RT tmp( serial( rhs.sm_ ) );  // Evaluation of the sparse matrix operand
       divAssign( ~lhs, var<rowwise>( tmp ) );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**SMP assignment to vectors*******************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP assignment of a row-wise row-major sparse matrix variance operation to a vector.
-   // \ingroup dense_vector
-   //
-   // \param lhs The target left-hand side vector.
-   // \param rhs The right-hand side variance expression to be assigned.
-   // \return void
-   //
-   // This function implements the performance optimized SMP assignment of a row-wise row-major
-   // sparse matrix variance expression to a vector. Due to the explicit application of the
-   // SFINAE principle, this function can only be selected by the compiler in case the expression
-   // specific parallel evaluation strategy is selected.
-   */
-   template< typename VT1 >  // Type of the target vector
-   friend inline auto smpAssign( Vector<VT1,false>& lhs, const SMatVarExpr& rhs )
-      -> EnableIf_t< UseSMPAssign_v<VT1> >
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      const RT tmp( rhs.sm_ );  // Evaluation of the sparse matrix operand
-      smpAssign( ~lhs, var<rowwise>( tmp ) );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**SMP addition assignment to vectors**********************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP addition assignment of a row-wise row-major sparse matrix variance operation
-   //        to a vector.
-   // \ingroup dense_vector
-   //
-   // \param lhs The target left-hand side vector.
-   // \param rhs The right-hand side variance expression to be added.
-   // \return void
-   //
-   // This function implements the performance optimized SMP addition assignment of a row-wise
-   // row-major sparse matrix variance expression to a vector. Due to the explicit application
-   // of the SFINAE principle, this function can only be selected by the compiler in case the
-   // expression specific parallel evaluation strategy is selected.
-   */
-   template< typename VT1 >  // Type of the target vector
-   friend inline auto smpAddAssign( Vector<VT1,false>& lhs, const SMatVarExpr& rhs )
-      -> EnableIf_t< UseSMPAssign_v<VT1> >
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      const RT tmp( rhs.sm_ );  // Evaluation of the sparse matrix operand
-      smpAddAssign( ~lhs, var<rowwise>( tmp ) );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**SMP subtraction assignment to vectors*******************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP subtraction assignment of a row-wise row-major sparse matrix variance operation
-   //        to a vector.
-   // \ingroup dense_vector
-   //
-   // \param lhs The target left-hand side vector.
-   // \param rhs The right-hand side variance expression to be subtracted.
-   // \return void
-   //
-   // This function implements the performance optimized SMP subtraction assignment of a row-wise
-   // row-major sparse matrix variance expression to a vector. Due to the explicit application
-   // of the SFINAE principle, this function can only be selected by the compiler in case the
-   // expression specific parallel evaluation strategy is selected.
-   */
-   template< typename VT1 >  // Type of the target vector
-   friend inline auto smpSubAssign( Vector<VT1,false>& lhs, const SMatVarExpr& rhs )
-      -> EnableIf_t< UseSMPAssign_v<VT1> >
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      const RT tmp( rhs.sm_ );  // Evaluation of the sparse matrix operand
-      smpSubAssign( ~lhs, var<rowwise>( tmp ) );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**SMP multiplication assignment to vectors****************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP multiplication assignment of a row-wise row-major sparse matrix variance operation
-   //        to a vector.
-   // \ingroup dense_vector
-   //
-   // \param lhs The target left-hand side vector.
-   // \param rhs The right-hand side variance expression to be multiplied.
-   // \return void
-   //
-   // This function implements the performance optimized SMP multiplication assignment of a
-   // row-wise row-major sparse matrix variance expression to a vector. Due to the explicit
-   // application of the SFINAE principle, this function can only be selected by the compiler
-   // in case the expression specific parallel evaluation strategy is selected.
-   */
-   template< typename VT1 >  // Type of the target vector
-   friend inline auto smpMultAssign( Vector<VT1,false>& lhs, const SMatVarExpr& rhs )
-      -> EnableIf_t< UseSMPAssign_v<VT1> >
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      const RT tmp( rhs.sm_ );  // Evaluation of the sparse matrix operand
-      smpMultAssign( ~lhs, var<rowwise>( tmp ) );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**SMP division assignment to vectors**********************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP division assignment of a row-wise row-major sparse matrix variance operation
-   //        to a vector.
-   // \ingroup dense_vector
-   //
-   // \param lhs The target left-hand side vector.
-   // \param rhs The right-hand side variance expression divisor.
-   // \return void
-   //
-   // This function implements the performance optimized SMP division assignment of a row-wise
-   // row-major sparse matrix variance expression to a vector. Due to the explicit application
-   // of the SFINAE principle, this function can only be selected by the compiler in case the
-   // expression specific parallel evaluation strategy is selected.
-   */
-   template< typename VT1 >  // Type of the target vector
-   friend inline auto smpDivAssign( Vector<VT1,false>& lhs, const SMatVarExpr& rhs )
-      -> EnableIf_t< UseSMPAssign_v<VT1> >
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-
-      const RT tmp( rhs.sm_ );  // Evaluation of the sparse matrix operand
-      smpDivAssign( ~lhs, var<rowwise>( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
