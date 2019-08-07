@@ -61,7 +61,6 @@
 #include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/mpl/SizeT.h>
 #include <blaze/util/mpl/Times.h>
-#include <blaze/util/mpl/Xnor.h>
 #include <blaze/util/mpl/Xor.h>
 
 #endif
