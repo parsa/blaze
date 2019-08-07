@@ -4836,12 +4836,12 @@ inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF>&& dm )
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
 struct Size< Submatrix<MT,AF,SO,DF,I,J,M,N>, 0UL >
-   : public PtrdiffT<M>
+   : public Ptrdiff_t<M>
 {};
 
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
 struct Size< Submatrix<MT,AF,SO,DF,I,J,M,N>, 1UL >
-   : public PtrdiffT<N>
+   : public Ptrdiff_t<N>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -4859,12 +4859,12 @@ struct Size< Submatrix<MT,AF,SO,DF,I,J,M,N>, 1UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
 struct MaxSize< Submatrix<MT,AF,SO,DF,I,J,M,N>, 0UL >
-   : public PtrdiffT<M>
+   : public Ptrdiff_t<M>
 {};
 
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
 struct MaxSize< Submatrix<MT,AF,SO,DF,I,J,M,N>, 1UL >
-   : public PtrdiffT<N>
+   : public Ptrdiff_t<N>
 {};
 /*! \endcond */
 //*************************************************************************************************

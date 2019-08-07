@@ -4398,7 +4398,7 @@ struct Size< Columns<MT,SO,DF,SF,CCAs...>, 0UL >
 
 template< typename MT, bool SO, bool DF, bool SF, size_t I, size_t... Is, typename... CCAs >
 struct Size< Columns<MT,SO,DF,SF,index_sequence<I,Is...>,CCAs...>, 1UL >
-   : public PtrdiffT<1UL+sizeof...(Is)>
+   : public Ptrdiff_t<1UL+sizeof...(Is)>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -4421,7 +4421,7 @@ struct MaxSize< Columns<MT,SO,DF,SF,CCAs...>, 0UL >
 
 template< typename MT, bool SO, bool DF, bool SF, size_t I, size_t... Is, typename... CCAs >
 struct MaxSize< Columns<MT,SO,DF,SF,index_sequence<I,Is...>,CCAs...>, 1UL >
-   : public PtrdiffT<1UL+sizeof...(Is)>
+   : public Ptrdiff_t<1UL+sizeof...(Is)>
 {};
 /*! \endcond */
 //*************************************************************************************************

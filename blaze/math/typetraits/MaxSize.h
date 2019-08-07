@@ -77,7 +77,7 @@ constexpr ptrdiff_t DefaultMaxSize_v = -1L;
 /*!\brief Type representation of the default size of the MaxSize type trait.
 // \ingroup math_type_traits
 */
-using DefaultMaxSize = PtrdiffT<DefaultMaxSize_v>;
+using DefaultMaxSize = Ptrdiff_t<DefaultMaxSize_v>;
 //*************************************************************************************************
 
 

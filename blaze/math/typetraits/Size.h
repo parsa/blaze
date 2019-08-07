@@ -77,7 +77,7 @@ constexpr ptrdiff_t DefaultSize_v = -1L;
 /*!\brief Type representation of the default size of the Size type trait.
 // \ingroup math_type_traits
 */
-using DefaultSize = PtrdiffT<DefaultSize_v>;
+using DefaultSize = Ptrdiff_t<DefaultSize_v>;
 //*************************************************************************************************
 
 

@@ -6557,12 +6557,12 @@ inline void swap( HybridMatrix<Type,M,N,SO>& a, HybridMatrix<Type,M,N,SO>& b ) n
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
 struct MaxSize< HybridMatrix<T,M,N,SO>, 0UL >
-   : public PtrdiffT<M>
+   : public Ptrdiff_t<M>
 {};
 
 template< typename T, size_t M, size_t N, bool SO >
 struct MaxSize< HybridMatrix<T,M,N,SO>, 1UL >
-   : public PtrdiffT<N>
+   : public Ptrdiff_t<N>
 {};
 /*! \endcond */
 //*************************************************************************************************

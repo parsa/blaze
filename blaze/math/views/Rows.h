@@ -4375,7 +4375,7 @@ inline decltype(auto) derestrict( Rows<MT,SO,DF,SF,CRAs...>&& r )
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool SF, size_t I, size_t... Is, typename... CRAs >
 struct Size< Rows<MT,SO,DF,SF,index_sequence<I,Is...>,CRAs...>, 0UL >
-   : public PtrdiffT<1UL+sizeof...(Is)>
+   : public Ptrdiff_t<1UL+sizeof...(Is)>
 {};
 
 template< typename MT, bool SO, bool DF, bool SF, typename... CRAs >
@@ -4398,7 +4398,7 @@ struct Size< Rows<MT,SO,DF,SF,CRAs...>, 1UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, bool SF, size_t I, size_t... Is, typename... CRAs >
 struct MaxSize< Rows<MT,SO,DF,SF,index_sequence<I,Is...>,CRAs...>, 0UL >
-   : public PtrdiffT<1UL+sizeof...(Is)>
+   : public Ptrdiff_t<1UL+sizeof...(Is)>
 {};
 
 template< typename MT, bool SO, bool DF, bool SF, typename... CRAs >

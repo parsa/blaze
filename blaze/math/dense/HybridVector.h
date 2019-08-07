@@ -2730,7 +2730,7 @@ inline void swap( HybridVector<Type,N,TF>& a, HybridVector<Type,N,TF>& b ) noexc
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
 struct MaxSize< HybridVector<T,N,TF>, 0UL >
-   : public PtrdiffT<N>
+   : public Ptrdiff_t<N>
 {};
 /*! \endcond */
 //*************************************************************************************************

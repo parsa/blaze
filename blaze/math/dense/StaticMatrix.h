@@ -6258,12 +6258,12 @@ inline void swap( StaticMatrix<Type,M,N,SO>& a, StaticMatrix<Type,M,N,SO>& b ) n
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
 struct Size< StaticMatrix<T,M,N,SO>, 0UL >
-   : public PtrdiffT<M>
+   : public Ptrdiff_t<M>
 {};
 
 template< typename T, size_t M, size_t N, bool SO >
 struct Size< StaticMatrix<T,M,N,SO>, 1UL >
-   : public PtrdiffT<N>
+   : public Ptrdiff_t<N>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -6281,12 +6281,12 @@ struct Size< StaticMatrix<T,M,N,SO>, 1UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t M, size_t N, bool SO >
 struct MaxSize< StaticMatrix<T,M,N,SO>, 0UL >
-   : public PtrdiffT<M>
+   : public Ptrdiff_t<M>
 {};
 
 template< typename T, size_t M, size_t N, bool SO >
 struct MaxSize< StaticMatrix<T,M,N,SO>, 1UL >
-   : public PtrdiffT<N>
+   : public Ptrdiff_t<N>
 {};
 /*! \endcond */
 //*************************************************************************************************

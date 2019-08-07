@@ -2778,7 +2778,7 @@ constexpr const Type&& get( const StaticVector<Type,N,TF>&& v ) noexcept
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
 struct Size< StaticVector<T,N,TF>, 0UL >
-   : public PtrdiffT<N>
+   : public Ptrdiff_t<N>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2796,7 +2796,7 @@ struct Size< StaticVector<T,N,TF>, 0UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t N, bool TF >
 struct MaxSize< StaticVector<T,N,TF>, 0UL >
-   : public PtrdiffT<N>
+   : public Ptrdiff_t<N>
 {};
 /*! \endcond */
 //*************************************************************************************************

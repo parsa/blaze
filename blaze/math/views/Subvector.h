@@ -2774,7 +2774,7 @@ inline decltype(auto) derestrict( Subvector<VT,AF,TF,DF>&& sv )
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, AlignmentFlag AF, bool TF, bool DF, size_t I, size_t N >
 struct Size< Subvector<VT,AF,TF,DF,I,N>, 0UL >
-   : public PtrdiffT<N>
+   : public Ptrdiff_t<N>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2792,7 +2792,7 @@ struct Size< Subvector<VT,AF,TF,DF,I,N>, 0UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, AlignmentFlag AF, bool TF, bool DF, size_t I, size_t N >
 struct MaxSize< Subvector<VT,AF,TF,DF,I,N>, 0UL >
-   : public PtrdiffT<N>
+   : public Ptrdiff_t<N>
 {};
 /*! \endcond */
 //*************************************************************************************************

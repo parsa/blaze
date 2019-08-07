@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/mpl/PtrdiffT.h
-//  \brief Header file for the PtrdiffT class template
+//  \brief Header file for the Ptrdiff_t alias template
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -56,20 +56,20 @@ namespace blaze {
 /*!\brief Compile time integral constant wrapper for \a ptrdiff_t.
 // \ingroup mpl
 //
-// The PtrdiffT class template represents an integral wrapper for a compile time constant
-// expression of type \a ptrdiff_t. The value of an PtrdiffT can be accessed via the nested
+// The Ptrdiff_t alias template represents an integral wrapper for a compile time constant
+// expression of type \a ptrdiff_t. The value of an Ptrdiff_t can be accessed via the nested
 // \a value (which is guaranteed to be of type \a ptrdiff_t), the type can be accessed via
 // the nested type definition \a ValueType.
 
    \code
    using namespace blaze;
 
-   PtrdiffT<3>::value      // Evaluates to 3
-   PtrdiffT<5>::ValueType  // Results in ptrdiff_t
+   Ptrdiff_t<3>::value      // Evaluates to 3
+   Ptrdiff_t<5>::ValueType  // Results in ptrdiff_t
    \endcode
 */
 template< ptrdiff_t N >
-using PtrdiffT = IntegralConstant<ptrdiff_t,N>;
+using Ptrdiff_t = IntegralConstant<ptrdiff_t,N>;
 //*************************************************************************************************
 
 } // namespace blaze
