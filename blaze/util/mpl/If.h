@@ -91,10 +91,10 @@ struct If<false,T1,T2>
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary alias declaration for the If class template.
+/*!\brief Auxiliary alias template for the If class template.
 // \ingroup util
 //
-// The If_t alias declaration provides a convenient shortcut to access the nested \a Type of
+// The If_t alias template provides a convenient shortcut to access the nested \a Type of
 // the If class template. For instance, given the types \a C, \a T1, and \a T2 the following
 // two type definitions are identical:
 
