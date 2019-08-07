@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/mpl/Nand.h
-//  \brief Header file for the Nand class template
+//  \brief Header file for the Nand_t alias template
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -54,48 +54,48 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Compile time logical 'not and' evaluation.
+/*!\brief Compile time logical NAND evaluation.
 // \ingroup mpl
 //
-// The Nand alias declaration performs at compile time a logical 'not and' evaluation of at least
-// two compile time conditions:
+// The Nand_t alias template performs at compile time a logical NAND evaluation of at least two
+// compile time conditions:
 
    \code
    using namespace blaze;
 
    using Type = int;
 
-   Nand< IsIntegral<Type>, IsFloatingPoint<Type> >::value  // Evaluates to 1
-   Nand< IsFloat<Type>   , IsDouble<Type>        >::value  // Evaluates to 1
-   Nand< IsIntegral<Type>, IsSigned<Type>        >::value  // Evaluates to 0
+   Nand_t< IsIntegral<Type>, IsFloatingPoint<Type> >::value  // Evaluates to 1
+   Nand_t< IsFloat<Type>   , IsDouble<Type>        >::value  // Evaluates to 1
+   Nand_t< IsIntegral<Type>, IsSigned<Type>        >::value  // Evaluates to 0
    \endcode
 */
 template< typename T1       // Type of the first mandatory operand
         , typename T2       // Type of the second mandatory operand
         , typename... Ts >  // Types of the optional operands
-using Nand =
+using Nand_t =
    Bool< !IsSame< Bools< true, T1::value, T2::value, (Ts::value)... >
                 , Bools< T1::value, T2::value, (Ts::value)..., true > >::value >;
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary variable template for the Nand alias.
+/*!\brief Auxiliary variable template for the Nand_t alias.
 // \ingroup mpl
 //
 // The Nand_v variable template provides a convenient shortcut to access the nested \a value of
-// the Nand alias. For instance, given the types \a T1 and \a T2 the following two statements
+// the Nand_t alias. For instance, given the types \a T1 and \a T2 the following two statements
 // are identical:
 
    \code
-   constexpr bool value1 = Nand<T1,T2>::value;
+   constexpr bool value1 = Nand_t<T1,T2>::value;
    constexpr bool value2 = Nand_v<T1,T2>;
    \endcode
 */
 template< typename T1       // Type of the first mandatory operand
         , typename T2       // Type of the second mandatory operand
         , typename... Ts >  // Types of the optional operands
-constexpr bool Nand_v = Nand<T1,T2,Ts...>::value;
+constexpr bool Nand_v = Nand_t<T1,T2,Ts...>::value;
 //*************************************************************************************************
 
 } // namespace blaze
