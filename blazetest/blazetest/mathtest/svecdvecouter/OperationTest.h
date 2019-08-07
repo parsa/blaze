@@ -347,11 +347,11 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testImagOperation();
    testEvalOperation();
    testSerialOperation();
-   testDeclSymOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
-   testDeclHermOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
-   testDeclLowOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
-   testDeclUppOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
-   testDeclDiagOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
+   testDeclSymOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
+   testDeclHermOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
+   testDeclLowOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
+   testDeclUppOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
+   testDeclDiagOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
    testSubmatrixOperation();
    testRowOperation();
    testRowsOperation();

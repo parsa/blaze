@@ -403,9 +403,9 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testSerialOperation();
    testDeclSymOperation( IsSame< LowType_t<ET1,ET2>, ET1 >() );
    testDeclHermOperation( IsSame< LowType_t<ET1,ET2>, ET1 >() );
-   testDeclLowOperation( Or< IsSquare<SRE>, IsResizable<SRE> >() );
-   testDeclUppOperation( Or< IsSquare<SRE>, IsResizable<SRE> >() );
-   testDeclDiagOperation( Or< IsSquare<SRE>, IsResizable<SRE> >() );
+   testDeclLowOperation( Or_t< IsSquare<SRE>, IsResizable<SRE> >() );
+   testDeclUppOperation( Or_t< IsSquare<SRE>, IsResizable<SRE> >() );
+   testDeclDiagOperation( Or_t< IsSquare<SRE>, IsResizable<SRE> >() );
    testSubmatrixOperation();
    testRowOperation();
    testRowsOperation( Nor< IsSymmetric<DRE>, IsHermitian<DRE> >() );

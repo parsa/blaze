@@ -411,11 +411,11 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testImagOperation();
    testEvalOperation();
    testSerialOperation();
-   testDeclSymOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
-   testDeclHermOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
-   testDeclLowOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
-   testDeclUppOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
-   testDeclDiagOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
+   testDeclSymOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
+   testDeclHermOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
+   testDeclLowOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
+   testDeclUppOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
+   testDeclDiagOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
    testSubmatrixOperation( Not_t< IsUniform<DRE> >() );
    testRowOperation( Not_t< IsUniform<DRE> >() );
    testRowsOperation( Nor< IsUniform<DRE>, IsSymmetric<DRE>, IsHermitian<DRE> >() );
