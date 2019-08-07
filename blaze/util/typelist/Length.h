@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/mpl/SizeT.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/typelist/TypeList.h>
 
 

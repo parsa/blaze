@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/mpl/SizeT.h>
 #include <blaze/util/typelist/TypeList.h>
 #include <blaze/util/Types.h>
 

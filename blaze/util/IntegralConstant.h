@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <type_traits>
+#include <blaze/util/Types.h>
 
 
 namespace blaze {
@@ -204,6 +205,27 @@ using Long_t = IntegralConstant<long,N>;
 */
 template< ptrdiff_t N >
 using Ptrdiff_t = IntegralConstant<ptrdiff_t,N>;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Compile time integral constant wrapper for \a size_t.
+// \ingroup mpl
+//
+// The Size_t alias template represents an integral wrapper for a compile time constant expression
+// of type \a size_t. The value of an Size_t can be accessed via the nested \a value (which is
+// guaranteed to be of type \a size_t), the type can be accessed via the nested type definition
+// \a ValueType.
+
+   \code
+   using namespace blaze;
+
+   Size_t<3>::value      // Evaluates to 3
+   Size_t<5>::ValueType  // Results in size_t
+   \endcode
+*/
+template< size_t N >
+using Size_t = IntegralConstant<size_t,N>;
 //*************************************************************************************************
 
 } // namespace blaze
