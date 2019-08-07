@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/mpl/Greater.h
-//  \brief Header file for the Greater class template
+//  \brief Header file for the Greater_t alias template
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -55,42 +55,42 @@ namespace blaze {
 /*!\brief Compile time type comparison.
 // \ingroup mpl
 //
-// The Greater alias declaration compares the two given types using the greater-than operator
+// The Greater_t alias template compares the two given types using the greater-than operator
 // ('>'). In case \a T1::value is greater than \a T2::value, the nested \a value member is set
 // to 1. Otherwise it is set to 0.
 
    \code
    using namespace blaze;
 
-   Greater< Int<5> , Int<2>  >::value      // Evaluates to true
-   Greater< Int<5> , Long<2> >::value      // Evaluates to true
-   Greater< Long<2>, Int<2>  >::value      // Evaluates to false
-   Greater< Int<2> , Long<5> >::value      // Evaluates to false
-   Greater< Int<5> , Int<2>  >::ValueType  // Results in bool
+   Greater_t< Int<5> , Int<2>  >::value      // Evaluates to true
+   Greater_t< Int<5> , Long<2> >::value      // Evaluates to true
+   Greater_t< Long<2>, Int<2>  >::value      // Evaluates to false
+   Greater_t< Int<2> , Long<5> >::value      // Evaluates to false
+   Greater_t< Int<5> , Int<2>  >::ValueType  // Results in bool
    \endcode
 */
 template< typename T1    // The type of the left-hand side operand
         , typename T2 >  // The type of the right-hand side operand
-using Greater = Bool< ( T1::value > T2::value ) >;
+using Greater_t = Bool< ( T1::value > T2::value ) >;
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary variable template for the Greater alias.
+/*!\brief Auxiliary variable template for the Greater_t alias.
 // \ingroup mpl
 //
 // The Greater_v variable template provides a convenient shortcut to access the nested \a value of
-// the Greater alias. For instance, given the types \a T1 and \a T2 the following two statements
+// the Greater_t alias. For instance, given the types \a T1 and \a T2 the following two statements
 // are identical:
 
    \code
-   constexpr bool value1 = Greater<T1,T2>::value;
+   constexpr bool value1 = Greater_t<T1,T2>::value;
    constexpr bool value2 = Greater_v<T1,T2>;
    \endcode
 */
 template< typename T1    // The type of the left-hand side operand
         , typename T2 >  // The type of the right-hand side operand
-constexpr bool Greater_v = Greater<T1,T2>::value;
+constexpr bool Greater_v = Greater_t<T1,T2>::value;
 //*************************************************************************************************
 
 } // namespace blaze
