@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/mpl/Modulus.h
-//  \brief Header file for the Modulus class template
+//  \file blaze/util/mpl/Modulo.h
+//  \brief Header file for the Modulo_t alias template
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_MPL_MODULUS_H_
-#define _BLAZE_UTIL_MPL_MODULUS_H_
+#ifndef _BLAZE_UTIL_MPL_MODULO_H_
+#define _BLAZE_UTIL_MPL_MODULO_H_
 
 
 //*************************************************************************************************
@@ -53,24 +53,24 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Compile time integral modulus operation.
+/*!\brief Compile time integral modulo operation.
 // \ingroup mpl
 //
-// The Modulus alias declaration returns the result of a modulus operation between the two given
-// template arguments \a T1 and \a T2. In order for Modulus to be able to perform the operation
+// The Modulo_t alias template returns the result of a modulo operation between the two given
+// template arguments \a T1 and \a T2. In order for Modulo_t to be able to perform the operation
 // with the given two types, both arguments are required to have a nested member \a value. The
-// result of the modulus operation can be accessed via the nested member \a value, the resulting
+// result of the modulo operation can be accessed via the nested member \a value, the resulting
 // type is available via the nested type \a ValueType.
 
    \code
-   blaze::Modulus< Int<3> , Int<2>  >::value      // Results in 1
-   blaze::Modulus< Long<3>, Int<2>  >::ValueType  // Results in long
-   blaze::Modulus< Int<3> , Long<2> >::ValueType  // Results in long
+   blaze::Modulo_t< Int<3> , Int<2>  >::value      // Results in 1
+   blaze::Modulo_t< Long<3>, Int<2>  >::ValueType  // Results in long
+   blaze::Modulo_t< Int<3> , Long<2> >::ValueType  // Results in long
    \endcode
 */
 template< typename T1    // Type of the first compile time value
         , typename T2 >  // Type of the second compile time value
-using Modulus =
+using Modulo_t =
    IntegralConstant< CommonType_t< typename T1::ValueType, typename T2::ValueType >
                    , ( T1::value % T2::value ) >;
 //*************************************************************************************************

@@ -52,7 +52,7 @@
 #include <blaze/util/mpl/Maximum.h>
 #include <blaze/util/mpl/Minimum.h>
 #include <blaze/util/mpl/Minus.h>
-#include <blaze/util/mpl/Modulus.h>
+#include <blaze/util/mpl/Modulo.h>
 #include <blaze/util/mpl/Nand.h>
 #include <blaze/util/mpl/Nor.h>
 #include <blaze/util/mpl/Not.h>
