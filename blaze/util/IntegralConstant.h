@@ -122,6 +122,27 @@ template< bool B >
 using Bool_t = IntegralConstant<bool,B>;
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Compile time integral constant wrapper for \a char.
+// \ingroup mpl
+//
+// The Char_t alias template represents an integral wrapper for a compile time constant
+// expression of type \a char. The value of an Char_t can be accessed via the nested \a value
+// (which is guaranteed to be of type \a char), the type can be accessed via the nested type
+// definition \a ValueType.
+
+   \code
+   using namespace blaze;
+
+   Char_t<3>::value      // Evaluates to 3
+   Char_t<5>::ValueType  // Results in char
+   \endcode
+*/
+template< char N >
+using Char_t = IntegralConstant<char,N>;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
