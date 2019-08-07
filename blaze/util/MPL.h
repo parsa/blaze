@@ -54,7 +54,6 @@
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/mpl/Plus.h>
-#include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/mpl/SizeT.h>
 #include <blaze/util/mpl/Times.h>
 #include <blaze/util/mpl/Xor.h>
