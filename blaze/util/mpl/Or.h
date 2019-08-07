@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/mpl/Bool.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/Bools.h>
 #include <blaze/util/typetraits/IsSame.h>
 

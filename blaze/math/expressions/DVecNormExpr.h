@@ -73,8 +73,8 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Bool.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>

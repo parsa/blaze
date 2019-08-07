@@ -85,7 +85,7 @@ struct IntegralConstant
 /*!\brief Generic wrapper for a compile time constant boolean value.
 // \ingroup util
 //
-// The BoolConstant class template represents a generic wrapper for a compile time constant
+// The BoolConstant alias template represents a generic wrapper for a compile time constant
 // boolean value. The value of a BoolConstant can be accessed via the nested \a value (which
 // is guaranteed to be of type \c bool), the type can be accessed via the nested type definition
 // \a ValueType.
@@ -99,6 +99,27 @@ struct IntegralConstant
 */
 template< bool B >
 using BoolConstant = IntegralConstant<bool,B>;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Compile time integral constant wrapper for \a bool.
+// \ingroup mpl
+//
+// The Bool_t alias template represents an integral wrapper for a compile time constant
+// expression of type \a bool. The value of a Bool_t can be accessed via the nested \a value
+// (which is guaranteed to be of type \a bool), the type can be accessed via the nested type
+// definition \a ValueType.
+
+   \code
+   using namespace blaze;
+
+   Bool_t<true>::value       // Evaluates to true
+   Bool_t<false>::ValueType  // Results in bool
+   \endcode
+*/
+template< bool B >
+using Bool_t = IntegralConstant<bool,B>;
 //*************************************************************************************************
 
 } // namespace blaze

@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Bool.h>
 #include <blaze/util/mpl/Char.h>
 #include <blaze/util/mpl/Equal.h>
 #include <blaze/util/mpl/Greater.h>
