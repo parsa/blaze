@@ -103,6 +103,7 @@
 #include <blaze/math/functors/Mult.h>
 #include <blaze/math/functors/MultAssign.h>
 #include <blaze/math/functors/Noop.h>
+#include <blaze/math/functors/Not.h>
 #include <blaze/math/functors/OrAssign.h>
 #include <blaze/math/functors/Pow.h>
 #include <blaze/math/functors/Pow2.h>
