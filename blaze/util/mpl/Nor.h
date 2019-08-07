@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/mpl/Nor.h
-//  \brief Header file for the Nor class template
+//  \brief Header file for the Nor_t alias template
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -57,7 +57,7 @@ namespace blaze {
 /*!\brief Compile time logical 'not or' evaluation.
 // \ingroup mpl
 //
-// The Nor alias declaration performs at compile time a logical 'not or' evaluation of at least
+// The Nor_t alias template performs at compile time a logical 'not or' evaluation of at least
 // two compile time conditions:
 
    \code
@@ -65,37 +65,37 @@ namespace blaze {
 
    using Type = int;
 
-   Nor< IsFloat<Type>   , IsDouble<Type>        >::value  // Evaluates to 1
-   Nor< IsIntegral<Type>, IsSigned<Type>        >::value  // Evaluates to 0
-   Nor< IsIntegral<Type>, IsFloatingPoint<Type> >::value  // Evaluates to 0
+   Nor_t< IsFloat<Type>   , IsDouble<Type>        >::value  // Evaluates to 1
+   Nor_t< IsIntegral<Type>, IsSigned<Type>        >::value  // Evaluates to 0
+   Nor_t< IsIntegral<Type>, IsFloatingPoint<Type> >::value  // Evaluates to 0
    \endcode
 */
 template< typename T1       // Type of the first mandatory operand
         , typename T2       // Type of the second mandatory operand
         , typename... Ts >  // Types of the optional operands
-using Nor =
+using Nor_t =
    Bool< IsSame< Bools< false, T1::value, T2::value, (Ts::value)... >
                , Bools< T1::value, T2::value, (Ts::value)..., false > >::value >;
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary variable template for the Nor alias.
+/*!\brief Auxiliary variable template for the Nor_t alias.
 // \ingroup mpl
 //
 // The Nor_v variable template provides a convenient shortcut to access the nested \a value of
-// the Nor alias. For instance, given the types \a T1 and \a T2 the following two statements
+// the Nor_t alias. For instance, given the types \a T1 and \a T2 the following two statements
 // are identical:
 
    \code
-   constexpr bool value1 = Nor<T1,T2>::value;
+   constexpr bool value1 = Nor_t<T1,T2>::value;
    constexpr bool value2 = Nor_v<T1,T2>;
    \endcode
 */
 template< typename T1       // Type of the first mandatory operand
         , typename T2       // Type of the second mandatory operand
         , typename... Ts >  // Types of the optional operands
-constexpr bool Nor_v = Nor<T1,T2,Ts...>::value;
+constexpr bool Nor_v = Nor_t<T1,T2,Ts...>::value;
 //*************************************************************************************************
 
 } // namespace blaze
