@@ -422,9 +422,9 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testDeclDiagOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
    testSubmatrixOperation( Not_t< IsUniform<DRE> >() );
    testRowOperation( Not_t< IsUniform<DRE> >() );
-   testRowsOperation( Nor< IsUniform<DRE>, IsSymmetric<DRE>, IsHermitian<DRE> >() );
+   testRowsOperation( Nor_t< IsUniform<DRE>, IsSymmetric<DRE>, IsHermitian<DRE> >() );
    testColumnOperation( Not_t< IsUniform<DRE> >() );
-   testColumnsOperation( Nor< IsUniform<DRE>, IsSymmetric<DRE>, IsHermitian<DRE> >() );
+   testColumnsOperation( Nor_t< IsUniform<DRE>, IsSymmetric<DRE>, IsHermitian<DRE> >() );
    testBandOperation( Not_t< IsUniform<DRE> >() );
 }
 //*************************************************************************************************

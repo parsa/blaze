@@ -408,9 +408,9 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testDeclDiagOperation( Or_t< IsSquare<SRE>, IsResizable<SRE> >() );
    testSubmatrixOperation();
    testRowOperation();
-   testRowsOperation( Nor< IsSymmetric<DRE>, IsHermitian<DRE> >() );
+   testRowsOperation( Nor_t< IsSymmetric<DRE>, IsHermitian<DRE> >() );
    testColumnOperation();
-   testColumnsOperation( Nor< IsSymmetric<DRE>, IsHermitian<DRE> >() );
+   testColumnsOperation( Nor_t< IsSymmetric<DRE>, IsHermitian<DRE> >() );
    testBandOperation();
 }
 //*************************************************************************************************
