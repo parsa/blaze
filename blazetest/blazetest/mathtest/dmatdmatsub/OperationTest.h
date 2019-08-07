@@ -413,19 +413,19 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testRealOperation();
    testImagOperation();
    testEvalOperation();
-   testInvOperation( Not< IsUniform<DRE> >() );
+   testInvOperation( Not_t< IsUniform<DRE> >() );
    testSerialOperation();
    testDeclSymOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
    testDeclHermOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
    testDeclLowOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
    testDeclUppOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
    testDeclDiagOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
-   testSubmatrixOperation( Not< IsUniform<DRE> >() );
-   testRowOperation( Not< IsUniform<DRE> >() );
+   testSubmatrixOperation( Not_t< IsUniform<DRE> >() );
+   testRowOperation( Not_t< IsUniform<DRE> >() );
    testRowsOperation( Nor< IsUniform<DRE>, IsSymmetric<DRE>, IsHermitian<DRE> >() );
-   testColumnOperation( Not< IsUniform<DRE> >() );
+   testColumnOperation( Not_t< IsUniform<DRE> >() );
    testColumnsOperation( Nor< IsUniform<DRE>, IsSymmetric<DRE>, IsHermitian<DRE> >() );
-   testBandOperation( Not< IsUniform<DRE> >() );
+   testBandOperation( Not_t< IsUniform<DRE> >() );
 }
 //*************************************************************************************************
 

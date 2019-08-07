@@ -414,12 +414,12 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testDeclLowOperation( Or< IsSquare<SRE>, IsResizable<SRE> >() );
    testDeclUppOperation( Or< IsSquare<SRE>, IsResizable<SRE> >() );
    testDeclDiagOperation( Or< IsSquare<SRE>, IsResizable<SRE> >() );
-   testSubmatrixOperation( Not< IsUniform<DRE> >() );
-   testRowOperation( Not< IsUniform<DRE> >() );
+   testSubmatrixOperation( Not_t< IsUniform<DRE> >() );
+   testRowOperation( Not_t< IsUniform<DRE> >() );
    testRowsOperation( Nor< IsUniform<DRE>, IsSymmetric<DRE>, IsHermitian<DRE> >() );
-   testColumnOperation( Not< IsUniform<DRE> >() );
+   testColumnOperation( Not_t< IsUniform<DRE> >() );
    testColumnsOperation( Nor< IsUniform<DRE>, IsSymmetric<DRE>, IsHermitian<DRE> >() );
-   testBandOperation( Not< IsUniform<DRE> >() );
+   testBandOperation( Not_t< IsUniform<DRE> >() );
 }
 //*************************************************************************************************
 

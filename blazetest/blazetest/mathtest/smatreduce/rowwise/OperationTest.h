@@ -286,8 +286,8 @@ OperationTest<MT>::OperationTest( const Creator<MT>& creator, OP op )
    testScaledOperation( op, Scalar( 2 ) );
    testTransOperation( op );
    testCTransOperation( op );
-   testSubvectorOperation( op, Not< IsUniform<DRE> >() );
-   testElementsOperation( op, Not< IsUniform<DRE> >() );
+   testSubvectorOperation( op, Not_t< IsUniform<DRE> >() );
+   testElementsOperation( op, Not_t< IsUniform<DRE> >() );
 }
 //*************************************************************************************************
 

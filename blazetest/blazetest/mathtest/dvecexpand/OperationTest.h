@@ -361,12 +361,12 @@ OperationTest<VT,E>::OperationTest( const Creator<VT>& creator )
    testImagOperation();
    testEvalOperation();
    testSerialOperation();
-   testSubmatrixOperation( Not< IsUniform<DRE> >() );
-   testRowOperation( Not< IsUniform<DRE> >() );
-   testRowsOperation( Not< IsUniform<DRE> >() );
-   testColumnOperation( Not< IsUniform<DRE> >() );
-   testColumnsOperation( Not< IsUniform<DRE> >() );
-   testBandOperation( Not< IsUniform<DRE> >() );
+   testSubmatrixOperation( Not_t< IsUniform<DRE> >() );
+   testRowOperation( Not_t< IsUniform<DRE> >() );
+   testRowsOperation( Not_t< IsUniform<DRE> >() );
+   testColumnOperation( Not_t< IsUniform<DRE> >() );
+   testColumnsOperation( Not_t< IsUniform<DRE> >() );
+   testBandOperation( Not_t< IsUniform<DRE> >() );
 }
 //*************************************************************************************************
 

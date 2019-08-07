@@ -360,12 +360,12 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testDeclLowOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
    testDeclUppOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
    testDeclDiagOperation( Or< IsSquare<DRE>, IsResizable<DRE> >() );
-   testSubmatrixOperation( Not< IsUniform<DRE> >() );
-   testRowOperation( Not< IsUniform<DRE> >() );
-   testRowsOperation( Not< IsUniform<DRE> >() );
-   testColumnOperation( Not< IsUniform<DRE> >() );
-   testColumnsOperation( Not< IsUniform<DRE> >() );
-   testBandOperation( Not< IsUniform<DRE> >() );
+   testSubmatrixOperation( Not_t< IsUniform<DRE> >() );
+   testRowOperation( Not_t< IsUniform<DRE> >() );
+   testRowsOperation( Not_t< IsUniform<DRE> >() );
+   testColumnOperation( Not_t< IsUniform<DRE> >() );
+   testColumnsOperation( Not_t< IsUniform<DRE> >() );
+   testBandOperation( Not_t< IsUniform<DRE> >() );
 }
 //*************************************************************************************************
 

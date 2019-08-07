@@ -330,8 +330,8 @@ OperationTest<VT,MT>::OperationTest( const Creator<VT>& creator1, const Creator<
    testImagOperation();
    testEvalOperation();
    testSerialOperation();
-   testSubvectorOperation( Not< IsUniform<DRE> >() );
-   testElementsOperation( Not< IsUniform<DRE> >() );
+   testSubvectorOperation( Not_t< IsUniform<DRE> >() );
+   testElementsOperation( Not_t< IsUniform<DRE> >() );
 }
 //*************************************************************************************************
 
