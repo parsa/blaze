@@ -114,8 +114,8 @@ struct DMatNormHelper
       ( useOptimizedKernels &&
         CT::simdEnabled &&
         If_t< HasSIMDEnabled_v<Abs> && HasSIMDEnabled_v<Power>
-            , And< GetSIMDEnabled<Abs,ET>, GetSIMDEnabled<Power,ET> >
-            , And< HasLoad<Abs>, HasLoad<Power> > >::value &&
+            , And_t< GetSIMDEnabled<Abs,ET>, GetSIMDEnabled<Power,ET> >
+            , And_t< HasLoad<Abs>, HasLoad<Power> > >::value &&
         HasSIMDAdd_v< ElementType_t<CT>, ElementType_t<CT> > );
    //**********************************************************************************************
 };

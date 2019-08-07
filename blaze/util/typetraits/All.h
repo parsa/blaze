@@ -60,7 +60,7 @@ namespace blaze {
 // all given types \a Ts. If the expression
 
    \code
-   And< TypeTrait<Ts>... >::value
+   And_t< TypeTrait<Ts>... >::value
    \endcode
 
 // evaluates to \a true, the \a value member constant is set to \a true, the nested type definition
@@ -81,7 +81,7 @@ template< template< typename > class TypeTrait  // Type trait to be evaluated on
         , typename T2                           // Type of the second mandatory operand
         , typename... Ts >                      // Types of the optional operands
 struct All
-   : public BoolConstant< And< TypeTrait<T1>, TypeTrait<T2>, TypeTrait<Ts>... >::value >
+   : public BoolConstant< And_t< TypeTrait<T1>, TypeTrait<T2>, TypeTrait<Ts>... >::value >
 {};
 //*************************************************************************************************
 
