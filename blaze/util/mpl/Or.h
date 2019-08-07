@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze/util/mpl/Or.h
-//  \brief Header file for the Or class template
+//  \brief Header file for the Or_t alias template
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -54,10 +54,10 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Compile time logical 'or' evaluation.
+/*!\brief Compile time logical OR evaluation.
 // \ingroup mpl
 //
-// The Or alias declaration performs at compile time a logical 'or' ('||') evaluation of at least
+// The Or_t alias template performs at compile time a logical OR ('||') evaluation of at least
 // two compile time conditions:
 
    \code
@@ -65,37 +65,37 @@ namespace blaze {
 
    using Type = int;
 
-   Or< IsIntegral<Type>, IsSigned<Type>        >::value  // Evaluates to 1
-   Or< IsIntegral<Type>, IsFloatingPoint<Type> >::value  // Evaluates to 1
-   Or< IsFloat<Type>   , IsDouble<Type>        >::value  // Evaluates to 0
+   Or_t< IsIntegral<Type>, IsSigned<Type>        >::value  // Evaluates to 1
+   Or_t< IsIntegral<Type>, IsFloatingPoint<Type> >::value  // Evaluates to 1
+   Or_t< IsFloat<Type>   , IsDouble<Type>        >::value  // Evaluates to 0
    \endcode
 */
 template< typename T1       // Type of the first mandatory operand
         , typename T2       // Type of the second mandatory operand
         , typename... Ts >  // Types of the optional operands
-using Or =
+using Or_t =
    Bool< !IsSame< Bools< false, T1::value, T2::value, (Ts::value)... >
                 , Bools< T1::value, T2::value, (Ts::value)..., false > >::value >;
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary variable template for the Or alias.
+/*!\brief Auxiliary variable template for the Or_t alias.
 // \ingroup mpl
 //
 // The Or_v variable template provides a convenient shortcut to access the nested \a value of
-// the Or alias. For instance, given the types \a T1 and \a T2 the following two statements
+// the Or_t alias. For instance, given the types \a T1 and \a T2 the following two statements
 // are identical:
 
    \code
-   constexpr bool value1 = Or<T1,T2>::value;
-   constexpr bool value2 = Or_v<T1,T2>;
+   constexpr bool value1 = Or_t<T1,T2>::value;
+   constexpr bool value2 = Or_t_v<T1,T2>;
    \endcode
 */
 template< typename T1       // Type of the first mandatory operand
         , typename T2       // Type of the second mandatory operand
         , typename... Ts >  // Types of the optional operands
-constexpr bool Or_v = Or<T1,T2,Ts...>::value;
+constexpr bool Or_v = Or_t<T1,T2,Ts...>::value;
 //*************************************************************************************************
 
 } // namespace blaze
