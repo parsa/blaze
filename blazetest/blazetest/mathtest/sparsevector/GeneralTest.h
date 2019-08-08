@@ -96,6 +96,7 @@ class GeneralTest
    void testL3Norm();
    void testL4Norm();
    void testLpNorm();
+   void testLinfNorm();
    void testLength();
    void testMean();
    void testVar();
