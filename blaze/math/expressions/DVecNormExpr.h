@@ -513,6 +513,32 @@ inline decltype(auto) lpNorm( const DenseVector<VT,TF>& dv )
 
 
 //*************************************************************************************************
+/*!\brief Computes the infinity norm for the given dense vector.
+// \ingroup dense_vector
+//
+// \param dv The given dense vector for the norm computation.
+// \return The infinity norm of the given dense vector.
+//
+// This function computes the infinity norm of the given dense vector:
+
+   \code
+   blaze::DynamicVector<double> a;
+   // ... Resizing and initialization
+   const double linf = linfNorm( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) linfNorm( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return max( abs( ~dv ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the maximum norm for the given dense vector.
 // \ingroup dense_vector
 //
@@ -533,7 +559,7 @@ inline decltype(auto) maxNorm( const DenseVector<VT,TF>& dv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return max( abs( ~dv ) );
+   return linfNorm( ~dv );
 }
 //*************************************************************************************************
 
