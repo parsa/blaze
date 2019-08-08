@@ -358,6 +358,32 @@ inline decltype(auto) lpNorm( const SparseVector<VT,TF>& sv )
 
 
 //*************************************************************************************************
+/*!\brief Computes the infinity norm for the given sparse vector.
+// \ingroup sparse_vector
+//
+// \param sv The given sparse vector for the norm computation.
+// \return The infinity norm of the given sparse vector.
+//
+// This function computes the infinity norm of the given sparse vector:
+
+   \code
+   blaze::CompressedVector<double> a;
+   // ... Resizing and initialization
+   const double linf = linfNorm( a );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+decltype(auto) linfNorm( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return max( abs( ~sv ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the maximum norm for the given sparse vector.
 // \ingroup sparse_vector
 //
@@ -378,7 +404,7 @@ decltype(auto) maxNorm( const SparseVector<VT,TF>& sv )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return max( abs( ~sv ) );
+   return linfNorm( ~sv );
 }
 //*************************************************************************************************
 
