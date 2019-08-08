@@ -82,6 +82,7 @@ GeneralTest::GeneralTest()
    testL3Norm();
    testL4Norm();
    testLpNorm();
+   testLinfNorm();
    testLength();
    testMean();
    testVar();
@@ -1153,6 +1154,72 @@ void GeneralTest::testLpNorm()
              << "   lpNorm<4>(): " << norm1 << "\n"
              << "   lpNorm(4): " << norm2 << "\n"
              << "   Expected result: " << norm3 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c linfNorm() function for dense vectors.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c linfNorm() function for dense vectors. In case an
+// error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testLinfNorm()
+{
+   test_ = "linfNorm() function";
+
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec;
+
+      const double norm = blaze::linfNorm( vec );
+
+      if( !isEqual( norm, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Infinity norm computation failed\n"
+             << " Details:\n"
+             << "   linfNorm(): " << norm << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec( 7UL, 0 );
+
+      const double norm = blaze::linfNorm( vec );
+
+      if( !isEqual( norm, 0.0 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Infinity norm computation failed\n"
+             << " Details:\n"
+             << "   linfNorm(): " << norm << "\n"
+             << "   Expected result: 0\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      blaze::DynamicVector<int,blaze::rowVector> vec( 10UL );
+      randomize( vec, -5, 5 );
+
+      const int norm1( blaze::linfNorm( vec ) );
+      const int norm2( blaze::max( blaze::abs( vec ) ) );
+
+      if( !isEqual( norm1, norm2 ) ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Lp norm computation failed\n"
+             << " Details:\n"
+             << "   linfNorm(): " << norm1 << "\n"
+             << "   Expected result: " << norm2 << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
