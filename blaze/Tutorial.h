@@ -2566,14 +2566,16 @@
    const double lp2 = lpNorm( a, 2.3 );  // Runtime argument
    \endcode
 
-// \n \subsection vector_operations_norms_maxnorm maxNorm()
+// \n \subsection vector_operations_norms_maxnorm linfNorm() / maxNorm()
 //
-// The \c maxNorm() function computes the maximum norm of the given dense or sparse vector:
+// The \c linfNorm() and \c maxNorm() functions compute the infinity/maximum norm of the given
+// dense or sparse vector:
 
    \code
    blaze::DynamicVector<double> a;
    // ... Resizing and initialization
-   const double max = maxNorm( a );
+   const double linf = linfNorm( a );
+   const double max  = maxNorm( a );
    \endcode
 
 // \n \section vector_operations_scalar_expansion Scalar Expansion
@@ -2660,7 +2662,7 @@
    \code
    blaze::DynamicVector<int> v{ 1, 4, 3, 6, 7 };
 
-   const double m = var( v );  // Results in 5.7
+   const double v = var( v );  // Results in 5.7
    \endcode
 
 // In case the size of the given vector is smaller than 2, a \a std::invalid_argument is thrown.
@@ -2675,7 +2677,7 @@
    \code
    blaze::DynamicVector<int> v{ 1, 4, 3, 6, 7 };
 
-   const double m = stddev( v );  // Results in 2.38747
+   const double s = stddev( v );  // Results in 2.38747
    \endcode
 
 // In case the size of the given vector is smaller than 2, a \a std::invalid_argument is thrown.
@@ -5343,14 +5345,16 @@
    const double lp2 = lpNorm( A, 2.3 );  // Runtime argument
    \endcode
 
-// \n \subsection matrix_operations_norms_maxnorm maxNorm()
+// \n \subsection matrix_operations_norms_maxnorm linfNorm() / maxNorm()
 //
-// The \c maxNorm() function computes the maximum norm of the given dense or sparse matrix:
+// The \c linfNorm() and \c maxNorm() functions compute the infinity/maximum norm of the given
+// dense or sparse matrix:
 
    \code
    blaze::DynamicMatrix<double> A;
    // ... Resizing and initialization
-   const double max = maxNorm( A );
+   const double linf = linfNorm( A );
+   const double max  = maxNorm( A );
    \endcode
 
 // \n \section matrix_operations_scalar_expansion Scalar Expansion
