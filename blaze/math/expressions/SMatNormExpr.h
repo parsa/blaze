@@ -359,6 +359,32 @@ inline decltype(auto) lpNorm( const SparseMatrix<MT,SO>& sm )
 
 
 //*************************************************************************************************
+/*!\brief Computes the infinity norm for the given sparse matrix.
+// \ingroup sparse_matrix
+//
+// \param sm The given sparse matrix for the norm computation.
+// \return The infinity norm of the given sparse matrix.
+//
+// This function computes the infinity norm of the given sparse matrix:
+
+   \code
+   blaze::CompressedMatrix<double> A;
+   // ... Resizing and initialization
+   const double linf = linfNorm( A );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+decltype(auto) linfNorm( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return max( abs( ~sm ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the maximum norm for the given sparse matrix.
 // \ingroup sparse_matrix
 //
@@ -379,7 +405,7 @@ decltype(auto) maxNorm( const SparseMatrix<MT,SO>& sm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return max( abs( ~sm ) );
+   return linfNorm( ~sm );
 }
 //*************************************************************************************************
 
