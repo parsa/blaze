@@ -678,6 +678,32 @@ inline decltype(auto) lpNorm( const DenseMatrix<MT,SO>& dm )
 
 
 //*************************************************************************************************
+/*!\brief Computes the infinity norm for the given dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix for the norm computation.
+// \return The infinity norm of the given dense matrix.
+//
+// This function computes the infinity norm of the given dense matrix:
+
+   \code
+   blaze::DynamicMatrix<double> A;
+   // ... Resizing and initialization
+   const double linf = linfNorm( A );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+decltype(auto) linfNorm( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return max( abs( ~dm ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the maximum norm for the given dense matrix.
 // \ingroup dense_matrix
 //
@@ -698,7 +724,7 @@ decltype(auto) maxNorm( const DenseMatrix<MT,SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return max( abs( ~dm ) );
+   return linfNorm( ~dm );
 }
 //*************************************************************************************************
 
