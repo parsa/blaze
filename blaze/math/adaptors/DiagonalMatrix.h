@@ -1713,7 +1713,7 @@ struct IsLower< DiagonalMatrix<MT,SO,DF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
 struct IsStrictlyLower< DiagonalMatrix<MT,SO,DF> >
-   : public IsUniform<MT>
+   : public IsZero<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1749,7 +1749,7 @@ struct IsUpper< DiagonalMatrix<MT,SO,DF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
 struct IsStrictlyUpper< DiagonalMatrix<MT,SO,DF> >
-   : public IsUniform<MT>
+   : public IsZero<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
