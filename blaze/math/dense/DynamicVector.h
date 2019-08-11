@@ -58,6 +58,7 @@
 #include <blaze/math/shims/NextMultiple.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/SIMD.h>
+#include <blaze/math/smp/Forward.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/ColumnTrait.h>

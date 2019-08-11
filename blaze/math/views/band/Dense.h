@@ -59,6 +59,7 @@
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/shims/Clear.h>
 #include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/Reset.h>
 #include <blaze/math/traits/BandTrait.h>
 #include <blaze/math/traits/CrossTrait.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -80,6 +81,7 @@
 #include <blaze/math/views/band/BaseTemplate.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/system/Thresholds.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
