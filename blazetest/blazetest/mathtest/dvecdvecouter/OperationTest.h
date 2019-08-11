@@ -71,6 +71,7 @@
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/FalseType.h>
+#include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Random.h>
@@ -357,8 +358,8 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testSerialOperation();
    testDeclSymOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
    testDeclHermOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
-   testDeclLowOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
-   testDeclUppOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
+   testDeclLowOperation( And_t< Or_t< IsSquare<DRE>, IsResizable<DRE> >, Not_t< IsUniform<VT2> > >() );
+   testDeclUppOperation( And_t< Or_t< IsSquare<DRE>, IsResizable<DRE> >, Not_t< IsUniform<VT1> > >() );
    testDeclDiagOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
    testSubmatrixOperation( Not_t< IsUniform<DRE> >() );
    testRowOperation( Not_t< IsUniform<DRE> >() );
