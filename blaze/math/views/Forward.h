@@ -61,6 +61,15 @@ namespace blaze {
 //
 //=================================================================================================
 
+template< size_t I, size_t N, typename VT, bool TF, typename... RSAs >
+decltype(auto) subvector( Vector<VT,TF>&, RSAs... );
+
+template< size_t I, size_t N, typename VT, bool TF, typename... RSAs >
+decltype(auto) subvector( const Vector<VT,TF>&, RSAs... );
+
+template< size_t I, size_t N, typename VT, bool TF, typename... RSAs >
+decltype(auto) subvector( Vector<VT,TF>&&, RSAs... );
+
 template< AlignmentFlag AF, size_t I, size_t N, typename VT, bool TF, typename... RSAs >
 decltype(auto) subvector( Vector<VT,TF>&, RSAs... );
 
@@ -70,6 +79,15 @@ decltype(auto) subvector( const Vector<VT,TF>&, RSAs... );
 template< AlignmentFlag AF, size_t I, size_t N, typename VT, bool TF, typename... RSAs >
 decltype(auto) subvector( Vector<VT,TF>&&, RSAs... );
 
+template< typename VT, bool TF, typename... RSAs >
+decltype(auto) subvector( Vector<VT,TF>&, size_t, size_t, RSAs... );
+
+template< typename VT, bool TF, typename... RSAs >
+decltype(auto) subvector( const Vector<VT,TF>&, size_t, size_t, RSAs... );
+
+template< typename VT, bool TF, typename... RSAs >
+decltype(auto) subvector( Vector<VT,TF>&&, size_t, size_t, RSAs... );
+
 template< AlignmentFlag AF, typename VT, bool TF, typename... RSAs >
 decltype(auto) subvector( Vector<VT,TF>&, size_t, size_t, RSAs... );
 
@@ -78,6 +96,7 @@ decltype(auto) subvector( const Vector<VT,TF>&, size_t, size_t, RSAs... );
 
 template< AlignmentFlag AF, typename VT, bool TF, typename... RSAs >
 decltype(auto) subvector( Vector<VT,TF>&&, size_t, size_t, RSAs... );
+
 
 template< size_t I, size_t... Is, typename VT, bool TF, typename... REAs >
 decltype(auto) elements( Vector<VT,TF>&, REAs... );
@@ -106,6 +125,16 @@ decltype(auto) elements( const Vector<VT,TF>&, P, size_t, REAs... );
 template< typename VT, bool TF, typename P, typename... REAs >
 decltype(auto) elements( Vector<VT,TF>&&, P, size_t, REAs... );
 
+
+template< size_t I, size_t J, size_t M, size_t N, typename MT, bool SO, typename... RSAs >
+decltype(auto) submatrix( Matrix<MT,SO>&, RSAs... );
+
+template< size_t I, size_t J, size_t M, size_t N, typename MT, bool SO, typename... RSAs >
+decltype(auto) submatrix( const Matrix<MT,SO>&, RSAs... );
+
+template< size_t I, size_t J, size_t M, size_t N, typename MT, bool SO, typename... RSAs >
+decltype(auto) submatrix( Matrix<MT,SO>&&, RSAs... );
+
 template< AlignmentFlag AF, size_t I, size_t J, size_t M, size_t N, typename MT, bool SO, typename... RSAs >
 decltype(auto) submatrix( Matrix<MT,SO>&, RSAs... );
 
@@ -115,6 +144,15 @@ decltype(auto) submatrix( const Matrix<MT,SO>&, RSAs... );
 template< AlignmentFlag AF, size_t I, size_t J, size_t M, size_t N, typename MT, bool SO, typename... RSAs >
 decltype(auto) submatrix( Matrix<MT,SO>&&, RSAs... );
 
+template< typename MT, bool SO, typename... RSAs >
+decltype(auto) submatrix( Matrix<MT,SO>&, size_t, size_t, size_t, size_t, RSAs... );
+
+template< typename MT, bool SO, typename... RSAs >
+decltype(auto) submatrix( const Matrix<MT,SO>&, size_t, size_t, size_t, size_t, RSAs... );
+
+template< typename MT, bool SO, typename... RSAs >
+decltype(auto) submatrix( Matrix<MT,SO>&&, size_t, size_t, size_t, size_t, RSAs... );
+
 template< AlignmentFlag AF, typename MT, bool SO, typename... RSAs >
 decltype(auto) submatrix( Matrix<MT,SO>&, size_t, size_t, size_t, size_t, RSAs... );
 
@@ -123,6 +161,7 @@ decltype(auto) submatrix( const Matrix<MT,SO>&, size_t, size_t, size_t, size_t, 
 
 template< AlignmentFlag AF, typename MT, bool SO, typename... RSAs >
 decltype(auto) submatrix( Matrix<MT,SO>&&, size_t, size_t, size_t, size_t, RSAs... );
+
 
 template< size_t I, typename MT, bool SO, typename... RRAs >
 decltype(auto) row( Matrix<MT,SO>&, RRAs... );
@@ -141,6 +180,7 @@ decltype(auto) row( const Matrix<MT,SO>&, size_t, RRAs... );
 
 template< typename MT, bool SO, typename... RRAs >
 decltype(auto) row( Matrix<MT,SO>&&, size_t, RRAs... );
+
 
 template< size_t I, size_t... Is, typename MT, bool SO, typename... RRAs >
 decltype(auto) rows( Matrix<MT,SO>&, RRAs... );
@@ -169,6 +209,7 @@ decltype(auto) rows( const Matrix<MT,SO>&, P, size_t, RRAs... );
 template< typename MT, bool SO, typename P, typename... RRAs >
 decltype(auto) rows( Matrix<MT,SO>&&, P, size_t, RRAs... );
 
+
 template< size_t I, typename MT, bool SO, typename... RCAs >
 decltype(auto) column( Matrix<MT,SO>&, RCAs... );
 
@@ -186,6 +227,7 @@ decltype(auto) column( const Matrix<MT,SO>&, size_t, RCAs... );
 
 template< typename MT, bool SO, typename... RCAs >
 decltype(auto) column( Matrix<MT,SO>&&, size_t, RCAs... );
+
 
 template< size_t I, size_t... Is, typename MT, bool SO, typename... RCAs >
 decltype(auto) columns( Matrix<MT,SO>&, RCAs... );
@@ -213,6 +255,7 @@ decltype(auto) columns( const Matrix<MT,SO>&, P, size_t, RCAs... );
 
 template< typename MT, bool SO, typename P, typename... RCAs >
 decltype(auto) columns( Matrix<MT,SO>&&, P, size_t, RCAs... );
+
 
 template< ptrdiff_t I, typename MT, bool SO, typename... RBAs >
 decltype(auto) band( Matrix<MT,SO>&, RBAs... );
