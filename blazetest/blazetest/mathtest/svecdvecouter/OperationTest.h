@@ -64,12 +64,15 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsSquare.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/FalseType.h>
+#include <blaze/util/mpl/And.h>
+#include <blaze/util/mpl/Not.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Random.h>
 #include <blaze/util/TrueType.h>
@@ -349,7 +352,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testSerialOperation();
    testDeclSymOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
    testDeclHermOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
-   testDeclLowOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
+   testDeclLowOperation( And_t< Or_t< IsSquare<DRE>, IsResizable<DRE> >, Not_t< IsUniform<VT2> > >() );
    testDeclUppOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
    testDeclDiagOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
    testSubmatrixOperation();
