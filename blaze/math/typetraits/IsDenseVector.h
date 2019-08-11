@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/DenseVector.h>
+#include <blaze/math/expressions/Forward.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
 
