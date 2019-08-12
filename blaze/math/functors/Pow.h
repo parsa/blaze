@@ -44,7 +44,7 @@
 #include <blaze/math/shims/Pow.h>
 #include <blaze/math/simd/Pow.h>
 #include <blaze/math/typetraits/HasSIMDPow.h>
-#include <blaze/system/CUDAAttributes.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 
 
