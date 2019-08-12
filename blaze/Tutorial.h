@@ -325,7 +325,8 @@
 
    \code
    #define BLAZE_MAJOR_VERSION 3
-   #define BLAZE_MINOR_VERSION 2
+   #define BLAZE_MINOR_VERSION 5
+   #define BLAZE_PATCH_VERSION 0
    \endcode
 
 // \n Next: \ref getting_started
@@ -2500,8 +2501,11 @@
 
    \code
    blaze::DynamicVector<double> a;
+   blaze::CompressedVector<double> b;
    // ... Resizing and initialization
-   const double l2 = norm( a );
+
+   const double norm1 = norm( a );
+   const double norm2 = norm( b );
    \endcode
 
 // \n \subsection vector_operations_norms_sqrnorm sqrNorm()
@@ -2510,8 +2514,11 @@
 
    \code
    blaze::DynamicVector<double> a;
+   blaze::CompressedVector<double> b;
    // ... Resizing and initialization
-   const double l2 = sqrNorm( a );
+
+   const double norm1 = sqrNorm( a );
+   const double norm2 = sqrNorm( b );
    \endcode
 
 // \n \subsection vector_operations_norms_l1norm l1Norm()
@@ -2520,8 +2527,11 @@
 
    \code
    blaze::DynamicVector<double> a;
+   blaze::CompressedVector<double> b;
    // ... Resizing and initialization
-   const double l1 = l1Norm( a );
+
+   const double norm1 = l1Norm( a );
+   const double norm2 = l1Norm( b );
    \endcode
 
 // \n \subsection vector_operations_norms_l2norm l2Norm()
@@ -2530,8 +2540,11 @@
 
    \code
    blaze::DynamicVector<double> a;
+   blaze::CompressedVector<double> b;
    // ... Resizing and initialization
-   const double l2 = l2Norm( a );
+
+   const double norm1 = l2Norm( a );
+   const double norm2 = l2Norm( b );
    \endcode
 
 // \n \subsection vector_operations_norms_l3norm l3Norm()
@@ -2540,8 +2553,11 @@
 
    \code
    blaze::DynamicVector<double> a;
+   blaze::CompressedVector<double> b;
    // ... Resizing and initialization
-   const double l3 = l3Norm( a );
+
+   const double norm1 = l3Norm( a );
+   const double norm2 = l3Norm( b );
    \endcode
 
 // \n \subsection vector_operations_norms_l4norm l4Norm()
@@ -2550,8 +2566,11 @@
 
    \code
    blaze::DynamicVector<double> a;
+   blaze::CompressedVector<double> b;
    // ... Resizing and initialization
-   const double l4 = l4Norm( a );
+
+   const double norm1 = l4Norm( a );
+   const double norm2 = l4Norm( b );
    \endcode
 
 // \n \subsection vector_operations_norms_lpnorm lpNorm()
@@ -2561,9 +2580,11 @@
 
    \code
    blaze::DynamicVector<double> a;
+   blaze::CompressedVector<double> b;
    // ... Resizing and initialization
-   const double lp1 = lpNorm<2>( a );    // Compile time argument
-   const double lp2 = lpNorm( a, 2.3 );  // Runtime argument
+
+   const double norm1 = lpNorm<2>( a );    // Compile time argument
+   const double norm2 = lpNorm( b, 2.3 );  // Runtime argument
    \endcode
 
 // \n \subsection vector_operations_norms_maxnorm linfNorm() / maxNorm()
@@ -2573,9 +2594,11 @@
 
    \code
    blaze::DynamicVector<double> a;
+   blaze::CompressedVector<double> b;
    // ... Resizing and initialization
-   const double linf = linfNorm( a );
-   const double max  = maxNorm( a );
+
+   const double norm1 = linfNorm( a );
+   const double norm2 = maxNorm( b );
    \endcode
 
 // \n \section vector_operations_scalar_expansion Scalar Expansion
@@ -5279,8 +5302,11 @@
 
    \code
    blaze::DynamicMatrix<double> A;
+   blaze::CompressedMatrix<double> B;
    // ... Resizing and initialization
-   const double l2 = norm( A );
+
+   const double norm1 = norm( A );
+   const double norm2 = norm( B );
    \endcode
 
 // \n \subsection matrix_operations_norms_sqrnorm sqrNorm()
@@ -5289,8 +5315,11 @@
 
    \code
    blaze::DynamicMatrix<double> A;
+   blaze::CompressedMatrix<double> B;
    // ... Resizing and initialization
-   const double l2 = sqrNorm( A );
+
+   const double norm1 = sqrNorm( A );
+   const double norm2 = sqrNorm( B );
    \endcode
 
 // \n \subsection matrix_operations_norms_l1norm l1Norm()
@@ -5299,8 +5328,11 @@
 
    \code
    blaze::DynamicMatrix<double> A;
+   blaze::CompressedMatrix<double> B;
    // ... Resizing and initialization
-   const double l1 = l1Norm( A );
+
+   const double norm1 = l1Norm( A );
+   const double norm2 = l1Norm( B );
    \endcode
 
 // \n \subsection matrix_operations_norms_l2norm l2Norm()
@@ -5309,8 +5341,11 @@
 
    \code
    blaze::DynamicMatrix<double> A;
+   blaze::CompressedMatrix<double> B;
    // ... Resizing and initialization
-   const double l2 = l2Norm( A );
+
+   const double norm1 = l2Norm( A );
+   const double norm2 = l2Norm( B );
    \endcode
 
 // \n \subsection matrix_operations_norms_l3norm l3Norm()
@@ -5319,8 +5354,11 @@
 
    \code
    blaze::DynamicMatrix<double> A;
+   blaze::CompressedMatrix<double> B;
    // ... Resizing and initialization
-   const double l3 = l3Norm( A );
+
+   const double norm1 = l3Norm( A );
+   const double norm2 = l3Norm( B );
    \endcode
 
 // \n \subsection matrix_operations_norms_l4norm l4Norm()
@@ -5329,8 +5367,11 @@
 
    \code
    blaze::DynamicMatrix<double> A;
+   blaze::CompressedMatrix<double> B;
    // ... Resizing and initialization
-   const double l4 = l4Norm( A );
+
+   const double norm1 = l4Norm( A );
+   const double norm2 = l4Norm( B );
    \endcode
 
 // \n \subsection matrix_operations_norms_lpnorm lpNorm()
@@ -5340,9 +5381,11 @@
 
    \code
    blaze::DynamicMatrix<double> A;
+   blaze::CompressedMatrix<double> B;
    // ... Resizing and initialization
-   const double lp1 = lpNorm<2>( A );    // Compile time argument
-   const double lp2 = lpNorm( A, 2.3 );  // Runtime argument
+
+   const double norm1 = lpNorm<2>( A );    // Compile time argument
+   const double norm2 = lpNorm( B, 2.3 );  // Runtime argument
    \endcode
 
 // \n \subsection matrix_operations_norms_maxnorm linfNorm() / maxNorm()
@@ -5352,9 +5395,11 @@
 
    \code
    blaze::DynamicMatrix<double> A;
+   blaze::CompressedMatrix<double> B;
    // ... Resizing and initialization
-   const double linf = linfNorm( A );
-   const double max  = maxNorm( A );
+
+   const double norm1 = linfNorm( A );
+   const double norm2 = maxNorm( B );
    \endcode
 
 // \n \section matrix_operations_scalar_expansion Scalar Expansion
