@@ -95,8 +95,8 @@
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/MaybeUnused.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 
 

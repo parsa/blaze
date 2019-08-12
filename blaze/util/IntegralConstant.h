@@ -82,6 +82,14 @@ struct IntegralConstant
 //*************************************************************************************************
 
 
+
+
+//=================================================================================================
+//
+//  ALIAS DECLARATIONS
+//
+//=================================================================================================
+
 //*************************************************************************************************
 /*!\brief Generic wrapper for a compile time constant boolean value.
 // \ingroup util
@@ -100,6 +108,28 @@ struct IntegralConstant
 */
 template< bool B >
 using BoolConstant = IntegralConstant<bool,B>;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Type/value traits base class.
+// \ingroup util
+//
+// The FalseType class is used as base class for type traits and value traits that evaluate to
+// \a false.
+*/
+using FalseType = BoolConstant<false>;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Type traits base class.
+// \ingroup util
+//
+// The TrueType class is used as base class for type traits and value traits that evaluate to
+// \a true.
+*/
+using TrueType = BoolConstant<true>;
 //*************************************************************************************************
 
 

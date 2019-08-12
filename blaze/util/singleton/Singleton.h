@@ -47,7 +47,6 @@
 #include <blaze/util/NonCopyable.h>
 #include <blaze/util/NullType.h>
 #include <blaze/util/Suffix.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
 
 

@@ -42,8 +42,7 @@
 
 #include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/StorageOrder.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 
 
 namespace blaze {

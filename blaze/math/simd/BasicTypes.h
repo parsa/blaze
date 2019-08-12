@@ -44,7 +44,6 @@
 #include <blaze/system/Inline.h>
 #include <blaze/system/Vectorization.h>
 #include <blaze/util/Complex.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 
 

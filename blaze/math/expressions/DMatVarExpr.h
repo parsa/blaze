@@ -49,6 +49,7 @@
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
 

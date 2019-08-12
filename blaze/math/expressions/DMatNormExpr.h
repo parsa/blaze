@@ -9,7 +9,7 @@
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
 //  forms, with or without modification, are permitted provided that the following conditions
 //  are met:
-//
+//x
 //  1. Redistributions of source code must retain the above copyright notice, this list of
 //     conditions and the following disclaimer.
 //  2. Redistributions in binary form must reproduce the above copyright notice, this list
@@ -70,13 +70,11 @@
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/FalseType.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/And.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/HasMember.h>

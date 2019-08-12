@@ -40,9 +40,8 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/FalseType.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
-#include <blaze/util/TrueType.h>
 
 
 namespace blaze {
