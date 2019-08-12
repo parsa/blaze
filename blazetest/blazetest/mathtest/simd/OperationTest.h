@@ -136,12 +136,11 @@
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/constraints/Numeric.h>
-#include <blaze/util/FalseType.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/NonCopyable.h>
 #include <blaze/util/policies/Deallocate.h>
 #include <blaze/util/Random.h>
-#include <blaze/util/TrueType.h>
 
 
 namespace blazetest {
