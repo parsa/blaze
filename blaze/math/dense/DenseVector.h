@@ -49,7 +49,6 @@
 #include <blaze/math/shims/IsZero.h>
 #include <blaze/math/shims/Pow2.h>
 #include <blaze/math/shims/Sqrt.h>
-#include <blaze/math/smp/Forward.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/IsZero.h>

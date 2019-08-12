@@ -58,7 +58,6 @@
 #include <blaze/math/shims/NextMultiple.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/SIMD.h>
-#include <blaze/math/smp/Forward.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/DivTrait.h>
