@@ -135,7 +135,7 @@ using TrueType = BoolConstant<true>;
 
 //*************************************************************************************************
 /*!\brief Compile time integral constant wrapper for \a bool.
-// \ingroup mpl
+// \ingroup util
 //
 // The Bool_t alias template represents an integral wrapper for a compile time constant
 // expression of type \a bool. The value of a Bool_t can be accessed via the nested \a value
@@ -156,7 +156,7 @@ using Bool_t = IntegralConstant<bool,B>;
 
 //*************************************************************************************************
 /*!\brief Compile time integral constant wrapper for \a char.
-// \ingroup mpl
+// \ingroup util
 //
 // The Char_t alias template represents an integral wrapper for a compile time constant
 // expression of type \a char. The value of an Char_t can be accessed via the nested \a value
@@ -177,7 +177,7 @@ using Char_t = IntegralConstant<char,N>;
 
 //*************************************************************************************************
 /*!\brief Compile time integral constant wrapper for \a int.
-// \ingroup mpl
+// \ingroup util
 //
 // The Int_t alias template represents an integral wrapper for a compile time constant
 // expression of type \a int. The value of an Int_t can be accessed via the nested \a value
@@ -198,7 +198,7 @@ using Int_t = IntegralConstant<int,N>;
 
 //*************************************************************************************************
 /*!\brief Compile time integral constant wrapper for \a long.
-// \ingroup mpl
+// \ingroup util
 //
 // The Long_t alias template represents an integral wrapper for a compile time constant
 // expression of type \a long. The value of an Long_t can be accessed via the nested \a value
@@ -219,7 +219,7 @@ using Long_t = IntegralConstant<long,N>;
 
 //*************************************************************************************************
 /*!\brief Compile time integral constant wrapper for \a ptrdiff_t.
-// \ingroup mpl
+// \ingroup util
 //
 // The Ptrdiff_t alias template represents an integral wrapper for a compile time constant
 // expression of type \a ptrdiff_t. The value of an Ptrdiff_t can be accessed via the nested
@@ -240,7 +240,7 @@ using Ptrdiff_t = IntegralConstant<ptrdiff_t,N>;
 
 //*************************************************************************************************
 /*!\brief Compile time integral constant wrapper for \a size_t.
-// \ingroup mpl
+// \ingroup util
 //
 // The Size_t alias template represents an integral wrapper for a compile time constant expression
 // of type \a size_t. The value of an Size_t can be accessed via the nested \a value (which is
@@ -256,6 +256,65 @@ using Ptrdiff_t = IntegralConstant<ptrdiff_t,N>;
 */
 template< size_t N >
 using Size_t = IntegralConstant<size_t,N>;
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Logical NOT of a boolean constant.
+// \ingroup util
+//
+// \return \a TrueType if the given argument is \a FalseType, \a FalseType otherwise.
+//
+// This function performs a logical NOT on the given boolean constant. In case the argument is
+// \a FalseType, the function returns \a TrueType, else it returns \a FalseType.
+*/
+template< bool B >
+constexpr BoolConstant<!B> operator!( BoolConstant<B> ) noexcept
+{
+   return BoolConstant<!B>();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Logical AND of two boolean constants.
+// \ingroup util
+//
+// \return \a TrueType if both arguments are \a TrueType, \a FalseType otherwise.
+//
+// This function performs a logical AND between the two given boolean constants. In case both
+// arguments are \a TrueType, the function returns \a TrueType, else it returns \a FalseType.
+*/
+template< bool B1, bool B2 >
+constexpr BoolConstant< B1 && B2 > operator&&( BoolConstant<B1>, BoolConstant<B2> ) noexcept
+{
+   return BoolConstant< B1 && B2 >();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Logical OR of two boolean constants.
+// \ingroup util
+//
+// \return \a TrueType if any of the arguments is \a TrueType, \a FalseType otherwise.
+//
+// This function performs a logical OR between the two given boolean constants. In case any of the
+// two arguments is \a TrueType, the function returns \a TrueType, else it returns \a FalseType.
+*/
+template< bool B1, bool B2 >
+constexpr BoolConstant< B1 || B2 > operator||( BoolConstant<B1>, BoolConstant<B2> ) noexcept
+{
+   return BoolConstant< B1 || B2 >();
+}
 //*************************************************************************************************
 
 } // namespace blaze
