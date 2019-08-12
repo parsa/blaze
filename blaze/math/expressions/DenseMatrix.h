@@ -45,6 +45,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/algorithms/Min.h>
@@ -268,8 +269,11 @@ BLAZE_ALWAYS_INLINE size_t spacing( const DenseMatrix<MT,SO>& dm ) noexcept
 // matrix.
 */
 template< typename MT >  // Type of the matrix
-inline auto resetLower_backend( DenseMatrix<MT,false>& dm ) -> DisableIf_t< IsUpper_v<MT> >
+inline auto resetLower_backend( DenseMatrix<MT,false>& dm )
+   -> DisableIf_t< IsUniform_v<MT> || IsUpper_v<MT> >
 {
+   using blaze::reset;
+
    const size_t m( (~dm).rows()    );
    const size_t n( (~dm).columns() );
 
@@ -296,8 +300,11 @@ inline auto resetLower_backend( DenseMatrix<MT,false>& dm ) -> DisableIf_t< IsUp
 // matrix.
 */
 template< typename MT >  // Type of the matrix
-inline auto resetLower_backend( DenseMatrix<MT,true>& dm ) -> DisableIf_t< IsUpper_v<MT> >
+inline auto resetLower_backend( DenseMatrix<MT,true>& dm )
+   -> DisableIf_t< IsUniform_v<MT> || IsUpper_v<MT> >
 {
+   using blaze::reset;
+
    const size_t m   ( (~dm).rows()    );
    const size_t n   ( (~dm).columns() );
    const size_t jend( min( m, n ) );
@@ -314,17 +321,41 @@ inline auto resetLower_backend( DenseMatrix<MT,true>& dm ) -> DisableIf_t< IsUpp
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend implementation of the \c resetLower() function for lower dense matrices.
+/*!\brief Backend implementation of the \c resetLower() function for uniform dense matrices.
 // \ingroup dense_matrix
 //
 // \param matrix The given dense matrix.
 // \return void
 //
-// This function resets the lower part (excluding the diagonal) of the given lower dense matrix.
+// This function resets the lower part (excluding the diagonal) of the given uniform dense matrix.
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline auto resetLower_backend( DenseMatrix<MT,SO>& dm ) -> EnableIf_t< IsUpper_v<MT> >
+inline auto resetLower_backend( DenseMatrix<MT,SO>& dm )
+   -> EnableIf_t< IsUniform_v<MT> && !IsUpper_v<MT> >
+{
+   using blaze::reset;
+
+   reset( ~dm );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c resetLower() function for upper dense matrices.
+// \ingroup dense_matrix
+//
+// \param matrix The given dense matrix.
+// \return void
+//
+// This function resets the lower part (excluding the diagonal) of the given upper dense matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline auto resetLower_backend( DenseMatrix<MT,SO>& dm )
+   -> EnableIf_t< IsUpper_v<MT> >
 {
    MAYBE_UNUSED( dm );
 }
@@ -364,8 +395,11 @@ inline void resetLower( DenseMatrix<MT,SO>& dm )
 // matrix.
 */
 template< typename MT >  // Type of the matrix
-inline auto resetUpper_backend( DenseMatrix<MT,false>& dm ) -> DisableIf_t< IsLower_v<MT> >
+inline auto resetUpper_backend( DenseMatrix<MT,false>& dm )
+   -> DisableIf_t< IsUniform_v<MT> || IsLower_v<MT> >
 {
+   using blaze::reset;
+
    const size_t m   ( (~dm).rows()    );
    const size_t n   ( (~dm).columns() );
    const size_t iend( min( m, n ) );
@@ -392,8 +426,11 @@ inline auto resetUpper_backend( DenseMatrix<MT,false>& dm ) -> DisableIf_t< IsLo
 // matrix.
 */
 template< typename MT >  // Type of the matrix
-inline auto resetUpper_backend( DenseMatrix<MT,true>& dm ) -> DisableIf_t< IsLower_v<MT> >
+inline auto resetUpper_backend( DenseMatrix<MT,true>& dm )
+   -> DisableIf_t< IsUniform_v<MT> || IsLower_v<MT> >
 {
+   using blaze::reset;
+
    const size_t m( (~dm).rows()    );
    const size_t n( (~dm).columns() );
 
@@ -410,17 +447,41 @@ inline auto resetUpper_backend( DenseMatrix<MT,true>& dm ) -> DisableIf_t< IsLow
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend implementation of the \c resetUpper() function for upper dense matrices.
+/*!\brief Backend implementation of the \c resetUpper() function for uniform dense matrices.
 // \ingroup dense_matrix
 //
 // \param matrix The given dense matrix.
 // \return void
 //
-// This function resets the upper part (excluding the diagonal) of the given upper dense matrix.
+// This function resets the upper part (excluding the diagonal) of the given uniform dense matrix.
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order of the matrix
-inline auto resetUpper_backend( DenseMatrix<MT,SO>& dm ) -> EnableIf_t< IsLower_v<MT> >
+inline auto resetUpper_backend( DenseMatrix<MT,SO>& dm )
+   -> EnableIf_t< IsUniform_v<MT> || !IsLower_v<MT> >
+{
+   using blaze::reset;
+
+   reset( ~dm );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend implementation of the \c resetUpper() function for lower dense matrices.
+// \ingroup dense_matrix
+//
+// \param matrix The given dense matrix.
+// \return void
+//
+// This function resets the upper part (excluding the diagonal) of the given lower dense matrix.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order of the matrix
+inline auto resetUpper_backend( DenseMatrix<MT,SO>& dm )
+   -> EnableIf_t< IsLower_v<MT> >
 {
    MAYBE_UNUSED( dm );
 }
