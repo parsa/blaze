@@ -41,7 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/shims/Invert.h>
-#include <blaze/system/CUDAAttributes.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 
 
