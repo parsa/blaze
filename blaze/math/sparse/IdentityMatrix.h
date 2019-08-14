@@ -45,6 +45,7 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
+#include <blaze/math/expressions/Expression.h>
 #include <blaze/math/expressions/SparseMatrix.h>
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/Forward.h>
@@ -178,7 +179,7 @@ namespace blaze {
 template< typename Type                    // Data type of the matrix
         , bool SO = defaultStorageOrder >  // Storage order
 class IdentityMatrix
-   : public SparseMatrix< IdentityMatrix<Type,SO>, SO >
+   : public Expression< SparseMatrix< IdentityMatrix<Type,SO>, SO > >
 {
  public:
    //**Type definitions****************************************************************************
