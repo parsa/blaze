@@ -1078,7 +1078,7 @@ class TDMatDMatMultExpr
       const size_t jpos( remainder ? ( N & size_t(-SIMDSIZE) ) : N );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
 
-      if( LOW && UPP && N > SIMDSIZE*3UL ) {
+      if( LOW && UPP && ( remainder || N > SIMDSIZE*3UL ) ) {
          reset( C );
       }
 
@@ -1759,7 +1759,7 @@ class TDMatDMatMultExpr
       const size_t ipos( remainder ? ( M & size_t(-SIMDSIZE) ) : M );
       BLAZE_INTERNAL_ASSERT( !remainder || ( M - ( M % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
 
-      if( LOW && UPP && M > SIMDSIZE*3UL ) {
+      if( LOW && UPP && ( remainder || M > SIMDSIZE*3UL ) ) {
          reset( C );
       }
 
@@ -7825,7 +7825,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       const SIMDType factor( set( scalar ) );
 
-      if( LOW && UPP && N > SIMDSIZE*3UL ) {
+      if( LOW && UPP && ( remainder || N > SIMDSIZE*3UL ) ) {
          reset( C );
       }
 
@@ -8508,7 +8508,7 @@ class DMatScalarMultExpr< TDMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
 
       const SIMDType factor( set( scalar ) );
 
-      if( LOW && UPP && M > SIMDSIZE*3UL ) {
+      if( LOW && UPP && ( remainder || M > SIMDSIZE*3UL ) ) {
          reset( C );
       }
 
