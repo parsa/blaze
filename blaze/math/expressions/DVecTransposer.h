@@ -50,6 +50,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/Size.h>
@@ -694,6 +695,24 @@ struct HasMutableDataAccess< DVecTransposer<VT,TF> >
 template< typename VT, bool TF >
 struct IsAligned< DVecTransposer<VT,TF> >
    : public IsAligned<VT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISCONTIGUOUS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename VT, bool TF >
+struct IsContiguous< DVecTransposer<VT,TF> >
+   : public IsContiguous<VT>
 {};
 /*! \endcond */
 //*************************************************************************************************
