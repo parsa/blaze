@@ -49,6 +49,7 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/Size.h>
@@ -757,6 +758,24 @@ struct HasMutableDataAccess< DMatTransposer<MT,SO> >
 template< typename MT, bool SO >
 struct IsAligned< DMatTransposer<MT,SO> >
    : public IsAligned<MT>
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ISCONTIGUOUS SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO >
+struct IsContiguous< DMatTransposer<MT,SO> >
+   : public IsContiguous<MT>
 {};
 /*! \endcond */
 //*************************************************************************************************
