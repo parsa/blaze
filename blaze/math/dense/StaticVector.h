@@ -3376,12 +3376,12 @@ struct BandTraitEval2< MT, I
 namespace std
 {
    template< typename Type, size_t N, bool TF >
-   struct tuple_size< blaze::StaticVector<Type,N,TF> >
+   class tuple_size< blaze::StaticVector<Type,N,TF> >
       : integral_constant< size_t, N >
    {};
 
    template< size_t I, typename Type, size_t N, bool TF >
-   struct tuple_element< I, blaze::StaticVector<Type,N,TF> >
+   class tuple_element< I, blaze::StaticVector<Type,N,TF> >
    {
       using type = Type;
    };
