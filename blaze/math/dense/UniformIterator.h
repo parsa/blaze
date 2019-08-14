@@ -519,16 +519,16 @@ constexpr bool
    operator>=( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept;
 
 template< typename Type, bool AF >
-constexpr const
-   UniformIterator<Type,AF> operator+( const UniformIterator<Type,AF>& it, ptrdiff_t inc ) noexcept;
+constexpr const UniformIterator<Type,AF>
+   operator+( const UniformIterator<Type,AF>& it, ptrdiff_t inc ) noexcept;
 
 template< typename Type, bool AF >
-constexpr const
-   UniformIterator<Type,AF> operator+( ptrdiff_t inc, const UniformIterator<Type,AF>& it ) noexcept;
+constexpr const UniformIterator<Type,AF>
+   operator+( ptrdiff_t inc, const UniformIterator<Type,AF>& it ) noexcept;
 
 template< typename Type, bool AF >
-constexpr const
-   UniformIterator<Type,AF> operator-( const UniformIterator<Type,AF>& it, ptrdiff_t inc ) noexcept;
+constexpr const UniformIterator<Type,AF>
+   operator-( const UniformIterator<Type,AF>& it, ptrdiff_t inc ) noexcept;
 
 template< typename Type, bool AF >
 constexpr ptrdiff_t
