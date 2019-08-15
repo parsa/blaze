@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/Matrix.h>
+#include <blaze/math/expressions/Forward.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/util/IntegralConstant.h>
 
