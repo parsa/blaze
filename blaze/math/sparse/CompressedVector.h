@@ -78,6 +78,7 @@
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>
 #include <blaze/math/typetraits/IsVector.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/TransposeFlag.h>
 #include <blaze/system/Thresholds.h>
@@ -1058,7 +1059,10 @@ inline CompressedVector<Type,TF>&
    else {
       size_ = (~rhs).size();
       end_  = begin_;
-      assign( *this, ~rhs );
+
+      if( !IsZero_v<VT> ) {
+         assign( *this, ~rhs );
+      }
    }
 
    return *this;
@@ -1087,7 +1091,9 @@ inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::operator+=( const V
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   addAssign( *this, ~rhs );
+   if( !IsZero_v<VT> ) {
+      addAssign( *this, ~rhs );
+   }
 
    return *this;
 }
@@ -1115,7 +1121,9 @@ inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::operator-=( const V
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   subAssign( *this, ~rhs );
+   if( !IsZero_v<VT> ) {
+      subAssign( *this, ~rhs );
+   }
 
    return *this;
 }
@@ -1180,8 +1188,13 @@ inline CompressedVector<Type,TF>&
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
-   CompressedVector tmp( *this * (~rhs) );
-   swap( tmp );
+   if( !IsZero_v<VT> ) {
+      CompressedVector tmp( *this * (~rhs) );
+      swap( tmp );
+   }
+   else {
+      reset();
+   }
 
    return *this;
 }
@@ -1254,9 +1267,14 @@ inline CompressedVector<Type,TF>& CompressedVector<Type,TF>::operator%=( const V
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
    }
 
-   const CrossType tmp( *this % (~rhs) );
-   end_ = begin_;
-   assign( *this, tmp );
+   if( !IsZero_v<VT> ) {
+      const CrossType tmp( *this % (~rhs) );
+      reset();
+      assign( *this, tmp );
+   }
+   else {
+      reset();
+   }
 
    return *this;
 }
