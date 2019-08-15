@@ -13946,7 +13946,7 @@
            , bool SO >    // Storage order
    void setToZero( blaze::SparseMatrix<MT,SO>& mat )
    {
-      (~mat) = blaze::map( ~mat, []( auto value ){ return decltype(auto){}; } );
+      (~mat) = blaze::map( ~mat, []( const auto& value ){ return decltype(value){}; } );
    }
    \endcode
 
@@ -16572,8 +16572,8 @@
 // \section faq_custom_operations Blaze does not provide feature XYZ. What can I do?
 //
 // In some cases you might be able to implement the required functionality very conveniently by
-// building on the existing \c map() functions (see custom_operations_map). For instance, the
-// following code demonstrates the addition of a function that merges two vectors of floating
+// building on the existing \c map() functions (see \ref custom_operations_map). For instance,
+// the following code demonstrates the addition of a function that merges two vectors of floating
 // point type into a vector of complex numbers:
 
    \code
@@ -16590,7 +16590,7 @@
 
 // You will find a summary of the necessary steps to create custom features in \ref customization.
 //
-// Sometime, however, the available customization points might not be sufficient. In this case
+// Sometimes, however, the available customization points might not be sufficient. In this case
 // you are cordially invited to create a pull request that provides the implementation of a
 // feature or to create an issue according to our \ref issue_creation_guidelines. Please try
 // to explain the feature as descriptive as possible, for instance by providing conceptual code
