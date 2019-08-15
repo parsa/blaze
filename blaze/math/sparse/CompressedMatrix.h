@@ -80,6 +80,7 @@
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/LowType.h>
 #include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/system/StorageOrder.h>
@@ -1284,7 +1285,10 @@ inline CompressedMatrix<Type,SO>&
    else {
       resize( (~rhs).rows(), (~rhs).columns(), false );
       reset();
-      assign( *this, ~rhs );
+
+      if( !IsZero_v<MT> ) {
+         assign( *this, ~rhs );
+      }
    }
 
    return *this;
@@ -1315,7 +1319,10 @@ inline CompressedMatrix<Type,SO>&
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   addAssign( *this, ~rhs );
+   if( !IsZero_v<MT> ) {
+      addAssign( *this, ~rhs );
+   }
+
    return *this;
 }
 //*************************************************************************************************
@@ -1343,7 +1350,10 @@ inline CompressedMatrix<Type,SO>& CompressedMatrix<Type,SO>::operator-=( const M
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   subAssign( *this, ~rhs );
+   if( !IsZero_v<MT> ) {
+      subAssign( *this, ~rhs );
+   }
+
    return *this;
 }
 //*************************************************************************************************
@@ -1409,8 +1419,13 @@ inline CompressedMatrix<Type,SO>&
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   CompressedMatrix tmp( *this % (~rhs) );
-   swap( tmp );
+   if( !IsZero_v<MT> ) {
+      CompressedMatrix tmp( *this % (~rhs) );
+      swap( tmp );
+   }
+   else {
+      reset();
+   }
 
    return *this;
 }
@@ -4044,7 +4059,10 @@ inline CompressedMatrix<Type,true>&
    else {
       resize( (~rhs).rows(), (~rhs).columns(), false );
       reset();
-      assign( *this, ~rhs );
+
+      if( !IsZero_v<MT> ) {
+         assign( *this, ~rhs );
+      }
    }
 
    return *this;
@@ -4075,7 +4093,10 @@ inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::operator+=( con
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   addAssign( *this, ~rhs );
+   if( !IsZero_v<MT> ) {
+      addAssign( *this, ~rhs );
+   }
+
    return *this;
 }
 /*! \endcond */
@@ -4104,7 +4125,10 @@ inline CompressedMatrix<Type,true>& CompressedMatrix<Type,true>::operator-=( con
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   subAssign( *this, ~rhs );
+   if( !IsZero_v<MT> ) {
+      subAssign( *this, ~rhs );
+   }
+
    return *this;
 }
 /*! \endcond */
@@ -4172,8 +4196,13 @@ inline CompressedMatrix<Type,true>&
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   CompressedMatrix tmp( *this % (~rhs) );
-   swap( tmp );
+   if( !IsZero_v<MT> ) {
+      CompressedMatrix tmp( *this % (~rhs) );
+      swap( tmp );
+   }
+   else {
+      reset();
+   }
 
    return *this;
 }
