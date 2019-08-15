@@ -2334,11 +2334,11 @@
    blaze::DynamicVector< complex<double> > cplx;
 
    // Creating the vector
-   //    ( (-2.1,  0.3) )
-   //    ( (-4.2, -1.4) )
+   //    ( ( 2.1,  0.3) )
+   //    ( (-4.2,  1.4) )
    //    ( ( 1.0,  2.9) )
    //    ( ( 0.6, -3.4) )
-   cplx = map( real, imag, []( double r, double i ){ return complex( r, i ); } );
+   cplx = map( real, imag, []( double r, double i ){ return complex<double>( r, i ); } );
    \endcode
 
 // Although the computation can be parallelized it is not vectorized and thus cannot perform at
@@ -5010,9 +5010,9 @@
    blaze::DynamicMatrix< complex<double> > cplx;
 
    // Creating the matrix
-   //    ( (-2.1,  0.3) (-4.2, -1.4) )
+   //    ( ( 2.1,  0.3) (-4.2,  1.4) )
    //    ( ( 1.0,  2.9) ( 0.6, -3.4) )
-   cplx = map( real, imag, []( double r, double i ){ return complex( r, i ); } );
+   cplx = map( real, imag, []( double r, double i ){ return complex<double>( r, i ); } );
    \endcode
 
 // Although the computation can be parallelized it is not vectorized and thus cannot perform at
@@ -13724,9 +13724,9 @@
    blaze::DynamicMatrix< complex<double> > cplx;
 
    // Creating the matrix
-   //    ( (-2.1,  0.3) (-4.2, -1.4) )
+   //    ( ( 2.1,  0.3) (-4.2,  1.4) )
    //    ( ( 1.0,  2.9) ( 0.6, -3.4) )
-   cplx = map( real, imag, []( double r, double i ){ return complex( r, i ); } );
+   cplx = map( real, imag, []( double r, double i ){ return complex<double>( r, i ); } );
    \endcode
 
 // These examples demonstrate the most convenient way of defining a unary custom operation by
@@ -13946,7 +13946,7 @@
            , bool SO >    // Storage order
    void setToZero( blaze::SparseMatrix<MT,SO>& mat )
    {
-      (~mat) = blaze::map( ~mat, []( int ){ return 0; } );
+      (~mat) = blaze::map( ~mat, []( auto value ){ return decltype(auto){}; } );
    }
    \endcode
 
@@ -16566,6 +16566,35 @@
 // Additionally we are taking care to implement new \b Blaze functionality such that compile times
 // do not explode and try to reduce the compile times of existing features. Thus newer releases of
 // \b Blaze can also improve compile times.
+//
+//
+// <hr>
+// \section faq_custom_operations Blaze does not provide feature XYZ. What can I do?
+//
+// In some cases you might be able to implement the required functionality very conveniently by
+// building on the existing \c map() functions (see custom_operations_map). For instance, the
+// following code demonstrates the addition of a function that merges two vectors of floating
+// point type into a vector of complex numbers:
+
+   \code
+   template< typename VT1, typename VT2, bool TF >
+   decltype(auto) zip( const blaze::DenseVector<VT1,TF>& lhs, const blaze::DenseVector<VT2,TF>& rhs )
+   {
+      return blaze::map( ~lhs, ~rhs, []( const auto& r, const auto& i ) {
+         using ET1 = ElementType_t<VT1>;
+         using ET2 = ElementType_t<VT2>;
+         return std::complex<std::common_type_t<ET1,ET2>>( r, i );
+      } );
+   }
+   \endcode
+
+// You will find a summary of the necessary steps to create custom features in \ref customization.
+//
+// Sometime, however, the available customization points might not be sufficient. In this case
+// you are cordially invited to create a pull request that provides the implementation of a
+// feature or to create an issue according to our \ref issue_creation_guidelines. Please try
+// to explain the feature as descriptive as possible, for instance by providing conceptual code
+// examples.
 //
 // \n Previous: \ref intra_statement_optimization &nbsp; &nbsp; Next: \ref issue_creation_guidelines \n
 */
