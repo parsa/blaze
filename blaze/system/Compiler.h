@@ -72,7 +72,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if defined(__clang__) && !defined(BLAZE_INTEL_COMPILER)
+#if defined(__clang__) && !BLAZE_INTEL_COMPILER
 #  define BLAZE_CLANG_COMPILER 1
 #else
 #  define BLAZE_CLANG_COMPILER 0
@@ -112,7 +112,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if defined(__GNUC__) && !defined(BLAZE_CLANG_COMPILER) && !defined(BLAZE_INTEL_COMPILER)
+#if defined(__GNUC__) && !BLAZE_CLANG_COMPILER && !BLAZE_INTEL_COMPILER
 #  define BLAZE_GNU_COMPILER 1
 #else
 #  define BLAZE_GNU_COMPILER 0
@@ -145,7 +145,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if defined(_MSC_VER) && !defined(BLAZE_CLANG_COMPILER) && !defined(BLAZE_INTEL_COMPILER)
+#if defined(_MSC_VER) && !BLAZE_CLANG_COMPILER && !BLAZE_INTEL_COMPILER
 #  define BLAZE_MSC_COMPILER 1
 #else
 #  define BLAZE_MSC_COMPILER 0

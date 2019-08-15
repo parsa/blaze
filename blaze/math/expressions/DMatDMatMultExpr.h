@@ -1496,11 +1496,14 @@ class DMatDMatMultExpr
          }
       }
 
-      if( ( SYM || HERM ) && ( N > SIMDSIZE*4UL ) ) {
-         for( size_t i=SIMDSIZE*4UL; i<M; ++i ) {
-            const size_t jend( ( SIMDSIZE*4UL ) * ( i / (SIMDSIZE*4UL) ) );
-            for( size_t j=0UL; j<jend; ++j ) {
-               C(i,j) = HERM ? conj( C(j,i) ) : C(j,i);
+      if( SYM || HERM ) {
+         const size_t blocksize( remainder ? min(jpos,SIMDSIZE*4UL) : (SIMDSIZE*4UL) );
+         if( blocksize > 0UL ) {
+            for( size_t i=blocksize; i<M; ++i ) {
+               const size_t jend( blocksize * ( i / blocksize ) );
+               for( size_t j=0UL; j<jend; ++j ) {
+                  C(i,j) = HERM ? conj( C(j,i) ) : C(j,i);
+               }
             }
          }
       }
@@ -5957,11 +5960,14 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          }
       }
 
-      if( ( SYM || HERM ) && ( N > SIMDSIZE*4UL ) ) {
-         for( size_t i=SIMDSIZE*4UL; i<M; ++i ) {
-            const size_t jend( ( SIMDSIZE*4UL ) * ( i / (SIMDSIZE*4UL) ) );
-            for( size_t j=0UL; j<jend; ++j ) {
-               C(i,j) = HERM ? conj( C(j,i) ) : C(j,i);
+      if( SYM || HERM ) {
+         const size_t blocksize( remainder ? min(jpos,SIMDSIZE*4UL) : (SIMDSIZE*4UL) );
+         if( blocksize > 0UL ) {
+            for( size_t i=blocksize; i<M; ++i ) {
+               const size_t jend( blocksize * ( i / blocksize ) );
+               for( size_t j=0UL; j<jend; ++j ) {
+                  C(i,j) = HERM ? conj( C(j,i) ) : C(j,i);
+               }
             }
          }
       }
