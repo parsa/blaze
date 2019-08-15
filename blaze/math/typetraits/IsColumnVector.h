@@ -40,7 +40,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/Vector.h>
+#include <blaze/math/expressions/Forward.h>
 #include <blaze/math/TransposeFlag.h>
 #include <blaze/util/IntegralConstant.h>
 
