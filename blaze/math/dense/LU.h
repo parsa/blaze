@@ -55,6 +55,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/lapack/getrf.h>
 #include <blaze/math/typetraits/IsResizable.h>
+#include <blaze/math/typetraits/IsSquare.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/NumericCast.h>
 
