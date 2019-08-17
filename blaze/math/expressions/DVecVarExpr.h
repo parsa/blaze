@@ -50,6 +50,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
 
 
@@ -99,6 +100,8 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 decltype(auto) var_backend( const DenseVector<VT,TF>& dv, TrueType )
 {
+   MAYBE_UNUSED( dv );
+
    BLAZE_INTERNAL_ASSERT( size( ~dv ) > 1UL, "Invalid vector size detected" );
 
    return ElementType_t<VT>();

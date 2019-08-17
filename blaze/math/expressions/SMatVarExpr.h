@@ -65,6 +65,7 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
@@ -1167,6 +1168,8 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 inline decltype(auto) var_backend( const SparseMatrix<MT,SO>& sm, TrueType )
 {
+   MAYBE_UNUSED( sm );
+
    BLAZE_INTERNAL_ASSERT( size( ~sm ) > 1UL, "Invalid matrix size detected" );
 
    return ElementType_t<MT>();

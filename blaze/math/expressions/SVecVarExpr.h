@@ -48,6 +48,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/Types.h>
 
 
@@ -105,6 +106,8 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 decltype(auto) var_backend( const SparseVector<VT,TF>& sv, TrueType )
 {
+   MAYBE_UNUSED( sv );
+
    BLAZE_INTERNAL_ASSERT( size( ~sv ) > 1UL, "Invalid vector size detected" );
 
    return ElementType_t<VT>();

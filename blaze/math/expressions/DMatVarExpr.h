@@ -50,6 +50,7 @@
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
 
@@ -98,6 +99,8 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 inline decltype(auto) var_backend( const DenseMatrix<MT,SO>& dm, TrueType )
 {
+   MAYBE_UNUSED( dm );
+
    BLAZE_INTERNAL_ASSERT( size( ~dm ) > 1UL, "Invalid matrix size detected" );
 
    return ElementType_t<MT>();
