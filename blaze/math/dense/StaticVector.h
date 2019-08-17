@@ -3378,12 +3378,13 @@ namespace std
 {
    template< typename Type, size_t N, bool TF >
    class tuple_size< blaze::StaticVector<Type,N,TF> >
-      : integral_constant< size_t, N >
+      : public integral_constant< size_t, N >
    {};
 
    template< size_t I, typename Type, size_t N, bool TF >
    class tuple_element< I, blaze::StaticVector<Type,N,TF> >
    {
+    public:
       using type = Type;
    };
 }
