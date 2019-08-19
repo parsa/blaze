@@ -515,8 +515,8 @@ class CustomMatrix
    inline CustomMatrix& operator=( const Type& set );
    inline CustomMatrix& operator=( initializer_list< initializer_list<Type> > list );
 
-   template< typename Other, size_t M, size_t N >
-   inline CustomMatrix& operator=( const Other (&array)[M][N] );
+   template< typename Other, size_t Rows, size_t Cols >
+   inline CustomMatrix& operator=( const Other (&array)[Rows][Cols] );
 
    inline CustomMatrix& operator=( const CustomMatrix& rhs );
    inline CustomMatrix& operator=( CustomMatrix&& rhs ) noexcept;
@@ -1367,17 +1367,17 @@ template< typename Type   // Data type of the matrix
         , bool SO         // Storage order
         , typename RT >   // Result type
 template< typename Other  // Data type of the initialization array
-        , size_t M        // Number of rows of the initialization array
-        , size_t N >      // Number of columns of the initialization array
+        , size_t Rows     // Number of rows of the initialization array
+        , size_t Cols >   // Number of columns of the initialization array
 inline CustomMatrix<Type,AF,PF,SO,RT>&
-   CustomMatrix<Type,AF,PF,SO,RT>::operator=( const Other (&array)[M][N] )
+   CustomMatrix<Type,AF,PF,SO,RT>::operator=( const Other (&array)[Rows][Cols] )
 {
-   if( m_ != M || n_ != N ) {
+   if( m_ != Rows || n_ != Cols ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
    }
 
-   for( size_t i=0UL; i<M; ++i )
-      for( size_t j=0UL; j<N; ++j )
+   for( size_t i=0UL; i<Rows; ++i )
+      for( size_t j=0UL; j<Cols; ++j )
          v_[i*nn_+j] = array[i][j];
 
    return *this;
@@ -3407,8 +3407,8 @@ class CustomMatrix<Type,AF,PF,true,RT>
    inline CustomMatrix& operator=( const Type& set );
    inline CustomMatrix& operator=( initializer_list< initializer_list<Type> > list );
 
-   template< typename Other, size_t M, size_t N >
-   inline CustomMatrix& operator=( const Other (&array)[M][N] );
+   template< typename Other, size_t Rows, size_t Cols >
+   inline CustomMatrix& operator=( const Other (&array)[Rows][Cols] );
 
    inline CustomMatrix& operator=( const CustomMatrix& rhs );
    inline CustomMatrix& operator=( CustomMatrix&& rhs ) noexcept;
@@ -4241,17 +4241,17 @@ template< typename Type   // Data type of the matrix
         , bool PF         // Padding flag
         , typename RT >   // Result type
 template< typename Other  // Data type of the initialization array
-        , size_t M        // Number of rows of the initialization array
-        , size_t N >      // Number of columns of the initialization array
+        , size_t Rows     // Number of rows of the initialization array
+        , size_t Cols >   // Number of columns of the initialization array
 inline CustomMatrix<Type,AF,PF,true,RT>&
-   CustomMatrix<Type,AF,PF,true,RT>::operator=( const Other (&array)[M][N] )
+   CustomMatrix<Type,AF,PF,true,RT>::operator=( const Other (&array)[Rows][Cols] )
 {
-   if( m_ != M || n_ != N ) {
+   if( m_ != Rows || n_ != Cols ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
    }
 
-   for( size_t j=0UL; j<N; ++j )
-      for( size_t i=0UL; i<M; ++i )
+   for( size_t j=0UL; j<Cols; ++j )
+      for( size_t i=0UL; i<Rows; ++i )
          v_[i+j*mm_] = array[i][j];
 
    return *this;
