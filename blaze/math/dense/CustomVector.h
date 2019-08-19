@@ -496,8 +496,8 @@ class CustomVector
    inline CustomVector& operator=( const Type& rhs );
    inline CustomVector& operator=( initializer_list<Type> list );
 
-   template< typename Other, size_t N >
-   inline CustomVector& operator=( const Other (&array)[N] );
+   template< typename Other, size_t Dim >
+   inline CustomVector& operator=( const Other (&array)[Dim] );
 
    inline CustomVector& operator=( const CustomVector& rhs );
    inline CustomVector& operator=( CustomVector&& rhs ) noexcept;
@@ -1188,15 +1188,15 @@ template< typename Type   // Data type of the vector
         , bool TF         // Transpose flag
         , typename RT >   // Result type
 template< typename Other  // Data type of the initialization array
-        , size_t N >      // Dimension of the initialization array
+        , size_t Dim >    // Dimension of the initialization array
 inline CustomVector<Type,AF,PF,TF,RT>&
-   CustomVector<Type,AF,PF,TF,RT>::operator=( const Other (&array)[N] )
+   CustomVector<Type,AF,PF,TF,RT>::operator=( const Other (&array)[Dim] )
 {
-   if( size_ != N ) {
+   if( size_ != Dim ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
    }
 
-   for( size_t i=0UL; i<N; ++i )
+   for( size_t i=0UL; i<Dim; ++i )
       v_[i] = array[i];
 
    return *this;
