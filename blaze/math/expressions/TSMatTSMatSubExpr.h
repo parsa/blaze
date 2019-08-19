@@ -72,7 +72,6 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsSame.h>
-#include <blaze/util/typetraits/IsVoid.h>
 
 
 namespace blaze {
@@ -128,8 +127,7 @@ class TSMatTSMatSubExpr
        variable is set to 0 and the default strategy is chosen. */
    template< typename T1, typename T2, typename T3 >
    static constexpr bool UseSymmetricKernel_v =
-      ( IsVoid_v< EnableIf_t< IsRowMajorMatrix_v<T1> > > &&
-        IsSymmetric_v<T2> && IsSymmetric_v<T3> );
+      ( IsRowMajorMatrix_v<T1> && IsSymmetric_v<T2> && IsSymmetric_v<T3> );
    /*! \endcond */
    //**********************************************************************************************
 
