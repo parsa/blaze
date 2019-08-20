@@ -230,5 +230,3 @@ Darcy Beurle -- Integration of **Blaze** into the Compiler Explorer
 Robert Schumacher -- CMake fixes
 
 Jan Rudolph -- CMake fixes
-
-[Jules Pénuchot](https://github.com/jpenuchot) -- [Blaze CUDA](https://github.com/stellar-group/blaze_cuda), a CUDA backend for Blaze
