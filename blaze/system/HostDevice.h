@@ -63,7 +63,7 @@
 
 //*************************************************************************************************
 /*!\def BLAZE_HOST
-// \brief Conditional macro that sets __host__ and __device__ attributes when compiled with CUDA.
+// \brief Conditional macro that sets __host__ attribute when compiled with CUDA.
 // \ingroup system
 */
 #ifdef __CUDACC__
