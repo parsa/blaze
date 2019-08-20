@@ -1213,6 +1213,8 @@ class DMatTDMatMultExpr
                C(i    ,j) += A(i    ,k) * B(k,j);
                C(i+1UL,j) += A(i+1UL,k) * B(k,j);
             }
+
+            if( LOW ) ++j;
          }
 
          if( LOW ) {
@@ -1301,7 +1303,7 @@ class DMatTDMatMultExpr
             }
          }
 
-         for( ; j<jend; ++j )
+         if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
                                  ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
@@ -1322,6 +1324,8 @@ class DMatTDMatMultExpr
             for( ; remainder && k<K; ++k ) {
                C(i,j) += A(i,k) * B(k,j);
             }
+
+            if( LOW ) ++j;
          }
 
          if( LOW ) {
@@ -1472,6 +1476,8 @@ class DMatTDMatMultExpr
                C(i+2UL,j) += A(i+2UL,k) * B(k,j);
                C(i+3UL,j) += A(i+3UL,k) * B(k,j);
             }
+
+            if( LOW ) ++j;
          }
 
          if( LOW ) {
@@ -1567,6 +1573,8 @@ class DMatTDMatMultExpr
                C(i    ,j) += A(i    ,k) * B(k,j);
                C(i+1UL,j) += A(i+1UL,k) * B(k,j);
             }
+
+            if( LOW ) ++j;
          }
 
          if( LOW ) {
@@ -1621,7 +1629,7 @@ class DMatTDMatMultExpr
             }
          }
 
-         for( ; j<jend; ++j )
+         if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
                                  ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
@@ -1642,6 +1650,8 @@ class DMatTDMatMultExpr
             for( ; remainder && k<K; ++k ) {
                C(i,j) += A(i,k) * B(k,j);
             }
+
+            if( LOW ) ++j;
          }
 
          if( LOW ) {
@@ -5414,6 +5424,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
                C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
             }
+
+            if( LOW ) ++j;
          }
 
          if( LOW ) {
@@ -5502,7 +5514,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             }
          }
 
-         for( ; j<jend; ++j )
+         if( j < jend )
          {
             const size_t kbegin( ( IsUpper_v<MT4> )
                                  ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
@@ -5523,6 +5535,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             for( ; remainder && k<K; ++k ) {
                C(i,j) += A(i,k) * B(k,j) * scalar;
             }
+
+            if( LOW ) ++j;
          }
 
          if( LOW ) {
@@ -5673,6 +5687,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                C(i+2UL,j) += A(i+2UL,k) * B(k,j) * scalar;
                C(i+3UL,j) += A(i+3UL,k) * B(k,j) * scalar;
             }
+
+            if( LOW ) ++j;
          }
 
          if( LOW ) {
@@ -5768,6 +5784,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
                C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
                C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
             }
+
+            if( LOW ) ++j;
          }
 
          if( LOW ) {
@@ -5778,7 +5796,7 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          }
       }
 
-      if( i < M )
+      for( ; i<M; ++i )
       {
          const size_t jend( LOW ? i+1UL : N );
          size_t j( 0UL );
@@ -5843,6 +5861,8 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             for( ; remainder && k<K; ++k ) {
                C(i,j) += A(i,k) * B(k,j) * scalar;
             }
+
+            if( LOW ) ++j;
          }
 
          if( LOW ) {
