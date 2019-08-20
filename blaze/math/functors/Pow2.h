@@ -84,7 +84,7 @@ struct Pow2
    // \return The result of the pow2() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE constexpr decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE constexpr decltype(auto) operator()( const T& a ) const
    {
       return pow2( a );
    }

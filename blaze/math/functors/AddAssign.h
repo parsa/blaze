@@ -66,7 +66,7 @@ struct AddAssign
    // \return void
    */
    template< typename T1, typename T2 >
-   BLAZE_ALWAYS_INLINE void operator()( T1& a, const T2& b ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE void operator()( T1& a, const T2& b ) const
    {
       a += b;
    }
