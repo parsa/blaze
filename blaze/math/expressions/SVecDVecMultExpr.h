@@ -63,7 +63,6 @@
 #include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
-#include <blaze/system/HostDevice.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
@@ -204,7 +203,7 @@ class SVecDVecMultExpr
       //
       // \return Reference to the incremented expression iterator.
       */
-      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator++() {
+      inline ConstIterator& operator++() {
          ++it_;
          return *this;
       }

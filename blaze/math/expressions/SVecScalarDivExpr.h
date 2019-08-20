@@ -222,7 +222,7 @@ class SVecScalarDivExpr
       //
       // \return Reference to the incremented expression iterator.
       */
-      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator++() {
+      inline ConstIterator& operator++() {
          ++vector_;
          return *this;
       }

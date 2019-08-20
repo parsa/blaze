@@ -854,7 +854,7 @@ class SMatReduceExpr<MT,OP,rowwise>
       // \param inc The increment of the iterator.
       // \return The incremented iterator.
       */
-      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator+=( size_t inc ) {
+      inline ConstIterator& operator+=( size_t inc ) {
          index_ += inc;
          return *this;
       }
@@ -866,7 +866,7 @@ class SMatReduceExpr<MT,OP,rowwise>
       // \param dec The decrement of the iterator.
       // \return The decremented iterator.
       */
-      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator-=( size_t dec ) {
+      inline ConstIterator& operator-=( size_t dec ) {
          index_ -= dec;
          return *this;
       }
@@ -877,7 +877,7 @@ class SMatReduceExpr<MT,OP,rowwise>
       //
       // \return Reference to the incremented iterator.
       */
-      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator++() {
+      inline ConstIterator& operator++() {
          ++index_;
          return *this;
       }
@@ -888,7 +888,7 @@ class SMatReduceExpr<MT,OP,rowwise>
       //
       // \return The previous position of the iterator.
       */
-      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator++( int ) {
+      inline const ConstIterator operator++( int ) {
          return ConstIterator( index_++ );
       }
       //*******************************************************************************************
@@ -898,7 +898,7 @@ class SMatReduceExpr<MT,OP,rowwise>
       //
       // \return Reference to the decremented iterator.
       */
-      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator--() {
+      inline ConstIterator& operator--() {
          --index_;
          return *this;
       }
@@ -909,7 +909,7 @@ class SMatReduceExpr<MT,OP,rowwise>
       //
       // \return The previous position of the iterator.
       */
-      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator--( int ) {
+      inline const ConstIterator operator--( int ) {
          return ConstIterator( index_-- );
       }
       //*******************************************************************************************

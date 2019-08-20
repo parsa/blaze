@@ -245,7 +245,7 @@ class SVecDVecOuterExpr
       //
       // \return Reference to the incremented expression iterator.
       */
-      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator++() {
+      inline ConstIterator& operator++() {
          ++it_;
          return *this;
       }
