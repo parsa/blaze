@@ -4699,8 +4699,7 @@ class DMatScalarMultExpr< DMatDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
         IsContiguous_v<T2> && HasConstDataAccess_v<T2> &&
         IsContiguous_v<T3> && HasConstDataAccess_v<T3> &&
         !IsDiagonal_v<T2> && !IsDiagonal_v<T3> &&
-        (  (T1::simdEnabled && T2::simdEnabled && T3::simdEnabled)
-        || (T1::cudaAssignable && T2::cudaAssignable && T3::cudaAssignable) ) &&
+        T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
         IsBLASCompatible_v< ElementType_t<T1> > &&
         IsBLASCompatible_v< ElementType_t<T2> > &&
         IsBLASCompatible_v< ElementType_t<T3> > &&
