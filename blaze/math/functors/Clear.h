@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/shims/Clear.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 
 
@@ -65,7 +66,7 @@ struct Clear
    // \return void
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE void operator()( T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE void operator()( T& a ) const
    {
       clear( a );
    }

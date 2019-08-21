@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/shims/Reset.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 
 
@@ -65,7 +66,7 @@ struct Reset
    // \return void
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE void operator()( T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE void operator()( T& a ) const
    {
       reset( a );
    }

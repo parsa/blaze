@@ -73,6 +73,7 @@
 #include <blaze/math/typetraits/IsPaddingEnabled.h>
 #include <blaze/math/typetraits/IsSIMDEnabled.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -228,7 +229,7 @@ class DMatDMatMapExpr
       // \param inc The increment of the iterator.
       // \return The incremented iterator.
       */
-      inline ConstIterator& operator+=( size_t inc ) {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator+=( size_t inc ) {
          left_  += inc;
          right_ += inc;
          return *this;
@@ -241,7 +242,7 @@ class DMatDMatMapExpr
       // \param dec The decrement of the iterator.
       // \return The decremented iterator.
       */
-      inline ConstIterator& operator-=( size_t dec ) {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator-=( size_t dec ) {
          left_  -= dec;
          right_ -= dec;
          return *this;
@@ -253,7 +254,7 @@ class DMatDMatMapExpr
       //
       // \return Reference to the incremented iterator.
       */
-      inline ConstIterator& operator++() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator++() {
          ++left_;
          ++right_;
          return *this;
@@ -265,7 +266,7 @@ class DMatDMatMapExpr
       //
       // \return The previous position of the iterator.
       */
-      inline const ConstIterator operator++( int ) {
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator++( int ) {
          return ConstIterator( left_++, right_++, op_ );
       }
       //*******************************************************************************************
@@ -275,7 +276,7 @@ class DMatDMatMapExpr
       //
       // \return Reference to the decremented iterator.
       */
-      inline ConstIterator& operator--() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator--() {
          --left_;
          --right_;
          return *this;
@@ -287,7 +288,7 @@ class DMatDMatMapExpr
       //
       // \return The previous position of the iterator.
       */
-      inline const ConstIterator operator--( int ) {
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator--( int ) {
          return ConstIterator( left_--, right_--, op_ );
       }
       //*******************************************************************************************
@@ -318,7 +319,7 @@ class DMatDMatMapExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
-      inline bool operator==( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator==( const ConstIterator& rhs ) const {
          return left_ == rhs.left_;
       }
       //*******************************************************************************************
@@ -329,7 +330,7 @@ class DMatDMatMapExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
-      inline bool operator!=( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator!=( const ConstIterator& rhs ) const {
          return left_ != rhs.left_;
       }
       //*******************************************************************************************
@@ -340,7 +341,7 @@ class DMatDMatMapExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is smaller, \a false if not.
       */
-      inline bool operator<( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator<( const ConstIterator& rhs ) const {
          return left_ < rhs.left_;
       }
       //*******************************************************************************************
@@ -351,7 +352,7 @@ class DMatDMatMapExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is greater, \a false if not.
       */
-      inline bool operator>( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator>( const ConstIterator& rhs ) const {
          return left_ > rhs.left_;
       }
       //*******************************************************************************************
@@ -362,7 +363,7 @@ class DMatDMatMapExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
       */
-      inline bool operator<=( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator<=( const ConstIterator& rhs ) const {
          return left_ <= rhs.left_;
       }
       //*******************************************************************************************
@@ -373,7 +374,7 @@ class DMatDMatMapExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
       */
-      inline bool operator>=( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator>=( const ConstIterator& rhs ) const {
          return left_ >= rhs.left_;
       }
       //*******************************************************************************************
@@ -384,7 +385,7 @@ class DMatDMatMapExpr
       // \param rhs The right-hand side iterator.
       // \return The number of elements between the two iterators.
       */
-      inline DifferenceType operator-( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE DifferenceType operator-( const ConstIterator& rhs ) const {
          return left_ - rhs.left_;
       }
       //*******************************************************************************************
@@ -420,7 +421,7 @@ class DMatDMatMapExpr
       // \param dec The number of elements the iterator is decremented.
       // \return The decremented iterator.
       */
-      friend inline const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
+      friend BLAZE_DEVICE_CALLABLE inline const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
          return ConstIterator( it.left_ - dec, it.right_ - dec, it.op_ );
       }
       //*******************************************************************************************

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/functors/MultAssign.h
-//  \brief Header file for the MultAssign functor
+//  \file blaze/config/HostDevice.h
+//  \brief Macro for CUDA compatibility
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -32,48 +32,58 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_FUNCTORS_MULTASSIGN_H_
-#define _BLAZE_MATH_FUNCTORS_MULTASSIGN_H_
+
+#ifndef _BLAZE_SYSTEM_HOSTDEVICE_H_
+#define _BLAZE_SYSTEM_HOSTDEVICE_H_
 
 
 //*************************************************************************************************
-// Includes
-//*************************************************************************************************
-
-#include <blaze/system/HostDevice.h>
-#include <blaze/system/Inline.h>
-
-
-namespace blaze {
-
-//=================================================================================================
-//
-//  CLASS DEFINITION
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Generic wrapper for multiplication assignment.
-// \ingroup functors
+/*!\def BLAZE_GLOBAL
+// \brief Conditional macro that sets __global__ attribute when compiled with CUDA.
+// \ingroup system
 */
-struct MultAssign
-{
-   //**********************************************************************************************
-   /*!\brief Performs a multiplication assignment with the given objects/values.
-   //
-   // \param a The target left-hand side object/value.
-   // \param b The right-hand side object/value to be multiplied.
-   // \return void
-   */
-   template< typename T1, typename T2 >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE void operator()( T1& a, const T2& b ) const
-   {
-      a *= b;
-   }
-   //**********************************************************************************************
-};
-//*************************************************************************************************
+#ifdef __CUDACC__
+#  define BLAZE_GLOBAL __global__
+#else
+#  define BLAZE_GLOBAL
+#endif
 
-} // namespace blaze
+
+//*************************************************************************************************
+/*!\def BLAZE_DEVICE
+// \brief Conditional macro that sets __device__ attribute when compiled with CUDA.
+// \ingroup system
+*/
+#ifdef __CUDACC__
+#  define BLAZE_DEVICE __device__
+#else
+#  define BLAZE_DEVICE
+#endif
+
+
+//*************************************************************************************************
+/*!\def BLAZE_HOST
+// \brief Conditional macro that sets __host__ attribute when compiled with CUDA.
+// \ingroup system
+*/
+#ifdef __CUDACC__
+#  define BLAZE_HOST __host__
+#else
+#  define BLAZE_HOST
+#endif
+
+
+//*************************************************************************************************
+/*!\def BLAZE_DEVICE_CALLABLE
+// \brief Conditional macro that sets __host__ and __device__ attributes when compiled with CUDA.
+// \ingroup system
+*/
+#ifdef __CUDACC__
+#  define BLAZE_DEVICE_CALLABLE __host__ __device__
+#else
+#  define BLAZE_DEVICE_CALLABLE
+#endif
+
+//*************************************************************************************************
 
 #endif

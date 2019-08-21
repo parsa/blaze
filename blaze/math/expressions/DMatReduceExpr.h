@@ -70,6 +70,7 @@
 #include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/views/Check.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
@@ -861,7 +862,7 @@ class DMatReduceExpr<MT,OP,rowwise>
       // \param inc The increment of the iterator.
       // \return The incremented iterator.
       */
-      inline ConstIterator& operator+=( size_t inc ) {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator+=( size_t inc ) {
          index_ += inc;
          return *this;
       }
@@ -873,7 +874,7 @@ class DMatReduceExpr<MT,OP,rowwise>
       // \param dec The decrement of the iterator.
       // \return The decremented iterator.
       */
-      inline ConstIterator& operator-=( size_t dec ) {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator-=( size_t dec ) {
          index_ -= dec;
          return *this;
       }
@@ -884,7 +885,7 @@ class DMatReduceExpr<MT,OP,rowwise>
       //
       // \return Reference to the incremented iterator.
       */
-      inline ConstIterator& operator++() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator++() {
          ++index_;
          return *this;
       }
@@ -895,7 +896,7 @@ class DMatReduceExpr<MT,OP,rowwise>
       //
       // \return The previous position of the iterator.
       */
-      inline const ConstIterator operator++( int ) {
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator++( int ) {
          return ConstIterator( index_++ );
       }
       //*******************************************************************************************
@@ -905,7 +906,7 @@ class DMatReduceExpr<MT,OP,rowwise>
       //
       // \return Reference to the decremented iterator.
       */
-      inline ConstIterator& operator--() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator--() {
          --index_;
          return *this;
       }
@@ -916,7 +917,7 @@ class DMatReduceExpr<MT,OP,rowwise>
       //
       // \return The previous position of the iterator.
       */
-      inline const ConstIterator operator--( int ) {
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator--( int ) {
          return ConstIterator( index_-- );
       }
       //*******************************************************************************************

@@ -60,6 +60,7 @@
 #include <blaze/math/typetraits/YieldsUniUpper.h>
 #include <blaze/math/typetraits/YieldsUpper.h>
 #include <blaze/math/typetraits/YieldsZero.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/IntegralConstant.h>
 
@@ -85,7 +86,7 @@ struct Real
    // \return The result of the real() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
    {
       return real( a );
    }

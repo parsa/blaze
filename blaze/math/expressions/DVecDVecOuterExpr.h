@@ -72,6 +72,7 @@
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/system/Thresholds.h>
@@ -268,7 +269,7 @@ class DVecDVecOuterExpr
       // \param inc The increment of the iterator.
       // \return The incremented iterator.
       */
-      inline ConstIterator& operator+=( size_t inc ) {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator+=( size_t inc ) {
          right_ += inc;
          return *this;
       }
@@ -280,7 +281,7 @@ class DVecDVecOuterExpr
       // \param dec The decrement of the iterator.
       // \return The decremented iterator.
       */
-      inline ConstIterator& operator-=( size_t dec ) {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator-=( size_t dec ) {
          right_ -= dec;
          return *this;
       }
@@ -291,7 +292,7 @@ class DVecDVecOuterExpr
       //
       // \return Reference to the incremented iterator.
       */
-      inline ConstIterator& operator++() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator++() {
          ++right_;
          return *this;
       }
@@ -302,7 +303,7 @@ class DVecDVecOuterExpr
       //
       // \return The previous position of the iterator.
       */
-      inline const ConstIterator operator++( int ) {
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator++( int ) {
          return ConstIterator( left_, right_++ );
       }
       //*******************************************************************************************
@@ -312,7 +313,7 @@ class DVecDVecOuterExpr
       //
       // \return Reference to the decremented iterator.
       */
-      inline ConstIterator& operator--() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator--() {
          --right_;
          return *this;
       }
@@ -323,7 +324,7 @@ class DVecDVecOuterExpr
       //
       // \return The previous position of the iterator.
       */
-      inline const ConstIterator operator--( int ) {
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator--( int ) {
          return ConstIterator( left_, right_-- );
       }
       //*******************************************************************************************

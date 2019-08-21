@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 
 
@@ -64,7 +65,7 @@ struct L2Norm
    // \return The L2 norm of the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
    {
       return l2Norm( a );
    }

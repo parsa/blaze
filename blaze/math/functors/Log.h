@@ -50,6 +50,7 @@
 #include <blaze/math/typetraits/YieldsHermitian.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
 #include <blaze/math/typetraits/YieldsUniform.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 
 
@@ -74,7 +75,7 @@ struct Log
    // \return The result of the log() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
    {
       return log( a );
    }

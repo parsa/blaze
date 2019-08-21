@@ -59,6 +59,7 @@
 #include <blaze/math/typetraits/YieldsUniUpper.h>
 #include <blaze/math/typetraits/YieldsUpper.h>
 #include <blaze/math/typetraits/YieldsZero.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 
 
@@ -83,7 +84,7 @@ struct Pow3
    // \return The result of the pow3() function for the given object/value.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE constexpr decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE constexpr decltype(auto) operator()( const T& a ) const
    {
       return pow3( a );
    }

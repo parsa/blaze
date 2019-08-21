@@ -63,6 +63,7 @@
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
@@ -206,7 +207,7 @@ class DVecDVecMultExpr
       // \param left Iterator to the initial left-hand side element.
       // \param right Iterator to the initial right-hand side element.
       */
-      explicit inline ConstIterator( LeftIteratorType left, RightIteratorType right )
+      explicit inline BLAZE_DEVICE_CALLABLE ConstIterator( LeftIteratorType left, RightIteratorType right )
          : left_ ( left  )  // Iterator to the current left-hand side element
          , right_( right )  // Iterator to the current right-hand side element
       {}
@@ -218,7 +219,7 @@ class DVecDVecMultExpr
       // \param inc The increment of the iterator.
       // \return The incremented iterator.
       */
-      inline ConstIterator& operator+=( size_t inc ) {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator+=( size_t inc ) {
          left_  += inc;
          right_ += inc;
          return *this;
@@ -231,7 +232,7 @@ class DVecDVecMultExpr
       // \param dec The decrement of the iterator.
       // \return The decremented iterator.
       */
-      inline ConstIterator& operator-=( size_t dec ) {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator-=( size_t dec ) {
          left_  -= dec;
          right_ -= dec;
          return *this;
@@ -243,7 +244,7 @@ class DVecDVecMultExpr
       //
       // \return Reference to the incremented iterator.
       */
-      inline ConstIterator& operator++() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator++() {
          ++left_;
          ++right_;
          return *this;
@@ -255,7 +256,7 @@ class DVecDVecMultExpr
       //
       // \return The previous position of the iterator.
       */
-      inline const ConstIterator operator++( int ) {
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator++( int ) {
          return ConstIterator( left_++, right_++ );
       }
       //*******************************************************************************************
@@ -265,7 +266,7 @@ class DVecDVecMultExpr
       //
       // \return Reference to the decremented iterator.
       */
-      inline ConstIterator& operator--() {
+      inline BLAZE_DEVICE_CALLABLE ConstIterator& operator--() {
          --left_;
          --right_;
          return *this;
@@ -277,7 +278,7 @@ class DVecDVecMultExpr
       //
       // \return The previous position of the iterator.
       */
-      inline const ConstIterator operator--( int ) {
+      inline BLAZE_DEVICE_CALLABLE const ConstIterator operator--( int ) {
          return ConstIterator( left_--, right_-- );
       }
       //*******************************************************************************************
@@ -287,7 +288,7 @@ class DVecDVecMultExpr
       //
       // \return The resulting value.
       */
-      inline ReturnType operator*() const {
+      inline BLAZE_DEVICE_CALLABLE ReturnType operator*() const {
          return (*left_) * (*right_);
       }
       //*******************************************************************************************
@@ -308,7 +309,7 @@ class DVecDVecMultExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
-      inline bool operator==( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator==( const ConstIterator& rhs ) const {
          return left_ == rhs.left_;
       }
       //*******************************************************************************************
@@ -319,7 +320,7 @@ class DVecDVecMultExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
-      inline bool operator!=( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator!=( const ConstIterator& rhs ) const {
          return left_ != rhs.left_;
       }
       //*******************************************************************************************
@@ -330,7 +331,7 @@ class DVecDVecMultExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is smaller, \a false if not.
       */
-      inline bool operator<( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator<( const ConstIterator& rhs ) const {
          return left_ < rhs.left_;
       }
       //*******************************************************************************************
@@ -341,7 +342,7 @@ class DVecDVecMultExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is greater, \a false if not.
       */
-      inline bool operator>( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator>( const ConstIterator& rhs ) const {
          return left_ > rhs.left_;
       }
       //*******************************************************************************************
@@ -352,7 +353,7 @@ class DVecDVecMultExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
       */
-      inline bool operator<=( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator<=( const ConstIterator& rhs ) const {
          return left_ <= rhs.left_;
       }
       //*******************************************************************************************
@@ -363,7 +364,7 @@ class DVecDVecMultExpr
       // \param rhs The right-hand side iterator.
       // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
       */
-      inline bool operator>=( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE bool operator>=( const ConstIterator& rhs ) const {
          return left_ >= rhs.left_;
       }
       //*******************************************************************************************
@@ -374,7 +375,7 @@ class DVecDVecMultExpr
       // \param rhs The right-hand side iterator.
       // \return The number of elements between the two iterators.
       */
-      inline DifferenceType operator-( const ConstIterator& rhs ) const {
+      inline BLAZE_DEVICE_CALLABLE DifferenceType operator-( const ConstIterator& rhs ) const {
          return left_ - rhs.left_;
       }
       //*******************************************************************************************
@@ -386,7 +387,7 @@ class DVecDVecMultExpr
       // \param inc The number of elements the iterator is incremented.
       // \return The incremented iterator.
       */
-      friend inline const ConstIterator operator+( const ConstIterator& it, size_t inc ) {
+      friend inline BLAZE_DEVICE_CALLABLE const ConstIterator operator+( const ConstIterator& it, size_t inc ) {
          return ConstIterator( it.left_ + inc, it.right_ + inc );
       }
       //*******************************************************************************************
@@ -398,7 +399,7 @@ class DVecDVecMultExpr
       // \param it The iterator to be incremented.
       // \return The incremented iterator.
       */
-      friend inline const ConstIterator operator+( size_t inc, const ConstIterator& it ) {
+      friend inline BLAZE_DEVICE_CALLABLE const ConstIterator operator+( size_t inc, const ConstIterator& it ) {
          return ConstIterator( it.left_ + inc, it.right_ + inc );
       }
       //*******************************************************************************************
@@ -410,7 +411,7 @@ class DVecDVecMultExpr
       // \param dec The number of elements the iterator is decremented.
       // \return The decremented iterator.
       */
-      friend inline const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
+      friend inline BLAZE_DEVICE_CALLABLE const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
          return ConstIterator( it.left_ - dec, it.right_ - dec );
       }
       //*******************************************************************************************

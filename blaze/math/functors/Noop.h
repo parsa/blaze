@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/constraints/SIMDPack.h>
+#include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 
 
@@ -65,7 +66,7 @@ struct Noop
    // \return The given object/value without modifications.
    */
    template< typename T >
-   BLAZE_ALWAYS_INLINE decltype(auto) operator()( const T& a ) const
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
    {
       return a;
    }
