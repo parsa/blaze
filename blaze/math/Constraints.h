@@ -55,6 +55,7 @@
 #include <blaze/math/constraints/ConstDataAccess.h>
 #include <blaze/math/constraints/Contiguous.h>
 #include <blaze/math/constraints/CrossExpr.h>
+#include <blaze/math/constraints/CUDAAssignable.h>
 #include <blaze/math/constraints/Custom.h>
 #include <blaze/math/constraints/Declaration.h>
 #include <blaze/math/constraints/DeclDiagExpr.h>
