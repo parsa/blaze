@@ -44,6 +44,7 @@
 #include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/Commutative.h>
+#include <blaze/math/constraints/CUDAAssignable.h>
 #include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/constraints/Hermitian.h>
 #include <blaze/math/constraints/Identity.h>
@@ -76,6 +77,7 @@
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
 #include <blaze/math/typetraits/IsCommutative.h>
+#include <blaze/math/typetraits/IsCUDAAssignable.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
@@ -127,6 +129,7 @@ OperationTest::OperationTest()
    testIsColumnMajorMatrix();
    testIsColumnVector();
    testIsCommutative();
+   testIsCUDAAssignable();
    testIsDiagonal();
    testIsHermitian();
    testIsIdentity();
@@ -251,6 +254,24 @@ void OperationTest::testIsCommutative()
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMMUTATIVE_TYPES( Type6, Type3 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMMUTATIVE_TYPES( Type5, Type4 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMMUTATIVE_TYPES( Type7, Type8 );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the mathematical 'IsCUDAAssignable' type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the mathematical 'IsCUDAAssignable' type trait.
+// In case an error is detected, a compilation error is created.
+*/
+void OperationTest::testIsCUDAAssignable()
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CUDA_ASSIGNABLE( A );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_CUDA_ASSIGNABLE( I );
+   BLAZE_CONSTRAINT_MUST_BE_CUDA_ASSIGNABLE    ( J );
 }
 //*************************************************************************************************
 

@@ -83,6 +83,7 @@ class OperationTest
    void testIsColumnMajorMatrix();
    void testIsColumnVector();
    void testIsCommutative();
+   void testIsCUDAAssignable();
    void testIsDiagonal();
    void testIsHermitian();
    void testIsIdentity();
@@ -120,6 +121,9 @@ class OperationTest
 
    struct G { static constexpr bool simdEnabled() { return false; } };
    struct H { static constexpr bool simdEnabled() { return true; } };
+
+   struct I { static constexpr bool cudaAssignable = false; };
+   struct J { static constexpr bool cudaAssignable = true; };
    /*! \endcond */
    //**********************************************************************************************
 };
