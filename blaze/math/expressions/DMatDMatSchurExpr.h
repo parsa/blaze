@@ -423,7 +423,7 @@ class DMatDMatSchurExpr
       // \param dec The number of elements the iterator is decremented.
       // \return The decremented iterator.
       */
-      friend BLAZE_DEVICE_CALLABLE inline const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
+      friend inline BLAZE_DEVICE_CALLABLE const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
          return ConstIterator( it.left_ - dec, it.right_ - dec );
       }
       //*******************************************************************************************
