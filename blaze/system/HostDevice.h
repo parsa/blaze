@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/config/HostDevice.h
+//  \file blaze/system/HostDevice.h
 //  \brief Macro for CUDA compatibility
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
@@ -31,7 +31,6 @@
 //  DAMAGE.
 */
 //=================================================================================================
-
 
 #ifndef _BLAZE_SYSTEM_HOSTDEVICE_H_
 #define _BLAZE_SYSTEM_HOSTDEVICE_H_
