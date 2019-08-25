@@ -19,15 +19,17 @@ Get an impression of the clear but powerful syntax of **Blaze** in the [Getting 
 ## Download ##
 
 ![white20x120.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/white20x120.jpg)
-[![blaze-3.5.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-3.5.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-3.5.tar.gz)
+[![blaze-3.6.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-3.6.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-3.6.tar.gz)
 ![white40x120.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/white40x120.jpg)
-[![blaze-docu-3.5.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-docu-3.5.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-docu-3.5.tar.gz)
+[![blaze-docu-3.6.jpg](https://bitbucket.org/blaze-lib/blaze/wiki/images/blaze-docu-3.6.jpg)](https://bitbucket.org/blaze-lib/blaze/downloads/blaze-docu-3.6.tar.gz)
 
 Older releases of **Blaze** can be found in the [downloads](https://bitbucket.org/blaze-lib/blaze/downloads) section or in our [release archive](https://bitbucket.org/blaze-lib/blaze/wiki/Release Archive).
 
 ----
 
 ## Blaze Projects ##
+
+[Blaze CUDA](https://github.com/STEllAR-GROUP/blaze_cuda): Add CUDA capabilities to the **Blaze** library (Jules Pénuchot)
 
 [blaze_tensor](https://github.com/STEllAR-GROUP/blaze_tensor): An implementation of 3D tensors for the **Blaze** library (Stellar Group)
 
@@ -39,8 +41,9 @@ Older releases of **Blaze** can be found in the [downloads](https://bitbucket.or
 
 ## News ##
 
-**26.2.2019**: Today we present the next evolution of the **Blaze** library, **Blaze** 3.5. This new release
-introduces several new, requested features:
+**??.??.2019**: On time for [CppCon 2019](https://cppcon.org) and [SC19](https://sc19.supercomputing.org) we release the next **Blaze** milestone. **Blaze** 3.6 comes with a multitude of new features including the Kronecker product for [vectors](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Multiplication#!kronecker-product) and [matrices](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Matrix Multiplication#!kronecker-product), the [`mean()`](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!mean), [`var()`](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!var) and [`stddev()`](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!stddev) statistic functions for all kinds of vectors and matrices, [scalar additions](https://bitbucket.org/blaze-lib/blaze/wiki/Addition#!scalar_addition), [scalar subtractions](https://bitbucket.org/blaze-lib/blaze/wiki/Addition#!scalar_subtraction), and [scalar expansion](https://bitbucket.org/blaze-lib/blaze/wiki/Vector Operations#!scalar-expansion). Furthermore we have integrated various bitwise operations for dense vectors and dense matrices ([bitwise shift](https://bitbucket.org/blaze-lib/blaze/wiki/Bitwise Shift), [AND](https://bitbucket.org/blaze-lib/blaze/wiki/Bitwise AND), [OR](https://bitbucket.org/blaze-lib/blaze/wiki/Bitwise OR), and [XOR](https://bitbucket.org/blaze-lib/blaze/wiki/Bitwise XOR)) and logical operations ([Logical NOT](https://bitbucket.org/blaze-lib/blaze/wiki/Logical NOT), [AND](https://bitbucket.org/blaze-lib/blaze/wiki/Logical AND), and [OR](https://bitbucket.org/blaze-lib/blaze/wiki/Logical OR)). We hope you enjoy this amazing release of **Blaze**!
+
+**26.2.2019**: Today we present the next evolution of the **Blaze** library, **Blaze** 3.5. This new release introduces several new, requested features:
 
 * New vector and matrix types, specifically [```UniformVector```](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Types#!uniformvector), [```UniformMatrix```](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Types#!uniformmatrix), [```ZeroVector```](https://bitbucket.org/blaze-lib/blaze/wiki/Vector%20Types#!zerovector), and [```ZeroMatrix```](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix%20Types#!zeromatrix):
 
@@ -98,9 +101,6 @@ expand<3>( b );  // Compile time parameter
 
 With the release of **Blaze** 3.5 we also officially deprecate the **Blazemark**, which means that we will eventually remove it in an upcoming release. We hope that you enjoy this new release!
 
-**25.11.2018**: We are proud to announce a new **Blaze** project: [blaze_tensor](https://github.com/STEllAR-GROUP/blaze_tensor)
-provides an implementation of **Blaze**-style 3D tensors. A big thank you to the Stellar Group!
-
 ----
 
 ## Wiki: Table of Contents ##
@@ -135,11 +135,22 @@ provides an implementation of **Blaze**-style 3D tensors. A big thank you to the
         * [Inner Product / Scalar Product / Dot Product](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Multiplication#!inner-product-scalar-product-dot-product)
         * [Outer Product](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Multiplication#!outer-product)
         * [Cross Product](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Multiplication#!cross-product)
+        * [Kronecker Product](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Multiplication#!kronecker-product)
     * [Vector/Vector Division](https://bitbucket.org/blaze-lib/blaze/wiki/Vector-Vector Division)
     * [Matrix/Vector Multiplication](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Vector Multiplication)
     * [Matrix/Matrix Multiplication](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Matrix Multiplication)
         * [Schur Product](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Matrix Multiplication#!componentwise-multiplication-schur-product)
         * [Matrix Product](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Matrix Multiplication#!matrix-product)
+        * [Kronecker Product](https://bitbucket.org/blaze-lib/blaze/wiki/Matrix-Matrix Multiplication#!kronecker-product)
+* [Bitwise Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Arithmetic Operations)
+    * [Bitwise Shift](https://bitbucket.org/blaze-lib/blaze/wiki/Bitwise Shift)
+    * [Bitwise AND](https://bitbucket.org/blaze-lib/blaze/wiki/Bitwise AND)
+    * [Bitwise OR](https://bitbucket.org/blaze-lib/blaze/wiki/Bitwise OR)
+    * [Bitwise XOR](https://bitbucket.org/blaze-lib/blaze/wiki/Bitwise XOR)
+* [Logical Operations](https://bitbucket.org/blaze-lib/blaze/wiki/Arithmetic Operations)
+    * [Logical NOT](https://bitbucket.org/blaze-lib/blaze/wiki/Logical NOT)
+    * [Logical AND](https://bitbucket.org/blaze-lib/blaze/wiki/Logical AND)
+    * [Logical OR](https://bitbucket.org/blaze-lib/blaze/wiki/Logical OR)
 * [Shared-Memory Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/Shared Memory Parallelization)
     * [HPX Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/HPX Parallelization)
     * [C++11 Thread Parallelization](https://bitbucket.org/blaze-lib/blaze/wiki/Cpp Thread Parallelization)
@@ -182,7 +193,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 ## Compiler Compatibility ##
 
-**Blaze** supports the C++14 standard and is compatible with a wide range of C++ compilers. In fact, **Blaze** is constantly tested with the GNU compiler collection (version 6.0 through 7.2), the Clang compiler (version 5.0 through 7.0), and Visual C++ 2017 (Win64 only). Other compilers are not explicitly tested, but might work with a high probability.
+**Blaze** supports the C++14 standard and is compatible with a wide range of C++ compilers. In fact, **Blaze** is constantly tested with the GNU compiler collection (version 6.0 through 9.1), the Clang compiler (version 5.0 through 8.0), and Visual C++ 2017 (Win64 only). Other compilers are not explicitly tested, but might work with a high probability.
 
 If you are looking for a C++98 compatible math library you might consider using an older release of **Blaze**. Until the release 2.6 **Blaze** was written in C++-98 and constantly tested with the GNU compiler collection (version 4.5 through 5.0), the Intel C++ compiler (12.1, 13.1, 14.0, 15.0), the Clang compiler (version 3.4 through 3.7), and Visual C++ 2010, 2012, 2013, and 2015 (Win64 only).
 
@@ -230,3 +241,5 @@ Darcy Beurle -- Integration of **Blaze** into the Compiler Explorer
 Robert Schumacher -- CMake fixes
 
 Jan Rudolph -- CMake fixes
+
+Mikhail Katliar -- LAPACK extensions
