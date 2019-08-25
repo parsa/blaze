@@ -325,7 +325,7 @@
 
    \code
    #define BLAZE_MAJOR_VERSION 3
-   #define BLAZE_MINOR_VERSION 5
+   #define BLAZE_MINOR_VERSION 6
    #define BLAZE_PATCH_VERSION 0
    \endcode
 
