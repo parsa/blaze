@@ -116,7 +116,7 @@ void geev( char jobvl, char jobvr, int n, complex<double>* A, int lda,
 // \param jobvr \c 'V' to compute the right eigenvectors of \a A, \c 'N' to not compute them.
 // \param n The number of rows and columns of the given matrix \f$[0..\infty)\f$.
 // \param A Pointer to the first element of the single precision column-major matrix.
-// \param lda The total number of elements between two columns of the matrix A \f$[0..\infty)\f$.
+// \param lda The total number of elements between two columns of the matrix A; size >= max( 1, \a n ).
 // \param wr Pointer to the first element of the vector for the real part of the eigenvalues.
 // \param wi Pointer to the first element of the vector for the imaginary part of the eigenvalues.
 // \param VL Pointer to the first element of the column-major matrix for the left eigenvectors.
@@ -192,7 +192,7 @@ inline void geev( char jobvl, char jobvr, int n, float* A, int lda,
 // \param jobvr \c 'V' to compute the right eigenvectors of \a A, \c 'N' to not compute them.
 // \param n The number of rows and columns of the given matrix \f$[0..\infty)\f$.
 // \param A Pointer to the first element of the double precision column-major matrix.
-// \param lda The total number of elements between two columns of the matrix A \f$[0..\infty)\f$.
+// \param lda The total number of elements between two columns of the matrix A; size >= max( 1, \a n ).
 // \param wr Pointer to the first element of the vector for the real part of the eigenvalues.
 // \param wi Pointer to the first element of the vector for the imaginary part of the eigenvalues.
 // \param VL Pointer to the first element of the column-major matrix for the left eigenvectors.
@@ -268,7 +268,7 @@ inline void geev( char jobvl, char jobvr, int n, double* A, int lda,
 // \param jobvr \c 'V' to compute the right eigenvectors of \a A, \c 'N' to not compute them.
 // \param n The number of rows and columns of the given matrix \f$[0..\infty)\f$.
 // \param A Pointer to the first element of the single precision complex column-major matrix.
-// \param lda The total number of elements between two columns of the matrix A \f$[0..\infty)\f$.
+// \param lda The total number of elements between two columns of the matrix A; size >= max( 1, \a n ).
 // \param w Pointer to the first element of the vector for the eigenvalues.
 // \param VL Pointer to the first element of the column-major matrix for the left eigenvectors.
 // \param ldvl The total number of elements between two columns of the matrix VL \f$[0..\infty)\f$.
@@ -351,7 +351,7 @@ inline void geev( char jobvl, char jobvr, int n, complex<float>* A, int lda,
 // \param jobvr \c 'V' to compute the right eigenvectors of \a A, \c 'N' to not compute them.
 // \param n The number of rows and columns of the given matrix \f$[0..\infty)\f$.
 // \param A Pointer to the first element of the double precision complex column-major matrix.
-// \param lda The total number of elements between two columns of the matrix A \f$[0..\infty)\f$.
+// \param lda The total number of elements between two columns of the matrix A; size >= max( 1, \a n ).
 // \param w Pointer to the first element of the vector for the eigenvalues.
 // \param VL Pointer to the first element of the column-major matrix for the left eigenvectors.
 // \param ldvl The total number of elements between two columns of the matrix VL \f$[0..\infty)\f$.
