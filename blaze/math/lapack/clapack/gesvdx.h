@@ -59,19 +59,23 @@ extern "C" {
 void sgesvdx_( char* jobu, char* jobv, char* range, int* m, int* n, float* A, int* lda,
                float* vl, float* vu, int* il, int* iu, int* ns, float* s, float* U, int* ldu,
                float* V, int* ldv, float* work, int* lwork, int* iwork, int* info,
-               blaze::fortran_charlen_t njobu, blaze::fortran_charlen_t njobv );
+               blaze::fortran_charlen_t njobu, blaze::fortran_charlen_t njobv,
+               blaze::fortran_charlen_t nrange );
 void dgesvdx_( char* jobu, char* jobv, char* range, int* m, int* n, double* A, int* lda,
                double* vl, double* vu, int* il, int* iu, int* ns, double* s, double* U, int* ldu,
                double* V, int* ldv, double* work, int* lwork, int* iwork, int* info,
-               blaze::fortran_charlen_t njobu, blaze::fortran_charlen_t njobv );
+               blaze::fortran_charlen_t njobu, blaze::fortran_charlen_t njobv,
+               blaze::fortran_charlen_t nrange );
 void cgesvdx_( char* jobu, char* jobv, char* range, int* m, int* n, float* A, int* lda,
                float* vl, float* vu, int* il, int* iu, int* ns, float* s, float* U, int* ldu,
                float* V, int* ldv, float* work, int* lwork, float* rwork, int* iwork, int* info,
-               blaze::fortran_charlen_t njobu, blaze::fortran_charlen_t njobv );
+               blaze::fortran_charlen_t njobu, blaze::fortran_charlen_t njobv,
+               blaze::fortran_charlen_t nrange );
 void zgesvdx_( char* jobu, char* jobv, char* range, int* m, int* n, double* A, int* lda,
                double* vl, double* vu, int* il, int* iu, int* ns, double* s, double* U, int* ldu,
                double* V, int* ldv, double* work, int* lwork, double* rwork, int* iwork, int* info,
-               blaze::fortran_charlen_t njobu, blaze::fortran_charlen_t njobv );
+               blaze::fortran_charlen_t njobu, blaze::fortran_charlen_t njobv,
+               blaze::fortran_charlen_t nrange );
 
 }
 #endif
@@ -203,7 +207,8 @@ inline void gesvdx( char jobu, char jobv, char range, int m, int n, float* A, in
 
    sgesvdx_( &jobu, &jobv, &range, &m, &n, A, &lda, &vl, &vu, &il, &iu, ns,
              s, U, &ldu, V, &ldv, work, &lwork, iwork, info,
-             blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+             blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1),
+             blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -296,7 +301,8 @@ inline void gesvdx( char jobu, char jobv, char range, int m, int n, double* A, i
 
    dgesvdx_( &jobu, &jobv, &range, &m, &n, A, &lda, &vl, &vu, &il, &iu, ns,
              s, U, &ldu, V, &ldv, work, &lwork, iwork, info,
-             blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+             blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1),
+             blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -397,7 +403,8 @@ inline void gesvdx( char jobu, char jobv, char range, int m, int n, complex<floa
              &vl, &vu, &il, &iu, ns, s,
              reinterpret_cast<ET*>( U ), &ldu, reinterpret_cast<ET*>( V ), &ldv,
              reinterpret_cast<ET*>( work ), &lwork, rwork, iwork, info,
-             blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+             blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1),
+             blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
@@ -498,7 +505,8 @@ inline void gesvdx( char jobu, char jobv, char range, int m, int n, complex<doub
              &vl, &vu, &il, &iu, ns, s,
              reinterpret_cast<ET*>( U ), &ldu, reinterpret_cast<ET*>( V ), &ldv,
              reinterpret_cast<ET*>( work ), &lwork, rwork, iwork, info,
-             blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+             blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1),
+             blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
