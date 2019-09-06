@@ -52,7 +52,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/lapack/clapack/gges.h>
 #include <blaze/math/shims/Equal.h>
-#include <blaze/math/typetraits/UnderlyingElement.h>
+#include <blaze/util/algorithms/Max.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/constraints/Builtin.h>
@@ -74,64 +74,204 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK generalized Schur factorization functions (gges) */
 //@{
-template< typename MT1, bool SO1, typename MT2, bool SO2, 
-   typename VT1, bool TF1, typename VT2, bool TF2,
-   typename MT3, bool SO3, typename MT4, bool SO4 >
-inline void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
-   DenseVector<VT1,TF1>& alpha, DenseVector<VT2,TF2>& beta, 
-   DenseMatrix<MT3,SO3>& VSL, DenseMatrix<MT4,SO4>& VSR );
+template< typename MT1, bool SO1, typename MT2, bool SO2
+        , typename VT1, bool TF1, typename VT2, bool TF2 >
+void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
+           DenseVector<VT1,TF1>& alpha, DenseVector<VT2,TF2>& beta );
 
+template< typename MT1, bool SO1, typename MT2, bool SO2
+        , typename VT1, bool TF1, typename VT2, bool TF2
+        , typename Select >
+void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
+           DenseVector<VT1,TF1>& alpha, DenseVector<VT2,TF2>& beta,
+           Select select );
 
-template<
-   typename MT1, bool SO1, typename MT2, bool SO2, 
-   typename VT1, bool TF1, typename VT2, bool TF2,
-   typename MT3, bool SO3, typename MT4, bool SO4 >
-inline void gges( int (*selctg)(ElementType_t<VT2> const*, ElementType_t<VT2> const*, ElementType_t<VT2> const*), 
-   DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
-   DenseVector<VT1,TF1>& alpha, DenseVector<VT2,TF2>& beta, 
-   DenseMatrix<MT3,SO3>& VSL, DenseMatrix<MT4,SO4>& VSR );
+template< typename MT1, bool SO1, typename MT2, bool SO2, typename MT3, bool SO3
+        , typename VT1, bool TF1, typename VT2, bool TF2, typename MT4, bool SO4 >
+void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, DenseMatrix<MT3,SO3>& VSL,
+           DenseVector<VT1,TF1>& alpha, DenseVector<VT2,TF2>& beta, DenseMatrix<MT4,SO4>& VSR );
 
+template< typename MT1, bool SO1, typename MT2, bool SO2, typename MT3, bool SO3
+        , typename VT1, bool TF1, typename VT2, bool TF2, typename MT4, bool SO4
+        , typename Select >
+void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, DenseMatrix<MT3,SO3>& VSL,
+           DenseVector<VT1,TF1>& alpha, DenseVector<VT2,TF2>& beta, DenseMatrix<MT4,SO4>& VSR,
+           Select select );
 //@}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for computing the generalized Schur factorization
-// of the given pair of dense general matrices.
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the LAPACK gges kernel for real general matrices.
 // \ingroup lapack_eigenvalue
 //
-// \param A On entry, the first of the pair of matrices. On exit, \a A has been overwritten 
-// by its generalized Schur form S.
-// \param B On entry, the second of the pair of matrices. On exit, \a B has been overwritten
-// by its generalized Schur form T.
-// \param alpha The resulting complex vector of eigenvalues numerator. Resized if necessary.
-// \param beta The resulting real vector of eigenvalues denominator. Resized if necessary.
-// \param VSL The matrix of resulting left Schur vectors. Resized if necessary.
-// \param VSR The matrix of resulting right Schur vectors. Resized if necessary.
+// \param A The first matrix of the given pair of real general matrices.
+// \param B The second matrix of the given pair of real general matrices.
+// \param alpha The resulting complex vector of eigenvalue numerators.
+// \param beta The resulting real vector of eigenvalue denominators.
+// \param select Logical function for the eigenvalue selection.
+// \return void
+// \exception std::runtime_error Schur factorization computation failed.
+//
+// This function is the backend implementation for computing the generalized Schur factorization
+// of the given pair of real dense general matrices.\n
+// This function must \b NOT be called explicitly! It is used internally for the dispatch to
+// the correct LAPACK function. Calling this function explicitly might result in erroneous
+// results and/or in compilation errors. Instead of using this function use the according
+// gges() function.
+*/
+template< typename MT1       // Type of the matrix A
+        , bool SO1           // Storage order of the matrix A
+        , typename MT2       // Type of the matrix B
+        , bool SO2           // Storage order of the matrix B
+        , typename VT1       // Type of the vector alpha
+        , bool TF1           // Transpose flag of the vector alpha
+        , typename VT2       // Type of the vector beta
+        , bool TF2           // Transpose flag of the vector beta
+        , typename Select >  // Type of the eigenvalue selector
+inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
+                          DenseVector<VT1,TF1>& alpha, DenseVector<VT2,TF2>& beta,
+                          Select select )
+   -> DisableIf_t< IsComplex_v< ElementType_t<MT1> > >
+{
+   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( ~B ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (~B).rows() == (~A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (~alpha).size() == (~A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (~beta).size() == (~A).rows(), "Invalid vector dimension detected" );
+
+   using CT = ElementType_t<VT1>;
+   using BT = ElementType_t<MT1>;
+
+   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
+   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
+
+   const int n  ( numeric_cast<int>( (~A).rows() ) );
+   const int lda( numeric_cast<int>( (~A).spacing() ) );
+   const int ldb( numeric_cast<int>( (~B).spacing() ) );
+   int info( 0 );
+   int sdim( 0 );
+
+   int lwork = max( 8*n, 6*n + 16 );
+   const std::unique_ptr<BT[]> alphar( new BT[n] );
+   const std::unique_ptr<BT[]> alphai( new BT[n] );
+   const std::unique_ptr<BT[]> work( new BT[max(1,lwork)] );
+   const std::unique_ptr<bool[]> bwork( select ? new bool[n] : nullptr );
+
+   gges( 'N', 'N', ( select ? 'S' : 'N' ), select, n, (~A).data(), lda, (~B).data(), ldb, &sdim,
+         alphar.get(), alphai.get(), (~beta).data(), nullptr, 1, nullptr, 1,
+         work.get(), lwork, bwork.get(), &info );
+
+   BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for generalized eigenvalue decomposition" );
+
+   if( info > 0 ) {
+      BLAZE_THROW_LAPACK_ERROR( "Generalized eigenvalue decomposition failed" );
+   }
+
+   for( size_t i=0UL; i<(~A).rows(); ++i ) {
+      (~alpha)[i] = CT( alphar[i], alphai[i] );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the LAPACK gges kernel for complex general matrices.
+// \ingroup lapack_eigenvalue
+//
+// \param A The first matrix of the given pair of complex general matrices.
+// \param B The second matrix of the given pair of complex general matrices.
+// \param alpha The resulting complex vector of eigenvalue numerators.
+// \param beta The resulting complex vector of eigenvalue denominators.
+// \param select Logical function for the eigenvalue selection.
+// \return void
+// \exception std::runtime_error Schur factorization computation failed.
+//
+// This function is the backend implementation for computing the generalized Schur factorization
+// of the given pair of complex dense general matrices.\n
+// This function must \b NOT be called explicitly! It is used internally for the dispatch to
+// the correct LAPACK function. Calling this function explicitly might result in erroneous
+// results and/or in compilation errors. Instead of using this function use the according
+// gges() function.
+*/
+template< typename MT1       // Type of the matrix A
+        , bool SO1           // Storage order of the matrix A
+        , typename MT2       // Type of the matrix B
+        , bool SO2           // Storage order of the matrix B
+        , typename VT1       // Type of the vector alpha
+        , bool TF1           // Transpose flag of the vector alpha
+        , typename VT2       // Type of the vector beta
+        , bool TF2           // Transpose flag of the vector beta
+        , typename Select >  // Type of the eigenvalue selector
+inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
+                          DenseVector<VT1,TF1>& alpha, DenseVector<VT2,TF2>& beta,
+                          Select select )
+   -> EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
+{
+   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( ~B ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (~B).rows() == (~A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (~alpha).size() == (~A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (~beta).size() == (~A).rows(), "Invalid vector dimension detected" );
+
+   using CT = ElementType_t<VT1>;
+   using BT = typename CT::value_type;
+
+   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
+   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
+
+   const int n  ( numeric_cast<int>( (~A).rows() ) );
+   const int lda( numeric_cast<int>( (~A).spacing() ) );
+   const int ldb( numeric_cast<int>( (~B).spacing() ) );
+   int info( 0 );
+   int sdim( 0 );
+
+   int lwork = max( 1, 2*n );
+   const std::unique_ptr<CT[]> work( new CT[max(1,lwork)] );
+   const std::unique_ptr<BT[]> rwork( new BT[8*n] );
+   const std::unique_ptr<bool[]> bwork( select ? new bool[n] : nullptr );
+
+   gges( 'N', 'N', ( select ? 'S' : 'N' ), select, n, (~A).data(), lda, (~B).data(), ldb, &sdim,
+         (~alpha).data(), (~beta).data(), nullptr, 1, nullptr, 1,
+         work.get(), lwork, rwork.get(), bwork.get(), &info );
+
+   BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for generalized eigenvalue decomposition" );
+
+   if( info > 0 ) {
+      BLAZE_THROW_LAPACK_ERROR( "Generalized eigenvalue decomposition failed" );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief LAPACK kernel for computing the generalized Schur factorization of the given pair of
+//        dense general matrices.
+// \ingroup lapack_eigenvalue
+//
+// \param A The first matrix of the given pair of complex general matrices.
+// \param B The second matrix of the given pair of complex general matrices.
+// \param alpha The resulting complex vector of eigenvalue numerators.
+// \param beta The resulting complex vector of eigenvalue denominators.
 // \return void
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Matrix sizes do not match.
 // \exception std::invalid_argument Vector or matrix cannot be resized.
 // \exception std::runtime_error Schur factorization computation failed.
 //
-// This function computes for a pair of N-by-N real nonsymmetric matrices (A,B),
-//  the generalized eigenvalues, the generalized real Schur form (S,T),
-//  and the left and right matrices of Schur vectors (VSL and
-//  VSR). This gives the generalized Schur factorization
-// 
-//           (A^FA,B^FB) = ( (VSL^FL)*(S^FA)*(VSR^FR)^T, (VSL^FL)*T*(VSR^FR)^T )
+// This function computes for a pair of \a n-by-\a n real non-symmetric matrices (\a A,\a B), the
+// generalized eigenvalues and the generalized real Schur form (\a S,\a T), which on exit replaces
+// (\a A, \a B).
 //
-// where FA, FB, FL, FR are transposition flags:
-//  FA = 1 if \a A is column-major and FA = T (transpose) if \a A is row-major,
-//  FB = 1 if \a B is column-major and FB = T (transpose) if \a B is row-major,
-//  FL = 1 if \a VSL is column-major and FL = T (transpose) if \a VSL is row-major,
-//  FR = 1 if \a VSR is column-major and FR = T (transpose) if \a VSR is row-major.
-// 
-// A generalized eigenvalue for a pair of matrices (A,B) is a scalar w
-//  or a ratio alpha/beta = w, such that  A - w*B is singular.  It is
-//  usually represented as the pair (alpha,beta), as there is a
-//  reasonable interpretation for beta=0 or both being zero.
-//  The complex eigenvalues are returned as numerators and denominators in the given vectors
-// \a alpha, \a beta, which are resized to the correct size (if possible and necessary).
+// A generalized eigenvalue for a pair of matrices (\a A,\a B) is a scalar \a w or a ratio
+// \f$ alpha/beta = w \f$, such that \f$ A - w*B \f$ is singular. It is usually represented as
+// the pair (\a alpha,\a beta), as there is a reasonable interpretation for \a beta=0 or both
+// being zero. The complex eigenvalues are returned as numerators and denominators in the given
+// vectors \a alpha, \a beta, which are resized to the correct size (if possible and necessary).
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
 // \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
@@ -141,12 +281,9 @@ inline void gges( int (*selctg)(ElementType_t<VT2> const*, ElementType_t<VT2> co
 // The function fails if ...
 //
 //  - ... the given matrix \a A is not a square matrix;
-//  - ... the given matrix \a B is not a square matrix;
-//  - ... the size of the given matrces \a A and \a B don't match;
+//  - ... the size of the given matrices \a A and \a B don't match;
 //  - ... the given vector \a alpha is a fixed size vector and the size doesn't match;
 //  - ... the given vector \a beta is a fixed size vector and the size doesn't match;
-//  - ... the given matrix \a VSL is a fixed size matrix and the size doesn't match;
-//  - ... the given matrix \a VSR is a fixed size matrix and the size doesn't match;
 //  - ... the Schur factorization computation fails.
 //
 // In all failure cases an exception is thrown.
@@ -159,16 +296,16 @@ inline void gges( int (*selctg)(ElementType_t<VT2> const*, ElementType_t<VT2> co
    using blaze::rowMajor;
    using blaze::columnVector;
 
-   DynamicMatrix<double,rowMajor> A( 5UL, 5UL ), B( 5UL, 5UL );  // The general matrces A, B
+   DynamicMatrix<double,rowMajor> A( 5UL, 5UL );  // The first general matrix
+   DynamicMatrix<double,rowMajor> B( 5UL, 5UL );  // The second general matrix
    // ... Initialization
 
-   DynamicVector<complex<double>,columnVector> alpha( 5UL );  // The numerator vector for the complex eigenvalues
-   DynamicVector<double,columnVector> beta( 5UL );  // The denominator vector for the complex eigenvalues
-   DynamicMatrix<double,columnVector> VSL( 5UL, 5UL ), VSR( 5UL, 5UL );  // The matrices of left and right Schur vectors
+   DynamicVector<complex<double>,columnVector> alpha( 5UL );  // The vector for the eigenvalue numerators
+   DynamicVector<double,columnVector> beta( 5UL );            // The vector for the eigenvalue denominators
 
-   gges( A, B, alpha, beta, VSL, VSR );
+   gges( A, B, alpha, beta );
    \endcode
-//
+
 // For more information on the gges() functions (i.e. sgges(), dgges(), cgges(), and zgges())
 // see the LAPACK online documentation browser:
 //
@@ -178,13 +315,16 @@ inline void gges( int (*selctg)(ElementType_t<VT2> const*, ElementType_t<VT2> co
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-template< 
-   typename MT1, bool SO1, typename MT2, bool SO2, 
-   typename VT1, bool TF1, typename VT2, bool TF2,
-   typename MT3, bool SO3, typename MT4, bool SO4 >
+template< typename MT1  // Type of the matrix A
+        , bool SO1      // Storage order of the matrix A
+        , typename MT2  // Type of the matrix B
+        , bool SO2      // Storage order of the matrix B
+        , typename VT1  // Type of the vector alpha
+        , bool TF1      // Transpose flag of the vector alpha
+        , typename VT2  // Type of the vector beta
+        , bool TF2 >    // Transpose flag of the vector beta
 inline void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
-   DenseVector<VT1,TF1>& alpha, DenseVector<VT2,TF2>& beta, 
-   DenseMatrix<MT3,SO3>& VSL, DenseMatrix<MT4,SO4>& VSR )
+                  DenseVector<VT1,TF1>& alpha, DenseVector<VT2,TF2>& beta )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
@@ -198,18 +338,6 @@ inline void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT3 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT3 );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT3 );
-   BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT3 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT3> );
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT4 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT4 );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT4 );
-   BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT4 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT4> );
-   
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT1 );
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( VT1 );
@@ -220,9 +348,6 @@ inline void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT2 );
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( VT2 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT2> );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPLEX_TYPE( ElementType_t<VT2> );
-
-   using RT = ElementType_t<VT2>;
 
    const size_t N( (~A).rows() );
 
@@ -233,61 +358,49 @@ inline void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    resize( ~B, N, N, false );
    resize( ~alpha, N, false );
    resize( ~beta, N, false );
-   resize( ~VSL, N, N, false );
-   resize( ~VSR, N, N, false );
 
    if( N == 0UL ) {
       return;
    }
 
-   gges_backend( (int (*)(RT const*, RT const*, RT const*))nullptr, ~A, ~B, ~alpha, ~beta, ~VSL, ~VSR );
+   gges_backend( ~A, ~B, ~alpha, ~beta, nullptr );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for computing the generalized Schur factorization
-// of the given pair of dense general matrices with eigenvalue selection.
+/*!\brief LAPACK kernel for computing the generalized Schur factorization of the given pair of
+//        dense general matrices.
 // \ingroup lapack_eigenvalue
 //
-// \param selctg is a function of three real arguments.
-// \a selctg is used to select eigenvalues to sort to the top left of the Schur form.
-// An eigenvalue (ALPHAR(j)+ALPHAI(j))/BETA(j) is selected if
-// selctg(ALPHAR(j),ALPHAI(j),BETA(j)) is true; i.e. if either
-// one of a complex conjugate pair of eigenvalues is selected,
-// then both complex eigenvalues are selected.
-// \param A On entry, the first of the pair of matrices. On exit, \a A has been overwritten 
-// by its generalized Schur form S.
-// \param B On entry, the second of the pair of matrices. On exit, \a B has been overwritten
-// by its generalized Schur form T.
-// \param alpha The resulting complex vector of eigenvalues numerator. Resized if necessary.
-// \param beta The resulting real vector of eigenvalues denominator. Resized if necessary.
-// \param VSL The matrix of resulting left Schur vectors. Resized if necessary.
-// \param VSR The matrix of resulting right Schur vectors. Resized if necessary.
+// \param A The first matrix of the given pair of complex general matrices.
+// \param B The second matrix of the given pair of complex general matrices.
+// \param alpha The resulting complex vector of eigenvalue numerators.
+// \param beta The resulting complex vector of eigenvalue denominators.
+// \param select Logical function for the eigenvalue selection.
 // \return void
 // \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Matrix sizes do not match.
 // \exception std::invalid_argument Vector or matrix cannot be resized.
 // \exception std::runtime_error Schur factorization computation failed.
 //
-// This function computes for a pair of N-by-N real nonsymmetric matrices (A,B),
-//  the generalized eigenvalues, the generalized real Schur form (S,T),
-//  and the left and right matrices of Schur vectors (VSL and
-//  VSR). This gives the generalized Schur factorization
-// 
-//           (A^FA,B^FB) = ( (VSL^FL)*(S^FA)*(VSR^FR)^T, (VSL^FL)*T*(VSR^FR)^T )
+// This function computes for a pair of \a n-by-\a n real non-symmetric matrices (\a A,\a B), the
+// generalized eigenvalues and the generalized real Schur form (\a S,\a T), which on exit replaces
+// (\a A, \a B).
 //
-// where FA, FB, FL, FR are transposition flags:
-//  FA = 1 if \a A is column-major and FA = T (transpose) if \a A is row-major,
-//  FB = 1 if \a B is column-major and FB = T (transpose) if \a B is row-major,
-//  FL = 1 if \a VSL is column-major and FL = T (transpose) if \a VSL is row-major,
-//  FR = 1 if \a VSR is column-major and FR = T (transpose) if \a VSR is row-major.
-// 
-// A generalized eigenvalue for a pair of matrices (A,B) is a scalar w
-//  or a ratio alpha/beta = w, such that  A - w*B is singular.  It is
-//  usually represented as the pair (alpha,beta), as there is a
-//  reasonable interpretation for beta=0 or both being zero.
-//  The complex eigenvalues are returned as numerators and denominators in the given vectors
-// \a alpha, \a beta, which are resized to the correct size (if possible and necessary).
+// A generalized eigenvalue for a pair of matrices (\a A,\a B) is a scalar \a w or a ratio
+// \f$ alpha/beta = w \f$, such that \f$ A - w*B \f$ is singular. It is usually represented as
+// the pair (\a alpha,\a beta), as there is a reasonable interpretation for \a beta=0 or both
+// being zero. The complex eigenvalues are returned as numerators and denominators in the given
+// vectors \a alpha, \a beta, which are resized to the correct size (if possible and necessary).
+//
+// It also orders the eigenvalues such that a selected cluster of eigenvalues appears in the
+// leading diagonal blocks of the upper quasi-triangular matrix \a S and the upper triangular
+// matrix \a T. The according selection of eigenvalues is performed via the given \a select
+// function. In case the given pair of matrices is a pair of real matrices the function is
+// required to accept three pointers to real arguments, in case the given pair of matrices
+// is a pair of complex matrices the function is required to accept two pointers to complex
+// arguments.
 //
 // Note that this function can only be used for general, non-adapted matrices with \c float,
 // \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
@@ -297,12 +410,9 @@ inline void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
 // The function fails if ...
 //
 //  - ... the given matrix \a A is not a square matrix;
-//  - ... the given matrix \a B is not a square matrix;
-//  - ... the size of the given matrces \a A and \a B don't match;
+//  - ... the size of the given matrices \a A and \a B don't match;
 //  - ... the given vector \a alpha is a fixed size vector and the size doesn't match;
 //  - ... the given vector \a beta is a fixed size vector and the size doesn't match;
-//  - ... the given matrix \a VSL is a fixed size matrix and the size doesn't match;
-//  - ... the given matrix \a VSR is a fixed size matrix and the size doesn't match;
 //  - ... the Schur factorization computation fails.
 //
 // In all failure cases an exception is thrown.
@@ -315,16 +425,20 @@ inline void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    using blaze::rowMajor;
    using blaze::columnVector;
 
-   DynamicMatrix<double,rowMajor> A( 5UL, 5UL ), B( 5UL, 5UL );  // The general matrces A, B
+   DynamicMatrix<double,rowMajor> A( 5UL, 5UL );  // The first general matrix
+   DynamicMatrix<double,rowMajor> B( 5UL, 5UL );  // The second general matrix
    // ... Initialization
 
-   DynamicVector<complex<double>,columnVector> alpha( 5UL );  // The numerator vector for the complex eigenvalues
-   DynamicVector<double,columnVector> beta( 5UL );  // The denominator vector for the complex eigenvalues
-   DynamicMatrix<double,columnVector> VSL( 5UL, 5UL ), VSR( 5UL, 5UL );  // The matrices of left and right Schur vectors
+   const auto select = []( T* alphar, T* alphai, T* beta ) -> int {
+      return *alphar > 0.0;
+   };
 
-   gges( A, B, alpha, beta, VSL, VSR );
+   DynamicVector<complex<double>,columnVector> alpha( 5UL );  // The vector for the eigenvalue numerators
+   DynamicVector<double,columnVector> beta( 5UL );            // The vector for the eigenvalue denominators
+
+   gges( A, B, alpha, beta, select );
    \endcode
-//
+
 // For more information on the gges() functions (i.e. sgges(), dgges(), cgges(), and zgges())
 // see the LAPACK online documentation browser:
 //
@@ -334,19 +448,19 @@ inline void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-template< 
-   typename MT1, bool SO1, typename MT2, bool SO2, 
-   typename VT1, bool TF1, typename VT2, bool TF2,
-   typename MT3, bool SO3, typename MT4, bool SO4 >
-inline void gges(
-   int (*selctg)(ElementType_t<VT2> const*, ElementType_t<VT2> const*, ElementType_t<VT2> const*),
-   DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
-   DenseVector<VT1,TF1>& alpha, DenseVector<VT2,TF2>& beta, 
-   DenseMatrix<MT3,SO3>& VSL, DenseMatrix<MT4,SO4>& VSR )
+template< typename MT1       // Type of the matrix A
+        , bool SO1           // Storage order of the matrix A
+        , typename MT2       // Type of the matrix B
+        , bool SO2           // Storage order of the matrix B
+        , typename VT1       // Type of the vector alpha
+        , bool TF1           // Transpose flag of the vector alpha
+        , typename VT2       // Type of the vector beta
+        , bool TF2           // Transpose flag of the vector beta
+        , typename Select >  // Type of the eigenvalue selector
+inline void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
+                  DenseVector<VT1,TF1>& alpha, DenseVector<VT2,TF2>& beta,
+                  Select select )
 {
-   using RT = ElementType_t<VT2>;
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPLEX_TYPE( RT );
-
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
@@ -359,18 +473,6 @@ inline void gges(
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT2 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
 
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT3 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT3 );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT3 );
-   BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT3 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT3> );
-
-   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT4 );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT4 );
-   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT4 );
-   BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT4 );
-   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT4> );
-   
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT1 );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT1 );
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( VT1 );
@@ -381,7 +483,6 @@ inline void gges(
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT2 );
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( VT2 );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT2> );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPLEX_TYPE( ElementType_t<VT2> );
 
    const size_t N( (~A).rows() );
 
@@ -392,14 +493,12 @@ inline void gges(
    resize( ~B, N, N, false );
    resize( ~alpha, N, false );
    resize( ~beta, N, false );
-   resize( ~VSL, N, N, false );
-   resize( ~VSR, N, N, false );
 
    if( N == 0UL ) {
       return;
    }
 
-   gges_backend( selctg, ~A, ~B, ~alpha, ~beta, ~VSL, ~VSR );
+   gges_backend( ~A, ~B, ~alpha, ~beta, select );
 }
 //*************************************************************************************************
 
@@ -409,6 +508,16 @@ inline void gges(
 /*!\brief Backend of the LAPACK gges kernel for real general matrices.
 // \ingroup lapack_eigenvalue
 //
+// \param A The first matrix of the given pair of real general matrices.
+// \param B The second matrix of the given pair of real general matrices.
+// \param VSL The resulting real matrix of left Schur vectors.
+// \param alpha The resulting complex vector of eigenvalue numerators.
+// \param beta The resulting real vector of eigenvalue denominators.
+// \param VSR The resulting real matrix of right Schur vectors.
+// \param select Logical function for the eigenvalue selection.
+// \return void
+// \exception std::runtime_error Schur factorization computation failed.
+//
 // This function is the backend implementation for computing the generalized Schur factorization
 // of the given pair of real dense general matrices.\n
 // This function must \b NOT be called explicitly! It is used internally for the dispatch to
@@ -416,32 +525,34 @@ inline void gges(
 // results and/or in compilation errors. Instead of using this function use the according
 // gges() function.
 */
-template< 
-   typename MT1, bool SO1, typename MT2, bool SO2, 
-   typename VT1, bool TF1, typename VT2, bool TF2,
-   typename MT3, bool SO3, typename MT4, bool SO4 >
-inline auto gges_backend( int (*selctg)(ElementType_t<VT2> const*, ElementType_t<VT2> const*, ElementType_t<VT2> const*), 
-   DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, 
-   DenseVector<VT1,TF1>& alpha, DenseVector<VT2,TF2>& beta, 
-   DenseMatrix<MT3,SO3>& VSL, DenseMatrix<MT4,SO4>& VSR )
+template< typename MT1       // Type of the matrix A
+        , bool SO1           // Storage order of the matrix A
+        , typename MT2       // Type of the matrix B
+        , bool SO2           // Storage order of the matrix B
+        , typename MT3       // Type of the matrix VSL
+        , bool SO3           // Storage order of the matrix VSL
+        , typename VT1       // Type of the vector alpha
+        , bool TF1           // Transpose flag of the vector alpha
+        , typename VT2       // Type of the vector beta
+        , bool TF2           // Transpose flag of the vector beta
+        , typename MT4       // Type of the matrix VSR
+        , bool SO4           // Storage order of the matrix VSR
+        , typename Select >  // Type of the eigenvalue selector
+inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
+                          DenseMatrix<MT3,SO3>& VSL, DenseVector<VT1,TF1>& alpha,
+                          DenseVector<VT2,TF2>& beta, DenseMatrix<MT4,SO4>& VSR,
+                          Select select )
    -> DisableIf_t< IsComplex_v< ElementType_t<MT1> > >
 {
-   using RT = ElementType_t<VT2>;
-   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPLEX_TYPE( RT );
-
-   int const n = numeric_cast<int>( rows( A ) );
-   
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( isSquare( ~B ), "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( isSquare( ~VSL ), "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( isSquare( ~VSR ), "Invalid non-square matrix detected" );
-   BLAZE_INTERNAL_ASSERT( rows( B ) == n, "Invalid matrix size detected" );
-   BLAZE_INTERNAL_ASSERT( rows( VSL ) == n, "Invalid matrix size detected" );
-   BLAZE_INTERNAL_ASSERT( rows( VSR ) == n, "Invalid matrix size detected" );
-   
-   BLAZE_INTERNAL_ASSERT( size( alphar ) == n, "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( size( alphal ) == n, "Invalid vector dimension detected" );
-   BLAZE_INTERNAL_ASSERT( size( beta ) == n, "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (~B).rows() == (~A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (~VSL).rows() == (~A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (~VSR).rows() == (~A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (~alpha).size() == (~A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (~beta).size() == (~A).rows(), "Invalid vector dimension detected" );
 
    using CT = ElementType_t<VT1>;
    using BT = ElementType_t<MT1>;
@@ -449,23 +560,23 @@ inline auto gges_backend( int (*selctg)(ElementType_t<VT2> const*, ElementType_t
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
 
-   int const lda = numeric_cast<int>( spacing( A ) );
-   int const ldb = numeric_cast<int>( spacing( B ) );
-   int const ldvsl = numeric_cast<int>( spacing( VSL ) );
-   int const ldvsr = numeric_cast<int>( spacing( VSR ) );
-   int info = 0;
-   int sdim = 0;
+   const int n    ( numeric_cast<int>( (~A).rows() ) );
+   const int lda  ( numeric_cast<int>( (~A).spacing() ) );
+   const int ldb  ( numeric_cast<int>( (~B).spacing() ) );
+   const int ldvsl( numeric_cast<int>( (~VSL).spacing() ) );
+   const int ldvsr( numeric_cast<int>( (~VSR).spacing() ) );
+   int info( 0 );
+   int sdim( 0 );
 
-   int lwork = std::max( 8*n, 6*n + 16 );
+   int lwork = max( 8*n, 6*n + 16 );
    const std::unique_ptr<BT[]> alphar( new BT[n] );
    const std::unique_ptr<BT[]> alphai( new BT[n] );
-   const std::unique_ptr<BT[]> work( new BT[std::max(1, lwork)] );
-   const std::unique_ptr<int[]> bwork( new int[n] );
+   const std::unique_ptr<BT[]> work( new BT[max(1, lwork)] );
+   const std::unique_ptr<bool[]> bwork( select ? new bool[n] : nullptr );
 
-   gges( 'V', 'V', selctg ? 'S' : 'N', (int (*)(RT*, RT*, RT*))selctg, n,
-      data( A ), lda, data( B ), ldb, &sdim, 
-      alphar.get(), alphai.get(), data( beta ), data( VSL ), ldvsl, data( VSR ), ldvsr, 
-      work.get(), lwork, bwork.get(), &info );
+   gges( 'V', 'V', ( select ? 'S' : 'N' ), select, n, (~A).data(), lda, (~B).data(), ldb, &sdim,
+         alphar.get(), alphai.get(), (~beta).data(), (~VSL).data(), ldvsl, (~VSR).data(), ldvsr,
+         work.get(), lwork, bwork.get(), &info );
 
    BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for generalized eigenvalue decomposition" );
 
@@ -473,11 +584,422 @@ inline auto gges_backend( int (*selctg)(ElementType_t<VT2> const*, ElementType_t
       BLAZE_THROW_LAPACK_ERROR( "Generalized eigenvalue decomposition failed" );
    }
 
-   for( size_t i=0UL; i < rows( A ); ++i ) {
+   for( size_t i=0UL; i<(~A).rows(); ++i ) {
       (~alpha)[i] = CT( alphar[i], alphai[i] );
    }
 }
 /*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend of the LAPACK gges kernel for complex general matrices.
+// \ingroup lapack_eigenvalue
+//
+// \param A The first matrix of the given pair of complex general matrices.
+// \param B The second matrix of the given pair of complex general matrices.
+// \param VSL The resulting complex matrix of left Schur vectors.
+// \param alpha The resulting complex vector of eigenvalue numerators.
+// \param beta The resulting complex vector of eigenvalue denominators.
+// \param VSR The resulting complex matrix of right Schur vectors.
+// \param select Logical function for the eigenvalue selection.
+// \return void
+// \exception std::runtime_error Schur factorization computation failed.
+//
+// This function is the backend implementation for computing the generalized Schur factorization
+// of the given pair of complex dense general matrices.\n
+// This function must \b NOT be called explicitly! It is used internally for the dispatch to
+// the correct LAPACK function. Calling this function explicitly might result in erroneous
+// results and/or in compilation errors. Instead of using this function use the according
+// gges() function.
+*/
+template< typename MT1       // Type of the matrix A
+        , bool SO1           // Storage order of the matrix A
+        , typename MT2       // Type of the matrix B
+        , bool SO2           // Storage order of the matrix B
+        , typename MT3       // Type of the matrix VSL
+        , bool SO3           // Storage order of the matrix VSL
+        , typename VT1       // Type of the vector alpha
+        , bool TF1           // Transpose flag of the vector alpha
+        , typename VT2       // Type of the vector beta
+        , bool TF2           // Transpose flag of the vector beta
+        , typename MT4       // Type of the matrix VSR
+        , bool SO4           // Storage order of the matrix VSR
+        , typename Select >  // Type of the eigenvalue selector
+inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
+                          DenseMatrix<MT3,SO3>& VSL, DenseVector<VT1,TF1>& alpha,
+                          DenseVector<VT2,TF2>& beta, DenseMatrix<MT4,SO4>& VSR,
+                          Select select )
+   -> EnableIf_t< IsComplex_v< ElementType_t<MT1> > >
+{
+   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( ~B ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( ~VSL ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( isSquare( ~VSR ), "Invalid non-square matrix detected" );
+   BLAZE_INTERNAL_ASSERT( (~B).rows() == (~A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (~VSL).rows() == (~A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (~VSR).rows() == (~A).rows(), "Invalid matrix dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (~alpha).size() == (~A).rows(), "Invalid vector dimension detected" );
+   BLAZE_INTERNAL_ASSERT( (~beta).size() == (~A).rows(), "Invalid vector dimension detected" );
+
+   using CT = ElementType_t<VT1>;
+   using BT = typename CT::value_type;
+
+   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
+   BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
+
+   const int n    ( numeric_cast<int>( (~A).rows() ) );
+   const int lda  ( numeric_cast<int>( (~A).spacing() ) );
+   const int ldb  ( numeric_cast<int>( (~B).spacing() ) );
+   const int ldvsl( numeric_cast<int>( (~VSL).spacing() ) );
+   const int ldvsr( numeric_cast<int>( (~VSR).spacing() ) );
+   int info( 0 );
+   int sdim( 0 );
+
+   int lwork = max( 1, 2*n );
+   const std::unique_ptr<CT[]> work( new CT[max(1,lwork)] );
+   const std::unique_ptr<BT[]> rwork( new BT[8*n] );
+   const std::unique_ptr<bool[]> bwork( select ? new bool[n] : nullptr );
+
+   gges( 'V', 'V', ( select ? 'S' : 'N' ), select, n, (~A).data(), lda, (~B).data(), ldb, &sdim,
+         (~alpha).data(), (~beta).data(), (~VSL).data(), ldvsl, (~VSR).data(), ldvsr,
+         work.get(), lwork, rwork.get(), bwork.get(), &info );
+
+   BLAZE_INTERNAL_ASSERT( info >= 0, "Invalid argument for generalized eigenvalue decomposition" );
+
+   if( info > 0 ) {
+      BLAZE_THROW_LAPACK_ERROR( "Generalized eigenvalue decomposition failed" );
+   }
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief LAPACK kernel for computing the generalized Schur factorization of the given pair of
+//        dense general matrices.
+// \ingroup lapack_eigenvalue
+//
+// \param A The first matrix of the given pair of complex general matrices.
+// \param B The second matrix of the given pair of complex general matrices.
+// \param VSL The resulting complex matrix of left Schur vectors.
+// \param alpha The resulting complex vector of eigenvalue numerators.
+// \param beta The resulting complex vector of eigenvalue denominators.
+// \param VSR The resulting complex matrix of right Schur vectors.
+// \return void
+// \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Vector or matrix cannot be resized.
+// \exception std::runtime_error Schur factorization computation failed.
+//
+// This function computes for a pair of \a n-by-\a n real non-symmetric matrices (\a A,\a B), the
+// generalized eigenvalues, the generalized real Schur form (\a S,\a T), which on exit replaces
+// (\a A, \a B), and the left and right matrices of Schur vectors (\a VSL and \a VSR). This gives
+// the generalized Schur factorization
+
+         \f[ (A^FA,B^FB) = ( (VSL^FL)*(S^FA)*(VSR^FR)^T, (VSL^FL)*T*(VSR^FR)^T ) \f]
+
+// where \a FA, \a FB, \a FL, \a FR are transposition flags:
+//  - \a FA == 1 if \a A is column-major and \a FA == T (transpose) if \a A is row-major;
+//  - \a FB == 1 if \a B is column-major and \a FB == T (transpose) if \a B is row-major;
+//  - \a FL == 1 if \a VSL is column-major and \a FL == T (transpose) if \a VSL is row-major;
+//  - \a FR == 1 if \a VSR is column-major and \a FR == T (transpose) if \a VSR is row-major.
+//
+// A generalized eigenvalue for a pair of matrices (\a A,\a B) is a scalar \a w or a ratio
+// \f$ alpha/beta = w \f$, such that \f$ A - w*B \f$ is singular. It is usually represented as
+// the pair (\a alpha,\a beta), as there is a reasonable interpretation for \a beta=0 or both
+// being zero. The complex eigenvalues are returned as numerators and denominators in the given
+// vectors \a alpha, \a beta, which are resized to the correct size (if possible and necessary).
+//
+// Note that this function can only be used for general, non-adapted matrices with \c float,
+// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// function with any adapted matrix or matrices of any other element type results in a compile
+// time error!
+//
+// The function fails if ...
+//
+//  - ... the given matrix \a A is not a square matrix;
+//  - ... the size of the given matrices \a A and \a B don't match;
+//  - ... the given matrix \a VSL is a fixed size matrix and the size doesn't match;
+//  - ... the given vector \a alpha is a fixed size vector and the size doesn't match;
+//  - ... the given vector \a beta is a fixed size vector and the size doesn't match;
+//  - ... the given matrix \a VSR is a fixed size matrix and the size doesn't match;
+//  - ... the Schur factorization computation fails.
+//
+// In all failure cases an exception is thrown.
+//
+// Examples:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::rowMajor;
+   using blaze::columnVector;
+
+   DynamicMatrix<double,rowMajor> A( 5UL, 5UL );  // The first general matrix
+   DynamicMatrix<double,rowMajor> B( 5UL, 5UL );  // The second general matrix
+   // ... Initialization
+
+   DynamicVector<complex<double>,columnVector> alpha( 5UL );  // The vector for the eigenvalue numerators
+   DynamicVector<double,columnVector> beta( 5UL );            // The vector for the eigenvalue denominators
+   DynamicMatrix<double,columnVector> VSL( 5UL, 5UL );        // The matrix for the left Schur vectors
+   DynamicMatrix<double,columnVector> VSR( 5UL, 5UL );        // The matrix for the right Schur vectors
+
+   gges( A, B, VSL, alpha, beta, VSR );
+   \endcode
+
+// For more information on the gges() functions (i.e. sgges(), dgges(), cgges(), and zgges())
+// see the LAPACK online documentation browser:
+//
+//        http://www.netlib.org/lapack/explore-html/
+//
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
+*/
+template< typename MT1  // Type of the matrix A
+        , bool SO1      // Storage order of the matrix A
+        , typename MT2  // Type of the matrix B
+        , bool SO2      // Storage order of the matrix B
+        , typename MT3  // Type of the matrix VSL
+        , bool SO3      // Storage order of the matrix VSL
+        , typename VT1  // Type of the vector alpha
+        , bool TF1      // Transpose flag of the vector alpha
+        , typename VT2  // Type of the vector beta
+        , bool TF2      // Transpose flag of the vector beta
+        , typename MT4  // Type of the matrix VSR
+        , bool SO4 >    // Storage order of the matrix VSR
+inline void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
+                  DenseMatrix<MT3,SO3>& VSL, DenseVector<VT1,TF1>& alpha,
+                  DenseVector<VT2,TF2>& beta, DenseMatrix<MT4,SO4>& VSR )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
+   BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT1 );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT2 );
+   BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT2 );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT3 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT3 );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT3 );
+   BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT3 );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT3> );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT1 );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT1 );
+   BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( VT1 );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT1> );
+   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_t<VT1> );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT2 );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT2 );
+   BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( VT2 );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT2> );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT4 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT4 );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT4 );
+   BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT4 );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT4> );
+
+   const size_t N( (~A).rows() );
+
+   if( !isSquare( ~A ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
+   }
+
+   if( (~A).rows() != (~B).rows() || (~A).columns() != (~B).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
+   }
+
+   resize( ~VSL, N, N, false );
+   resize( ~alpha, N, false );
+   resize( ~beta, N, false );
+   resize( ~VSR, N, N, false );
+
+   if( N == 0UL ) {
+      return;
+   }
+
+   gges_backend( ~A, ~B, ~VSL, ~alpha, ~beta, ~VSR, nullptr );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief LAPACK kernel for computing the generalized Schur factorization of the given pair of
+//        dense general matrices.
+// \ingroup lapack_eigenvalue
+//
+// \param A The first matrix of the given pair of complex general matrices.
+// \param B The second matrix of the given pair of complex general matrices.
+// \param VSL The resulting complex matrix of left Schur vectors.
+// \param alpha The resulting complex vector of eigenvalue numerators.
+// \param beta The resulting complex vector of eigenvalue denominators.
+// \param VSR The resulting complex matrix of right Schur vectors.
+// \param select Logical function for the eigenvalue selection.
+// \return void
+// \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Matrix sizes do not match.
+// \exception std::invalid_argument Vector or matrix cannot be resized.
+// \exception std::runtime_error Schur factorization computation failed.
+//
+// This function computes for a pair of \a n-by-\a n real non-symmetric matrices (\a A,\a B), the
+// generalized eigenvalues, the generalized real Schur form (\a S,\a T), which on exit replaces
+// (\a A, \a B), and the left and right matrices of Schur vectors (\a VSL and \a VSR). This gives
+// the generalized Schur factorization
+
+         \f[ (A^FA,B^FB) = ( (VSL^FL)*(S^FA)*(VSR^FR)^T, (VSL^FL)*T*(VSR^FR)^T ) \f]
+
+// where \a FA, \a FB, \a FL, \a FR are transposition flags:
+//  - \a FA == 1 if \a A is column-major and \a FA == T (transpose) if \a A is row-major;
+//  - \a FB == 1 if \a B is column-major and \a FB == T (transpose) if \a B is row-major;
+//  - \a FL == 1 if \a VSL is column-major and \a FL == T (transpose) if \a VSL is row-major;
+//  - \a FR == 1 if \a VSR is column-major and \a FR == T (transpose) if \a VSR is row-major.
+//
+// A generalized eigenvalue for a pair of matrices (\a A,\a B) is a scalar \a w or a ratio
+// \f$ alpha/beta = w \f$, such that \f$ A - w*B \f$ is singular. It is usually represented as
+// the pair (\a alpha,\a beta), as there is a reasonable interpretation for \a beta=0 or both
+// being zero. The complex eigenvalues are returned as numerators and denominators in the given
+// vectors \a alpha, \a beta, which are resized to the correct size (if possible and necessary).
+//
+// It also orders the eigenvalues such that a selected cluster of eigenvalues appears in the
+// leading diagonal blocks of the upper quasi-triangular matrix \a S and the upper triangular
+// matrix \a T. The leading columns of \a VSL and \a VSR then form an orthonormal basis for the
+// corresponding left and right eigenspaces (deflating subspaces). The according selection of
+// eigenvalues is performed via the given \a select function. In case the given pair of matrices
+// is a pair of real matrices the function is required to accept three pointers to real arguments,
+// in case the given pair of matrices is a pair of complex matrices the function is required to
+// accept two pointers to complex arguments.
+//
+// Note that this function can only be used for general, non-adapted matrices with \c float,
+// \c double, \c complex<float>, or \c complex<double> element type. The attempt to call the
+// function with any adapted matrix or matrices of any other element type results in a compile
+// time error!
+//
+// The function fails if ...
+//
+//  - ... the given matrix \a A is not a square matrix;
+//  - ... the size of the given matrices \a A and \a B don't match;
+//  - ... the given matrix \a VSL is a fixed size matrix and the size doesn't match;
+//  - ... the given vector \a alpha is a fixed size vector and the size doesn't match;
+//  - ... the given vector \a beta is a fixed size vector and the size doesn't match;
+//  - ... the given matrix \a VSR is a fixed size matrix and the size doesn't match;
+//  - ... the Schur factorization computation fails.
+//
+// In all failure cases an exception is thrown.
+//
+// Examples:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::rowMajor;
+   using blaze::columnVector;
+
+   DynamicMatrix<double,rowMajor> A( 5UL, 5UL );  // The first general matrix
+   DynamicMatrix<double,rowMajor> B( 5UL, 5UL );  // The second general matrix
+   // ... Initialization
+
+   const auto select = []( T* alphar, T* alphai, T* beta ) -> int {
+      return *alphar > 0.0;
+   };
+
+   DynamicVector<complex<double>,columnVector> alpha( 5UL );  // The vector for the eigenvalue numerators
+   DynamicVector<double,columnVector> beta( 5UL );            // The vector for the eigenvalue denominators
+   DynamicMatrix<double,columnVector> VSL( 5UL, 5UL );        // The matrix for the left Schur vectors
+   DynamicMatrix<double,columnVector> VSR( 5UL, 5UL );        // The matrix for the right Schur vectors
+
+   gges( A, B, VSL, alpha, beta, VSR, select );
+   \endcode
+
+// For more information on the gges() functions (i.e. sgges(), dgges(), cgges(), and zgges())
+// see the LAPACK online documentation browser:
+//
+//        http://www.netlib.org/lapack/explore-html/
+//
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
+*/
+template< typename MT1       // Type of the matrix A
+        , bool SO1           // Storage order of the matrix A
+        , typename MT2       // Type of the matrix B
+        , bool SO2           // Storage order of the matrix B
+        , typename MT3       // Type of the matrix VSL
+        , bool SO3           // Storage order of the matrix VSL
+        , typename VT1       // Type of the vector alpha
+        , bool TF1           // Transpose flag of the vector alpha
+        , typename VT2       // Type of the vector beta
+        , bool TF2           // Transpose flag of the vector beta
+        , typename MT4       // Type of the matrix VSR
+        , bool SO4           // Storage order of the matrix VSR
+        , typename Select >  // Type of the eigenvalue selector
+inline void gges( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
+                  DenseMatrix<MT3,SO3>& VSL, DenseVector<VT1,TF1>& alpha,
+                  DenseVector<VT2,TF2>& beta, DenseMatrix<MT4,SO4>& VSR,
+                  Select select )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT1 );
+   BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT1 );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT2 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT2 );
+   BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT2 );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT3 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT3 );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT3 );
+   BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT3 );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT3> );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT1 );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT1 );
+   BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( VT1 );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT1> );
+   BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( ElementType_t<VT1> );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT2 );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT2 );
+   BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( VT2 );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT2> );
+
+   BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT4 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT4 );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT4 );
+   BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT4 );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT4> );
+
+   const size_t N( (~A).rows() );
+
+   if( !isSquare( ~A ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
+   }
+
+   resize( ~B, N, N, false );
+   resize( ~VSL, N, N, false );
+   resize( ~alpha, N, false );
+   resize( ~beta, N, false );
+   resize( ~VSR, N, N, false );
+
+   if( N == 0UL ) {
+      return;
+   }
+
+   gges_backend( ~A, ~B, ~VSL, ~alpha, ~beta, ~VSR, select );
+}
 //*************************************************************************************************
 
 } // namespace blaze

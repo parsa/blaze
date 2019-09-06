@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/lapack/clapack/gees.h
+//  \file blaze/math/lapack/clapack/gges.h
 //  \brief Header file for the CLAPACK gges wrapper functions
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
@@ -42,6 +42,7 @@
 
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 
 
 //=================================================================================================
@@ -55,15 +56,30 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void sgges_( char* jobvsl, char* jobvsr, char* sort, int (*selectg)(float*, float*, float*), int* n, 
-   float* A, int* lda, float* B, int* ldb, int* sdim, float* alphar, float* alphal, float* beta, 
-   float* vsl, int* ldvsl, float* vsr, int* ldvsr, float* work, int* lwork, int* bwork, int* info,
-   blaze::fortran_charlen_t njobvsl, blaze::fortran_charlen_t njobvsr, blaze::fortran_charlen_t nsort );
-   
-void dgges_( char* jobvsl, char* jobvsr, char* sort, int (*selectg)(double*, double*, double*), int* n, 
-   double* A, int* lda, double* B, int* ldb, int* sdim, double* alphar, double* alphal, double* beta, 
-   double* vsl, int* ldvsl, double* vsr, int* ldvsr, double* work, int* lwork, int* bwork, int* info,
-   blaze::fortran_charlen_t njobvsl, blaze::fortran_charlen_t njobvsr, blaze::fortran_charlen_t nsort );
+void sgges_( char* jobvsl, char* jobvsr, char* sort,
+             bool (*selctg)( const float*, const float*, const float* ), int* n,
+             float* A, int* lda, float* B, int* ldb, int* sdim, float* alphar, float* alphai,
+             float* beta, float* VSL, int* ldvsl, float* VSR, int* ldvsr, float* work,
+             int* lwork, bool* bwork, int* info, blaze::fortran_charlen_t njobvsl,
+             blaze::fortran_charlen_t njobvsr, blaze::fortran_charlen_t nsort );
+void dgges_( char* jobvsl, char* jobvsr, char* sort,
+             bool (*selctg)( const double*, const double*, const double* ), int* n,
+             double* A, int* lda, double* B, int* ldb, int* sdim, double* alphar, double* alphai,
+             double* beta, double* VSL, int* ldvsl, double* VSR, int* ldvsr, double* work,
+             int* lwork, bool* bwork, int* info, blaze::fortran_charlen_t njobvsl,
+             blaze::fortran_charlen_t njobvsr, blaze::fortran_charlen_t nsort );
+void cgges_( char* jobvsl, char* jobvsr, char* sort,
+             bool (*selctg)( const float*, const float* ), int* n,
+             float* A, int* lda, float* B, int* ldb, int* sdim, float* alpha, float* beta,
+             float* VSL, int* ldvsl, float* VSR, int* ldvsr, float* work, int* lwork,
+             float* rwork, bool* bwork, int* info, blaze::fortran_charlen_t njobvsl,
+             blaze::fortran_charlen_t njobvsr, blaze::fortran_charlen_t nsort );
+void zgges_( char* jobvsl, char* jobvsr, char* sort,
+             bool (*selctg)( const double*, const double* ), int* n,
+             double* A, int* lda, double* B, int* ldb, int* sdim, double* alpha, double* beta,
+             double* VSL, int* ldvsl, double* VSR, int* ldvsr, double* work, int* lwork,
+             double* rwork, bool* bwork, int* info, blaze::fortran_charlen_t njobvsl,
+             blaze::fortran_charlen_t njobvsr, blaze::fortran_charlen_t nsort );
 
 }
 #endif
@@ -84,317 +100,441 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK generalized Schur decomposition functions (gges) */
 //@{
-inline void gges( char jobvsl, char jobvsr, char sort, int (*selectg)(float*, float*, float*), int n, 
-                  float* A, int lda, float* B, int ldb, int sdim, float* alphar, float* alphal, float* beta, 
-                  float* vsl, int ldvsl, float* vsr, int ldvsr, float* work, int lwork, int* bwork, int info );
+void gges( char jobvsl, char jobvsr, char sort,
+           bool (*selctg)( const float*, const float*, const float* ), int n, float* A, int lda,
+           float* B, int ldb, int* sdim, float* alphar, float* alphai, float* beta, float* VSL,
+           int ldvsl, float* VSR, int ldvsr, float* work, int lwork, bool* bwork, int* info );
 
-inline void gges( char jobvsl, char jobvsr, char sort, int (*selectg)(double*, double*, double*), int n, 
-                  double* A, int lda, double* B, int ldb, int sdim, double* alphar, double* alphal, double* beta, 
-                  double* vsl, int ldvsl, double* vsr, int ldvsr, double* work, int lwork, int* bwork, int info );
+void gges( char jobvsl, char jobvsr, char sort,
+           bool (*selctg)( const double*, const double*, const double* ), int n, double* A, int lda,
+           double* B, int ldb, int* sdim, double* alphar, double* alphai, double* beta, double* VSL,
+           int ldvsl, double* VSR, int ldvsr, double* work, int lwork, bool* bwork, int* info );
+
+void gges( char jobvsl, char jobvsr, char sort,
+           bool (*selctg)( const complex<float>*, const complex<float>* ), int n,
+           complex<float>* A, int lda, complex<float>* B, int ldb, int* sdim,
+           complex<float>* alpha, complex<float>* beta, complex<float>* VSL, int ldvsl,
+           complex<float>* VSR, int ldvsr, complex<float>* work, int lwork, float* rwork,
+           bool* bwork, int* info );
+
+void gges( char jobvsl, char jobvsr, char sort,
+           bool (*selctg)( const complex<double>*, const complex<double>* ), int n,
+           complex<double>* A, int lda, complex<double>* B, int ldb, int* sdim,
+           complex<double>* alpha, complex<double>* beta, complex<double>* VSL, int ldvsl,
+           complex<double>* VSR, int ldvsr, complex<double>* work, int lwork, double* rwork,
+           bool* bwork, int* info );
 //@}
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for computing the generalized Schur decomposition
-// for a pair of non-symmetric single precision matrices.
+/*!\brief LAPACK kernel for computing the generalized Schur decomposition for a pair of
+//        non-symmetric single precision column-major matrices.
 // \ingroup lapack_eigenvalue
 //
-// GGES computes for a pair of N-by-N real nonsymmetric matrices (A,B),
-//  the generalized eigenvalues, the generalized real Schur form (S,T),
-//  optionally, the left and/or right matrices of Schur vectors (VSL and
-//  VSR). This gives the generalized Schur factorization
-// 
-//           (A,B) = ( (VSL)*S*(VSR)**T, (VSL)*T*(VSR)**T )
-// 
-//  Optionally, it also orders the eigenvalues so that a selected cluster
-//  of eigenvalues appears in the leading diagonal blocks of the upper
-//  quasi-triangular matrix S and the upper triangular matrix T.The
-//  leading columns of VSL and VSR then form an orthonormal basis for the
-//  corresponding left and right eigenspaces (deflating subspaces).
+// \param jobvsl \c 'V' to compute the left Schur vectors, \c 'N' to not compute them.
+// \param jobvsr \c 'V' to compute the right Schur vectors, \c 'N' to not compute them.
+// \param sort \c 'S' to order the eigenvalues on the diagonal, \c 'N' to not order them (see \a selctg).
+// \param selctg Logical function of three single precision arguments.
+// \param n The order of the matrices \a A, \a B, \a VSL, and \a VSR \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the single precision column-major matrix \a A.
+// \param lda The total number of elements between two columns of the matrix A; size >= max( 1, \a n ).
+// \param B Pointer to the first element of the single precision column-major matrix \a B.
+// \param ldb The total number of elements between two columns of the matrix B; size >= max( 1, \a n ).
+// \param sdim Returns the number of eigenvalues (after sorting) for which \a selctg is \a true.
+// \param alphar Pointer to the first element of the real part of the eigenvalue numerator; size == n.
+// \param alphai Pointer to the first element of the imaginary part of the eigenvalue numerator; size == n.
+// \param beta Pointer to the first element of the eigenvalue denominator; size == n.
+// \param VSL Pointer to the first element of the column-major matrix for the left Schur vectors.
+// \param ldvsl The total number of elements between two columns of the matrix VSL \f$[0..\infty)\f$.
+// \param VSR Pointer to the first element of the column-major matrix for the right Schur vectors.
+// \param ldvsr The total number of elements between two columns of the matrix VSR \f$[0..\infty)\f$.
+// \param work Auxiliary array; size >= max( 1, \a lwork ).
+// \param lwork The dimension of the array \a work; see online reference for details.
+// \param bwork Auxiliary array; size == n.
+// \param info Return code of the function call.
+//
+// This function computes for a pair of \a n-by-\a n single precision non-symmetric matrices
+// (\a A,\a B) the generalized eigenvalues, the generalized real Schur form (\a S, \a T), and
+// optionally the left and/or right matrices of Schur vectors (\a VSL and \a VSR). This gives
+// the generalized Schur factorization
+
+                      \f[ (A,B) = ( (VSL)*S*(VSR)**T, (VSL)*T*(VSR)**T ). \f]
+
+// Optionally, it also orders the eigenvalues such that a selected cluster of eigenvalues appears
+// in the leading diagonal blocks of the upper quasi-triangular matrix \a S and the upper triangular
+// matrix \a T. The leading columns of \a VSL and \a VSR then form an orthonormal basis for the
+// corresponding left and right eigenspaces (deflating subspaces).
+//
+// The parameter \a jobvsl specifies the computation of the left Schur vectors:
+//
+//   - \c 'V': The left Schur vectors of \a (A,B) are computed and returned in \a VSL.
+//   - \c 'N': The left Schur vectors of \a (A,B) are not computed.
+//
+// The parameter \a jobvsr specifies the computation of the right Schur vectors:
+//
+//   - \c 'V': The right Schur vectors of \a (A,B) are computed and returned in \a VSR.
+//   - \c 'N': The right Schur vectors of \a (A,B) are not computed.
+//
+// Via the parameter \a selctg it is possible to select specific eigenvalues. \a selctg is a
+// pointer to a function of three single precision floating point arguments returning a boolean
+// value. In case \a sort is set to \c 'N', \a selctg is not referenced, else if sort is set to
+// \c 'S' \a selctg is used to select eigenvalues to sort to the top left of the Schur form. An
+// eigenvalue \f$ (alphar[j]+alphai[j]*i)/beta[j] \f$ is selected if
+
+   \code
+   selctg( &alphar[j], &alphai[j], &beta[j])
+   \endcode
+
+// evaluates to true; i.e. if either one of a complex conjugate pair of eigenvalues is selected,
+// then both complex eigenvalues are selected. On exit, the parameter \a sdim will contain the
+// number of eigenvalues (after sorting) for which \a selctg is \a true. Note that complex
+// conjugate pairs for which \a selctg is \a true for either eigenvalue count as 2.
+//
+// The \a info argument provides feedback on the success of the function call:
+//
+//   - = 0: The computation finished successfully.
+//   - < 0: If info = -i, the i-th argument had an illegal value.
+//   - > 1,...,\a n: The QZ iteration failed. (A,B) are not in Schur form, but \a alphar(j),
+//          \a alphai(j), and \a beta(j) should be correct for j=\a info,...,\a n-1.
+//   - > \a n: see online reference for details.
 //
 // For more information on the sgges() function, see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
 //
-// \param jobvsl
-//           = 'N':  do not compute the left Schur vectors;
-//           = 'V':  compute the left Schur vectors.
-// \param jobvsr
-//           = 'N':  do not compute the right Schur vectors;
-//           = 'V':  compute the right Schur vectors.
-// \param sort
-//           Specifies whether or not to order the eigenvalues on the
-//           diagonal of the generalized Schur form.
-//           = 'N':  Eigenvalues are not ordered;
-//           = 'S':  Eigenvalues are ordered (see \a selctg);
-// \param selctg
-//           a pointer to a function of three single precision floating point arguments
-//           returning a boolean value.
-//           If \a sort = 'N', \a selctg is not referenced.
-//           If \a sort = 'S', \a selctg is used to select eigenvalues to sort
-//           to the top left of the Schur form.
-//           An eigenvalue (alphar[j]+I*alphai[j])/beta[j] is selected if
-//           selctg(&alphar[j],&alphai[j],&beta[j]) is true; i.e. if either
-//           one of a complex conjugate pair of eigenvalues is selected,
-//           then both complex eigenvalues are selected.
-// 
-//           Note that in the ill-conditioned case, a selected complex
-//           eigenvalue may no longer satisfy selctg(&alphar[j],&alphai[j],
-//           &beta[j]) = TRUE after ordering. \a info is to be set to \a n+2
-//           in this case.
-// \param	n	
-//           The order of the matrices \a A, \a B, \a VSL, and \a vsr.  \a n >= 0.
-// \param	A	
-//           On entry, the first of the pair of matrices.
-//           On exit, \a A has been overwritten by its generalized Schur
-//           form S.
-// \param	lda
-//           The leading dimension of \a A.  \a lda >= max(1,\a n).
-// \param	B	
-//           On entry, the second of the pair of matrices.
-//           On exit, \a B has been overwritten by its generalized Schur
-//           form T.
-// \param	ldb	
-//           The leading dimension of \a B.  \a ldb >= max(1,\a n).
-// \param	sdim	
-//           If \a sort = 'N', \a *\a sdim = 0.
-//           If \a sort = 'S', *\a sdim = number of eigenvalues (after sorting)
-//           for which \a selctg is true.  (Complex conjugate pairs for which
-//           \a selctg is true for either eigenvalue count as 2.)
-// \param	alphar	
-//           real part of eigenvalue numerator, dimension (\a n)
-// \param	alphai	
-//           imaginary part of eigenvalue numerator, dimension (\a n)
-// \param	beta
-//           eigenvalue denominator, dimension (\a n).
-//           On exit, (alphar[j] + I*alphai[j])/beta[j], j=0,...,n-1, will
-//           be the generalized eigenvalues.  alphar[j] + I*alphai[j],
-//           and  beta[j],j=0,...,n-1 are the diagonals of the complex Schur
-//           form (S,T) that would result if the 2-by-2 diagonal blocks of
-//           the real Schur form of (A,B) were further reduced to
-//           triangular form using 2-by-2 complex unitary transformations.
-//           If alphai[j] is zero, then the j-th eigenvalue is real; if
-//           positive, then the j-th and (j+1)-st eigenvalues are a
-//           complex conjugate pair, with alphai[j+1] negative.
-// 
-//           Note: the quotients alphar[j]/beta[j] and alphai[j]/beta[j]
-//           may easily over- or underflow, and beta[j] may even be zero.
-//           Thus, the user should avoid naively computing the ratio.
-//           However, alphar and alphai will be always less than and
-//           usually comparable with norm(A) in magnitude, and beta always
-//           less than and usually comparable with norm(B).
-// \param	vsl	
-//           If \a jobvsl = 'V', \a vsl will contain the left Schur vectors.
-//           Not referenced if \a jobvsl = 'N'.
-// \param	ldvsl
-//           The leading dimension of the matrix \a vsl. \a lsvsl >=1, and
-//           if \a jobvsl = 'V', \a ldvsl >= \a n.
-// \param	vsr
-//           If \a jobvsr = 'V', \a vsr will contain the right Schur vectors.
-//           Not referenced if \a jobvsr = 'N'.
-// \param	ldvsr	
-//           The leading dimension of the matrix \a vsr. \a ldvsr >= 1, and
-//           if \a jobvsr = 'V', \a ldvsr >= \a n.
-// \param	work
-//           is a floating point working array, dimension (MAX(1,\a lwork))
-//           On exit, if *\a info = 0, \a work[0] returns the optimal \a lwork.
-// \param	lwork	
-//           The dimension of the array \a work.
-//           If \a n = 0, \a lwork >= 1, else \a lwork >= 8*\a n+16.
-//           For good performance, \a lwork must generally be larger.
-// 
-//           If \a lwork = -1, then a workspace query is assumed; the routine
-//           only calculates the optimal size of the work array, returns
-//           this value as the first entry of the work array, and no error
-//           message related to \a lwork is issued by XERBLA.
-// \param	bwork	
-//           is a logical working array, dimension (\a n)
-//           Not referenced if \a sort = 'N'.
-// \param	info	
-//           = 0:  successful exit
-//           < 0:  if \a info = -i, the i-th argument had an illegal value.
-//           = 1,...,\a n:
-//                 The QZ iteration failed.  (A,B) are not in Schur
-//                 form, but ALPHAR(j), ALPHAI(j), and BETA(j) should
-//                 be correct for j=\a info,...,\a n-1.
-//           > \a n:  =\a n+1: other than QZ iteration failed in DHGEQZ.
-//                 =\a n+2: after reordering, roundoff changed values of
-//                       some complex eigenvalues so that leading
-//                       eigenvalues in the Generalized Schur form no
-//                       longer satisfy \a selctg=TRUE.  This could also
-//                       be caused due to scaling.
-//                 =\a n+3: reordering failed in DTGSEN.
-//
-//
 // \note This function can only be used if a fitting LAPACK library, which supports this function,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void gges( char jobvsl, char jobvsr, char sort, int (*selectg)(float*, float*, float*), int n, 
-                  float* A, int lda, float* B, int ldb, int* sdim, float* alphar, float* alphai, float* beta, 
-                  float* vsl, int ldvsl, float* vsr, int ldvsr, float* work, int lwork, int* bwork, int* info )
+inline void gges( char jobvsl, char jobvsr, char sort,
+                  bool (*selctg)( const float*, const float*, const float* ), int n,
+                  float* A, int lda, float* B, int ldb, int* sdim, float* alphar, float* alphai,
+                  float* beta, float* VSL, int ldvsl, float* VSR, int ldvsr, float* work,
+                  int lwork, bool* bwork, int* info )
 {
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   sgges_( &jobvsl, &jobvsr, &sort, selectg, &n, A, &lda, B, &ldb, sdim, alphar, alphai, beta, 
-      vsl, &ldvsl, vsr, &ldvsr, work, &lwork, bwork, info, 
-      blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+   sgges_( &jobvsl, &jobvsr, &sort, selctg, &n, A, &lda, B, &ldb, sdim, alphar, alphai, beta,
+           VSL, &ldvsl, VSR, &ldvsr, work, &lwork, bwork, info,
+           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief LAPACK kernel for computing the generalized Schur decomposition
-// for a pair of non-symmetric double precision matrices.
+/*!\brief LAPACK kernel for computing the generalized Schur decomposition for a pair of
+//        non-symmetric double precision column-major matrices.
 // \ingroup lapack_eigenvalue
 //
-// GGES computes for a pair of N-by-N real nonsymmetric matrices (A,B),
-//  the generalized eigenvalues, the generalized real Schur form (S,T),
-//  optionally, the left and/or right matrices of Schur vectors (VSL and
-//  VSR). This gives the generalized Schur factorization
-// 
-//           (A,B) = ( (VSL)*S*(VSR)**T, (VSL)*T*(VSR)**T )
-// 
-//  Optionally, it also orders the eigenvalues so that a selected cluster
-//  of eigenvalues appears in the leading diagonal blocks of the upper
-//  quasi-triangular matrix S and the upper triangular matrix T.The
-//  leading columns of VSL and VSR then form an orthonormal basis for the
-//  corresponding left and right eigenspaces (deflating subspaces).
+// \param jobvsl \c 'V' to compute the left Schur vectors, \c 'N' to not compute them.
+// \param jobvsr \c 'V' to compute the right Schur vectors, \c 'N' to not compute them.
+// \param sort \c 'S' to order the eigenvalues on the diagonal, \c 'N' to not order them (see \a selctg).
+// \param selctg Logical function of three double precision arguments.
+// \param n The order of the matrices \a A, \a B, \a VSL, and \a VSR \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the double precision column-major matrix \a A.
+// \param lda The total number of elements between two columns of the matrix A; size >= max( 1, \a n ).
+// \param B Pointer to the first element of the double precision column-major matrix \a B.
+// \param ldb The total number of elements between two columns of the matrix B; size >= max( 1, \a n ).
+// \param sdim Returns the number of eigenvalues (after sorting) for which \a selctg is \a true.
+// \param alphar Pointer to the first element of the real part of the eigenvalue numerator; size == n.
+// \param alphai Pointer to the first element of the imaginary part of the eigenvalue numerator; size == n.
+// \param beta Pointer to the first element of the eigenvalue denominator; size == n.
+// \param VSL Pointer to the first element of the column-major matrix for the left Schur vectors.
+// \param ldvsl The total number of elements between two columns of the matrix VSL \f$[0..\infty)\f$.
+// \param VSR Pointer to the first element of the column-major matrix for the right Schur vectors.
+// \param ldvsr The total number of elements between two columns of the matrix VSR \f$[0..\infty)\f$.
+// \param work Auxiliary array; size >= max( 1, \a lwork ).
+// \param lwork The dimension of the array \a work; see online reference for details.
+// \param bwork Auxiliary array; size == n.
+// \param info Return code of the function call.
 //
-// For more information on the dgges() function, see the LAPACK online documentation browser:
+// This function computes for a pair of \a n-by-\a n double precision non-symmetric matrices
+// (\a A,\a B) the generalized eigenvalues, the generalized real Schur form (\a S, \a T), and
+// optionally the left and/or right matrices of Schur vectors (\a VSL and \a VSR). This gives
+// the generalized Schur factorization
+
+                      \f[ (A,B) = ( (VSL)*S*(VSR)**T, (VSL)*T*(VSR)**T ). \f]
+
+// Optionally, it also orders the eigenvalues such that a selected cluster of eigenvalues appears
+// in the leading diagonal blocks of the upper quasi-triangular matrix \a S and the upper triangular
+// matrix \a T. The leading columns of \a VSL and \a VSR then form an orthonormal basis for the
+// corresponding left and right eigenspaces (deflating subspaces).
+//
+// The parameter \a jobvsl specifies the computation of the left Schur vectors:
+//
+//   - \c 'V': The left Schur vectors of \a (A,B) are computed and returned in \a VSL.
+//   - \c 'N': The left Schur vectors of \a (A,B) are not computed.
+//
+// The parameter \a jobvsr specifies the computation of the right Schur vectors:
+//
+//   - \c 'V': The right Schur vectors of \a (A,B) are computed and returned in \a VSR.
+//   - \c 'N': The right Schur vectors of \a (A,B) are not computed.
+//
+// Via the parameter \a selctg it is possible to select specific eigenvalues. \a selctg is a
+// pointer to a function of three double precision floating point arguments returning a boolean
+// value. In case \a sort is set to \c 'N', \a selctg is not referenced, else if sort is set to
+// \c 'S' \a selctg is used to select eigenvalues to sort to the top left of the Schur form. An
+// eigenvalue \f$ (alphar[j]+alphai[j]*i)/beta[j] \f$ is selected if
+
+   \code
+   selctg( &alphar[j], &alphai[j], &beta[j])
+   \endcode
+
+// evaluates to true; i.e. if either one of a complex conjugate pair of eigenvalues is selected,
+// then both complex eigenvalues are selected. On exit, the parameter \a sdim will contain the
+// number of eigenvalues (after sorting) for which \a selctg is \a true. Note that complex
+// conjugate pairs for which \a selctg is \a true for either eigenvalue count as 2.
+//
+// The \a info argument provides feedback on the success of the function call:
+//
+//   - = 0: The computation finished successfully.
+//   - < 0: If info = -i, the i-th argument had an illegal value.
+//   - > 1,...,\a n: The QZ iteration failed. (A,B) are not in Schur form, but \a alphar(j),
+//          \a alphai(j), and \a beta(j) should be correct for j=\a info,...,\a n-1.
+//   - > \a n: see online reference for details.
+//
+// For more information on the sgges() function, see the LAPACK online documentation browser:
 //
 //        http://www.netlib.org/lapack/explore-html/
-// 
-// \param jobvsl
-//           = 'N':  do not compute the left Schur vectors;
-//           = 'V':  compute the left Schur vectors.
-// \param jobvsr
-//           = 'N':  do not compute the right Schur vectors;
-//           = 'V':  compute the right Schur vectors.
-// \param sort
-//           Specifies whether or not to order the eigenvalues on the
-//           diagonal of the generalized Schur form.
-//           = 'N':  Eigenvalues are not ordered;
-//           = 'S':  Eigenvalues are ordered (see \a selctg);
-// \param selctg
-//           a pointer to a function of three double precision floating point arguments
-//           returning a boolean value.
-//           If \a sort = 'N', \a selctg is not referenced.
-//           If \a sort = 'S', \a selctg is used to select eigenvalues to sort
-//           to the top left of the Schur form.
-//           An eigenvalue (alphar[j]+I*alphai[j])/beta[j] is selected if
-//           selctg(&alphar[j],&alphai[j],&beta[j]) is true; i.e. if either
-//           one of a complex conjugate pair of eigenvalues is selected,
-//           then both complex eigenvalues are selected.
-// 
-//           Note that in the ill-conditioned case, a selected complex
-//           eigenvalue may no longer satisfy selctg(&alphar[j],&alphai[j],
-//           &beta[j]) = TRUE after ordering. \a info is to be set to \a n+2
-//           in this case.
-// \param	n	
-//           The order of the matrices \a A, \a B, \a VSL, and \a vsr.  \a n >= 0.
-// \param	A	
-//           On entry, the first of the pair of matrices.
-//           On exit, \a A has been overwritten by its generalized Schur
-//           form S.
-// \param	lda
-//           The leading dimension of \a A.  \a lda >= max(1,\a n).
-// \param	B	
-//           On entry, the second of the pair of matrices.
-//           On exit, \a B has been overwritten by its generalized Schur
-//           form T.
-// \param	ldb	
-//           The leading dimension of \a B.  \a ldb >= max(1,\a n).
-// \param	sdim	
-//           If \a sort = 'N', \a *\a sdim = 0.
-//           If \a sort = 'S', *\a sdim = number of eigenvalues (after sorting)
-//           for which \a selctg is true.  (Complex conjugate pairs for which
-//           \a selctg is true for either eigenvalue count as 2.)
-// \param	alphar	
-//           real part of eigenvalue numerator, dimension (\a n)
-// \param	alphai	
-//           imaginary part of eigenvalue numerator, dimension (\a n)
-// \param	beta
-//           eigenvalue denominator, dimension (\a n).
-//           On exit, (alphar[j] + I*alphai[j])/beta[j], j=0,...,n-1, will
-//           be the generalized eigenvalues.  alphar[j] + I*alphai[j],
-//           and  beta[j],j=0,...,n-1 are the diagonals of the complex Schur
-//           form (S,T) that would result if the 2-by-2 diagonal blocks of
-//           the real Schur form of (A,B) were further reduced to
-//           triangular form using 2-by-2 complex unitary transformations.
-//           If alphai[j] is zero, then the j-th eigenvalue is real; if
-//           positive, then the j-th and (j+1)-st eigenvalues are a
-//           complex conjugate pair, with alphai[j+1] negative.
-// 
-//           Note: the quotients alphar[j]/beta[j] and alphai[j]/beta[j]
-//           may easily over- or underflow, and beta[j] may even be zero.
-//           Thus, the user should avoid naively computing the ratio.
-//           However, alphar and alphai will be always less than and
-//           usually comparable with norm(A) in magnitude, and beta always
-//           less than and usually comparable with norm(B).
-// \param	vsl	
-//           If \a jobvsl = 'V', \a vsl will contain the left Schur vectors.
-//           Not referenced if \a jobvsl = 'N'.
-// \param	ldvsl
-//           The leading dimension of the matrix \a vsl. \a lsvsl >=1, and
-//           if \a jobvsl = 'V', \a ldvsl >= \a n.
-// \param	vsr
-//           If \a jobvsr = 'V', \a vsr will contain the right Schur vectors.
-//           Not referenced if \a jobvsr = 'N'.
-// \param	ldvsr	
-//           The leading dimension of the matrix \a vsr. \a ldvsr >= 1, and
-//           if \a jobvsr = 'V', \a ldvsr >= \a n.
-// \param	work
-//           is a floating point working array, dimension (MAX(1,\a lwork))
-//           On exit, if *\a info = 0, \a work[0] returns the optimal \a lwork.
-// \param	lwork	
-//           The dimension of the array \a work.
-//           If \a n = 0, \a lwork >= 1, else \a lwork >= 8*\a n+16.
-//           For good performance, \a lwork must generally be larger.
-
-//           If \a lwork = -1, then a workspace query is assumed; the routine
-//           only calculates the optimal size of the work array, returns
-//           this value as the first entry of the work array, and no error
-//           message related to \a lwork is issued by XERBLA.
-// \param	bwork	
-//           is a logical working array, dimension (\a n)
-//           Not referenced if \a sort = 'N'.
-// \param	info	
-//           = 0:  successful exit
-//           < 0:  if \a info = -i, the i-th argument had an illegal value.
-//           = 1,...,\a n:
-//                 The QZ iteration failed.  (A,B) are not in Schur
-//                 form, but ALPHAR(j), ALPHAI(j), and BETA(j) should
-//                 be correct for j=\a info,...,\a n-1.
-//           > \a n:  =\a n+1: other than QZ iteration failed in DHGEQZ.
-//                 =\a n+2: after reordering, roundoff changed values of
-//                       some complex eigenvalues so that leading
-//                       eigenvalues in the Generalized Schur form no
-//                       longer satisfy \a selctg=TRUE.  This could also
-//                       be caused due to scaling.
-//                 =\a n+3: reordering failed in DTGSEN.
 //
 // \note This function can only be used if a fitting LAPACK library, which supports this function,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void gges( char jobvsl, char jobvsr, char sort, int (*selectg)(double*, double*, double*), int n, 
-                  double* A, int lda, double* B, int ldb, int* sdim, double* alphar, double* alphai, double* beta, 
-                  double* vsl, int ldvsl, double* vsr, int ldvsr, double* work, int lwork, int* bwork, int* info )
+inline void gges( char jobvsl, char jobvsr, char sort,
+                  bool (*selctg)( const double*, const double*, const double* ), int n,
+                  double* A, int lda, double* B, int ldb, int* sdim, double* alphar, double* alphai,
+                  double* beta, double* VSL, int ldvsl, double* VSR, int ldvsr, double* work,
+                  int lwork, bool* bwork, int* info )
 {
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   dgges_( &jobvsl, &jobvsr, &sort, selectg, &n, A, &lda, B, &ldb, sdim, alphar, alphai, beta, 
-      vsl, &ldvsl, vsr, &ldvsr, work, &lwork, bwork, info,
-      blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+   dgges_( &jobvsl, &jobvsr, &sort, selctg, &n, A, &lda, B, &ldb, sdim, alphar, alphai, beta,
+           VSL, &ldvsl, VSR, &ldvsr, work, &lwork, bwork, info,
+           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
 }
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief LAPACK kernel for computing the generalized Schur decomposition for a pair of
+//        non-symmetric single precision complex column-major matrices.
+// \ingroup lapack_eigenvalue
+//
+// \param jobvsl \c 'V' to compute the left Schur vectors, \c 'N' to not compute them.
+// \param jobvsr \c 'V' to compute the right Schur vectors, \c 'N' to not compute them.
+// \param sort \c 'S' to order the eigenvalues on the diagonal, \c 'N' to not order them (see \a selctg).
+// \param selctg Logical function of two single precision complex arguments.
+// \param n The order of the matrices \a A, \a B, \a VSL, and \a VSR \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the single precision complex column-major matrix \a A.
+// \param lda The total number of elements between two columns of the matrix A; size >= max( 1, \a n ).
+// \param B Pointer to the first element of the single precision complex column-major matrix \a B.
+// \param ldb The total number of elements between two columns of the matrix B; size >= max( 1, \a n ).
+// \param sdim Returns the number of eigenvalues (after sorting) for which \a selctg is \a true.
+// \param alpha Pointer to the first element of the eigenvalue numerator; size == n.
+// \param beta Pointer to the first element of the eigenvalue denominator; size == n.
+// \param VSL Pointer to the first element of the column-major matrix for the left Schur vectors.
+// \param ldvsl The total number of elements between two columns of the matrix VSL \f$[0..\infty)\f$.
+// \param VSR Pointer to the first element of the column-major matrix for the right Schur vectors.
+// \param ldvsr The total number of elements between two columns of the matrix VSR \f$[0..\infty)\f$.
+// \param work Auxiliary array; size >= max( 1, \a lwork ).
+// \param lwork The dimension of the array \a work; see online reference for details.
+// \param rwork Auxiliary array; size == 8*n.
+// \param bwork Auxiliary array; size == n.
+// \param info Return code of the function call.
+//
+// This function computes for a pair of \a n-by-\a n single precision complex non-symmetric
+// matrices (\a A,\a B) the generalized eigenvalues, the generalized real Schur form (\a S, \a T),
+// and optionally the left and/or right matrices of Schur vectors (\a VSL and \a VSR). This gives
+// the generalized Schur factorization
+
+                      \f[ (A,B) = ( (VSL)*S*(VSR)**T, (VSL)*T*(VSR)**T ). \f]
+
+// Optionally, it also orders the eigenvalues such that a selected cluster of eigenvalues appears
+// in the leading diagonal blocks of the upper quasi-triangular matrix \a S and the upper triangular
+// matrix \a T. The leading columns of \a VSL and \a VSR then form an orthonormal basis for the
+// corresponding left and right eigenspaces (deflating subspaces).
+//
+// The parameter \a jobvsl specifies the computation of the left Schur vectors:
+//
+//   - \c 'V': The left Schur vectors of \a (A,B) are computed and returned in \a VSL.
+//   - \c 'N': The left Schur vectors of \a (A,B) are not computed.
+//
+// The parameter \a jobvsr specifies the computation of the right Schur vectors:
+//
+//   - \c 'V': The right Schur vectors of \a (A,B) are computed and returned in \a VSR.
+//   - \c 'N': The right Schur vectors of \a (A,B) are not computed.
+//
+// Via the parameter \a selctg it is possible to select specific eigenvalues. \a selctg is a
+// pointer to a function of two single precision complex arguments returning a boolean value.
+// In case \a sort is set to \c 'N', \a selctg is not referenced, else if sort is set to \c 'S'
+// \a selctg is used to select eigenvalues to sort to the top left of the Schur form. An
+// eigenvalue \f$ alpha[j]/beta[j] \f$ is selected if
+
+   \code
+   selctg( &alpha[j], &beta[j])
+   \endcode
+
+// evaluates to true; i.e. if either one of a complex conjugate pair of eigenvalues is selected,
+// then both complex eigenvalues are selected. On exit, the parameter \a sdim will contain the
+// number of eigenvalues (after sorting) for which \a selctg is \a true. Note that complex
+// conjugate pairs for which \a selctg is \a true for either eigenvalue count as 2.
+//
+// The \a info argument provides feedback on the success of the function call:
+//
+//   - = 0: The computation finished successfully.
+//   - < 0: If info = -i, the i-th argument had an illegal value.
+//   - > 1,...,\a n: The QZ iteration failed. (A,B) are not in Schur form, but \a alphar(j),
+//          \a alphai(j), and \a beta(j) should be correct for j=\a info,...,\a n-1.
+//   - > \a n: see online reference for details.
+//
+// For more information on the sgges() function, see the LAPACK online documentation browser:
+//
+//        http://www.netlib.org/lapack/explore-html/
+//
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
+*/
+inline void gges( char jobvsl, char jobvsr, char sort,
+                  bool (*selctg)( const complex<float>*, const complex<float>* ), int n,
+                  complex<float>* A, int lda, complex<float>* B, int ldb, int* sdim,
+                  complex<float>* alpha, complex<float>* beta, complex<float>* VSL, int ldvsl,
+                  complex<float>* VSR, int ldvsr, complex<float>* work, int lwork, float* rwork,
+                  bool* bwork, int* info )
+{
+   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
+
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex8;
+#else
+   using ET = float;
+#endif
+
+   using Selctg = bool (*)( const float*, const float* );
+
+   cgges_( &jobvsl, &jobvsr, &sort, reinterpret_cast<Selctg>( selctg ), &n,
+           reinterpret_cast<ET*>( A ), &lda, reinterpret_cast<ET*>( B ), &ldb, sdim,
+           reinterpret_cast<ET*>( alpha ), reinterpret_cast<ET*>( beta ),
+           reinterpret_cast<ET*>( VSL ), &ldvsl, reinterpret_cast<ET*>( VSR ), &ldvsr,
+           reinterpret_cast<ET*>( work ), &lwork, rwork, bwork, info,
+           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief LAPACK kernel for computing the generalized Schur decomposition for a pair of
+//        non-symmetric double precision complex column-major matrices.
+// \ingroup lapack_eigenvalue
+//
+// \param jobvsl \c 'V' to compute the left Schur vectors, \c 'N' to not compute them.
+// \param jobvsr \c 'V' to compute the right Schur vectors, \c 'N' to not compute them.
+// \param sort \c 'S' to order the eigenvalues on the diagonal, \c 'N' to not order them (see \a selctg).
+// \param selctg Logical function of two double precision complex arguments.
+// \param n The order of the matrices \a A, \a B, \a VSL, and \a VSR \f$[0..\infty)\f$.
+// \param A Pointer to the first element of the double precision complex column-major matrix \a A.
+// \param lda The total number of elements between two columns of the matrix A; size >= max( 1, \a n ).
+// \param B Pointer to the first element of the double precision complex column-major matrix \a B.
+// \param ldb The total number of elements between two columns of the matrix B; size >= max( 1, \a n ).
+// \param sdim Returns the number of eigenvalues (after sorting) for which \a selctg is \a true.
+// \param alpha Pointer to the first element of the eigenvalue numerator; size == n.
+// \param beta Pointer to the first element of the eigenvalue denominator; size == n.
+// \param VSL Pointer to the first element of the column-major matrix for the left Schur vectors.
+// \param ldvsl The total number of elements between two columns of the matrix VSL \f$[0..\infty)\f$.
+// \param VSR Pointer to the first element of the column-major matrix for the right Schur vectors.
+// \param ldvsr The total number of elements between two columns of the matrix VSR \f$[0..\infty)\f$.
+// \param work Auxiliary array; size >= max( 1, \a lwork ).
+// \param lwork The dimension of the array \a work; see online reference for details.
+// \param rwork Auxiliary array; size == 8*n.
+// \param bwork Auxiliary array; size == n.
+// \param info Return code of the function call.
+//
+// This function computes for a pair of \a n-by-\a n double precision complex non-symmetric
+// matrices (\a A,\a B) the generalized eigenvalues, the generalized real Schur form (\a S, \a T),
+// and optionally the left and/or right matrices of Schur vectors (\a VSL and \a VSR). This gives
+// the generalized Schur factorization
+
+                      \f[ (A,B) = ( (VSL)*S*(VSR)**T, (VSL)*T*(VSR)**T ). \f]
+
+// Optionally, it also orders the eigenvalues such that a selected cluster of eigenvalues appears
+// in the leading diagonal blocks of the upper quasi-triangular matrix \a S and the upper triangular
+// matrix \a T. The leading columns of \a VSL and \a VSR then form an orthonormal basis for the
+// corresponding left and right eigenspaces (deflating subspaces).
+//
+// The parameter \a jobvsl specifies the computation of the left Schur vectors:
+//
+//   - \c 'V': The left Schur vectors of \a (A,B) are computed and returned in \a VSL.
+//   - \c 'N': The left Schur vectors of \a (A,B) are not computed.
+//
+// The parameter \a jobvsr specifies the computation of the right Schur vectors:
+//
+//   - \c 'V': The right Schur vectors of \a (A,B) are computed and returned in \a VSR.
+//   - \c 'N': The right Schur vectors of \a (A,B) are not computed.
+//
+// Via the parameter \a selctg it is possible to select specific eigenvalues. \a selctg is a
+// pointer to a function of two double precision complex arguments returning a boolean value.
+// In case \a sort is set to \c 'N', \a selctg is not referenced, else if sort is set to \c 'S'
+// \a selctg is used to select eigenvalues to sort to the top left of the Schur form. An
+// eigenvalue \f$ alpha[j]/beta[j] \f$ is selected if
+
+   \code
+   selctg( &alpha[j], &beta[j])
+   \endcode
+
+// evaluates to true; i.e. if either one of a complex conjugate pair of eigenvalues is selected,
+// then both complex eigenvalues are selected. On exit, the parameter \a sdim will contain the
+// number of eigenvalues (after sorting) for which \a selctg is \a true. Note that complex
+// conjugate pairs for which \a selctg is \a true for either eigenvalue count as 2.
+//
+// The \a info argument provides feedback on the success of the function call:
+//
+//   - = 0: The computation finished successfully.
+//   - < 0: If info = -i, the i-th argument had an illegal value.
+//   - > 1,...,\a n: The QZ iteration failed. (A,B) are not in Schur form, but \a alphar(j),
+//          \a alphai(j), and \a beta(j) should be correct for j=\a info,...,\a n-1.
+//   - > \a n: see online reference for details.
+//
+// For more information on the sgges() function, see the LAPACK online documentation browser:
+//
+//        http://www.netlib.org/lapack/explore-html/
+//
+// \note This function can only be used if a fitting LAPACK library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
+*/
+inline void gges( char jobvsl, char jobvsr, char sort,
+                  bool (*selctg)( const complex<double>*, const complex<double>* ), int n,
+                  complex<double>* A, int lda, complex<double>* B, int ldb, int* sdim,
+                  complex<double>* alpha, complex<double>* beta, complex<double>* VSL, int ldvsl,
+                  complex<double>* VSR, int ldvsr, complex<double>* work, int lwork, double* rwork,
+                  bool* bwork, int* info )
+{
+   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
+
+#if defined(INTEL_MKL_VERSION)
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   using ET = MKL_Complex16;
+#else
+   using ET = double;
+#endif
+
+   using Selctg = bool (*)( const double*, const double* );
+
+   zgges_( &jobvsl, &jobvsr, &sort, reinterpret_cast<Selctg>( selctg ), &n,
+           reinterpret_cast<ET*>( A ), &lda, reinterpret_cast<ET*>( B ), &ldb, sdim,
+           reinterpret_cast<ET*>( alpha ), reinterpret_cast<ET*>( beta ),
+           reinterpret_cast<ET*>( VSL ), &ldvsl, reinterpret_cast<ET*>( VSR ), &ldvsr,
+           reinterpret_cast<ET*>( work ), &lwork, rwork, bwork, info,
+           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+}
+//*************************************************************************************************
 
 } // namespace blaze
 
