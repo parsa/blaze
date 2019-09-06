@@ -188,7 +188,7 @@ inline void gesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, int* ipiv )
 // \exception std::runtime_error Inversion of singular matrix failed.
 //
 // This function uses the LAPACK gesv() functions to compute the solution to the general system of
-// linera equations:
+// linear equations:
 //
 //  - \f$ A  *X  =B   \f$ if both \a A and \a B are column-major
 //  - \f$ A^T*X  =B   \f$ if \a A is row-major and \a B is column-major
