@@ -66,8 +66,6 @@ namespace lapack {
 EigenvalueTest::EigenvalueTest()
 {
    using blaze::complex;
-   using blaze::columnMajor;
-   using blaze::rowMajor;
 
 
    //=====================================================================================
@@ -75,41 +73,7 @@ EigenvalueTest::EigenvalueTest()
    //=====================================================================================
 
    //testGeev < float >();
-
-   testGges < float, columnMajor, columnMajor, columnMajor, columnMajor >();
-   testGges < float, columnMajor, columnMajor, columnMajor, rowMajor >();
-   testGges < float, columnMajor, columnMajor, rowMajor, columnMajor >();
-   testGges < float, columnMajor, columnMajor, rowMajor, rowMajor >();
-   testGges < float, columnMajor, rowMajor, columnMajor, columnMajor >();
-   testGges < float, columnMajor, rowMajor, columnMajor, rowMajor >();
-   testGges < float, columnMajor, rowMajor, rowMajor, columnMajor >();
-   testGges < float, columnMajor, rowMajor, rowMajor, rowMajor >();
-   testGges < float, rowMajor, columnMajor, columnMajor, columnMajor >();
-   testGges < float, rowMajor, columnMajor, columnMajor, rowMajor >();
-   testGges < float, rowMajor, columnMajor, rowMajor, columnMajor >();
-   testGges < float, rowMajor, columnMajor, rowMajor, rowMajor >();
-   testGges < float, rowMajor, rowMajor, columnMajor, columnMajor >();
-   testGges < float, rowMajor, rowMajor, columnMajor, rowMajor >();
-   testGges < float, rowMajor, rowMajor, rowMajor, columnMajor >();
-   testGges < float, rowMajor, rowMajor, rowMajor, rowMajor >();
-
-   testGgesSelect < float, columnMajor, columnMajor, columnMajor, columnMajor >();
-   testGgesSelect < float, columnMajor, columnMajor, columnMajor, rowMajor >();
-   testGgesSelect < float, columnMajor, columnMajor, rowMajor, columnMajor >();
-   testGgesSelect < float, columnMajor, columnMajor, rowMajor, rowMajor >();
-   testGgesSelect < float, columnMajor, rowMajor, columnMajor, columnMajor >();
-   testGgesSelect < float, columnMajor, rowMajor, columnMajor, rowMajor >();
-   testGgesSelect < float, columnMajor, rowMajor, rowMajor, columnMajor >();
-   testGgesSelect < float, columnMajor, rowMajor, rowMajor, rowMajor >();
-   testGgesSelect < float, rowMajor, columnMajor, columnMajor, columnMajor >();
-   testGgesSelect < float, rowMajor, columnMajor, columnMajor, rowMajor >();
-   testGgesSelect < float, rowMajor, columnMajor, rowMajor, columnMajor >();
-   testGgesSelect < float, rowMajor, columnMajor, rowMajor, rowMajor >();
-   testGgesSelect < float, rowMajor, rowMajor, columnMajor, columnMajor >();
-   testGgesSelect < float, rowMajor, rowMajor, columnMajor, rowMajor >();
-   testGgesSelect < float, rowMajor, rowMajor, rowMajor, columnMajor >();
-   testGgesSelect < float, rowMajor, rowMajor, rowMajor, rowMajor >();
-
+   //testGges < float >();
    //testSyev < float >();
    //testSyevd< float >();
    //testSyevx< float >();
@@ -120,41 +84,7 @@ EigenvalueTest::EigenvalueTest()
    //=====================================================================================
 
    testGeev < double >();
-   
-   testGges < double, columnMajor, columnMajor, columnMajor, columnMajor >();
-   testGges < double, columnMajor, columnMajor, columnMajor, rowMajor >();
-   testGges < double, columnMajor, columnMajor, rowMajor, columnMajor >();
-   testGges < double, columnMajor, columnMajor, rowMajor, rowMajor >();
-   testGges < double, columnMajor, rowMajor, columnMajor, columnMajor >();
-   testGges < double, columnMajor, rowMajor, columnMajor, rowMajor >();
-   testGges < double, columnMajor, rowMajor, rowMajor, columnMajor >();
-   testGges < double, columnMajor, rowMajor, rowMajor, rowMajor >();
-   testGges < double, rowMajor, columnMajor, columnMajor, columnMajor >();
-   testGges < double, rowMajor, columnMajor, columnMajor, rowMajor >();
-   testGges < double, rowMajor, columnMajor, rowMajor, columnMajor >();
-   testGges < double, rowMajor, columnMajor, rowMajor, rowMajor >();
-   testGges < double, rowMajor, rowMajor, columnMajor, columnMajor >();
-   testGges < double, rowMajor, rowMajor, columnMajor, rowMajor >();
-   testGges < double, rowMajor, rowMajor, rowMajor, columnMajor >();
-   testGges < double, rowMajor, rowMajor, rowMajor, rowMajor >();
-
-   testGgesSelect < double, columnMajor, columnMajor, columnMajor, columnMajor >();
-   testGgesSelect < double, columnMajor, columnMajor, columnMajor, rowMajor >();
-   testGgesSelect < double, columnMajor, columnMajor, rowMajor, columnMajor >();
-   testGgesSelect < double, columnMajor, columnMajor, rowMajor, rowMajor >();
-   testGgesSelect < double, columnMajor, rowMajor, columnMajor, columnMajor >();
-   testGgesSelect < double, columnMajor, rowMajor, columnMajor, rowMajor >();
-   testGgesSelect < double, columnMajor, rowMajor, rowMajor, columnMajor >();
-   testGgesSelect < double, columnMajor, rowMajor, rowMajor, rowMajor >();
-   testGgesSelect < double, rowMajor, columnMajor, columnMajor, columnMajor >();
-   testGgesSelect < double, rowMajor, columnMajor, columnMajor, rowMajor >();
-   testGgesSelect < double, rowMajor, columnMajor, rowMajor, columnMajor >();
-   testGgesSelect < double, rowMajor, columnMajor, rowMajor, rowMajor >();
-   testGgesSelect < double, rowMajor, rowMajor, columnMajor, columnMajor >();
-   testGgesSelect < double, rowMajor, rowMajor, columnMajor, rowMajor >();
-   testGgesSelect < double, rowMajor, rowMajor, rowMajor, columnMajor >();
-   testGgesSelect < double, rowMajor, rowMajor, rowMajor, rowMajor >();
-   
+   testGges < double >();
    testSyev < double >();
    testSyevd< double >();
    testSyevx< double >();
@@ -165,6 +95,7 @@ EigenvalueTest::EigenvalueTest()
    //=====================================================================================
 
    //testGeev < complex<float> >();
+   //testGges < complex<float> >();
    //testHeev < complex<float> >();
    //testHeevd< complex<float> >();
    //testHeevx< complex<float> >();
@@ -175,6 +106,7 @@ EigenvalueTest::EigenvalueTest()
    //=====================================================================================
 
    testGeev < complex<double> >();
+   testGges < complex<double> >();
    testHeev < complex<double> >();
    testHeevd< complex<double> >();
    testHeevx< complex<double> >();
