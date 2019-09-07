@@ -154,7 +154,7 @@ void DenseTest::checkEigenvector( const blaze::DenseVector<VT,false>& v,
           << "   Eigenvalue = " << w << "\n"
           << "   Right eigenvector:\n" << (~v) << "\n"
           << "   A * v =\n" << ( (~A) * (~v) ) << "\n"
-          << "   A * w =\n" << ( w * (~v) ) << "\n";
+          << "   w * v =\n" << ( w * (~v) ) << "\n";
       throw std::runtime_error( oss.str() );
    }
 }

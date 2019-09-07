@@ -127,21 +127,42 @@ void DenseTest::testGeneral()
       randomize( A1 );
       DynamicMatrix<double,columnMajor> A2( A1 );
 
-      DynamicVector<complex<double>,rowVector> w1;
-      DynamicVector<complex<double>,rowVector> w2;
+      {
+         DynamicVector<complex<double>,rowVector> w1;
+         DynamicVector<complex<double>,rowVector> w2;
 
-      eigen( A1, w1 );
-      eigen( A2, w2 );
+         eigen( A1, w1 );
+         eigen( A2, w2 );
 
-      if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Eigenvalue computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major eigenvalues:\n" << w1 << "\n"
-             << "   Column-major eigenvalues:\n" << w2 << "\n";
-         throw std::runtime_error( oss.str() );
+         if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         DynamicVector<complex<double>,rowVector> w1;
+         DynamicVector<complex<double>,rowVector> w2;
+
+         eigen( trans( A1 ), w1 );
+         eigen( trans( A2 ), w2 );
+
+         if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 
@@ -152,21 +173,42 @@ void DenseTest::testGeneral()
       randomize( A1 );
       DynamicMatrix<complex<double>,columnMajor> A2( A1 );
 
-      DynamicVector<complex<double>,rowVector> w1;
-      DynamicVector<complex<double>,rowVector> w2;
+      {
+         DynamicVector<complex<double>,rowVector> w1;
+         DynamicVector<complex<double>,rowVector> w2;
 
-      eigen( A1, w1 );
-      eigen( A2, w2 );
+         eigen( A1, w1 );
+         eigen( A2, w2 );
 
-      if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Eigenvalue computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major eigenvalues:\n" << w1 << "\n"
-             << "   Column-major eigenvalues:\n" << w2 << "\n";
-         throw std::runtime_error( oss.str() );
+         if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         DynamicVector<complex<double>,rowVector> w1;
+         DynamicVector<complex<double>,rowVector> w2;
+
+         eigen( trans( A1 ), w1 );
+         eigen( trans( A2 ), w2 );
+
+         if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 
@@ -184,70 +226,134 @@ void DenseTest::testGeneral()
       DynamicMatrix<double,rowMajor>    A1( A );
       DynamicMatrix<double,columnMajor> A2( A );
 
-      DynamicVector<complex<double>,rowVector> w1;
-      DynamicVector<complex<double>,rowVector> w2;
+      {
+         DynamicVector<complex<double>,rowVector> w1;
+         DynamicVector<complex<double>,rowVector> w2;
 
-      DynamicMatrix<complex<double>,rowMajor>    V1;
-      DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<complex<double>,rowMajor>    V1;
+         DynamicMatrix<complex<double>,columnMajor> V2;
 
-      eigen( A1, w1, V1 );
-      eigen( A2, w2, V2 );
+         eigen( A1, w1, V1 );
+         eigen( A2, w2, V2 );
 
-      if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Eigenvalue computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major eigenvalues:\n" << w1 << "\n"
-             << "   Column-major eigenvalues:\n" << w2 << "\n";
-         throw std::runtime_error( oss.str() );
+         if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         for( size_t i=0UL; i<V1.rows(); ++i ) {
+            checkEigenvector( row( V1, i ), A, w1[i] );
+         }
+
+         for( size_t i=0UL; i<V2.columns(); ++i ) {
+            checkEigenvector( column( V2, i ), A, w2[i] );
+         }
       }
 
-      for( size_t i=0UL; i<V1.rows(); ++i ) {
-         checkEigenvector( row( V1, i ), A, w1[i] );
-      }
+      {
+         DynamicVector<complex<double>,rowVector> w1;
+         DynamicVector<complex<double>,rowVector> w2;
 
-      for( size_t i=0UL; i<V2.columns(); ++i ) {
-         checkEigenvector( column( V2, i ), A, w2[i] );
+         DynamicMatrix<complex<double>,rowMajor>    V1;
+         DynamicMatrix<complex<double>,columnMajor> V2;
+
+         eigen( trans( A1 ), w1, V1 );
+         eigen( trans( A2 ), w2, V2 );
+
+         if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         for( size_t i=0UL; i<V1.rows(); ++i ) {
+            checkEigenvector( ctrans( row( V1, i ) ), trans( A ), w1[i] );
+         }
+
+         for( size_t i=0UL; i<V2.columns(); ++i ) {
+            checkEigenvector( ctrans( column( V2, i ) ), trans( A ), w2[i] );
+         }
       }
    }
 
    {
       test_ = "eigen( DenseMatrix, DenseVector, DenseMatrix ) (general, complex<double>)";
 
-      DynamicMatrix<double,rowMajor> A( 5UL, 5UL );
+      DynamicMatrix<complex<double>,rowMajor> A( 5UL, 5UL );
       randomize( A );
 
       DynamicMatrix<complex<double>,rowMajor>    A1( A );
       DynamicMatrix<complex<double>,columnMajor> A2( A );
 
-      DynamicVector<complex<double>,rowVector> w1;
-      DynamicVector<complex<double>,rowVector> w2;
+      {
+         DynamicVector<complex<double>,rowVector> w1;
+         DynamicVector<complex<double>,rowVector> w2;
 
-      DynamicMatrix<complex<double>,rowMajor>    V1;
-      DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<complex<double>,rowMajor>    V1;
+         DynamicMatrix<complex<double>,columnMajor> V2;
 
-      eigen( A1, w1, V1 );
-      eigen( A2, w2, V2 );
+         eigen( A1, w1, V1 );
+         eigen( A2, w2, V2 );
 
-      if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Eigenvalue computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major eigenvalues:\n" << w1 << "\n"
-             << "   Column-major eigenvalues:\n" << w2 << "\n";
-         throw std::runtime_error( oss.str() );
+         if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         for( size_t i=0UL; i<V1.rows(); ++i ) {
+            checkEigenvector( row( V1, i ), A, w1[i] );
+         }
+
+         for( size_t i=0UL; i<V2.columns(); ++i ) {
+            checkEigenvector( column( V2, i ), A, w2[i] );
+         }
       }
 
-      for( size_t i=0UL; i<V1.rows(); ++i ) {
-         checkEigenvector( row( V1, i ), A, w1[i] );
-      }
+      {
+         DynamicVector<complex<double>,rowVector> w1;
+         DynamicVector<complex<double>,rowVector> w2;
 
-      for( size_t i=0UL; i<V2.columns(); ++i ) {
-         checkEigenvector( column( V2, i ), A, w2[i] );
+         DynamicMatrix<complex<double>,rowMajor>    V1;
+         DynamicMatrix<complex<double>,columnMajor> V2;
+
+         eigen( trans( A1 ), w1, V1 );
+         eigen( trans( A2 ), w2, V2 );
+
+         if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         for( size_t i=0UL; i<V1.rows(); ++i ) {
+            checkEigenvector( trans( row( V1, i ) ), trans( A ), w1[i] );
+         }
+
+         for( size_t i=0UL; i<V2.columns(); ++i ) {
+            checkEigenvector( trans( column( V2, i ) ), trans( A ), w2[i] );
+         }
       }
    }
 
@@ -294,21 +400,42 @@ void DenseTest::testSymmetric()
       randomize( A1 );
       SymmetricMatrix< DynamicMatrix<double,columnMajor> > A2( A1 );
 
-      DynamicVector<double,rowVector> w1;
-      DynamicVector<double,rowVector> w2;
+      {
+         DynamicVector<double,rowVector> w1;
+         DynamicVector<double,rowVector> w2;
 
-      eigen( A1, w1 );
-      eigen( A2, w2 );
+         eigen( A1, w1 );
+         eigen( A2, w2 );
 
-      if( w1 != w2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Eigenvalue computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major eigenvalues:\n" << w1 << "\n"
-             << "   Column-major eigenvalues:\n" << w2 << "\n";
-         throw std::runtime_error( oss.str() );
+         if( w1 != w2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         DynamicVector<double,rowVector> w1;
+         DynamicVector<double,rowVector> w2;
+
+         eigen( trans( A1 ), w1 );
+         eigen( trans( A2 ), w2 );
+
+         if( w1 != w2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 
@@ -319,21 +446,42 @@ void DenseTest::testSymmetric()
       randomize( A1 );
       SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> > A2( A1 );
 
-      DynamicVector<complex<double>,rowVector> w1;
-      DynamicVector<complex<double>,rowVector> w2;
+      {
+         DynamicVector<complex<double>,rowVector> w1;
+         DynamicVector<complex<double>,rowVector> w2;
 
-      eigen( A1, w1 );
-      eigen( A2, w2 );
+         eigen( A1, w1 );
+         eigen( A2, w2 );
 
-      if( w1 != w2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Eigenvalue computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major eigenvalues:\n" << w1 << "\n"
-             << "   Column-major eigenvalues:\n" << w2 << "\n";
-         throw std::runtime_error( oss.str() );
+         if( w1 != w2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         DynamicVector<complex<double>,rowVector> w1;
+         DynamicVector<complex<double>,rowVector> w2;
+
+         eigen( trans( A1 ), w1 );
+         eigen( trans( A2 ), w2 );
+
+         if( w1 != w2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 
@@ -351,32 +499,64 @@ void DenseTest::testSymmetric()
       SymmetricMatrix< DynamicMatrix<double,rowMajor> >    A1( A );
       SymmetricMatrix< DynamicMatrix<double,columnMajor> > A2( A );
 
-      DynamicVector<double,rowVector> w1;
-      DynamicVector<double,rowVector> w2;
+      {
+         DynamicVector<double,rowVector> w1;
+         DynamicVector<double,rowVector> w2;
 
-      DynamicMatrix<double,rowMajor>    V1;
-      DynamicMatrix<double,columnMajor> V2;
+         DynamicMatrix<double,rowMajor>    V1;
+         DynamicMatrix<double,columnMajor> V2;
 
-      eigen( A1, w1, V1 );
-      eigen( A2, w2, V2 );
+         eigen( A1, w1, V1 );
+         eigen( A2, w2, V2 );
 
-      if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Eigenvalue computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major eigenvalues:\n" << w1 << "\n"
-             << "   Column-major eigenvalues:\n" << w2 << "\n";
-         throw std::runtime_error( oss.str() );
+         if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         for( size_t i=0UL; i<V1.rows(); ++i ) {
+            checkEigenvector( row( V1, i ), A, w1[i] );
+         }
+
+         for( size_t i=0UL; i<V2.columns(); ++i ) {
+            checkEigenvector( column( V2, i ), A, w2[i] );
+         }
       }
 
-      for( size_t i=0UL; i<V1.rows(); ++i ) {
-         checkEigenvector( row( V1, i ), A, w1[i] );
-      }
+      {
+         DynamicVector<double,rowVector> w1;
+         DynamicVector<double,rowVector> w2;
 
-      for( size_t i=0UL; i<V2.columns(); ++i ) {
-         checkEigenvector( column( V2, i ), A, w2[i] );
+         DynamicMatrix<double,rowMajor>    V1;
+         DynamicMatrix<double,columnMajor> V2;
+
+         eigen( trans( A1 ), w1, V1 );
+         eigen( trans( A2 ), w2, V2 );
+
+         if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         for( size_t i=0UL; i<V1.rows(); ++i ) {
+            checkEigenvector( row( V1, i ), trans( A ), w1[i] );
+         }
+
+         for( size_t i=0UL; i<V2.columns(); ++i ) {
+            checkEigenvector( trans( column( V2, i ) ), trans( A ), w2[i] );
+         }
       }
    }
 
@@ -389,32 +569,64 @@ void DenseTest::testSymmetric()
       SymmetricMatrix< DynamicMatrix<complex<double>,rowMajor> >    A1( A );
       SymmetricMatrix< DynamicMatrix<complex<double>,columnMajor> > A2( A );
 
-      DynamicVector<complex<double>,rowVector> w1;
-      DynamicVector<complex<double>,rowVector> w2;
+      {
+         DynamicVector<complex<double>,rowVector> w1;
+         DynamicVector<complex<double>,rowVector> w2;
 
-      DynamicMatrix<complex<double>,rowMajor>    V1;
-      DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<complex<double>,rowMajor>    V1;
+         DynamicMatrix<complex<double>,columnMajor> V2;
 
-      eigen( A1, w1, V1 );
-      eigen( A2, w2, V2 );
+         eigen( A1, w1, V1 );
+         eigen( A2, w2, V2 );
 
-      if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Eigenvalue computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major eigenvalues:\n" << w1 << "\n"
-             << "   Column-major eigenvalues:\n" << w2 << "\n";
-         throw std::runtime_error( oss.str() );
+         if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         for( size_t i=0UL; i<V1.rows(); ++i ) {
+            checkEigenvector( row( V1, i ), A, w1[i] );
+         }
+
+         for( size_t i=0UL; i<V2.columns(); ++i ) {
+            checkEigenvector( column( V2, i ), A, w2[i] );
+         }
       }
 
-      for( size_t i=0UL; i<V1.rows(); ++i ) {
-         checkEigenvector( row( V1, i ), A, w1[i] );
-      }
+      {
+         DynamicVector<complex<double>,rowVector> w1;
+         DynamicVector<complex<double>,rowVector> w2;
 
-      for( size_t i=0UL; i<V2.columns(); ++i ) {
-         checkEigenvector( column( V2, i ), A, w2[i] );
+         DynamicMatrix<complex<double>,rowMajor>    V1;
+         DynamicMatrix<complex<double>,columnMajor> V2;
+
+         eigen( trans( A1 ), w1, V1 );
+         eigen( trans( A2 ), w2, V2 );
+
+         if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         for( size_t i=0UL; i<V1.rows(); ++i ) {
+            checkEigenvector( trans( row( V1, i ) ), trans( A ), w1[i] );
+         }
+
+         for( size_t i=0UL; i<V2.columns(); ++i ) {
+            checkEigenvector( trans( column( V2, i ) ), trans( A ), w2[i] );
+         }
       }
    }
 
@@ -461,21 +673,42 @@ void DenseTest::testHermitian()
       randomize( A1 );
       HermitianMatrix< DynamicMatrix<double,columnMajor> > A2( A1 );
 
-      DynamicVector<double,rowVector> w1;
-      DynamicVector<double,rowVector> w2;
+      {
+         DynamicVector<double,rowVector> w1;
+         DynamicVector<double,rowVector> w2;
 
-      eigen( A1, w1 );
-      eigen( A2, w2 );
+         eigen( A1, w1 );
+         eigen( A2, w2 );
 
-      if( w1 != w2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Eigenvalue computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major eigenvalues:\n" << w1 << "\n"
-             << "   Column-major eigenvalues:\n" << w2 << "\n";
-         throw std::runtime_error( oss.str() );
+         if( w1 != w2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         DynamicVector<double,rowVector> w1;
+         DynamicVector<double,rowVector> w2;
+
+         eigen( trans( A1 ), w1 );
+         eigen( trans( A2 ), w2 );
+
+         if( w1 != w2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 
@@ -486,21 +719,42 @@ void DenseTest::testHermitian()
       randomize( A1 );
       HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> > A2( A1 );
 
-      DynamicVector<double,rowVector> w1;
-      DynamicVector<double,rowVector> w2;
+      {
+         DynamicVector<double,rowVector> w1;
+         DynamicVector<double,rowVector> w2;
 
-      eigen( A1, w1 );
-      eigen( A2, w2 );
+         eigen( A1, w1 );
+         eigen( A2, w2 );
 
-      if( w1 != w2 ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Eigenvalue computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major eigenvalues:\n" << w1 << "\n"
-             << "   Column-major eigenvalues:\n" << w2 << "\n";
-         throw std::runtime_error( oss.str() );
+         if( w1 != w2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         DynamicVector<double,rowVector> w1;
+         DynamicVector<double,rowVector> w2;
+
+         eigen( trans( A1 ), w1 );
+         eigen( trans( A2 ), w2 );
+
+         if( w1 != w2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
    }
 
@@ -518,32 +772,64 @@ void DenseTest::testHermitian()
       HermitianMatrix< DynamicMatrix<double,rowMajor> >    A1( A );
       HermitianMatrix< DynamicMatrix<double,columnMajor> > A2( A );
 
-      DynamicVector<double,rowVector> w1;
-      DynamicVector<double,rowVector> w2;
+      {
+         DynamicVector<double,rowVector> w1;
+         DynamicVector<double,rowVector> w2;
 
-      DynamicMatrix<double,rowMajor>    V1;
-      DynamicMatrix<double,columnMajor> V2;
+         DynamicMatrix<double,rowMajor>    V1;
+         DynamicMatrix<double,columnMajor> V2;
 
-      eigen( A1, w1, V1 );
-      eigen( A2, w2, V2 );
+         eigen( A1, w1, V1 );
+         eigen( A2, w2, V2 );
 
-      if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Eigenvalue computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major eigenvalues:\n" << w1 << "\n"
-             << "   Column-major eigenvalues:\n" << w2 << "\n";
-         throw std::runtime_error( oss.str() );
+         if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         for( size_t i=0UL; i<V1.rows(); ++i ) {
+            checkEigenvector( row( V1, i ), A, w1[i] );
+         }
+
+         for( size_t i=0UL; i<V2.columns(); ++i ) {
+            checkEigenvector( column( V2, i ), A, w2[i] );
+         }
       }
 
-      for( size_t i=0UL; i<V1.rows(); ++i ) {
-         checkEigenvector( row( V1, i ), A, w1[i] );
-      }
+      {
+         DynamicVector<double,rowVector> w1;
+         DynamicVector<double,rowVector> w2;
 
-      for( size_t i=0UL; i<V2.columns(); ++i ) {
-         checkEigenvector( column( V2, i ), A, w2[i] );
+         DynamicMatrix<double,rowMajor>    V1;
+         DynamicMatrix<double,columnMajor> V2;
+
+         eigen( trans( A1 ), w1, V1 );
+         eigen( trans( A2 ), w2, V2 );
+
+         if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         for( size_t i=0UL; i<V1.rows(); ++i ) {
+            checkEigenvector( trans( row( V1, i ) ), trans( A ), w1[i] );
+         }
+
+         for( size_t i=0UL; i<V2.columns(); ++i ) {
+            checkEigenvector( trans( column( V2, i ) ), trans( A ), w2[i] );
+         }
       }
    }
 
@@ -556,32 +842,64 @@ void DenseTest::testHermitian()
       HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> >    A1( A );
       HermitianMatrix< DynamicMatrix<complex<double>,columnMajor> > A2( A );
 
-      DynamicVector<double,rowVector> w1;
-      DynamicVector<double,rowVector> w2;
+      {
+         DynamicVector<double,rowVector> w1;
+         DynamicVector<double,rowVector> w2;
 
-      DynamicMatrix<complex<double>,rowMajor>    V1;
-      DynamicMatrix<complex<double>,columnMajor> V2;
+         DynamicMatrix<complex<double>,rowMajor>    V1;
+         DynamicMatrix<complex<double>,columnMajor> V2;
 
-      eigen( A1, w1, V1 );
-      eigen( A2, w2, V2 );
+         eigen( A1, w1, V1 );
+         eigen( A2, w2, V2 );
 
-      if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Eigenvalue computation failed\n"
-             << " Details:\n"
-             << "   Random seed = " << blaze::getSeed() << "\n"
-             << "   Row-major eigenvalues:\n" << w1 << "\n"
-             << "   Column-major eigenvalues:\n" << w2 << "\n";
-         throw std::runtime_error( oss.str() );
+         if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         for( size_t i=0UL; i<V1.rows(); ++i ) {
+            checkEigenvector( row( V1, i ), A, w1[i] );
+         }
+
+         for( size_t i=0UL; i<V2.columns(); ++i ) {
+            checkEigenvector( column( V2, i ), A, w2[i] );
+         }
       }
 
-      for( size_t i=0UL; i<V1.rows(); ++i ) {
-         checkEigenvector( row( V1, i ), A, w1[i] );
-      }
+      {
+         DynamicVector<double,rowVector> w1;
+         DynamicVector<double,rowVector> w2;
 
-      for( size_t i=0UL; i<V2.columns(); ++i ) {
-         checkEigenvector( column( V2, i ), A, w2[i] );
+         DynamicMatrix<complex<double>,rowMajor>    V1;
+         DynamicMatrix<complex<double>,columnMajor> V2;
+
+         eigen( trans( A1 ), w1, V1 );
+         eigen( trans( A2 ), w2, V2 );
+
+         if( !std::is_permutation( w1.begin(), w1.end(), w2.begin(), comparator ) ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose eigenvalue computation failed\n"
+                << " Details:\n"
+                << "   Random seed = " << blaze::getSeed() << "\n"
+                << "   Row-major eigenvalues:\n" << w1 << "\n"
+                << "   Column-major eigenvalues:\n" << w2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         for( size_t i=0UL; i<V1.rows(); ++i ) {
+            checkEigenvector( trans( row( V1, i ) ), trans( A ), w1[i] );
+         }
+
+         for( size_t i=0UL; i<V2.columns(); ++i ) {
+            checkEigenvector( trans( column( V2, i ) ), trans( A ), w2[i] );
+         }
       }
    }
 
