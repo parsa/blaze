@@ -375,8 +375,7 @@ class SymmetricMatrix<MT,SO,false,true>
       -> EnableIf_t< IsComputation_v<MT2>, SymmetricMatrix& >;
 
    template< typename MT2 >
-   inline auto operator+=( const Matrix<MT2,!SO>& rhs )
-      -> SymmetricMatrix&;
+   inline auto operator+=( const Matrix<MT2,!SO>& rhs ) -> SymmetricMatrix&;
 
    template< typename MT2 >
    inline auto operator-=( const Matrix<MT2,SO>& rhs )
@@ -387,8 +386,7 @@ class SymmetricMatrix<MT,SO,false,true>
       -> EnableIf_t< IsComputation_v<MT2>, SymmetricMatrix& >;
 
    template< typename MT2 >
-   inline auto operator-=( const Matrix<MT2,!SO>& rhs )
-      -> SymmetricMatrix&;
+   inline auto operator-=( const Matrix<MT2,!SO>& rhs ) -> SymmetricMatrix&;
 
    template< typename MT2 >
    inline auto operator%=( const Matrix<MT2,SO>& rhs )
