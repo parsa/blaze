@@ -490,7 +490,7 @@ template< typename VT    // Type of the left-hand side dense vector
 inline auto operator/=( DenseVector<VT,TF>& vec, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, VT& >
 {
-   BLAZE_USER_ASSERT( !isZero( scalar ), "Division by zero detected" );
+   BLAZE_USER_ASSERT( isDivisor( scalar ), "Division by zero detected" );
 
    if( IsRestricted_v<VT> ) {
       if( !tryDiv( ~vec, 0UL, (~vec).size(), scalar ) ) {
