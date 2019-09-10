@@ -781,14 +781,39 @@ inline decltype(auto) band( const DeclExpr<MT>& matrix, RBAs... args )
 // This function returns an expression representing the specified band of the given matrix
 // transpose operation.
 */
-template< ptrdiff_t... CBAs   // Compile time band arguments
+template< ptrdiff_t I         // Band index
         , typename MT         // Type of the matrix
         , typename... RBAs >  // Runtime band arguments
 inline decltype(auto) band( const MatTransExpr<MT>& matrix, RBAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return band<-CBAs...>( (~matrix).operand(), -args... );
+   return band<-I>( (~matrix).operand(), args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific band of the given matrix transpose operation.
+// \ingroup band
+//
+// \param matrix The constant matrix transpose operation.
+// \param index The band index.
+// \param args Optional band arguments.
+// \return View on the specified band of the transpose operation.
+//
+// This function returns an expression representing the specified band of the given matrix
+// transpose operation.
+*/
+template< typename MT         // Type of the matrix
+        , typename... RBAs >  // Runtime band arguments
+inline decltype(auto) band( const MatTransExpr<MT>& matrix, ptrdiff_t index, RBAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return band( (~matrix).operand(), -index, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
