@@ -190,6 +190,7 @@
 #include <blaze/math/typetraits/IsMatVecMultExpr.h>
 #include <blaze/math/typetraits/IsModification.h>
 #include <blaze/math/typetraits/IsMultExpr.h>
+#include <blaze/math/typetraits/IsNoAliasExpr.h>
 #include <blaze/math/typetraits/IsNumericMatrix.h>
 #include <blaze/math/typetraits/IsNumericVector.h>
 #include <blaze/math/typetraits/IsOperation.h>

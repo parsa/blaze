@@ -97,6 +97,7 @@
 #include <blaze/math/constraints/Modification.h>
 #include <blaze/math/constraints/MultExpr.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
+#include <blaze/math/constraints/NoAliasExpr.h>
 #include <blaze/math/constraints/NumericMatrix.h>
 #include <blaze/math/constraints/NumericVector.h>
 #include <blaze/math/constraints/Operation.h>
