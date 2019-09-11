@@ -50,6 +50,7 @@
 #include <blaze/math/expressions/MatMatMapExpr.h>
 #include <blaze/math/expressions/MatMatMultExpr.h>
 #include <blaze/math/expressions/MatMatSubExpr.h>
+#include <blaze/math/expressions/MatNoAliasExpr.h>
 #include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/expressions/MatScalarDivExpr.h>
 #include <blaze/math/expressions/MatScalarMultExpr.h>
@@ -707,6 +708,31 @@ inline decltype(auto) column( const MatSerialExpr<MT>& matrix, RCAs... args )
    BLAZE_FUNCTION_TRACE;
 
    return serial( column<CCAs...>( (~matrix).operand(), args... ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given matrix no-alias operation.
+// \ingroup column
+//
+// \param matrix The constant matrix no-alias operation.
+// \param args The runtime column arguments.
+// \return View on the specified column of the no-alias operation.
+//
+// This function returns an expression representing the specified column of the given matrix
+// no-alias operation.
+*/
+template< size_t... CCAs      // Compile time column arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) column( const MatNoAliasExpr<MT>& matrix, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return noalias( column<CCAs...>( (~matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
