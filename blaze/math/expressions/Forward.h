@@ -126,6 +126,7 @@ template< typename, typename, bool > class SMatDMatSubExpr;
 template< typename, typename > class SMatDVecMultExpr;
 template< typename, bool > class SMatEvalExpr;
 template< typename, typename, bool > class SMatMapExpr;
+template< typename, bool > class SMatNoAliasExpr;
 template< typename, typename, bool > class SMatScalarDivExpr;
 template< typename, typename, bool > class SMatScalarMultExpr;
 template< typename, bool > class SMatSerialExpr;
@@ -581,6 +582,9 @@ decltype(auto) noalias( const SparseVector<VT,TF>& );
 
 template< typename MT, bool SO >
 decltype(auto) noalias( const DenseMatrix<MT,SO>& );
+
+template< typename MT, bool SO >
+decltype(auto) noalias( const SparseMatrix<MT,SO>& );
 
 
 template< typename MT, bool SO >
