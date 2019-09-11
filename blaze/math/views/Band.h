@@ -49,6 +49,7 @@
 #include <blaze/math/expressions/MatMatKronExpr.h>
 #include <blaze/math/expressions/MatMatMapExpr.h>
 #include <blaze/math/expressions/MatMatSubExpr.h>
+#include <blaze/math/expressions/MatNoAliasExpr.h>
 #include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/expressions/MatScalarDivExpr.h>
 #include <blaze/math/expressions/MatScalarMultExpr.h>
@@ -739,6 +740,31 @@ inline decltype(auto) band( const MatSerialExpr<MT>& matrix, RBAs... args )
    BLAZE_FUNCTION_TRACE;
 
    return serial( band<CBAs...>( (~matrix).operand(), args... ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific band of the given matrix no-alias operation.
+// \ingroup band
+//
+// \param matrix The constant matrix no-alias operation.
+// \param args The runtime band arguments.
+// \return View on the specified band of the no-alias operation.
+//
+// This function returns an expression representing the specified band of the given matrix
+// no-alias operation.
+*/
+template< ptrdiff_t... CBAs   // Compile time band arguments
+        , typename MT         // Type of the matrix
+        , typename... RBAs >  // Runtime band arguments
+inline decltype(auto) band( const MatNoAliasExpr<MT>& matrix, RBAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return noalias( band<CBAs...>( (~matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
