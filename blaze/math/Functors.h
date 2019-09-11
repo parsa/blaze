@@ -105,6 +105,7 @@
 #include <blaze/math/functors/ModuloAssign.h>
 #include <blaze/math/functors/Mult.h>
 #include <blaze/math/functors/MultAssign.h>
+#include <blaze/math/functors/NoAlias.h>
 #include <blaze/math/functors/Noop.h>
 #include <blaze/math/functors/Not.h>
 #include <blaze/math/functors/Or.h>
