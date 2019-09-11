@@ -100,6 +100,7 @@ template< typename, typename, bool > class DVecDVecSubExpr;
 template< typename, bool > class DVecEvalExpr;
 template< typename, bool, size_t... > class DVecExpandExpr;
 template< typename, typename, bool > class DVecMapExpr;
+template< typename, bool > class DVecNoAliasExpr;
 template< typename, typename, bool > class DVecScalarDivExpr;
 template< typename, typename, bool > class DVecScalarMultExpr;
 template< typename, bool > class DVecSerialExpr;
@@ -568,6 +569,10 @@ decltype(auto) serial( const DenseMatrix<MT,SO>& );
 
 template< typename MT, bool SO >
 decltype(auto) serial( const SparseMatrix<MT,SO>& );
+
+
+template< typename VT, bool TF >
+decltype(auto) noalias( const DenseVector<VT,TF>& );
 
 
 template< typename MT, bool SO >

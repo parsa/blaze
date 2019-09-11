@@ -55,6 +55,7 @@
 #include <blaze/math/expressions/DVecExpandExpr.h>
 #include <blaze/math/expressions/DVecMapExpr.h>
 #include <blaze/math/expressions/DVecMeanExpr.h>
+#include <blaze/math/expressions/DVecNoAliasExpr.h>
 #include <blaze/math/expressions/DVecNormExpr.h>
 #include <blaze/math/expressions/DVecReduceExpr.h>
 #include <blaze/math/expressions/DVecScalarDivExpr.h>
