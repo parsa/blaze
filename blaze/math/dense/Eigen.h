@@ -51,12 +51,15 @@
 #include <blaze/math/lapack/heevd.h>
 #include <blaze/math/lapack/syevd.h>
 #include <blaze/math/typetraits/IsContiguous.h>
+#include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsHermitian.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
+#include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blaze/util/typetraits/IsFloatingPoint.h>
@@ -106,7 +109,7 @@ template< typename MT  // Type of the matrix A
         , typename VT  // Type of the vector w
         , bool TF >    // Transpose flag of the vector w
 inline auto eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
-   -> EnableIf_t< IsSymmetric_v<MT> && IsFloatingPoint_v< ElementType_t<MT> > >
+   -> EnableIf_t< IsSymmetric_v<MT> && !IsDiagonal_v<MT> && IsFloatingPoint_v< ElementType_t<MT> > >
 {
    using ATmp = RemoveAdaptor_t< ResultType_t<MT> >;
 
@@ -115,7 +118,7 @@ inline auto eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
-   ATmp Atmp( A );
+   ATmp Atmp( ~A );
 
    syevd( Atmp, ~w, 'N', 'L' );
 }
@@ -156,9 +159,53 @@ inline auto eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
-   ATmp Atmp( A );
+   ATmp Atmp( ~A );
 
    heevd( Atmp, ~w, 'N', 'L' );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend for the eigenvalue computation of the given dense triangular matrix.
+// \ingroup dense_matrix
+//
+// \param A The given triangular matrix.
+// \param w The resulting vector of eigenvalues.
+// \return void
+// \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Vector cannot be resized.
+// \exception std::runtime_error Eigenvalue computation failed.
+//
+// This function is the backend implementation for computing the eigenvalues of the given
+// dense triangular matrix.\n
+// This function must \b NOT be called explicitly! It is used internally for the dispatch to
+// the correct LAPACK function. Calling this function explicitly might result in erroneous
+// results and/or in compilation errors. Instead of using this function use the according
+// eigen() function.
+*/
+template< typename MT  // Type of the matrix A
+        , bool SO      // Storage order of the matrix A
+        , typename VT  // Type of the vector w
+        , bool TF >    // Transpose flag of the vector w
+inline auto eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
+   -> EnableIf_t< IsTriangular_v<MT> >
+{
+   const size_t N( (~A).rows() );
+
+   if( !isSquare( ~A ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
+   }
+
+   CompositeType_t<MT> Atmp( ~A );
+
+   resize( ~w, N, false );
+
+   for( size_t i=0UL; i<N; ++i ) {
+      (~w)[i] = Atmp(i,i);
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -188,8 +235,9 @@ template< typename MT  // Type of the matrix A
         , typename VT  // Type of the vector w
         , bool TF >    // Transpose flag of the vector w
 inline auto eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
-   -> DisableIf_t< ( IsSymmetric_v<MT> && IsFloatingPoint_v< ElementType_t<MT> > ) ||
-                   ( IsHermitian_v<MT> && IsComplex_v< ElementType_t<MT> > ) >
+   -> DisableIf_t< ( IsSymmetric_v<MT> && !IsDiagonal_v<MT> && IsFloatingPoint_v< ElementType_t<MT> > ) ||
+                   ( IsHermitian_v<MT> && IsComplex_v< ElementType_t<MT> > ) ||
+                   ( IsTriangular_v<MT> ) >
 {
    using ATmp = RemoveAdaptor_t< ResultType_t<MT> >;
 
@@ -198,7 +246,7 @@ inline auto eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
-   ATmp Atmp( A );
+   ATmp Atmp( ~A );
 
    geev( Atmp, ~w );
 }
@@ -299,6 +347,8 @@ template< typename MT  // Type of the matrix A
         , bool TF >    // Transpose flag of the vector w
 inline void eigen( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
 {
+   BLAZE_FUNCTION_TRACE;
+
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
@@ -346,7 +396,7 @@ template< typename MT1  // Type of the matrix A
         , typename MT2  // Type of the matrix V
         , bool SO2 >    // Storage order of the matrix V
 inline auto eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& V )
-   -> EnableIf_t< IsSymmetric_v<MT1> && IsFloatingPoint_v< ElementType_t<MT1> > >
+   -> EnableIf_t< IsSymmetric_v<MT1> && !IsDiagonal_v<MT1> && IsFloatingPoint_v< ElementType_t<MT1> > >
 {
    using ATmp = RemoveAdaptor_t< ResultType_t<MT1> >;
 
@@ -355,7 +405,7 @@ inline auto eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
-   ATmp Atmp( A );
+   ATmp Atmp( ~A );
 
    syevd( Atmp, ~w, 'V', 'L' );
 
@@ -405,7 +455,7 @@ inline auto eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
-   ATmp Atmp( A );
+   ATmp Atmp( ~A );
 
    heevd( Atmp, ~w, 'V', 'L' );
 
@@ -413,6 +463,57 @@ inline auto eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
       (~V) = Atmp;
    else
       (~V) = trans( Atmp );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Backend for the eigenvalue computation of the given dense diagonal matrix.
+// \ingroup dense_matrix
+//
+// \param A The given diagonal matrix.
+// \param w The resulting vector of eigenvalues.
+// \param V The resulting matrix of eigenvectors.
+// \return void
+// \exception std::invalid_argument Invalid non-square matrix provided.
+// \exception std::invalid_argument Vector cannot be resized.
+// \exception std::invalid_argument Matrix cannot be resized.
+// \exception std::runtime_error Eigenvalue computation failed.
+//
+// This function is the backend implementation for computing the eigenvalues of the given
+// dense diagonal matrix.\n
+// This function must \b NOT be called explicitly! It is used internally for the dispatch to
+// the correct LAPACK function. Calling this function explicitly might result in erroneous
+// results and/or in compilation errors. Instead of using this function use the according
+// eigen() function.
+*/
+template< typename MT1  // Type of the matrix A
+        , bool SO1      // Storage order of the matrix A
+        , typename VT   // Type of the vector w
+        , bool TF       // Transpose flag of the vector w
+        , typename MT2  // Type of the matrix V
+        , bool SO2 >    // Storage order of the matrix V
+inline auto eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& V )
+   -> EnableIf_t< IsDiagonal_v<MT1> >
+{
+   const size_t N( (~A).rows() );
+
+   if( !isSquare( ~A ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
+   }
+
+   CompositeType_t<MT1> Atmp( ~A );
+
+   resize( ~w, N, false );
+   resize( ~V, N, N, false );
+   reset( ~V );
+
+   for( size_t i=0UL; i<N; ++i ) {
+      (~w)[i] = Atmp(i,i);
+      (~V)(i,i) = ElementType_t<MT2>(1);
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -446,8 +547,9 @@ template< typename MT1  // Type of the matrix A
         , typename MT2  // Type of the matrix V
         , bool SO2 >    // Storage order of the matrix V
 inline auto eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& V )
-   -> DisableIf_t< ( IsSymmetric_v<MT1> && IsFloatingPoint_v< ElementType_t<MT1> > ) ||
-                   ( IsHermitian_v<MT1> && IsComplex_v< ElementType_t<MT1> > ) >
+   -> DisableIf_t< ( IsSymmetric_v<MT1> && !IsDiagonal_v<MT1> && IsFloatingPoint_v< ElementType_t<MT1> > ) ||
+                   ( IsHermitian_v<MT1> && IsComplex_v< ElementType_t<MT1> > ) ||
+                   ( IsDiagonal_v<MT1> ) >
 {
    using ATmp = RemoveAdaptor_t< ResultType_t<MT1> >;
 
@@ -456,7 +558,7 @@ inline auto eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
-   ATmp Atmp( A );
+   ATmp Atmp( ~A );
 
    if( IsRowMajorMatrix_v<MT1> )
       geev( Atmp, ~V, ~w );
@@ -576,6 +678,8 @@ template< typename MT1  // Type of the matrix A
         , bool SO2 >    // Storage order of the matrix V
 inline void eigen( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& V )
 {
+   BLAZE_FUNCTION_TRACE;
+
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
 
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
