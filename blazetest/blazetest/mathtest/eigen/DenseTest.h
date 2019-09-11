@@ -61,10 +61,11 @@ namespace eigen {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all dense matrix eigenvalue tests.
+/*!\brief Auxiliary class for all dense matrix eigenvalue/eigenvector tests.
 //
-// This class represents a test suite for the dense matrix eigenvalue functionality. It performs
-// a series of eigenvalue computations on several dense matrix types of the Blaze library.
+// This class represents a test suite for the dense matrix eigenvalue/eigenvector functionality.
+// It performs a series of eigenvalue/eigenvector computations on several dense matrix types of
+// the Blaze library.
 */
 class DenseTest
 {
@@ -88,6 +89,9 @@ class DenseTest
    void testGeneral();
    void testSymmetric();
    void testHermitian();
+   void testLower();
+   void testUpper();
+   void testDiagonal();
    //@}
    //**********************************************************************************************
 
