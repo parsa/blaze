@@ -50,6 +50,7 @@
 #include <blaze/math/expressions/CrossExpr.h>
 #include <blaze/math/expressions/VecEvalExpr.h>
 #include <blaze/math/expressions/VecMapExpr.h>
+#include <blaze/math/expressions/VecNoAliasExpr.h>
 #include <blaze/math/expressions/VecScalarDivExpr.h>
 #include <blaze/math/expressions/VecScalarMultExpr.h>
 #include <blaze/math/expressions/VecSerialExpr.h>
@@ -1154,6 +1155,31 @@ inline decltype(auto) elements( const VecSerialExpr<VT>& vector, REAs... args )
    BLAZE_FUNCTION_TRACE;
 
    return serial( elements<CEAs...>( (~vector).operand(), args... ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of elements on the given vector no-alias operation.
+// \ingroup elements
+//
+// \param vector The constant vector no-alias operation.
+// \param args The runtime element arguments.
+// \return View on the specified selection of elements on the no-alias operation.
+//
+// This function returns an expression representing the specified selection of elements on the
+// given vector no-alias operation.
+*/
+template< size_t... CEAs      // Compile time element arguments
+        , typename VT         // Vector base type of the expression
+        , typename... REAs >  // Runtime element arguments
+inline decltype(auto) elements( const VecNoAliasExpr<VT>& vector, REAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return noalias( elements<CEAs...>( (~vector).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
