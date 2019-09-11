@@ -166,6 +166,7 @@ class OperationTest
                           void testImagOperation     ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
+                          void testNoAliasOperation  ();
                           void testSubvectorOperation( blaze::TrueType  );
                           void testSubvectorOperation( blaze::FalseType );
                           void testElementsOperation ( blaze::TrueType  );
@@ -327,6 +328,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testImagOperation();
    testEvalOperation();
    testSerialOperation();
+   testNoAliasOperation();
    testSubvectorOperation( Not_t< IsUniform<DRE> >() );
    testElementsOperation( Not_t< IsUniform<DRE> >() );
 }
@@ -3138,6 +3140,31 @@ void OperationTest<VT1,VT2>::testSerialOperation()
    if( BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION > 1 )
    {
       testCustomOperation( blaze::Serial(), "serial" );
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the non-alias sparse vector/sparse vector Kronecker product.
+//
+// \return void
+// \exception std::runtime_error Kronecker product error detected.
+//
+// This function tests the non-aliased vector Kronecker product with plain assignment, addition
+// assignment, subtraction assignment, and multiplication assignment. In case any error resulting
+// from the Kronecker product or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void OperationTest<VT1,VT2>::testNoAliasOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_NOALIAS_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_NOALIAS_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::NoAlias(), "noalias" );
    }
 #endif
 }

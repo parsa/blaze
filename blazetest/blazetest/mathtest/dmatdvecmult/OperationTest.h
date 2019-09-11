@@ -173,6 +173,7 @@ class OperationTest
                           void testImagOperation     ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
+                          void testNoAliasOperation  ();
                           void testSubvectorOperation( blaze::TrueType  );
                           void testSubvectorOperation( blaze::FalseType );
                           void testElementsOperation ( blaze::TrueType  );
@@ -328,6 +329,7 @@ OperationTest<MT,VT>::OperationTest( const Creator<MT>& creator1, const Creator<
    testImagOperation();
    testEvalOperation();
    testSerialOperation();
+   testNoAliasOperation();
    testSubvectorOperation( Not_t< IsUniform<DRE> >() );
    testElementsOperation( Not_t< IsUniform<DRE> >() );
 }
@@ -3600,6 +3602,31 @@ void OperationTest<MT,VT>::testSerialOperation()
    if( BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION > 1 )
    {
       testCustomOperation( blaze::Serial(), "serial" );
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the non-aliased dense matrix/dense vector multiplication.
+//
+// \return void
+// \exception std::runtime_error Multiplication error detected.
+//
+// This function tests the non-aliased matrix/vector multiplication with plain assignment,
+// addition assignment, subtraction assignment, multiplication assignment, and division
+// assignment. In case any error resulting from the multiplication or the subsequent
+// assignment is detected, a \a std::runtime_error exception is thrown.
+*/
+template< typename MT    // Type of the left-hand side dense matrix
+        , typename VT >  // Type of the right-hand side dense vector
+void OperationTest<MT,VT>::testNoAliasOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_NOALIAS_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_NOALIAS_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::NoAlias(), "noalias" );
    }
 #endif
 }

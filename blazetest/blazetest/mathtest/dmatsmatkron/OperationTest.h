@@ -197,6 +197,7 @@ class OperationTest
                           void testImagOperation     ();
                           void testEvalOperation     ();
                           void testSerialOperation   ();
+                          void testNoAliasOperation  ();
                           void testDeclSymOperation  ( blaze::TrueType  );
                           void testDeclSymOperation  ( blaze::FalseType );
                           void testDeclHermOperation ( blaze::TrueType  );
@@ -411,6 +412,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testImagOperation();
    testEvalOperation();
    testSerialOperation();
+   testNoAliasOperation();
    testDeclSymOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
    testDeclHermOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
    testDeclLowOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
@@ -4663,6 +4665,31 @@ void OperationTest<MT1,MT2>::testSerialOperation()
    if( BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION > 1 )
    {
       testCustomOperation( blaze::Serial(), "serial" );
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the non-aliased dense matrix/sparse matrix Kronecker product.
+//
+// \return void
+// \exception std::runtime_error Kronecker product error detected.
+//
+// This function tests the non-aliased matrix Kronecker product with plain assignment, addition
+// assignment, subtraction assignment, and Schur product assignment. In case any error resulting
+// from the Kronecker product or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void OperationTest<MT1,MT2>::testNoAliasOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_NOALIAS_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_NOALIAS_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::NoAlias(), "noalias" );
    }
 #endif
 }
