@@ -433,6 +433,28 @@ typedef double  TypeB;
 
 
 //*************************************************************************************************
+/*!\brief Compilation switch for the \a noalias tests.
+//
+// This compilation switch triggers the \a noalias tests for all test scenarios. In case the
+// \a noalias tests are activated, each operation is tested in combination with an \a noalias
+// operation. The following example demonstrates this by means of the vector addition:
+
+   \code
+   blaze::DynamicVector<double> a, b, c;
+   c = noalias( a + b );  // Non-aliased evaluation of the vector addition
+   \endcode
+
+// The following settings are possible:
+//
+//   - 0: The \a noalias tests are not included in the compilation process and not executed
+//   - 1: The \a noalias tests are included in the compilation process, but not executed
+//   - 2: The \a noalias tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_NOALIAS_OPERATION 0
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compilation switch for the declsym tests.
 //
 // This compilation switch triggers the declsym tests for all test scenarios. In case the declsym
