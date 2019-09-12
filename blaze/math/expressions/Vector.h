@@ -1608,6 +1608,54 @@ BLAZE_ALWAYS_INLINE VT& derestrict( Vector<VT,TF>& vector )
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removal of the top-level view on the given vector.
+// \ingroup vector
+//
+// \param vector The vector to be unviewed.
+// \return Reference to the vector without view.
+//
+// This function removes the top-level view on the given vector and returns a reference to the
+// unviewed vector.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+BLAZE_ALWAYS_INLINE VT& unview( Vector<VT,TF>& vector )
+{
+   return ~vector;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removal of the top-level views on the given constant vector.
+// \ingroup vector
+//
+// \param vector The constant vector to be unviewed.
+// \return Reference to the vector without view.
+//
+// This function removes the top-level view on the given constant vector and returns a reference
+// to the unviewed vector.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename VT  // Type of the vector
+        , bool TF >    // Transpose flag of the vector
+BLAZE_ALWAYS_INLINE const VT& unview( const Vector<VT,TF>& vector )
+{
+   return ~vector;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

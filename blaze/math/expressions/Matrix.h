@@ -3048,6 +3048,54 @@ BLAZE_ALWAYS_INLINE MT& derestrict( Matrix<MT,SO>& matrix )
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removal of the top-level view on the given matrix.
+// \ingroup matrix
+//
+// \param matrix The matrix to be unviewed.
+// \return Reference to the matrix without view.
+//
+// This function removes the top-level view on the given matrix and returns a reference to the
+// unviewed matrix.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+BLAZE_ALWAYS_INLINE MT& unview( Matrix<MT,SO>& matrix )
+{
+   return ~matrix;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removal of the top-level view on the given constant matrix.
+// \ingroup matrix
+//
+// \param matrix The constant matrix to be unviewed.
+// \return Reference to the matrix without view.
+//
+// This function removes the top-level view on the given constant matrix and returns a reference
+// to the unviewed matrix.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename MT  // Type of the matrix
+        , bool SO >    // Storage order
+BLAZE_ALWAYS_INLINE const MT& unview( const Matrix<MT,SO>& matrix )
+{
+   return ~matrix;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
