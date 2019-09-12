@@ -188,6 +188,7 @@
 #include <blaze/math/typetraits/IsMatSerialExpr.h>
 #include <blaze/math/typetraits/IsMatTransExpr.h>
 #include <blaze/math/typetraits/IsMatVecMultExpr.h>
+#include <blaze/math/typetraits/IsModification.h>
 #include <blaze/math/typetraits/IsMultExpr.h>
 #include <blaze/math/typetraits/IsNumericMatrix.h>
 #include <blaze/math/typetraits/IsNumericVector.h>
