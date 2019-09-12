@@ -295,7 +295,7 @@ class DVecSerialExpr
    // \ingroup dense_vector
    //
    // \param lhs The target left-hand side sparse vector.
-   // \param rhs The right-hand side evaulation expression to be added.
+   // \param rhs The right-hand side serial evaluation expression to be added.
    // \return void
    //
    // This function implements the performance optimized addition assignment of a dense vector
