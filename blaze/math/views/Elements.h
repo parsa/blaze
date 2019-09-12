@@ -2841,6 +2841,57 @@ inline decltype(auto) derestrict( Elements<VT,TF,DF,CEAs...>&& e )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns a reference to the underlying vector of the given element selection.
+// \ingroup elements
+//
+// \param e The given element selection.
+// \return Reference to the underlying vector.
+//
+// This function returns a reference to the underlying vector of the given element selection.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , typename... CEAs >  // Compile time element arguments
+inline decltype(auto) unview( Elements<VT,TF,DF,CEAs...>& e )
+{
+   return e.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns a reference to the underlying vector of the given constant element selection.
+// \ingroup elements
+//
+// \param e The given constant element selection.
+// \return Reference to the underlying vector.
+//
+// This function returns a reference to the underlying vector of the given constant element
+// selection.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename VT         // Type of the vector
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , typename... CEAs >  // Compile time element arguments
+inline decltype(auto) unview( const Elements<VT,TF,DF,CEAs...>& e )
+{
+   return e.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================

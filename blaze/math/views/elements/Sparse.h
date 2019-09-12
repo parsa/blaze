@@ -953,7 +953,7 @@ inline Elements<VT,TF,false,CEAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &vector_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       assign( left, tmp );
    }
@@ -1010,7 +1010,7 @@ inline Elements<VT,TF,false,CEAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> || right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> || right.canAlias( this ) ) {
       const ResultType_t<VT2> tmp( right );
       assign( left, tmp );
    }
@@ -1067,7 +1067,7 @@ inline Elements<VT,TF,false,CEAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT2> tmp( right );
       addAssign( left, tmp );
    }
@@ -1124,7 +1124,7 @@ inline Elements<VT,TF,false,CEAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT2> tmp( right );
       subAssign( left, tmp );
    }
@@ -1939,7 +1939,7 @@ template< typename VT         // Type of the sparse vector
 template< typename Other >  // Data type of the foreign expression
 inline bool Elements<VT,TF,false,CEAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return vector_.isAliased( alias );
+   return vector_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1962,7 +1962,7 @@ template< typename VT         // Type of the sparse vector
 template< typename Other >  // Data type of the foreign expression
 inline bool Elements<VT,TF,false,CEAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return vector_.isAliased( alias );
+   return vector_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
