@@ -1229,7 +1229,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &vector_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -1280,7 +1280,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT2> tmp( right );
       smpAssign( left, tmp );
    }
@@ -1333,7 +1333,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT2> tmp( right );
       smpAddAssign( left, tmp );
    }
@@ -1384,7 +1384,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT2> tmp( right );
       smpSubAssign( left, tmp );
    }
@@ -1436,7 +1436,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT2> tmp( right );
       smpMultAssign( left, tmp );
    }
@@ -1487,7 +1487,7 @@ inline Subvector<VT,unaligned,TF,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT2> tmp( right );
       smpDivAssign( left, tmp );
    }
@@ -1744,7 +1744,7 @@ template< typename VT       // Type of the dense vector
 template< typename Other >  // Data type of the foreign expression
 inline bool Subvector<VT,unaligned,TF,true,CSAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return vector_.isAliased( alias );
+   return vector_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1796,7 +1796,7 @@ template< typename VT       // Type of the dense vector
 template< typename Other >  // Data type of the foreign expression
 inline bool Subvector<VT,unaligned,TF,true,CSAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return vector_.isAliased( alias );
+   return vector_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2163,7 +2163,7 @@ inline auto Subvector<VT,unaligned,TF,true,CSAs...>::assign( const DenseVector<V
 
    if( useStreaming && isAligned_ &&
        ( size() > ( cacheSize/( sizeof(ElementType) * 3UL ) ) ) &&
-       !(~rhs).isAliased( &vector_ ) )
+       !(~rhs).isAliased( this ) )
    {
       for( ; i<ipos; i+=SIMDSIZE ) {
          left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -3355,7 +3355,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &vector_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( ~rhs );
       smpAssign( left, tmp );
    }
@@ -3406,7 +3406,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT2> tmp( right );
       smpAssign( left, tmp );
    }
@@ -3459,7 +3459,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT2> tmp( right );
       smpAddAssign( left, tmp );
    }
@@ -3510,7 +3510,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT2> tmp( right );
       smpSubAssign( left, tmp );
    }
@@ -3562,7 +3562,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT2> tmp( right );
       smpMultAssign( left, tmp );
    }
@@ -3613,7 +3613,7 @@ inline Subvector<VT,aligned,TF,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT2> tmp( right );
       smpDivAssign( left, tmp );
    }
@@ -3870,7 +3870,7 @@ template< typename VT       // Type of the dense vector
 template< typename Other >  // Data type of the foreign expression
 inline bool Subvector<VT,aligned,TF,true,CSAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return vector_.isAliased( alias );
+   return vector_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3922,7 +3922,7 @@ template< typename VT       // Type of the dense vector
 template< typename Other >  // Data type of the foreign expression
 inline bool Subvector<VT,aligned,TF,true,CSAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return vector_.isAliased( alias );
+   return vector_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4278,7 +4278,7 @@ inline auto Subvector<VT,aligned,TF,true,CSAs...>::assign( const DenseVector<VT2
    Iterator left( begin() );
    ConstIterator_t<VT2> right( (~rhs).begin() );
 
-   if( useStreaming && size() > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( &vector_ ) )
+   if( useStreaming && size() > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( this ) )
    {
       for( ; i<ipos; i+=SIMDSIZE ) {
          left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -4885,7 +4885,7 @@ class Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return vector_.canAlias( alias );
+      return vector_.canAlias( &unview( *alias ) );
    }
    //**********************************************************************************************
 
@@ -4897,7 +4897,7 @@ class Subvector< DVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const noexcept {
-      return vector_.isAliased( alias );
+      return vector_.isAliased( &unview( *alias ) );
    }
    //**********************************************************************************************
 
@@ -5043,7 +5043,7 @@ class Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return vector_.canAlias( alias );
+      return vector_.canAlias( &unview( *alias ) );
    }
    //**********************************************************************************************
 
@@ -5055,7 +5055,7 @@ class Subvector< DVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const noexcept {
-      return vector_.isAliased( alias );
+      return vector_.isAliased( &unview( *alias ) );
    }
    //**********************************************************************************************
 
@@ -5201,7 +5201,7 @@ class Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return vector_.canAlias( alias );
+      return vector_.canAlias( &unview( *alias ) );
    }
    //**********************************************************************************************
 
@@ -5213,7 +5213,7 @@ class Subvector< SVecDVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const noexcept {
-      return vector_.isAliased( alias );
+      return vector_.isAliased( &unview( *alias ) );
    }
    //**********************************************************************************************
 
@@ -5359,7 +5359,7 @@ class Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return vector_.canAlias( alias );
+      return vector_.canAlias( &unview( *alias ) );
    }
    //**********************************************************************************************
 
@@ -5371,7 +5371,7 @@ class Subvector< SVecSVecCrossExpr<VT1,VT2,TF>, unaligned, TF, true, CSAs... >
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const {
-      return vector_.isAliased( alias );
+      return vector_.isAliased( &unview( *alias ) );
    }
    //**********************************************************************************************
 

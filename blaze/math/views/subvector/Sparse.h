@@ -960,7 +960,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &vector_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       reset();
       assign( left, tmp );
@@ -1016,7 +1016,7 @@ inline Subvector<VT,AF,TF,false,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> || right.canAlias( &vector_ ) ) {
+   if( IsReference_v<Right> || right.canAlias( this ) ) {
       const ResultType_t<VT2> tmp( right );
       reset();
       assign( left, tmp );
@@ -1920,7 +1920,7 @@ template< typename VT       // Type of the sparse vector
 template< typename Other >  // Data type of the foreign expression
 inline bool Subvector<VT,AF,TF,false,CSAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return vector_.isAliased( alias );
+   return vector_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1944,7 +1944,7 @@ template< typename VT       // Type of the sparse vector
 template< typename Other >  // Data type of the foreign expression
 inline bool Subvector<VT,AF,TF,false,CSAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return vector_.isAliased( alias );
+   return vector_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************

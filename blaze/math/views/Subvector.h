@@ -2788,6 +2788,58 @@ inline decltype(auto) derestrict( Subvector<VT,AF,TF,DF>&& sv )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns a reference to the underlying vector of the given subvector.
+// \ingroup subvector
+//
+// \param sv The given subvector.
+// \return Reference to the underlying vector.
+//
+// This function returns a reference to the underlying vector of the given subvector.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename VT       // Type of the vector
+        , AlignmentFlag AF  // Alignment flag
+        , bool TF           // Transpose flag
+        , bool DF           // Density flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline decltype(auto) unview( Subvector<VT,AF,TF,DF,CSAs...>& sv )
+{
+   return sv.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns a reference to the underlying vector of the given constant subvector.
+// \ingroup subvector
+//
+// \param sv The given constant subvector.
+// \return Reference to the underlying vector.
+//
+// This function returns a reference to the underlying vector of the given constant subvector.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename VT       // Type of the vector
+        , AlignmentFlag AF  // Alignment flag
+        , bool TF           // Transpose flag
+        , bool DF           // Density flag
+        , size_t... CSAs >  // Compile time subvector arguments
+inline decltype(auto) unview( const Subvector<VT,AF,TF,DF,CSAs...>& sv )
+{
+   return sv.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
