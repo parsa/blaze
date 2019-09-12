@@ -1097,7 +1097,7 @@ inline Band<MT,TF,true,false,CBAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsExpression_v<MT> && rhs.canAlias( &matrix_ ) ) {
+   if( IsExpression_v<MT> && rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -1150,7 +1150,7 @@ inline Band<MT,TF,true,false,CBAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpAssign( left, tmp );
    }
@@ -1205,7 +1205,7 @@ inline Band<MT,TF,true,false,CBAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpAddAssign( left, tmp );
    }
@@ -1258,7 +1258,7 @@ inline Band<MT,TF,true,false,CBAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpSubAssign( left, tmp );
    }
@@ -1313,7 +1313,7 @@ inline Band<MT,TF,true,false,CBAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpMultAssign( left, tmp );
    }
@@ -1364,7 +1364,7 @@ inline Band<MT,TF,true,false,CBAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpDivAssign( left, tmp );
    }
@@ -1655,7 +1655,7 @@ template< typename MT          // Type of the dense matrix
 template< typename Other >     // Data type of the foreign expression
 inline bool Band<MT,TF,true,false,CBAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1703,7 +1703,7 @@ template< typename MT          // Type of the dense matrix
 template< typename Other >     // Data type of the foreign expression
 inline bool Band<MT,TF,true,false,CBAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2236,7 +2236,7 @@ class Band<MT,TF,true,true,CBAs...>
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return matrix_.isAliased( alias );
+      return matrix_.isAliased( &unview( *alias ) );
    }
    //**********************************************************************************************
 
@@ -2248,7 +2248,7 @@ class Band<MT,TF,true,true,CBAs...>
    */
    template< typename T >
    inline bool isAliased( const T* alias ) const noexcept {
-      return matrix_.isAliased( alias );
+      return matrix_.isAliased( &unview( *alias ) );
    }
    //**********************************************************************************************
 

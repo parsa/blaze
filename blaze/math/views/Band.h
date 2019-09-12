@@ -2381,6 +2381,58 @@ inline decltype(auto) derestrict( Band<MT,TF,DF,MF>&& b )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns a reference to the underlying matrix of the given band.
+// \ingroup band
+//
+// \param b The given band.
+// \return Reference to the underlying matrix.
+//
+// This function returns a reference to the underlying matrix of the given band.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename MT          // Type of the matrix
+        , bool TF              // Transpose flag
+        , bool DF              // Density flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline decltype(auto) unview( Band<MT,TF,DF,MF,CBAs...>& b )
+{
+   return b.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns a reference to the underlying matrix of the given constant band.
+// \ingroup band
+//
+// \param b The given constant band.
+// \return Reference to the underlying matrix.
+//
+// This function returns a reference to the underlying matrix of the given constant band.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename MT          // Type of the matrix
+        , bool TF              // Transpose flag
+        , bool DF              // Density flag
+        , bool MF              // Multiplication flag
+        , ptrdiff_t... CBAs >  // Compile time band arguments
+inline decltype(auto) unview( const Band<MT,TF,DF,MF,CBAs...>& b )
+{
+   return b.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
