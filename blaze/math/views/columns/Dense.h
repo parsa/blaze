@@ -952,7 +952,7 @@ inline Columns<MT,true,true,SF,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &matrix_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -1017,7 +1017,7 @@ inline Columns<MT,true,true,SF,CCAs...>&
       reset();
    }
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<MT2> tmp( right );
       smpAssign( left, tmp );
    }
@@ -1081,7 +1081,7 @@ inline auto Columns<MT,true,true,SF,CCAs...>::operator+=( const Matrix<MT2,SO2>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
+   if( (~rhs).canAlias( this ) ) {
       const AddType tmp( *this + (~rhs) );
       smpAssign( left, tmp );
    }
@@ -1205,7 +1205,7 @@ inline auto Columns<MT,true,true,SF,CCAs...>::operator-=( const Matrix<MT2,SO2>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
+   if( (~rhs).canAlias( this ) ) {
       const SubType tmp( *this - (~rhs ) );
       smpAssign( left, tmp );
    }
@@ -1328,7 +1328,7 @@ inline auto Columns<MT,true,true,SF,CCAs...>::operator%=( const Matrix<MT2,SO2>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
+   if( (~rhs).canAlias( this ) ) {
       const SchurType tmp( *this % (~rhs) );
       if( IsSparseMatrix_v<SchurType> )
          reset();
@@ -1779,7 +1779,7 @@ template< typename MT         // Type of the dense matrix
 template< typename Other >    // Data type of the foreign expression
 inline bool Columns<MT,true,true,SF,CCAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1830,7 +1830,7 @@ template< typename MT         // Type of the dense matrix
 template< typename Other >    // Data type of the foreign expression
 inline bool Columns<MT,true,true,SF,CCAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2175,7 +2175,7 @@ inline auto Columns<MT,true,true,SF,CCAs...>::assign( const DenseMatrix<MT2,true
 
    if( useStreaming &&
        rows()*columns() > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
-       !(~rhs).isAliased( &matrix_ ) )
+       !(~rhs).isAliased( this ) )
    {
       for( size_t j=0UL; j<columns(); ++j )
       {
@@ -4174,7 +4174,7 @@ inline Columns<MT,false,true,false,CCAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &matrix_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -4238,7 +4238,7 @@ inline Columns<MT,false,true,false,CCAs...>&
       reset();
    }
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<MT2> tmp( right );
       smpAssign( left, tmp );
    }
@@ -4301,7 +4301,7 @@ inline auto Columns<MT,false,true,false,CCAs...>::operator+=( const Matrix<MT2,S
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
+   if( (~rhs).canAlias( this ) ) {
       const AddType tmp( *this + (~rhs) );
       smpAssign( left, tmp );
    }
@@ -4423,7 +4423,7 @@ inline auto Columns<MT,false,true,false,CCAs...>::operator-=( const Matrix<MT2,S
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
+   if( (~rhs).canAlias( this ) ) {
       const SubType tmp( *this - (~rhs ) );
       smpAssign( left, tmp );
    }
@@ -4544,7 +4544,7 @@ inline auto Columns<MT,false,true,false,CCAs...>::operator%=( const Matrix<MT2,S
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
+   if( (~rhs).canAlias( this ) ) {
       const SchurType tmp( *this % (~rhs) );
       if( IsSparseMatrix_v<SchurType> )
          reset();
@@ -4993,7 +4993,7 @@ template< typename MT         // Type of the dense matrix
 template< typename Other >    // Data type of the foreign expression
 inline bool Columns<MT,false,true,false,CCAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5042,7 +5042,7 @@ template< typename MT         // Type of the dense matrix
 template< typename Other >    // Data type of the foreign expression
 inline bool Columns<MT,false,true,false,CCAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -6643,7 +6643,7 @@ template< typename MT         // Type of the dense matrix
 template< typename Other >    // Data type of the foreign expression
 inline bool Columns<MT,false,true,true,CCAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -6692,7 +6692,7 @@ template< typename MT         // Type of the dense matrix
 template< typename Other >    // Data type of the foreign expression
 inline bool Columns<MT,false,true,true,CCAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
