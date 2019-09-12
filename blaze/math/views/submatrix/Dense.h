@@ -1384,7 +1384,7 @@ inline Submatrix<MT,unaligned,false,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &matrix_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -1437,7 +1437,7 @@ inline Submatrix<MT,unaligned,false,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<MT2> tmp( right );
       if( IsSparseMatrix_v<MT2> )
          reset();
@@ -1497,8 +1497,7 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator+=( const Matrix
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (~rhs).canAlias( this ) ) {
       const AddType tmp( *this + (~rhs) );
       smpAssign( left, tmp );
    }
@@ -1606,8 +1605,7 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator-=( const Matrix
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (~rhs).canAlias( this ) ) {
       const SubType tmp( *this - (~rhs ) );
       smpAssign( left, tmp );
    }
@@ -1714,8 +1712,7 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::operator%=( const Matrix
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (~rhs).canAlias( this ) ) {
       const SchurType tmp( *this % (~rhs) );
       if( IsSparseMatrix_v<SchurType> )
          reset();
@@ -2204,7 +2201,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,unaligned,false,true,CSAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2256,7 +2253,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,unaligned,false,true,CSAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2634,7 +2631,7 @@ inline auto Submatrix<MT,unaligned,false,true,CSAs...>::assign( const DenseMatri
 
    if( useStreaming && isAligned_ &&
        rows()*columns() > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
-       !(~rhs).isAliased( &matrix_ ) )
+       !(~rhs).isAliased( this ) )
    {
       for( size_t i=0UL; i<rows(); ++i )
       {
@@ -4646,7 +4643,7 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &matrix_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -4699,7 +4696,7 @@ inline Submatrix<MT,unaligned,true,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<MT2> tmp( right );
       if( IsSparseMatrix_v<MT2> )
          reset();
@@ -4759,8 +4756,7 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator+=( const Matrix<
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (~rhs).canAlias( this ) ) {
       const AddType tmp( *this + (~rhs) );
       smpAssign( left, tmp );
    }
@@ -4868,8 +4864,7 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator-=( const Matrix<
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (~rhs).canAlias( this ) ) {
       const SubType tmp( *this - (~rhs ) );
       smpAssign( left, tmp );
    }
@@ -4976,8 +4971,7 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::operator%=( const Matrix<
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (~rhs).canAlias( this ) ) {
       const SchurType tmp( *this % (~rhs) );
       if( IsSparseMatrix_v<SchurType> )
          reset();
@@ -5449,7 +5443,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,unaligned,true,true,CSAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5501,7 +5495,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,unaligned,true,true,CSAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5873,7 +5867,7 @@ inline auto Submatrix<MT,unaligned,true,true,CSAs...>::assign( const DenseMatrix
 
    if( useStreaming && isAligned_ &&
        rows()*columns() > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
-       !(~rhs).isAliased( &matrix_ ) )
+       !(~rhs).isAliased( this ) )
    {
       for( size_t j=0UL; j<columns(); ++j )
       {
@@ -7496,7 +7490,7 @@ inline Submatrix<MT,aligned,false,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &matrix_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -7549,7 +7543,7 @@ inline Submatrix<MT,aligned,false,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<MT2> tmp( right );
       if( IsSparseMatrix_v<MT2> )
          reset();
@@ -7609,8 +7603,7 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator+=( const Matrix<M
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (~rhs).canAlias( this ) ) {
       const AddType tmp( *this + (~rhs) );
       smpAssign( left, tmp );
    }
@@ -7718,8 +7711,7 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator-=( const Matrix<M
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (~rhs).canAlias( this ) ) {
       const SubType tmp( *this - (~rhs ) );
       smpAssign( left, tmp );
    }
@@ -7826,8 +7818,7 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::operator%=( const Matrix<M
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (~rhs).canAlias( this ) ) {
       const SchurType tmp( *this % (~rhs) );
       if( IsSparseMatrix_v<SchurType> )
          reset();
@@ -8316,7 +8307,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,aligned,false,true,CSAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -8368,7 +8359,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,aligned,false,true,CSAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -8738,7 +8729,7 @@ inline auto Submatrix<MT,aligned,false,true,CSAs...>::assign( const DenseMatrix<
 
    if( useStreaming &&
        rows()*columns() > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
-       !(~rhs).isAliased( &matrix_ ) )
+       !(~rhs).isAliased( this ) )
    {
       for( size_t i=0UL; i<rows(); ++i )
       {
@@ -10339,7 +10330,7 @@ inline Submatrix<MT,aligned,true,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &matrix_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -10391,7 +10382,7 @@ inline Submatrix<MT,aligned,true,true,CSAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<MT2> tmp( right );
       if( IsSparseMatrix_v<MT2> )
          reset();
@@ -10451,8 +10442,7 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator+=( const Matrix<MT
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (~rhs).canAlias( this ) ) {
       const AddType tmp( *this + (~rhs) );
       smpAssign( left, tmp );
    }
@@ -10560,8 +10550,7 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator-=( const Matrix<MT
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (~rhs).canAlias( this ) ) {
       const SubType tmp( *this - (~rhs ) );
       smpAssign( left, tmp );
    }
@@ -10668,8 +10657,7 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::operator%=( const Matrix<MT
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) ||
-       (~rhs).canAlias( &matrix_ ) ) {
+   if( ( ( IsSymmetric_v<MT> || IsHermitian_v<MT> ) && hasOverlap() ) || (~rhs).canAlias( this ) ) {
       const SchurType tmp( *this % (~rhs) );
       if( IsSparseMatrix_v<SchurType> )
          reset();
@@ -11141,7 +11129,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,aligned,true,true,CSAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -11193,7 +11181,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Submatrix<MT,aligned,true,true,CSAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -11556,7 +11544,7 @@ inline auto Submatrix<MT,aligned,true,true,CSAs...>::assign( const DenseMatrix<M
 
    if( useStreaming &&
        rows()*columns() > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
-       !(~rhs).isAliased( &matrix_ ) )
+       !(~rhs).isAliased( this ) )
    {
       for( size_t j=0UL; j<columns(); ++j )
       {

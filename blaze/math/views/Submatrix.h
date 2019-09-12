@@ -4738,7 +4738,7 @@ inline bool tryBitxorAssign( const Submatrix<MT1,AF,SO1,DF,CSAs...>& lhs,
 /*!\brief Removal of all restrictions on the data access to the given submatrix.
 // \ingroup submatrix
 //
-// \param dm The submatrix to be derestricted.
+// \param sm The submatrix to be derestricted.
 // \return Submatrix without access restrictions.
 //
 // This function removes all restrictions on the data access to the given submatrix. It returns a
@@ -4756,9 +4756,9 @@ template< typename MT       // Type of the matrix
         , size_t J          // Index of the first column
         , size_t M          // Number of rows
         , size_t N >        // Number of columns
-inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF,I,J,M,N>& dm )
+inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF,I,J,M,N>& sm )
 {
-   return submatrix<AF,I,J,M,N>( derestrict( dm.operand() ), unchecked );
+   return submatrix<AF,I,J,M,N>( derestrict( sm.operand() ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4769,7 +4769,7 @@ inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF,I,J,M,N>& dm )
 /*!\brief Removal of all restrictions on the data access to the given temporary submatrix.
 // \ingroup submatrix
 //
-// \param dm The temporary submatrix to be derestricted.
+// \param sm The temporary submatrix to be derestricted.
 // \return Submatrix without access restrictions.
 //
 // This function removes all restrictions on the data access to the given temporary submatrix. It
@@ -4787,9 +4787,9 @@ template< typename MT       // Type of the matrix
         , size_t J          // Index of the first column
         , size_t M          // Number of rows
         , size_t N >        // Number of columns
-inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF,I,J,M,N>&& dm )
+inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF,I,J,M,N>&& sm )
 {
-   return submatrix<AF,I,J,M,N>( derestrict( dm.operand() ), unchecked );
+   return submatrix<AF,I,J,M,N>( derestrict( sm.operand() ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4800,7 +4800,7 @@ inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF,I,J,M,N>&& dm )
 /*!\brief Removal of all restrictions on the data access to the given submatrix.
 // \ingroup submatrix
 //
-// \param dm The submatrix to be derestricted.
+// \param sm The submatrix to be derestricted.
 // \return Submatrix without access restrictions.
 //
 // This function removes all restrictions on the data access to the given submatrix. It returns a
@@ -4814,9 +4814,9 @@ template< typename MT       // Type of the matrix
         , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , bool DF >         // Density flag
-inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF>& dm )
+inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF>& sm )
 {
-   return submatrix<AF>( derestrict( dm.operand() ), dm.row(), dm.column(), dm.rows(), dm.columns(), unchecked );
+   return submatrix<AF>( derestrict( sm.operand() ), sm.row(), sm.column(), sm.rows(), sm.columns(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4827,7 +4827,7 @@ inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF>& dm )
 /*!\brief Removal of all restrictions on the data access to the given temporary submatrix.
 // \ingroup submatrix
 //
-// \param dm The temporary submatrix to be derestricted.
+// \param sm The temporary submatrix to be derestricted.
 // \return Submatrix without access restrictions.
 //
 // This function removes all restrictions on the data access to the given temporary submatrix. It
@@ -4841,9 +4841,61 @@ template< typename MT       // Type of the matrix
         , AlignmentFlag AF  // Alignment flag
         , bool SO           // Storage order
         , bool DF >         // Density flag
-inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF>&& dm )
+inline decltype(auto) derestrict( Submatrix<MT,AF,SO,DF>&& sm )
 {
-   return submatrix<AF>( derestrict( dm.operand() ), dm.row(), dm.column(), dm.rows(), dm.columns(), unchecked );
+   return submatrix<AF>( derestrict( sm.operand() ), sm.row(), sm.column(), sm.rows(), sm.columns(), unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns a reference to the underlying matrix of the given submatrix.
+// \ingroup submatrix
+//
+// \param sm The given submatrix.
+// \return Reference to the underlying matrix.
+//
+// This function returns a reference to the underlying matrix of the given submatrix.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename MT       // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline decltype(auto) unview( Submatrix<MT,AF,SO,DF,CSAs...>& sm )
+{
+   return sm.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns a reference to the underlying matrix of the given constant submatrix.
+// \ingroup submatrix
+//
+// \param sm The given constant submatrix.
+// \return Reference to the underlying matrix.
+//
+// This function returns a reference to the underlying matrix of the given constant submatrix.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename MT       // Type of the matrix
+        , AlignmentFlag AF  // Alignment flag
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , size_t... CSAs >  // Compile time submatrix arguments
+inline decltype(auto) unview( const Submatrix<MT,AF,SO,DF,CSAs...>& sm )
+{
+   return sm.operand();
 }
 /*! \endcond */
 //*************************************************************************************************
