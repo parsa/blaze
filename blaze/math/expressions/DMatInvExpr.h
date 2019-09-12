@@ -49,6 +49,7 @@
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatInvExpr.h>
+#include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
@@ -469,6 +470,35 @@ inline decltype(auto) inv( const DMatInvExpr<MT,SO>& dm )
    BLAZE_FUNCTION_TRACE;
 
    return dm.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Computation of the determinant of the given dense matrix inversion.
+// \ingroup dense_matrix
+//
+// \param dm The given dense matrix inversion.
+// \return The determinant of the given matrix inversion.
+//
+// This function computes the determinant of the given dense matrix inversion.
+//
+// \note The computation of the determinant is numerically unreliable since especially for large
+// matrices the value can overflow during the computation. Please note that this function does
+// not guarantee that it is possible to compute the determinant with the given matrix!
+//
+// \note This function can only be used if a fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+inline decltype(auto) det( const DMatInvExpr<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return inv( det( (~dm).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
