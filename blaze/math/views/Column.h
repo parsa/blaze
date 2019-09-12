@@ -2082,6 +2082,58 @@ inline decltype(auto) derestrict( Column<MT,SO,DF,SF>&& c )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns a reference to the underlying matrix of the given column.
+// \ingroup column
+//
+// \param c The given column.
+// \return Reference to the underlying matrix.
+//
+// This function returns a reference to the underlying matrix of the given column.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , size_t... CCAs >  // Compile time column arguments
+inline decltype(auto) unview( Column<MT,SO,DF,SF,CCAs...>& c )
+{
+   return c.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns a reference to the underlying matrix of the given constant column.
+// \ingroup column
+//
+// \param c The given constant column.
+// \return Reference to the underlying matrix.
+//
+// This function returns a reference to the underlying matrix of the given constant column.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename MT       // Type of the matrix
+        , bool SO           // Storage order
+        , bool DF           // Density flag
+        , bool SF           // Symmetry flag
+        , size_t... CCAs >  // Compile time column arguments
+inline decltype(auto) unview( const Column<MT,SO,DF,SF,CCAs...>& c )
+{
+   return c.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
