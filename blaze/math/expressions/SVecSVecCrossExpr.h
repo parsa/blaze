@@ -56,7 +56,6 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/CrossTrait.h>
-#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsZero.h>

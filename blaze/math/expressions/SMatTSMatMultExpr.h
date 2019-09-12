@@ -57,7 +57,6 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
-#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>

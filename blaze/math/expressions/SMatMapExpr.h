@@ -56,7 +56,6 @@
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
-#include <blaze/math/typetraits/IsComputation.h>
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
