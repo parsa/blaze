@@ -833,7 +833,7 @@ inline Row<MT,true,true,SF,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsExpression_v<MT> && rhs.canAlias( &matrix_ ) ) {
+   if( IsExpression_v<MT> && rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -886,7 +886,7 @@ inline Row<MT,true,true,SF,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpAssign( left, tmp );
    }
@@ -941,7 +941,7 @@ inline Row<MT,true,true,SF,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpAddAssign( left, tmp );
    }
@@ -994,7 +994,7 @@ inline Row<MT,true,true,SF,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpSubAssign( left, tmp );
    }
@@ -1046,7 +1046,7 @@ inline Row<MT,true,true,SF,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpMultAssign( left, tmp );
    }
@@ -1097,7 +1097,7 @@ inline Row<MT,true,true,SF,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpDivAssign( left, tmp );
    }
@@ -1375,7 +1375,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Row<MT,true,true,SF,CRAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1425,7 +1425,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Row<MT,true,true,SF,CRAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1747,7 +1747,7 @@ inline auto Row<MT,true,true,SF,CRAs...>::assign( const DenseVector<VT,true>& rh
    Iterator left( begin() );
    ConstIterator_t<VT> right( (~rhs).begin() );
 
-   if( useStreaming && columns > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( &matrix_ ) )
+   if( useStreaming && columns > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( this ) )
    {
       for( ; j<jpos; j+=SIMDSIZE ) {
          left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -3185,7 +3185,7 @@ inline Row<MT,false,true,false,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsExpression_v<MT> && rhs.canAlias( &matrix_ ) ) {
+   if( IsExpression_v<MT> && rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -3238,7 +3238,7 @@ inline Row<MT,false,true,false,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType tmp( right );
       smpAssign( left, tmp );
    }
@@ -3292,7 +3292,7 @@ inline Row<MT,false,true,false,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpAddAssign( left, tmp );
    }
@@ -3344,7 +3344,7 @@ inline Row<MT,false,true,false,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpSubAssign( left, tmp );
    }
@@ -3395,7 +3395,7 @@ inline Row<MT,false,true,false,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpMultAssign( left, tmp );
    }
@@ -3445,7 +3445,7 @@ inline Row<MT,false,true,false,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpDivAssign( left, tmp );
    }
@@ -3734,7 +3734,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Row<MT,false,true,false,CRAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3782,7 +3782,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Row<MT,false,true,false,CRAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4842,7 +4842,7 @@ inline Row<MT,false,true,true,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsExpression_v<MT> && rhs.canAlias( &matrix_ ) ) {
+   if( IsExpression_v<MT> && rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -4894,7 +4894,7 @@ inline Row<MT,false,true,true,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpAssign( left, tmp );
    }
@@ -4948,7 +4948,7 @@ inline Row<MT,false,true,true,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpAddAssign( left, tmp );
    }
@@ -5000,7 +5000,7 @@ inline Row<MT,false,true,true,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpSubAssign( left, tmp );
    }
@@ -5051,7 +5051,7 @@ inline Row<MT,false,true,true,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpMultAssign( left, tmp );
    }
@@ -5101,7 +5101,7 @@ inline Row<MT,false,true,true,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       smpDivAssign( left, tmp );
    }
@@ -5369,7 +5369,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Row<MT,false,true,true,CRAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5417,7 +5417,7 @@ template< typename MT       // Type of the dense matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Row<MT,false,true,true,CRAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5727,7 +5727,7 @@ inline auto Row<MT,false,true,true,CRAs...>::assign( const DenseVector<VT,true>&
    Iterator left( begin() );
    ConstIterator_t<VT> right( (~rhs).begin() );
 
-   if( useStreaming && rows > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( &matrix_ ) )
+   if( useStreaming && rows > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( this ) )
    {
       for( ; i<ipos; i+=SIMDSIZE ) {
          left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;

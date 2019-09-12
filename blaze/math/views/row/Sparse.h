@@ -673,7 +673,7 @@ inline Row<MT,true,false,SF,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &matrix_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       left.reset();
       left.reserve( tmp.nonZeros() );
@@ -733,7 +733,7 @@ inline Row<MT,true,false,SF,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       left.reset();
       assign( left, tmp );
@@ -791,7 +791,7 @@ inline Row<MT,true,false,SF,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       left.reset();
       left.reserve( tmp.nonZeros() );
@@ -1841,7 +1841,7 @@ template< typename MT       // Type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Row<MT,true,false,SF,CRAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1864,7 +1864,7 @@ template< typename MT       // Type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Row<MT,true,false,SF,CRAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2931,7 +2931,7 @@ inline Row<MT,false,false,false,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &matrix_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       assign( left, tmp );
    }
@@ -3910,7 +3910,7 @@ template< typename MT       // Type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Row<MT,false,false,false,CRAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3928,7 +3928,7 @@ template< typename MT       // Type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Row<MT,false,false,false,CRAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4626,7 +4626,7 @@ inline Row<MT,false,false,true,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &matrix_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       left.reset();
       left.reserve( tmp.nonZeros() );
@@ -4685,7 +4685,7 @@ inline Row<MT,false,false,true,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       left.reset();
       assign( left, tmp );
@@ -4742,7 +4742,7 @@ inline Row<MT,false,false,true,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<VT> tmp( right );
       left.reset();
       left.reserve( tmp.nonZeros() );
@@ -5761,7 +5761,7 @@ template< typename MT       // Type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Row<MT,false,false,true,CRAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5783,7 +5783,7 @@ template< typename MT       // Type of the sparse matrix
 template< typename Other >  // Data type of the foreign expression
 inline bool Row<MT,false,false,true,CRAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
