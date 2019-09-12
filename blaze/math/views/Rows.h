@@ -4390,6 +4390,59 @@ inline decltype(auto) derestrict( Rows<MT,SO,DF,SF,CRAs...>&& r )
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns a reference to the underlying matrix of the given row selection.
+// \ingroup rows
+//
+// \param r The given row selection.
+// \return Reference to the underlying matrix.
+//
+// This function returns a reference to the underlying matrix of the given row selection.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , bool SF             // Symmetry flag
+        , typename... CRAs >  // Compile time row arguments
+inline decltype(auto) unview( Rows<MT,SO,DF,SF,CRAs...>& r )
+{
+   return r.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns a reference to the underlying matrix of the given constant row selection.
+// \ingroup rows
+//
+// \param r The given constant row selection.
+// \return Reference to the underlying matrix.
+//
+// This function returns a reference to the underlying matrix of the given constant row
+// selection.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename MT         // Type of the matrix
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , bool SF             // Symmetry flag
+        , typename... CRAs >  // Compile time row arguments
+inline decltype(auto) unview( const Rows<MT,SO,DF,SF,CRAs...>& r )
+{
+   return r.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================

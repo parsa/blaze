@@ -947,7 +947,7 @@ inline Rows<MT,true,true,SF,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &matrix_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -1012,7 +1012,7 @@ inline Rows<MT,true,true,SF,CRAs...>&
       reset();
    }
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<MT2> tmp( right );
       smpAssign( left, tmp );
    }
@@ -1076,7 +1076,7 @@ inline auto Rows<MT,true,true,SF,CRAs...>::operator+=( const Matrix<MT2,SO2>& rh
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
+   if( (~rhs).canAlias( this ) ) {
       const AddType tmp( *this + (~rhs) );
       smpAssign( left, tmp );
    }
@@ -1200,7 +1200,7 @@ inline auto Rows<MT,true,true,SF,CRAs...>::operator-=( const Matrix<MT2,SO2>& rh
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
+   if( (~rhs).canAlias( this ) ) {
       const SubType tmp( *this - (~rhs ) );
       smpAssign( left, tmp );
    }
@@ -1323,7 +1323,7 @@ inline auto Rows<MT,true,true,SF,CRAs...>::operator%=( const Matrix<MT2,SO2>& rh
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
+   if( (~rhs).canAlias( this ) ) {
       const SchurType tmp( *this % (~rhs) );
       if( IsSparseMatrix_v<SchurType> )
          reset();
@@ -1774,7 +1774,7 @@ template< typename MT         // Type of the dense matrix
 template< typename Other >    // Data type of the foreign expression
 inline bool Rows<MT,true,true,SF,CRAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1825,7 +1825,7 @@ template< typename MT         // Type of the dense matrix
 template< typename Other >    // Data type of the foreign expression
 inline bool Rows<MT,true,true,SF,CRAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2170,7 +2170,7 @@ inline auto Rows<MT,true,true,SF,CRAs...>::assign( const DenseMatrix<MT2,false>&
 
    if( useStreaming &&
        rows()*columns() > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
-       !(~rhs).isAliased( &matrix_ ) )
+       !(~rhs).isAliased( this ) )
    {
       for( size_t i=0UL; i<rows(); ++i )
       {
@@ -4166,7 +4166,7 @@ inline Rows<MT,false,true,false,CRAs...>&
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( rhs.canAlias( &matrix_ ) ) {
+   if( rhs.canAlias( this ) ) {
       const ResultType tmp( rhs );
       smpAssign( left, tmp );
    }
@@ -4230,7 +4230,7 @@ inline Rows<MT,false,true,false,CRAs...>&
       reset();
    }
 
-   if( IsReference_v<Right> && right.canAlias( &matrix_ ) ) {
+   if( IsReference_v<Right> && right.canAlias( this ) ) {
       const ResultType_t<MT2> tmp( right );
       smpAssign( left, tmp );
    }
@@ -4293,7 +4293,7 @@ inline auto Rows<MT,false,true,false,CRAs...>::operator+=( const Matrix<MT2,SO2>
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
+   if( (~rhs).canAlias( this ) ) {
       const AddType tmp( *this + (~rhs) );
       smpAssign( left, tmp );
    }
@@ -4415,7 +4415,7 @@ inline auto Rows<MT,false,true,false,CRAs...>::operator-=( const Matrix<MT2,SO2>
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
+   if( (~rhs).canAlias( this ) ) {
       const SubType tmp( *this - (~rhs ) );
       smpAssign( left, tmp );
    }
@@ -4536,7 +4536,7 @@ inline auto Rows<MT,false,true,false,CRAs...>::operator%=( const Matrix<MT2,SO2>
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &matrix_ ) ) {
+   if( (~rhs).canAlias( this ) ) {
       const SchurType tmp( *this % (~rhs) );
       if( IsSparseMatrix_v<SchurType> )
          reset();
@@ -4985,7 +4985,7 @@ template< typename MT         // Type of the dense matrix
 template< typename Other >    // Data type of the foreign expression
 inline bool Rows<MT,false,true,false,CRAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5034,7 +5034,7 @@ template< typename MT         // Type of the dense matrix
 template< typename Other >    // Data type of the foreign expression
 inline bool Rows<MT,false,true,false,CRAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -6636,7 +6636,7 @@ template< typename MT         // Type of the dense matrix
 template< typename Other >    // Data type of the foreign expression
 inline bool Rows<MT,false,true,true,CRAs...>::canAlias( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -6685,7 +6685,7 @@ template< typename MT         // Type of the dense matrix
 template< typename Other >    // Data type of the foreign expression
 inline bool Rows<MT,false,true,true,CRAs...>::isAliased( const Other* alias ) const noexcept
 {
-   return matrix_.isAliased( alias );
+   return matrix_.isAliased( &unview( *alias ) );
 }
 /*! \endcond */
 //*************************************************************************************************
