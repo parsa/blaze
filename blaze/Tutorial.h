@@ -5986,6 +5986,35 @@
 // exception is thrown the matrix may already have been modified.
 //
 //
+// \n \section matrix_operations_matrix_exponential Matrix Exponential
+// <hr>
+//
+// The matrix exponential of a \f$N \times N\f$ matrix \f$ X \f$ is defined as
+
+                  \f[ e^X = \sum\limits_{k=0}^\infty \frac{1}{k!} X^k. \f]
+
+// In order to compute the matrix exponential of a square dense matrix, the \c matexp() function
+// can be used:
+
+   \code
+   blaze::DynamicMatrix<float,blaze::rowMajor> A, B;
+   // ... Resizing and initialization
+   B = matexp( A );  // Compute the inverse of A
+   \endcode
+
+// \note The matrix exponential can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type results in a compile time error!
+//
+// \note It is not possible to use any kind of view on the expression object returned by the
+// \c matexp() function. Also, it is not possible to access individual elements via the function
+// call operator on the expression object:
+
+   \code
+   row( matexp( A ), 2UL );  // Compilation error: Views cannot be used on an matexp() expression!
+   matexp( A )(1,2);         // Compilation error: It is not possible to access individual elements!
+   \endcode
+
 // \n \section matrix_operations_decomposition Matrix Decomposition
 // <hr>
 //
