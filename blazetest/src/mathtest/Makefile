@@ -66,7 +66,7 @@ all: shims simd blas lapack typetraits traits constraints functors \
      dmatdmatkron dmatsmatkron smatdmatkron smatsmatkron \
      dmatdmatmin dmatdmatmax \
      dmatreduce smatreduce \
-     determinant lu llh qr rq ql lq inversion eigen svd \
+     determinant lu llh qr rq ql lq inversion exponential eigen svd \
      vectorserializer matrixserializer
 
 essential: all
@@ -84,7 +84,7 @@ noop: shims simd blas lapack typetraits traits constraints functors \
       uniformvector uniformmatrix \
       zerovector zeromatrix \
       subvector elements submatrix row rows column columns band \
-      determinant lu llh qr rq ql lq inversion eigen svd \
+      determinant lu llh qr rq ql lq inversion exponential eigen svd \
       vectorserializer matrixserializer
 
 
@@ -693,6 +693,11 @@ inversion:
 	@echo "Building the matrix inversion tests..."
 	@$(MAKE) --no-print-directory -C ./inversion $(MAKECMDGOALS)
 
+exponential:
+	@echo
+	@echo "Building the matrix exponential tests..."
+	@$(MAKE) --no-print-directory -C ./exponential $(MAKECMDGOALS)
+
 eigen:
 	@echo
 	@echo "Building the matrix eigenvalue/eigenvector tests..."
@@ -838,6 +843,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./ql reset
 	@$(MAKE) --no-print-directory -C ./lq reset
 	@$(MAKE) --no-print-directory -C ./inversion reset
+	@$(MAKE) --no-print-directory -C ./exponential reset
 	@$(MAKE) --no-print-directory -C ./eigen reset
 	@$(MAKE) --no-print-directory -C ./svd reset
 	@$(MAKE) --no-print-directory -C ./vectorserializer reset
@@ -966,6 +972,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./ql clean
 	@$(MAKE) --no-print-directory -C ./lq clean
 	@$(MAKE) --no-print-directory -C ./inversion clean
+	@$(MAKE) --no-print-directory -C ./exponential clean
 	@$(MAKE) --no-print-directory -C ./eigen clean
 	@$(MAKE) --no-print-directory -C ./svd clean
 	@$(MAKE) --no-print-directory -C ./vectorserializer clean
@@ -1005,5 +1012,5 @@ clean:
         dmatdmatkron dmatsmatkron smatdmatkron smatsmatkron \
         dmatdmatmin dmatdmatmax \
         dmatreduce smatreduce \
-        determinant lu llh qr rq ql lq inversion eigen svd \
+        determinant lu llh qr rq ql lq inversion exponential eigen svd \
         vectorserializer matrixserializer
