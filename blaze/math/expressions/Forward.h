@@ -591,6 +591,10 @@ template< typename MT, bool SO >
 decltype(auto) inv( const DenseMatrix<MT,SO>& );
 
 
+template< typename MT, bool SO >
+decltype(auto) matexp( const DenseMatrix<MT,SO>& );
+
+
 template< typename VT, bool TF, typename OP >
 decltype(auto) map( const DenseVector<VT,TF>&, OP );
 
