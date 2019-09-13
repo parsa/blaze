@@ -65,6 +65,7 @@
 #include <blaze/math/shims/Exp2.h>
 #include <blaze/math/shims/Exp10.h>
 #include <blaze/math/shims/Floor.h>
+#include <blaze/math/shims/Frexp.h>
 #include <blaze/math/shims/Greater.h>
 #include <blaze/math/shims/Hypot.h>
 #include <blaze/math/shims/Imaginary.h>
