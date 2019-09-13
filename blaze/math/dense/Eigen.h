@@ -118,6 +118,8 @@ inline auto eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
+   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
+
    ATmp Atmp( ~A );
 
    syevd( Atmp, ~w, 'N', 'L' );
@@ -159,6 +161,8 @@ inline auto eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
+   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
+
    ATmp Atmp( ~A );
 
    heevd( Atmp, ~w, 'N', 'L' );
@@ -193,11 +197,9 @@ template< typename MT  // Type of the matrix A
 inline auto eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    -> EnableIf_t< IsTriangular_v<MT> >
 {
-   const size_t N( (~A).rows() );
+   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
 
-   if( !isSquare( ~A ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
-   }
+   const size_t N( (~A).rows() );
 
    CompositeType_t<MT> Atmp( ~A );
 
@@ -245,6 +247,8 @@ inline auto eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( ATmp );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
 
    ATmp Atmp( ~A );
 
@@ -355,8 +359,11 @@ inline void eigen( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
 
-   using WTmp = If_t< IsContiguous_v<VT>, VT&, ResultType_t<VT> >;
+   if( !isSquare( ~A ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
+   }
 
+   using WTmp = If_t< IsContiguous_v<VT>, VT&, ResultType_t<VT> >;
    WTmp wtmp( ~w );
 
    eigen_backend( ~A, wtmp );
@@ -404,6 +411,8 @@ inline auto eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( ATmp );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
 
    ATmp Atmp( ~A );
 
@@ -455,6 +464,8 @@ inline auto eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
 
+   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
+
    ATmp Atmp( ~A );
 
    heevd( Atmp, ~w, 'V', 'L' );
@@ -498,11 +509,9 @@ template< typename MT1  // Type of the matrix A
 inline auto eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& V )
    -> EnableIf_t< IsDiagonal_v<MT1> >
 {
-   const size_t N( (~A).rows() );
+   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
 
-   if( !isSquare( ~A ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
-   }
+   const size_t N( (~A).rows() );
 
    CompositeType_t<MT1> Atmp( ~A );
 
@@ -557,6 +566,8 @@ inline auto eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( ATmp );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( ATmp );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<ATmp> );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square matrix detected" );
 
    ATmp Atmp( ~A );
 
@@ -693,6 +704,10 @@ inline void eigen( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMa
 
    using WTmp = If_t< IsContiguous_v<VT>, VT&, ResultType_t<VT> >;
    using VTmp = If_t< IsContiguous_v<MT2>, MT2&, ResultType_t<MT2> >;
+
+   if( !isSquare( ~A ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
+   }
 
    WTmp wtmp( ~w );
    VTmp Vtmp( ~V );
