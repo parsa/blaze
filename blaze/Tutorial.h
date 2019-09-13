@@ -1827,6 +1827,40 @@
 // into account and therefore can guarantee the most efficient way to evaluate it (see also
 // \ref intra_statement_optimization).
 //
+// \n \subsection vector_operations_noalias noalias()
+//
+// The \b Blaze library is able to reliably detect aliasing during the assignment of vectors.
+// In case the aliasing would lead to an incorrect result, \b Blaze introduces an intermediate
+// temporary of the appropriate type to break the aliasing. For instance, in the following
+// example \b Blaze performs an alias detection in both assignments, but only, in the second
+// assignment it detects a problematic aliasing and uses an intermediate temporary in order
+// to be able to compute the correct result:
+
+   \code
+   blaze::DynamicVector<double> x, y;
+   blaze::DynamicMatrix<double> A;
+
+   x = x + y;  // No problematic aliasing of x, no intermediate temporary is required.
+   x = A * x;  // Problematic aliasing of x; intermediate temporary required!
+   \endcode
+
+// The detection of aliasing effects, however, takes a small runtime effort. In order to disable
+// the aliasing detection, the \c noalias() function can be used:
+
+   \code
+   blaze::DynamicVector<double> x, y;
+   blaze::DynamicMatrix<double> A;
+
+   x = noalias( x + y );  // No alias detection performed, no intermediate temporary.
+   x = noalias( A * x );  // No alias detection performed, no intermediate temporary.
+                          // Note that the final result will be incorrect!
+   \endcode
+
+// \warning The \c noalias() operation has the semantics of a cast: The caller is completely
+// responsible and the system trusts the given information. Using \c noalias() in a situation
+// where an aliasing effect occurs leads to undefined behavior (which can be violated invariants
+// or wrong computation results)!
+//
 //
 // \n \section vector_operations_modifying_operations Modifying Operations
 // <hr>
@@ -4423,6 +4457,38 @@
 // In contrast to the \c evaluate() function, \c eval() can take the complete expression
 // into account and therefore can guarantee the most efficient way to evaluate it (see also
 // \ref intra_statement_optimization).
+//
+// \n \subsection matrix_operations_noalias noalias()
+//
+// The \b Blaze library is able to reliably detect aliasing during the assignment of matrices.
+// In case the aliasing would lead to an incorrect result, \b Blaze introduces an intermediate
+// temporary of the appropriate type to break the aliasing. For instance, in the following
+// example \b Blaze performs an alias detection in both assignments, but only, in the second
+// assignment it detects a problematic aliasing and uses an intermediate temporary in order
+// to be able to compute the correct result:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+
+   A = A + B;  // No problematic aliasing of A, no intermediate temporary is required.
+   A = A * B;  // Problematic aliasing of A; intermediate temporary required!
+   \endcode
+
+// The detection of aliasing effects, however, takes a small runtime effort. In order to disable
+// the aliasing detection, the \c noalias() function can be used:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+
+   A = noalias( A + B );  // No alias detection performed, no intermediate temporary.
+   A = noalias( A * B );  // No alias detection performed, no intermediate temporary.
+                          // Note that the final result will be incorrect!
+   \endcode
+
+// \warning The \c noalias() operation has the semantics of a cast: The caller is completely
+// responsible and the system trusts the given information. Using \c noalias() in a situation
+// where an aliasing effect occurs leads to undefined behavior (which can be violated invariants
+// or wrong computation results)!
 //
 //
 // \n \section matrix_operations_modifying_operations Modifying Operations
