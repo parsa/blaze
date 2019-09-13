@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <iterator>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
@@ -93,9 +92,6 @@ class DMatTransExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using RT = ResultType_t<MT>;     //!< Result type of the dense matrix expression.
-   using CT = CompositeType_t<MT>;  //!< Composite type of the dense matrix expression.
-
    //! Definition of the GetConstIterator type trait.
    BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetConstIterator, ConstIterator, INVALID_TYPE );
    //**********************************************************************************************

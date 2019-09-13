@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <iterator>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseVector.h>
 #include <blaze/math/constraints/TransposeFlag.h>
@@ -93,8 +92,6 @@ class DVecTransExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using CT = CompositeType_t<VT>;  //!< Composite type of the dense vector expression.
-
    //! Definition of the GetConstIterator type trait.
    BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetConstIterator, ConstIterator, INVALID_TYPE );
    //**********************************************************************************************

@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <iterator>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/SparseVector.h>
@@ -87,8 +86,6 @@ class SVecTransExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using CT = CompositeType_t<VT>;  //!< Composite type of the sparse vector expression.
-
    //! Definition of the GetConstIterator type trait.
    BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetConstIterator, ConstIterator, INVALID_TYPE );
    //**********************************************************************************************
