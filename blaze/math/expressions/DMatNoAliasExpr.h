@@ -727,35 +727,6 @@ inline decltype(auto) noalias( const DenseMatrix<MT,SO>& dm )
 
 //=================================================================================================
 //
-//  GLOBAL RESTRUCTURING FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Non-aliased evaluation of the given dense matrix no-alias expression \a dm.
-// \ingroup dense_matrix
-//
-// \param dm The input no-alias expression.
-// \return The non-aliased dense matrix.
-//
-// This function implements a performance optimized treatment of the non-aliased evaluation of
-// a dense matrix no-alias expression.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline decltype(auto) noalias( const DMatNoAliasExpr<MT,SO>& dm )
-{
-   return dm;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  HASCONSTDATAACCESS SPECIALIZATIONS
 //
 //=================================================================================================

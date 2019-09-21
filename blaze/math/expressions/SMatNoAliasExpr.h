@@ -707,35 +707,6 @@ inline decltype(auto) noalias( const SparseMatrix<MT,SO>& sm )
 }
 //*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  GLOBAL RESTRUCTURING FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Non-aliased evaluation of the given sparse matrix no-alias expression \a sm.
-// \ingroup sparse_matrix
-//
-// \param sm The input no-alias expression.
-// \return The non-aliased sparse matrix.
-//
-// This function implements a performance optimized treatment of the non-aliased evaluation of
-// a sparse matrix no-alias expression.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline decltype(auto) noalias( const SMatNoAliasExpr<MT,SO>& sm )
-{
-   return sm;
-}
-/*! \endcond */
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

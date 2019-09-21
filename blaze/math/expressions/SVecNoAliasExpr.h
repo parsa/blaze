@@ -642,35 +642,6 @@ inline decltype(auto) noalias( const SparseVector<VT,TF>& sv )
 }
 //*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  GLOBAL RESTRUCTURING FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Non-aliased evaluation of the given sparse vector no-alias expression \a sv.
-// \ingroup sparse_vector
-//
-// \param sv The input no-alias expression.
-// \return The non-aliased sparse vector.
-//
-// This function implements a performance optimized treatment of the non-aliased evaluation of
-// a sparse vector no-alias expression.
-*/
-template< typename VT  // Type of the sparse vector
-        , bool TF >    // Transpose flag
-inline decltype(auto) noalias( const SVecNoAliasExpr<VT,TF>& sv )
-{
-   return sv;
-}
-/*! \endcond */
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

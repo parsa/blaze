@@ -68,6 +68,34 @@ struct MatNoAliasExpr
 {};
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Non-aliased evaluation of the given matrix no-alias expression.
+// \ingroup math
+//
+// \param matrix The input no-alias expression.
+// \return The non-aliased matrix.
+//
+// This function implements a performance optimized treatment of the non-aliased evaluation of
+// a matrix no-alias expression.
+*/
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) noalias( const MatNoAliasExpr<MT>& matrix )
+{
+   return ~matrix;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

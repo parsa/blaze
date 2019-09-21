@@ -706,35 +706,6 @@ inline decltype(auto) noalias( const DenseVector<VT,TF>& dv )
 
 //=================================================================================================
 //
-//  GLOBAL RESTRUCTURING FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Non-aliased evaluation of the given dense vector no-alias expression \a dv.
-// \ingroup dense_vector
-//
-// \param dv The input no-alias expression.
-// \return The non-aliased dense vector.
-//
-// This function implements a performance optimized treatment of the non-aliased evaluation of
-// a dense vector no-alias expression.
-*/
-template< typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
-inline decltype(auto) noalias( const DVecNoAliasExpr<VT,TF>& dv )
-{
-   return dv;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  ISALIGNED SPECIALIZATIONS
 //
 //=================================================================================================

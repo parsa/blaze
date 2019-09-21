@@ -68,6 +68,34 @@ struct VecNoAliasExpr
 {};
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Non-aliased evaluation of the given vector no-alias expression.
+// \ingroup math
+//
+// \param vector The input no-alias expression.
+// \return The non-aliased vector.
+//
+// This function implements a performance optimized treatment of the non-aliased evaluation of
+// a vector no-alias expression.
+*/
+template< typename VT >  // Vector base type of the expression
+inline decltype(auto) noalias( const VecNoAliasExpr<VT>& vector )
+{
+   return ~vector;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
