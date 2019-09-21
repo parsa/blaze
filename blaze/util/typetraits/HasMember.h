@@ -107,7 +107,7 @@ class TYPE_TRAIT_NAME##HELPER                                                   
    struct Fallback { int MEMBER_NAME; };                                                     \
                                                                                              \
    struct Derived                                                                            \
-      : blaze::If< blaze::IsBuiltin_v<TYPE1230>, blaze::EmptyType, TYPE1230 >::Type          \
+      : blaze::If_t< blaze::IsBuiltin_v<TYPE1230>, blaze::EmptyType, TYPE1230 >              \
       , Fallback                                                                             \
    {};                                                                                       \
                                                                                              \
@@ -183,7 +183,7 @@ struct TYPE_TRAIT_NAME##HELPER                                                  
    struct Fallback { using MEMBER_NAME = int; };                                     \
                                                                                      \
    struct Derived                                                                    \
-      : blaze::If< blaze::IsBuiltin_v<TYPE1231>, blaze::EmptyType, TYPE1231 >::Type  \
+      : blaze::If_t< blaze::IsBuiltin_v<TYPE1231>, blaze::EmptyType, TYPE1231 >      \
       , Fallback                                                                     \
    {};                                                                               \
                                                                                      \

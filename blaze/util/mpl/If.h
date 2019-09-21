@@ -53,14 +53,13 @@ namespace blaze {
 // evaluates to \a true, the member type definition \a Type is set to \a T1. In case
 // \a Condition evaluates to \a false, \a Type is set to \a T2.
 */
-template< bool Condition  // Compile time selection
-        , typename T1     // Type to be selected if Condition=true
-        , typename T2 >   // Type to be selected if Condition=false
+template< bool Condition >  // Compile time selection
 struct If
 {
  public:
    //**********************************************************************************************
    /*! \cond BLAZE_INTERNAL */
+   template< typename T1, typename T2 >
    using Type = T1;  //!< The selected type.
    /*! \endcond */
    //**********************************************************************************************
@@ -77,12 +76,12 @@ struct If
 // constant expression evaluates to \a false. The member type definition is set to the second
 // given type \a T2.
 */
-template< typename T1    // Type not to be selected
-        , typename T2 >  // Type to be selected
-struct If<false,T1,T2>
+template<>
+struct If<false>
 {
  public:
    //**********************************************************************************************
+   template< typename T1, typename T2 >
    using Type = T2;  //!< The selected type.
    //**********************************************************************************************
 };
@@ -106,7 +105,7 @@ struct If<false,T1,T2>
 template< bool Condition  // Compile time selection
         , typename T1     // Type to be selected if Condition=true
         , typename T2 >   // Type to be selected if Condition=false
-using If_t = typename If<Condition,T1,T2>::Type;
+using If_t = typename If<Condition>::template Type<T1,T2>;
 //*************************************************************************************************
 
 } // namespace blaze
