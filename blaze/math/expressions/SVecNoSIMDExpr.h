@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/SparseVector.h
-//  \brief Header file for all basic SparseVector functionality
+//  \file blaze/math/expressions/SVecNoSIMDExpr.h
+//  \brief Header file for the sparse vector no-SIMD expression
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -32,48 +32,53 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_SPARSEVECTOR_H_
-#define _BLAZE_MATH_SPARSEVECTOR_H_
+#ifndef _BLAZE_MATH_EXPRESSIONS_SVECNOSIMDEXPR_H_
+#define _BLAZE_MATH_EXPRESSIONS_SVECNOSIMDEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/DenseVector.h>
-#include <blaze/math/expressions/DVecSVecEqualExpr.h>
-#include <blaze/math/expressions/DVecSVecInnerExpr.h>
-#include <blaze/math/expressions/DVecSVecKronExpr.h>
-#include <blaze/math/expressions/DVecSVecMultExpr.h>
 #include <blaze/math/expressions/SparseVector.h>
-#include <blaze/math/expressions/SVecDVecDivExpr.h>
-#include <blaze/math/expressions/SVecDVecInnerExpr.h>
-#include <blaze/math/expressions/SVecDVecKronExpr.h>
-#include <blaze/math/expressions/SVecDVecMultExpr.h>
-#include <blaze/math/expressions/SVecEvalExpr.h>
-#include <blaze/math/expressions/SVecExpandExpr.h>
-#include <blaze/math/expressions/SVecMapExpr.h>
-#include <blaze/math/expressions/SVecMeanExpr.h>
-#include <blaze/math/expressions/SVecNoAliasExpr.h>
-#include <blaze/math/expressions/SVecNormExpr.h>
-#include <blaze/math/expressions/SVecNoSIMDExpr.h>
-#include <blaze/math/expressions/SVecReduceExpr.h>
-#include <blaze/math/expressions/SVecScalarDivExpr.h>
-#include <blaze/math/expressions/SVecScalarMultExpr.h>
-#include <blaze/math/expressions/SVecSerialExpr.h>
-#include <blaze/math/expressions/SVecStdDevExpr.h>
-#include <blaze/math/expressions/SVecSVecAddExpr.h>
-#include <blaze/math/expressions/SVecSVecEqualExpr.h>
-#include <blaze/math/expressions/SVecSVecInnerExpr.h>
-#include <blaze/math/expressions/SVecSVecKronExpr.h>
-#include <blaze/math/expressions/SVecSVecMultExpr.h>
-#include <blaze/math/expressions/SVecSVecSubExpr.h>
-#include <blaze/math/expressions/SVecTransExpr.h>
-#include <blaze/math/expressions/SVecVarExpr.h>
-#include <blaze/math/smp/DenseVector.h>
-#include <blaze/math/smp/SparseVector.h>
-#include <blaze/math/sparse/SparseVector.h>
-#include <blaze/math/Vector.h>
-#include <blaze/math/views/Subvector.h>
+#include <blaze/util/FunctionTrace.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  GLOBAL FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Disables the SIMD evaluation of the given sparse vector expression \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The input vector.
+// \return The SIMD-disabled sparse vector.
+//
+// The \a nosimd function disables the SIMD evaluation of the given sparse vector expression
+// \a sv. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a nosimd function:
+
+   \code
+   blaze::CompressedVector<double> a, b;
+   // ... Resizing and initialization
+   b = nosimd( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) nosimd( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return ~sv;
+}
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif

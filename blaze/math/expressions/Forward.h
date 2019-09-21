@@ -158,6 +158,7 @@ template< typename, bool > class SVecEvalExpr;
 template< typename, bool, size_t... > class SVecExpandExpr;
 template< typename, typename, bool > class SVecMapExpr;
 template< typename, bool > class SVecNoAliasExpr;
+template< typename, bool > class SVecNoSIMDExpr;
 template< typename, typename, bool > class SVecScalarDivExpr;
 template< typename, typename, bool > class SVecScalarMultExpr;
 template< typename, bool > class SVecSerialExpr;
