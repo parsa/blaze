@@ -48,6 +48,7 @@
 #include <blaze/math/expressions/VecEvalExpr.h>
 #include <blaze/math/expressions/VecMapExpr.h>
 #include <blaze/math/expressions/VecNoAliasExpr.h>
+#include <blaze/math/expressions/VecNoSIMDExpr.h>
 #include <blaze/math/expressions/VecScalarDivExpr.h>
 #include <blaze/math/expressions/VecScalarMultExpr.h>
 #include <blaze/math/expressions/VecSerialExpr.h>
@@ -1185,6 +1186,32 @@ inline decltype(auto) subvector( const VecNoAliasExpr<VT>& vector, RSAs... args 
    BLAZE_FUNCTION_TRACE;
 
    return noalias( subvector<AF,CSAs...>( (~vector).operand(), args... ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subvector of the given vector no-SIMD operation.
+// \ingroup subvector
+//
+// \param vector The constant vector no-SIMD operation.
+// \param args The runtime subvector arguments.
+// \return View on the specified subvector of the no-SIMD operation.
+//
+// This function returns an expression representing the specified subvector of the given vector
+// no-SIMD operation.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename VT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime subvector arguments
+inline decltype(auto) subvector( const VecNoSIMDExpr<VT>& vector, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return nosimd( subvector<AF,CSAs...>( (~vector).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
