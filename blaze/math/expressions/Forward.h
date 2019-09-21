@@ -129,6 +129,7 @@ template< typename, typename > class SMatDVecMultExpr;
 template< typename, bool > class SMatEvalExpr;
 template< typename, typename, bool > class SMatMapExpr;
 template< typename, bool > class SMatNoAliasExpr;
+template< typename, bool > class SMatNoSIMDExpr;
 template< typename, typename, bool > class SMatScalarDivExpr;
 template< typename, typename, bool > class SMatScalarMultExpr;
 template< typename, bool > class SMatSerialExpr;

@@ -64,6 +64,7 @@
 #include <blaze/math/expressions/SMatMeanExpr.h>
 #include <blaze/math/expressions/SMatNoAliasExpr.h>
 #include <blaze/math/expressions/SMatNormExpr.h>
+#include <blaze/math/expressions/SMatNoSIMDExpr.h>
 #include <blaze/math/expressions/SMatReduceExpr.h>
 #include <blaze/math/expressions/SMatScalarDivExpr.h>
 #include <blaze/math/expressions/SMatScalarMultExpr.h>
