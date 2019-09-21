@@ -821,35 +821,6 @@ inline decltype(auto) serial( const SparseMatrix<MT,SO>& sm )
 }
 //*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  GLOBAL RESTRUCTURING FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Evaluation of the given sparse matrix serial evaluation expression \a sm.
-// \ingroup sparse_matrix
-//
-// \param sm The input serial evaluation expression.
-// \return The evaluated sparse matrix.
-//
-// This function implements a performance optimized treatment of the serial evaluation of a sparse
-// matrix serial evaluation expression.
-*/
-template< typename MT  // Type of the sparse matrix
-        , bool SO >    // Storage order
-inline decltype(auto) serial( const SMatSerialExpr<MT,SO>& sm )
-{
-   return sm;
-}
-/*! \endcond */
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

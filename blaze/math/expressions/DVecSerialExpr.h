@@ -760,35 +760,6 @@ inline decltype(auto) serial( const DenseVector<VT,TF>& dv )
 
 //=================================================================================================
 //
-//  GLOBAL RESTRUCTURING FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Evaluation of the given dense vector serial evaluation expression \a dv.
-// \ingroup dense_vector
-//
-// \param dv The input serial evaluation expression.
-// \return The evaluated dense vector.
-//
-// This function implements a performance optimized treatment of the serial evaluation of a dense
-// vector serial evaluation expression.
-*/
-template< typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
-inline decltype(auto) serial( const DVecSerialExpr<VT,TF>& dv )
-{
-   return dv;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  ISALIGNED SPECIALIZATIONS
 //
 //=================================================================================================

@@ -653,35 +653,6 @@ inline decltype(auto) serial( const SparseVector<VT,TF>& sv )
 }
 //*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  GLOBAL RESTRUCTURING FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Evaluation of the given sparse vector serial evaluation expression \a sv.
-// \ingroup sparse_vector
-//
-// \param sv The input serial evaluation expression.
-// \return The evaluated sparse vector.
-//
-// This function implements a performance optimized treatment of the serial evaluation of a sparse
-// vector serial evaluation expression.
-*/
-template< typename VT  // Type of the sparse vector
-        , bool TF >    // Transpose flag
-inline decltype(auto) serial( const SVecSerialExpr<VT,TF>& sv )
-{
-   return sv;
-}
-/*! \endcond */
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

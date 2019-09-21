@@ -69,6 +69,34 @@ struct MatSerialExpr
 {};
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Evaluation of the given matrix serial evaluation expression.
+// \ingroup math
+//
+// \param matrix The input serial evaluation expression.
+// \return The evaluated matrix.
+//
+// This function implements a performance optimized treatment of the serial evaluation of a
+// matrix serial evaluation expression.
+*/
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) serial( const MatSerialExpr<MT>& matrix )
+{
+   return ~matrix;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

@@ -819,35 +819,6 @@ inline decltype(auto) serial( const DenseMatrix<MT,SO>& dm )
 
 //=================================================================================================
 //
-//  GLOBAL RESTRUCTURING FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Evaluation of the given dense matrix serial evaluation expression \a dm.
-// \ingroup dense_matrix
-//
-// \param dm The input serial evaluation expression.
-// \return The evaluated dense matrix.
-//
-// This function implements a performance optimized treatment of the serial evaluation of a dense
-// matrix serial evaluation expression.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline decltype(auto) serial( const DMatSerialExpr<MT,SO>& dm )
-{
-   return dm;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  ISALIGNED SPECIALIZATIONS
 //
 //=================================================================================================

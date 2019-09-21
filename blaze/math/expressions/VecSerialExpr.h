@@ -69,6 +69,36 @@ struct VecSerialExpr
 {};
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Evaluation of the given vector serial evaluation expression.
+// \ingroup math
+//
+// \param vector The input serial evaluation expression.
+// \return The evaluated vector.
+//
+// This function implements a performance optimized treatment of the serial evaluation of a
+// vector serial evaluation expression.
+*/
+template< typename VT >  // Vector base type of the expression
+inline decltype(auto) serial( const VecSerialExpr<VT>& vector )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return ~vector;
+}
+/*! \endcond */
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
