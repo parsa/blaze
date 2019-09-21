@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/functors/Forward.h
-//  \brief Header file for all functor forward declarations
+//  \file blaze/math/functors/NoSIMD.h
+//  \brief Header file for the NoSIMD functor
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //
@@ -32,123 +32,46 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_FUNCTORS_FORWARD_H_
-#define _BLAZE_MATH_FUNCTORS_FORWARD_H_
+#ifndef _BLAZE_MATH_FUNCTORS_NOSIMD_H_
+#define _BLAZE_MATH_FUNCTORS_NOSIMD_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/Types.h>
+#include <blaze/system/HostDevice.h>
+#include <blaze/system/Inline.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//  CLASS DEFINITION
 //
 //=================================================================================================
 
-struct Abs;
-struct Acos;
-struct Acosh;
-struct Add;
-struct AddAssign;
-struct And;
-struct AndAssign;
-struct Asin;
-struct Asinh;
-struct Assign;
-struct Atan;
-struct Atan2;
-struct Atanh;
-template< typename, typename > struct Bind1st;
-template< typename, typename > struct Bind2nd;
-struct Bitand;
-struct Bitor;
-struct Bitxor;
-struct Cbrt;
-struct Ceil;
-template< typename > struct Clamp;
-struct Clear;
-struct Conj;
-struct Cos;
-struct Cosh;
-struct CTrans;
-struct DeclDiag;
-struct DeclHerm;
-struct DeclId;
-struct DeclLow;
-struct DeclSym;
-struct DeclUpp;
-struct DeclZero;
-struct Div;
-struct DivAssign;
-struct Erf;
-struct Erfc;
-struct Eval;
-struct Exp;
-struct Exp2;
-struct Exp10;
-struct Floor;
-struct Greater;
-struct Hypot;
-struct Imag;
-struct Inv;
-struct InvAdd;
-struct InvCbrt;
-struct InvSqrt;
-struct Kron;
-struct L1Norm;
-struct L2Norm;
-struct L3Norm;
-struct L4Norm;
-struct LeftShiftAssign;
-struct Less;
-struct Log;
-struct Log2;
-struct Log10;
-template< size_t... > struct LpNorm;
-struct Max;
-struct Min;
-struct ModuloAssign;
-struct Mult;
-struct MultAssign;
-struct NoAlias;
-struct Noop;
-struct NoSIMD;
-struct Not;
-struct Or;
-struct OrAssign;
-struct Pow;
-struct Pow2;
-struct Pow3;
-struct Pow4;
-struct Qdrt;
-struct Real;
-struct Reset;
-struct RightShiftAssign;
-struct Round;
-struct Schur;
-struct Serial;
-struct ShiftLI;
-struct ShiftLV;
-struct ShiftRI;
-struct ShiftRV;
-struct Sign;
-struct Sin;
-struct Sinh;
-struct SqrAbs;
-struct Sqrt;
-struct Sub;
-struct SubAssign;
-struct Tan;
-struct Tanh;
-struct Trans;
-struct Trunc;
-struct XorAssign;
+//*************************************************************************************************
+/*!\brief Generic wrapper for the nosimd() function.
+// \ingroup functors
+*/
+struct NoSIMD
+{
+   //**********************************************************************************************
+   /*!\brief Returns the result of the nosimd() function for the given object/value.
+   //
+   // \param a The given object/value.
+   // \return The result of the nosimd() function for the given object/value.
+   */
+   template< typename T >
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
+   {
+      return nosimd( a );
+   }
+   //**********************************************************************************************
+};
+//*************************************************************************************************
 
 } // namespace blaze
 
