@@ -88,7 +88,7 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 class DVecTransExpr
    : public VecTransExpr< DenseVector< DVecTransExpr<VT,TF>, TF > >
-   , private If< IsComputation_v<VT>, Computation, Transformation >::Type
+   , private If_t< IsComputation_v<VT>, Computation, Transformation >
 {
  private:
    //**Type definitions****************************************************************************

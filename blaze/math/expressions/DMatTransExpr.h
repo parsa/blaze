@@ -88,7 +88,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 class DMatTransExpr
    : public MatTransExpr< DenseMatrix< DMatTransExpr<MT,SO>, SO > >
-   , private If< IsComputation_v<MT>, Computation, Transformation >::Type
+   , private If_t< IsComputation_v<MT>, Computation, Transformation >
 {
  private:
    //**Type definitions****************************************************************************

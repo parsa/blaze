@@ -82,7 +82,7 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 class SVecTransExpr
    : public VecTransExpr< SparseVector< SVecTransExpr<VT,TF>, TF > >
-   , private If< IsComputation_v<VT>, Computation, Transformation >::Type
+   , private If_t< IsComputation_v<VT>, Computation, Transformation >
 {
  private:
    //**Type definitions****************************************************************************

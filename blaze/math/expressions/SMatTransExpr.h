@@ -83,7 +83,7 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 class SMatTransExpr
    : public MatTransExpr< SparseMatrix< SMatTransExpr<MT,SO>, SO > >
-   , private If< IsComputation_v<MT>, Computation, Transformation >::Type
+   , private If_t< IsComputation_v<MT>, Computation, Transformation >
 {
  private:
    //**Type definitions****************************************************************************
