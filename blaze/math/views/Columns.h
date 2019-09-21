@@ -57,6 +57,7 @@
 #include <blaze/math/expressions/MatMatMultExpr.h>
 #include <blaze/math/expressions/MatMatSubExpr.h>
 #include <blaze/math/expressions/MatNoAliasExpr.h>
+#include <blaze/math/expressions/MatNoSIMDExpr.h>
 #include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/expressions/MatReduceExpr.h>
 #include <blaze/math/expressions/MatScalarDivExpr.h>
@@ -1247,6 +1248,32 @@ inline decltype(auto) columns( const MatNoAliasExpr<MT>& matrix, RCAs... args )
    BLAZE_FUNCTION_TRACE;
 
    return noalias( columns<CCAs...>( (~matrix).operand(), args... ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of columns on the given matrix no-SIMD operation.
+// \ingroup columns
+//
+// \param matrix The constant matrix no-SIMD operation.
+// \param args The runtime column arguments.
+// \return View on the specified selection of columns on the no-SIMD operation.
+//
+// This function returns an expression representing the specified selection of columns on the
+// given matrix no-SIMD operation.
+*/
+template< size_t... CCAs    // Compile time column arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RCAs  // Runtime column arguments
+        , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
+inline decltype(auto) columns( const MatNoSIMDExpr<MT>& matrix, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return nosimd( columns<CCAs...>( (~matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
