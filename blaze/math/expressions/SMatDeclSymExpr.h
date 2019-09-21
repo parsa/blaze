@@ -988,46 +988,6 @@ inline decltype(auto) declsym( const SparseMatrix<MT,SO>& sm )
 
 //=================================================================================================
 //
-//  GLOBAL RESTRUCTURING FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Declares the given non-symmetric sparse matrix-scalar multiplication expression as symmetric.
-// \ingroup sparse_matrix
-//
-// \param sm The input sparse matrix-scalar multiplication expression.
-// \return The redeclared expression.
-// \exception std::invalid_argument Invalid symmetric matrix specification.
-//
-// This function implements the application of the declsym() operation on a sparse matrix-
-// scalar multiplication. It restructures the expression \f$ A=declsym(B*s1) \f$ to the
-// expression \f$ A=declsym(B)*s1 \f$. In case the given matrix is not a square matrix,
-// a \a std::invalid_argument exception is thrown.
-*/
-template< typename MT  // Type of the left-hand side sparse matrix
-        , typename ST  // Type of the right-hand side scalar value
-        , bool SO      // Storage order
-        , DisableIf_t< IsSymmetric_v<MT> >* = nullptr >
-inline decltype(auto) declsym( const SMatScalarMultExpr<MT,ST,SO>& sm )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   if( !isSquare( ~sm ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid symmetric matrix specification" );
-   }
-
-   return declsym( sm.leftOperand() ) * sm.rightOperand();
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  ISSYMMETRIC SPECIALIZATIONS
 //
 //=================================================================================================

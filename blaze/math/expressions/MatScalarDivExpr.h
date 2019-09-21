@@ -123,6 +123,35 @@ inline decltype(auto) conj( const MatScalarDivExpr<MT>& matrix )
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given non-symmetric matrix-scalar division expression as symmetric.
+// \ingroup math
+//
+// \param matrix The input matrix-scalar division expression.
+// \return The redeclared expression.
+// \exception std::invalid_argument Invalid symmetric matrix specification.
+//
+// This function implements the application of the \a declsym operation on a matrix-scalar
+// division. It restructures the expression \f$ A=declsym(B/s1) \f$ to the expression
+// \f$ A=declsym(B)/s1 \f$. In case the given matrix is not a square matrix, a
+// \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) declsym( const MatScalarDivExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( ~matrix ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid symmetric matrix specification" );
+   }
+
+   return declsym( (~matrix).leftOperand() ) / (~matrix).rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
