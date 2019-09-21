@@ -53,6 +53,7 @@
 #include <blaze/math/expressions/MatMatMultExpr.h>
 #include <blaze/math/expressions/MatMatSubExpr.h>
 #include <blaze/math/expressions/MatNoAliasExpr.h>
+#include <blaze/math/expressions/MatNoSIMDExpr.h>
 #include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/expressions/MatReduceExpr.h>
 #include <blaze/math/expressions/MatScalarDivExpr.h>
@@ -1307,6 +1308,32 @@ inline decltype(auto) submatrix( const MatNoAliasExpr<MT>& matrix, RSAs... args 
    BLAZE_FUNCTION_TRACE;
 
    return noalias( submatrix<AF,CSAs...>( (~matrix).operand(), args... ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given matrix no-SIMD operation.
+// \ingroup submatrix
+//
+// \param matrix The constant matrix no-SIMD operation.
+// \param args The runtime submatrix arguments.
+// \return View on the specified submatrix of the no-SIMD operation.
+//
+// This function returns an expression representing the specified submatrix of the given matrix
+// no-SIMD operation.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time submatrix arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RSAs >  // Runtime submatrix arguments
+inline decltype(auto) submatrix( const MatNoSIMDExpr<MT>& matrix, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return nosimd( submatrix<AF,CSAs...>( (~matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
