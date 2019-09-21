@@ -183,6 +183,7 @@
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
 #include <blaze/math/typetraits/IsMatMatSubExpr.h>
 #include <blaze/math/typetraits/IsMatNoAliasExpr.h>
+#include <blaze/math/typetraits/IsMatNoSIMDExpr.h>
 #include <blaze/math/typetraits/IsMatReduceExpr.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/IsMatScalarDivExpr.h>
