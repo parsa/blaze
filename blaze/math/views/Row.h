@@ -51,6 +51,7 @@
 #include <blaze/math/expressions/MatMatMultExpr.h>
 #include <blaze/math/expressions/MatMatSubExpr.h>
 #include <blaze/math/expressions/MatNoAliasExpr.h>
+#include <blaze/math/expressions/MatNoSIMDExpr.h>
 #include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/expressions/MatScalarDivExpr.h>
 #include <blaze/math/expressions/MatScalarMultExpr.h>
@@ -730,6 +731,31 @@ inline decltype(auto) row( const MatNoAliasExpr<MT>& matrix, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    return noalias( row<CRAs...>( (~matrix).operand(), args... ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given matrix no-SIMD operation.
+// \ingroup row
+//
+// \param matrix The constant matrix no-SIMD operation.
+// \param args The runtime row arguments
+// \return View on the specified row of the no-SIMD operation.
+//
+// This function returns an expression representing the specified row of the given matrix
+// no-SIMD operation.
+*/
+template< size_t... CRAs      // Compile time row arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) row( const MatNoSIMDExpr<MT>& matrix, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return nosimd( row<CRAs...>( (~matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
