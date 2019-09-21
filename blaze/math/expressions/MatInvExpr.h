@@ -41,6 +41,8 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/Expression.h>
+#include <blaze/math/shims/Invert.h>
+#include <blaze/util/FunctionTrace.h>
 
 
 namespace blaze {
@@ -66,6 +68,73 @@ template< typename MT >  // Matrix base type of the expression
 struct MatInvExpr
    : public Expression<MT>
 {};
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Calculating the inverse of a matrix inversion.
+// \ingroup math
+//
+// \param matrix The matrix to be (re-)inverted.
+// \return The inverse of the inverted matrix.
+//
+// This function implements a performance optimized treatment of the inversion operation on a
+// matrix inversion expression. It returns an expression representing the inverse of a matrix
+// inversion:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::DynamicMatrix<double,rowMajor> A, B;
+   // ... Resizing and initialization
+   B = inv( inv( A ) );
+   \endcode
+*/
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) inv( const MatInvExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return matrix.operand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Computation of the determinant of the given matrix inversion.
+// \ingroup math
+//
+// \param matrix The given matrix inversion.
+// \return The determinant of the given matrix inversion.
+//
+// This function computes the determinant of the given matrix inversion.
+//
+// \note The computation of the determinant is numerically unreliable since especially for large
+// matrices the value can overflow during the computation. Please note that this function does
+// not guarantee that it is possible to compute the determinant with the given matrix!
+//
+// \note This function can only be used if a fitting LAPACK library is available and linked to
+// the executable. Otherwise a linker error will be created.
+*/
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) det( const MatInvExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return inv( det( (~matrix).operand() ) );
+}
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
