@@ -50,6 +50,7 @@
 #include <blaze/math/expressions/MatMatMapExpr.h>
 #include <blaze/math/expressions/MatMatSubExpr.h>
 #include <blaze/math/expressions/MatNoAliasExpr.h>
+#include <blaze/math/expressions/MatNoSIMDExpr.h>
 #include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/expressions/MatScalarDivExpr.h>
 #include <blaze/math/expressions/MatScalarMultExpr.h>
@@ -765,6 +766,31 @@ inline decltype(auto) band( const MatNoAliasExpr<MT>& matrix, RBAs... args )
    BLAZE_FUNCTION_TRACE;
 
    return noalias( band<CBAs...>( (~matrix).operand(), args... ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific band of the given matrix no-SIMD operation.
+// \ingroup band
+//
+// \param matrix The constant matrix no-SIMD operation.
+// \param args The runtime band arguments.
+// \return View on the specified band of the no-SIMD operation.
+//
+// This function returns an expression representing the specified band of the given matrix
+// no-SIMD operation.
+*/
+template< ptrdiff_t... CBAs   // Compile time band arguments
+        , typename MT         // Type of the matrix
+        , typename... RBAs >  // Runtime band arguments
+inline decltype(auto) band( const MatNoSIMDExpr<MT>& matrix, RBAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return nosimd( band<CBAs...>( (~matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
