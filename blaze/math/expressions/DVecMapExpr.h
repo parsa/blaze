@@ -1307,9 +1307,9 @@ inline decltype(auto) round( const DenseVector<VT,TF>& dv )
 // \param dv The input vector.
 // \return The complex conjugate of each single element of \a dv.
 //
-// The \a conj function calculates the complex conjugate of each element of the input vector
+// The \a conj() function calculates the complex conjugate of each element of the input vector
 // \a dv. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a conj function:
+// The following example demonstrates the use of the \a conj() function:
 
    \code
    blaze::DynamicVector< complex<double> > a, b;
@@ -1335,10 +1335,10 @@ inline decltype(auto) conj( const DenseVector<VT,TF>& dv )
 // \param dv The input vector.
 // \return The conjugate transpose of \a dv.
 //
-// The \a ctrans function returns an expression representing the conjugate transpose (also called
-// adjoint matrix, Hermitian conjugate matrix or transjugate matrix) of the given input vector
-// \a dv.\n
-// The following example demonstrates the use of the \a ctrans function:
+// The \a ctrans() function returns an expression representing the conjugate transpose (also
+// called adjoint matrix, Hermitian conjugate matrix or transjugate matrix) of the given input
+// vector \a dv.\n
+// The following example demonstrates the use of the \a ctrans() function:
 
    \code
    blaze::DynamicVector< complex<double> > a, b;
@@ -1346,7 +1346,7 @@ inline decltype(auto) conj( const DenseVector<VT,TF>& dv )
    b = ctrans( a );
    \endcode
 
-// Note that the \a ctrans function has the same effect as manually applying the \a conj and
+// Note that the \a ctrans() function has the same effect as manually applying the \a conj() and
 // \a trans function in any order:
 
    \code
@@ -1372,9 +1372,9 @@ inline decltype(auto) ctrans( const DenseVector<VT,TF>& dv )
 // \param dv The input vector.
 // \return The real part of each single element of \a dv.
 //
-// The \a real function calculates the real part of each element of the input vector \a dv.
+// The \a real() function calculates the real part of each element of the input vector \a dv.
 // The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a real function:
+// The following example demonstrates the use of the \a real() function:
 
    \code
    blaze::DynamicVector<double> a, b;
@@ -1400,9 +1400,9 @@ inline decltype(auto) real( const DenseVector<VT,TF>& dv )
 // \param dv The input vector.
 // \return The imaginary part of each single element of \a dv.
 //
-// The \a imag function calculates the imaginary part of each element of the input vector \a dv.
+// The \a imag() function calculates the imaginary part of each element of the input vector \a dv.
 // The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a imag function:
+// The following example demonstrates the use of the \a imag() function:
 
    \code
    blaze::DynamicVector<double> a, b;

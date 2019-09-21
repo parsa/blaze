@@ -1181,9 +1181,9 @@ inline decltype(auto) round( const SparseMatrix<MT,SO>& sm )
 // \param sm The input matrix.
 // \return The complex conjugate of each single element of \a sm.
 //
-// The \a conj function calculates the complex conjugate of each element of the input matrix
+// The \a conj() function calculates the complex conjugate of each element of the input matrix
 // \a sm. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a conj function:
+// The following example demonstrates the use of the \a conj() function:
 
    \code
    blaze::CompressedMatrix< complex<double> > A, B;
@@ -1209,10 +1209,10 @@ inline decltype(auto) conj( const SparseMatrix<MT,SO>& sm )
 // \param sm The input matrix.
 // \return The conjugate transpose of \a sm.
 //
-// The \a ctrans function returns an expression representing the conjugate transpose (also called
-// adjoint matrix, Hermitian conjugate matrix or transjugate matrix) of the given input matrix
-// \a sm.\n
-// The following example demonstrates the use of the \a ctrans function:
+// The \a ctrans() function returns an expression representing the conjugate transpose (also
+// called adjoint matrix, Hermitian conjugate matrix or transjugate matrix) of the given input
+// matrix \a sm.\n
+// The following example demonstrates the use of the \a ctrans() function:
 
    \code
    blaze::CompressedMatrix< complex<double> > A, B;
@@ -1220,7 +1220,7 @@ inline decltype(auto) conj( const SparseMatrix<MT,SO>& sm )
    B = ctrans( A );
    \endcode
 
-// Note that the \a ctrans function has the same effect as manually applying the \a conj and
+// Note that the \a ctrans() function has the same effect as manually applying the \a conj() and
 // \a trans function in any order:
 
    \code
@@ -1246,9 +1246,9 @@ inline decltype(auto) ctrans( const SparseMatrix<MT,SO>& sm )
 // \param sm The input matrix.
 // \return The real part of each single element of \a sm.
 //
-// The \a real function calculates the real part of each element of the input matrix \a sm.
+// The \a real() function calculates the real part of each element of the input matrix \a sm.
 // The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a real function:
+// The following example demonstrates the use of the \a real() function:
 
    \code
    blaze::CompressedMatrix<double> A, B;
@@ -1274,9 +1274,9 @@ inline decltype(auto) real( const SparseMatrix<MT,SO>& sm )
 // \param sm The input matrix.
 // \return The imaginary part of each single element of \a sm.
 //
-// The \a imag function calculates the imaginary part of each element of the input matrix \a sm.
+// The \a imag() function calculates the imaginary part of each element of the input matrix \a sm.
 // The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a imag function:
+// The following example demonstrates the use of the \a imag() function:
 
    \code
    blaze::CompressedMatrix<double> A, B;

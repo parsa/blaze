@@ -1068,9 +1068,9 @@ inline decltype(auto) round( const SparseVector<VT,TF>& sv )
 // \param sv The integral sparse input vector.
 // \return The complex conjugate of each single element of \a sv.
 //
-// The \a conj function calculates the complex conjugate of each element of the sparse input
+// The \a conj() function calculates the complex conjugate of each element of the sparse input
 // vector \a sv. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a conj function:
+// The following example demonstrates the use of the \a conj() function:
 
    \code
    blaze::CompressedVector<double> a, b;
@@ -1096,10 +1096,10 @@ inline decltype(auto) conj( const SparseVector<VT,TF>& sv )
 // \param sv The input vector.
 // \return The conjugate transpose of \a sv.
 //
-// The \a ctrans function returns an expression representing the conjugate transpose (also called
-// adjoint matrix, Hermitian conjugate matrix or transjugate matrix) of the given input vector
-// \a sv.\n
-// The following example demonstrates the use of the \a ctrans function:
+// The \a ctrans() function returns an expression representing the conjugate transpose (also
+// called adjoint matrix, Hermitian conjugate matrix or transjugate matrix) of the given input
+// vector \a sv.\n
+// The following example demonstrates the use of the \a ctrans() function:
 
    \code
    blaze::CompressedVector< complex<double> > a, b;
@@ -1107,7 +1107,7 @@ inline decltype(auto) conj( const SparseVector<VT,TF>& sv )
    b = ctrans( a );
    \endcode
 
-// Note that the \a ctrans function has the same effect as manually applying the \a conj and
+// Note that the \a ctrans() function has the same effect as manually applying the \a conj() and
 // \a trans function in any order:
 
    \code
@@ -1133,9 +1133,9 @@ inline decltype(auto) ctrans( const SparseVector<VT,TF>& sv )
 // \param sv The integral sparse input vector.
 // \return The real part of each single element of \a sv.
 //
-// The \a real function calculates the real part of each element of the sparse input vector
+// The \a real() function calculates the real part of each element of the sparse input vector
 // \a sv. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a real function:
+// The following example demonstrates the use of the \a real() function:
 
    \code
    blaze::CompressedVector<double> a, b;
@@ -1161,9 +1161,9 @@ inline decltype(auto) real( const SparseVector<VT,TF>& sv )
 // \param sv The integral sparse input vector.
 // \return The imaginary part of each single element of \a sv.
 //
-// The \a imag function calculates the imaginary part of each element of the sparse input vector
+// The \a imag() function calculates the imaginary part of each element of the sparse input vector
 // \a sv. The function returns an expression representing this operation.\n
-// The following example demonstrates the use of the \a imag function:
+// The following example demonstrates the use of the \a imag() function:
 
    \code
    blaze::CompressedVector<double> a, b;
