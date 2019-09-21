@@ -77,6 +77,7 @@
 #include <blaze/math/expressions/DMatMeanExpr.h>
 #include <blaze/math/expressions/DMatNoAliasExpr.h>
 #include <blaze/math/expressions/DMatNormExpr.h>
+#include <blaze/math/expressions/DMatNoSIMDExpr.h>
 #include <blaze/math/expressions/DMatReduceExpr.h>
 #include <blaze/math/expressions/DMatScalarDivExpr.h>
 #include <blaze/math/expressions/DMatScalarMultExpr.h>

@@ -70,6 +70,7 @@ template< typename, bool > class DMatExpExpr;
 template< typename, bool > class DMatInvExpr;
 template< typename, typename, bool > class DMatMapExpr;
 template< typename, bool > class DMatNoAliasExpr;
+template< typename, bool > class DMatNoSIMDExpr;
 template< typename, typename, bool > class DMatScalarDivExpr;
 template< typename, typename, bool > class DMatScalarMultExpr;
 template< typename, bool > class DMatSerialExpr;
