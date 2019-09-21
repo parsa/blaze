@@ -455,6 +455,28 @@ typedef double  TypeB;
 
 
 //*************************************************************************************************
+/*!\brief Compilation switch for the \a nosimd tests.
+//
+// This compilation switch triggers the \a nosimd tests for all test scenarios. In case the
+// \a nosimd tests are activated, each operation is tested in combination with an \a nosimd
+// operation. The following example demonstrates this by means of the vector addition:
+
+   \code
+   blaze::DynamicVector<double> a, b, c;
+   c = nosimd( a + b );  // Non-SIMD evaluation of the vector addition
+   \endcode
+
+// The following settings are possible:
+//
+//   - 0: The \a nosimd tests are not included in the compilation process and not executed
+//   - 1: The \a nosimd tests are included in the compilation process, but not executed
+//   - 2: The \a nosimd tests are included in the compilation process and executed
+*/
+#define BLAZETEST_MATHTEST_TEST_NOSIMD_OPERATION 0
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Compilation switch for the declsym tests.
 //
 // This compilation switch triggers the declsym tests for all test scenarios. In case the declsym
