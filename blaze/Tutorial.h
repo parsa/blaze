@@ -1861,6 +1861,24 @@
 // where an aliasing effect occurs leads to undefined behavior (which can be violated invariants
 // or wrong computation results)!
 //
+// \n \subsection vector_operations_nosimd nosimd()
+//
+// By default, \b Blaze attempts to vectorize all operations by means of SSE, AVX, etc. in order
+// to achieve maximum performance. However, via the \c nosimd() operation it is possible to disable
+// the SIMD evaluation of any operation:
+
+   \code
+   blaze::DynamicVector<double> x, y;
+   blaze::DynamicMatrix<double> A;
+
+   x = nosimd( x + y );  // Disables SIMD for the vector/vector addition
+   x = nosimd( A * x );  // Disables SIMD for the matrix/vector multiplication
+   \endcode
+
+// Please note that the main purpose of the \c nosimd() operation is to enable an easy performance
+// comparison between the vectorized and non-vectorized evaluation. Using the \c nosimd() operation
+// will likely result in significantly reduced performance!
+//
 //
 // \n \section vector_operations_modifying_operations Modifying Operations
 // <hr>
@@ -4489,6 +4507,23 @@
 // responsible and the system trusts the given information. Using \c noalias() in a situation
 // where an aliasing effect occurs leads to undefined behavior (which can be violated invariants
 // or wrong computation results)!
+//
+// \n \subsection matrix_operations_nosimd nosimd()
+//
+// By default, \b Blaze attempts to vectorize all operations by means of SSE, AVX, etc. in order
+// to achieve maximum performance. However, via the \c nosimd() operation it is possible to disable
+// the SIMD evaluation of any operation:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+
+   A = nosimd( A + B );  // Disables SIMD for the matrix/matrix addition
+   A = nosimd( A * B );  // Disables SIMD for the matrix/matrix multiplication
+   \endcode
+
+// Please note that the main purpose of the \c nosimd() operation is to enable an easy performance
+// comparison between the vectorized and non-vectorized evaluation. Using the \c nosimd() operation
+// will likely result in significantly reduced performance!
 //
 //
 // \n \section matrix_operations_modifying_operations Modifying Operations
