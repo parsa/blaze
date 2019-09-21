@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/TransExpr.h>
+#include <blaze/util/FunctionTrace.h>
 
 
 namespace blaze {
@@ -66,6 +67,45 @@ template< typename MT >  // Matrix base type of the expression
 struct MatTransExpr
    : public TransExpr<MT>
 {};
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Calculating the transpose of a transpose matrix.
+// \ingroup math
+//
+// \param matrix The matrix to be (re-)transposed.
+// \return The transpose of the transpose matrix.
+//
+// This function implements a performance optimized treatment of the transpose operation on
+// a matrix transpose expression. It returns an expression representing the transpose of a
+// transpose matrix:
+
+   \code
+   using blaze::rowMajor;
+
+   blaze::DynamicMatrix<double,rowMajor> A, B;
+   // ... Resizing and initialization
+   B = trans( trans( A ) );
+   \endcode
+*/
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) trans( const MatTransExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return (~matrix).operand();
+}
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

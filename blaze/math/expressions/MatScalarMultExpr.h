@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/MultExpr.h>
+#include <blaze/util/FunctionTrace.h>
 
 
 namespace blaze {
@@ -67,6 +68,37 @@ template< typename MT >  // Matrix base type of the expression
 struct MatScalarMultExpr
    : public MultExpr<MT>
 {};
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Calculation of the transpose of the given matrix-scalar multiplication.
+// \ingroup math
+//
+// \param matrix The matrix-scalar multiplication expression to be transposed.
+// \return The transpose of the expression.
+//
+// This operator implements the performance optimized treatment of the transpose of a
+// matrix-scalar multiplication. It restructures the expression \f$ A=trans(B*s1) \f$ to
+// the expression \f$ A=trans(B)*s1 \f$.
+*/
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) trans( const MatScalarMultExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( (~matrix).leftOperand() ) * (~matrix).rightOperand();
+}
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

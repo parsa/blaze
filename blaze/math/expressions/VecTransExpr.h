@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/TransExpr.h>
+#include <blaze/util/FunctionTrace.h>
 
 
 namespace blaze {
@@ -66,6 +67,45 @@ template< typename VT >  // Vector base type of the expression
 struct VecTransExpr
    : public TransExpr<VT>
 {};
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Calculating the transpose of a transpose vector.
+// \ingroup math
+//
+// \param vector The vector to be (re-)transposed.
+// \return The transpose of the transpose vector.
+//
+// This function implements a performance optimized treatment of the transpose operation on
+// a vector transpose expression. It returns an expression representing the transpose of a
+// transpose vector:
+
+   \code
+   using blaze::columnVector;
+
+   blaze::DynamicVector<double,columnVector> a, b;
+   // ... Resizing and initialization
+   b = trans( trans( a ) );
+   \endcode
+*/
+template< typename VT >  // Vector base type of the expression
+inline decltype(auto) trans( const VecTransExpr<VT>& vector )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return (~vector).operand();
+}
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/DivExpr.h>
+#include <blaze/util/FunctionTrace.h>
 
 
 namespace blaze {
@@ -66,6 +67,37 @@ template< typename MT >  // Matrix base type of the expression
 struct MatScalarDivExpr
    : public DivExpr<MT>
 {};
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Calculation of the transpose of the given matrix-scalar division.
+// \ingroup math
+//
+// \param matrix The matrix-scalar division expression to be transposed.
+// \return The transpose of the expression.
+//
+// This operator implements the performance optimized treatment of the transpose of a
+// matrix-scalar division. It restructures the expression \f$ A=trans(B/s1) \f$ to
+// the expression \f$ A=trans(B)/s1 \f$.
+*/
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) trans( const MatScalarDivExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( (~matrix).leftOperand() ) / (~matrix).rightOperand();
+}
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

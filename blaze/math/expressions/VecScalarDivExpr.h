@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/DivExpr.h>
+#include <blaze/util/FunctionTrace.h>
 
 
 namespace blaze {
@@ -66,6 +67,37 @@ template< typename VT >  // Vector base type of the expression
 struct VecScalarDivExpr
    : public DivExpr<VT>
 {};
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Calculation of the transpose of the given vector-scalar division.
+// \ingroup vector
+//
+// \param vector The vector-scalar division expression to be transposed.
+// \return The transpose of the expression.
+//
+// This operator implements the performance optimized treatment of the transpose of a
+// vector-scalar division. It restructures the expression \f$ a=trans(b/s1) \f$ to
+// the expression \f$ a=trans(b)/s1 \f$.
+*/
+template< typename VT >  // Vector base type of the expression
+inline decltype(auto) trans( const VecScalarDivExpr<VT>& vector )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( (~vector).leftOperand() ) / (~vector).rightOperand();
+}
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

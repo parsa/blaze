@@ -69,6 +69,37 @@ struct VecScalarMultExpr
 {};
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Calculation of the transpose of the given vector-scalar multiplication.
+// \ingroup vector
+//
+// \param vector The vector-scalar multiplication expression to be transposed.
+// \return The transpose of the expression.
+//
+// This operator implements the performance optimized treatment of the transpose of a
+// vector-scalar multiplication. It restructures the expression \f$ a=trans(b*s1) \f$ to
+// the expression \f$ a=trans(b)*s1 \f$.
+*/
+template< typename VT >  // Vector base type of the expression
+inline decltype(auto) trans( const VecScalarMultExpr<VT>& vector )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( (~vector).leftOperand() ) * (~vector).rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
