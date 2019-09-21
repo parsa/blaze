@@ -100,6 +100,29 @@ inline decltype(auto) trans( const MatScalarDivExpr<MT>& matrix )
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Calculation of the complex conjugate of the given matrix-scalar division.
+// \ingroup math
+//
+// \param matrix The matrix-scalar division expression to be conjugated.
+// \return The complex conjugate of the expression.
+//
+// This operator implements the performance optimized treatment of the complex conjugate
+// of a matrix-scalar division. It restructures the expression \f$ a=conj(b/s1) \f$ to the
+// expression \f$ a=conj(b)/s1 \f$.
+*/
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) conj( const MatScalarDivExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return conj( (~matrix).leftOperand() ) / (~matrix).rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

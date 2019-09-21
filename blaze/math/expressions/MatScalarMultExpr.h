@@ -101,6 +101,29 @@ inline decltype(auto) trans( const MatScalarMultExpr<MT>& matrix )
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Calculation of the complex conjugate of the given matrix-scalar multiplication.
+// \ingroup math
+//
+// \param matrix The matrix-scalar multiplication expression to be conjugated.
+// \return The complex conjugate of the expression.
+//
+// This operator implements the performance optimized treatment of the complex conjugate of a
+// matrix-scalar multiplication. It restructures the expression \f$ a=conj(b*s1) \f$ to the
+// expression \f$ a=conj(b)*s1 \f$.
+*/
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) conj( const MatScalarMultExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return conj( (~matrix).leftOperand() ) * (~matrix).rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

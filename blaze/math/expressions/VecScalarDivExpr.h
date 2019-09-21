@@ -81,7 +81,7 @@ struct VecScalarDivExpr
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Calculation of the transpose of the given vector-scalar division.
-// \ingroup vector
+// \ingroup math
 //
 // \param vector The vector-scalar division expression to be transposed.
 // \return The transpose of the expression.
@@ -96,6 +96,29 @@ inline decltype(auto) trans( const VecScalarDivExpr<VT>& vector )
    BLAZE_FUNCTION_TRACE;
 
    return trans( (~vector).leftOperand() ) / (~vector).rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Calculation of the complex conjugate of the given vector-scalar division.
+// \ingroup math
+//
+// \param vector The vector-scalar division expression to be conjugated.
+// \return The complex conjugate of the expression.
+//
+// This operator implements the performance optimized treatment of the complex conjugate
+// of a vector-scalar division. It restructures the expression \f$ a=conj(b/s1) \f$ to the
+// expression \f$ a=conj(b)/s1 \f$.
+*/
+template< typename VT >  // Vector base type of the expression
+inline decltype(auto) conj( const VecScalarDivExpr<VT>& vector )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return conj( (~vector).leftOperand() ) / (~vector).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
