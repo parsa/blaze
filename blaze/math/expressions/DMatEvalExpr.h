@@ -797,35 +797,6 @@ inline decltype(auto) eval( const DenseMatrix<MT,SO>& dm )
 
 //=================================================================================================
 //
-//  GLOBAL RESTRUCTURING FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Evaluation of the given dense matrix evaluation expression \a dm.
-// \ingroup dense_matrix
-//
-// \param dm The input evaluation expression.
-// \return The evaluated dense matrix.
-//
-// This function implements a performance optimized treatment of the evaluation of a dense matrix
-// evaluation expression.
-*/
-template< typename MT  // Type of the dense matrix
-        , bool SO >    // Storage order
-inline decltype(auto) eval( const DMatEvalExpr<MT,SO>& dm )
-{
-   return dm;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  ISALIGNED SPECIALIZATIONS
 //
 //=================================================================================================

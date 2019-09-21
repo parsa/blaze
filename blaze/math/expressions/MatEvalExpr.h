@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/EvalExpr.h>
+#include <blaze/util/FunctionTrace.h>
 
 
 namespace blaze {
@@ -66,6 +67,36 @@ template< typename MT >  // Matrix base type of the expression
 struct MatEvalExpr
    : public EvalExpr<MT>
 {};
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Evaluation of the given matrix evaluation expression.
+// \ingroup math
+//
+// \param matrix The input evaluation expression.
+// \return The evaluated matrix.
+//
+// This function implements a performance optimized treatment of the evaluation of a matrix
+// evaluation expression.
+*/
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) eval( const MatEvalExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return ~matrix;
+}
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

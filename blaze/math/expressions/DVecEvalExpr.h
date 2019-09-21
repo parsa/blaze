@@ -738,35 +738,6 @@ inline decltype(auto) eval( const DenseVector<VT,TF>& dv )
 
 //=================================================================================================
 //
-//  GLOBAL RESTRUCTURING FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Evaluation of the given dense vector evaluation expression \a dv.
-// \ingroup dense_vector
-//
-// \param dv The input evaluation expression.
-// \return The evaluated dense vector.
-//
-// This function implements a performance optimized treatment of the evaluation of a dense vector
-// evaluation expression.
-*/
-template< typename VT  // Type of the dense vector
-        , bool TF >    // Transpose flag
-inline decltype(auto) eval( const DVecEvalExpr<VT,TF>& dv )
-{
-   return dv;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  ISALIGNED SPECIALIZATIONS
 //
 //=================================================================================================

@@ -633,35 +633,6 @@ inline decltype(auto) eval( const SparseVector<VT,TF>& sv )
 }
 //*************************************************************************************************
 
-
-
-
-//=================================================================================================
-//
-//  GLOBAL RESTRUCTURING FUNCTIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Evaluation of the given sparse vector evaluation expression \a sv.
-// \ingroup sparse_vector
-//
-// \param sv The input evaluation expression.
-// \return The evaluated sparse vector.
-//
-// This function implements a performance optimized treatment of the evaluation of a sparse vector
-// evaluation expression.
-*/
-template< typename VT  // Type of the sparse vector
-        , bool TF >    // Transpose flag
-inline decltype(auto) eval( const SVecEvalExpr<VT,TF>& sv )
-{
-   return sv;
-}
-/*! \endcond */
-//*************************************************************************************************
-
 } // namespace blaze
 
 #endif

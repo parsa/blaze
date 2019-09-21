@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/EvalExpr.h>
+#include <blaze/util/FunctionTrace.h>
 
 
 namespace blaze {
@@ -66,6 +67,36 @@ template< typename VT >  // Vector base type of the expression
 struct VecEvalExpr
    : public EvalExpr<VT>
 {};
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Evaluation of the given vector evaluation expression.
+// \ingroup math
+//
+// \param vector The input evaluation expression.
+// \return The evaluated vector.
+//
+// This function implements a performance optimized treatment of the evaluation of a vector
+// evaluation expression.
+*/
+template< typename VT >  // Vector base type of the expression
+inline decltype(auto) eval( const VecEvalExpr<VT>& vector )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return ~vector;
+}
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
