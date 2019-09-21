@@ -170,6 +170,7 @@ class OperationTest
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testNoAliasOperation  ();
+                          void testNoSIMDOperation   ();
                           void testSubvectorOperation();
                           void testElementsOperation ();
 
@@ -322,6 +323,7 @@ OperationTest<VT,MT>::OperationTest( const Creator<VT>& creator1, const Creator<
    testEvalOperation();
    testSerialOperation();
    testNoAliasOperation();
+   testNoSIMDOperation();
    testSubvectorOperation();
    testElementsOperation();
 }
@@ -3143,6 +3145,31 @@ void OperationTest<VT,MT>::testNoAliasOperation()
    if( BLAZETEST_MATHTEST_TEST_NOALIAS_OPERATION > 1 )
    {
       testCustomOperation( blaze::NoAlias(), "noalias" );
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the non-SIMD sparse vector/sparse matrix multiplication.
+//
+// \return void
+// \exception std::runtime_error Multiplication error detected.
+//
+// This function tests the non-SIMD vector/matrix multiplication with plain assignment,
+// addition assignment, subtraction assignment, and multiplication assignment. In case any
+// error resulting from the multiplication or the subsequent assignment is detected, a
+// \a std::runtime_error exception is thrown.
+*/
+template< typename VT    // Type of the left-hand side sparse vector
+        , typename MT >  // Type of the right-hand side sparse matrix
+void OperationTest<VT,MT>::testNoSIMDOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_NOSIMD_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_NOSIMD_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::NoSIMD(), "nosimd" );
    }
 #endif
 }

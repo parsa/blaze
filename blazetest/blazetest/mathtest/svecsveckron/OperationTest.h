@@ -167,6 +167,7 @@ class OperationTest
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testNoAliasOperation  ();
+                          void testNoSIMDOperation   ();
                           void testSubvectorOperation( blaze::TrueType  );
                           void testSubvectorOperation( blaze::FalseType );
                           void testElementsOperation ( blaze::TrueType  );
@@ -329,6 +330,7 @@ OperationTest<VT1,VT2>::OperationTest( const Creator<VT1>& creator1, const Creat
    testEvalOperation();
    testSerialOperation();
    testNoAliasOperation();
+   testNoSIMDOperation();
    testSubvectorOperation( Not_t< IsUniform<DRE> >() );
    testElementsOperation( Not_t< IsUniform<DRE> >() );
 }
@@ -3147,7 +3149,7 @@ void OperationTest<VT1,VT2>::testSerialOperation()
 
 
 //*************************************************************************************************
-/*!\brief Testing the non-alias sparse vector/sparse vector Kronecker product.
+/*!\brief Testing the non-aliased sparse vector/sparse vector Kronecker product.
 //
 // \return void
 // \exception std::runtime_error Kronecker product error detected.
@@ -3165,6 +3167,31 @@ void OperationTest<VT1,VT2>::testNoAliasOperation()
    if( BLAZETEST_MATHTEST_TEST_NOALIAS_OPERATION > 1 )
    {
       testCustomOperation( blaze::NoAlias(), "noalias" );
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the non-SIMD sparse vector/sparse vector Kronecker product.
+//
+// \return void
+// \exception std::runtime_error Kronecker product error detected.
+//
+// This function tests the non-SIMD vector Kronecker product with plain assignment, addition
+// assignment, subtraction assignment, and multiplication assignment. In case any error resulting
+// from the Kronecker product or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+template< typename VT1    // Type of the left-hand side sparse vector
+        , typename VT2 >  // Type of the right-hand side sparse vector
+void OperationTest<VT1,VT2>::testNoSIMDOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_NOSIMD_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_NOSIMD_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::NoSIMD(), "nosimd" );
    }
 #endif
 }

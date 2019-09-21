@@ -197,6 +197,7 @@ class OperationTest
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testNoAliasOperation  ();
+                          void testNoSIMDOperation   ();
                           void testDeclSymOperation  ( blaze::TrueType  );
                           void testDeclSymOperation  ( blaze::FalseType );
                           void testDeclHermOperation ( blaze::TrueType  );
@@ -413,6 +414,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testEvalOperation();
    testSerialOperation();
    testNoAliasOperation();
+   testNoSIMDOperation();
    testDeclSymOperation( IsSame< LowType_t<ET1,ET2>, ET1 >() );
    testDeclHermOperation( IsSame< LowType_t<ET1,ET2>, ET1 >() );
    testDeclLowOperation( Or_t< IsSquare<DRE>, IsResizable<DRE> >() );
@@ -4732,6 +4734,31 @@ void OperationTest<MT1,MT2>::testNoAliasOperation()
    if( BLAZETEST_MATHTEST_TEST_NOALIAS_OPERATION > 1 )
    {
       testCustomOperation( blaze::NoAlias(), "noalias" );
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the non-SIMD dense matrix/sparse matrix multiplication.
+//
+// \return void
+// \exception std::runtime_error Multiplication error detected.
+//
+// This function tests the non-SIMD matrix multiplication with plain assignment, addition
+// assignment, subtraction assignment, and Schur product assignment. In case any error resulting
+// from the multiplication or the subsequent assignment is detected, a \a std::runtime_error
+// exception is thrown.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side sparse matrix
+void OperationTest<MT1,MT2>::testNoSIMDOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_NOSIMD_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_NOSIMD_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::NoSIMD(), "nosimd" );
    }
 #endif
 }

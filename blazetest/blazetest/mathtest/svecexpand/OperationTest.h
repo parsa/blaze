@@ -172,6 +172,7 @@ class OperationTest
                           void testEvalOperation     ();
                           void testSerialOperation   ();
                           void testNoAliasOperation  ();
+                          void testNoSIMDOperation   ();
                           void testSubmatrixOperation();
                           void testRowOperation      ();
                           void testRowsOperation     ();
@@ -351,6 +352,7 @@ OperationTest<VT,E>::OperationTest( const Creator<VT>& creator )
    testEvalOperation();
    testSerialOperation();
    testNoAliasOperation();
+   testNoSIMDOperation();
    testSubmatrixOperation();
    testRowOperation();
    testRowsOperation();
@@ -5121,6 +5123,31 @@ void OperationTest<VT,E>::testNoAliasOperation()
    if( BLAZETEST_MATHTEST_TEST_NOALIAS_OPERATION > 1 )
    {
       testCustomOperation( blaze::NoAlias(), "noalias" );
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Testing the non-SIMD sparse vector expansion operation.
+//
+// \return void
+// \exception std::runtime_error Expansion error detected.
+//
+// This function tests the non-SIMD vector expansion with plain assignment, addition
+// assignment, subtraction assignment, and Schur product assignment. In case any error resulting
+// from the expansion or the subsequent assignment is detected, a \a std::runtime_error exception
+// is thrown.
+*/
+template< typename VT  // Type of the sparse vector
+        , size_t E >   // Compile time expansion
+void OperationTest<VT,E>::testNoSIMDOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_NOSIMD_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_NOSIMD_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::NoSIMD(), "nosimd" );
    }
 #endif
 }
