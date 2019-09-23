@@ -242,6 +242,35 @@ inline decltype(auto) declupp( const MatScalarMultExpr<MT>& matrix )
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given non-diagonal matrix-scalar multiplication expression as diagonal.
+// \ingroup math
+//
+// \param matrix The input matrix-scalar multiplication expression.
+// \return The redeclared expression.
+// \exception std::invalid_argument Invalid diagonal matrix specification.
+//
+// This function implements the application of the decldiag() operation on a matrix-scalar
+// multiplication. It restructures the expression \f$ A=decldiag(B*s1) \f$ to the expression
+// \f$ A=decldiag(B)*s1 \f$. In case the given matrix is not a square matrix,
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) decldiag( const MatScalarMultExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( ~matrix ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid diagonal matrix specification" );
+   }
+
+   return decldiag( (~matrix).leftOperand() ) * (~matrix).rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
