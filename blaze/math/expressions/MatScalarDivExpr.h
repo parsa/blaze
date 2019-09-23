@@ -152,6 +152,35 @@ inline decltype(auto) declsym( const MatScalarDivExpr<MT>& matrix )
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given non-Hermitian matrix-scalar division expression as Hermitian.
+// \ingroup math
+//
+// \param matrix The input matrix-scalar division expression.
+// \return The redeclared expression.
+// \exception std::invalid_argument Invalid Hermitian matrix specification.
+//
+// This function implements the application of the declherm() operation on a matrix-scalar
+// division. It restructures the expression \f$ A=declherm(B/s1) \f$ to the expression
+// \f$ A=declherm(B)/s1 \f$. In case the given matrix is not a square matrix,
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) declherm( const MatScalarDivExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( ~matrix ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid Hermitian matrix specification" );
+   }
+
+   return declherm( (~matrix).leftOperand() ) / (~matrix).rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
