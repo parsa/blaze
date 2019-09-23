@@ -181,6 +181,35 @@ inline decltype(auto) declherm( const MatScalarDivExpr<MT>& matrix )
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given non-lower matrix-scalar division expression as lower.
+// \ingroup math
+//
+// \param matrix The input matrix-scalar division expression.
+// \return The redeclared expression.
+// \exception std::invalid_argument Invalid lower matrix specification.
+//
+// This function implements the application of the decllow() operation on a matrix-scalar
+// division. It restructures the expression \f$ A=decllow(B/s1) \f$ to the expression
+// \f$ A=decllow(B)/s1 \f$. In case the given matrix is not a square matrix,
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) decllow( const MatScalarDivExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( ~matrix ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid lower matrix specification" );
+   }
+
+   return decllow( (~matrix).leftOperand() ) / (~matrix).rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
