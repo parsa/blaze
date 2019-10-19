@@ -41,7 +41,6 @@
 //*************************************************************************************************
 
 #include <blaze/math/Exception.h>
-#include <blaze/math/expressions/Matrix.h>
 #include <blaze/math/expressions/MultExpr.h>
 #include <blaze/util/FunctionTrace.h>
 

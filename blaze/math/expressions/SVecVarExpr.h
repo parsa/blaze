@@ -44,6 +44,7 @@
 #include <blaze/math/expressions/SparseVector.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/Pow2.h>
+#include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>

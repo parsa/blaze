@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DivExpr.h>
 #include <blaze/util/FunctionTrace.h>
 

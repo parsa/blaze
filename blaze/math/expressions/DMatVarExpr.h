@@ -47,6 +47,7 @@
 #include <blaze/math/functors/Pow2.h>
 #include <blaze/math/ReductionFlag.h>
 #include <blaze/math/shims/Invert.h>
+#include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
