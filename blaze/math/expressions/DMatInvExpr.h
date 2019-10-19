@@ -51,14 +51,7 @@
 #include <blaze/math/expressions/MatInvExpr.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/Serial.h>
-#include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
-#include <blaze/math/typetraits/IsHermitian.h>
-#include <blaze/math/typetraits/IsLower.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
-#include <blaze/math/typetraits/IsUniLower.h>
-#include <blaze/math/typetraits/IsUniUpper.h>
-#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
@@ -185,25 +178,6 @@ class DMatInvExpr
    Operand dm_;  //!< Dense matrix of the inversion expression.
    //**********************************************************************************************
 
-   //**********************************************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Returns the proper inversion flag for the given matrix type \a MT.
-   //
-   // \return The proper inversion flag for the matrix type \a MT.
-   */
-   static constexpr InversionFlag getInversionFlag() noexcept {
-      return ( IsDiagonal_v<MT>  ? asDiagonal
-             : IsUniUpper_v<MT>  ? asUniUpper
-             : IsUpper_v<MT>     ? asUpper
-             : IsUniLower_v<MT>  ? asUniLower
-             : IsLower_v<MT>     ? asLower
-             : IsHermitian_v<MT> ? asHermitian
-             : IsSymmetric_v<MT> ? asSymmetric
-             :                     asGeneral );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
    //**Assignment to dense matrices****************************************************************
    /*! \cond BLAZE_INTERNAL */
    /*!\brief Assignment of a dense matrix inversion expression to a dense matrix.
@@ -229,7 +203,7 @@ class DMatInvExpr
          assign( ~lhs, rhs.dm_ );
       }
 
-      invert< DMatInvExpr::getInversionFlag() >( ~lhs );
+      invert( ~lhs );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -395,6 +369,7 @@ class DMatInvExpr
 //
 // \param dm The dense matrix to be inverted.
 // \return The inverse of the matrix.
+// \exception std::invalid_argument Invalid non-square matrix provided.
 //
 // This function returns an expression representing the inverse of the given dense matrix:
 

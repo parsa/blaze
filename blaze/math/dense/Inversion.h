@@ -62,6 +62,13 @@
 #include <blaze/math/shims/IsDivisor.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/math/shims/Real.h>
+#include <blaze/math/typetraits/IsDiagonal.h>
+#include <blaze/math/typetraits/IsHermitian.h>
+#include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniUpper.h>
+#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -71,6 +78,36 @@
 
 
 namespace blaze {
+
+//=================================================================================================
+//
+//  AUXILIARY FUNCTIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the proper inversion flag for the given matrix type \a MT.
+//
+// \return The proper inversion flag for the matrix type \a MT.
+*/
+template< typename MT >
+constexpr InversionFlag getInversionFlag() noexcept
+{
+   return ( IsDiagonal_v<MT>  ? asDiagonal
+          : IsUniUpper_v<MT>  ? asUniUpper
+          : IsUpper_v<MT>     ? asUpper
+          : IsUniLower_v<MT>  ? asUniLower
+          : IsLower_v<MT>     ? asLower
+          : IsSymmetric_v<MT> ? asSymmetric
+          : IsHermitian_v<MT> ? asHermitian
+          :                     asGeneral );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
 
 //=================================================================================================
 //
@@ -3853,7 +3890,7 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
 inline void invert( DenseMatrix<MT,SO>& dm )
 {
-   invert<byLU>( ~dm );
+   invert< getInversionFlag<MT>() >( ~dm );
 }
 //*************************************************************************************************
 
