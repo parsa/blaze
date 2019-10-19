@@ -45,7 +45,9 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Matrix.h>
+#include <blaze/math/ReductionFlag.h>
 #include <blaze/math/RelaxationFlag.h>
+#include <blaze/math/views/Band.h>
 #include <blaze/math/views/Elements.h>
 
 
@@ -96,8 +98,8 @@ bool isIdentity( const Matrix<MT,SO>& m );
 template< typename MT, bool SO >
 auto trace( const Matrix<MT,SO>& m );
 
-template< bool RF, typename MT, bool SO >
-decltype(auto) reverse( const Matrix<MT,SO>& m );
+template< bool RF, typename MT >
+decltype(auto) reverse( MT&& m );
 //@}
 //*************************************************************************************************
 
@@ -676,19 +678,18 @@ inline auto trace( const Matrix<MT,SO>& m )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend implementation of the \c reverse() function for reversing the rows.
+/*!\brief Backend implementation of the \c reverse() function for reversing the rows of a matrix.
 // \ingroup matrix
 //
 // \param m The matrix to be reversed.
 // \return The reversed matrix.
 */
-template< bool RF
-        , typename MT
-        , bool SO
+template< bool RF      // Reverse flag
+        , typename MT  // Type of the matrix
         , EnableIf_t< RF == rowwise >* = nullptr >
-inline decltype(auto) reverse_backend( const Matrix<MT,SO>& m )
+inline decltype(auto) reverse_backend( MT&& m )
 {
-   return rows( ~m, [max=(~m).rows()-1UL]( size_t i ){ return max - i; }, (~m).rows() );
+   return rows( std::forward<MT>( m ), [max=m.rows()-1UL]( size_t i ){ return max - i; }, m.rows() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -696,19 +697,18 @@ inline decltype(auto) reverse_backend( const Matrix<MT,SO>& m )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Backend implementation of the \c reverse() function for reversing the columns.
+/*!\brief Backend implementation of the \c reverse() function for reversing the columns of a matrix.
 // \ingroup matrix
 //
 // \param m The matrix to be reversed.
 // \return The reversed matrix.
 */
-template< bool RF
-        , typename MT
-        , bool SO
+template< bool RF      // Reverse flag
+        , typename MT  // Type of the matrix
         , EnableIf_t< RF == columnwise >* = nullptr >
-inline decltype(auto) reverse_backend( const Matrix<MT,SO>& m )
+inline decltype(auto) reverse_backend( MT&& m )
 {
-   return columns( ~m, [max=(~m).columns()-1UL]( size_t i ){ return max - i; }, (~m).columns() );
+   return columns( std::forward<MT>( m ), [max=m.columns()-1UL]( size_t i ){ return max - i; }, m.columns() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -749,12 +749,11 @@ inline decltype(auto) reverse_backend( const Matrix<MT,SO>& m )
    B = reverse<columnwise>( A );
    \endcode
 */
-template< bool RF      // Reverse flag
-        , typename MT  // Type of the matrix
-        , bool SO >    // Storage order
-inline decltype(auto) reverse( const Matrix<MT,SO>& m )
+template< bool RF        // Reverse flag
+        , typename MT >  // Type of the matrix
+inline decltype(auto) reverse( MT&& m )
 {
-   return reverse_backend<RF>( ~m );
+   return reverse_backend<RF>( std::forward<MT>( m ) );
 }
 //*************************************************************************************************
 
