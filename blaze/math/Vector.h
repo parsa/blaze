@@ -93,8 +93,8 @@ decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,false>& rhs );
 template< typename T1, typename T2 >
 decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,true>& rhs );
 
-template< typename VT, bool TF >
-decltype(auto) reverse( const Vector<VT,TF>& v );
+template< typename VT >
+decltype(auto) reverse( VT&& v );
 //@}
 //*************************************************************************************************
 
@@ -342,9 +342,8 @@ inline decltype(auto) outer( const Vector<T1,true>& lhs, const Vector<T2,true>& 
    b = reverse( a );  // Results in ( 5 4 3 2 1 )
    \endcode
 */
-template< typename VT  // Type of the vector
-        , bool TF >    // Transpose flag
-inline decltype(auto) reverse( const Vector<VT,TF>& v )
+template< typename VT >  // Type of the vector
+inline decltype(auto) reverse( VT&& v )
 {
    return elements( ~v, [max=(~v).size()-1UL]( size_t i ){ return max - i; }, (~v).size() );
 }
