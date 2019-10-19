@@ -314,7 +314,7 @@ class DMatDVecMultExpr
    //
    // \return The left-hand side dense matrix operand.
    */
-   inline LeftOperand leftOperand() const  noexcept{
+   inline LeftOperand leftOperand() const noexcept {
       return mat_;
    }
    //**********************************************************************************************
@@ -5354,41 +5354,6 @@ inline decltype(auto)
    using ReturnType = const DMatDVecMultExpr<MT,VT>;
    return ReturnType( ~mat, ~vec );
 }
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  GLOBAL RESTRUCTURING BINARY ARITHMETIC OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication operator for the multiplication of a matrix-matrix multiplication
-//        expression and a dense vector (\f$ \vec{y}=(A*B)*\vec{x} \f$).
-// \ingroup dense_vector
-//
-// \param mat The left-hand side dense matrix-matrix multiplication.
-// \param vec The right-hand side dense vector for the multiplication.
-// \return The resulting vector.
-//
-// This operator implements a performance optimized treatment of the multiplication of a
-// matrix-matrix multiplication expression and a dense vector. It restructures the expression
-// \f$ \vec{x}=(A*B)*\vec{x} \f$ to the expression \f$ \vec{y}=A*(B*\vec{x}) \f$.
-*/
-template< typename MT    // Matrix base type of the left-hand side expression
-        , typename VT >  // Type of the right-hand side dense vector
-inline decltype(auto)
-   operator*( const MatMatMultExpr<MT>& mat, const DenseVector<VT,false>& vec )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return (~mat).leftOperand() * ( (~mat).rightOperand() * vec );
-}
-/*! \endcond */
 //*************************************************************************************************
 
 
