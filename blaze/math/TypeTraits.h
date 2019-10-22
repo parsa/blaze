@@ -157,6 +157,7 @@
 #include <blaze/math/typetraits/IsDeclHermExpr.h>
 #include <blaze/math/typetraits/IsDeclLowExpr.h>
 #include <blaze/math/typetraits/IsDeclSymExpr.h>
+#include <blaze/math/typetraits/IsDeclUniLowExpr.h>
 #include <blaze/math/typetraits/IsDeclUppExpr.h>
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsDenseVector.h>
