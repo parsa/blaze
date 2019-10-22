@@ -68,7 +68,7 @@ struct IsMatVecMultExprHelper
    static TrueType test( const MatVecMultExpr<VT>* );
 
    template< typename MT >
-   static TrueType test( const volatile MatTransExpr<MT>* );
+   static TrueType test( const volatile MatVecMultExpr<MT>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
