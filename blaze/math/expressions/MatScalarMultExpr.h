@@ -215,6 +215,35 @@ inline decltype(auto) decllow( const MatScalarMultExpr<MT>& matrix )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given non-unilower matrix-scalar multiplication expression as unilower.
+// \ingroup math
+//
+// \param matrix The input matrix-scalar multiplication expression.
+// \return The redeclared expression.
+// \exception std::invalid_argument Invalid unilower matrix specification.
+//
+// This function implements the application of the declunilow() operation on a matrix-scalar
+// multiplication. It restructures the expression \f$ A=declunilow(B*s1) \f$ to the expression
+// \f$ A=declunilow(B)*s1 \f$. In case the given matrix is not a square matrix,
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) declunilow( const MatScalarMultExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( ~matrix ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid unilower matrix specification" );
+   }
+
+   return declunilow( (~matrix).leftOperand() ) * (~matrix).rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Declares the given non-upper matrix-scalar multiplication expression as upper.
 // \ingroup math
 //
