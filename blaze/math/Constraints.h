@@ -64,6 +64,7 @@
 #include <blaze/math/constraints/DeclLowExpr.h>
 #include <blaze/math/constraints/DeclSymExpr.h>
 #include <blaze/math/constraints/DeclUniLowExpr.h>
+#include <blaze/math/constraints/DeclUniUppExpr.h>
 #include <blaze/math/constraints/DeclUppExpr.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
