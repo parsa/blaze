@@ -44,6 +44,7 @@
 #include <blaze/math/expressions/DeclHermExpr.h>
 #include <blaze/math/expressions/DeclLowExpr.h>
 #include <blaze/math/expressions/DeclSymExpr.h>
+#include <blaze/math/expressions/DeclUniLowExpr.h>
 #include <blaze/math/expressions/DeclUppExpr.h>
 #include <blaze/math/expressions/MatEvalExpr.h>
 #include <blaze/math/expressions/MatMapExpr.h>
@@ -451,6 +452,27 @@ inline decltype(auto) nosimd( const DeclLowExpr<MT>& matrix )
    BLAZE_FUNCTION_TRACE;
 
    return decllow( nosimd( (~matrix).operand() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Disable the SIMD evaluation of the given matrix declunilow operation.
+// ingroup math
+//
+// \param matrix The constant matrix declunilow operation.
+// \return The SIMD-disabled declunilow operation.
+//
+// This function returns an expression representing the SIMD-disabled matrix declunilow operation.
+*/
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) nosimd( const DeclUniLowExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return declunilow( nosimd( (~matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
