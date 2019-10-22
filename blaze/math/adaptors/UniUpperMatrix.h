@@ -60,6 +60,7 @@
 #include <blaze/math/traits/DeclHermTrait.h>
 #include <blaze/math/traits/DeclLowTrait.h>
 #include <blaze/math/traits/DeclSymTrait.h>
+#include <blaze/math/traits/DeclUniLowTrait.h>
 #include <blaze/math/traits/DeclUppTrait.h>
 #include <blaze/math/traits/KronTrait.h>
 #include <blaze/math/traits/MapTrait.h>
@@ -3637,6 +3638,25 @@ struct DeclHermTrait< UniUpperMatrix<MT,SO,DF> >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF >
 struct DeclLowTrait< UniUpperMatrix<MT,SO,DF> >
+{
+   using Type = IdentityMatrix< ElementType_t<MT>, SO >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DECLUNILOWTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct DeclUniLowTrait< UniUpperMatrix<MT,SO,DF> >
 {
    using Type = IdentityMatrix< ElementType_t<MT>, SO >;
 };
