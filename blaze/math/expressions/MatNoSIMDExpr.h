@@ -45,6 +45,7 @@
 #include <blaze/math/expressions/DeclLowExpr.h>
 #include <blaze/math/expressions/DeclSymExpr.h>
 #include <blaze/math/expressions/DeclUniLowExpr.h>
+#include <blaze/math/expressions/DeclUniUppExpr.h>
 #include <blaze/math/expressions/DeclUppExpr.h>
 #include <blaze/math/expressions/MatEvalExpr.h>
 #include <blaze/math/expressions/MatMapExpr.h>
@@ -494,6 +495,27 @@ inline decltype(auto) nosimd( const DeclUppExpr<MT>& matrix )
    BLAZE_FUNCTION_TRACE;
 
    return declupp( nosimd( (~matrix).operand() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Disable the SIMD evaluation of the given matrix decluniupp operation.
+// ingroup math
+//
+// \param matrix The constant matrix decluniupp operation.
+// \return The SIMD-disabled decluniupp operation.
+//
+// This function returns an expression representing the SIMD-disabled matrix decluniupp operation.
+*/
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) nosimd( const DeclUniUppExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return decluniupp( nosimd( (~matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
