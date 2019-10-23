@@ -61,6 +61,7 @@
 #include <blaze/math/expressions/DMatDeclLowExpr.h>
 #include <blaze/math/expressions/DMatDeclSymExpr.h>
 #include <blaze/math/expressions/DMatDeclUniLowExpr.h>
+#include <blaze/math/expressions/DMatDeclUniUppExpr.h>
 #include <blaze/math/expressions/DMatDeclUppExpr.h>
 #include <blaze/math/expressions/DMatDetExpr.h>
 #include <blaze/math/expressions/DMatDMatAddExpr.h>
