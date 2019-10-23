@@ -62,6 +62,7 @@
 #include <blaze/math/constraints/DeclExpr.h>
 #include <blaze/math/constraints/DeclHermExpr.h>
 #include <blaze/math/constraints/DeclLowExpr.h>
+#include <blaze/math/constraints/DeclStrLowExpr.h>
 #include <blaze/math/constraints/DeclSymExpr.h>
 #include <blaze/math/constraints/DeclUniLowExpr.h>
 #include <blaze/math/constraints/DeclUniUppExpr.h>
