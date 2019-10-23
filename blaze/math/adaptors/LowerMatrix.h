@@ -62,6 +62,7 @@
 #include <blaze/math/traits/DeclLowTrait.h>
 #include <blaze/math/traits/DeclSymTrait.h>
 #include <blaze/math/traits/DeclUniLowTrait.h>
+#include <blaze/math/traits/DeclUniUppTrait.h>
 #include <blaze/math/traits/DeclUppTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/KronTrait.h>
@@ -2174,7 +2175,7 @@ struct BinaryMapTraitEval1< T1, T2, OP
 template< typename MT, bool SO, bool DF >
 struct DeclSymTrait< LowerMatrix<MT,SO,DF> >
 {
-   using Type = DiagonalMatrix<MT>;
+   using Type = DiagonalMatrix<MT,SO,DF>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2193,7 +2194,7 @@ struct DeclSymTrait< LowerMatrix<MT,SO,DF> >
 template< typename MT, bool SO, bool DF >
 struct DeclHermTrait< LowerMatrix<MT,SO,DF> >
 {
-   using Type = HermitianMatrix<MT>;
+   using Type = HermitianMatrix<MT,SO,DF>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2251,6 +2252,25 @@ template< typename MT, bool SO, bool DF >
 struct DeclUppTrait< LowerMatrix<MT,SO,DF> >
 {
    using Type = DiagonalMatrix<MT,SO,DF>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DECLUNIUPPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct DeclUniUppTrait< LowerMatrix<MT,SO,DF> >
+{
+   using Type = IdentityMatrix< ElementType_t<MT>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
