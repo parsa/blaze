@@ -272,6 +272,35 @@ inline decltype(auto) declupp( const MatScalarDivExpr<MT>& matrix )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given non-uniupper matrix-scalar division expression as uniupper.
+// \ingroup math
+//
+// \param matrix The input matrix-scalar division expression.
+// \return The redeclared expression.
+// \exception std::invalid_argument Invalid uniupper matrix specification.
+//
+// This function implements the application of the decluniupp() operation on a matrix-scalar
+// division. It restructures the expression \f$ A=decluniupp(B/s1) \f$ to the expression
+// \f$ A=decluniupp(B)/s1 \f$. In case the given matrix is not a square matrix,
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) decluniupp( const MatScalarDivExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( ~matrix ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid uniupper matrix specification" );
+   }
+
+   return decluniupp( (~matrix).leftOperand() ) / (~matrix).rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Declares the given non-diagonal matrix-scalar division expression as diagonal.
 // \ingroup math
 //
