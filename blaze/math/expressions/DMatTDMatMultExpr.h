@@ -8561,6 +8561,50 @@ inline decltype(auto) declupp( const DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>& dm 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given non-uniupper matrix multiplication expression as uniupper.
+// \ingroup dense_matrix
+//
+// \param dm The input matrix multiplication expression.
+// \return The redeclared dense matrix multiplication expression.
+// \exception std::invalid_argument Invalid uniupper matrix specification.
+//
+// The \a decluniupp function declares the given non-uniupper matrix multiplication expression
+// \a dm as uniupper. The function returns an expression representing the operation. In case
+// the given expression does not represent a square matrix, a \a std::invalid_argument
+// exception is thrown.\n
+// The following example demonstrates the use of the \a decluniupp function:
+
+   \code
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   blaze::DynamicMatrix<double,rowMajor> A, C;
+   blaze::DynamicMatrix<double,columnMajor> B;
+   // ... Resizing and initialization
+   C = decluniupp( A * B );
+   \endcode
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2  // Type of the right-hand side dense matrix
+        , bool SF       // Symmetry flag
+        , bool HF       // Hermitian flag
+        , bool LF >     // Lower flag
+inline decltype(auto) decluniupp( const DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,false>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( dm ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid upper matrix specification" );
+   }
+
+   return decluniupp( declupp( ~dm ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Declares the given non-diagonal matrix multiplication expression as diagonal.
 // \ingroup dense_matrix
 //
