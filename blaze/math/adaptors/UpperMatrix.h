@@ -62,6 +62,7 @@
 #include <blaze/math/traits/DeclLowTrait.h>
 #include <blaze/math/traits/DeclSymTrait.h>
 #include <blaze/math/traits/DeclUniLowTrait.h>
+#include <blaze/math/traits/DeclUniUppTrait.h>
 #include <blaze/math/traits/DeclUppTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/KronTrait.h>
@@ -2172,7 +2173,7 @@ struct BinaryMapTraitEval1< T1, T2, OP
 template< typename MT, bool SO, bool DF >
 struct DeclSymTrait< UpperMatrix<MT,SO,DF> >
 {
-   using Type = DiagonalMatrix<MT>;
+   using Type = DiagonalMatrix<MT,SO,DF>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2191,7 +2192,7 @@ struct DeclSymTrait< UpperMatrix<MT,SO,DF> >
 template< typename MT, bool SO, bool DF >
 struct DeclHermTrait< UpperMatrix<MT,SO,DF> >
 {
-   using Type = HermitianMatrix<MT>;
+   using Type = HermitianMatrix<MT,SO,DF>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2210,7 +2211,7 @@ struct DeclHermTrait< UpperMatrix<MT,SO,DF> >
 template< typename MT, bool SO, bool DF >
 struct DeclLowTrait< UpperMatrix<MT,SO,DF> >
 {
-   using Type = DiagonalMatrix<MT>;
+   using Type = DiagonalMatrix<MT,SO,DF>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -2258,6 +2259,25 @@ struct DeclUppTrait< UpperMatrix<MT,SO,DF> >
 
 //=================================================================================================
 //
+//  DECLUNIUPPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct DeclUniUppTrait< UpperMatrix<MT,SO,DF> >
+{
+   using Type = UniUpperMatrix<MT,SO,DF>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  DECLDIAGTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
@@ -2267,7 +2287,7 @@ struct DeclUppTrait< UpperMatrix<MT,SO,DF> >
 template< typename MT, bool SO, bool DF >
 struct DeclDiagTrait< UpperMatrix<MT,SO,DF> >
 {
-   using Type = DiagonalMatrix<MT>;
+   using Type = DiagonalMatrix<MT,SO,DF>;
 };
 /*! \endcond */
 //*************************************************************************************************
