@@ -59,6 +59,7 @@
 #include <blaze/math/traits/DeclLowTrait.h>
 #include <blaze/math/traits/DeclSymTrait.h>
 #include <blaze/math/traits/DeclUniLowTrait.h>
+#include <blaze/math/traits/DeclUniUppTrait.h>
 #include <blaze/math/traits/DeclUppTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/KronTrait.h>
@@ -1027,7 +1028,7 @@ struct DeclSymTrait< SymmetricMatrix<MT,SO,DF,NF> >
 template< typename MT, bool SO, bool DF, bool NF >
 struct DeclHermTrait< SymmetricMatrix<MT,SO,DF,NF> >
 {
-   using Type = HermitianMatrix<MT>;
+   using Type = HermitianMatrix<MT,SO,DF>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1046,7 +1047,7 @@ struct DeclHermTrait< SymmetricMatrix<MT,SO,DF,NF> >
 template< typename MT, bool SO, bool DF, bool NF >
 struct DeclLowTrait< SymmetricMatrix<MT,SO,DF,NF> >
 {
-   using Type = DiagonalMatrix<MT>;
+   using Type = DiagonalMatrix<MT,SO,NF>;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1084,7 +1085,26 @@ struct DeclUniLowTrait< SymmetricMatrix<MT,SO,DF,NF> >
 template< typename MT, bool SO, bool DF, bool NF >
 struct DeclUppTrait< SymmetricMatrix<MT,SO,DF,NF> >
 {
-   using Type = DiagonalMatrix<MT>;
+   using Type = DiagonalMatrix<MT,SO,DF>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DECLUNIUPPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool NF >
+struct DeclUniUppTrait< SymmetricMatrix<MT,SO,DF,NF> >
+{
+   using Type = IdentityMatrix< ElementType_t<MT>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1103,7 +1123,7 @@ struct DeclUppTrait< SymmetricMatrix<MT,SO,DF,NF> >
 template< typename MT, bool SO, bool DF, bool NF >
 struct DeclDiagTrait< SymmetricMatrix<MT,SO,DF,NF> >
 {
-   using Type = DiagonalMatrix<MT>;
+   using Type = DiagonalMatrix<MT,SO,DF>;
 };
 /*! \endcond */
 //*************************************************************************************************
