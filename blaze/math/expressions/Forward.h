@@ -57,6 +57,7 @@ template< typename, bool > class DMatDeclDiagExpr;
 template< typename, bool > class DMatDeclHermExpr;
 template< typename, bool > class DMatDeclLowExpr;
 template< typename, bool > class DMatDeclStrLowExpr;
+template< typename, bool > class DMatDeclStrUppExpr;
 template< typename, bool > class DMatDeclSymExpr;
 template< typename, bool > class DMatDeclUniLowExpr;
 template< typename, bool > class DMatDeclUniUppExpr;
