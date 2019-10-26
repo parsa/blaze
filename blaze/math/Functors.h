@@ -70,6 +70,7 @@
 #include <blaze/math/functors/DeclHerm.h>
 #include <blaze/math/functors/DeclId.h>
 #include <blaze/math/functors/DeclLow.h>
+#include <blaze/math/functors/DeclStrLow.h>
 #include <blaze/math/functors/DeclSym.h>
 #include <blaze/math/functors/DeclUniLow.h>
 #include <blaze/math/functors/DeclUniUpp.h>
