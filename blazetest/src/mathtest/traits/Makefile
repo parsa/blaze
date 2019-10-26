@@ -50,9 +50,9 @@ BIN = $(SRC:.cpp=)
 # Build rules
 default: all
 
-all: $(BIN) addtrait crosstrait decldiagtrait declhermtrait decllowtrait declsymtrait \
-     declunilowtrait decluniupptrait declupptrait divtrait expandtrait krontrait maptrait \
-     multtrait schurtrait subtrait
+all: $(BIN) addtrait crosstrait decldiagtrait declhermtrait decllowtrait declstrlowtrait \
+     declsymtrait declunilowtrait decluniupptrait declupptrait divtrait expandtrait \
+     krontrait maptrait multtrait schurtrait subtrait
 
 essential: all
 
@@ -87,6 +87,11 @@ decllowtrait:
 	@echo
 	@echo "Building the DeclLowTrait tests..."
 	@$(MAKE) --no-print-directory -C ./decllowtrait $(MAKECMDGOALS)
+
+declstrlowtrait:
+	@echo
+	@echo "Building the DeclStrLowTrait tests..."
+	@$(MAKE) --no-print-directory -C ./declstrlowtrait $(MAKECMDGOALS)
 
 declsymtrait:
 	@echo
@@ -152,6 +157,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./decldiagtrait reset
 	@$(MAKE) --no-print-directory -C ./declhermtrait reset
 	@$(MAKE) --no-print-directory -C ./decllowtrait reset
+	@$(MAKE) --no-print-directory -C ./declstrlowtrait reset
 	@$(MAKE) --no-print-directory -C ./declsymtrait reset
 	@$(MAKE) --no-print-directory -C ./declunilowtrait reset
 	@$(MAKE) --no-print-directory -C ./decluniupptrait reset
@@ -171,6 +177,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./decldiagtrait clean
 	@$(MAKE) --no-print-directory -C ./declhermtrait clean
 	@$(MAKE) --no-print-directory -C ./decllowtrait clean
+	@$(MAKE) --no-print-directory -C ./declstrlowtrait clean
 	@$(MAKE) --no-print-directory -C ./declsymtrait clean
 	@$(MAKE) --no-print-directory -C ./declunilowtrait clean
 	@$(MAKE) --no-print-directory -C ./decluniupptrait clean
@@ -186,6 +193,6 @@ clean:
 
 # Setting the independent commands
 .PHONY: default all essential single reset clean \
-        addtrait crosstrait decldiagtrait declhermtrait decllowtrait declsymtrait \
-        declunilowtrait decluniupptrait declupptrait divtrait expandtrait krontrait \
-        maptrait multtrait schurtrait subtrait
+        addtrait crosstrait decldiagtrait declhermtrait decllowtrait declstrlowtrait \
+        declsymtrait declunilowtrait decluniupptrait declupptrait divtrait expandtrait \
+        krontrait maptrait multtrait schurtrait subtrait
