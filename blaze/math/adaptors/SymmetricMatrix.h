@@ -57,6 +57,7 @@
 #include <blaze/math/traits/DeclDiagTrait.h>
 #include <blaze/math/traits/DeclHermTrait.h>
 #include <blaze/math/traits/DeclLowTrait.h>
+#include <blaze/math/traits/DeclStrLowTrait.h>
 #include <blaze/math/traits/DeclSymTrait.h>
 #include <blaze/math/traits/DeclUniLowTrait.h>
 #include <blaze/math/traits/DeclUniUppTrait.h>
@@ -1067,6 +1068,25 @@ template< typename MT, bool SO, bool DF, bool NF >
 struct DeclUniLowTrait< SymmetricMatrix<MT,SO,DF,NF> >
 {
    using Type = IdentityMatrix< ElementType_t<MT>, SO >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DECLSTRLOWTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF, bool NF >
+struct DeclStrLowTrait< SymmetricMatrix<MT,SO,DF,NF> >
+{
+   using Type = ZeroMatrix< ElementType_t<MT>, SO >;
 };
 /*! \endcond */
 //*************************************************************************************************
