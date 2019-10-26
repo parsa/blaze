@@ -49,6 +49,7 @@
 #include <blaze/math/sparse/ValueIndexPair.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
+#include <blaze/math/traits/DeclStrLowTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ExpandTrait.h>
 #include <blaze/math/traits/KronTrait.h>
@@ -1736,6 +1737,25 @@ struct ExpandTraitEval1< T, E
    static constexpr bool TF = ( IsColumnVector_v<T> ? columnMajor : rowMajor );
 
    using Type = ZeroMatrix< ElementType_t<T>, TF >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DECLSTRLOWTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool SO >
+struct DeclStrLowTrait< ZeroMatrix<T,SO> >
+{
+   using Type = ZeroMatrix<T,SO>;
 };
 /*! \endcond */
 //*************************************************************************************************
