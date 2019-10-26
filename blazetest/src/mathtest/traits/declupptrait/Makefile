@@ -1,6 +1,6 @@
 #==================================================================================================
 #
-#  Makefile for the decllowtrait module of the Blaze test suite
+#  Makefile for the declupptrait module of the Blaze test suite
 #
 #  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved - All Rights Reserved
 #

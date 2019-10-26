@@ -37,7 +37,6 @@
 // Includes
 //*************************************************************************************************
 
-// TODO: Rework!!!
 #include <cmath>
 #include <cstdlib>
 #include <iostream>

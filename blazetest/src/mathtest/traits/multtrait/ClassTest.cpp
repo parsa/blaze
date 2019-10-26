@@ -22889,8 +22889,8 @@ void ClassTest::testMatrixMatrixMultiplication()
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
-            using RT = DynamicMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -22899,8 +22899,8 @@ void ClassTest::testMatrixMatrixMultiplication()
          }
          {
             using T1 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<int,columnMajor> >;
-            using RT = DynamicMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -22909,8 +22909,8 @@ void ClassTest::testMatrixMatrixMultiplication()
          }
          {
             using T1 = SymmetricMatrix< DynamicMatrix<int,columnMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
-            using RT = DynamicMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -22919,8 +22919,8 @@ void ClassTest::testMatrixMatrixMultiplication()
          }
          {
             using T1 = SymmetricMatrix< DynamicMatrix<int,columnMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<int,columnMajor> >;
-            using RT = DynamicMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -23065,8 +23065,8 @@ void ClassTest::testMatrixMatrixMultiplication()
       {
          {
             using T1 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<int,rowMajor> >;
-            using RT = DynamicMatrix<int,rowMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -23075,8 +23075,8 @@ void ClassTest::testMatrixMatrixMultiplication()
          }
          {
             using T1 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<int,columnMajor> >;
-            using RT = DynamicMatrix<int,rowMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -23085,8 +23085,8 @@ void ClassTest::testMatrixMatrixMultiplication()
          }
          {
             using T1 = SymmetricMatrix< DynamicMatrix<int,columnMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<int,rowMajor> >;
-            using RT = DynamicMatrix<int,columnMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -23095,8 +23095,8 @@ void ClassTest::testMatrixMatrixMultiplication()
          }
          {
             using T1 = SymmetricMatrix< DynamicMatrix<int,columnMajor> >;
-            using T2 = HermitianMatrix< DynamicMatrix<int,columnMajor> >;
-            using RT = DynamicMatrix<int,columnMajor>;
+            using T2 = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -24791,8 +24791,8 @@ void ClassTest::testMatrixMatrixMultiplication()
       {
          {
             using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
-            using RT = DynamicMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -24801,8 +24801,8 @@ void ClassTest::testMatrixMatrixMultiplication()
          }
          {
             using T1 = SymmetricMatrix< UniformMatrix<int,rowMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<int,columnMajor> >;
-            using RT = DynamicMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -24811,8 +24811,8 @@ void ClassTest::testMatrixMatrixMultiplication()
          }
          {
             using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
-            using RT = DynamicMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -24821,8 +24821,8 @@ void ClassTest::testMatrixMatrixMultiplication()
          }
          {
             using T1 = SymmetricMatrix< UniformMatrix<int,columnMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<int,columnMajor> >;
-            using RT = DynamicMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -25742,8 +25742,8 @@ void ClassTest::testMatrixMatrixMultiplication()
       {
          {
             using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
-            using RT = ZeroMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using RT = ZeroMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -25752,8 +25752,8 @@ void ClassTest::testMatrixMatrixMultiplication()
          }
          {
             using T1 = SymmetricMatrix< ZeroMatrix<int,rowMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<int,columnMajor> >;
-            using RT = ZeroMatrix<int,rowMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using RT = ZeroMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -25762,8 +25762,8 @@ void ClassTest::testMatrixMatrixMultiplication()
          }
          {
             using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<int,rowMajor> >;
-            using RT = ZeroMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
+            using RT = ZeroMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -25772,8 +25772,8 @@ void ClassTest::testMatrixMatrixMultiplication()
          }
          {
             using T1 = SymmetricMatrix< ZeroMatrix<int,columnMajor> >;
-            using T2 = SymmetricMatrix< DynamicMatrix<int,columnMajor> >;
-            using RT = ZeroMatrix<int,columnMajor>;
+            using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
+            using RT = ZeroMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -31027,7 +31027,7 @@ void ClassTest::testMatrixMatrixMultiplication()
       // .../StaticMatrix
       {
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = StaticMatrix<double,5UL,7UL,rowMajor>;
             using RT = StaticMatrix<double,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31037,7 +31037,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = StaticMatrix<double,5UL,7UL,columnMajor>;
             using RT = StaticMatrix<double,5UL,7UL,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31047,7 +31047,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = StaticMatrix<double,5UL,7UL,rowMajor>;
             using RT = StaticMatrix<double,5UL,7UL,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31057,7 +31057,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = StaticMatrix<double,5UL,7UL,columnMajor>;
             using RT = StaticMatrix<double,5UL,7UL,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31071,7 +31071,7 @@ void ClassTest::testMatrixMatrixMultiplication()
       // .../HybridMatrix
       {
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = HybridMatrix<double,8UL,6UL,rowMajor>;
             using RT = HybridMatrix<double,8UL,6UL,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31081,7 +31081,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = HybridMatrix<double,8UL,6UL,columnMajor>;
             using RT = HybridMatrix<double,8UL,6UL,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31091,7 +31091,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = HybridMatrix<double,8UL,6UL,rowMajor>;
             using RT = HybridMatrix<double,8UL,6UL,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31101,7 +31101,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = HybridMatrix<double,8UL,6UL,columnMajor>;
             using RT = HybridMatrix<double,8UL,6UL,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31115,7 +31115,7 @@ void ClassTest::testMatrixMatrixMultiplication()
       // .../DynamicMatrix
       {
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = DynamicMatrix<double,rowMajor>;
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31125,7 +31125,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = DynamicMatrix<double,columnMajor>;
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31135,7 +31135,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = DynamicMatrix<double,rowMajor>;
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31145,7 +31145,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = DynamicMatrix<double,columnMajor>;
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31159,7 +31159,7 @@ void ClassTest::testMatrixMatrixMultiplication()
       // .../CustomMatrix
       {
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = CustomMatrix<double,unaligned,unpadded,rowMajor>;
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31169,7 +31169,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = CustomMatrix<double,unaligned,unpadded,columnMajor>;
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31179,7 +31179,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = CustomMatrix<double,unaligned,unpadded,rowMajor>;
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31189,7 +31189,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = CustomMatrix<double,unaligned,unpadded,columnMajor>;
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31203,7 +31203,7 @@ void ClassTest::testMatrixMatrixMultiplication()
       // .../UniformMatrix
       {
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = UniformMatrix<double,rowMajor>;
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31213,7 +31213,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = UniformMatrix<double,columnMajor>;
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31223,7 +31223,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = UniformMatrix<double,rowMajor>;
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31233,7 +31233,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = UniformMatrix<double,columnMajor>;
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31247,7 +31247,7 @@ void ClassTest::testMatrixMatrixMultiplication()
       // .../InitializerMatrix
       {
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = InitializerMatrix<double>;
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31257,7 +31257,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = InitializerMatrix<double>;
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31271,7 +31271,7 @@ void ClassTest::testMatrixMatrixMultiplication()
       // .../CompressedMatrix
       {
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = CompressedMatrix<double,rowMajor>;
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31281,7 +31281,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = CompressedMatrix<double,columnMajor>;
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31291,7 +31291,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = CompressedMatrix<double,rowMajor>;
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31301,7 +31301,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = CompressedMatrix<double,columnMajor>;
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31315,9 +31315,9 @@ void ClassTest::testMatrixMatrixMultiplication()
       // .../IdentityMatrix
       {
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = IdentityMatrix<double,rowMajor>;
-            using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -31325,9 +31325,9 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = IdentityMatrix<double,columnMajor>;
-            using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -31335,9 +31335,9 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = IdentityMatrix<double,rowMajor>;
-            using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -31345,9 +31345,9 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = IdentityMatrix<double,columnMajor>;
-            using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -31359,7 +31359,7 @@ void ClassTest::testMatrixMatrixMultiplication()
       // .../ZeroMatrix
       {
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = ZeroMatrix<double,rowMajor>;
             using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31369,7 +31369,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = ZeroMatrix<double,columnMajor>;
             using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31379,7 +31379,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = ZeroMatrix<double,rowMajor>;
             using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31389,7 +31389,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = ZeroMatrix<double,columnMajor>;
             using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31403,7 +31403,7 @@ void ClassTest::testMatrixMatrixMultiplication()
       // .../SymmetricMatrix<DynamicMatrix> (real)
       {
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31413,7 +31413,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = SymmetricMatrix< DynamicMatrix<double,columnMajor> >;
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31423,7 +31423,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = SymmetricMatrix< DynamicMatrix<double,rowMajor> >;
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31433,7 +31433,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = SymmetricMatrix< DynamicMatrix<double,columnMajor> >;
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31447,7 +31447,7 @@ void ClassTest::testMatrixMatrixMultiplication()
       // .../SymmetricMatrix<DynamicMatrix> (complex)
       {
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31457,7 +31457,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31467,7 +31467,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31477,7 +31477,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = SymmetricMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31491,7 +31491,7 @@ void ClassTest::testMatrixMatrixMultiplication()
       // .../SymmetricMatrix<UniformMatrix>
       {
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31501,7 +31501,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31511,7 +31511,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = SymmetricMatrix< UniformMatrix<double,rowMajor> >;
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31521,7 +31521,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = SymmetricMatrix< UniformMatrix<double,columnMajor> >;
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31535,7 +31535,7 @@ void ClassTest::testMatrixMatrixMultiplication()
       // .../SymmetricMatrix<ZeroMatrix>
       {
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
             using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31545,7 +31545,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
             using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31555,7 +31555,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = SymmetricMatrix< ZeroMatrix<double,rowMajor> >;
             using RT = ZeroMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31565,7 +31565,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = SymmetricMatrix< ZeroMatrix<double,columnMajor> >;
             using RT = ZeroMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31579,7 +31579,7 @@ void ClassTest::testMatrixMatrixMultiplication()
       // .../HermitianMatrix<DynamicMatrix> (symmetric)
       {
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = HermitianMatrix< DynamicMatrix<double,rowMajor> >;
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31589,7 +31589,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = HermitianMatrix< DynamicMatrix<double,columnMajor> >;
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31599,7 +31599,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = HermitianMatrix< DynamicMatrix<double,rowMajor> >;
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31609,7 +31609,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = HermitianMatrix< DynamicMatrix<double,columnMajor> >;
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31623,7 +31623,7 @@ void ClassTest::testMatrixMatrixMultiplication()
       // .../HermitianMatrix<DynamicMatrix> (Hermitian)
       {
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31633,7 +31633,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             using RT = DynamicMatrix<complex<int>,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31643,7 +31643,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = HermitianMatrix< DynamicMatrix<complex<int>,rowMajor> >;
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31653,7 +31653,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = HermitianMatrix< DynamicMatrix<complex<int>,columnMajor> >;
             using RT = DynamicMatrix<complex<int>,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31667,7 +31667,7 @@ void ClassTest::testMatrixMatrixMultiplication()
       // .../LowerMatrix<DynamicMatrix>
       {
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31677,7 +31677,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31687,7 +31687,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = LowerMatrix< DynamicMatrix<double,rowMajor> >;
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31697,7 +31697,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = LowerMatrix< DynamicMatrix<double,columnMajor> >;
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31711,7 +31711,7 @@ void ClassTest::testMatrixMatrixMultiplication()
       // .../UniLowerMatrix<DynamicMatrix>
       {
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = UniLowerMatrix< DynamicMatrix<double,rowMajor> >;
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31721,7 +31721,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = UniLowerMatrix< DynamicMatrix<double,columnMajor> >;
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31731,7 +31731,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = UniLowerMatrix< DynamicMatrix<double,rowMajor> >;
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31741,7 +31741,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = UniLowerMatrix< DynamicMatrix<double,columnMajor> >;
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31755,7 +31755,7 @@ void ClassTest::testMatrixMatrixMultiplication()
       // .../StrictlyLowerMatrix<DynamicMatrix>
       {
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31765,7 +31765,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
             using RT = DynamicMatrix<double,rowMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31775,7 +31775,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,rowMajor> >;
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31785,7 +31785,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = StrictlyLowerMatrix< DynamicMatrix<double,columnMajor> >;
             using RT = DynamicMatrix<double,columnMajor>;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31799,9 +31799,9 @@ void ClassTest::testMatrixMatrixMultiplication()
       // .../UpperMatrix<DynamicMatrix>
       {
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = UpperMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -31809,9 +31809,9 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = UpperMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -31819,9 +31819,9 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = UpperMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -31829,9 +31829,9 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = UpperMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -31843,9 +31843,9 @@ void ClassTest::testMatrixMatrixMultiplication()
       // .../UniUpperMatrix<DynamicMatrix>
       {
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = UniUpperMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -31853,9 +31853,9 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = UniUpperMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -31863,9 +31863,9 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = UniUpperMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -31873,9 +31873,9 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = UniUpperMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -31887,7 +31887,7 @@ void ClassTest::testMatrixMatrixMultiplication()
       // .../StrictlyUpperMatrix<DynamicMatrix>
       {
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31897,7 +31897,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31907,7 +31907,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31917,7 +31917,7 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
@@ -31931,9 +31931,9 @@ void ClassTest::testMatrixMatrixMultiplication()
       // .../DiagonalMatrix<DynamicMatrix>
       {
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -31941,9 +31941,9 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,rowMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,rowMajor> >;
             using T2 = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = StrictlyUpperMatrix< DynamicMatrix<double,rowMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,rowMajor> >;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -31951,9 +31951,9 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = DiagonalMatrix< DynamicMatrix<double,rowMajor> >;
-            using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
@@ -31961,9 +31961,9 @@ void ClassTest::testMatrixMatrixMultiplication()
             static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
          {
-            using T1 = StrictlyUpperMatrix< DynamicMatrix<int,columnMajor> >;
+            using T1 = UpperMatrix< DynamicMatrix<int,columnMajor> >;
             using T2 = DiagonalMatrix< DynamicMatrix<double,columnMajor> >;
-            using RT = StrictlyUpperMatrix< DynamicMatrix<double,columnMajor> >;
+            using RT = UpperMatrix< DynamicMatrix<double,columnMajor> >;
             static_assert( IsSame_v< MultTrait_t<T1,T2>, RT >, "Non-matching type detected" );
 
             using Expr = RemoveCVRef_t< decltype( std::declval<T1>() * std::declval<T2>() ) >;
