@@ -59,6 +59,7 @@
 #include <blaze/math/traits/DeclDiagTrait.h>
 #include <blaze/math/traits/DeclHermTrait.h>
 #include <blaze/math/traits/DeclLowTrait.h>
+#include <blaze/math/traits/DeclStrLowTrait.h>
 #include <blaze/math/traits/DeclSymTrait.h>
 #include <blaze/math/traits/DeclUniLowTrait.h>
 #include <blaze/math/traits/DeclUniUppTrait.h>
@@ -98,6 +99,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/InvalidType.h>
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 
@@ -3653,6 +3655,25 @@ template< typename MT, bool SO, bool DF >
 struct DeclUniLowTrait< UniLowerMatrix<MT,SO,DF> >
 {
    using Type = UniLowerMatrix<MT,SO,DF>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DECLSTRLOWTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, bool SO, bool DF >
+struct DeclStrLowTrait< UniLowerMatrix<MT,SO,DF> >
+{
+   using Type = INVALID_TYPE;
 };
 /*! \endcond */
 //*************************************************************************************************
