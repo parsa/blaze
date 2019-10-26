@@ -50,6 +50,7 @@
 #include <blaze/math/traits/DeclIdTrait.h>
 #include <blaze/math/traits/DeclLowTrait.h>
 #include <blaze/math/traits/DeclStrLowTrait.h>
+#include <blaze/math/traits/DeclStrUppTrait.h>
 #include <blaze/math/traits/DeclSymTrait.h>
 #include <blaze/math/traits/DeclUniLowTrait.h>
 #include <blaze/math/traits/DeclUniUppTrait.h>
