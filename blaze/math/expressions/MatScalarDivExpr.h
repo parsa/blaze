@@ -243,6 +243,35 @@ inline decltype(auto) declunilow( const MatScalarDivExpr<MT>& matrix )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Declares the given non-strictly-lower matrix-scalar division expression as strictly lower.
+// \ingroup math
+//
+// \param matrix The input matrix-scalar division expression.
+// \return The redeclared expression.
+// \exception std::invalid_argument Invalid strictly lower matrix specification.
+//
+// This function implements the application of the declstrlow() operation on a matrix-scalar
+// division. It restructures the expression \f$ A=declstrlow(B/s1) \f$ to the expression
+// \f$ A=declstrlow(B)/s1 \f$. In case the given matrix is not a square matrix,
+// a \a std::invalid_argument exception is thrown.
+*/
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) declstrlow( const MatScalarDivExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   if( !isSquare( ~matrix ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid strictly lower matrix specification" );
+   }
+
+   return declstrlow( (~matrix).leftOperand() ) / (~matrix).rightOperand();
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Declares the given non-upper matrix-scalar division expression as upper.
 // \ingroup math
 //
