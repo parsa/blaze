@@ -124,6 +124,7 @@ template< typename, bool > class SMatDeclDiagExpr;
 template< typename, bool > class SMatDeclHermExpr;
 template< typename, bool > class SMatDeclLowExpr;
 template< typename, bool > class SMatDeclStrLowExpr;
+template< typename, bool > class SMatDeclStrUppExpr;
 template< typename, bool > class SMatDeclSymExpr;
 template< typename, bool > class SMatDeclUniLowExpr;
 template< typename, bool > class SMatDeclUniUppExpr;
