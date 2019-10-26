@@ -50,6 +50,7 @@
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/ColumnsTrait.h>
 #include <blaze/math/traits/DeclStrLowTrait.h>
+#include <blaze/math/traits/DeclStrUppTrait.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ExpandTrait.h>
 #include <blaze/math/traits/KronTrait.h>
@@ -1754,6 +1755,25 @@ struct ExpandTraitEval1< T, E
 /*! \cond BLAZE_INTERNAL */
 template< typename T, bool SO >
 struct DeclStrLowTrait< ZeroMatrix<T,SO> >
+{
+   using Type = ZeroMatrix<T,SO>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DECLSTRUPPTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T, bool SO >
+struct DeclStrUppTrait< ZeroMatrix<T,SO> >
 {
    using Type = ZeroMatrix<T,SO>;
 };
