@@ -44,6 +44,7 @@
 #include <blaze/math/expressions/DeclHermExpr.h>
 #include <blaze/math/expressions/DeclLowExpr.h>
 #include <blaze/math/expressions/DeclStrLowExpr.h>
+#include <blaze/math/expressions/DeclStrUppExpr.h>
 #include <blaze/math/expressions/DeclSymExpr.h>
 #include <blaze/math/expressions/DeclUniLowExpr.h>
 #include <blaze/math/expressions/DeclUniUppExpr.h>
@@ -538,6 +539,27 @@ inline decltype(auto) nosimd( const DeclUniUppExpr<MT>& matrix )
    BLAZE_FUNCTION_TRACE;
 
    return decluniupp( nosimd( (~matrix).operand() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Disable the SIMD evaluation of the given matrix declstrupp operation.
+// ingroup math
+//
+// \param matrix The constant matrix declstrupp operation.
+// \return The SIMD-disabled declstrupp operation.
+//
+// This function returns an expression representing the SIMD-disabled matrix declstrupp operation.
+*/
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) nosimd( const DeclStrUppExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return declstrupp( nosimd( (~matrix).operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
