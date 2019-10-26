@@ -51,8 +51,8 @@ BIN = $(SRC:.cpp=)
 default: all
 
 all: $(BIN) addtrait crosstrait decldiagtrait declhermtrait decllowtrait declstrlowtrait \
-     declsymtrait declunilowtrait decluniupptrait declupptrait divtrait expandtrait \
-     krontrait maptrait multtrait schurtrait subtrait
+     declstrupptrait declsymtrait declunilowtrait decluniupptrait declupptrait divtrait \
+     expandtrait krontrait maptrait multtrait schurtrait subtrait
 
 essential: all
 
@@ -92,6 +92,11 @@ declstrlowtrait:
 	@echo
 	@echo "Building the DeclStrLowTrait tests..."
 	@$(MAKE) --no-print-directory -C ./declstrlowtrait $(MAKECMDGOALS)
+
+declstrupptrait:
+	@echo
+	@echo "Building the DeclStrUppTrait tests..."
+	@$(MAKE) --no-print-directory -C ./declstrupptrait $(MAKECMDGOALS)
 
 declsymtrait:
 	@echo
@@ -158,6 +163,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./declhermtrait reset
 	@$(MAKE) --no-print-directory -C ./decllowtrait reset
 	@$(MAKE) --no-print-directory -C ./declstrlowtrait reset
+	@$(MAKE) --no-print-directory -C ./declstrupptrait reset
 	@$(MAKE) --no-print-directory -C ./declsymtrait reset
 	@$(MAKE) --no-print-directory -C ./declunilowtrait reset
 	@$(MAKE) --no-print-directory -C ./decluniupptrait reset
@@ -178,6 +184,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./declhermtrait clean
 	@$(MAKE) --no-print-directory -C ./decllowtrait clean
 	@$(MAKE) --no-print-directory -C ./declstrlowtrait clean
+	@$(MAKE) --no-print-directory -C ./declstrupptrait clean
 	@$(MAKE) --no-print-directory -C ./declsymtrait clean
 	@$(MAKE) --no-print-directory -C ./declunilowtrait clean
 	@$(MAKE) --no-print-directory -C ./decluniupptrait clean
@@ -194,5 +201,5 @@ clean:
 # Setting the independent commands
 .PHONY: default all essential single reset clean \
         addtrait crosstrait decldiagtrait declhermtrait decllowtrait declstrlowtrait \
-        declsymtrait declunilowtrait decluniupptrait declupptrait divtrait expandtrait \
-        krontrait maptrait multtrait schurtrait subtrait
+        declstrupptrait declsymtrait declunilowtrait decluniupptrait declupptrait divtrait \
+        expandtrait krontrait maptrait multtrait schurtrait subtrait
