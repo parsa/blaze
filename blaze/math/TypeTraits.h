@@ -185,6 +185,7 @@
 #include <blaze/math/typetraits/IsMatMatKronExpr.h>
 #include <blaze/math/typetraits/IsMatMatMapExpr.h>
 #include <blaze/math/typetraits/IsMatMatMultExpr.h>
+#include <blaze/math/typetraits/IsMatMatSolveExpr.h>
 #include <blaze/math/typetraits/IsMatMatSubExpr.h>
 #include <blaze/math/typetraits/IsMatNoAliasExpr.h>
 #include <blaze/math/typetraits/IsMatNoSIMDExpr.h>

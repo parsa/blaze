@@ -91,6 +91,7 @@
 #include <blaze/math/constraints/MatMatKronExpr.h>
 #include <blaze/math/constraints/MatMatMapExpr.h>
 #include <blaze/math/constraints/MatMatMultExpr.h>
+#include <blaze/math/constraints/MatMatSolveExpr.h>
 #include <blaze/math/constraints/MatMatSubExpr.h>
 #include <blaze/math/constraints/MatNoAliasExpr.h>
 #include <blaze/math/constraints/MatNoSIMDExpr.h>
