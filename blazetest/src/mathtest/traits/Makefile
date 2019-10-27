@@ -52,7 +52,7 @@ default: all
 
 all: $(BIN) addtrait crosstrait decldiagtrait declhermtrait decllowtrait declstrlowtrait \
      declstrupptrait declsymtrait declunilowtrait decluniupptrait declupptrait divtrait \
-     expandtrait krontrait maptrait multtrait schurtrait subtrait
+     expandtrait krontrait maptrait multtrait schurtrait solvetrait subtrait
 
 essential: all
 
@@ -148,6 +148,11 @@ schurtrait:
 	@echo "Building the SchurTrait tests..."
 	@$(MAKE) --no-print-directory -C ./schurtrait $(MAKECMDGOALS)
 
+solvetrait:
+	@echo
+	@echo "Building the SolveTrait tests..."
+	@$(MAKE) --no-print-directory -C ./solvetrait $(MAKECMDGOALS)
+
 subtrait:
 	@echo
 	@echo "Building the SubTrait tests..."
@@ -174,6 +179,7 @@ reset:
 	@$(MAKE) --no-print-directory -C ./maptrait reset
 	@$(MAKE) --no-print-directory -C ./multtrait reset
 	@$(MAKE) --no-print-directory -C ./schurtrait reset
+	@$(MAKE) --no-print-directory -C ./solvetrait reset
 	@$(MAKE) --no-print-directory -C ./subtrait reset
 
 clean:
@@ -195,6 +201,7 @@ clean:
 	@$(MAKE) --no-print-directory -C ./maptrait clean
 	@$(MAKE) --no-print-directory -C ./multtrait clean
 	@$(MAKE) --no-print-directory -C ./schurtrait clean
+	@$(MAKE) --no-print-directory -C ./solvetrait clean
 	@$(MAKE) --no-print-directory -C ./subtrait clean
 
 
@@ -202,4 +209,4 @@ clean:
 .PHONY: default all essential single reset clean \
         addtrait crosstrait decldiagtrait declhermtrait decllowtrait declstrlowtrait \
         declstrupptrait declsymtrait declunilowtrait decluniupptrait declupptrait divtrait \
-        expandtrait krontrait maptrait multtrait schurtrait subtrait
+        expandtrait krontrait maptrait multtrait schurtrait solvetrait subtrait
