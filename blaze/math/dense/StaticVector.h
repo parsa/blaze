@@ -68,6 +68,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/ReduceTrait.h>
 #include <blaze/math/traits/RowTrait.h>
+#include <blaze/math/traits/SolveTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/traits/SubvectorTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
@@ -3209,6 +3210,32 @@ struct PartialReduceTraitEval2< T, OP, RF
    static constexpr size_t N = Size_v< T, TF ? 1UL : 0UL >;
 
    using Type = StaticVector<RT,N,TF>;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SOLVETRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+struct SolveTraitEval2< T1, T2
+                      , EnableIf_t< IsDenseMatrix_v<T1> &&
+                                    IsDenseVector_v<T2> &&
+                                    ( ( Size_v<T1,0UL> != DefaultSize_v ) ||
+                                      ( Size_v<T1,1UL> != DefaultSize_v ) ||
+                                      ( Size_v<T2,0UL> != DefaultSize_v ) ) > >
+{
+   static constexpr size_t N = max( Size_v<T1,0UL>, Size_v<T1,1UL>, Size_v<T2,0UL> );
+
+   using Type = StaticVector< ElementType_t<T2>, N, TransposeFlag_v<T2> >;
 };
 /*! \endcond */
 //*************************************************************************************************
