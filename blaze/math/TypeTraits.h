@@ -220,6 +220,7 @@
 #include <blaze/math/typetraits/IsSIMDEnabled.h>
 #include <blaze/math/typetraits/IsSIMDPack.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
+#include <blaze/math/typetraits/IsSolveExpr.h>
 #include <blaze/math/typetraits/IsSparseElement.h>
 #include <blaze/math/typetraits/IsSparseMatrix.h>
 #include <blaze/math/typetraits/IsSparseVector.h>

@@ -128,6 +128,7 @@
 #include <blaze/math/constraints/SIMDEnabled.h>
 #include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/constraints/SMPAssignable.h>
+#include <blaze/math/constraints/SolveExpr.h>
 #include <blaze/math/constraints/SparseElement.h>
 #include <blaze/math/constraints/SparseMatrix.h>
 #include <blaze/math/constraints/SparseVector.h>
