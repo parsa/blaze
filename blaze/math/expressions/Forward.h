@@ -69,6 +69,7 @@ template< typename, typename, bool, bool, bool, bool > class DMatDMatMultExpr;
 template< typename, typename, bool > class DMatDMatSchurExpr;
 template< typename, typename, bool > class DMatDMatSubExpr;
 template< typename, typename > class DMatDVecMultExpr;
+template< typename, typename, bool > class DMatDVecSolveExpr;
 template< typename, bool > class DMatEvalExpr;
 template< typename, bool > class DMatExpExpr;
 template< typename, bool > class DMatInvExpr;
@@ -601,6 +602,10 @@ decltype(auto) noalias( const SparseMatrix<MT,SO>& );
 
 template< typename MT, bool SO >
 decltype(auto) inv( const DenseMatrix<MT,SO>& );
+
+
+template< typename MT, bool SO, typename VT, bool TF >
+decltype(auto) solve( const DenseMatrix<MT,SO>&, const DenseVector<VT,TF>& );
 
 
 template< typename MT, bool SO >
