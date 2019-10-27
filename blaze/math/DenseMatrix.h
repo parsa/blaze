@@ -73,6 +73,7 @@
 #include <blaze/math/expressions/DMatDMatMapExpr.h>
 #include <blaze/math/expressions/DMatDMatMultExpr.h>
 #include <blaze/math/expressions/DMatDMatSchurExpr.h>
+#include <blaze/math/expressions/DMatDMatSolveExpr.h>
 #include <blaze/math/expressions/DMatDMatSubExpr.h>
 #include <blaze/math/expressions/DMatDVecMultExpr.h>
 #include <blaze/math/expressions/DMatDVecSolveExpr.h>
