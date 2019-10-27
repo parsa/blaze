@@ -67,6 +67,7 @@
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/RowsTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
+#include <blaze/math/traits/SolveTrait.h>
 #include <blaze/math/traits/SubmatrixTrait.h>
 #include <blaze/math/traits/SubTrait.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
@@ -6791,6 +6792,35 @@ struct ExpandTraitEval2< T, E
    static constexpr bool TF = ( IsColumnVector_v<T> ? columnMajor : rowMajor );
 
    using Type = DynamicMatrix< ElementType_t<T>, TF >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SOLVETRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+struct SolveTraitEval2< T1, T2
+                      , EnableIf_t< IsDenseMatrix_v<T1> &&
+                                    IsDenseMatrix_v<T2> &&
+                                    ( ( ( Size_v<T1,0UL> == DefaultSize_v ) &&
+                                        ( Size_v<T2,0UL> == DefaultSize_v ) &&
+                                        ( Size_v<T1,1UL> == DefaultSize_v ) &&
+                                        ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) &&
+                                        ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) &&
+                                        ( MaxSize_v<T1,1UL> == DefaultMaxSize_v ) ) ||
+                                      ( ( Size_v<T2,1UL> == DefaultSize_v ) &&
+                                        ( MaxSize_v<T2,1UL> == DefaultMaxSize_v ) ) ) > >
+{
+   using Type = DynamicMatrix< ElementType_t<T2>, StorageOrder_v<T2> >;
 };
 /*! \endcond */
 //*************************************************************************************************
