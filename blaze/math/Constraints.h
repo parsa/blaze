@@ -101,6 +101,7 @@
 #include <blaze/math/constraints/MatSerialExpr.h>
 #include <blaze/math/constraints/MatTransExpr.h>
 #include <blaze/math/constraints/MatVecMultExpr.h>
+#include <blaze/math/constraints/MatVecSolveExpr.h>
 #include <blaze/math/constraints/Modification.h>
 #include <blaze/math/constraints/MultExpr.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
