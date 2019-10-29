@@ -1183,6 +1183,34 @@ inline decltype(auto) imag( const SparseVector<VT,TF>& sv )
 
 
 //*************************************************************************************************
+/*!\brief Returns a vector containing the phase angle of each single element of \a sv.
+// \ingroup sparse_vector
+//
+// \param sv The integral sparse input vector.
+// \return The phase angle of each single element of \a sv.
+//
+// The \a arg() function calculates the phase angle of each element of the sparse input vector
+// \a sv. The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a arg() function:
+
+   \code
+   blaze::CompressedVector<double> a, b;
+   // ... Resizing and initialization
+   b = arg( a );
+   \endcode
+*/
+template< typename VT  // Type of the sparse vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) arg( const SparseVector<VT,TF>& sv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~sv, Arg() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the square root of each non-zero element of the sparse vector \a sv.
 // \ingroup sparse_vector
 //
