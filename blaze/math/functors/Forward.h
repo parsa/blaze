@@ -58,6 +58,7 @@ struct Add;
 struct AddAssign;
 struct And;
 struct AndAssign;
+struct Arg;
 struct Asin;
 struct Asinh;
 struct Assign;

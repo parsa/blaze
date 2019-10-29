@@ -47,6 +47,7 @@
 #include <blaze/math/functors/AddAssign.h>
 #include <blaze/math/functors/And.h>
 #include <blaze/math/functors/AndAssign.h>
+#include <blaze/math/functors/Arg.h>
 #include <blaze/math/functors/Asin.h>
 #include <blaze/math/functors/Asinh.h>
 #include <blaze/math/functors/Assign.h>
