@@ -2201,6 +2201,28 @@
    b = imag( a );
    \endcode
 
+// \n \subsection vector_operators_arg arg()
+//
+// The \c arg() function can be used on a dense or sparse vector to compute the phase angle for
+// each element of the vector:
+
+   \code
+   using blaze::StaticVector;
+
+   using cplx = std::complex<double>;
+
+   // Creating the vector
+   //    ( (-2,-1) )
+   //    ( ( 1, 1) )
+   StaticVector<cplx,2UL> a{ cplx(-2.0,-1.0), cplx(1.0,1.0) };
+
+   // Compute the phase angle of each vector element
+   //    ( -2.67795  )
+   //    (  0.785398 )
+   StaticVector<double,2UL> b;
+   b = arg( a );
+   \endcode
+
 // \n \subsection vector_operations_sqrt sqrt() / invsqrt()
 //
 // Via the \c sqrt() and \c invsqrt() functions the (inverse) square root of each element of a
@@ -4925,6 +4947,29 @@
    //    ( 1  1 )
    StaticMatrix<double,2UL,2UL> B;
    B = imag( A );
+   \endcode
+
+// \n \subsection matrix_operators_arg arg()
+//
+// The \c arg() function can be used on a dense or sparse matrix to compute the phase angle for
+// each element of the matrix:
+
+   \code
+   using blaze::StaticMatrix;
+
+   using cplx = std::complex<double>;
+
+   // Creating the matrix
+   //    ( (1,0)  (-2,-1) )
+   //    ( (1,1)  ( 0, 1) )
+   StaticMatrix<cplx,2UL,2UL> A{ { cplx( 1.0, 0.0 ), cplx( -2.0, -1.0 ) },
+                                 { cplx( 1.0, 1.0 ), cplx(  0.0,  1.0 ) } };
+
+   // Computing the phase angle of each matrix element
+   //    ( 0.0      -2.67795 )
+   //    ( 0.785398  1.5708  )
+   StaticMatrix<double,2UL,2UL> B;
+   B = arg( A );
    \endcode
 
 // \n \subsection matrix_operators_sqrt sqrt() / invsqrt()
