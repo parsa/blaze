@@ -6089,26 +6089,16 @@
 //
 // In case the type of the matrix does not provide additional compile time information about its
 // structure (symmetric, lower, upper, diagonal, ...), the information can be provided manually
-// when calling the \c invert() function:
+// by means of \ref matrix_operations_declaration_operations when calling the \c invert() function:
 
    \code
-   using blaze::asGeneral;
-   using blaze::asSymmetric;
-   using blaze::asHermitian;
-   using blaze::asLower;
-   using blaze::asUniLower;
-   using blaze::asUpper;
-   using blaze::asUniUpper;
-   using blaze::asDiagonal;
-
-   invert<asGeneral>  ( A );  // In-place inversion of a general matrix
-   invert<asSymmetric>( A );  // In-place inversion of a symmetric matrix
-   invert<asHermitian>( A );  // In-place inversion of an Hermitian matrix
-   invert<asLower>    ( A );  // In-place inversion of a lower triangular matrix
-   invert<asUniLower> ( A );  // In-place inversion of a lower unitriangular matrix
-   invert<asUpper>    ( A );  // In-place inversion of an upper triangular matrix
-   invert<asUniUpper> ( A );  // In-place inversion of an upper unitriangular matrix
-   invert<asDiagonal> ( A );  // In-place inversion of a diagonal matrix
+   invert( declsym( A ) );     // In-place inversion of a symmetric matrix
+   invert( declherm( A ) );    // In-place inversion of an Hermitian matrix
+   invert( decllow( A ) );     // In-place inversion of a lower triangular matrix
+   invert( declunilow( A ) );  // In-place inversion of a lower unitriangular matrix
+   invert( declupp( A ) );     // In-place inversion of an upper triangular matrix
+   invert( decluniupp( A ) );  // In-place inversion of an upper unitriangular matrix
+   invert( decldiag( A ) );    // In-place inversion of a diagonal matrix
    \endcode
 
 // Alternatively, via the \c invert() function it is possible to explicitly specify the inversion
