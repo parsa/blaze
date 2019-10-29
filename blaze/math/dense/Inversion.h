@@ -45,6 +45,7 @@
 #include <blaze/math/constraints/Adaptor.h>
 #include <blaze/math/constraints/BLASCompatible.h>
 #include <blaze/math/constraints/StrictlyTriangular.h>
+#include <blaze/math/constraints/Uniform.h>
 #include <blaze/math/dense/StaticMatrix.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/DenseMatrix.h>
@@ -3939,6 +3940,7 @@ template< InversionFlag IF  // Inversion algorithm
 inline void invert( DenseMatrix<MT,SO>& dm )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_STRICTLY_TRIANGULAR_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_UNIFORM_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
 
    if( !isSquare( ~dm ) ) {
