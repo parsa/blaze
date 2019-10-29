@@ -6417,6 +6417,100 @@
    lq( A, L, Q );  // LQ decomposition of A
    \endcode
 
+// \n \section matrix_operations_linear_systems Linear Systems
+// <hr>
+//
+// The \c solve() function computes a solution for the given dense linear system of equations (LSE)
+// \f$ A*x=b \f$, where \c A is the given system matrix, \c x is the solution vector, and \c b is
+// the given dense right-hand side vector:
+
+   \code
+   blaze::DynamicMatrix<double> A;  // The square general system matrix
+   blaze::DynamicVector<double> b;  // The right-hand side vector
+   // ... Resizing and initialization
+
+   blaze::DynamicVector<double> x;  // The solution vector
+
+   solve( A, x, b );   // Computing the solution x
+   x = solve( A, b );  // Alternative syntax
+   \endcode
+
+// Alternatively, \c solve() computes a solution for the given dense LSE \f$ A*X=B \f$, where \c A
+// is the given dense system matrix, the columns of \c X are the solution vectors, and the columns
+// of \c B are the given right-hand side vectors:
+
+   \code
+   blaze::DynamicMatrix<double> A;  // The square general system matrix
+   blaze::DynamicMatrix<double> B;  // The right-hand side matrix
+   // ... Resizing and initialization
+
+   blaze::DynamicMatrix<double> X;  // The solution matrix
+
+   solve( A, X, B );   // Computing the solutions X
+   X = solve( A, B );  // Alternative syntax
+   \endcode
+
+// Both \c solve() functions will automatically select the most suited direct solver algorithm
+// depending on the size and type of the given system matrix. For small matrices of up to 6x6,
+// both functions use manually optimized kernels for maximum performance. For matrices larger
+// than 6x6 the computation is performed by means of the most suited LAPACK solver method (see
+// \ref lapack_linear_system_solver).
+//
+// In case the type of the matrix does not provide additional compile time information about
+// its structure (symmetric, lower, upper, diagonal, ...), the information can be provided
+// manually by means of \ref matrix_operations_declaration_operations when calling the \c solve()
+// functions:
+
+   \code
+   blaze::DynamicMatrix<double> A;  // The square lower system matrix
+   blaze::DynamicVector<double> b;  // The right-hand side vector
+   // ... Resizing and initialization
+
+   blaze::DynamicVector<double> x;  // The solution vector
+
+   solve( declsym( A ), x, b );     // Solving the LSE with a symmetric system matrix
+   solve( declherm( A ), x, b );    // Solving the LSE with an Hermitian system matrix
+   solve( decllow( A ), x, b );     // Solving the LSE with a lower system matrix
+   solve( declunilow( A ), x, b );  // Solving the LSE with an unilower system matrix
+   solve( declupp( A ), x, b );     // Solving the LSE with an upper system matrix
+   solve( decluniupp( A ), x, b );  // Solving the LSE with an uniupper system matrix
+   solve( decldiag( A ), x, b );    // Solving the LSE with a diagonal system matrix
+   \endcode
+
+// For both \c solve() functions the computation fails if ...
+//
+//  - ... the given matrix is not a square matrix;
+//  - ... the size of the right-hand side vector doesn't match the dimensions of the system matrix;
+//  - ... the number of rows of the right-hand side matrix doesn't match the dimensions of the system matrix;
+//  - ... the given matrix is singular and not invertible.
+//
+// In all failure cases either a compilation error is created if the failure can be predicted at
+// compile time or a \c std::invalid_argument exception is thrown.
+//
+// \note The \c solve() functions can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type or with a sparse matrix results in a compile time error!
+//
+// \note The functions may make use of LAPACK kernels. Thus the functions can only be used if a
+// fitting LAPACK library is available and linked to the executable. Otherwise a linker error will
+// be created.
+//
+// \note It is not possible to use any kind of view on the expression object returned by the
+// two-argument \c solve() function. Also, it is not possible to access individual elements via
+// the function call operator on the expression object:
+
+   \code
+   row( solve( A, b ), 2UL );  // Compilation error: Views cannot be used on an solve() expression!
+   solve( A, b )[2];           // Compilation error: It is not possible to access individual elements!
+
+   rows( solve( A, B ), { 2UL, 4UL } );  // Compilation error: Views cannot be used on an solve() expression!
+   solve( A, B )(1,2);                   // Compilation error: It is not possible to access individual elements!
+   \endcode
+
+// \note The \c solve() functions do not provide any exception safety guarantee, i.e. in case an
+// exception is thrown the solution vector or matrix may already have been modified.
+//
+//
 // \n \section matrix_operations_eigenvalues Eigenvalues/Eigenvectors
 // <hr>
 //
