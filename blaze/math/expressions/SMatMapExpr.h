@@ -1296,6 +1296,34 @@ inline decltype(auto) imag( const SparseMatrix<MT,SO>& sm )
 
 
 //*************************************************************************************************
+/*!\brief Returns a matrix containing the phase angle of each single element of \a sm.
+// \ingroup sparse_matrix
+//
+// \param sm The input matrix.
+// \return The phase angle of each single element of \a sm.
+//
+// The \a arg() function calculates the phase angle of each element of the input matrix \a sm.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a arg() function:
+
+   \code
+   blaze::CompressedMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = arg( A );
+   \endcode
+*/
+template< typename MT  // Type of the sparse matrix
+        , bool SO >    // Storage order
+inline decltype(auto) arg( const SparseMatrix<MT,SO>& sm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~sm, Arg() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the square root of each non-zero element of the sparse matrix \a sm.
 // \ingroup sparse_matrix
 //
