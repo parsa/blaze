@@ -15511,8 +15511,10 @@
    } // namespace blaze
    \endcode
 
-// If the function exits successfully, the vector \a b or the matrix \a B contain the solution(s)
-// of the linear system of equations. The functions fail if ...
+// Note that depending on the storage order of the system matrix and the given right-hand side the
+// functions solve different equation systems (see \ref lapack_substitution). If the function exits
+// successfully, the vector \a b or the matrix \a B contain the solution(s) of the linear system of
+// equations. The functions fail if ...
 //
 //  - ... the given system matrix is not a square matrix;
 //  - ... the given \a trans argument is neither 'N' nor 'T' nor 'C';
@@ -15548,8 +15550,10 @@
    } // namespace blaze
    \endcode
 
-// If the function exits successfully, the vector \a b or the matrix \a B contain the solution(s)
-// of the linear system of equations. The functions fail if ...
+// Note that depending on the storage order of the system matrix and the given right-hand side the
+// functions solve different equation systems (see \ref lapack_substitution). If the function exits
+// successfully, the vector \a b or the matrix \a B contain the solution(s) of the linear system of
+// equations. The functions fail if ...
 //
 //  - ... the given system matrix is not a square matrix;
 //  - ... the given \a uplo argument is neither 'L' nor 'U';
@@ -15581,8 +15585,10 @@
    } // namespace blaze
    \endcode
 
-// If the function exits successfully, the vector \a b or the matrix \a B contain the solution(s)
-// of the linear system of equations. The functions fail if ...
+// Note that depending on the storage order of the system matrix and the given right-hand side the
+// functions solve different equation systems (see \ref lapack_substitution). If the function exits
+// successfully, the vector \a b or the matrix \a B contain the solution(s) of the linear system of
+// equations. The functions fail if ...
 //
 //  - ... the given system matrix is not a square matrix;
 //  - ... the given \a uplo argument is neither 'L' nor 'U';
@@ -15618,8 +15624,10 @@
    } // namespace blaze
    \endcode
 
-// If the function exits successfully, the vector \a b or the matrix \a B contain the solution(s)
-// of the linear system of equations. The functions fail if ...
+// Note that depending on the storage order of the system matrix and the given right-hand side the
+// functions solve different equation systems (see \ref lapack_substitution). If the function exits
+// successfully, the vector \a b or the matrix \a B contain the solution(s) of the linear system of
+// equations. The functions fail if ...
 //
 //  - ... the given system matrix is not a square matrix;
 //  - ... the given \a uplo argument is neither 'L' nor 'U';
@@ -15654,8 +15662,10 @@
    } // namespace blaze
    \endcode
 
-// If the function exits successfully, the vector \a b or the matrix \a B contain the solution(s)
-// of the linear system of equations. The functions fail if ...
+// Note that depending on the storage order of the system matrix and the given right-hand side the
+// functions solve different equation systems (see \ref lapack_substitution). If the function exits
+// successfully, the vector \a b or the matrix \a B contain the solution(s) of the linear system of
+// equations. The functions fail if ...
 //
 //  - ... the given system matrix is not a square matrix;
 //  - ... the given \a uplo argument is neither 'L' nor 'U';
@@ -15716,8 +15726,10 @@
    } // namespace blaze
    \endcode
 
-// If the function exits successfully, the vector \a b or the matrix \a B contain the
-// solution(s) of the linear system of equations and \a A has been decomposed by means of an
+// Note that depending on the storage order of the system matrix and the given right-hand side
+// the functions solve different equation systems (see \ref lapack_linear_system_solver). If
+// the function exits successfully, the vector \a b or the matrix \a B contain the solution(s)
+// of the linear system of equations and \a A has been decomposed by means of an
 // \ref lapack_lu_decomposition.
 //
 // The functions fail if ...
@@ -15755,8 +15767,10 @@
    } // namespace blaze
    \endcode
 
-// If the function exits successfully, the vector \a b or the matrix \a B contain the
-// solution(s) of the linear system of equations and \a A has been decomposed by means of an
+// Note that depending on the storage order of the system matrix and the given right-hand side
+// the functions solve different equation systems (see \ref lapack_linear_system_solver). If
+// the function exits successfully, the vector \a b or the matrix \a B contain the solution(s)
+// of the linear system of equations and \a A has been decomposed by means of an
 // \ref lapack_ldlt_decomposition.
 //
 // The functions fail if ...
@@ -15792,8 +15806,10 @@
    } // namespace blaze
    \endcode
 
-// If the function exits successfully, the vector \a b or the matrix \a B contain the
-// solution(s) of the linear system of equations and \a A has been decomposed by means of an
+// Note that depending on the storage order of the system matrix and the given right-hand side
+// the functions solve different equation systems (see \ref lapack_linear_system_solver). If
+// the function exits successfully, the vector \a b or the matrix \a B contain the solution(s)
+// of the linear system of equations and \a A has been decomposed by means of an
 // \ref lapack_ldlh_decomposition.
 //
 // The functions fail if ...
@@ -15833,8 +15849,10 @@
    } // namespace blaze
    \endcode
 
-// If the function exits successfully, the vector \a b or the matrix \a B contain the
-// solution(s) of the linear system of equations and \a A has been decomposed by means of an
+// Note that depending on the storage order of the system matrix and the given right-hand side
+// the functions solve different equation systems (see \ref lapack_linear_system_solver). If
+// the function exits successfully, the vector \a b or the matrix \a B contain the solution(s)
+// of the linear system of equations and \a A has been decomposed by means of an
 // \ref lapack_llh_decomposition.
 //
 // The functions fail if ...
@@ -15870,8 +15888,10 @@
    } // namespace blaze
    \endcode
 
-// If the function exits successfully, the vector \a b or the matrix \a B contain the
-// solution(s) of the linear system of equations.
+// Note that depending on the storage order of the system matrix and the given right-hand side
+// the functions solve different equation systems (see \ref lapack_linear_system_solver). If the
+// function exits successfully, the vector \a b or the matrix \a B contain the solution(s) of the
+// linear system of equations.
 //
 // The functions fail if ...
 //
