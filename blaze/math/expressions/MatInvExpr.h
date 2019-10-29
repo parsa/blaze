@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/Expression.h>
+#include <blaze/math/expressions/Forward.h>
 #include <blaze/math/shims/Invert.h>
 #include <blaze/util/FunctionTrace.h>
 
@@ -78,6 +79,60 @@ struct MatInvExpr
 //  GLOBAL RESTRUCTURING FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication operator for the multiplication of a matrix inversion expression
+//        and a dense vector (\f$ \vec{y}=inv(A)*\vec{x} \f$).
+// \ingroup math
+//
+// \param mat The left-hand side matrix inversion.
+// \param vec The right-hand side dense vector for the multiplication.
+// \return The resulting vector.
+//
+// This operator implements a performance optimized treatment of the multiplication of a
+// matrix inversion expression and a dense vector. It restructures the expression
+// \f$ \vec{x}=inv(A)*\vec{x} \f$ to the expression \f$ \vec{y}=solve(A,\vec{x}) \f$.
+*/
+template< typename MT    // Matrix base type of the left-hand side expression
+        , typename VT >  // Type of the right-hand side dense vector
+inline decltype(auto)
+   operator*( const MatInvExpr<MT>& mat, const DenseVector<VT,false>& vec )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return solve( (~mat).operand(), ~vec );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication operator for the multiplication of a transpose dense vector and a
+//        matrix inversion expression (\f$ \vec{y}=\vec{x}*inv(A) \f$).
+// \ingroup math
+//
+// \param vec The left-hand side transpose dense vector for the multiplication.
+// \param mat The right-hand side matrix inversion for the multiplication.
+// \return The resulting vector.
+//
+// This operator implements a performance optimized treatment of the multiplication of a
+// transpose dense vector and a matrix inversion expression. It restructures the expression
+// \f$ \vec{x}=\vec{x}*inv(A) \f$ to the expression \f$ \vec{y}=solve(A^T,\vec{x}) \f$.
+*/
+template< typename MT    // Matrix base type of the left-hand side expression
+        , typename VT >  // Type of the right-hand side dense vector
+inline decltype(auto)
+   operator*( const DenseVector<VT,true>& vec, const MatInvExpr<MT>& mat )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return solve( trans( (~mat).operand() ), ~vec );
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
