@@ -5759,6 +5759,82 @@
 // behavior (which can be violated invariants or wrong computation results)!
 //
 //
+// \n \subsection matrix_operations_declunilow declunilow()
+//
+// The \c declunilow() operation can be used to explicitly declare any matrix or matrix expression
+// as lower unitriangular:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+
+   B = declunilow( A );
+   \endcode
+
+// Any matrix or matrix expression that has been declared as lower unitriangular via \c declunilow()
+// will gain all the benefits of a lower unitriangular matrix, which range from reduced runtime
+// checking to a considerable speed-up in computations:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::UniLowerMatrix;
+
+   DynamicMatrix<double> A, B, C;
+   UniLowerMatrix< DynamicMatrix<double> > L;
+   // ... Resizing and initialization
+
+   isUniLower( declunilow( A ) );  // Will always return true without runtime effort
+
+   L = declunilow( A );  // Omit any runtime check for A being an unilower matrix
+
+   C = declunilow( A * B );  // Declare the result of the matrix multiplication as lower
+                             // unitriangular, i.e. perform an optimized matrix multiplication
+   \endcode
+
+// \warning The \c declunilow() operation has the semantics of a cast: The caller is completely
+// responsible and the system trusts the given information. Declaring a non-unilower matrix or
+// matrix expression as lower unitriangular via the \c declunilow() operation leads to undefined
+// behavior (which can be violated invariants or wrong computation results)!
+//
+//
+// \n \subsection matrix_operations_declstrlow declstrlow()
+//
+// The \c declstrlow() operation can be used to explicitly declare any matrix or matrix expression
+// as strictly lower triangular:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+
+   B = declstrlow( A );
+   \endcode
+
+// Any matrix or matrix expression that has been declared as strictly lower triangular via
+// \c declstrlow() will gain all the benefits of a strictly lower triangular matrix, which range
+// from reduced runtime checking to a considerable speed-up in computations:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::StrictlyLowerMatrix;
+
+   DynamicMatrix<double> A, B, C;
+   StrictlyLowerMatrix< DynamicMatrix<double> > L;
+   // ... Resizing and initialization
+
+   isStrictlyLower( declstrlow( A ) );  // Will always return true without runtime effort
+
+   L = declstrlow( A );  // Omit any runtime check for A being a strictly lower matrix
+
+   C = declstrlow( A * B );  // Declare the result of the matrix multiplication as strictly lower
+                             // triangular, i.e. perform an optimized matrix multiplication
+   \endcode
+
+// \warning The \c declstrlow() operation has the semantics of a cast: The caller is completely
+// responsible and the system trusts the given information. Declaring a non-strictly-lower matrix
+// or matrix expression as strictly lower triangular via the \c declstrlow() operation leads to
+// undefined behavior (which can be violated invariants or wrong computation results)!
+//
+//
 // \n \subsection matrix_operations_declupp declupp()
 //
 // The \c declupp() operation can be used to explicitly declare any matrix or matrix expression
@@ -5795,6 +5871,82 @@
 // responsible and the system trusts the given information. Declaring a non-upper matrix or
 // matrix expression as upper triangular via the \c declupp() operation leads to undefined
 // behavior (which can be violated invariants or wrong computation results)!
+//
+//
+// \n \subsection matrix_operations_decluniupp decluniupp()
+//
+// The \c decluniupp() operation can be used to explicitly declare any matrix or matrix expression
+// as upper unitriangular:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+
+   B = decluniupp( A );
+   \endcode
+
+// Any matrix or matrix expression that has been declared as upper unitriangular via \c decluniupp()
+// will gain all the benefits of a upper unitriangular matrix, which range from reduced runtime
+// checking to a considerable speed-up in computations:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::UniUpperMatrix;
+
+   DynamicMatrix<double> A, B, C;
+   UniUpperMatrix< DynamicMatrix<double> > L;
+   // ... Resizing and initialization
+
+   isUniUpper( decluniupp( A ) );  // Will always return true without runtime effort
+
+   L = decluniupp( A );  // Omit any runtime check for A being an uniupper matrix
+
+   C = decluniupp( A * B );  // Declare the result of the matrix multiplication as upper
+                             // unitriangular, i.e. perform an optimized matrix multiplication
+   \endcode
+
+// \warning The \c decluniupp() operation has the semantics of a cast: The caller is completely
+// responsible and the system trusts the given information. Declaring a non-uniupper matrix or
+// matrix expression as upper unitriangular via the \c decluniupp() operation leads to undefined
+// behavior (which can be violated invariants or wrong computation results)!
+//
+//
+// \n \subsection matrix_operations_declstrupp declstrupp()
+//
+// The \c declstrupp() operation can be used to explicitly declare any matrix or matrix expression
+// as strictly upper triangular:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+
+   B = declstrupp( A );
+   \endcode
+
+// Any matrix or matrix expression that has been declared as strictly upper triangular via
+// \c declstrupp() will gain all the benefits of a strictly upper triangular matrix, which range
+// from reduced runtime checking to a considerable speed-up in computations:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::StrictlyUpperMatrix;
+
+   DynamicMatrix<double> A, B, C;
+   StrictlyUpperMatrix< DynamicMatrix<double> > L;
+   // ... Resizing and initialization
+
+   isStrictlyUpper( declstrupp( A ) );  // Will always return true without runtime effort
+
+   L = declstrupp( A );  // Omit any runtime check for A being a strictly upper matrix
+
+   C = declstrupp( A * B );  // Declare the result of the matrix multiplication as strictly upper
+                             // triangular, i.e. perform an optimized matrix multiplication
+   \endcode
+
+// \warning The \c declstrupp() operation has the semantics of a cast: The caller is completely
+// responsible and the system trusts the given information. Declaring a non-strictly-upper matrix
+// or matrix expression as strictly upper triangular via the \c declstrupp() operation leads to
+// undefined behavior (which can be violated invariants or wrong computation results)!
 //
 //
 // \n \subsection matrix_operations_decldiag decldiag()
