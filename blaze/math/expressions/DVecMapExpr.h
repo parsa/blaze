@@ -1422,6 +1422,34 @@ inline decltype(auto) imag( const DenseVector<VT,TF>& dv )
 
 
 //*************************************************************************************************
+/*!\brief Returns a vector containing the phase angle of each single element of \a dv.
+// \ingroup dense_vector
+//
+// \param dv The input vector.
+// \return The phase angle of each single element of \a dv.
+//
+// The \a arg() function calculates the phase angle of each element of the input vector \a dv.
+// The function returns an expression representing this operation.\n
+// The following example demonstrates the use of the \a arg() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = arg( a );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF >    // Transpose flag
+inline decltype(auto) arg( const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( ~dv, Arg() );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Computes the square root of each single element of the dense vector \a dv.
 // \ingroup dense_vector
 //
