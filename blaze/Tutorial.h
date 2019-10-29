@@ -603,8 +603,10 @@
 // \tableofcontents
 //
 //
-// \n \section vector_types_static_vector StaticVector
+// \n \section vector_types_dense_vectors Dense Vectors
 // <hr>
+//
+// \subsection vector_types_static_vector StaticVector
 //
 // The blaze::StaticVector class template is the representation of a fixed size vector with
 // statically allocated elements of arbitrary type. It can be included via the header file
@@ -642,8 +644,7 @@
    blaze::StaticVector<double,6UL,blaze::rowVector> c;
    \endcode
 
-// \n \section vector_types_dynamic_vector DynamicVector
-// <hr>
+// \n \subsection vector_types_dynamic_vector DynamicVector
 //
 // The blaze::DynamicVector class template is the representation of an arbitrary sized vector
 // with dynamically allocated elements of arbitrary type. It can be included via the header file
@@ -679,8 +680,7 @@
    blaze::DynamicVector<double,blaze::rowVector> c;
    \endcode
 
-// \n \section vector_types_hybrid_vector HybridVector
-// <hr>
+// \n \subsection vector_types_hybrid_vector HybridVector
 //
 // The blaze::HybridVector class template combines the advantages of the blaze::StaticVector and
 // the blaze::DynamicVector class templates. It represents a fixed size vector with statically
@@ -721,8 +721,7 @@
    blaze::HybridVector<double,6UL,blaze::rowVector> c;
    \endcode
 
-// \n \section vector_types_custom_vector CustomVector
-// <hr>
+// \n \subsection vector_types_custom_vector CustomVector
 //
 // The blaze::CustomVector class template provides the functionality to represent an external
 // array of elements of arbitrary type and a fixed size as a native \b Blaze dense vector data
@@ -796,7 +795,7 @@
 //  -# <b>\ref vector_types_custom_vector_alignment</b>
 //  -# <b>\ref vector_types_custom_vector_padding</b>
 //
-// \n \subsection vector_types_custom_vector_memory_management Memory Management
+// \subsubsection vector_types_custom_vector_memory_management Memory Management
 //
 // The blaze::CustomVector class template acts as an adaptor for an existing array of elements. As
 // such it provides everything that is required to use the array just like a native \b Blaze dense
@@ -827,7 +826,7 @@
    CustomVector<int,aligned,padded> b( memory.get(), 3UL, 16UL );
    \endcode
 
-// \n \subsection vector_types_custom_vector_copy_operations Copy Operations
+// \subsubsection vector_types_custom_vector_copy_operations Copy Operations
 //
 // As with all dense vectors it is possible to copy construct a custom vector:
 
@@ -860,7 +859,7 @@
    a = c;  // Copy assignment: Set all values of vector a and b to 4.
    \endcode
 
-// \n \subsection vector_types_custom_vector_alignment Alignment
+// \subsubsection vector_types_custom_vector_alignment Alignment
 //
 // In case the custom vector is specified as \c aligned the passed array must be guaranteed to
 // be aligned according to the requirements of the used instruction set (SSE, AVX, ...). For
@@ -882,7 +881,7 @@
 // In case the alignment requirements are violated, a \c std::invalid_argument exception is
 // thrown.
 //
-// \n \subsection vector_types_custom_vector_padding Padding
+// \subsubsection vector_types_custom_vector_padding Padding
 //
 // Adding padding elements to the end of an array can have a significant impact on the performance.
 // For instance, assuming that AVX is available, then two aligned, padded, 3-dimensional vectors
@@ -954,8 +953,7 @@
 // maximum performance!
 //
 //
-// \n \section vector_types_uniform_vector UniformVector
-// <hr>
+// \n \subsection vector_types_uniform_vector UniformVector
 //
 // The blaze::UniformVector class template is the representation of an arbitrary sized uniform
 // vector with elements of arbitrary type. It can be included via the header file
@@ -991,8 +989,10 @@
    blaze::UniformVector<double,blaze::rowVector> c;
    \endcode
 
-// \n \section vector_types_compressed_vector CompressedVector
+// \n \section vector_types_sparse_vectors Sparse Vectors
 // <hr>
+//
+// \subsection vector_types_compressed_vector CompressedVector
 //
 // The blaze::CompressedVector class is the representation of an arbitrarily sized sparse
 // vector, which stores only non-zero elements of arbitrary type. It can be included via the
@@ -1028,8 +1028,7 @@
    blaze::CompressedVector<double,blaze::rowVector> c;
    \endcode
 
-// \n \section vector_types_zero_vector ZeroVector
-// <hr>
+// \n \subsection vector_types_zero_vector ZeroVector
 //
 // The blaze::ZeroVector class template is the representation of an immutable, arbitrary sized
 // zero vector with elements of arbitrary type. It can be included via the header file
@@ -2883,8 +2882,10 @@
 // \tableofcontents
 //
 //
-// \n \section matrix_types_static_matrix StaticMatrix
+// \n \section matrix_types_dense_matrices Dense Matrices
 // <hr>
+//
+// \subsection matrix_types_static_matrix StaticMatrix
 //
 // The blaze::StaticMatrix class template is the representation of a fixed size matrix with
 // statically allocated elements of arbitrary type. It can be included via the header file
@@ -2923,8 +2924,7 @@
    blaze::StaticMatrix<double,6UL,4UL,blaze::columnMajor> C;
    \endcode
 
-// \n \section matrix_types_dynamic_matrix DynamicMatrix
-// <hr>
+// \n \subsection matrix_types_dynamic_matrix DynamicMatrix
 //
 // The blaze::DynamicMatrix class template is the representation of an arbitrary sized matrix
 // with \f$ M \cdot N \f$ dynamically allocated elements of arbitrary type. It can be included
@@ -2961,8 +2961,7 @@
    blaze::DynamicMatrix<double,blaze::columnMajor> C;
    \endcode
 
-// \n \section matrix_types_hybrid_matrix HybridMatrix
-// <hr>
+// \n \subsection matrix_types_hybrid_matrix HybridMatrix
 //
 // The HybridMatrix class template combines the flexibility of a dynamically sized matrix with
 // the efficiency and performance of a fixed size matrix. It is implemented as a crossing between
@@ -3006,8 +3005,7 @@
    blaze::HybridMatrix<double,6UL,6UL,blaze::columnMajor> C;
    \endcode
 
-// \n \section matrix_types_custom_matrix CustomMatrix
-// <hr>
+// \n \subsection matrix_types_custom_matrix CustomMatrix
 //
 // The blaze::CustomMatrix class template provides the functionality to represent an external
 // array of elements of arbitrary type and a fixed size as a native \b Blaze dense matrix data
@@ -3081,7 +3079,7 @@
 //  -# <b>\ref matrix_types_custom_matrix_alignment</b>
 //  -# <b>\ref matrix_types_custom_matrix_padding</b>
 //
-// \n \subsection matrix_types_custom_matrix_memory_management Memory Management
+// \subsubsection matrix_types_custom_matrix_memory_management Memory Management
 //
 // The blaze::CustomMatrix class template acts as an adaptor for an existing array of elements. As
 // such it provides everything that is required to use the array just like a native \b Blaze dense
@@ -3112,7 +3110,7 @@
    CustomMatrix<int,aligned,padded> B( memory.get(), 8UL, 12UL, 16UL );
    \endcode
 
-// \n \subsection matrix_types_custom_matrix_copy_operations Copy Operations
+// \subsubsection matrix_types_custom_matrix_copy_operations Copy Operations
 //
 // As with all dense matrices it is possible to copy construct a custom matrix:
 
@@ -3145,7 +3143,7 @@
    A = C;  // Copy assignment: Set all values of matrix A and B to 4.
    \endcode
 
-// \n \subsection matrix_types_custom_matrix_alignment Alignment
+// \subsubsection matrix_types_custom_matrix_alignment Alignment
 //
 // In case the custom matrix is specified as \c aligned the passed array must adhere to some
 // alignment restrictions based on the alignment requirements of the used data type and the
@@ -3174,7 +3172,7 @@
 // that the first element of each row is 32-bit aligned. In case the alignment requirements are
 // violated, a \c std::invalid_argument exception is thrown.
 //
-// \n \subsection matrix_types_custom_matrix_padding Padding
+// \subsubsection matrix_types_custom_matrix_padding Padding
 //
 // Adding padding elements to the end of each row/column can have a significant impact on the
 // performance. For instance, assuming that AVX is available, then two aligned, padded, 3x3 double
@@ -3244,8 +3242,7 @@
 // \c std::invalid_argument exception is thrown.
 //
 //
-// \n \section matrix_types_uniform_matrix UniformMatrix
-// <hr>
+// \n \subsection matrix_types_uniform_matrix UniformMatrix
 //
 // The blaze::UniformMatrix class template is the representation of an arbitrary sized uniform
 // matrix with elements of arbitrary type. It can be included via the header file
@@ -3281,8 +3278,10 @@
    blaze::UniformMatrix<double,blaze::columnMajor> C;
    \endcode
 
-// \n \section matrix_types_compressed_matrix CompressedMatrix
+// \n \section matrix_types_sparse_matrices Sparse Matrices
 // <hr>
+//
+// \subsection matrix_types_compressed_matrix CompressedMatrix
 //
 // The blaze::CompressedMatrix class template is the representation of an arbitrary sized sparse
 // matrix with \f$ M \cdot N \f$ dynamically allocated elements of arbitrary type. It can be
@@ -3318,8 +3317,7 @@
    blaze::CompressedMatrix<double,blaze::columnMajor> C;
    \endcode
 
-// \n \section matrix_types_identity_matrix IdentityMatrix
-// <hr>
+// \n \subsection matrix_types_identity_matrix IdentityMatrix
 //
 // The blaze::IdentityMatrix class template is the representation of an immutable, arbitrary
 // sized identity matrix with \f$ N \cdot N \f$ elements of arbitrary type. It can be included
@@ -3355,8 +3353,7 @@
    blaze::IdentityMatrix<double,blaze::columnMajor> C;
    \endcode
 
-// \n \section matrix_types_zero_matrix ZeroMatrix
-// <hr>
+// \n \subsection matrix_types_zero_matrix ZeroMatrix
 //
 // The blaze::ZeroMatrix class template is the representation of an immutable, arbitrary sized
 // zero matrix with \f$ M \cdot N \f$ elements of arbitrary type. It can be included via the
