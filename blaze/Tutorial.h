@@ -2014,8 +2014,12 @@
 //
 // \n \subsection vector_operations_min_max min() / max()
 //
-// The \c min() and \c max() functions can be used for a single vector or multiple vectors. If
-// passed a single vector, the functions return the smallest and largest element of the given
+// The \c min() and \c max() functions can be used for a single vector, multiple vectors, and
+// a vector and a scalar.
+//
+// <b>Single Vector</b>
+//
+// If passed a single vector, the functions return the smallest and largest element of the given
 // dense vector or the smallest and largest non-zero element of the given sparse vector,
 // respectively:
 
@@ -2035,6 +2039,8 @@
 
 // For more information on the unary \c min() and \c max() reduction operations see the
 // \ref vector_operations_reduction_operations section.
+//
+// <b>Multiple Vectors</b>
 //
 // If passed two or more dense vectors, the \c min() and \c max() functions compute the
 // componentwise minimum or maximum of the given vectors, respectively:
@@ -2057,6 +2063,19 @@
 
    min( a + c, c - d );  // Results in ( -10 -2 -7 0 )
    max( a - c, c + d );  // Results in ( 0 4 14 6 )
+   \endcode
+
+// <b>Vector and Scalar</b>
+//
+// If passed a dense vector and a scalar, the \c min() and \c max() functions compute the
+// componentwise minimum or maximum between the given vector and a uniform vector represented by
+// the scalar value:
+
+   \code
+   min( a, 0 );  // Results in ( -5, 0, 0, -4 )
+   min( 0, a );  // Results in ( -5, 0, 0, -4 )
+   max( a, 0 );  // Results in ( 0, 2, 7, 0 )
+   max( 0, a );  // Results in ( 0, 2, 7, 0 )
    \endcode
 
 // \n \subsection vector_operators_softmax softmax()
@@ -4714,8 +4733,12 @@
 //
 // \subsection matrix_operations_min_max min() / max()
 //
-// The \c min() and \c max() functions can be used for a single vector or multiple vectors. If
-// passed a single matrix, the functions return the smallest and largest element of the given
+// The \c min() and \c max() functions can be used for a single matrix, multiple matrices, and
+// a matrix and a scalar.
+//
+// <b>Single Matrix</b>
+//
+// If passed a single matrix, the functions return the smallest and largest element of the given
 // dense matrix or the smallest and largest non-zero element of the given sparse matrix,
 // respectively:
 
@@ -4738,6 +4761,8 @@
 // For more information on the unary \c min() and \c max() reduction operations see the
 // \ref matrix_operations_reduction_operations section.
 //
+// <b>Multiple Matrices</b>
+//
 // If passed two or more dense matrices, the \c min() and \c max() functions compute the
 // componentwise minimum or maximum of the given matrices, respectively:
 
@@ -4756,6 +4781,19 @@
    \code
    min( A + B + C );  // Returns -9, i.e. the smallest value of the resulting matrix
    max( A - B - C );  // Returns 11, i.e. the largest value of the resulting matrix
+   \endcode
+
+// <b>Matrix and Scalar</b>
+//
+// If passed a dense matrix and a scalar, the \c min() and \c max() functions compute the
+// componentwise minimum or maximum between the given matrix and a uniform matrix represented by
+// the scalar value:
+
+   \code
+   min( A, 0 );  // Results in the matrix ( 0, 2, 7 ) ( 0, 0, 1 )
+   min( 0, A );  // Results in the matrix ( 0, 2, 7 ) ( 0, 0, 1 )
+   max( A, 0 );  // Results in the matrix ( -5, 0, 0 ) ( -4, 0, 0 )
+   max( 0, A );  // Results in the matrix ( -5, 0, 0 ) ( -4, 0, 0 )
    \endcode
 
 // \n \subsection matrix_operators_softmax softmax()
