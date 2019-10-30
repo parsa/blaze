@@ -121,14 +121,70 @@ inline decltype(auto)
 // transpose dense vector and a matrix inversion expression. It restructures the expression
 // \f$ \vec{x}=\vec{x}*inv(A) \f$ to the expression \f$ \vec{y}=solve(A^T,\vec{x}) \f$.
 */
-template< typename MT    // Matrix base type of the left-hand side expression
-        , typename VT >  // Type of the right-hand side dense vector
+template< typename VT    // Type of the left-hand side dense vector
+        , typename MT >  // Matrix base type of the right-hand side expression
 inline decltype(auto)
    operator*( const DenseVector<VT,true>& vec, const MatInvExpr<MT>& mat )
 {
    BLAZE_FUNCTION_TRACE;
 
    return solve( trans( (~mat).operand() ), ~vec );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication operator for the multiplication of a matrix inversion expression
+//        and a dense matrix (\f$ C=inv(A)*B \f$).
+// \ingroup math
+//
+// \param lhs The left-hand side matrix inversion.
+// \param rhs The right-hand side dense matrix for the multiplication.
+// \return The resulting vector.
+//
+// This operator implements a performance optimized treatment of the multiplication of a
+// matrix inversion expression and a dense matrix. It restructures the expression
+// \f$ C=inv(A)*B \f$ to the expression \f$ C=solve(A,B) \f$.
+*/
+template< typename MT1  // Matrix base type of the left-hand side expression
+        , typename MT2  // Type of the right-hand side dense matrix
+        , bool SO >     // Storage order of the right-hand side dense matrix
+inline decltype(auto)
+   operator*( const MatInvExpr<MT1>& lhs, const DenseMatrix<MT2,SO>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return solve( (~lhs).operand(), ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication operator for the multiplication of a dense matrix and a matrix inversion
+//        expression (\f$ C=B*inv(A) \f$).
+// \ingroup math
+//
+// \param lhs The left-hand side dense matrix for the multiplication.
+// \param rhs The right-hand side matrix inversion for the multiplication.
+// \return The resulting vector.
+//
+// This operator implements a performance optimized treatment of the multiplication of a
+// dense matrix and a matrix inversion expression. It restructures the expression
+// \f$ C=B*inv(A) \f$ to the expression \f$ C=solve(A^T,B^T)^T \f$.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , bool SO         // Storage order of the left-hand side dense matrix
+        , typename MT2 >  // Matrix base type of the right-hand side expression
+inline decltype(auto)
+   operator*( const DenseMatrix<MT1,SO>& lhs, const MatInvExpr<MT2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( solve( trans( (~rhs).operand() ), trans( ~lhs ) ) );
 }
 /*! \endcond */
 //*************************************************************************************************
