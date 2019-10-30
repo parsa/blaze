@@ -342,6 +342,19 @@ class DMatTransposer
    }
    //**********************************************************************************************
 
+   //**Resize function*****************************************************************************
+   /*!\brief Changing the size of the matrix.
+   //
+   // \param m The new number of rows of the matrix.
+   // \param n The new number of columns of the matrix.
+   // \param preserve \a true if the old values of the matrix should be preserved, \a false if not.
+   // \return void
+   */
+   inline void resize( size_t m, size_t n, bool preserve=true ) {
+      dm_.resize( m, n, preserve );
+   }
+   //**********************************************************************************************
+
    //**IsIntact function***************************************************************************
    /*!\brief Returns whether the invariants of the matrix are intact.
    //
