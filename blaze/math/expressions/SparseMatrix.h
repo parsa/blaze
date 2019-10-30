@@ -44,7 +44,6 @@
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/util/algorithms/Min.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/MaybeUnused.h>
 

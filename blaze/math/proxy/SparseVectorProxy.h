@@ -48,7 +48,7 @@
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/system/Inline.h>
-#include <blaze/util/DisableIf.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsIntegral.h>
 

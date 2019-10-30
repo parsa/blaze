@@ -45,6 +45,7 @@
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/StorageOrder.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
 
 

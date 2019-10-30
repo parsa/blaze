@@ -79,7 +79,6 @@
 #include <blaze/system/TransposeFlag.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>

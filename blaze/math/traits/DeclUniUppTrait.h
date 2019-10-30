@@ -44,6 +44,7 @@
 #include <blaze/math/adaptors/uniuppermatrix/BaseTemplate.h>
 #include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/Size.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
 
 

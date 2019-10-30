@@ -90,7 +90,6 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Vectorizable.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>

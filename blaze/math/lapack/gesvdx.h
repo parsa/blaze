@@ -58,7 +58,6 @@
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Builtin.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/NumericCast.h>
 #include <blaze/util/Types.h>

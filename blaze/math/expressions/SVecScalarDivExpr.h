@@ -68,7 +68,6 @@
 #include <blaze/util/constraints/FloatingPoint.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/MaybeUnused.h>

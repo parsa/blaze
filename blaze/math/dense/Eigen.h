@@ -57,7 +57,6 @@
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTriangular.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>

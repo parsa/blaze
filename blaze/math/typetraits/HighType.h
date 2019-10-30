@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/util/Complex.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/typetraits/IsComplex.h>

@@ -44,7 +44,6 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/system/Inline.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/MaybeUnused.h>
 

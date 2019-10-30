@@ -42,7 +42,6 @@
 
 #include <utility>
 #include <blaze/system/Inline.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsNumeric.h>

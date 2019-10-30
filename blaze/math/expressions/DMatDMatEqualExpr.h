@@ -49,7 +49,6 @@
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/system/Blocking.h>
 #include <blaze/system/Optimizations.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>

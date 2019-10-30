@@ -64,7 +64,6 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/IsZero.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
