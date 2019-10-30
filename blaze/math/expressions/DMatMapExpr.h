@@ -1135,6 +1135,138 @@ inline decltype(auto) forEach( const DenseMatrix<MT,SO>& dm, OP op )
 
 
 //*************************************************************************************************
+/*!\brief Computes the componentwise minimum of a dense matrix \a dm and a scalar.
+// \ingroup dense_matrix
+//
+// \param dm The left-hand side dense matrix operand.
+// \param scalar The right-hand side scalar value.
+// \return The resulting dense matrix.
+//
+// This operator computes the componentwise minimum of a dense matrix \a dm and a uniform matrix
+// represented by the scalar value \a scalar. The function returns an expression representing this
+// operation.\n
+// The following example demonstrates the use of the \a min() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = min( A, 0.0 );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , typename ST  // Type of the scalar exponent
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+decltype(auto) min( const DenseMatrix<MT,SO>& dm, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, ST >;
+   return map( ~dm, bind2nd( Min(), ScalarType( scalar ) ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the componentwise minimum of a scalar and a dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param scalar The left-hand side scalar value.
+// \param dm The right-hand side dense matrix operand.
+// \return The resulting dense matrix.
+//
+// This operator computes the componentwise minimum of a uniform matrix represented by the scalar
+// value \a scalar and a dense matrix \a dm. The function returns an expression representing this
+// operation.\n
+// The following example demonstrates the use of the \a min() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = min( 0.0, A );
+   \endcode
+*/
+template< typename ST  // Type of the scalar exponent
+        , typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+decltype(auto) min( ST scalar, const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, ST >;
+   return map( ~dm, bind1st( Min(), ScalarType( scalar ) ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the componentwise maximum of a dense matrix \a dm and a scalar.
+// \ingroup dense_matrix
+//
+// \param dm The left-hand side dense matrix operand.
+// \param scalar The right-hand side scalar value.
+// \return The resulting dense matrix.
+//
+// This operator computes the componentwise maximum of a dense matrix \a dm and a uniform matrix
+// represented by the scalar value \a scalar. The function returns an expression representing this
+// operation.\n
+// The following example demonstrates the use of the \a max() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = max( A, 0.0 );
+   \endcode
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , typename ST  // Type of the scalar exponent
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+decltype(auto) max( const DenseMatrix<MT,SO>& dm, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, ST >;
+   return map( ~dm, bind2nd( Max(), ScalarType( scalar ) ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the componentwise maximum of a scalar and a dense matrix \a dm.
+// \ingroup dense_matrix
+//
+// \param scalar The left-hand side scalar value.
+// \param dm The right-hand side dense matrix operand.
+// \return The resulting dense matrix.
+//
+// This operator computes the componentwise maximum of a uniform matrix represented by the scalar
+// value \a scalar and a dense matrix \a dm. The function returns an expression representing this
+// operation.\n
+// The following example demonstrates the use of the \a max() function:
+
+   \code
+   blaze::DynamicMatrix<double> A, B;
+   // ... Resizing and initialization
+   B = max( 0.0, A );
+   \endcode
+*/
+template< typename ST  // Type of the scalar exponent
+        , typename MT  // Type of the dense matrix
+        , bool SO      // Storage order
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+decltype(auto) max( ST scalar, const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, ST >;
+   return map( ~dm, bind1st( Max(), ScalarType( scalar ) ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Applies the \a abs() function to each single element of the dense matrix \a dm.
 // \ingroup dense_matrix
 //
