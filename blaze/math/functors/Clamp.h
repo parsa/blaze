@@ -40,7 +40,13 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/shims/Clamp.h>
+#include <blaze/math/simd/Max.h>
+#include <blaze/math/simd/Min.h>
+#include <blaze/math/simd/Set.h>
+#include <blaze/math/typetraits/HasSIMDMax.h>
+#include <blaze/math/typetraits/HasSIMDMin.h>
 #include <blaze/system/HostDevice.h>
 #include <blaze/system/Inline.h>
 
@@ -83,6 +89,37 @@ struct Clamp
    BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
    {
       return clamp( a, min_, max_ );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether SIMD is enabled for the specified data type \a T.
+   //
+   // \return \a true in case SIMD is enabled for the data type \a T, \a false if not.
+   */
+   template< typename T >
+   static constexpr bool simdEnabled() { return HasSIMDMin_v<T,DT> && HasSIMDMax_v<T,DT>; }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the operation supports padding, i.e. whether it can deal with zeros.
+   //
+   // \return \a true in case padding is supported, \a false if not.
+   */
+   static constexpr bool paddingEnabled() { return true; }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns the result of the clamp() function for the given SIMD vector.
+   //
+   // \param a The given SIMD vector.
+   // \return The result of the clamp() function for the given SIMD vector.
+   */
+   template< typename T >
+   BLAZE_ALWAYS_INLINE decltype(auto) load( const T& a ) const
+   {
+      BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T );
+      return max( min( a, set( max_ ) ), set( min_ ) );
    }
    //**********************************************************************************************
 
