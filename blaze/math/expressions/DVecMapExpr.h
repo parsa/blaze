@@ -1133,6 +1133,141 @@ inline decltype(auto) forEach( const DenseVector<VT,TF>& dv, OP op )
 
 
 //*************************************************************************************************
+/*!\brief Computes the componentwise minimum of a dense vector \a dv and a scalar.
+// \ingroup dense_vector
+//
+// \param dv The left-hand side dense vector operand.
+// \param scalar The right-hand side scalar value.
+// \return The resulting dense vector.
+//
+// This operator computes the componentwise minimum of a dense vector \a dv and a uniform vector
+// represented by the scalar value \a scalar. The function returns an expression representing this
+// operation.\n
+// The following example demonstrates the use of the \a min() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = min( a, 0.0 );
+   \endcode
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF      // Transpose flag
+        , typename ST  // Type of the scalar exponent
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+decltype(auto) min( const DenseVector<VT,TF>& dv, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = MultTrait_t< UnderlyingBuiltin_t<VT>, ST >;
+   return map( ~dv, bind2nd( Min(), ScalarType( scalar ) ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the componentwise minimum of a scalar and a dense vector \a dv.
+// \ingroup dense_vector
+//
+// \param scalar The left-hand side scalar value.
+// \param dv The right-hand side dense vector operand.
+// \return The resulting dense vector.
+//
+// This operator computes the componentwise minimum of a uniform vector represented by the scalar
+// value \a scalar and a dense vector \a dv. The function returns an expression representing this
+// operation.\n
+// The following example demonstrates the use of the \a min() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = min( 0.0, a );
+   \endcode
+*/
+template< typename ST  // Type of the scalar exponent
+        , typename VT  // Type of the dense vector
+        , bool TF      // Transpose flag
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+decltype(auto) min( ST scalar, const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = MultTrait_t< UnderlyingBuiltin_t<VT>, ST >;
+   return map( ~dv, bind1st( Min(), ScalarType( scalar ) ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the componentwise maximum of a dense vector \a dv and a scalar.
+// \ingroup dense_vector
+//
+// \param dv The left-hand side dense vector operand.
+// \param scalar The right-hand side scalar value.
+// \return The resulting dense vector.
+//
+// This operator computes the componentwise maximum of a dense vector \a dv and a uniform vector
+// represented by the scalar value \a scalar. The function returns an expression representing this
+// operation.\n
+// The following example demonstrates the use of the \a max() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = max( a, 0.0 );
+   \endcode
+
+// In case the current sizes of the two given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT  // Type of the dense vector
+        , bool TF      // Transpose flag
+        , typename ST  // Type of the scalar exponent
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+decltype(auto) max( const DenseVector<VT,TF>& dv, ST scalar )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = MultTrait_t< UnderlyingBuiltin_t<VT>, ST >;
+   return map( ~dv, bind2nd( Max(), ScalarType( scalar ) ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the componentwise maximum of a scalar and a dense vector \a dv.
+// \ingroup dense_vector
+//
+// \param scalar The left-hand side scalar value.
+// \param dv The right-hand side dense vector operand.
+// \return The resulting dense vector.
+//
+// This operator computes the componentwise maximum of a uniform vector represented by the scalar
+// value \a scalar and a dense vector \a dv. The function returns an expression representing this
+// operation.\n
+// The following example demonstrates the use of the \a max() function:
+
+   \code
+   blaze::DynamicVector<double> a, b;
+   // ... Resizing and initialization
+   b = max( 0.0, a );
+   \endcode
+*/
+template< typename ST  // Type of the scalar exponent
+        , typename VT  // Type of the dense vector
+        , bool TF      // Transpose flag
+        , EnableIf_t< IsNumeric_v<ST> >* = nullptr >
+decltype(auto) max( ST scalar, const DenseVector<VT,TF>& dv )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ScalarType = MultTrait_t< UnderlyingBuiltin_t<VT>, ST >;
+   return map( ~dv, bind1st( Max(), ScalarType( scalar ) ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Applies the \a abs() function to each single element of the dense vector \a dv.
 // \ingroup dense_vector
 //
