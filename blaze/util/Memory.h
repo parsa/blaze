@@ -46,7 +46,6 @@
 #include <cstdlib>
 #include <new>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
 #include <blaze/util/Types.h>
