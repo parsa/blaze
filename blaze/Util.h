@@ -51,7 +51,6 @@
 #include <blaze/util/Complex.h>
 #include <blaze/util/Constraints.h>
 #include <blaze/util/DimensionOf.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EmptyType.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/Exception.h>
