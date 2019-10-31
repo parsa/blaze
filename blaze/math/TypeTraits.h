@@ -266,6 +266,7 @@
 #include <blaze/math/typetraits/IsView.h>
 #include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/LowType.h>
+#include <blaze/math/typetraits/MakeComplex.h>
 #include <blaze/math/typetraits/MaxSize.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
