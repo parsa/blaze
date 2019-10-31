@@ -77,6 +77,7 @@
 #include <blaze/math/expressions/DMatDMatSubExpr.h>
 #include <blaze/math/expressions/DMatDVecMultExpr.h>
 #include <blaze/math/expressions/DMatDVecSolveExpr.h>
+#include <blaze/math/expressions/DMatEigenExpr.h>
 #include <blaze/math/expressions/DMatEvalExpr.h>
 #include <blaze/math/expressions/DMatExpExpr.h>
 #include <blaze/math/expressions/DMatInvExpr.h>
