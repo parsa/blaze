@@ -311,7 +311,7 @@ inline auto eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    using blaze::rowMajor;
    using blaze::columnVector;
 
-   SymmetricMatrix< DynamicMatrix<double,rowMajor> > A( 5UL, 5UL );  // The symmetric matrix A
+   SymmetricMatrix< DynamicMatrix<double,rowMajor> > A( 5UL );  // The symmetric matrix A
    // ... Initialization
 
    DynamicVector<double,columnVector> w( 5UL );  // The vector for the real eigenvalues
@@ -326,7 +326,7 @@ inline auto eigen_backend( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w )
    using blaze::rowMajor;
    using blaze::columnVector;
 
-   DynamicMatrix<complex<double>,rowMajor> A( 5UL, 5UL );  // The Hermitian matrix A
+   HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> > A( 5UL );  // The Hermitian matrix A
    // ... Initialization
 
    DynamicVector<double,columnVector> w( 5UL );  // The vector for the real eigenvalues
@@ -645,7 +645,7 @@ inline auto eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
    using blaze::rowMajor;
    using blaze::columnVector;
 
-   SymmetricMatrix< DynamicMatrix<double,rowMajor> > A( 5UL, 5UL );  // The symmetric matrix A
+   SymmetricMatrix< DynamicMatrix<double,rowMajor> > A( 5UL );  // The symmetric matrix A
    // ... Initialization
 
    DynamicVector<double,columnVector> w( 5UL );       // The vector for the real eigenvalues
@@ -661,7 +661,7 @@ inline auto eigen_backend( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
    using blaze::rowMajor;
    using blaze::columnVector;
 
-   HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> > A( 5UL, 5UL );  // The Hermitian matrix A
+   HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> > A( 5UL );  // The Hermitian matrix A
    // ... Initialization
 
    DynamicVector<double,columnVector>      w( 5UL );       // The vector for the real eigenvalues
