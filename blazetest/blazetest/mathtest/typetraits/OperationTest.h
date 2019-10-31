@@ -102,6 +102,7 @@ class OperationTest
    void testIsUpper();
    void testIsVector();
    void testIsZero();
+   void testMakeComplex();
    void testRemoveAdaptor();
    void testUnderlyingBuiltin();
    void testUnderlyingElement();

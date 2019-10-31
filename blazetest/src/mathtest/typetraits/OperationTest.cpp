@@ -95,6 +95,7 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/math/typetraits/IsZero.h>
+#include <blaze/math/typetraits/MakeComplex.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
@@ -147,6 +148,7 @@ OperationTest::OperationTest()
    testIsUpper();
    testIsVector();
    testIsZero();
+   testMakeComplex();
    testRemoveAdaptor();
    testUnderlyingBuiltin();
    testUnderlyingElement();
@@ -1067,6 +1069,55 @@ void OperationTest::testIsZero()
    BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type4 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type5 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_ZERO_TYPE( Type6 );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the mathematical 'MakeComplex' type trait.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a compile time test of the mathematical 'MakeComplex' type trait.
+// In case an error is detected, a compilation error is created.
+*/
+void OperationTest::testMakeComplex()
+{
+   using blaze::MakeComplex_t;
+   using blaze::complex;
+
+   using fcplx = complex<float>;
+   using dcplx = complex<double>;
+   using lcplx = complex<long double>;
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<float      >, fcplx );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<double     >, dcplx );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<long double>, lcplx );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<fcplx      >, fcplx );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<dcplx      >, dcplx );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<lcplx      >, lcplx );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<const float      >, const fcplx );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<const double     >, const dcplx );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<const long double>, const lcplx );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<const fcplx      >, const fcplx );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<const dcplx      >, const dcplx );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<const lcplx      >, const lcplx );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<volatile float      >, volatile fcplx );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<volatile double     >, volatile dcplx );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<volatile long double>, volatile lcplx );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<volatile fcplx      >, volatile fcplx );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<volatile dcplx      >, volatile dcplx );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<volatile lcplx      >, volatile lcplx );
+
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<const volatile float      >, const volatile fcplx );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<const volatile double     >, const volatile dcplx );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<const volatile long double>, const volatile lcplx );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<const volatile fcplx      >, const volatile fcplx );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<const volatile dcplx      >, const volatile dcplx );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( MakeComplex_t<const volatile lcplx      >, const volatile lcplx );
 }
 //*************************************************************************************************
 
