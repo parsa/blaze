@@ -144,6 +144,7 @@
 #include <blaze/math/constraints/SubExpr.h>
 #include <blaze/math/constraints/Submatrix.h>
 #include <blaze/math/constraints/Subvector.h>
+#include <blaze/math/constraints/SVDExpr.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/constraints/TransExpr.h>
 #include <blaze/math/constraints/Transformation.h>

@@ -235,6 +235,7 @@
 #include <blaze/math/typetraits/IsSubExpr.h>
 #include <blaze/math/typetraits/IsSubmatrix.h>
 #include <blaze/math/typetraits/IsSubvector.h>
+#include <blaze/math/typetraits/IsSVDExpr.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/math/typetraits/IsTemporary.h>
 #include <blaze/math/typetraits/IsTransExpr.h>
