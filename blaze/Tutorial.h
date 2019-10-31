@@ -6587,24 +6587,67 @@
 // \n \section matrix_operations_eigenvalues Eigenvalues/Eigenvectors
 // <hr>
 //
-// The eigenvalues and eigenvectors of a dense matrix can be computed via the \c eigen() functions:
+// The eigenvalues and eigenvectors of a dense matrix can be computed via the \c eigen() functions.
+// The following examples give an impression of the computation of eigenvalues and eigenvectors
+// for a general, a symmetric, and an Hermitian matrix:
 
    \code
-   namespace blaze {
+   using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::rowMajor;
+   using blaze::columnVector;
 
-   template< typename MT, bool SO, typename VT, bool TF >
-   void eigen( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w );
+   DynamicMatrix<double,rowMajor> A( 5UL, 5UL );  // The general matrix A
+   // ... Initialization
 
-   template< typename MT1, bool SO1, typename VT, bool TF, typename MT2, bool SO2 >
-   void eigen( const DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w, DenseMatrix<MT2,SO2>& V );
+   DynamicVector<complex<double>,columnVector> w( 5UL );   // The vector for the complex eigenvalues
+   DynamicMatrix<complex<double>,rowMajor> V( 5UL, 5UL );  // The matrix for the left eigenvectors
 
-   } // namespace blaze
+   w = eigen( A );    // Computing only the eigenvalues of A (one argument)
+   eigen( A, w );     // Computing only the eigenvalues of A (two arguments)
+   eigen( A, w, V );  // Computing both the eigenvalues and eigenvectors of A (three arguments)
    \endcode
 
-// The first function computes only the eigenvalues of the given \a n-by-\a n matrix, the second
-// function additionally computes the eigenvectors. The eigenvalues are returned in the given vector
-// \a w and the eigenvectors are returned in the given matrix \a V, which are both resized to the
-// correct dimensions (if possible and necessary).
+   \code
+   using blaze::SymmetricMatrix;
+   using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::rowMajor;
+   using blaze::columnVector;
+
+   SymmetricMatrix< DynamicMatrix<double,rowMajor> > A( 5UL );  // The symmetric matrix A
+   // ... Initialization
+
+   DynamicVector<double,columnVector> w( 5UL );       // The vector for the real eigenvalues
+   DynamicMatrix<double,rowMajor>     V( 5UL, 5UL );  // The matrix for the left eigenvectors
+
+   w = eigen( A );    // Computing only the eigenvalues of A (one argument)
+   eigen( A, w );     // Computing only the eigenvalues of A (two arguments)
+   eigen( A, w, V );  // Computing both the eigenvalues and eigenvectors of A (three arguments)
+   \endcode
+
+   \code
+   using blaze::HermitianMatrix;
+   using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::rowMajor;
+   using blaze::columnVector;
+
+   HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> > A( 5UL );  // The Hermitian matrix A
+   // ... Initialization
+
+   DynamicVector<double,columnVector>      w( 5UL );       // The vector for the real eigenvalues
+   DynamicMatrix<complex<double>,rowMajor> V( 5UL, 5UL );  // The matrix for the left eigenvectors
+
+   w = eigen( A );    // Computing only the eigenvalues of A (one argument)
+   eigen( A, w );     // Computing only the eigenvalues of A (two arguments)
+   eigen( A, w, V );  // Computing both the eigenvalues and eigenvectors of A (three arguments)
+   \endcode
+
+// The one- and two-argument functions compute only the eigenvalues of the given \a n-by-\a n
+// matrix, the three-argument function additionally computes the eigenvectors. The eigenvalues
+// are returned in the given vector \a w and the eigenvectors are returned in the given matrix
+// \a V, which are both resized to the correct dimensions (if possible and necessary).
 //
 // Depending on the given matrix type, the resulting eigenvalues are either of floating point
 // or complex type: In case the given matrix is either a compile time symmetric matrix with
@@ -6623,56 +6666,6 @@
 // therefore the elements of the given eigenvector matrix are expected to be of floating point
 // type. In all other cases they are expected to be of complex type.
 //
-// The following examples give an impression of the computation of eigenvalues and eigenvectors
-// for a general, a symmetric, and an Hermitian matrix:
-
-   \code
-   using blaze::DynamicMatrix;
-   using blaze::DynamicVector;
-   using blaze::rowMajor;
-   using blaze::columnVector;
-
-   DynamicMatrix<double,rowMajor> A( 5UL, 5UL );  // The general matrix A
-   // ... Initialization
-
-   DynamicVector<complex<double>,columnVector> w( 5UL );   // The vector for the complex eigenvalues
-   DynamicMatrix<complex<double>,rowMajor> V( 5UL, 5UL );  // The matrix for the left eigenvectors
-
-   eigen( A, w, V );
-   \endcode
-
-   \code
-   using blaze::SymmetricMatrix;
-   using blaze::DynamicMatrix;
-   using blaze::DynamicVector;
-   using blaze::rowMajor;
-   using blaze::columnVector;
-
-   SymmetricMatrix< DynamicMatrix<double,rowMajor> > A( 5UL );  // The symmetric matrix A
-   // ... Initialization
-
-   DynamicVector<double,columnVector> w( 5UL );       // The vector for the real eigenvalues
-   DynamicMatrix<double,rowMajor>     V( 5UL, 5UL );  // The matrix for the left eigenvectors
-
-   eigen( A, w, V );
-   \endcode
-
-   \code
-   using blaze::HermitianMatrix;
-   using blaze::DynamicMatrix;
-   using blaze::DynamicVector;
-   using blaze::rowMajor;
-   using blaze::columnVector;
-
-   HermitianMatrix< DynamicMatrix<complex<double>,rowMajor> > A( 5UL );  // The Hermitian matrix A
-   // ... Initialization
-
-   DynamicVector<double,columnVector>      w( 5UL );       // The vector for the real eigenvalues
-   DynamicMatrix<complex<double>,rowMajor> V( 5UL, 5UL );  // The matrix for the left eigenvectors
-
-   eigen( A, w, V );
-   \endcode
-
 // The functions fail if ...
 //
 //  - ... the given matrix \a A is not a square matrix;
