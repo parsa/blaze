@@ -166,6 +166,7 @@
 #include <blaze/math/typetraits/IsDenseVector.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsDivExpr.h>
+#include <blaze/math/typetraits/IsEigenExpr.h>
 #include <blaze/math/typetraits/IsElements.h>
 #include <blaze/math/typetraits/IsEvalExpr.h>
 #include <blaze/math/typetraits/IsExpandExpr.h>
