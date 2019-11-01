@@ -4381,6 +4381,28 @@
 // Note that non-square matrices are never considered to be identity matrices!
 //
 //
+// \n \subsection matrix_operations_ispositivedefinite isPositiveDefinite()
+//
+// The \c isPositiveDefinite() function checks if the given dense matrix is positive definite.
+
+   \code
+   blaze::DynamicMatrix<double> A;
+   // ... Initialization
+   if( isPositiveDefinite( A ) ) { ... }
+   \endcode
+
+// Note that non-square matrices are never considered to be positive definite!
+//
+// \note The \c isPositiveDefinite() function can only be used for dense matrices with \c float,
+// \c double, \c complex<float> or \c complex<double> element type. The attempt to call the
+// function wit matrices of any other element type or with a sparse matrix results in a compile
+// time error!
+//
+// \note The function is depending on LAPACK kernels. Thus the function can only be used if the
+// fitting LAPACK library is available and linked to the executable. Otherwise a linker error
+// will be created.
+//
+//
 // \n \subsection matrix_operations_matrix_determinant det()
 //
 // The determinant of a square dense matrix can be computed by means of the \c det() function:
