@@ -6688,33 +6688,59 @@
 // <hr>
 //
 // The singular value decomposition (SVD) of a dense matrix can be computed via the \c svd()
-// functions:
+// functions. The following two examples give an impression of the computation of singular values
+// and singular vectors for a general dense matrix with \c double and \c complex<double> element
+// type, respectively:
 
    \code
-   namespace blaze {
+   using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::rowMajor;
+   using blaze::columnVector;
 
-   template< typename MT, bool SO, typename VT, bool TF >
-   void svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s );
+   DynamicMatrix<double,rowMajor>  A( 5UL, 8UL );  // The general matrix A
+   // ... Initialization
 
-   template< typename MT1, bool SO, typename VT, bool TF, typename MT2, typename MT3 >
-   void svd( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V );
+   DynamicMatrix<double,rowMajor>     U;  // The matrix for the left singular vectors
+   DynamicVector<double,columnVector> s;  // The vector for the singular values
+   DynamicMatrix<double,rowMajor>     V;  // The matrix for the right singular vectors
 
-   template< typename MT, bool SO, typename VT, bool TF, typename ST >
-   size_t svd( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& s, ST low, ST upp );
+   s = svd( A );       // (1) Computing only the singular values of A
+   svd( A, s );        // (2) Computing only the singular values of A
+   svd( A, U, s, V );  // (3) Computing the singular values and vectors of A
 
-   template< typename MT1, bool SO, typename VT, bool TF, typename MT2, typename MT3, typename ST >
-   size_t svd( const DenseMatrix<MT1,SO>& A, DenseMatrix<MT2,SO>& U, DenseVector<VT,TF>& s, DenseMatrix<MT3,SO>& V, ST low, ST upp );
-
-   } // namespace blaze
+   svd( A, s, 0.0, 1.0 );    // (4) Computing all singular values in the floating point range [0.0..1.0)
+   svd( A, U, s, V, 0, 2 );  // (5) Computing the singular values and vectors in the index range [0..2]
    \endcode
 
-// The first and third function compute only singular values of the given general \a m-by-\a n
-// matrix, the second and fourth function additionally compute singular vectors. The resulting
-// singular values are returned in the given vector \a s, the left singular vectors are returned
-// in the given matrix \a U, and the right singular vectors are returned in the matrix \a V. \a s,
-// \a U, and \a V are resized to the correct dimensions (if possible and necessary).
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::DynamicVector;
+   using blaze::rowMajor;
+   using blaze::columnVector;
+
+   DynamicMatrix<complex<double>,rowMajor>  A( 5UL, 8UL );  // The general matrix A
+   // ... Initialization
+
+   DynamicMatrix<complex<double>,rowMajor> U;  // The matrix for the left singular vectors
+   DynamicVector<double,columnVector>      s;  // The vector for the singular values
+   DynamicMatrix<complex<double>,rowMajor> V;  // The matrix for the right singular vectors
+
+   s = svd( A );       // (1) Computing only the singular values of A
+   svd( A, s );        // (2) Computing only the singular values of A
+   svd( A, U, s, V );  // (3) Computing the singular values and vectors of A
+
+   svd( A, s, 0.0, 1.0 );    // (4) Computing all singular values in the floating point range [0.0..1.0)
+   svd( A, U, s, V, 0, 2 );  // (5) Computing the singular values and vectors in the index range [0..2]
+   \endcode
+
+// Functions (1), (2) and (4) compute only singular values of the given general \a m-by-\a n
+// matrix, functions (3) and (5) additionally compute singular vectors. The resulting singular
+// values are returned in the given vector \a s, the left singular vectors are returned in the
+// given matrix \a U, and the right singular vectors are returned in the matrix \a V. \a s, \a U,
+// and \a V are resized to the correct dimensions (if possible and necessary).
 //
-// The third and fourth function allow for the specification of a subset of singular values and/or
+// Functions (4) and (5) allow for the specification of a subset of singular values and/or
 // vectors. The number of singular values and vectors to be computed is specified by the lower
 // bound \a low and the upper bound \a upp, which either form an integral or a floating point
 // range.
@@ -6746,40 +6772,6 @@
 //
 // In all failure cases an exception is thrown.
 //
-// Examples:
-
-   \code
-   using blaze::DynamicMatrix;
-   using blaze::DynamicVector;
-   using blaze::rowMajor;
-   using blaze::columnVector;
-
-   DynamicMatrix<double,rowMajor>  A( 5UL, 8UL );  // The general matrix A
-   // ... Initialization
-
-   DynamicMatrix<double,rowMajor>     U;  // The matrix for the left singular vectors
-   DynamicVector<double,columnVector> s;  // The vector for the singular values
-   DynamicMatrix<double,rowMajor>     V;  // The matrix for the right singular vectors
-
-   svd( A, U, s, V );
-   \endcode
-
-   \code
-   using blaze::DynamicMatrix;
-   using blaze::DynamicVector;
-   using blaze::rowMajor;
-   using blaze::columnVector;
-
-   DynamicMatrix<complex<double>,rowMajor>  A( 5UL, 8UL );  // The general matrix A
-   // ... Initialization
-
-   DynamicMatrix<complex<double>,rowMajor> U;  // The matrix for the left singular vectors
-   DynamicVector<double,columnVector>      s;  // The vector for the singular values
-   DynamicMatrix<complex<double>,rowMajor> V;  // The matrix for the right singular vectors
-
-   svd( A, U, s, V, 0, 2 );
-   \endcode
-
 // \note All \c svd() functions can only be used for dense matrices with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
 // matrices of any other element type or with a sparse matrix results in a compile time error!
