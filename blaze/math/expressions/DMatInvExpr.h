@@ -116,7 +116,9 @@ class DMatInvExpr
    */
    explicit inline DMatInvExpr( const MT& dm ) noexcept
       : dm_( dm )  // Dense matrix of the inversion expression
-   {}
+   {
+      BLAZE_INTERNAL_ASSERT( isSquare( ~dm ), "Non-square matrix detected" );
+   }
    //**********************************************************************************************
 
    //**Rows function*******************************************************************************
