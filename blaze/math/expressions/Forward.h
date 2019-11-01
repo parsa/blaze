@@ -86,6 +86,7 @@ template< typename, typename, bool > class DMatSMatKronExpr;
 template< typename, typename, bool, bool, bool, bool > class DMatSMatMultExpr;
 template< typename, typename > class DMatSMatSchurExpr;
 template< typename, typename, bool > class DMatSMatSubExpr;
+template< typename, bool > class DMatSVDExpr;
 template< typename, typename > class DMatSVecMultExpr;
 template< typename, typename > class DMatTDMatAddExpr;
 template< typename, typename, typename > class DMatTDMatMapExpr;
@@ -619,6 +620,10 @@ decltype(auto) solve( const DenseMatrix<MT1,SO1>&, const DenseMatrix<MT2,SO2>& )
 
 template< typename MT, bool SO >
 decltype(auto) eigen( const DenseMatrix<MT,SO>& );
+
+
+template< typename MT, bool SO >
+decltype(auto) svd( const DenseMatrix<MT,SO>& );
 
 
 template< typename VT, bool TF, typename OP >
