@@ -41,10 +41,12 @@
 //*************************************************************************************************
 
 #include <blaze/math/Aliases.h>
+#include <blaze/math/constraints/BLASCompatible.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/Triangular.h>
 #include <blaze/math/constraints/UniTriangular.h>
 #include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/lapack/clapack/potrf.h>
 #include <blaze/math/ReductionFlag.h>
 #include <blaze/math/shims/Conjugate.h>
 #include <blaze/math/shims/Equal.h>
@@ -61,6 +63,7 @@
 #include <blaze/math/typetraits/IsIdentity.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsRestricted.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/math/typetraits/IsStrictlyLower.h>
 #include <blaze/math/typetraits/IsStrictlyUpper.h>
 #include <blaze/math/typetraits/IsSymmetric.h>
@@ -71,11 +74,13 @@
 #include <blaze/math/typetraits/IsUniUpper.h>
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/IsZero.h>
+#include <blaze/math/typetraits/RemoveAdaptor.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
+#include <blaze/util/NumericCast.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsNumeric.h>
@@ -1240,6 +1245,9 @@ bool isDiagonal( const DenseMatrix<MT,SO>& dm );
 
 template< bool RF, typename MT, bool SO >
 bool isIdentity( const DenseMatrix<MT,SO>& dm );
+
+template< typename MT, bool SO >
+bool isPositiveDefinite( const DenseMatrix<MT,SO>& dm );
 //@}
 //*************************************************************************************************
 
@@ -2280,7 +2288,7 @@ bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm )
 
 
 //*************************************************************************************************
-/*!\brief Checks if the give dense matrix is diagonal.
+/*!\brief Checks if the given dense matrix is diagonal.
 // \ingroup dense_matrix
 //
 // \param dm The dense matrix to be checked.
@@ -2386,7 +2394,7 @@ bool isDiagonal( const DenseMatrix<MT,SO>& dm )
 
 
 //*************************************************************************************************
-/*!\brief Checks if the give dense matrix is an identity matrix.
+/*!\brief Checks if the given dense matrix is an identity matrix.
 // \ingroup dense_matrix
 //
 // \param dm The dense matrix to be checked.
@@ -2489,6 +2497,64 @@ bool isIdentity( const DenseMatrix<MT,SO>& dm )
    }
 
    return true;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given dense matrix is a positive definite matrix.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix to be checked.
+// \return \a true if the matrix is a positive definite matrix, \a false if not.
+//
+// This function tests whether the matrix is a positive definite matrix. The following example
+// demonstrates the use of the function:
+
+   \code
+   blaze::DynamicMatrix<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isPositiveDefinite( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a matrix expression results in a positive definite matrix:
+
+   \code
+   if( isPositiveDefinite( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary matrix.
+//
+// \note This function only works for matrices with \c float, \c double, \c complex<float>, or
+// \c complex<double> element type. The attempt to call the function with matrices of any other
+// element type results in a compile time error!
+//
+// \note This function can only be used if a fitting LAPACK library is available and linked to
+// the executable. Otherwise a call to this function will result in a linker error.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+bool isPositiveDefinite( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
+
+   if( !isSquare( ~dm ) )
+      return false;
+
+   if( (~dm).rows() < 2UL )
+      return true;
+
+   RemoveAdaptor_t< ResultType_t<MT> > L( ~dm );
+
+   char uplo( IsRowMajorMatrix_v<MT> ? 'U' : 'L' );
+   int  n   ( numeric_cast<int>( (~L).rows()    ) );
+   int  lda ( numeric_cast<int>( (~L).spacing() ) );
+   int  info( 0 );
+
+   potrf( uplo, n, (~L).data(), lda, &info );
+
+   return ( info == 0 );
 }
 //*************************************************************************************************
 
