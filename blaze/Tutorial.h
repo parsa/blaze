@@ -61,14 +61,65 @@
 //    <li> \ref getting_started </li>
 //    <li> \ref vectors
 //       <ul>
-//          <li> \ref vector_types </li>
-//          <li> \ref vector_operations </li>
+//          <li> \ref vector_types
+//             <ul>
+//                <li> \ref vector_types_dense_vectors </li>
+//                <li> \ref vector_types_sparse_vectors </li>
+//             </ul>
+//          </li>
+//          <li> \ref vector_operations
+//             <ul>
+//                <li> \ref vector_operations_constructors </li>
+//                <li> \ref vector_operations_assignment </li>
+//                <li> \ref vector_operations_element_access </li>
+//                <li> \ref vector_operations_element_insertion </li>
+//                <li> \ref vector_operations_element_removal </li>
+//                <li> \ref vector_operations_element_lookup </li>
+//                <li> \ref vector_operations_non_modifying_operations </li>
+//                <li> \ref vector_operations_modifying_operations </li>
+//                <li> \ref vector_operations_arithmetic_operations </li>
+//                <li> \ref vector_operations_reduction_operations </li>
+//                <li> \ref vector_operations_norms </li>
+//                <li> \ref vector_operations_scalar_expansion </li>
+//                <li> \ref vector_operations_vector_expansion </li>
+//                <li> \ref vector_operations_statistic_operations </li>
+//                <li> \ref vector_operations_declaration_operations </li>
+//             </ul>
+//          </li>
 //       </ul>
 //    </li>
 //    <li> \ref matrices
 //       <ul>
-//          <li> \ref matrix_types </li>
-//          <li> \ref matrix_operations </li>
+//          <li> \ref matrix_types
+//             <ul>
+//                <li> \ref matrix_types_dense_matrices </li>
+//                <li> \ref matrix_types_sparse_matrices </li>
+//             </ul>
+//          </li>
+//          <li> \ref matrix_operations
+//             <ul>
+//                <li> \ref matrix_operations_constructors </li>
+//                <li> \ref matrix_operations_assignment </li>
+//                <li> \ref matrix_operations_element_access </li>
+//                <li> \ref matrix_operations_element_insertion </li>
+//                <li> \ref matrix_operations_element_removal </li>
+//                <li> \ref matrix_operations_element_lookup </li>
+//                <li> \ref matrix_operations_non_modifying_operations </li>
+//                <li> \ref matrix_operations_modifying_operations </li>
+//                <li> \ref matrix_operations_arithmetic_operations </li>
+//                <li> \ref matrix_operations_reduction_operations </li>
+//                <li> \ref matrix_operations_norms </li>
+//                <li> \ref matrix_operations_scalar_expansion </li>
+//                <li> \ref matrix_operations_statistic_operations </li>
+//                <li> \ref matrix_operations_declaration_operations </li>
+//                <li> \ref matrix_operations_matrix_inversion </li>
+//                <li> \ref matrix_operations_matrix_exponential </li>
+//                <li> \ref matrix_operations_decomposition </li>
+//                <li> \ref matrix_operations_linear_systems </li>
+//                <li> \ref matrix_operations_eigenvalues </li>
+//                <li> \ref matrix_operations_singularvalues </li>
+//             </ul>
+//          </li>
 //       </ul>
 //    </li>
 //    <li> \ref adaptors
