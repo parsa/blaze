@@ -102,6 +102,7 @@ class GeneralTest
    void testIsStrictlyUpper();
    void testIsDiagonal();
    void testIsIdentity();
+   void testIsPositiveDefinite();
    void testMinimum();
    void testMaximum();
    void testTrace();

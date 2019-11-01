@@ -84,6 +84,7 @@ GeneralTest::GeneralTest()
    testIsStrictlyUpper();
    testIsDiagonal();
    testIsIdentity();
+   testIsPositiveDefinite();
    testMinimum();
    testMaximum();
    testTrace();
@@ -4314,6 +4315,217 @@ void GeneralTest::testIsIdentity()
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isIdentity evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c isPositiveDefinite() function for dense matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c isPositiveDefinite() function for dense matrices. In
+// case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testIsPositiveDefinite()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major isPositiveDefinite()";
+
+      // 0x0 matrix
+      {
+         blaze::DynamicMatrix<double,blaze::rowMajor> mat( 0UL, 0UL );
+
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 0UL );
+         checkCapacity( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( isPositiveDefinite( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isPositiveDefinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-square matrix
+      {
+         blaze::DynamicMatrix<double,blaze::rowMajor> mat( 2UL, 3UL, 0 );
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 6UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+
+         if( isPositiveDefinite( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isPositiveDefinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Positive definite matrix
+      {
+         blaze::DynamicMatrix<double,blaze::rowMajor> mat
+            { {  2.0, -1.0,  0.0 }
+            , { -1.0,  2.0, -1.0 }
+            , {  0.0, -1.0,  2.0 } };
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 7UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 3UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isPositiveDefinite( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isPositiveDefinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-positive definite matrix
+      {
+         blaze::DynamicMatrix<double,blaze::rowMajor> mat
+            { { 1.0, 2.0, 0.0 }
+            , { 2.0, 1.0, 2.0 }
+            , { 0.0, 2.0, 1.0 } };
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 7UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 3UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isPositiveDefinite( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isPositiveDefinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major isPositiveDefinite()";
+
+      // 0x0 matrix
+      {
+         blaze::DynamicMatrix<double,blaze::columnMajor> mat( 0UL, 0UL );
+
+         checkRows    ( mat, 0UL );
+         checkColumns ( mat, 0UL );
+         checkCapacity( mat, 0UL );
+         checkNonZeros( mat, 0UL );
+
+         if( isPositiveDefinite( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isPositiveDefinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-square matrix
+      {
+         blaze::DynamicMatrix<double,blaze::columnMajor> mat( 2UL, 3UL, 0 );
+
+         checkRows    ( mat, 2UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 6UL );
+         checkNonZeros( mat, 0UL );
+         checkNonZeros( mat, 0UL, 0UL );
+         checkNonZeros( mat, 1UL, 0UL );
+
+         if( isPositiveDefinite( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isPositiveDefinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Positive definite matrix
+      {
+         blaze::DynamicMatrix<double,blaze::columnMajor> mat
+            { {  2.0, -1.0,  0.0 }
+            , { -1.0,  2.0, -1.0 }
+            , {  0.0, -1.0,  2.0 } };
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 7UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 3UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isPositiveDefinite( mat ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isPositiveDefinite evaluation\n"
+                << " Details:\n"
+                << "   Matrix:\n" << mat << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Non-positive definite matrix
+      {
+         blaze::DynamicMatrix<double,blaze::columnMajor> mat
+            { { 1.0, 2.0, 0.0 }
+            , { 2.0, 1.0, 2.0 }
+            , { 0.0, 2.0, 1.0 } };
+
+         checkRows    ( mat, 3UL );
+         checkColumns ( mat, 3UL );
+         checkCapacity( mat, 9UL );
+         checkNonZeros( mat, 7UL );
+         checkNonZeros( mat, 0UL, 2UL );
+         checkNonZeros( mat, 1UL, 3UL );
+         checkNonZeros( mat, 2UL, 2UL );
+
+         if( isPositiveDefinite( mat ) != false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isPositiveDefinite evaluation\n"
                 << " Details:\n"
                 << "   Matrix:\n" << mat << "\n";
             throw std::runtime_error( oss.str() );
