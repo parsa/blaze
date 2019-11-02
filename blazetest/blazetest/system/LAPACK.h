@@ -55,7 +55,7 @@
 //  - Deactivated: \b 0
 //  - Activated  : \b 1
 */
-#define BLAZETEST_MATHTEST_LAPACK_MODE 1
+#define BLAZETEST_MATHTEST_LAPACK_MODE 0
 //*************************************************************************************************
 
 
@@ -72,7 +72,7 @@
 //  - Deactivated: \b 0
 //  - Activated  : \b 1
 */
-#define BLAZETEST_MATHTEST_LAPACK_SUPPORTS_GESVDX 1
+#define BLAZETEST_MATHTEST_LAPACK_SUPPORTS_GESVDX 0
 //*************************************************************************************************
 
 #endif
