@@ -4336,6 +4336,8 @@ void GeneralTest::testIsIdentity()
 */
 void GeneralTest::testIsPositiveDefinite()
 {
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
@@ -4532,6 +4534,8 @@ void GeneralTest::testIsPositiveDefinite()
          }
       }
    }
+
+#endif
 }
 //*************************************************************************************************
 
