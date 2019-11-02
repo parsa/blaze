@@ -576,13 +576,6 @@ class Submatrix<MT,AF,false,false,CSAs...>
    //**********************************************************************************************
 
  private:
-   //**Utility functions***************************************************************************
-   /*!\name Utility functions */
-   //@{
-   inline bool hasOverlap() const noexcept;
-   //@}
-   //**********************************************************************************************
-
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -1572,31 +1565,6 @@ void Submatrix<MT,AF,false,false,CSAs...>::trim( size_t i )
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    matrix_.trim( row() + i );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checking whether there exists an overlap in the context of a symmetric matrix.
-//
-// \return \a true in case an overlap exists, \a false if not.
-//
-// This function checks if in the context of a symmetric matrix the submatrix has an overlap with
-// its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
-// \a false.
-*/
-template< typename MT       // Type of the sparse matrix
-        , AlignmentFlag AF  // Alignment flag
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline bool Submatrix<MT,AF,false,false,CSAs...>::hasOverlap() const noexcept
-{
-   BLAZE_INTERNAL_ASSERT( IsSymmetric_v<MT> || IsHermitian_v<MT>, "Invalid matrix detected" );
-
-   if( ( row() + rows() <= column() ) || ( column() + columns() <= row() ) )
-      return false;
-   else return true;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3029,13 +2997,6 @@ class Submatrix<MT,AF,true,false,CSAs...>
    //**********************************************************************************************
 
  private:
-   //**Utility functions***************************************************************************
-   /*!\name Utility functions */
-   //@{
-   inline bool hasOverlap() const noexcept;
-   //@}
-   //**********************************************************************************************
-
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
@@ -3974,31 +3935,6 @@ void Submatrix<MT,AF,true,false,CSAs...>::trim( size_t j )
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    matrix_.trim( column() + j );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Checking whether there exists an overlap in the context of a symmetric matrix.
-//
-// \return \a true in case an overlap exists, \a false if not.
-//
-// This function checks if in the context of a symmetric matrix the submatrix has an overlap with
-// its counterpart. In case an overlap exists, the function return \a true, otherwise it returns
-// \a false.
-*/
-template< typename MT       // Type of the sparse matrix
-        , AlignmentFlag AF  // Alignment flag
-        , size_t... CSAs >  // Compile time submatrix arguments
-inline bool Submatrix<MT,AF,true,false,CSAs...>::hasOverlap() const noexcept
-{
-   BLAZE_INTERNAL_ASSERT( IsSymmetric_v<MT> || IsHermitian_v<MT>, "Invalid matrix detected" );
-
-   if( ( row() + rows() <= column() ) || ( column() + columns() <= row() ) )
-      return false;
-   else return true;
 }
 /*! \endcond */
 //*************************************************************************************************
