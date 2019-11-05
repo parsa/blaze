@@ -284,6 +284,44 @@
    endif()
    \endcode
 
+// Alternatively \b Blaze provides the <tt>./cmake/Blaze_Import</tt> CMake function to import
+// the \b Blaze library into CMake based projects. This approach includes the configuration
+// step (see \ref step_2_configuration). To do so you need to import the function file like
+// any other module/function into your CMake project:
+
+   \code
+   list(APPEND CMAKE_MODULE_PATH ${BLAZE_LIBRARY_PATH}/cmake)
+   include(Blaze_Import)
+   \endcode
+
+// After importing the function script you can import and use the \b Blaze library:
+
+   \code
+   Blaze_Import(ARGUMENTS)
+   target_link_libraries(TARGET Blaze)
+   \endcode
+
+// In this example, \c TARGET is the executable/library using \b Blaze and \c ARGUMENTS is the
+// configuration you want for building \b Blaze. To configure \b Blaze using the import function
+// you can set the input arguments like this example:
+
+   \code
+   Blaze_Import(
+      QUIET
+      BLAS on
+      LAPACK on
+      THREADING Boost
+      CACHE_SIZE auto
+      VECTORIZATION on
+      STORAGE_ORDER rowMajor
+      THRESHOLD_DMATDVECMULT 100000UL
+      THRESHOLD_SMP_DVECDVECADD 1000000UL
+   )
+   \endcode
+
+// For more details about available configuration options please have a look at
+// \ref configuration_files and the <tt>Blaze_Import.cmake</tt> function script.
+//
 // \n \subsection step_1_vcpkg Installation via the VC++ Packaging Tool
 //
 // An alternate way to install \b Blaze for Windows users is Microsoft's
@@ -6329,7 +6367,7 @@
    \code
    blaze::DynamicMatrix<float,blaze::rowMajor> A, B;
    // ... Resizing and initialization
-   B = matexp( A );  // Compute the inverse of A
+   B = matexp( A );  // Compute the exponential of A
    \endcode
 
 // \note The matrix exponential can only be used for dense matrices with \c float, \c double,
