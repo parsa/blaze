@@ -148,14 +148,14 @@ class EigenvalueTest
 */
 template< typename T >
 const auto select =
-   []( const T* alphar, const T* alphai, const T* beta ) {
+   []( const T* alphar, const T* alphai, const T* beta ) -> int {
       blaze::MAYBE_UNUSED( alphai, beta );
       return *alphar > T(0);
    };
 
 template< typename T >
 const auto select< blaze::complex<T> > =
-   []( const blaze::complex<T>* alpha, const blaze::complex<T>* beta ) {
+   []( const blaze::complex<T>* alpha, const blaze::complex<T>* beta ) -> int {
       blaze::MAYBE_UNUSED( beta );
       return alpha->real() > T(0);
    };
