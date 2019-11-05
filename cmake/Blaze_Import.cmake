@@ -49,43 +49,44 @@ function(Blaze_Import)
    endmacro()
 
    cmake_minimum_required(VERSION 3.5)
+
    #==================================================================================================
    #   Input Parsing
    #==================================================================================================
-   
+
       set(options
-         REQUIRED   # Throw error if Blaze can't be imported
-         HELP       # Print Help message
-         QUIET       # Suppress messages if not in Debug mode
-         DEBUG      # Print additional information messages
+         REQUIRED  # Throw error if Blaze can't be imported
+         HELP      # Print Help message
+         QUIET     # Suppress messages if not in Debug mode
+         DEBUG     # Print additional information messages
       )
       set(oneValueArgs
-         BLAS         # ON/OFF
-         BLAS_PARALLEL   # ON/OFF
-         BLAS_MV         # ON/OFF
-         BLAS_MM         # ON/OFF
-         BLAS_INCLUDE   # <cblas.h>/<mkl_blas.h> or another blas header
-         LAPACK         # ON/OFF
-         THREADING      # HPX/C++11/Boost/OpenMP/off
-         CACHE_SIZE      # auto or an unsinged long (UL) value
-         VECTORIZATION   # ON/OFF
-         TRANSPOSE_FLAG   # columnVector/rowVector
-         STORAGE_ORDER   # rowMajor/ColumnMajor
-         PADDING         # ON/OFF
-         STREAMING      # ON/OFF
-         OPTIMIZED_KERNELS      # ON/OFF
-         DEFAULT_INITIALIZATION   # ON/OFF
-         STRONG_INLINE      # ON/OFF
-         ALWAYS_INLINE      # ON/OFF
-         RESTRICT         # ON/OFF
-         DEBUG_MODE         # ON/OFF
-         FUNCTION_TRACES      # ON/OFF
-         INTERNAL_ASSERTION   # ON/OFF
-         USER_ASSERTION      # ON/OFF
-         MPI_PARALLEL_MODE   # ON/OFF
-         RANDOM            # (Psudo) Random Number Generator, like std::mt19937
-         # All THREASHOLDS are unsinged long (UL) value
-         THRESHOLD_DMATDVECMULT      
+         BLAS                    # ON/OFF
+         BLAS_PARALLEL           # ON/OFF
+         BLAS_MV                 # ON/OFF
+         BLAS_MM                 # ON/OFF
+         BLAS_INCLUDE            # <cblas.h>/<mkl_blas.h> or another blas header
+         LAPACK                  # ON/OFF
+         THREADING               # HPX/C++11/Boost/OpenMP/off
+         CACHE_SIZE              # auto or an unsinged long (UL) value
+         VECTORIZATION           # ON/OFF
+         TRANSPOSE_FLAG          # columnVector/rowVector
+         STORAGE_ORDER           # rowMajor/ColumnMajor
+         PADDING                 # ON/OFF
+         STREAMING               # ON/OFF
+         OPTIMIZED_KERNELS       # ON/OFF
+         DEFAULT_INITIALIZATION  # ON/OFF
+         STRONG_INLINE           # ON/OFF
+         ALWAYS_INLINE           # ON/OFF
+         RESTRICT                # ON/OFF
+         DEBUG_MODE              # ON/OFF
+         FUNCTION_TRACES         # ON/OFF
+         INTERNAL_ASSERTION      # ON/OFF
+         USER_ASSERTION          # ON/OFF
+         MPI_PARALLEL_MODE       # ON/OFF
+         RANDOM                  # (Pseudo) Random Number Generator, like std::mt19937
+         # All THRESHOLDS are unsinged long (UL) value
+         THRESHOLD_DMATDVECMULT
          THRESHOLD_TDMATDVECMULT
          THRESHOLD_TDVECDMATMULT
          THRESHOLD_TDVECTDMATMULT
@@ -159,7 +160,7 @@ function(Blaze_Import)
    #==================================================================================================
    #   Include Guard
    #==================================================================================================
-   
+
       if(blaze_FOUND)
          if(NOT Blaze_Import_QUIET OR Blaze_Import_DEBUG)
             message(WARNING "Blaze was already imported and will not be imported again")
@@ -169,7 +170,7 @@ function(Blaze_Import)
    #==================================================================================================
    #   Blaze Version
    #==================================================================================================
-   
+
       file(READ ${CMAKE_CURRENT_LIST_DIR}/blaze/system/Version.h BLAZE_VERSION_FILE)
 
       string(REGEX MATCH "#define BLAZE_MAJOR_VERSION ([0-9]*)" _BLAZE_MAJOR_VERSION ${BLAZE_VERSION_FILE})
@@ -179,7 +180,7 @@ function(Blaze_Import)
       set(BLAZE_MINOR_VERSION ${CMAKE_MATCH_1})
 
       set(BLAZE_VERSION ${BLAZE_MAJOR_VERSION}.${BLAZE_MINOR_VERSION})
-   
+
       msg("Configuring blaze version ${BLAZE_VERSION}")
 
    #==================================================================================================
@@ -192,11 +193,11 @@ function(Blaze_Import)
          message("\t\t______________________________\n")
 
          message("Description")
-      
+
          message("________________________________________")
 
       endif()
-   
+
    #==================================================================================================
    #   Library Definition
    #==================================================================================================
@@ -499,7 +500,7 @@ function(Blaze_Import)
    #==================================================================================================
    #   Inlining
    #==================================================================================================
-   
+
       if(Blaze_Import_DEFAULT_STRONG_INLINE)
          target_compile_definitions( Blaze INTERFACE BLAZE_USE_STRONG_INLINE=1 )
          msg("Configuring Strong Inlining : ON")
@@ -954,7 +955,7 @@ function(Blaze_Import)
    #==================================================================================================
    #   MPI
    #==================================================================================================
-   
+
       if(Blaze_Import_MPI_PARALLEL_MODE)
          target_compile_definitions( Blaze INTERFACE BLAZE_MPI_PARALLEL_MODE=1 )
          msg("Configuring MPI Parallel Mode : ON")
@@ -968,18 +969,18 @@ function(Blaze_Import)
    #==================================================================================================
    #   Random
    #==================================================================================================
-   
+
       if(Blaze_Import_RANDOM)
          target_compile_definitions( Blaze INTERFACE BLAZE_RANDOM_NUMBER_GENERATOR=${Blaze_Import_RANDOM} )
          msg("Configuring Random Number Generator : ${Blaze_Import_RANDOM}")
       else()
          msg_db("Using default configuration for Random Number Generator.")
       endif()
-    
+
    #==================================================================================================
    #   Restrict
    #==================================================================================================
-      
+
       if(Blaze_Import_RESTRICT)
          target_compile_definitions( Blaze INTERFACE BLAZE_USE_RESTRICT=1 )
          msg("Configuring Restrict Keyword : ON")
@@ -1051,11 +1052,11 @@ function(Blaze_Import)
       endif()
 
    #==================================================================================================
-   #   
+   #
    #==================================================================================================
 
       set(blaze_FOUND TRUE CACHE BOOL "Indicates whether the blaze library was found successfully.")
-   
+
       msg("Blaze has been configured successfully")
 
    endif()
