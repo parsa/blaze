@@ -156,7 +156,7 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    const std::unique_ptr<BT[]> alphar( new BT[n] );
    const std::unique_ptr<BT[]> alphai( new BT[n] );
    const std::unique_ptr<BT[]> work( new BT[max(1,lwork)] );
-   const std::unique_ptr<bool[]> bwork( select ? new bool[n] : nullptr );
+   const std::unique_ptr<int[]> bwork( select ? new int[n] : nullptr );
 
    gges( 'N', 'N', ( select ? 'S' : 'N' ), select, n, (~A).data(), lda, (~B).data(), ldb, &sdim,
          alphar.get(), alphai.get(), (~beta).data(), nullptr, 1, nullptr, 1,
@@ -231,7 +231,7 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    int lwork = max( 1, 2*n );
    const std::unique_ptr<CT[]> work( new CT[max(1,lwork)] );
    const std::unique_ptr<BT[]> rwork( new BT[8*n] );
-   const std::unique_ptr<bool[]> bwork( select ? new bool[n] : nullptr );
+   const std::unique_ptr<int[]> bwork( select ? new int[n] : nullptr );
 
    gges( 'N', 'N', ( select ? 'S' : 'N' ), select, n, (~A).data(), lda, (~B).data(), ldb, &sdim,
          (~alpha).data(), (~beta).data(), nullptr, 1, nullptr, 1,
@@ -571,7 +571,7 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    const std::unique_ptr<BT[]> alphar( new BT[n] );
    const std::unique_ptr<BT[]> alphai( new BT[n] );
    const std::unique_ptr<BT[]> work( new BT[max(1, lwork)] );
-   const std::unique_ptr<bool[]> bwork( select ? new bool[n] : nullptr );
+   const std::unique_ptr<int[]> bwork( select ? new int[n] : nullptr );
 
    gges( 'V', 'V', ( select ? 'S' : 'N' ), select, n, (~A).data(), lda, (~B).data(), ldb, &sdim,
          alphar.get(), alphai.get(), (~beta).data(), (~VSL).data(), ldvsl, (~VSR).data(), ldvsr,
@@ -659,7 +659,7 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    int lwork = max( 1, 2*n );
    const std::unique_ptr<CT[]> work( new CT[max(1,lwork)] );
    const std::unique_ptr<BT[]> rwork( new BT[8*n] );
-   const std::unique_ptr<bool[]> bwork( select ? new bool[n] : nullptr );
+   const std::unique_ptr<int[]> bwork( select ? new int[n] : nullptr );
 
    gges( 'V', 'V', ( select ? 'S' : 'N' ), select, n, (~A).data(), lda, (~B).data(), ldb, &sdim,
          (~alpha).data(), (~beta).data(), (~VSL).data(), ldvsl, (~VSR).data(), ldvsr,
