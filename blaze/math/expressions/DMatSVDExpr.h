@@ -374,8 +374,8 @@ class DMatSVDExpr
 // matrices of any other element type results in a compile time error!
 //
 // \note It is not possible to use any kind of view on the expression object returned by the
-// \c svd() function. Also, it is not possible to access individual elements via the function
-// call operator on the expression object:
+// \c svd() function. Also, it is not possible to access individual elements via the subscript
+// operator on the expression object:
 
    \code
    subvector( svd( A ), 2, 4 );  // Compilation error: Views cannot be used on an svd() expression!
