@@ -43,6 +43,7 @@
 #include <memory>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/BLASCompatible.h>
+#include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/StrictlyTriangular.h>
 #include <blaze/math/constraints/Uniform.h>
 #include <blaze/math/Exception.h>
@@ -5753,15 +5754,16 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (~B).rows() == (~X).rows(), "Invalid number of rows detected" );
    BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (~B).columns() == (~X).columns(), "Invalid number of columns detected" );
 
-   using RT1 = ResultType_t<MT1>;
-   using RT2 = ResultType_t<MT2>;
-   using OT1 = OppositeType_t<MT1>;
-   using OT2 = OppositeType_t<MT2>;
+   using MT4 = RemoveAdaptor_t< If_t< SO1, ResultType_t<MT1>, OppositeType_t<MT1> > >;
+   using MT5 = RemoveAdaptor_t< If_t< SO3, ResultType_t<MT3>, OppositeType_t<MT3> > >;
+
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT4 );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT5 );
 
    const size_t N( (~A).rows() );
 
-   RemoveAdaptor_t< If_t<SO1,RT1,OT1> > Atmp( A );
-   RemoveAdaptor_t< If_t<SO2,RT2,OT2> > Xtmp( B );
+   MT4 Atmp( A );
+   MT5 Xtmp( B );
 
    const std::unique_ptr<int[]> ipiv( new int[N] );
 
@@ -5819,15 +5821,16 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (~B).rows() == (~X).rows(), "Invalid number of rows detected" );
    BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (~B).columns() == (~X).columns(), "Invalid number of columns detected" );
 
-   using RT1 = ResultType_t<MT1>;
-   using RT2 = ResultType_t<MT2>;
-   using OT1 = OppositeType_t<MT1>;
-   using OT2 = OppositeType_t<MT2>;
+   using MT4 = RemoveAdaptor_t< If_t< SO1, ResultType_t<MT1>, OppositeType_t<MT1> > >;
+   using MT5 = RemoveAdaptor_t< If_t< SO3, ResultType_t<MT3>, OppositeType_t<MT3> > >;
+
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT4 );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT5 );
 
    const size_t N( (~A).rows() );
 
-   RemoveAdaptor_t< If_t<SO1,RT1,OT1> > Atmp( A );
-   RemoveAdaptor_t< If_t<SO2,RT2,OT2> > Xtmp( B );
+   MT4 Atmp( A );
+   MT5 Xtmp( B );
 
    const std::unique_ptr<int[]> ipiv( new int[N] );
 
@@ -5885,15 +5888,16 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (~B).rows() == (~X).rows(), "Invalid number of rows detected" );
    BLAZE_INTERNAL_ASSERT( IsResizable_v<MT2> || (~B).columns() == (~X).columns(), "Invalid number of columns detected" );
 
-   using RT1 = ResultType_t<MT1>;
-   using RT2 = ResultType_t<MT2>;
-   using OT1 = OppositeType_t<MT1>;
-   using OT2 = OppositeType_t<MT2>;
+   using MT4 = RemoveAdaptor_t< If_t< SO1, ResultType_t<MT1>, OppositeType_t<MT1> > >;
+   using MT5 = RemoveAdaptor_t< If_t< SO3, ResultType_t<MT3>, OppositeType_t<MT3> > >;
+
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT4 );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( MT5 );
 
    const size_t N( (~A).rows() );
 
-   RemoveAdaptor_t< If_t<SO1,RT1,OT1> > Atmp( A );
-   RemoveAdaptor_t< If_t<SO2,RT2,OT2> > Xtmp( B );
+   MT4 Atmp( A );
+   MT5 Xtmp( B );
 
    const std::unique_ptr<int[]> ipiv( new int[N] );
 
