@@ -67,6 +67,7 @@ struct Atan2;
 struct Atanh;
 template< typename, typename > struct Bind1st;
 template< typename, typename > struct Bind2nd;
+template< typename, typename > struct Bind3rd;
 struct Bitand;
 struct Bitor;
 struct Bitxor;

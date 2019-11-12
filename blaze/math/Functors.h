@@ -56,6 +56,7 @@
 #include <blaze/math/functors/Atanh.h>
 #include <blaze/math/functors/Bind1st.h>
 #include <blaze/math/functors/Bind2nd.h>
+#include <blaze/math/functors/Bind3rd.h>
 #include <blaze/math/functors/Bitand.h>
 #include <blaze/math/functors/Bitor.h>
 #include <blaze/math/functors/Bitxor.h>
