@@ -258,6 +258,7 @@
 #include <blaze/math/typetraits/IsVecSerialExpr.h>
 #include <blaze/math/typetraits/IsVector.h>
 #include <blaze/math/typetraits/IsVecTransExpr.h>
+#include <blaze/math/typetraits/IsVecTVecMapExpr.h>
 #include <blaze/math/typetraits/IsVecTVecMultExpr.h>
 #include <blaze/math/typetraits/IsVecVecAddExpr.h>
 #include <blaze/math/typetraits/IsVecVecDivExpr.h>

@@ -167,6 +167,7 @@
 #include <blaze/math/constraints/VecSerialExpr.h>
 #include <blaze/math/constraints/Vector.h>
 #include <blaze/math/constraints/VecTransExpr.h>
+#include <blaze/math/constraints/VecTVecMapExpr.h>
 #include <blaze/math/constraints/VecTVecMultExpr.h>
 #include <blaze/math/constraints/VecVecAddExpr.h>
 #include <blaze/math/constraints/VecVecDivExpr.h>
