@@ -73,7 +73,7 @@ struct Bitor;
 struct Bitxor;
 struct Cbrt;
 struct Ceil;
-template< typename > struct Clamp;
+struct Clamp;
 struct Clear;
 struct Conj;
 struct Cos;

@@ -1734,7 +1734,7 @@ inline decltype(auto) clamp( const DenseVector<VT,TF>& dv, const DT& min, const 
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dv, Clamp<DT>( min, max ) );
+   return map( ~dv, bind2nd( bind3rd( Clamp(), max ), min ) );
 }
 //*************************************************************************************************
 

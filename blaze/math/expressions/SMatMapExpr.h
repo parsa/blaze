@@ -1473,7 +1473,7 @@ inline decltype(auto) clamp( const SparseMatrix<MT,SO>& sm, const DT& min, const
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sm, Clamp<DT>( min, max ) );
+   return map( ~sm, bind2nd( bind3rd( Clamp(), max ), min ) );
 }
 //*************************************************************************************************
 

@@ -1733,7 +1733,7 @@ inline decltype(auto) clamp( const DenseMatrix<MT,SO>& dm, const DT& min, const 
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dm, Clamp<DT>( min, max ) );
+   return map( ~dm, bind2nd( bind3rd( Clamp(), max ), min ) );
 }
 //*************************************************************************************************
 

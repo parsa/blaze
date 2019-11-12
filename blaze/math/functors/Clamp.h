@@ -63,32 +63,21 @@ namespace blaze {
 /*!\brief Generic wrapper for the clamp() function.
 // \ingroup functors
 */
-template< typename DT >  // Type of the delimiters
 struct Clamp
 {
- public:
-   //**********************************************************************************************
-   /*!\brief Constructor of the Clamp functor.
-   //
-   // \param min The lower limit of the range.
-   // \param max The upper limit of the range.
-   */
-   explicit inline Clamp( const DT& min, const DT& max )
-      : min_( min )  // The lower delimiter
-      , max_( max )  // The upper delimiter
-   {}
-   //**********************************************************************************************
-
    //**********************************************************************************************
    /*!\brief Returns the result of the clamp() function for the given object/value.
    //
-   // \param a The given object/value.
+   // \param v The given object/value to clamp.
+   // \param lo The minimum to clamp \a v.
+   // \param hi The maximum to clamp \a v.
    // \return The result of the clamp() function for the given object/value.
    */
-   template< typename T >
-   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto) operator()( const T& a ) const
+   template< typename T1, typename T2, typename T3 >
+   BLAZE_ALWAYS_INLINE BLAZE_DEVICE_CALLABLE decltype(auto)
+      operator()( const T1& v, const T2& lo, const T3& hi ) const
    {
-      return clamp( a, min_, max_ );
+      return clamp( v, lo, hi );
    }
    //**********************************************************************************************
 
@@ -97,8 +86,8 @@ struct Clamp
    //
    // \return \a true in case SIMD is enabled for the data type \a T, \a false if not.
    */
-   template< typename T >
-   static constexpr bool simdEnabled() { return HasSIMDMin_v<T,DT> && HasSIMDMax_v<T,DT>; }
+   template< typename T1, typename T2, typename T3 >
+   static constexpr bool simdEnabled() { return HasSIMDMax_v<T1,T2> && HasSIMDMin_v<T1,T3>; }
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -112,21 +101,19 @@ struct Clamp
    //**********************************************************************************************
    /*!\brief Returns the result of the clamp() function for the given SIMD vector.
    //
-   // \param a The given SIMD vector.
+   // \param v The SIMD vector to clamp.
+   // \param lo The minimum to clamp \a v.
+   // \param hi The maximum to clamp \a v.
    // \return The result of the clamp() function for the given SIMD vector.
    */
-   template< typename T >
-   BLAZE_ALWAYS_INLINE decltype(auto) load( const T& a ) const
+   template< typename T1, typename T2, typename T3 >
+   BLAZE_ALWAYS_INLINE decltype(auto) load( const T1& v, const T2& lo, const T3& hi ) const
    {
-      BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T );
-      return max( min( a, set( max_ ) ), set( min_ ) );
+      BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T1 );
+      BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T2 );
+      BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T3 );
+      return min( max( v, lo ), hi );
    }
-   //**********************************************************************************************
-
- private:
-   //**Member variables****************************************************************************
-   DT min_;  //!< The lower delimiter.
-   DT max_;  //!< The upper delimiter.
    //**********************************************************************************************
 };
 //*************************************************************************************************

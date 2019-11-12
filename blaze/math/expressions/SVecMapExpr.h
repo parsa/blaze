@@ -1360,7 +1360,7 @@ inline decltype(auto) clamp( const SparseVector<VT,TF>& sv, const DT& min, const
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~sv, Clamp<DT>( min, max ) );
+   return map( ~sv, bind2nd( bind3rd( Clamp(), max ), min ) );
 }
 //*************************************************************************************************
 
