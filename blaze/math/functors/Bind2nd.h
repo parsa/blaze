@@ -40,7 +40,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/constraints/SIMDPack.h>
 #include <blaze/math/simd/Set.h>
 #include <blaze/math/typetraits/IsSIMDEnabled.h>
 #include <blaze/math/typetraits/YieldsSymmetric.h>
@@ -57,10 +56,10 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Generic wrapper for a binary operation with fixed 2nd argument.
+/*!\brief Generic wrapper for an operation with fixed 2nd argument.
 // \ingroup functors
 */
-template< typename OP    // Type of the binary operation
+template< typename OP    // Type of the operation
         , typename A2 >  // Type of the bound argument
 struct Bind2nd
 {
@@ -68,7 +67,7 @@ struct Bind2nd
    //**********************************************************************************************
    /*!\brief Constructor of the Bind2nd functor.
    //
-   // \param op The binary operation.
+   // \param op The wrapped operation.
    // \param a2 The 2nd argument.
    */
    explicit inline constexpr Bind2nd( const OP& op, const A2& a2 )
@@ -78,25 +77,26 @@ struct Bind2nd
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*!\brief Returns the result of the wrapped operation for the given object/value.
+   /*!\brief Returns the result of the wrapped operation for the given arguments.
    //
-   // \param a The given object/value.
-   // \return The result of the wrapped operation for the given object/value.
+   // \param a1 The 1st argument.
+   // \param args The remaining arguments.
+   // \return The result of the wrapped operation for the given arguments.
    */
-   template< typename T >
-   BLAZE_ALWAYS_INLINE constexpr decltype(auto) operator()( const T& a ) const
+   template< typename A1, typename... Args >
+   BLAZE_ALWAYS_INLINE constexpr decltype(auto) operator()( A1&& a1, Args&&... args ) const
    {
-      return op_( a, a2_ );
+      return op_( std::forward<A1>( a1 ), a2_, std::forward<Args>( args )... );
    }
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*!\brief Returns whether SIMD is enabled for the specified data type \a T.
+   /*!\brief Returns whether SIMD is enabled for the specified data types \a Ts.
    //
-   // \return \a true in case SIMD is enabled for the data type \a T, \a false if not.
+   // \return \a true in case SIMD is enabled for the data types \a Ts, \a false if not.
    */
-   template< typename T >
-   static constexpr bool simdEnabled() { return IsSIMDEnabled_v<OP,T,A2>; }
+   template< typename A1, typename... Args >
+   static constexpr bool simdEnabled() { return IsSIMDEnabled_v<OP,A1,A2,Args...>; }
    //**********************************************************************************************
 
    //**********************************************************************************************
@@ -108,22 +108,22 @@ struct Bind2nd
    //**********************************************************************************************
 
    //**********************************************************************************************
-   /*!\brief Returns the result of the wrapped operation for the given SIMD vector.
+   /*!\brief Returns the result of the wrapped operation for the given SIMD vectors.
    //
-   // \param a The given SIMD vector.
-   // \return The result of the wrapped operation for the given SIMD vector.
+   // \param a1 The 1st given SIMD vector.
+   // \param args The remaining SIMD vectors.
+   // \return The result of the wrapped operation for the given SIMD vectors.
    */
-   template< typename T >
-   BLAZE_ALWAYS_INLINE decltype(auto) load( const T& a ) const
+   template< typename A1, typename... Args >
+   BLAZE_ALWAYS_INLINE decltype(auto) load( A1&& a1, Args&&... args ) const
    {
-      BLAZE_CONSTRAINT_MUST_BE_SIMD_PACK( T );
-      return op_.load( a, set( a2_ ) );
+      return op_.load( std::forward<A1>( a1 ), set( a2_ ), std::forward<Args>( args )... );
    }
    //**********************************************************************************************
 
  private:
    //**Member variables****************************************************************************
-   OP op_;  //!< The binary operation.
+   OP op_;  //!< The wrapped operation.
    A2 a2_;  //!< The 2nd argument.
    //**********************************************************************************************
 };
@@ -139,17 +139,17 @@ struct Bind2nd
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Binds the given object/value to the 2nd parameter of the given binary operation.
+/*!\brief Binds the given object/value to the 2nd parameter of the given operation.
 // \ingroup functors
 //
-// \param op The binary operation to be wrapped.
-// \param a2 The argument to be bound to the second parameter of the binary operation.
+// \param op The operation to be wrapped.
+// \param a2 The argument to be bound to the second parameter of the operation.
 // \return The operation with bound 2nd argument.
 //
 // The \a bind2nd() function binds the given argument \a x to the 2nd parameter of the given
-// binary operation \a op.
+// operation \a op.
 */
-template< typename OP    // Type of the binary operation
+template< typename OP    // Type of the operation
         , typename A2 >  // Type of the bound argument
 inline constexpr Bind2nd<OP,A2> bind2nd( const OP& op, const A2& a2 )
 {
