@@ -134,7 +134,11 @@ inline void hetri( char uplo, int n, complex<float>* A, int lda,
 #endif
 
    chetri_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, const_cast<int*>( ipiv ),
-            reinterpret_cast<ET*>( work ), info, blaze::fortran_charlen_t(1) );
+            reinterpret_cast<ET*>( work ), info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -184,7 +188,11 @@ inline void hetri( char uplo, int n, complex<double>* A, int lda,
 #endif
 
    zhetri_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, const_cast<int*>( ipiv ),
-            reinterpret_cast<ET*>( work ), info, blaze::fortran_charlen_t(1) );
+            reinterpret_cast<ET*>( work ), info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 

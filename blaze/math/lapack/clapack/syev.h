@@ -136,8 +136,11 @@ inline void syev( char jobz, char uplo, int n, float* A, int lda,
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   ssyev_( &jobz, &uplo, &n, A, &lda, w, work, &lwork, info,
-           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+   ssyev_( &jobz, &uplo, &n, A, &lda, w, work, &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+         , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+         );
 }
 //*************************************************************************************************
 
@@ -189,8 +192,11 @@ inline void syev( char jobz, char uplo, int n, double* A, int lda,
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   dsyev_( &jobz, &uplo, &n, A, &lda, w, work, &lwork, info,
-           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+   dsyev_( &jobz, &uplo, &n, A, &lda, w, work, &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+         , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+         );
 }
 //*************************************************************************************************
 

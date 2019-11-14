@@ -179,8 +179,11 @@ inline void gesdd( char jobz, int m, int n, float* A, int lda,
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   sgesdd_( &jobz, &m, &n, A, &lda, s, U, &ldu, V, &ldv, work, &lwork, iwork, info,
-            blaze::fortran_charlen_t(1) );
+   sgesdd_( &jobz, &m, &n, A, &lda, s, U, &ldu, V, &ldv, work, &lwork, iwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -257,8 +260,11 @@ inline void gesdd( char jobz, int m, int n, double* A, int lda,
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   dgesdd_( &jobz, &m, &n, A, &lda, s, U, &ldu, V, &ldv, work, &lwork, iwork, info,
-            blaze::fortran_charlen_t(1) );
+   dgesdd_( &jobz, &m, &n, A, &lda, s, U, &ldu, V, &ldv, work, &lwork, iwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -343,8 +349,11 @@ inline void gesdd( char jobz, int m, int n, complex<float>* A, int lda, float* s
 
    cgesdd_( &jobz, &m, &n, reinterpret_cast<ET*>( A ), &lda, s,
             reinterpret_cast<ET*>( U ), &ldu, reinterpret_cast<ET*>( V ), &ldv,
-            reinterpret_cast<ET*>( work ), &lwork, rwork, iwork, info,
-            blaze::fortran_charlen_t(1) );
+            reinterpret_cast<ET*>( work ), &lwork, rwork, iwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -429,8 +438,11 @@ inline void gesdd( char jobz, int m, int n, complex<double>* A, int lda, double*
 
    zgesdd_( &jobz, &m, &n, reinterpret_cast<ET*>( A ), &lda, s,
             reinterpret_cast<ET*>( U ), &ldu, reinterpret_cast<ET*>( V ), &ldv,
-            reinterpret_cast<ET*>( work ), &lwork, rwork, iwork, info,
-            blaze::fortran_charlen_t(1) );
+            reinterpret_cast<ET*>( work ), &lwork, rwork, iwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 

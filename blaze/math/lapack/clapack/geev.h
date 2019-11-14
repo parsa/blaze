@@ -177,8 +177,11 @@ inline void geev( char jobvl, char jobvr, int n, float* A, int lda,
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   sgeev_( &jobvl, &jobvr, &n, A, &lda, wr, wi, VL, &ldvl, VR, &ldvr, work, &lwork, info,
-           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+   sgeev_( &jobvl, &jobvr, &n, A, &lda, wr, wi, VL, &ldvl, VR, &ldvr, work, &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+         , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+         );
 }
 //*************************************************************************************************
 
@@ -253,8 +256,11 @@ inline void geev( char jobvl, char jobvr, int n, double* A, int lda,
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   dgeev_( &jobvl, &jobvr, &n, A, &lda, wr, wi, VL, &ldvl, VR, &ldvr, work, &lwork, info,
-           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+   dgeev_( &jobvl, &jobvr, &n, A, &lda, wr, wi, VL, &ldvl, VR, &ldvr, work, &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+         , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+         );
 }
 //*************************************************************************************************
 
@@ -336,8 +342,11 @@ inline void geev( char jobvl, char jobvr, int n, complex<float>* A, int lda,
 
    cgeev_( &jobvl, &jobvr, &n, reinterpret_cast<ET*>( A ), &lda, reinterpret_cast<ET*>( w ),
            reinterpret_cast<ET*>( VL ), &ldvl, reinterpret_cast<ET*>( VR ), &ldvr,
-           reinterpret_cast<ET*>( work ), &lwork, rwork, info,
-           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+           reinterpret_cast<ET*>( work ), &lwork, rwork, info
+#if !defined(INTEL_MKL_VERSION)
+         , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+         );
 }
 //*************************************************************************************************
 
@@ -419,8 +428,11 @@ inline void geev( char jobvl, char jobvr, int n, complex<double>* A, int lda,
 
    zgeev_( &jobvl, &jobvr, &n, reinterpret_cast<ET*>( A ), &lda, reinterpret_cast<ET*>( w ),
            reinterpret_cast<ET*>( VL ), &ldvl, reinterpret_cast<ET*>( VR ), &ldvr,
-           reinterpret_cast<ET*>( work ), &lwork, rwork, info,
-           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+           reinterpret_cast<ET*>( work ), &lwork, rwork, info
+#if !defined(INTEL_MKL_VERSION)
+         , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+         );
 }
 //*************************************************************************************************
 

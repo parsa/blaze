@@ -218,8 +218,11 @@ inline void gges( char jobvsl, char jobvsr, char sort,
 #endif
 
    sgges_( &jobvsl, &jobvsr, &sort, selctg, &n, A, &lda, B, &ldb, sdim, alphar, alphai, beta,
-           VSL, &ldvsl, VSR, &ldvsr, work, &lwork, bwork, info,
-           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+           VSL, &ldvsl, VSR, &ldvsr, work, &lwork, bwork, info
+#if !defined(INTEL_MKL_VERSION)
+         , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+         );
 }
 //*************************************************************************************************
 
@@ -315,8 +318,11 @@ inline void gges( char jobvsl, char jobvsr, char sort,
 #endif
 
    dgges_( &jobvsl, &jobvsr, &sort, selctg, &n, A, &lda, B, &ldb, sdim, alphar, alphai, beta,
-           VSL, &ldvsl, VSR, &ldvsr, work, &lwork, bwork, info,
-           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+           VSL, &ldvsl, VSR, &ldvsr, work, &lwork, bwork, info
+#if !defined(INTEL_MKL_VERSION)
+         , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+         );
 }
 //*************************************************************************************************
 
@@ -423,8 +429,11 @@ inline void gges( char jobvsl, char jobvsr, char sort,
            reinterpret_cast<ET*>( A ), &lda, reinterpret_cast<ET*>( B ), &ldb, sdim,
            reinterpret_cast<ET*>( alpha ), reinterpret_cast<ET*>( beta ),
            reinterpret_cast<ET*>( VSL ), &ldvsl, reinterpret_cast<ET*>( VSR ), &ldvsr,
-           reinterpret_cast<ET*>( work ), &lwork, rwork, bwork, info,
-           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+           reinterpret_cast<ET*>( work ), &lwork, rwork, bwork, info
+#if !defined(INTEL_MKL_VERSION)
+         , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+         );
 }
 //*************************************************************************************************
 
@@ -531,8 +540,11 @@ inline void gges( char jobvsl, char jobvsr, char sort,
            reinterpret_cast<ET*>( A ), &lda, reinterpret_cast<ET*>( B ), &ldb, sdim,
            reinterpret_cast<ET*>( alpha ), reinterpret_cast<ET*>( beta ),
            reinterpret_cast<ET*>( VSL ), &ldvsl, reinterpret_cast<ET*>( VSR ), &ldvsr,
-           reinterpret_cast<ET*>( work ), &lwork, rwork, bwork, info,
-           blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+           reinterpret_cast<ET*>( work ), &lwork, rwork, bwork, info
+#if !defined(INTEL_MKL_VERSION)
+         , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+         );
 }
 //*************************************************************************************************
 

@@ -150,8 +150,11 @@ inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const floa
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   strtrs_( &uplo, &trans, &diag, &n, &nrhs, const_cast<float*>( A ), &lda, B, &ldb, info,
-            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+   strtrs_( &uplo, &trans, &diag, &n, &nrhs, const_cast<float*>( A ), &lda, B, &ldb, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -203,8 +206,11 @@ inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const doub
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   dtrtrs_( &uplo, &trans, &diag, &n, &nrhs, const_cast<double*>( A ), &lda, B, &ldb, info,
-            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+   dtrtrs_( &uplo, &trans, &diag, &n, &nrhs, const_cast<double*>( A ), &lda, B, &ldb, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -262,8 +268,11 @@ inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const comp
 #endif
 
    ctrtrs_( &uplo, &trans, &diag, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
-            &lda, reinterpret_cast<ET*>( B ), &ldb, info, blaze::fortran_charlen_t(1),
-            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+            &lda, reinterpret_cast<ET*>( B ), &ldb, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -321,8 +330,11 @@ inline void trtrs( char uplo, char trans, char diag, int n, int nrhs, const comp
 #endif
 
    ztrtrs_( &uplo, &trans, &diag, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
-            &lda, reinterpret_cast<ET*>( B ), &ldb, info, blaze::fortran_charlen_t(1),
-            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+            &lda, reinterpret_cast<ET*>( B ), &ldb, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 

@@ -135,7 +135,11 @@ inline void potrf( char uplo, int n, float* A, int lda, int* info )
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   spotrf_( &uplo, &n, A, &lda, info, blaze::fortran_charlen_t(1) );
+   spotrf_( &uplo, &n, A, &lda, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -184,7 +188,11 @@ inline void potrf( char uplo, int n, double* A, int lda, int* info )
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   dpotrf_( &uplo, &n, A, &lda, info, blaze::fortran_charlen_t(1) );
+   dpotrf_( &uplo, &n, A, &lda, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -238,7 +246,11 @@ inline void potrf( char uplo, int n, complex<float>* A, int lda, int* info )
    using ET = float;
 #endif
 
-   cpotrf_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, info, blaze::fortran_charlen_t(1) );
+   cpotrf_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -292,7 +304,11 @@ inline void potrf( char uplo, int n, complex<double>* A, int lda, int* info )
    using ET = double;
 #endif
 
-   zpotrf_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, info, blaze::fortran_charlen_t(1) );
+   zpotrf_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 

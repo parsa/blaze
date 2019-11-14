@@ -146,7 +146,11 @@ inline void posv( char uplo, int n, int nrhs, float* A, int lda, float* B, int l
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   sposv_( &uplo, &n, &nrhs, A, &lda, B, &ldb, info, blaze::fortran_charlen_t(1) );
+   sposv_( &uplo, &n, &nrhs, A, &lda, B, &ldb, info
+#if !defined(INTEL_MKL_VERSION)
+         , blaze::fortran_charlen_t(1)
+#endif
+         );
 }
 //*************************************************************************************************
 
@@ -202,7 +206,11 @@ inline void posv( char uplo, int n, int nrhs, double* A, int lda, double* B, int
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   dposv_( &uplo, &n, &nrhs, A, &lda, B, &ldb, info, blaze::fortran_charlen_t(1) );
+   dposv_( &uplo, &n, &nrhs, A, &lda, B, &ldb, info
+#if !defined(INTEL_MKL_VERSION)
+         , blaze::fortran_charlen_t(1)
+#endif
+         );
 }
 //*************************************************************************************************
 
@@ -264,7 +272,11 @@ inline void posv( char uplo, int n, int nrhs, complex<float>* A, int lda, comple
 #endif
 
    cposv_( &uplo, &n, &nrhs, reinterpret_cast<ET*>( A ), &lda,
-           reinterpret_cast<ET*>( B ), &ldb, info, blaze::fortran_charlen_t(1) );
+           reinterpret_cast<ET*>( B ), &ldb, info
+#if !defined(INTEL_MKL_VERSION)
+         , blaze::fortran_charlen_t(1)
+#endif
+         );
 }
 //*************************************************************************************************
 
@@ -326,7 +338,11 @@ inline void posv( char uplo, int n, int nrhs, complex<double>* A, int lda, compl
 #endif
 
    zposv_( &uplo, &n, &nrhs, reinterpret_cast<ET*>( A ), &lda,
-           reinterpret_cast<ET*>( B ), &ldb, info, blaze::fortran_charlen_t(1) );
+           reinterpret_cast<ET*>( B ), &ldb, info
+#if !defined(INTEL_MKL_VERSION)
+         , blaze::fortran_charlen_t(1)
+#endif
+         );
 }
 //*************************************************************************************************
 

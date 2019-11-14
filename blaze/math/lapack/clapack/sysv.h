@@ -155,8 +155,11 @@ inline void sysv( char uplo, int n, int nrhs, float* A, int lda, int* ipiv,
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   ssysv_( &uplo, &n, &nrhs, A, &lda, ipiv, B, &ldb, work, &lwork,
-           info, blaze::fortran_charlen_t(1) );
+   ssysv_( &uplo, &n, &nrhs, A, &lda, ipiv, B, &ldb, work, &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+         , blaze::fortran_charlen_t(1)
+#endif
+         );
 }
 //*************************************************************************************************
 
@@ -217,8 +220,11 @@ inline void sysv( char uplo, int n, int nrhs, double* A, int lda, int* ipiv,
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   dsysv_( &uplo, &n, &nrhs, A, &lda, ipiv, B, &ldb, work, &lwork,
-           info, blaze::fortran_charlen_t(1) );
+   dsysv_( &uplo, &n, &nrhs, A, &lda, ipiv, B, &ldb, work, &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+         , blaze::fortran_charlen_t(1)
+#endif
+         );
 }
 //*************************************************************************************************
 
@@ -285,8 +291,11 @@ inline void sysv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* i
 #endif
 
    csysv_( &uplo, &n, &nrhs, reinterpret_cast<ET*>( A ), &lda, ipiv,
-           reinterpret_cast<ET*>( B ), &ldb, reinterpret_cast<ET*>( work ),
-           &lwork, info, blaze::fortran_charlen_t(1) );
+           reinterpret_cast<ET*>( B ), &ldb, reinterpret_cast<ET*>( work ), &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+         , blaze::fortran_charlen_t(1)
+#endif
+         );
 }
 //*************************************************************************************************
 
@@ -353,8 +362,11 @@ inline void sysv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* 
 #endif
 
    zsysv_( &uplo, &n, &nrhs, reinterpret_cast<ET*>( A ), &lda, ipiv,
-           reinterpret_cast<ET*>( B ), &ldb, reinterpret_cast<ET*>( work ),
-           &lwork, info, blaze::fortran_charlen_t(1) );
+           reinterpret_cast<ET*>( B ), &ldb, reinterpret_cast<ET*>( work ), &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+         , blaze::fortran_charlen_t(1)
+#endif
+         );
 }
 //*************************************************************************************************
 

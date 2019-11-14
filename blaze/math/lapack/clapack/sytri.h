@@ -135,7 +135,11 @@ inline void sytri( char uplo, int n, float* A, int lda, const int* ipiv, float* 
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   ssytri_( &uplo, &n, A, &lda, const_cast<int*>( ipiv ), work, info, blaze::fortran_charlen_t(1) );
+   ssytri_( &uplo, &n, A, &lda, const_cast<int*>( ipiv ), work, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -178,7 +182,11 @@ inline void sytri( char uplo, int n, double* A, int lda, const int* ipiv, double
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   dsytri_( &uplo, &n, A, &lda, const_cast<int*>( ipiv ), work, info, blaze::fortran_charlen_t(1) );
+   dsytri_( &uplo, &n, A, &lda, const_cast<int*>( ipiv ), work, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -228,8 +236,11 @@ inline void sytri( char uplo, int n, complex<float>* A, int lda,
 #endif
 
    csytri_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda,
-            const_cast<int*>( ipiv ), reinterpret_cast<ET*>( work ),
-            info, blaze::fortran_charlen_t(1) );
+            const_cast<int*>( ipiv ), reinterpret_cast<ET*>( work ), info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -279,8 +290,11 @@ inline void sytri( char uplo, int n, complex<double>* A, int lda,
 #endif
 
    zsytri_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda,
-            const_cast<int*>( ipiv ), reinterpret_cast<ET*>( work ),
-            info, blaze::fortran_charlen_t(1) );
+            const_cast<int*>( ipiv ), reinterpret_cast<ET*>( work ), info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 

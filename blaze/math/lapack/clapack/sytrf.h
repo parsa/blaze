@@ -154,7 +154,11 @@ inline void sytrf( char uplo, int n, float* A, int lda, int* ipiv,
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   ssytrf_( &uplo, &n, A, &lda, ipiv, work, &lwork, info, blaze::fortran_charlen_t(1) );
+   ssytrf_( &uplo, &n, A, &lda, ipiv, work, &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -214,7 +218,11 @@ inline void sytrf( char uplo, int n, double* A, int lda, int* ipiv,
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   dsytrf_( &uplo, &n, A, &lda, ipiv, work, &lwork, info, blaze::fortran_charlen_t(1) );
+   dsytrf_( &uplo, &n, A, &lda, ipiv, work, &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -280,7 +288,11 @@ inline void sytrf( char uplo, int n, complex<float>* A, int lda, int* ipiv,
 #endif
 
    csytrf_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, ipiv,
-            reinterpret_cast<ET*>( work ), &lwork, info, blaze::fortran_charlen_t(1) );
+            reinterpret_cast<ET*>( work ), &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -346,7 +358,11 @@ inline void sytrf( char uplo, int n, complex<double>* A, int lda, int* ipiv,
 #endif
 
    zsytrf_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, ipiv,
-            reinterpret_cast<ET*>( work ), &lwork, info, blaze::fortran_charlen_t(1) );
+            reinterpret_cast<ET*>( work ), &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 

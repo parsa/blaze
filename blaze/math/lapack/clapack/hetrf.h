@@ -150,7 +150,11 @@ inline void hetrf( char uplo, int n, complex<float>* A, int lda, int* ipiv,
 #endif
 
    chetrf_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, ipiv,
-            reinterpret_cast<ET*>( work ), &lwork, info, blaze::fortran_charlen_t(1) );
+            reinterpret_cast<ET*>( work ), &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -216,7 +220,11 @@ inline void hetrf( char uplo, int n, complex<double>* A, int lda, int* ipiv,
 #endif
 
    zhetrf_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, ipiv,
-            reinterpret_cast<ET*>( work ), &lwork, info, blaze::fortran_charlen_t(1) );
+            reinterpret_cast<ET*>( work ), &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 

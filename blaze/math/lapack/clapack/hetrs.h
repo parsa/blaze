@@ -136,8 +136,11 @@ inline void hetrs( char uplo, int n, int nrhs, const complex<float>* A, int lda,
 #endif
 
    chetrs_( &uplo, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
-            &lda, const_cast<int*>( ipiv ), reinterpret_cast<ET*>( B ), &ldb, info,
-            blaze::fortran_charlen_t(1) );
+            &lda, const_cast<int*>( ipiv ), reinterpret_cast<ET*>( B ), &ldb, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -189,8 +192,11 @@ inline void hetrs( char uplo, int n, int nrhs, const complex<double>* A, int lda
 #endif
 
    zhetrs_( &uplo, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
-            &lda, const_cast<int*>( ipiv ), reinterpret_cast<ET*>( B ), &ldb, info,
-            blaze::fortran_charlen_t(1) );
+            &lda, const_cast<int*>( ipiv ), reinterpret_cast<ET*>( B ), &ldb, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 

@@ -145,8 +145,11 @@ inline void ormrq( char side, char trans, int m, int n, int k, const float* A, i
 #endif
 
    sormrq_( &side, &trans, &m, &n, &k, const_cast<float*>( A ), &lda,
-            const_cast<float*>( tau ), C, &ldc, work, &lwork, info,
-            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+            const_cast<float*>( tau ), C, &ldc, work, &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -206,8 +209,11 @@ inline void ormrq( char side, char trans, int m, int n, int k, const double* A, 
 #endif
 
    dormrq_( &side, &trans, &m, &n, &k, const_cast<double*>( A ), &lda,
-            const_cast<double*>( tau ), C, &ldc, work, &lwork, info,
-            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+            const_cast<double*>( tau ), C, &ldc, work, &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 

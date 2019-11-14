@@ -166,8 +166,11 @@ inline void syevx( char jobz, char range, char uplo, int n, float* A, int lda,
    ++iu;
 
    ssyevx_( &jobz, &range, &uplo, &n, A, &lda, &vl, &vu, &il, &iu,
-            &abstol, m, w, Z, &ldz, work, &lwork, iwork, ifail, info,
-            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+            &abstol, m, w, Z, &ldz, work, &lwork, iwork, ifail, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -241,8 +244,11 @@ inline void syevx( char jobz, char range, char uplo, int n, double* A, int lda,
    ++iu;
 
    dsyevx_( &jobz, &range, &uplo, &n, A, &lda, &vl, &vu, &il, &iu,
-            &abstol, m, w, Z, &ldz, work, &lwork, iwork, ifail, info,
-            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+            &abstol, m, w, Z, &ldz, work, &lwork, iwork, ifail, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 

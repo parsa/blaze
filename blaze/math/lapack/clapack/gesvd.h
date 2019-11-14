@@ -177,8 +177,11 @@ inline void gesvd( char jobu, char jobv, int m, int n, float* A, int lda,
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   sgesvd_( &jobu, &jobv, &m, &n, A, &lda, s, U, &ldu, V, &ldv, work, &lwork, info,
-            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+   sgesvd_( &jobu, &jobv, &m, &n, A, &lda, s, U, &ldu, V, &ldv, work, &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -253,8 +256,11 @@ inline void gesvd( char jobu, char jobv, int m, int n, double* A, int lda,
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   dgesvd_( &jobu, &jobv, &m, &n, A, &lda, s, U, &ldu, V, &ldv, work, &lwork, info,
-            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+   dgesvd_( &jobu, &jobv, &m, &n, A, &lda, s, U, &ldu, V, &ldv, work, &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -337,8 +343,11 @@ inline void gesvd( char jobu, char jobv, int m, int n, complex<float>* A, int ld
 
    cgesvd_( &jobu, &jobv, &m, &n, reinterpret_cast<ET*>( A ), &lda, s,
             reinterpret_cast<ET*>( U ), &ldu, reinterpret_cast<ET*>( V ), &ldv,
-            reinterpret_cast<ET*>( work ), &lwork, rwork, info,
-            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+            reinterpret_cast<ET*>( work ), &lwork, rwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -421,8 +430,11 @@ inline void gesvd( char jobu, char jobv, int m, int n, complex<double>* A, int l
 
    zgesvd_( &jobu, &jobv, &m, &n, reinterpret_cast<ET*>( A ), &lda, s,
             reinterpret_cast<ET*>( U ), &ldu, reinterpret_cast<ET*>( V ), &ldv,
-            reinterpret_cast<ET*>( work ), &lwork, rwork, info,
-            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+            reinterpret_cast<ET*>( work ), &lwork, rwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 

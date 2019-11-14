@@ -151,8 +151,11 @@ inline void heevd( char jobz, char uplo, int n, complex<float>* A, int lda, floa
 #endif
 
    cheevd_( &jobz, &uplo, &n, reinterpret_cast<ET*>( A ), &lda, w,
-            reinterpret_cast<ET*>( work ), &lwork, rwork, &lrwork, iwork, &liwork, info,
-            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+            reinterpret_cast<ET*>( work ), &lwork, rwork, &lrwork, iwork, &liwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -215,8 +218,11 @@ inline void heevd( char jobz, char uplo, int n, complex<double>* A, int lda,
 #endif
 
    zheevd_( &jobz, &uplo, &n, reinterpret_cast<ET*>( A ), &lda, w,
-            reinterpret_cast<ET*>( work ), &lwork, rwork, &lrwork, iwork, &liwork, info,
-            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+            reinterpret_cast<ET*>( work ), &lwork, rwork, &lrwork, iwork, &liwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 

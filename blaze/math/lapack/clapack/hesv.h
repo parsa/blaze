@@ -151,8 +151,11 @@ inline void hesv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* i
 #endif
 
    chesv_( &uplo, &n, &nrhs, reinterpret_cast<ET*>( A ), &lda, ipiv,
-           reinterpret_cast<ET*>( B ), &ldb, reinterpret_cast<ET*>( work ), &lwork, info,
-           blaze::fortran_charlen_t(1) );
+           reinterpret_cast<ET*>( B ), &ldb, reinterpret_cast<ET*>( work ), &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+         , blaze::fortran_charlen_t(1)
+#endif
+         );
 }
 //*************************************************************************************************
 
@@ -219,8 +222,11 @@ inline void hesv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* 
 #endif
 
    zhesv_( &uplo, &n, &nrhs, reinterpret_cast<ET*>( A ), &lda, ipiv,
-           reinterpret_cast<ET*>( B ), &ldb, reinterpret_cast<ET*>( work ), &lwork, info,
-           blaze::fortran_charlen_t(1) );
+           reinterpret_cast<ET*>( B ), &ldb, reinterpret_cast<ET*>( work ), &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+         , blaze::fortran_charlen_t(1)
+#endif
+         );
 }
 //*************************************************************************************************
 

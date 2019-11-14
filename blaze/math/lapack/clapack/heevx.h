@@ -176,8 +176,11 @@ inline void heevx( char jobz, char range, char uplo, int n, complex<float>* A, i
 
    cheevx_( &jobz, &range, &uplo, &n, reinterpret_cast<ET*>( A ), &lda, &vl, &vu, &il, &iu,
             &abstol, m, w, reinterpret_cast<ET*>( Z ), &ldz, reinterpret_cast<ET*>( work ),
-            &lwork, rwork, iwork, ifail, info, blaze::fortran_charlen_t(1),
-            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+            &lwork, rwork, iwork, ifail, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -259,8 +262,11 @@ inline void heevx( char jobz, char range, char uplo, int n, complex<double>* A, 
 
    zheevx_( &jobz, &range, &uplo, &n, reinterpret_cast<ET*>( A ), &lda, &vl, &vu, &il, &iu,
             &abstol, m, w, reinterpret_cast<ET*>( Z ), &ldz, reinterpret_cast<ET*>( work ),
-            &lwork, rwork, iwork, ifail, info, blaze::fortran_charlen_t(1),
-            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+            &lwork, rwork, iwork, ifail, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 

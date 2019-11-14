@@ -206,9 +206,11 @@ inline void gesvdx( char jobu, char jobv, char range, int m, int n, float* A, in
    ++iu;
 
    sgesvdx_( &jobu, &jobv, &range, &m, &n, A, &lda, &vl, &vu, &il, &iu, ns,
-             s, U, &ldu, V, &ldv, work, &lwork, iwork, info,
-             blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1),
-             blaze::fortran_charlen_t(1) );
+             s, U, &ldu, V, &ldv, work, &lwork, iwork, info
+#if !defined(INTEL_MKL_VERSION) || (INTEL_MKL_VERSION < 20170000)
+           , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+           );
 }
 //*************************************************************************************************
 
@@ -300,9 +302,11 @@ inline void gesvdx( char jobu, char jobv, char range, int m, int n, double* A, i
    ++iu;
 
    dgesvdx_( &jobu, &jobv, &range, &m, &n, A, &lda, &vl, &vu, &il, &iu, ns,
-             s, U, &ldu, V, &ldv, work, &lwork, iwork, info,
-             blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1),
-             blaze::fortran_charlen_t(1) );
+             s, U, &ldu, V, &ldv, work, &lwork, iwork, info
+#if !defined(INTEL_MKL_VERSION) || (INTEL_MKL_VERSION < 20170000)
+           , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+           );
 }
 //*************************************************************************************************
 
@@ -402,9 +406,11 @@ inline void gesvdx( char jobu, char jobv, char range, int m, int n, complex<floa
    cgesvdx_( &jobu, &jobv, &range, &m, &n, reinterpret_cast<ET*>( A ), &lda,
              &vl, &vu, &il, &iu, ns, s,
              reinterpret_cast<ET*>( U ), &ldu, reinterpret_cast<ET*>( V ), &ldv,
-             reinterpret_cast<ET*>( work ), &lwork, rwork, iwork, info,
-             blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1),
-             blaze::fortran_charlen_t(1) );
+             reinterpret_cast<ET*>( work ), &lwork, rwork, iwork, info
+#if !defined(INTEL_MKL_VERSION) || (INTEL_MKL_VERSION < 20170000)
+           , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+           );
 }
 //*************************************************************************************************
 
@@ -504,9 +510,11 @@ inline void gesvdx( char jobu, char jobv, char range, int m, int n, complex<doub
    zgesvdx_( &jobu, &jobv, &range, &m, &n, reinterpret_cast<ET*>( A ), &lda,
              &vl, &vu, &il, &iu, ns, s,
              reinterpret_cast<ET*>( U ), &ldu, reinterpret_cast<ET*>( V ), &ldv,
-             reinterpret_cast<ET*>( work ), &lwork, rwork, iwork, info,
-             blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1),
-             blaze::fortran_charlen_t(1) );
+             reinterpret_cast<ET*>( work ), &lwork, rwork, iwork, info
+#if !defined(INTEL_MKL_VERSION) || (INTEL_MKL_VERSION < 20170000)
+           , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+           );
 }
 //*************************************************************************************************
 

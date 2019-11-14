@@ -138,8 +138,11 @@ inline void potrs( char uplo, int n, int nrhs, const float* A, int lda, float* B
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   spotrs_( &uplo, &n, &nrhs, const_cast<float*>( A ), &lda, B, &ldb, info,
-            blaze::fortran_charlen_t(1) );
+   spotrs_( &uplo, &n, &nrhs, const_cast<float*>( A ), &lda, B, &ldb, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -183,8 +186,11 @@ inline void potrs( char uplo, int n, int nrhs, const double* A, int lda, double*
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   dpotrs_( &uplo, &n, &nrhs, const_cast<double*>( A ), &lda, B, &ldb, info,
-            blaze::fortran_charlen_t(1) );
+   dpotrs_( &uplo, &n, &nrhs, const_cast<double*>( A ), &lda, B, &ldb, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -235,7 +241,11 @@ inline void potrs( char uplo, int n, int nrhs, const complex<float>* A,
 #endif
 
    cpotrs_( &uplo, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
-            &lda, reinterpret_cast<ET*>( B ), &ldb, info, blaze::fortran_charlen_t(1) );
+            &lda, reinterpret_cast<ET*>( B ), &ldb, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -286,7 +296,11 @@ inline void potrs( char uplo, int n, int nrhs, const complex<double>* A,
 #endif
 
    zpotrs_( &uplo, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
-            &lda, reinterpret_cast<ET*>( B ), &ldb, info, blaze::fortran_charlen_t(1) );
+            &lda, reinterpret_cast<ET*>( B ), &ldb, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 

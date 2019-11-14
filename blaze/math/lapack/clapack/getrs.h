@@ -146,7 +146,11 @@ inline void getrs( char trans, int n, int nrhs, const float* A, int lda,
 #endif
 
    sgetrs_( &trans, &n, &nrhs, const_cast<float*>( A ), &lda,
-            const_cast<int*>( ipiv ), B, &ldb, info, blaze::fortran_charlen_t(1) );
+            const_cast<int*>( ipiv ), B, &ldb, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -198,7 +202,11 @@ inline void getrs( char trans, int n, int nrhs, const double* A, int lda,
 #endif
 
    dgetrs_( &trans, &n, &nrhs, const_cast<double*>( A ), &lda,
-            const_cast<int*>( ipiv ), B, &ldb, info, blaze::fortran_charlen_t(1) );
+            const_cast<int*>( ipiv ), B, &ldb, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -255,8 +263,11 @@ inline void getrs( char trans, int n, int nrhs, const complex<float>* A, int lda
 #endif
 
    cgetrs_( &trans, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
-            &lda, const_cast<int*>( ipiv ), reinterpret_cast<ET*>( B ), &ldb, info,
-            blaze::fortran_charlen_t(1) );
+            &lda, const_cast<int*>( ipiv ), reinterpret_cast<ET*>( B ), &ldb, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -313,8 +324,11 @@ inline void getrs( char trans, int n, int nrhs, const complex<double>* A, int ld
 #endif
 
    zgetrs_( &trans, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
-            &lda, const_cast<int*>( ipiv ), reinterpret_cast<ET*>( B ), &ldb, info,
-            blaze::fortran_charlen_t(1) );
+            &lda, const_cast<int*>( ipiv ), reinterpret_cast<ET*>( B ), &ldb, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 

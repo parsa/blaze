@@ -157,7 +157,11 @@ inline void unmql( char side, char trans, int m, int n, int k, const complex<flo
             const_cast<ET*>( reinterpret_cast<const ET*>( A ) ), &lda,
             const_cast<ET*>( reinterpret_cast<const ET*>( tau ) ),
             reinterpret_cast<ET*>( C ), &ldc, reinterpret_cast<ET*>( work ),
-            &lwork, info, blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+            &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -226,7 +230,11 @@ inline void unmql( char side, char trans, int m, int n, int k, const complex<dou
             const_cast<ET*>( reinterpret_cast<const ET*>( A ) ), &lda,
             const_cast<ET*>( reinterpret_cast<const ET*>( tau ) ),
             reinterpret_cast<ET*>( C ), &ldc, reinterpret_cast<ET*>( work ),
-            &lwork, info, blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+            &lwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 

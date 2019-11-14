@@ -132,8 +132,11 @@ inline void trtri( char uplo, char diag, int n, float* A, int lda, int* info )
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   strtri_( &uplo, &diag, &n, A, &lda, info,
-            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+   strtri_( &uplo, &diag, &n, A, &lda, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -175,8 +178,11 @@ inline void trtri( char uplo, char diag, int n, double* A, int lda, int* info )
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   dtrtri_( &uplo, &diag, &n, A, &lda, info,
-            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+   dtrtri_( &uplo, &diag, &n, A, &lda, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -223,8 +229,11 @@ inline void trtri( char uplo, char diag, int n, complex<float>* A, int lda, int*
    using ET = float;
 #endif
 
-   ctrtri_( &uplo, &diag, &n, reinterpret_cast<ET*>( A ), &lda, info,
-            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+   ctrtri_( &uplo, &diag, &n, reinterpret_cast<ET*>( A ), &lda, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -271,8 +280,11 @@ inline void trtri( char uplo, char diag, int n, complex<double>* A, int lda, int
    using ET = double;
 #endif
 
-   ztrtri_( &uplo, &diag, &n, reinterpret_cast<ET*>( A ), &lda, info,
-            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+   ztrtri_( &uplo, &diag, &n, reinterpret_cast<ET*>( A ), &lda, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 

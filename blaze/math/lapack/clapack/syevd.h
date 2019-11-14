@@ -140,8 +140,11 @@ inline void syevd( char jobz, char uplo, int n, float* A, int lda, float* w,
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   ssyevd_( &jobz, &uplo, &n, A, &lda, w, work, &lwork, iwork, &liwork, info,
-            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+   ssyevd_( &jobz, &uplo, &n, A, &lda, w, work, &lwork, iwork, &liwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
@@ -195,8 +198,11 @@ inline void syevd( char jobz, char uplo, int n, double* A, int lda, double* w,
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
 #endif
 
-   dsyevd_( &jobz, &uplo, &n, A, &lda, w, work, &lwork, iwork, &liwork, info,
-            blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1) );
+   dsyevd_( &jobz, &uplo, &n, A, &lda, w, work, &lwork, iwork, &liwork, info
+#if !defined(INTEL_MKL_VERSION)
+          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
+#endif
+          );
 }
 //*************************************************************************************************
 
