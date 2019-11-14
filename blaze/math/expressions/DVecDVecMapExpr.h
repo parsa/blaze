@@ -120,12 +120,11 @@ class DVecDVecMapExpr
 
    //**Serial evaluation strategy******************************************************************
    //! Compilation switch for the serial evaluation strategy of the map expression.
-   /*! The \a useAssign compile time constant expression represents a compilation switch for
-       the serial evaluation strategy of the map expression. In case either of the two dense
-       vector operands requires an intermediate evaluation, \a useAssign will be set to 1 and
-       the addition expression will be evaluated via the \a assign function family. Otherwise
-       \a useAssign will be set to 0 and the expression will be evaluated via the subscript
-       operator. */
+   /*! The \a useAssign compile time constant expression represents a compilation switch for the
+       serial evaluation strategy of the map expression. In case either of the two dense vector
+       operands requires an intermediate evaluation, \a useAssign will be set to \a true and the
+       map expression will be evaluated via the \a assign function family. Otherwise \a useAssign
+       will be set to \a false and the expression will be evaluated via the subscript operator. */
    static constexpr bool useAssign = ( RequiresEvaluation_v<VT1> || RequiresEvaluation_v<VT2> );
 
    /*! \cond BLAZE_INTERNAL */
@@ -140,9 +139,9 @@ class DVecDVecMapExpr
    //! Helper variable template for the explicit application of the SFINAE principle.
    /*! This variable template is a helper for the selection of the parallel evaluation strategy.
        In case at least one of the two dense vector operands is not SMP assignable and at least
-       one of the two operands requires an intermediate evaluation, the variable is set to 1 and
-       the expression specific evaluation strategy is selected. Otherwise the variable is set to
-       0 and the default strategy is chosen. */
+       one of the two operands requires an intermediate evaluation, the variable is set to \a true
+       and the expression specific evaluation strategy is selected. Otherwise the variable is set
+       to \a false and the default strategy is chosen. */
    template< typename VT >
    static constexpr bool UseSMPAssign_v =
       ( ( !VT1::smpAssignable || !VT2::smpAssignable ) && useAssign );
@@ -169,7 +168,7 @@ class DVecDVecMapExpr
    //! Composite type of the right-hand side dense vector expression.
    using RightOperand = If_t< IsExpression_v<VT2>, const VT2, const VT2& >;
 
-   //! Data type of the custom unary operation.
+   //! Data type of the custom binary operation.
    using Operation = OP;
 
    //! Type for the assignment of the left-hand side dense vector operand.
@@ -211,12 +210,12 @@ class DVecDVecMapExpr
       //
       // \param left Iterator to the initial left-hand side element.
       // \param right Iterator to the initial right-hand side element.
-      // \param op The custom unary operation.
+      // \param op The custom binary operation.
       */
       explicit inline ConstIterator( LeftIteratorType left, RightIteratorType right, OP op )
          : left_ ( left  )  // Iterator to the current left-hand side element
          , right_( right )  // Iterator to the current right-hand side element
-         , op_   ( op    )  // The custom unary operation
+         , op_   ( op    )  // The custom binary operation
       {}
       //*******************************************************************************************
 
@@ -427,7 +426,7 @@ class DVecDVecMapExpr
       //**Member variables*************************************************************************
       LeftIteratorType  left_;   //!< Iterator to the current left-hand side element.
       RightIteratorType right_;  //!< Iterator to the current right-hand side element.
-      OP                op_;     //!< The custom unary operation.
+      OP                op_;     //!< The custom binary operation.
       //*******************************************************************************************
    };
    //**********************************************************************************************
@@ -448,16 +447,16 @@ class DVecDVecMapExpr
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
-   /*!\brief Constructor for the DVecMapExpr class.
+   /*!\brief Constructor for the DVecDVecMapExpr class.
    //
    // \param lhs The left-hand side dense vector operand of the map expression.
    // \param rhs The right-hand side dense vector operand of the map expression.
-   // \param op The custom unary operation.
+   // \param op The custom binary operation.
    */
    explicit inline DVecDVecMapExpr( const VT1& lhs, const VT2& rhs, OP op ) noexcept
       : lhs_( lhs )  // Left-hand side dense vector of the map expression
       , rhs_( rhs )  // Right-hand side dense vector of the map expression
-      , op_ ( op  )  // The custom unary operation
+      , op_ ( op  )  // The custom binary operation
    {}
    //**********************************************************************************************
 
@@ -610,7 +609,7 @@ class DVecDVecMapExpr
    //**Member variables****************************************************************************
    LeftOperand  lhs_;  //!< Left-hand side dense vector of the map expression.
    RightOperand rhs_;  //!< Right-hand side dense vector of the map expression.
-   Operation    op_;   //!< The custom unary operation.
+   Operation    op_;   //!< The custom binary operation.
    //**********************************************************************************************
 
    //**Assignment to dense vectors*****************************************************************
@@ -1064,8 +1063,8 @@ class DVecDVecMapExpr
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Evaluates the given binary operation on each single element of the dense vectors
-//        \a lhs and \a rhs.
+/*!\brief Elementwise evaluation of the given binary operation on each single element of the
+//        dense vectors \a lhs and \a rhs.
 // \ingroup dense_vector
 //
 // \param lhs The left-hand side dense vector operand.
@@ -1074,7 +1073,7 @@ class DVecDVecMapExpr
 // \return The binary operation applied to each single element of \a lhs and \a rhs.
 // \exception std::invalid_argument Vector sizes do not match.
 //
-// The \a map() function evaluates the given binary operation on each element of the input
+// The \a map() function evaluates the given binary operation on each single element of the input
 // vectors \a lhs and \a rhs. The function returns an expression representing this operation.\n
 // The following example demonstrates the use of the \a map() function:
 
