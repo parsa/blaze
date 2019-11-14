@@ -969,6 +969,16 @@ void ClassTest::testBinaryVectorOperation()
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
+         {
+            using T1 = StaticVector<int,3UL,columnVector>;
+            using T2 = StaticVector<double,4UL,rowVector>;
+            using RT = StaticMatrix<double,3UL,4UL,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
       }
 
       // .../HybridVector
@@ -992,6 +1002,16 @@ void ClassTest::testBinaryVectorOperation()
             using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = StaticVector<int,3UL,columnVector>;
+            using T2 = HybridVector<double,6UL,rowVector>;
+            using RT = HybridMatrix<double,3UL,6UL,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
@@ -1017,6 +1037,16 @@ void ClassTest::testBinaryVectorOperation()
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
+         {
+            using T1 = StaticVector<int,3UL,columnVector>;
+            using T2 = DynamicVector<double,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
       }
 
       // .../CustomVector
@@ -1040,6 +1070,16 @@ void ClassTest::testBinaryVectorOperation()
             using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = StaticVector<int,3UL,columnVector>;
+            using T2 = CustomVector<double,unaligned,unpadded,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
@@ -1065,6 +1105,16 @@ void ClassTest::testBinaryVectorOperation()
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
+         {
+            using T1 = StaticVector<int,3UL,columnVector>;
+            using T2 = UniformVector<double,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
       }
 
       // .../InitializerVector
@@ -1088,6 +1138,16 @@ void ClassTest::testBinaryVectorOperation()
             using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = StaticVector<int,3UL,columnVector>;
+            using T2 = InitializerVector<double,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
    }
@@ -1116,6 +1176,16 @@ void ClassTest::testBinaryVectorOperation()
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
+         {
+            using T1 = HybridVector<int,5UL,columnVector>;
+            using T2 = StaticVector<double,4UL,rowVector>;
+            using RT = HybridMatrix<double,5UL,4UL,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
       }
 
       // .../HybridVector
@@ -1139,6 +1209,16 @@ void ClassTest::testBinaryVectorOperation()
             using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = HybridVector<int,5UL,columnVector>;
+            using T2 = HybridVector<double,6UL,rowVector>;
+            using RT = HybridMatrix<double,5UL,6UL,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
@@ -1164,6 +1244,16 @@ void ClassTest::testBinaryVectorOperation()
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
+         {
+            using T1 = HybridVector<int,5UL,columnVector>;
+            using T2 = DynamicVector<double,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
       }
 
       // .../CustomVector
@@ -1187,6 +1277,16 @@ void ClassTest::testBinaryVectorOperation()
             using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = HybridVector<int,5UL,columnVector>;
+            using T2 = CustomVector<double,unaligned,unpadded,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
@@ -1212,6 +1312,16 @@ void ClassTest::testBinaryVectorOperation()
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
+         {
+            using T1 = HybridVector<int,5UL,columnVector>;
+            using T2 = UniformVector<double,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
       }
 
       // .../InitializerVector
@@ -1235,6 +1345,16 @@ void ClassTest::testBinaryVectorOperation()
             using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = HybridVector<int,5UL,columnVector>;
+            using T2 = InitializerVector<double,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
    }
@@ -1263,6 +1383,16 @@ void ClassTest::testBinaryVectorOperation()
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
+         {
+            using T1 = DynamicVector<int,columnVector>;
+            using T2 = StaticVector<double,4UL,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
       }
 
       // .../HybridVector
@@ -1286,6 +1416,16 @@ void ClassTest::testBinaryVectorOperation()
             using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = DynamicVector<int,columnVector>;
+            using T2 = HybridVector<double,6UL,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
@@ -1311,6 +1451,16 @@ void ClassTest::testBinaryVectorOperation()
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
+         {
+            using T1 = DynamicVector<int,columnVector>;
+            using T2 = DynamicVector<double,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
       }
 
       // .../CustomVector
@@ -1334,6 +1484,16 @@ void ClassTest::testBinaryVectorOperation()
             using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = DynamicVector<int,columnVector>;
+            using T2 = CustomVector<double,unaligned,unpadded,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
@@ -1359,6 +1519,16 @@ void ClassTest::testBinaryVectorOperation()
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
+         {
+            using T1 = DynamicVector<int,columnVector>;
+            using T2 = UniformVector<double,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
       }
 
       // .../InitializerVector
@@ -1382,6 +1552,16 @@ void ClassTest::testBinaryVectorOperation()
             using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = DynamicVector<int,columnVector>;
+            using T2 = InitializerVector<double,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
    }
@@ -1410,6 +1590,16 @@ void ClassTest::testBinaryVectorOperation()
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
+         {
+            using T1 = CustomVector<int,unaligned,unpadded,columnVector>;
+            using T2 = StaticVector<double,4UL,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
       }
 
       // .../HybridVector
@@ -1433,6 +1623,16 @@ void ClassTest::testBinaryVectorOperation()
             using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = CustomVector<int,unaligned,unpadded,columnVector>;
+            using T2 = HybridVector<double,6UL,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
@@ -1458,6 +1658,16 @@ void ClassTest::testBinaryVectorOperation()
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
+         {
+            using T1 = CustomVector<int,unaligned,unpadded,columnVector>;
+            using T2 = DynamicVector<double,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
       }
 
       // .../CustomVector
@@ -1481,6 +1691,16 @@ void ClassTest::testBinaryVectorOperation()
             using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = CustomVector<int,unaligned,unpadded,columnVector>;
+            using T2 = CustomVector<double,unaligned,unpadded,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
@@ -1506,6 +1726,16 @@ void ClassTest::testBinaryVectorOperation()
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
+         {
+            using T1 = CustomVector<int,unaligned,unpadded,columnVector>;
+            using T2 = UniformVector<double,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
       }
 
       // .../InitializerVector
@@ -1529,6 +1759,16 @@ void ClassTest::testBinaryVectorOperation()
             using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = CustomVector<int,unaligned,unpadded,columnVector>;
+            using T2 = InitializerVector<double,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
    }
@@ -1557,6 +1797,16 @@ void ClassTest::testBinaryVectorOperation()
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
+         {
+            using T1 = UniformVector<int,columnVector>;
+            using T2 = StaticVector<double,4UL,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
       }
 
       // .../HybridVector
@@ -1580,6 +1830,16 @@ void ClassTest::testBinaryVectorOperation()
             using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = UniformVector<int,columnVector>;
+            using T2 = HybridVector<double,6UL,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
@@ -1605,6 +1865,16 @@ void ClassTest::testBinaryVectorOperation()
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
+         {
+            using T1 = UniformVector<int,columnVector>;
+            using T2 = DynamicVector<double,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
       }
 
       // .../CustomVector
@@ -1628,6 +1898,16 @@ void ClassTest::testBinaryVectorOperation()
             using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = UniformVector<int,columnVector>;
+            using T2 = CustomVector<double,unaligned,unpadded,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
@@ -1653,6 +1933,16 @@ void ClassTest::testBinaryVectorOperation()
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
+         {
+            using T1 = UniformVector<int,columnVector>;
+            using T2 = UniformVector<double,rowVector>;
+            using RT = UniformMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
       }
 
       // .../InitializerVector
@@ -1676,6 +1966,16 @@ void ClassTest::testBinaryVectorOperation()
             using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = UniformVector<int,columnVector>;
+            using T2 = InitializerVector<double,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
    }
@@ -1704,6 +2004,16 @@ void ClassTest::testBinaryVectorOperation()
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
+         {
+            using T1 = InitializerVector<int,columnVector>;
+            using T2 = StaticVector<double,4UL,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
       }
 
       // .../HybridVector
@@ -1727,6 +2037,16 @@ void ClassTest::testBinaryVectorOperation()
             using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = InitializerVector<int,columnVector>;
+            using T2 = HybridVector<double,6UL,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
@@ -1752,6 +2072,16 @@ void ClassTest::testBinaryVectorOperation()
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
+         {
+            using T1 = InitializerVector<int,columnVector>;
+            using T2 = DynamicVector<double,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
       }
 
       // .../CustomVector
@@ -1775,6 +2105,16 @@ void ClassTest::testBinaryVectorOperation()
             using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = InitializerVector<int,columnVector>;
+            using T2 = CustomVector<double,unaligned,unpadded,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
 
@@ -1800,6 +2140,16 @@ void ClassTest::testBinaryVectorOperation()
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
          }
+         {
+            using T1 = InitializerVector<int,columnVector>;
+            using T2 = UniformVector<double,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
+         }
       }
 
       // .../InitializerVector
@@ -1823,6 +2173,16 @@ void ClassTest::testBinaryVectorOperation()
             using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
             static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
             static_assert( TransposeFlag_v<Expr> == TransposeFlag_v<RT>, "Non-matching transpose flag detected" );
+         }
+         {
+            using T1 = InitializerVector<int,columnVector>;
+            using T2 = InitializerVector<double,rowVector>;
+            using RT = DynamicMatrix<double,rowMajor>;
+            static_assert( IsSame_v< MapTrait_t<T1,T2,OP>, RT >, "Non-matching type detected" );
+
+            using Expr = RemoveCVRef_t< decltype( map( std::declval<T1>(), std::declval<T2>(), std::declval<OP>() ) ) >;
+            static_assert( IsSame_v< ResultType_t<Expr>, RT >, "Non-matching type detected" );
+            static_assert( StorageOrder_v<Expr> == StorageOrder_v<RT>, "Non-matching storage order detected" );
          }
       }
    }
