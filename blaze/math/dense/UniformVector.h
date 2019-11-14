@@ -1614,8 +1614,8 @@ struct UnaryMapTraitEval1< T, OP
 /*! \cond BLAZE_INTERNAL */
 template< typename T1, typename T2, typename OP >
 struct BinaryMapTraitEval1< T1, T2, OP
-                          , EnableIf_t< IsVector_v<T1> &&
-                                        IsVector_v<T2> &&
+                          , EnableIf_t< ( ( IsRowVector_v<T1> && IsRowVector_v<T2> ) ||
+                                          ( IsColumnVector_v<T1> && IsColumnVector_v<T2> ) ) &&
                                         YieldsUniform_v<OP,T1,T2> &&
                                         !YieldsZero_v<OP,T1,T2> > >
 {
