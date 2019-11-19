@@ -53,8 +53,8 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
 extern "C" {
+#if !defined(BLAS_H)
 
 void strsv_( char* uplo, char* trans, char* diag, int* n, float* A, int* lda,
              float* x, int* incX, blaze::fortran_charlen_t nuplo,
@@ -69,8 +69,15 @@ void ztrsv_( char* uplo, char* trans, char* diag, int* n, double* A, int* lda,
              double* x, int* incX, blaze::fortran_charlen_t nuplo,
              blaze::fortran_charlen_t ntrans, blaze::fortran_charlen_t ndiag );
 
-}
+#else
+
+void strsv_( char* uplo, char* trans, char* diag, int* n, float*  A, int* lda, float*  x, int* incX );
+void dtrsv_( char* uplo, char* trans, char* diag, int* n, double* A, int* lda, double* x, int* incX );
+void ctrsv_( char* uplo, char* trans, char* diag, int* n, float*  A, int* lda, float*  x, int* incX );
+void ztrsv_( char* uplo, char* trans, char* diag, int* n, double* A, int* lda, double* x, int* incX );
+
 #endif
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -142,7 +149,7 @@ inline void trsv( char uplo, char trans, char diag, int n, const float* A,
                   int lda, float* x, int incX )
 {
    strsv_( &uplo, &trans, &diag, &n, const_cast<float*>( A ), &lda, x, &incX
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(BLAS_H)
          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
          );
@@ -189,7 +196,7 @@ inline void trsv( char uplo, char trans, char diag, int n, const double* A,
                   int lda, double* x, int incX )
 {
    dtrsv_( &uplo, &trans, &diag, &n, const_cast<double*>( A ), &lda, x, &incX
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(BLAS_H)
          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
          );
@@ -239,7 +246,7 @@ inline void trsv( char uplo, char trans, char diag, int n, const complex<float>*
 
    ctrsv_( &uplo, &trans, &diag, &n, const_cast<float*>( reinterpret_cast<const float*>( A ) ),
            &lda, reinterpret_cast<float*>( x ), &incX
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(BLAS_H)
          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
          );
@@ -289,7 +296,7 @@ inline void trsv( char uplo, char trans, char diag, int n, const complex<double>
 
    ztrsv_( &uplo, &trans, &diag, &n, const_cast<double*>( reinterpret_cast<const double*>( A ) ),
            &lda, reinterpret_cast<double*>( x ), &incX
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(BLAS_H)
          , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
          );

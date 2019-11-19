@@ -419,11 +419,11 @@ inline void gges( char jobvsl, char jobvsr, char sort,
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
    using ET = MKL_Complex8;
+   using Selctg = MKL_INT (*)( const ET*, const ET* );
 #else
    using ET = float;
+   using Selctg = int (*)( const ET*, const ET* );
 #endif
-
-   using Selctg = int (*)( const float*, const float* );
 
    cgges_( &jobvsl, &jobvsr, &sort, reinterpret_cast<Selctg>( selctg ), &n,
            reinterpret_cast<ET*>( A ), &lda, reinterpret_cast<ET*>( B ), &ldb, sdim,
@@ -530,11 +530,11 @@ inline void gges( char jobvsl, char jobvsr, char sort,
 #if defined(INTEL_MKL_VERSION)
    BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
    using ET = MKL_Complex16;
+   using Selctg = MKL_INT (*)( const ET*, const ET* );
 #else
    using ET = double;
+   using Selctg = int (*)( const ET*, const ET* );
 #endif
-
-   using Selctg = int (*)( const double*, const double* );
 
    zgges_( &jobvsl, &jobvsr, &sort, reinterpret_cast<Selctg>( selctg ), &n,
            reinterpret_cast<ET*>( A ), &lda, reinterpret_cast<ET*>( B ), &ldb, sdim,
