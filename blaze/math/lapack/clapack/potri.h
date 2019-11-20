@@ -53,7 +53,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
 extern "C" {
 
 void spotri_( char* uplo, int* n, float* A, int* lda, int* info, blaze::fortran_charlen_t nuplo );
@@ -129,7 +129,7 @@ inline void potri( char uplo, int n, float* A, int lda, int* info )
 #endif
 
    spotri_( &uplo, &n, A, &lda, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
           , blaze::fortran_charlen_t(1)
 #endif
           );
@@ -175,7 +175,7 @@ inline void potri( char uplo, int n, double* A, int lda, int* info )
 #endif
 
    dpotri_( &uplo, &n, A, &lda, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
           , blaze::fortran_charlen_t(1)
 #endif
           );
@@ -226,7 +226,7 @@ inline void potri( char uplo, int n, complex<float>* A, int lda, int* info )
 #endif
 
    cpotri_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
           , blaze::fortran_charlen_t(1)
 #endif
           );
@@ -277,7 +277,7 @@ inline void potri( char uplo, int n, complex<double>* A, int lda, int* info )
 #endif
 
    zpotri_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
           , blaze::fortran_charlen_t(1)
 #endif
           );

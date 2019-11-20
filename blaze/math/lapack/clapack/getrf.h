@@ -52,7 +52,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
 extern "C" {
 
 void sgetrf_( int* m, int* n, float* A, int* lda, int* ipiv, int* info );

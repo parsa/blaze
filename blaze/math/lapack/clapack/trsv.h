@@ -53,8 +53,8 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-extern "C" {
 #if !defined(BLAS_H)
+extern "C" {
 
 void strsv_( char* uplo, char* trans, char* diag, int* n, float* A, int* lda,
              float* x, int* incX, blaze::fortran_charlen_t nuplo,
@@ -69,15 +69,8 @@ void ztrsv_( char* uplo, char* trans, char* diag, int* n, double* A, int* lda,
              double* x, int* incX, blaze::fortran_charlen_t nuplo,
              blaze::fortran_charlen_t ntrans, blaze::fortran_charlen_t ndiag );
 
-#else
-
-void strsv_( char* uplo, char* trans, char* diag, int* n, float*  A, int* lda, float*  x, int* incX );
-void dtrsv_( char* uplo, char* trans, char* diag, int* n, double* A, int* lda, double* x, int* incX );
-void ctrsv_( char* uplo, char* trans, char* diag, int* n, float*  A, int* lda, float*  x, int* incX );
-void ztrsv_( char* uplo, char* trans, char* diag, int* n, double* A, int* lda, double* x, int* incX );
-
-#endif
 }
+#endif
 /*! \endcond */
 //*************************************************************************************************
 

@@ -53,7 +53,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
 extern "C" {
 
 void strtri_( char* uplo, char* diag, int* n, float* A, int* lda, int* info,
@@ -133,7 +133,7 @@ inline void trtri( char uplo, char diag, int n, float* A, int lda, int* info )
 #endif
 
    strtri_( &uplo, &diag, &n, A, &lda, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
           , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
           );
@@ -179,7 +179,7 @@ inline void trtri( char uplo, char diag, int n, double* A, int lda, int* info )
 #endif
 
    dtrtri_( &uplo, &diag, &n, A, &lda, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
           , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
           );
@@ -230,7 +230,7 @@ inline void trtri( char uplo, char diag, int n, complex<float>* A, int lda, int*
 #endif
 
    ctrtri_( &uplo, &diag, &n, reinterpret_cast<ET*>( A ), &lda, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
           , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
           );
@@ -281,7 +281,7 @@ inline void trtri( char uplo, char diag, int n, complex<double>* A, int lda, int
 #endif
 
    ztrtri_( &uplo, &diag, &n, reinterpret_cast<ET*>( A ), &lda, info
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
           , blaze::fortran_charlen_t(1), blaze::fortran_charlen_t(1)
 #endif
           );

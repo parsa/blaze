@@ -52,7 +52,7 @@
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-#if !defined(INTEL_MKL_VERSION)
+#if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
 extern "C" {
 
 void sgesv_( int* n, int* nrhs, float* A, int* lda, int* ipiv, float* b, int* ldb, int* info );
