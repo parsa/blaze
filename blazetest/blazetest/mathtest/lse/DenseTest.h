@@ -143,6 +143,7 @@ void DenseTest::testGeneral( size_t N )
    using blaze::DynamicVector;
    using blaze::rowMajor;
    using blaze::columnMajor;
+   using blaze::rowVector;
    using blaze::solve;
    using blaze::isDefault;
 
@@ -188,6 +189,129 @@ void DenseTest::testGeneral( size_t N )
              << "   Column-major solution (x2):\n" << x2 << "\n"
              << "   A * x1 =\n" << ( A * x1 ) << "\n"
              << "   A * x2 =\n" << ( A * x2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "General LSE (single rhs, automatic, transpose)";
+
+      DynamicMatrix<Type> A( N, N );
+      DynamicVector<Type> b( N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( b );
+      }
+
+      const DynamicMatrix<Type,rowMajor>    A1( A );
+      const DynamicMatrix<Type,columnMajor> A2( A );
+
+      DynamicVector<Type> x1( N );
+      DynamicVector<Type> x2( N );
+
+      x1 = solve( trans(A1), b );
+      x2 = solve( trans(A2), b );
+
+      if( trans(A)*x1 != b || trans(A)*x2 != b || x1 != x2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   Row-major solution (x1):\n" << x1 << "\n"
+             << "   Column-major solution (x2):\n" << x2 << "\n"
+             << "   A * x1 =\n" << ( trans(A) * x1 ) << "\n"
+             << "   A * x2 =\n" << ( trans(A) * x2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "General LSE (single rhs, inv(A)*b)";
+
+      DynamicMatrix<Type> A( N, N );
+      DynamicVector<Type> b( N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( b );
+      }
+
+      const DynamicMatrix<Type,rowMajor>    A1( A );
+      const DynamicMatrix<Type,columnMajor> A2( A );
+
+      DynamicVector<Type> x1( N );
+      DynamicVector<Type> x2( N );
+
+      x1 = inv(A1) * b;
+      x2 = inv(A2) * b;
+
+      if( A*x1 != b || A*x2 != b || x1 != x2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   Row-major solution (x1):\n" << x1 << "\n"
+             << "   Column-major solution (x2):\n" << x2 << "\n"
+             << "   A * x1 =\n" << ( A * x1 ) << "\n"
+             << "   A * x2 =\n" << ( A * x2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "General LSE (single rhs, b*inv(A))";
+
+      DynamicMatrix<Type> A( N, N );
+      DynamicVector<Type,rowVector> b( N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( b );
+      }
+
+      const DynamicMatrix<Type,rowMajor>    A1( A );
+      const DynamicMatrix<Type,columnMajor> A2( A );
+
+      DynamicVector<Type,rowVector> x1( N );
+      DynamicVector<Type,rowVector> x2( N );
+
+      x1 = b * inv(A1);
+      x2 = b * inv(A2);
+
+      if( x1*A != b || x2*A != b || x1 != x2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   Row-major solution (x1):\n" << x1 << "\n"
+             << "   Column-major solution (x2):\n" << x2 << "\n"
+             << "   x1 * A =\n" << ( x1 * A ) << "\n"
+             << "   x2 * A =\n" << ( x2 * A ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -303,6 +427,138 @@ void DenseTest::testGeneral( size_t N )
              << "   Column-major solutions (X2):\n" << X2 << "\n"
              << "   A * X1 =\n" << ( A * X1 ) << "\n"
              << "   A * X2 =\n" << ( A * X2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "General LSE (multiple rhs, automatic, transpose)";
+
+      DynamicMatrix<Type> A( N, N );
+      DynamicMatrix<Type> B( 3UL, N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( B );
+      }
+
+      const DynamicMatrix<Type,rowMajor>    A1( A );
+      const DynamicMatrix<Type,columnMajor> A2( A );
+
+      const DynamicMatrix<Type,rowMajor>    B1( B );
+      const DynamicMatrix<Type,columnMajor> B2( B );
+
+      DynamicMatrix<Type,rowMajor>    X1;
+      DynamicMatrix<Type,columnMajor> X2;
+
+      X1 = solve( trans(A1), trans(B1) );
+      X2 = solve( trans(A2), trans(B2) );
+
+      if( trans(A)*X1 != trans(B) || trans(A)*X2 != trans(B) || X1 != X2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand sides (B):\n" << trans(B) << "\n"
+             << "   Row-major solutions (X1):\n" << X1 << "\n"
+             << "   Column-major solutions (X2):\n" << X2 << "\n"
+             << "   A * X1 =\n" << ( trans(A) * X1 ) << "\n"
+             << "   A * X2 =\n" << ( trans(A) * X2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "General LSE (multiple rhs, inv(A)*B)";
+
+      DynamicMatrix<Type> A( N, N );
+      DynamicMatrix<Type> B( N, 3UL );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( B );
+      }
+
+      const DynamicMatrix<Type,rowMajor>    A1( A );
+      const DynamicMatrix<Type,columnMajor> A2( A );
+
+      const DynamicMatrix<Type,rowMajor>    B1( B );
+      const DynamicMatrix<Type,columnMajor> B2( B );
+
+      DynamicMatrix<Type,rowMajor>    X1;
+      DynamicMatrix<Type,columnMajor> X2;
+
+      X1 = inv(A1) * B1;
+      X2 = inv(A2) * B2;
+
+      if( A*X1 != B || A*X2 != B || X1 != X2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Right-hand sides (B):\n" << B << "\n"
+             << "   Row-major solutions (X1):\n" << X1 << "\n"
+             << "   Column-major solutions (X2):\n" << X2 << "\n"
+             << "   A * X1 =\n" << ( A * X1 ) << "\n"
+             << "   A * X2 =\n" << ( A * X2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "General LSE (multiple rhs, B*inv(A))";
+
+      DynamicMatrix<Type> A( N, N );
+      DynamicMatrix<Type> B( 3UL, N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( B );
+      }
+
+      const DynamicMatrix<Type,rowMajor>    A1( A );
+      const DynamicMatrix<Type,columnMajor> A2( A );
+
+      const DynamicMatrix<Type,rowMajor>    B1( B );
+      const DynamicMatrix<Type,columnMajor> B2( B );
+
+      DynamicMatrix<Type,rowMajor>    X1;
+      DynamicMatrix<Type,columnMajor> X2;
+
+      X1 = B1 * inv(A1);
+      X2 = B2 * inv(A2);
+
+      if( X1*A != B || X2*A != B || X1 != X2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << A << "\n"
+             << "   Right-hand sides (B):\n" << B << "\n"
+             << "   Row-major solutions (X1):\n" << X1 << "\n"
+             << "   Column-major solutions (X2):\n" << X2 << "\n"
+             << "   X1 * A =\n" << ( X1 * A ) << "\n"
+             << "   X2 * A =\n" << ( X2 * A ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -448,6 +704,47 @@ void DenseTest::testSymmetric( size_t N )
    }
 
    {
+      test_ = "Symmetric LSE (single rhs, automatic, transpose)";
+
+      SymmetricMatrix< DynamicMatrix<Type> > A( N );
+      DynamicVector<Type> b( N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( b );
+      }
+
+      const SymmetricMatrix< DynamicMatrix<Type,rowMajor>    > A1( A );
+      const SymmetricMatrix< DynamicMatrix<Type,columnMajor> > A2( A );
+
+      DynamicVector<Type> x1( N );
+      DynamicVector<Type> x2( N );
+
+      x1 = solve( trans(A1), b );
+      x2 = solve( trans(A2), b );
+
+      if( trans(A)*x1 != b || trans(A)*x2 != b || x1 != x2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   Row-major solution (x1):\n" << x1 << "\n"
+             << "   Column-major solution (x2):\n" << x2 << "\n"
+             << "   A * x1 =\n" << ( trans(A) * x1 ) << "\n"
+             << "   A * x2 =\n" << ( trans(A) * x2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Symmetric LSE (single rhs, declsym)";
 
       SymmetricMatrix< DynamicMatrix<Type> > A( N );
@@ -484,6 +781,47 @@ void DenseTest::testSymmetric( size_t N )
              << "   Column-major solution (x2):\n" << x2 << "\n"
              << "   A * x1 =\n" << ( A * x1 ) << "\n"
              << "   A * x2 =\n" << ( A * x2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Symmetric LSE (single rhs, declsym, transpose)";
+
+      SymmetricMatrix< DynamicMatrix<Type> > A( N );
+      DynamicVector<Type> b( N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( b );
+      }
+
+      const DynamicMatrix<Type,rowMajor>    A1( A );
+      const DynamicMatrix<Type,columnMajor> A2( A );
+
+      DynamicVector<Type> x1( N );
+      DynamicVector<Type> x2( N );
+
+      solve( declsym( trans(A1) ), x1, b );
+      solve( declsym( trans(A2) ), x2, b );
+
+      if( A*x1 != b || A*x2 != b || x1 != x2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   Row-major solution (x1):\n" << x1 << "\n"
+             << "   Column-major solution (x2):\n" << x2 << "\n"
+             << "   A * x1 =\n" << ( trans(A) * x1 ) << "\n"
+             << "   A * x2 =\n" << ( trans(A) * x2 ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -560,6 +898,50 @@ void DenseTest::testSymmetric( size_t N )
    }
 
    {
+      test_ = "Symmetric LSE (multiple rhs, automatic, transpose)";
+
+      SymmetricMatrix< DynamicMatrix<Type> > A( N );
+      DynamicMatrix<Type> B( 3UL, N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( B );
+      }
+
+      const SymmetricMatrix< DynamicMatrix<Type,rowMajor> >    A1( A );
+      const SymmetricMatrix< DynamicMatrix<Type,columnMajor> > A2( A );
+
+      const DynamicMatrix<Type,rowMajor>    B1( B );
+      const DynamicMatrix<Type,columnMajor> B2( B );
+
+      DynamicMatrix<Type,rowMajor>    X1;
+      DynamicMatrix<Type,columnMajor> X2;
+
+      X1 = solve( trans(A1), trans(B1) );
+      X2 = solve( trans(A2), trans(B2) );
+
+      if( trans(A)*X1 != trans(B) || trans(A)*X2 != trans(B) || X1 != X2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand sides (B):\n" << trans(B) << "\n"
+             << "   Row-major solutions (X1):\n" << X1 << "\n"
+             << "   Column-major solutions (X2):\n" << X2 << "\n"
+             << "   A * X1 =\n" << ( trans(A) * X1 ) << "\n"
+             << "   A * X2 =\n" << ( trans(A) * X2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Symmetric LSE (multiple rhs, declsym)";
 
       SymmetricMatrix< DynamicMatrix<Type> > A( N );
@@ -599,6 +981,50 @@ void DenseTest::testSymmetric( size_t N )
              << "   Column-major solutions (X2):\n" << X2 << "\n"
              << "   A * X1 =\n" << ( A * X1 ) << "\n"
              << "   A * X2 =\n" << ( A * X2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Symmetric LSE (multiple rhs, declsym, transpose)";
+
+      SymmetricMatrix< DynamicMatrix<Type> > A( N );
+      DynamicMatrix<Type> B( 3UL, N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( B );
+      }
+
+      const DynamicMatrix<Type,rowMajor>    A1( A );
+      const DynamicMatrix<Type,columnMajor> A2( A );
+
+      const DynamicMatrix<Type,rowMajor>    B1( B );
+      const DynamicMatrix<Type,columnMajor> B2( B );
+
+      DynamicMatrix<Type,rowMajor>    X1;
+      DynamicMatrix<Type,columnMajor> X2;
+
+      solve( declsym( trans(A1) ), X1, trans(B1) );
+      solve( declsym( trans(A2) ), X2, trans(B2) );
+
+      if( trans(A)*X1 != trans(B) || trans(A)*X2 != trans(B) || X1 != X2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand sides (B):\n" << trans(B) << "\n"
+             << "   Row-major solutions (X1):\n" << X1 << "\n"
+             << "   Column-major solutions (X2):\n" << X2 << "\n"
+             << "   A * X1 =\n" << ( trans(A) * X1 ) << "\n"
+             << "   A * X2 =\n" << ( trans(A) * X2 ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -700,6 +1126,47 @@ void DenseTest::testHermitian( size_t N )
    }
 
    {
+      test_ = "Hermitian LSE (single rhs, automatic, transpose)";
+
+      HermitianMatrix< DynamicMatrix<Type> > A( N );
+      DynamicVector<Type> b( N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( b );
+      }
+
+      const HermitianMatrix< DynamicMatrix<Type,rowMajor>    > A1( A );
+      const HermitianMatrix< DynamicMatrix<Type,columnMajor> > A2( A );
+
+      DynamicVector<Type> x1( N );
+      DynamicVector<Type> x2( N );
+
+      x1 = solve( trans(A1), b );
+      x2 = solve( trans(A2), b );
+
+      if( trans(A)*x1 != b || trans(A)*x2 != b || x1 != x2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   Row-major solution (x1):\n" << x1 << "\n"
+             << "   Column-major solution (x2):\n" << x2 << "\n"
+             << "   A * x1 =\n" << ( trans(A) * x1 ) << "\n"
+             << "   A * x2 =\n" << ( trans(A) * x2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Hermitian LSE (single rhs, declherm)";
 
       HermitianMatrix< DynamicMatrix<Type> > A( N );
@@ -736,6 +1203,47 @@ void DenseTest::testHermitian( size_t N )
              << "   Column-major solution (x2):\n" << x2 << "\n"
              << "   A * x1 =\n" << ( A * x1 ) << "\n"
              << "   A * x2 =\n" << ( A * x2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Hermitian LSE (single rhs, declherm, transpose)";
+
+      HermitianMatrix< DynamicMatrix<Type> > A( N );
+      DynamicVector<Type> b( N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( b );
+      }
+
+      const DynamicMatrix<Type,rowMajor>    A1( A );
+      const DynamicMatrix<Type,columnMajor> A2( A );
+
+      DynamicVector<Type> x1( N );
+      DynamicVector<Type> x2( N );
+
+      solve( declherm( trans(A1) ), x1, b );
+      solve( declherm( trans(A2) ), x2, b );
+
+      if( trans(A)*x1 != b || trans(A)*x2 != b || x1 != x2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   Row-major solution (x1):\n" << x1 << "\n"
+             << "   Column-major solution (x2):\n" << x2 << "\n"
+             << "   A * x1 =\n" << ( trans(A) * x1 ) << "\n"
+             << "   A * x2 =\n" << ( trans(A) * x2 ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -812,6 +1320,50 @@ void DenseTest::testHermitian( size_t N )
    }
 
    {
+      test_ = "Hermitian LSE (multiple rhs, automatic, transpose)";
+
+      HermitianMatrix< DynamicMatrix<Type> > A( N );
+      DynamicMatrix<Type> B( 3UL, N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( B );
+      }
+
+      const HermitianMatrix< DynamicMatrix<Type,rowMajor> >    A1( A );
+      const HermitianMatrix< DynamicMatrix<Type,columnMajor> > A2( A );
+
+      const DynamicMatrix<Type,rowMajor>    B1( B );
+      const DynamicMatrix<Type,columnMajor> B2( B );
+
+      DynamicMatrix<Type,rowMajor>    X1;
+      DynamicMatrix<Type,columnMajor> X2;
+
+      X1 = solve( trans(A1), trans(B1) );
+      X2 = solve( trans(A2), trans(B2) );
+
+      if( trans(A)*X1 != trans(B) || trans(A)*X2 != trans(B) || X1 != X2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand sides (B):\n" << trans(B) << "\n"
+             << "   Row-major solutions (X1):\n" << X1 << "\n"
+             << "   Column-major solutions (X2):\n" << X2 << "\n"
+             << "   A * X1 =\n" << ( trans(A) * X1 ) << "\n"
+             << "   A * X2 =\n" << ( trans(A) * X2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Hermitian LSE (multiple rhs, declherm)";
 
       HermitianMatrix< DynamicMatrix<Type> > A( N );
@@ -851,6 +1403,50 @@ void DenseTest::testHermitian( size_t N )
              << "   Column-major solutions (X2):\n" << X2 << "\n"
              << "   A * X1 =\n" << ( A * X1 ) << "\n"
              << "   A * X2 =\n" << ( A * X2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Hermitian LSE (multiple rhs, declherm, transpose)";
+
+      HermitianMatrix< DynamicMatrix<Type> > A( N );
+      DynamicMatrix<Type> B( 3UL, N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( B );
+      }
+
+      const DynamicMatrix<Type,rowMajor>    A1( A );
+      const DynamicMatrix<Type,columnMajor> A2( A );
+
+      const DynamicMatrix<Type,rowMajor>    B1( B );
+      const DynamicMatrix<Type,columnMajor> B2( B );
+
+      DynamicMatrix<Type,rowMajor>    X1;
+      DynamicMatrix<Type,columnMajor> X2;
+
+      solve( declherm( trans(A1) ), X1, trans(B1) );
+      solve( declherm( trans(A2) ), X2, trans(B2) );
+
+      if( trans(A)*X1 != trans(B) || trans(A)*X2 != trans(B) || X1 != X2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand sides (B):\n" << trans(B) << "\n"
+             << "   Row-major solutions (X1):\n" << X1 << "\n"
+             << "   Column-major solutions (X2):\n" << X2 << "\n"
+             << "   A * X1 =\n" << ( trans(A) * X1 ) << "\n"
+             << "   A * X2 =\n" << ( trans(A) * X2 ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -898,6 +1494,7 @@ void DenseTest::testLower( size_t N )
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
    using blaze::LowerMatrix;
+   using blaze::UpperMatrix;
    using blaze::DynamicMatrix;
    using blaze::DynamicVector;
    using blaze::rowMajor;
@@ -952,6 +1549,47 @@ void DenseTest::testLower( size_t N )
    }
 
    {
+      test_ = "Lower LSE (single rhs, automatic, transpose)";
+
+      UpperMatrix< DynamicMatrix<Type> > A( N );
+      DynamicVector<Type> b( N );
+
+      if( N != 0 ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( b );
+      }
+
+      const UpperMatrix< DynamicMatrix<Type,rowMajor>    > A1( A );
+      const UpperMatrix< DynamicMatrix<Type,columnMajor> > A2( A );
+
+      DynamicVector<Type> x1( N );
+      DynamicVector<Type> x2( N );
+
+      x1 = solve( trans(A1), b );
+      x2 = solve( trans(A2), b );
+
+      if( trans(A)*x1 != b || trans(A)*x2 != b || x1 != x2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   Row-major solution (x1):\n" << x1 << "\n"
+             << "   Column-major solution (x2):\n" << x2 << "\n"
+             << "   A * x1 =\n" << ( trans(A) * x1 ) << "\n"
+             << "   A * x2 =\n" << ( trans(A) * x2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Lower LSE (single rhs, decllow)";
 
       LowerMatrix< DynamicMatrix<Type> > A( N );
@@ -988,6 +1626,47 @@ void DenseTest::testLower( size_t N )
              << "   Column-major solution (x2):\n" << x2 << "\n"
              << "   A * x1 =\n" << ( A * x1 ) << "\n"
              << "   A * x2 =\n" << ( A * x2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Lower LSE (single rhs, decllow, transpose)";
+
+      UpperMatrix< DynamicMatrix<Type> > A( N );
+      DynamicVector<Type> b( N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( b );
+      }
+
+      const DynamicMatrix<Type,rowMajor>    A1( A );
+      const DynamicMatrix<Type,columnMajor> A2( A );
+
+      DynamicVector<Type> x1( N );
+      DynamicVector<Type> x2( N );
+
+      solve( decllow( trans(A1) ), x1, b );
+      solve( decllow( trans(A2) ), x2, b );
+
+      if( trans(A)*x1 != b || trans(A)*x2 != b || x1 != x2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   Row-major solution (x1):\n" << x1 << "\n"
+             << "   Column-major solution (x2):\n" << x2 << "\n"
+             << "   A * x1 =\n" << ( trans(A) * x1 ) << "\n"
+             << "   A * x2 =\n" << ( trans(A) * x2 ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1064,6 +1743,50 @@ void DenseTest::testLower( size_t N )
    }
 
    {
+      test_ = "Lower LSE (multiple rhs, automatic, transpose)";
+
+      UpperMatrix< DynamicMatrix<Type> > A( N );
+      DynamicMatrix<Type> B( 3UL, N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( B );
+      }
+
+      const UpperMatrix< DynamicMatrix<Type,rowMajor> >    A1( A );
+      const UpperMatrix< DynamicMatrix<Type,columnMajor> > A2( A );
+
+      const DynamicMatrix<Type,rowMajor>    B1( B );
+      const DynamicMatrix<Type,columnMajor> B2( B );
+
+      DynamicMatrix<Type,rowMajor>    X1;
+      DynamicMatrix<Type,columnMajor> X2;
+
+      X1 = solve( trans(A1), trans(B1) );
+      X2 = solve( trans(A2), trans(B2) );
+
+      if( trans(A)*X1 != trans(B) || trans(A)*X2 != trans(B) || X1 != X2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand sides (B):\n" << trans(B) << "\n"
+             << "   Row-major solutions (X1):\n" << X1 << "\n"
+             << "   Column-major solutions (X2):\n" << X2 << "\n"
+             << "   A * X1 =\n" << ( trans(A) * X1 ) << "\n"
+             << "   A * X2 =\n" << ( trans(A) * X2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Lower LSE (multiple rhs, decllow)";
 
       LowerMatrix< DynamicMatrix<Type> > A( N );
@@ -1103,6 +1826,50 @@ void DenseTest::testLower( size_t N )
              << "   Column-major solutions (X2):\n" << X2 << "\n"
              << "   A * X1 =\n" << ( A * X1 ) << "\n"
              << "   A * X2 =\n" << ( A * X2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Lower LSE (multiple rhs, decllow, transpose)";
+
+      UpperMatrix< DynamicMatrix<Type> > A( N );
+      DynamicMatrix<Type> B( 3UL, N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( B );
+      }
+
+      const DynamicMatrix<Type,rowMajor>    A1( A );
+      const DynamicMatrix<Type,columnMajor> A2( A );
+
+      const DynamicMatrix<Type,rowMajor>    B1( B );
+      const DynamicMatrix<Type,columnMajor> B2( B );
+
+      DynamicMatrix<Type,rowMajor>    X1;
+      DynamicMatrix<Type,columnMajor> X2;
+
+      solve( decllow( trans(A1) ), X1, trans(B1) );
+      solve( decllow( trans(A2) ), X2, trans(B2) );
+
+      if( trans(A)*X1 != trans(B) || trans(A)*X2 != trans(B) || X1 != X2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand sides (B):\n" << trans(B) << "\n"
+             << "   Row-major solutions (X1):\n" << X1 << "\n"
+             << "   Column-major solutions (X2):\n" << X2 << "\n"
+             << "   A * X1 =\n" << ( trans(A) * X1 ) << "\n"
+             << "   A * X2 =\n" << ( trans(A) * X2 ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1151,6 +1918,7 @@ void DenseTest::testUniLower( size_t N )
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
    using blaze::UniLowerMatrix;
+   using blaze::UniUpperMatrix;
    using blaze::DynamicMatrix;
    using blaze::DynamicVector;
    using blaze::rowMajor;
@@ -1205,6 +1973,47 @@ void DenseTest::testUniLower( size_t N )
    }
 
    {
+      test_ = "UniLower LSE (single rhs, automatic, transpose)";
+
+      UniUpperMatrix< DynamicMatrix<Type> > A( N );
+      DynamicVector<Type> b( N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( b );
+      }
+
+      const UniUpperMatrix< DynamicMatrix<Type,rowMajor>    > A1( A );
+      const UniUpperMatrix< DynamicMatrix<Type,columnMajor> > A2( A );
+
+      DynamicVector<Type> x1( N );
+      DynamicVector<Type> x2( N );
+
+      x1 = solve( trans(A1), b );
+      x2 = solve( trans(A2), b );
+
+      if( trans(A)*x1 != b || trans(A)*x2 != b || x1 != x2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   Row-major solution (x1):\n" << x1 << "\n"
+             << "   Column-major solution (x2):\n" << x2 << "\n"
+             << "   A * x1 =\n" << ( trans(A) * x1 ) << "\n"
+             << "   A * x2 =\n" << ( trans(A) * x2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "UniLower LSE (single rhs, declunilow)";
 
       UniLowerMatrix< DynamicMatrix<Type> > A( N );
@@ -1241,6 +2050,47 @@ void DenseTest::testUniLower( size_t N )
              << "   Column-major solution (x2):\n" << x2 << "\n"
              << "   A * x1 =\n" << ( A * x1 ) << "\n"
              << "   A * x2 =\n" << ( A * x2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "UniLower LSE (single rhs, declunilow, transpose)";
+
+      UniUpperMatrix< DynamicMatrix<Type> > A( N );
+      DynamicVector<Type> b( N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( b );
+      }
+
+      const DynamicMatrix<Type,rowMajor>    A1( A );
+      const DynamicMatrix<Type,columnMajor> A2( A );
+
+      DynamicVector<Type> x1( N );
+      DynamicVector<Type> x2( N );
+
+      solve( declunilow( trans(A1) ), x1, b );
+      solve( declunilow( trans(A2) ), x2, b );
+
+      if( trans(A)*x1 != b || trans(A)*x2 != b || x1 != x2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   Row-major solution (x1):\n" << x1 << "\n"
+             << "   Column-major solution (x2):\n" << x2 << "\n"
+             << "   A * x1 =\n" << ( trans(A) * x1 ) << "\n"
+             << "   A * x2 =\n" << ( trans(A) * x2 ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1317,6 +2167,50 @@ void DenseTest::testUniLower( size_t N )
    }
 
    {
+      test_ = "UniLower LSE (multiple rhs, automatic, transpose)";
+
+      UniUpperMatrix< DynamicMatrix<Type> > A( N );
+      DynamicMatrix<Type> B( 3UL, N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( B );
+      }
+
+      const UniUpperMatrix< DynamicMatrix<Type,rowMajor> >    A1( A );
+      const UniUpperMatrix< DynamicMatrix<Type,columnMajor> > A2( A );
+
+      const DynamicMatrix<Type,rowMajor>    B1( B );
+      const DynamicMatrix<Type,columnMajor> B2( B );
+
+      DynamicMatrix<Type,rowMajor>    X1;
+      DynamicMatrix<Type,columnMajor> X2;
+
+      X1 = solve( trans(A1), trans(B1) );
+      X2 = solve( trans(A2), trans(B2) );
+
+      if( trans(A)*X1 != trans(B) || trans(A)*X2 != trans(B) || X1 != X2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand sides (B):\n" << trans(B) << "\n"
+             << "   Row-major solutions (X1):\n" << X1 << "\n"
+             << "   Column-major solutions (X2):\n" << X2 << "\n"
+             << "   A * X1 =\n" << ( trans(A) * X1 ) << "\n"
+             << "   A * X2 =\n" << ( trans(A) * X2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "UniLower LSE (multiple rhs, declunilow)";
 
       UniLowerMatrix< DynamicMatrix<Type> > A( N );
@@ -1356,6 +2250,50 @@ void DenseTest::testUniLower( size_t N )
              << "   Column-major solutions (X2):\n" << X2 << "\n"
              << "   A * X1 =\n" << ( A * X1 ) << "\n"
              << "   A * X2 =\n" << ( A * X2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "UniLower LSE (multiple rhs, declunilow, transpose)";
+
+      UniUpperMatrix< DynamicMatrix<Type> > A( N );
+      DynamicMatrix<Type> B( 3UL, N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( B );
+      }
+
+      const DynamicMatrix<Type,rowMajor>    A1( A );
+      const DynamicMatrix<Type,columnMajor> A2( A );
+
+      const DynamicMatrix<Type,rowMajor>    B1( B );
+      const DynamicMatrix<Type,columnMajor> B2( B );
+
+      DynamicMatrix<Type,rowMajor>    X1;
+      DynamicMatrix<Type,columnMajor> X2;
+
+      solve( declunilow( trans(A1) ), X1, trans(B1) );
+      solve( declunilow( trans(A2) ), X2, trans(B2) );
+
+      if( trans(A)*X1 != trans(B) || trans(A)*X2 != trans(B) || X1 != X2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand sides (B):\n" << trans(B) << "\n"
+             << "   Row-major solutions (X1):\n" << X1 << "\n"
+             << "   Column-major solutions (X2):\n" << X2 << "\n"
+             << "   A * X1 =\n" << ( trans(A) * X1 ) << "\n"
+             << "   A * X2 =\n" << ( trans(A) * X2 ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1403,6 +2341,7 @@ void DenseTest::testUpper( size_t N )
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
    using blaze::UpperMatrix;
+   using blaze::LowerMatrix;
    using blaze::DynamicMatrix;
    using blaze::DynamicVector;
    using blaze::rowMajor;
@@ -1457,6 +2396,47 @@ void DenseTest::testUpper( size_t N )
    }
 
    {
+      test_ = "Upper LSE (single rhs, automatic, transpose)";
+
+      LowerMatrix< DynamicMatrix<Type> > A( N );
+      DynamicVector<Type> b( N );
+
+      if( N != 0 ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( b );
+      }
+
+      const LowerMatrix< DynamicMatrix<Type,rowMajor>    > A1( A );
+      const LowerMatrix< DynamicMatrix<Type,columnMajor> > A2( A );
+
+      DynamicVector<Type> x1( N );
+      DynamicVector<Type> x2( N );
+
+      x1 = solve( trans(A1), b );
+      x2 = solve( trans(A2), b );
+
+      if( trans(A)*x1 != b || trans(A)*x2 != b || x1 != x2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   Row-major solution (x1):\n" << x1 << "\n"
+             << "   Column-major solution (x2):\n" << x2 << "\n"
+             << "   A * x1 =\n" << ( trans(A) * x1 ) << "\n"
+             << "   A * x2 =\n" << ( trans(A) * x2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Upper LSE (single rhs, declupp)";
 
       UpperMatrix< DynamicMatrix<Type> > A( N );
@@ -1493,6 +2473,47 @@ void DenseTest::testUpper( size_t N )
              << "   Column-major solution (x2):\n" << x2 << "\n"
              << "   A * x1 =\n" << ( A * x1 ) << "\n"
              << "   A * x2 =\n" << ( A * x2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Upper LSE (single rhs, declupp, transpose)";
+
+      LowerMatrix< DynamicMatrix<Type> > A( N );
+      DynamicVector<Type> b( N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( b );
+      }
+
+      const DynamicMatrix<Type,rowMajor>    A1( A );
+      const DynamicMatrix<Type,columnMajor> A2( A );
+
+      DynamicVector<Type> x1( N );
+      DynamicVector<Type> x2( N );
+
+      solve( declupp( trans(A1) ), x1, b );
+      solve( declupp( trans(A2) ), x2, b );
+
+      if( trans(A)*x1 != b || trans(A)*x2 != b || x1 != x2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   Row-major solution (x1):\n" << x1 << "\n"
+             << "   Column-major solution (x2):\n" << x2 << "\n"
+             << "   A * x1 =\n" << ( trans(A) * x1 ) << "\n"
+             << "   A * x2 =\n" << ( trans(A) * x2 ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1569,6 +2590,50 @@ void DenseTest::testUpper( size_t N )
    }
 
    {
+      test_ = "Upper LSE (multiple rhs, automatic, transpose)";
+
+      LowerMatrix< DynamicMatrix<Type> > A( N );
+      DynamicMatrix<Type> B( 3UL, N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( B );
+      }
+
+      const LowerMatrix< DynamicMatrix<Type,rowMajor> >    A1( A );
+      const LowerMatrix< DynamicMatrix<Type,columnMajor> > A2( A );
+
+      const DynamicMatrix<Type,rowMajor>    B1( B );
+      const DynamicMatrix<Type,columnMajor> B2( B );
+
+      DynamicMatrix<Type,rowMajor>    X1;
+      DynamicMatrix<Type,columnMajor> X2;
+
+      X1 = solve( trans(A1), trans(B1) );
+      X2 = solve( trans(A2), trans(B2) );
+
+      if( trans(A)*X1 != trans(B) || trans(A)*X2 != trans(B) || X1 != X2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand sides (B):\n" << trans(B) << "\n"
+             << "   Row-major solutions (X1):\n" << X1 << "\n"
+             << "   Column-major solutions (X2):\n" << X2 << "\n"
+             << "   A * X1 =\n" << ( trans(A) * X1 ) << "\n"
+             << "   A * X2 =\n" << ( trans(A) * X2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Upper LSE (multiple rhs, declupp)";
 
       UpperMatrix< DynamicMatrix<Type> > A( N );
@@ -1608,6 +2673,50 @@ void DenseTest::testUpper( size_t N )
              << "   Column-major solutions (X2):\n" << X2 << "\n"
              << "   A * X1 =\n" << ( A * X1 ) << "\n"
              << "   A * X2 =\n" << ( A * X2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Upper LSE (multiple rhs, declupp, transpose)";
+
+      LowerMatrix< DynamicMatrix<Type> > A( N );
+      DynamicMatrix<Type> B( 3UL, N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( B );
+      }
+
+      const DynamicMatrix<Type,rowMajor>    A1( A );
+      const DynamicMatrix<Type,columnMajor> A2( A );
+
+      const DynamicMatrix<Type,rowMajor>    B1( B );
+      const DynamicMatrix<Type,columnMajor> B2( B );
+
+      DynamicMatrix<Type,rowMajor>    X1;
+      DynamicMatrix<Type,columnMajor> X2;
+
+      solve( declupp( trans(A1) ), X1, trans(B1) );
+      solve( declupp( trans(A2) ), X2, trans(B2) );
+
+      if( trans(A)*X1 != trans(B) || trans(A)*X2 != trans(B) || X1 != X2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand sides (B):\n" << trans(B) << "\n"
+             << "   Row-major solutions (X1):\n" << X1 << "\n"
+             << "   Column-major solutions (X2):\n" << X2 << "\n"
+             << "   A * X1 =\n" << ( trans(A) * X1 ) << "\n"
+             << "   A * X2 =\n" << ( trans(A) * X2 ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1656,6 +2765,7 @@ void DenseTest::testUniUpper( size_t N )
 #if BLAZETEST_MATHTEST_LAPACK_MODE
 
    using blaze::UniUpperMatrix;
+   using blaze::UniLowerMatrix;
    using blaze::DynamicMatrix;
    using blaze::DynamicVector;
    using blaze::rowMajor;
@@ -1710,6 +2820,47 @@ void DenseTest::testUniUpper( size_t N )
    }
 
    {
+      test_ = "UniUpper LSE (single rhs, automatic, transpose)";
+
+      UniLowerMatrix< DynamicMatrix<Type> > A( N );
+      DynamicVector<Type> b( N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( b );
+      }
+
+      const UniLowerMatrix< DynamicMatrix<Type,rowMajor>    > A1( A );
+      const UniLowerMatrix< DynamicMatrix<Type,columnMajor> > A2( A );
+
+      DynamicVector<Type> x1( N );
+      DynamicVector<Type> x2( N );
+
+      x1 = solve( trans(A1), b );
+      x2 = solve( trans(A2), b );
+
+      if( trans(A)*x1 != b || trans(A)*x2 != b || x1 != x2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   Row-major solution (x1):\n" << x1 << "\n"
+             << "   Column-major solution (x2):\n" << x2 << "\n"
+             << "   A * x1 =\n" << ( trans(A) * x1 ) << "\n"
+             << "   A * x2 =\n" << ( trans(A) * x2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "UniUpper LSE (single rhs, decluniupp)";
 
       UniUpperMatrix< DynamicMatrix<Type> > A( N );
@@ -1746,6 +2897,47 @@ void DenseTest::testUniUpper( size_t N )
              << "   Column-major solution (x2):\n" << x2 << "\n"
              << "   A * x1 =\n" << ( A * x1 ) << "\n"
              << "   A * x2 =\n" << ( A * x2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "UniUpper LSE (single rhs, decluniupp, transpose)";
+
+      UniLowerMatrix< DynamicMatrix<Type> > A( N );
+      DynamicVector<Type> b( N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( b );
+      }
+
+      const DynamicMatrix<Type,rowMajor>    A1( A );
+      const DynamicMatrix<Type,columnMajor> A2( A );
+
+      DynamicVector<Type> x1( N );
+      DynamicVector<Type> x2( N );
+
+      solve( decluniupp( trans(A1) ), x1, b );
+      solve( decluniupp( trans(A2) ), x2, b );
+
+      if( trans(A)*x1 != b || trans(A)*x2 != b || x1 != x2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   Row-major solution (x1):\n" << x1 << "\n"
+             << "   Column-major solution (x2):\n" << x2 << "\n"
+             << "   A * x1 =\n" << ( trans(A) * x1 ) << "\n"
+             << "   A * x2 =\n" << ( trans(A) * x2 ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1822,6 +3014,50 @@ void DenseTest::testUniUpper( size_t N )
    }
 
    {
+      test_ = "UniUpper LSE (multiple rhs, automatic, transpose)";
+
+      UniLowerMatrix< DynamicMatrix<Type> > A( N );
+      DynamicMatrix<Type> B( 3UL, N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( B );
+      }
+
+      const UniLowerMatrix< DynamicMatrix<Type,rowMajor> >    A1( A );
+      const UniLowerMatrix< DynamicMatrix<Type,columnMajor> > A2( A );
+
+      const DynamicMatrix<Type,rowMajor>    B1( B );
+      const DynamicMatrix<Type,columnMajor> B2( B );
+
+      DynamicMatrix<Type,rowMajor>    X1;
+      DynamicMatrix<Type,columnMajor> X2;
+
+      X1 = solve( trans(A1), trans(B1) );
+      X2 = solve( trans(A2), trans(B2) );
+
+      if( trans(A)*X1 != trans(B) || trans(A)*X2 != trans(B) || X1 != X2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand sides (B):\n" << trans(B) << "\n"
+             << "   Row-major solutions (X1):\n" << X1 << "\n"
+             << "   Column-major solutions (X2):\n" << X2 << "\n"
+             << "   A * X1 =\n" << ( trans(A) * X1 ) << "\n"
+             << "   A * X2 =\n" << ( trans(A) * X2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "UniUpper LSE (multiple rhs, decluniupp)";
 
       UniUpperMatrix< DynamicMatrix<Type> > A( N );
@@ -1861,6 +3097,50 @@ void DenseTest::testUniUpper( size_t N )
              << "   Column-major solutions (X2):\n" << X2 << "\n"
              << "   A * X1 =\n" << ( A * X1 ) << "\n"
              << "   A * X2 =\n" << ( A * X2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "UniUpper LSE (multiple rhs, decluniupp, transpose)";
+
+      UniLowerMatrix< DynamicMatrix<Type> > A( N );
+      DynamicMatrix<Type> B( 3UL, N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( B );
+      }
+
+      const DynamicMatrix<Type,rowMajor>    A1( A );
+      const DynamicMatrix<Type,columnMajor> A2( A );
+
+      const DynamicMatrix<Type,rowMajor>    B1( B );
+      const DynamicMatrix<Type,columnMajor> B2( B );
+
+      DynamicMatrix<Type,rowMajor>    X1;
+      DynamicMatrix<Type,columnMajor> X2;
+
+      solve( decluniupp( trans(A1) ), X1, trans(B1) );
+      solve( decluniupp( trans(A2) ), X2, trans(B2) );
+
+      if( trans(A)*X1 != trans(B) || trans(A)*X2 != trans(B) || X1 != X2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand sides (B):\n" << trans(B) << "\n"
+             << "   Row-major solutions (X1):\n" << X1 << "\n"
+             << "   Column-major solutions (X2):\n" << X2 << "\n"
+             << "   A * X1 =\n" << ( trans(A) * X1 ) << "\n"
+             << "   A * X2 =\n" << ( trans(A) * X2 ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -1962,6 +3242,47 @@ void DenseTest::testDiagonal( size_t N )
    }
 
    {
+      test_ = "Diagonal LSE (single rhs, automatic, transpose)";
+
+      DiagonalMatrix< DynamicMatrix<Type> > A( N );
+      DynamicVector<Type> b( N );
+
+      if( N != 0 ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( b );
+      }
+
+      const DiagonalMatrix< DynamicMatrix<Type,rowMajor>    > A1( A );
+      const DiagonalMatrix< DynamicMatrix<Type,columnMajor> > A2( A );
+
+      DynamicVector<Type> x1( N );
+      DynamicVector<Type> x2( N );
+
+      x1 = solve( trans(A1), b );
+      x2 = solve( trans(A2), b );
+
+      if( trans(A)*x1 != b || trans(A)*x2 != b || x1 != x2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   Row-major solution (x1):\n" << x1 << "\n"
+             << "   Column-major solution (x2):\n" << x2 << "\n"
+             << "   A * x1 =\n" << ( trans(A) * x1 ) << "\n"
+             << "   A * x2 =\n" << ( trans(A) * x2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Diagonal LSE (single rhs, decldiag)";
 
       DiagonalMatrix< DynamicMatrix<Type> > A( N );
@@ -1998,6 +3319,47 @@ void DenseTest::testDiagonal( size_t N )
              << "   Column-major solution (x2):\n" << x2 << "\n"
              << "   A * x1 =\n" << ( A * x1 ) << "\n"
              << "   A * x2 =\n" << ( A * x2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Diagonal LSE (single rhs, decldiag, transpose)";
+
+      DiagonalMatrix< DynamicMatrix<Type> > A( N );
+      DynamicVector<Type> b( N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( b );
+      }
+
+      const DynamicMatrix<Type,rowMajor>    A1( A );
+      const DynamicMatrix<Type,columnMajor> A2( A );
+
+      DynamicVector<Type> x1( N );
+      DynamicVector<Type> x2( N );
+
+      solve( decldiag( trans(A1) ), x1, b );
+      solve( decldiag( trans(A2) ), x2, b );
+
+      if( trans(A)*x1 != b || trans(A)*x2 != b || x1 != x2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand side (b):\n" << b << "\n"
+             << "   Row-major solution (x1):\n" << x1 << "\n"
+             << "   Column-major solution (x2):\n" << x2 << "\n"
+             << "   A * x1 =\n" << ( trans(A) * x1 ) << "\n"
+             << "   A * x2 =\n" << ( trans(A) * x2 ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -2074,6 +3436,50 @@ void DenseTest::testDiagonal( size_t N )
    }
 
    {
+      test_ = "Diagonal LSE (multiple rhs, automatic, transpose)";
+
+      DiagonalMatrix< DynamicMatrix<Type> > A( N );
+      DynamicMatrix<Type> B( 3UL, N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( B );
+      }
+
+      const DiagonalMatrix< DynamicMatrix<Type,rowMajor> >    A1( A );
+      const DiagonalMatrix< DynamicMatrix<Type,columnMajor> > A2( A );
+
+      const DynamicMatrix<Type,rowMajor>    B1( B );
+      const DynamicMatrix<Type,columnMajor> B2( B );
+
+      DynamicMatrix<Type,rowMajor>    X1;
+      DynamicMatrix<Type,columnMajor> X2;
+
+      X1 = solve( trans(A1), trans(B1) );
+      X2 = solve( trans(A2), trans(B2) );
+
+      if( trans(A)*X1 != trans(B) || trans(A)*X2 != trans(B) || X1 != X2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand sides (B):\n" << trans(B) << "\n"
+             << "   Row-major solutions (X1):\n" << X1 << "\n"
+             << "   Column-major solutions (X2):\n" << X2 << "\n"
+             << "   A * X1 =\n" << ( trans(A) * X1 ) << "\n"
+             << "   A * X2 =\n" << ( trans(A) * X2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "Diagonal LSE (multiple rhs, decldiag)";
 
       DiagonalMatrix< DynamicMatrix<Type> > A( N );
@@ -2113,6 +3519,50 @@ void DenseTest::testDiagonal( size_t N )
              << "   Column-major solutions (X2):\n" << X2 << "\n"
              << "   A * X1 =\n" << ( A * X1 ) << "\n"
              << "   A * X2 =\n" << ( A * X2 ) << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Diagonal LSE (multiple rhs, decldiag, transpose)";
+
+      DiagonalMatrix< DynamicMatrix<Type> > A( N );
+      DynamicMatrix<Type> B( 3UL, N );
+
+      if( N != 0UL ) {
+         do {
+            randomize( A );
+         }
+         while( isDefault( det( A ) ) );
+
+         randomize( B );
+      }
+
+      const DynamicMatrix<Type,rowMajor>    A1( A );
+      const DynamicMatrix<Type,columnMajor> A2( A );
+
+      const DynamicMatrix<Type,rowMajor>    B1( B );
+      const DynamicMatrix<Type,columnMajor> B2( B );
+
+      DynamicMatrix<Type,rowMajor>    X1;
+      DynamicMatrix<Type,columnMajor> X2;
+
+      solve( decldiag( trans(A1) ), X1, trans(B1) );
+      solve( decldiag( trans(A2) ), X2, trans(B2) );
+
+      if( trans(A)*X1 != trans(B) || trans(A)*X2 != trans(B) || X1 != X2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Solving LSE failed\n"
+             << " Details:\n"
+             << "   Element type:\n"
+             << "     " << typeid( Type ).name() << "\n"
+             << "   System matrix (A):\n" << trans(A) << "\n"
+             << "   Right-hand sides (B):\n" << trans(B) << "\n"
+             << "   Row-major solutions (X1):\n" << X1 << "\n"
+             << "   Column-major solutions (X2):\n" << X2 << "\n"
+             << "   A * X1 =\n" << ( trans(A) * X1 ) << "\n"
+             << "   A * X2 =\n" << ( trans(A) * X2 ) << "\n";
          throw std::runtime_error( oss.str() );
       }
    }
