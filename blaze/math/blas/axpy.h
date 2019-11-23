@@ -66,18 +66,18 @@ namespace blaze {
 //@{
 #if BLAZE_BLAS_MODE
 
-BLAZE_ALWAYS_INLINE void axpy( int n, float alpha, const float* x, int incX, float* y, int incY );
+void axpy( int n, float alpha, const float* x, int incX, float* y, int incY );
 
-BLAZE_ALWAYS_INLINE void axpy( int n, double alpha, const double* x, int incX, double* y, int incY );
+void axpy( int n, double alpha, const double* x, int incX, double* y, int incY );
 
-BLAZE_ALWAYS_INLINE void axpy( int n, complex<float> alpha, const complex<float>* x,
-                               int incX, complex<float>* y, int incY );
+void axpy( int n, complex<float> alpha, const complex<float>* x,
+           int incX, complex<float>* y, int incY );
 
-BLAZE_ALWAYS_INLINE void axpy( int n, complex<double> alpha, const complex<double>* x,
-                               int incX, complex<double>* y, int incY );
+void axpy( int n, complex<double> alpha, const complex<double>* x,
+           int incX, complex<double>* y, int incY );
 
 template< typename VT1, bool TF1, typename VT2, bool TF2, typename ST >
-BLAZE_ALWAYS_INLINE void axpy( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y, ST alpha );
+void axpy( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y, ST alpha );
 
 #endif
 //@}

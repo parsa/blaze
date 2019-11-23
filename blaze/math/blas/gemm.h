@@ -68,27 +68,27 @@ namespace blaze {
 //@{
 #if BLAZE_BLAS_MODE
 
-BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-                               int m, int n, int k, float alpha, const float* A, int lda,
-                               const float* B, int ldb, float beta, float* C, int ldc );
+void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
+           int m, int n, int k, float alpha, const float* A, int lda,
+           const float* B, int ldb, float beta, float* C, int ldc );
 
-BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-                               int m, int n, int k, double alpha, const double* A, int lda,
-                               const double* B, int ldb, double beta, float* C, int ldc );
+void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
+           int m, int n, int k, double alpha, const double* A, int lda,
+           const double* B, int ldb, double beta, float* C, int ldc );
 
-BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-                               int m, int n, int k, complex<float> alpha, const complex<float>* A,
-                               int lda, const complex<float>* B, int ldb, complex<float> beta,
-                               float* C, int ldc );
+void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
+           int m, int n, int k, complex<float> alpha, const complex<float>* A,
+           int lda, const complex<float>* B, int ldb, complex<float> beta,
+           float* C, int ldc );
 
-BLAZE_ALWAYS_INLINE void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
-                               int m, int n, int k, complex<double> alpha, const complex<double>* A,
-                               int lda, const complex<double>* B, int ldb, complex<double> beta,
-                               float* C, int ldc );
+void gemm( CBLAS_ORDER order, CBLAS_TRANSPOSE transA, CBLAS_TRANSPOSE transB,
+           int m, int n, int k, complex<double> alpha, const complex<double>* A,
+           int lda, const complex<double>* B, int ldb, complex<double> beta,
+           float* C, int ldc );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2, typename MT3, bool SO3, typename ST >
-BLAZE_ALWAYS_INLINE void gemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
-                               const DenseMatrix<MT3,SO3>& B, ST alpha, ST beta );
+void gemm( DenseMatrix<MT1,SO1>& C, const DenseMatrix<MT2,SO2>& A,
+           const DenseMatrix<MT3,SO3>& B, ST alpha, ST beta );
 
 #endif
 //@}

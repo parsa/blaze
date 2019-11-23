@@ -69,31 +69,31 @@ namespace blaze {
 //@{
 #if BLAZE_BLAS_MODE
 
-BLAZE_ALWAYS_INLINE void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
-                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
-                               float alpha, const float* A, int lda, float* B, int ldb );
+void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
+           CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
+           float alpha, const float* A, int lda, float* B, int ldb );
 
-BLAZE_ALWAYS_INLINE void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
-                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
-                               double alpha, const double* A, int lda, double* B, int ldb );
+void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
+           CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
+           double alpha, const double* A, int lda, double* B, int ldb );
 
-BLAZE_ALWAYS_INLINE void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
-                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
-                               complex<float> alpha, const complex<float>* A, int lda,
-                               complex<float>* B, int ldb );
+void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
+           CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
+           complex<float> alpha, const complex<float>* A, int lda,
+           complex<float>* B, int ldb );
 
-BLAZE_ALWAYS_INLINE void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
-                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
-                               complex<double> alpha, const complex<double>* A, int lda,
-                               complex<double>* B, int ldb );
+void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
+           CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
+           complex<double> alpha, const complex<double>* A, int lda,
+           complex<double>* B, int ldb );
 
 template< typename MT, bool SO, typename VT, bool TF, typename ST >
-BLAZE_ALWAYS_INLINE void trsm( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
-                               CBLAS_SIDE side, CBLAS_UPLO uplo, ST alpha );
+void trsm( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
+           CBLAS_SIDE side, CBLAS_UPLO uplo, ST alpha );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2, typename ST >
-BLAZE_ALWAYS_INLINE void trsm( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
-                               CBLAS_SIDE side, CBLAS_UPLO uplo, ST alpha );
+void trsm( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
+           CBLAS_SIDE side, CBLAS_UPLO uplo, ST alpha );
 
 #endif
 //@}

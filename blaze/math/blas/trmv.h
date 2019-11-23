@@ -69,29 +69,27 @@ namespace blaze {
 //@{
 #if BLAZE_BLAS_MODE
 
-BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-                               CBLAS_DIAG diag, int n, const float* A, int lda, float* x,
-                               int incX );
+void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
+           CBLAS_DIAG diag, int n, const float* A, int lda, float* x,
+           int incX );
 
-BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-                               CBLAS_DIAG diag, int n, const double* A, int lda, double* x,
-                               int incX );
+void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
+           CBLAS_DIAG diag, int n, const double* A, int lda, double* x,
+           int incX );
 
-BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-                               CBLAS_DIAG diag, int n, const complex<float>* A, int lda,
-                               complex<float>* x, int incX );
+void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
+           CBLAS_DIAG diag, int n, const complex<float>* A, int lda,
+           complex<float>* x, int incX );
 
-BLAZE_ALWAYS_INLINE void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
-                               CBLAS_DIAG diag, int n, const complex<double>* A, int lda,
-                               complex<double>* x, int incX );
-
-template< typename VT, typename MT, bool SO >
-BLAZE_ALWAYS_INLINE void trmv( DenseVector<VT,false>& x, const DenseMatrix<MT,SO>& A,
-                               CBLAS_UPLO uplo );
+void trmv( CBLAS_ORDER order, CBLAS_UPLO uplo, CBLAS_TRANSPOSE transA,
+           CBLAS_DIAG diag, int n, const complex<double>* A, int lda,
+           complex<double>* x, int incX );
 
 template< typename VT, typename MT, bool SO >
-BLAZE_ALWAYS_INLINE void trmv( DenseVector<VT,true>& x, const DenseMatrix<MT,SO>& A,
-                               CBLAS_UPLO uplo );
+void trmv( DenseVector<VT,false>& x, const DenseMatrix<MT,SO>& A, CBLAS_UPLO uplo );
+
+template< typename VT, typename MT, bool SO >
+void trmv( DenseVector<VT,true>& x, const DenseMatrix<MT,SO>& A, CBLAS_UPLO uplo );
 
 #endif
 //@}

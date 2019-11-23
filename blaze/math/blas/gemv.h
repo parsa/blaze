@@ -68,31 +68,31 @@ namespace blaze {
 //@{
 #if BLAZE_BLAS_MODE
 
-BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int m, int n,
-                               float alpha, const float* A, int lda, const float* x, int incX,
-                               float beta, float* y, int incY );
+void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int m, int n,
+           float alpha, const float* A, int lda, const float* x, int incX,
+           float beta, float* y, int incY );
 
-BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int m, int n,
-                               double alpha, const double* A, int lda, const double* x, int incX,
-                               double beta, double* y, int incY );
+void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int m, int n,
+           double alpha, const double* A, int lda, const double* x, int incX,
+           double beta, double* y, int incY );
 
-BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int m, int n,
-                               complex<float> alpha, const complex<float>* A, int lda,
-                               const complex<float>* x, int incX, complex<float> beta,
-                               complex<float>* y, int incY );
+void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int m, int n,
+           complex<float> alpha, const complex<float>* A, int lda,
+           const complex<float>* x, int incX, complex<float> beta,
+           complex<float>* y, int incY );
 
-BLAZE_ALWAYS_INLINE void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int m, int n,
-                               complex<double> alpha, const complex<double>* A, int lda,
-                               const complex<double>* x, int incX, complex<double> beta,
-                               complex<double>* y, int incY );
+void gemv( CBLAS_ORDER layout, CBLAS_TRANSPOSE transA, int m, int n,
+           complex<double> alpha, const complex<double>* A, int lda,
+           const complex<double>* x, int incX, complex<double> beta,
+           complex<double>* y, int incY );
 
 template< typename VT1, typename MT1, bool SO, typename VT2, typename ST >
-BLAZE_ALWAYS_INLINE void gemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
-                               const DenseVector<VT2,false>& x, ST alpha, ST beta );
+void gemv( DenseVector<VT1,false>& y, const DenseMatrix<MT1,SO>& A,
+           const DenseVector<VT2,false>& x, ST alpha, ST beta );
 
 template< typename VT1, typename VT2, typename MT1, bool SO, typename ST >
-BLAZE_ALWAYS_INLINE void gemv( DenseVector<VT1,true>& y, const DenseVector<VT2,true>& x,
-                               const DenseMatrix<MT1,SO>& A, ST alpha, ST beta );
+void gemv( DenseVector<VT1,true>& y, const DenseVector<VT2,true>& x,
+           const DenseMatrix<MT1,SO>& A, ST alpha, ST beta );
 
 #endif
 //@}

@@ -66,18 +66,18 @@ namespace blaze {
 //@{
 #if BLAZE_BLAS_MODE
 
-BLAZE_ALWAYS_INLINE float dotu( int n, const float* x, int incX, const float* y, int incY );
+float dotu( int n, const float* x, int incX, const float* y, int incY );
 
-BLAZE_ALWAYS_INLINE double dotu( int n, const double* x, int incX, const double* y, int incY );
+double dotu( int n, const double* x, int incX, const double* y, int incY );
 
-BLAZE_ALWAYS_INLINE complex<float> dotu( int n, const complex<float>* x, int incX,
-                                         const complex<float>* y, int incY );
+complex<float> dotu( int n, const complex<float>* x, int incX,
+                     const complex<float>* y, int incY );
 
-BLAZE_ALWAYS_INLINE complex<double> dotu( int n, const complex<double>* x, int incX,
-                                          const complex<double>* y, int incY );
+complex<double> dotu( int n, const complex<double>* x, int incX,
+                      const complex<double>* y, int incY );
 
 template< typename VT1, bool TF1, typename VT2, bool TF2 >
-BLAZE_ALWAYS_INLINE ElementType_t<VT1> dotu( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y );
+ElementType_t<VT1> dotu( const DenseVector<VT1,TF1>& x, const DenseVector<VT2,TF2>& y );
 
 #endif
 //@}
