@@ -2505,8 +2505,8 @@
    \endcode
 
 // The binary \c map() function can be used to apply an operation pairwise to the elements of
-// two dense vectors. The following example demonstrates the merging of two vectors of double
-// precision values into a vector of double precision complex numbers:
+// two dense vectors. The following example demonstrates the merging of two column vectors of
+// double precision values into a vector of double precision complex numbers:
 
    \code
    blaze::DynamicVector<double> real{ 2.1, -4.2,  1.0,  0.6 };
@@ -2522,15 +2522,32 @@
    cplx = map( real, imag, []( double r, double i ){ return complex<double>( r, i ); } );
    \endcode
 
-// Although the computation can be parallelized it is not vectorized and thus cannot perform at
-// peak performance. However, it is also possible to create vectorized custom operations. See
-// \ref custom_operations for a detailed overview of the possibilities of custom operations.
+// Applying the map() function to a column vector and a row vector results in the outer map of
+// the two vectors. The following example demonstrates the outer sum of a column vector and a
+// row vector:
+
+   \code
+   blaze::DynamicVector<int,columnVector> v1{ 2, 5, -1 };
+   blaze::DynamicVector<int,rowVector> v2{ -1, 3, -2, 4 };
+
+   // Results in the matrix
+   //
+   //       (  1  5  0  6 )
+   //   A = (  4  8  3  9 )
+   //       ( -2  2 -3  3 )
+   //
+   StaticMatrix<int,3UL,3UL> M1 = map( v1, v2, []( int a, int b ){ return a + b; } );
+   \endcode
+
+// Although the computation in the two previous examples can be parallelized it is not vectorized
+// and thus cannot perform at peak performance. However, it is also possible to create vectorized
+// custom operations. See \ref custom_operations for a detailed overview of the possibilities of
+// custom operations.
 //
 // Please note that unary custom operations on vectors have been introduced in \b Blaze 3.0 in
 // form of the \c forEach() function. With the introduction of binary custom functions, the
 // \c forEach() function has been renamed to \c map(). The \c forEach() function can still be
-// used (even for binary custom operations), but the function might be deprecated in future
-// releases of \b Blaze.
+// used, but the function might be deprecated in future releases of \b Blaze.
 //
 //
 // \n \section vector_operations_reduction_operations Reduction Operations
@@ -4974,7 +4991,7 @@
 // For instance, the following computation
 
    \code
-   blaze::StaticMatrix<int,2UL,3UL,rowMajor> A{ { -1,  2, -3 },
+   blaze::StaticMatrix<int,2UL,3UL,rowMajor> A{ { -1,  2, -3 },
                                                 {  4, -5,  6 } };
    blaze::StaticMatrix<int,2UL,3UL,rowMajor> B( abs( A ) );
    \endcode
@@ -4994,7 +5011,7 @@
 // the \c sign() function
 
    \code
-   blaze::StaticMatrix<int,2UL,3UL,rowMajor> A{ { -1,  2,  0 },
+   blaze::StaticMatrix<int,2UL,3UL,rowMajor> A{ { -1,  2,  0 },
                                                 {  4,  0, -6 } };
    blaze::StaticMatrix<int,2UL,3UL,rowMajor> B( sign( A ) );
    \endcode
@@ -5065,7 +5082,7 @@
    // Creating the matrix
    //    ( (1,0)  (-2,-1) )
    //    ( (1,1)  ( 0, 1) )
-   StaticMatrix<cplx,2UL,2UL> A{ { cplx( 1.0, 0.0 ), cplx( -2.0, -1.0 ) },
+   StaticMatrix<cplx,2UL,2UL> A{ { cplx( 1.0, 0.0 ), cplx( -2.0, -1.0 ) },
                                  { cplx( 1.0, 1.0 ), cplx(  0.0,  1.0 ) } };
 
    // Extracting the real part of each matrix element
@@ -5314,8 +5331,7 @@
 // Please note that unary custom operations on vectors have been introduced in \b Blaze 3.0 in
 // form of the \c forEach() function. With the introduction of binary custom functions, the
 // \c forEach() function has been renamed to \c map(). The \c forEach() function can still be
-// used (even for binary custom operations), but the function might be deprecated in future
-// releases of \b Blaze.
+// used, but the function might be deprecated in future releases of \b Blaze.
 //
 //
 // \n \section matrix_operations_reduction_operations Reduction Operations
@@ -7170,7 +7186,7 @@
    // Assignment of a non-symmetric dense matrix
    StaticMatrix<double,3UL,3UL> D{ {  3.0,  7.0, -2.0 },
                                    {  8.0,  0.0, -1.0 },
-                                   { -2.0, -1.0,  4.0 } };
+                                   { -2.0, -1.0,  4.0 } };
 
    C = D;  // Throws an exception; symmetric invariant would be violated!
    \endcode
@@ -7755,9 +7771,9 @@
    HermitianMatrix< DynamicMatrix<double,rowMajor> > C( B );  // OK
 
    // Assignment of a non-Hermitian dense matrix
-	StaticMatrix<cplx,3UL,3UL> D{ { cplx(  3.0, 0.0 ), cplx(  7.0, 2.0 ), cplx( 3.0, 2.0 ) },
-                                 { cplx(  8.0, 1.0 ), cplx(  0.0, 0.0 ), cplx( 6.0, 4.0 ) },
-                                 { cplx( -2.0, 2.0 ), cplx( -1.0, 1.0 ), cplx( 4.0, 0.0 ) } };
+	StaticMatrix<cplx,3UL,3UL> D{ { cplx(  3.0, 0.0 ), cplx(  7.0, 2.0 ), cplx( 3.0, 2.0 ) },
+                                 { cplx(  8.0, 1.0 ), cplx(  0.0, 0.0 ), cplx( 6.0, 4.0 ) },
+                                 { cplx( -2.0, 2.0 ), cplx( -1.0, 1.0 ), cplx( 4.0, 0.0 ) } };
 
    C = D;  // Throws an exception; Hermitian invariant would be violated!
    \endcode
@@ -8930,7 +8946,7 @@
 // triangular matrix) of the matrix:
 
    \code
-   const StaticMatrix<int,3UL,3UL> C{ { 1, -4,  5 },
+   const StaticMatrix<int,3UL,3UL> C{ { 1, -4,  5 },
                                       { 6,  8, -3 },
                                       { 2, -1,  2 } };
 
@@ -9119,7 +9135,7 @@
                          { 1,  0,  0,  2,  1 } };
 
    // Setup of the 2-dimensional row vector
-   StaticVector<int,2UL,rowVector> vec{ 18, 19 };
+   StaticVector<int,2UL,rowVector> vec{ 18, 19 };
 
    // Assigning to the elements (1,2) and (1,3) via a subvector of a row
    //
@@ -9609,7 +9625,7 @@
    row( A, 3UL ) = elements( x, { 5UL, 4UL, 3UL, 2UL } );
 
    // Rotating the result of the addition between y and the 1st row of A
-   x = elements( y + row( A, 1UL ), { 2UL, 3UL, 0UL, 1UL } )
+   x = elements( y + row( A, 1UL ), { 2UL, 3UL, 0UL, 1UL } )
    \endcode
 
 // Please note that using an element selection, which refers to an index multiple times, on the
@@ -11883,6 +11899,34 @@
    v3 = v1 + v2;  // Vectorized addition of two double precision vectors
    \endcode
 
+// \n \section outer_sum Outer Sum
+// <hr>
+//
+// The addition between a column vector and a row vector results in the outer sum of the two
+// vectors:
+
+   \code
+   blaze::StaticVector<int,3UL,columnVector> v1{ 2, 5, -1 };
+   blaze::DynamicVector<int,rowVector> v2{ -1, 3, -2, 4 };
+
+   // Results in the matrix
+   //
+   //       (  1  5  0  6 )
+   //   A = (  4  8  3  9 )
+   //       ( -2  2 -3  3 )
+   //
+   StaticMatrix<int,3UL,3UL> M1 = v1 + v2;
+   \endcode
+
+// The \c trans() function can be used to transpose a vector as necessary:
+
+   \code
+   blaze::StaticVector<int,2UL,rowVector> v1{ 2, 5 };
+   blaze::DynamicVector<int,rowVector> v2{ -1, 3, -2, 4 };
+
+   StaticMatrix<int,3UL,3UL> M1 = trans( v1 ) + v2;
+   \endcode
+
 // \n \section matrix_matrix_addition Matrix/Matrix Addition
 // <hr>
 //
@@ -11984,6 +12028,34 @@
    // ... Initialization of the vectors
 
    v3 = v1 - v2;  // Vectorized subtraction of two double precision vectors
+   \endcode
+
+// \n \section outer_difference Outer Difference
+// <hr>
+//
+// The subtraction between a column vector and a row vector results in the outer difference of
+// the two vectors:
+
+   \code
+   blaze::StaticVector<int,3UL,columnVector> v1{ 2, 5, -1 };
+   blaze::DynamicVector<int,rowVector> v2{ -1, 3, -2, 4 };
+
+   // Results in the matrix
+   //
+   //       ( 3 -1  4 -2 )
+   //   A = ( 6  2  7  1 )
+   //       ( 0 -4  1 -5 )
+   //
+   StaticMatrix<int,3UL,3UL> M1 = v1 - v2;
+   \endcode
+
+// The \c trans() function can be used to transpose a vector as necessary:
+
+   \code
+   blaze::StaticVector<int,2UL,rowVector> v1{ 2, 5 };
+   blaze::DynamicVector<int,rowVector> v2{ -1, 3, -2, 4 };
+
+   StaticMatrix<int,3UL,3UL> M1 = trans( v1 ) - v2;
    \endcode
 
 // \n \section matrix_matrix_subtraction Matrix/Matrix Subtraction
@@ -12136,7 +12208,7 @@
 
    \code
    blaze::StaticVector<int,3UL,rowVector> v1{  2, 5, -1 };
-   blaze::StaticVector<int,3UL,rowVector> v2{ -1, 3, -2 };
+   blaze::StaticVector<int,3UL,rowVector> v2{ -1, 3, -2 };
 
    int result = v1 * trans( v2 );  // Also results in the value 15
    \endcode
@@ -12146,7 +12218,7 @@
 
    \code
    blaze::StaticVector<int,3UL,columnVector> v1{  2, 5, -1 };
-   blaze::StaticVector<int,3UL,rowVector>    v2{ -1, 3, -2 };
+   blaze::StaticVector<int,3UL,rowVector>    v2{ -1, 3, -2 };
 
    // All alternatives for the inner product between a column vector and a row vector
    int result1 = trans( v1 ) * trans( v2 );
@@ -12167,9 +12239,15 @@
 // the two vectors:
 
    \code
-   blaze::StaticVector<int,3UL,columnVector> v1{ 2, 5, -1 };
-   blaze::DynamicVector<int,rowVector> v2{ -1, 3, -2 };
+   blaze::StaticVector<int,3UL,columnVector> v1{ 2, 5, -1 };
+   blaze::DynamicVector<int,rowVector> v2{ -1, 3, -2, 4 };
 
+   // Results in the matrix
+   //
+   //       ( -2  6  -4  8 )
+   //   A = ( -5 15 -10 20 )
+   //       (  1 -3   2 -4 )
+   //
    StaticMatrix<int,3UL,3UL> M1 = v1 * v2;
    \endcode
 
@@ -12177,9 +12255,9 @@
 
    \code
    blaze::StaticVector<int,3UL,rowVector> v1{  2, 5, -1 };
-   blaze::StaticVector<int,3UL,rowVector> v2{ -1, 3, -2 };
+   blaze::DynamicVector<int,rowVector> v2{ -1, 3, -2, 4 };
 
-   int result = trans( v1 ) * v2;
+   StaticMatrix<int,3UL,3UL> M1 = trans( v1 ) * v2;
    \endcode
 
 // Alternatively, the \c outer() function can be used for any combination of vectors (row or column
@@ -12187,7 +12265,7 @@
 
    \code
    blaze::StaticVector<int,3UL,rowVector> v1{  2, 5, -1 };
-   blaze::StaticVector<int,3UL,rowVector> v2{ -1, 3, -2 };
+   blaze::DynamicVector<int,rowVector> v2{ -1, 3, -2 };
 
    StaticMatrix<int,3UL,3UL> M1 = outer( v1, v2 );  // Outer product between two row vectors
    \endcode
@@ -12281,6 +12359,38 @@
                                                       // column vector.
    DynamicVector<double,rowVector>    v6( v3 / v4 );  // Componentwise division of two dense row
                                                       // vectors. The result is a dense row vector.
+   \endcode
+
+// Note that all values of the divisor must be non-zero and that no checks are performed to assert
+// this precondition!
+//
+//
+// \n \section outer_quotient Outer Quotient
+// <hr>
+//
+// The division between a column vector and a row vector results in the outer quotient of the
+// two vectors:
+
+   \code
+   blaze::StaticVector<double,3UL,columnVector> v1{ 2, 5, -1 };
+   blaze::DynamicVector<double,rowVector> v2{ -1, 5, -2, 4 };
+
+   // Results in the matrix
+   //
+   //       ( -2  0.4   -1   0.5 )
+   //   A = ( -5    1 -2.5  1.25 )
+   //       (  1 -0.2  0.5 -0.25 )
+   //
+   StaticMatrix<int,3UL,3UL> M1 = v1 / v2;
+   \endcode
+
+// The \c trans() function can be used to transpose a vector as necessary:
+
+   \code
+   blaze::StaticVector<int,2UL,rowVector> v1{ 2, 5 };
+   blaze::DynamicVector<int,rowVector> v2{ -1, 5, -2, 4 };
+
+   StaticMatrix<int,3UL,3UL> M1 = trans( v1 ) / v2;
    \endcode
 
 // Note that all values of the divisor must be non-zero and that no checks are performed to assert
