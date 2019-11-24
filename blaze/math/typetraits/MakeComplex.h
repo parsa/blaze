@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/typetraits/MakeComplex.h
+//  \file blaze/math/typetraits/MakeComplex.h
 //  \brief Header file for the MakeComplex type trait
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_UTIL_TYPETRAITS_MAKECOMPLEX_H_
-#define _BLAZE_UTIL_TYPETRAITS_MAKECOMPLEX_H_
+#ifndef _BLAZE_MATH_TYPETRAITS_MAKECOMPLEX_H_
+#define _BLAZE_MATH_TYPETRAITS_MAKECOMPLEX_H_
 
 
 //*************************************************************************************************
