@@ -67,6 +67,7 @@
 #include <blaze/math/expressions/MatVecMultExpr.h>
 #include <blaze/math/expressions/SchurExpr.h>
 #include <blaze/math/expressions/VecExpandExpr.h>
+#include <blaze/math/expressions/VecTVecMapExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/IntegerSequence.h>
@@ -1166,6 +1167,33 @@ inline decltype(auto) rows( const MatMatMapExpr<MT>& matrix, RRAs... args )
    return map( rows<CRAs...>( (~matrix).leftOperand(), args... ),
                rows<CRAs...>( (~matrix).rightOperand(), args... ),
                (~matrix).operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of rows on the given outer map operation.
+// \ingroup rows
+//
+// \param matrix The constant outer map operation.
+// \param args The runtime row arguments.
+// \return View on the specified selection of rows on the outer map operation.
+//
+// This function returns an expression representing the specified selection of rows on the given
+// outer map operation.
+*/
+template< size_t... CRAs    // Compile time row arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RRAs  // Runtime row arguments
+        , EnableIf_t< ( sizeof...( CRAs ) + sizeof...( RRAs ) > 0UL ) >* = nullptr >
+inline decltype(auto) rows( const VecTVecMapExpr<MT>& matrix, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( elements<CRAs...>( (~matrix).leftOperand(), args... ),
+               (~matrix).rightOperand(), (~matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
