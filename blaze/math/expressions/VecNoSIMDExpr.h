@@ -41,7 +41,10 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/CrossExpr.h>
+#include <blaze/math/expressions/MatReduceExpr.h>
+#include <blaze/math/expressions/MatVecMultExpr.h>
 #include <blaze/math/expressions/NoSIMDExpr.h>
+#include <blaze/math/expressions/TVecMatMultExpr.h>
 #include <blaze/math/expressions/VecEvalExpr.h>
 #include <blaze/math/expressions/VecMapExpr.h>
 #include <blaze/math/expressions/VecNoAliasExpr.h>
@@ -404,6 +407,73 @@ inline decltype(auto) nosimd( const VecTransExpr<VT>& vector )
    BLAZE_FUNCTION_TRACE;
 
    return trans( nosimd( (~vector).operand() ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Disable the SIMD evaluation of the given matrix/vector multiplication.
+// \ingroup math
+//
+// \param vector The constant matrix/vector multiplication.
+// \return The SIMD-disabled multiplication.
+//
+// This function returns an expression representing the SIMD-disabled matrix/vector
+// multiplication.
+*/
+template< typename VT >  // Vector base type of the expression
+inline decltype(auto) nosimd( const MatVecMultExpr<VT>& vector )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return nosimd( (~vector).leftOperand() ) * nosimd( (~vector).rightOperand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Disable the SIMD evaluation of the given vector/matrix multiplication.
+// \ingroup math
+//
+// \param vector The constant vector/matrix multiplication.
+// \return The SIMD-disabled multiplication.
+//
+// This function returns an expression representing the SIMD-disabled vector/matrix
+// multiplication.
+*/
+template< typename VT >  // Vector base type of the expression
+inline decltype(auto) nosimd( const TVecMatMultExpr<VT>& vector )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return nosimd( (~vector).leftOperand() ) * nosimd( (~vector).rightOperand() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Disable the SIMD evaluation of the given matrix reduction operation.
+// \ingroup math
+//
+// \param vector The constant matrix reduction operation.
+// \return The SIMD-disabled reduction operation.
+//
+// This function returns an expression representing the SIMD-disabled matrix reduction
+// operation.
+*/
+template< typename VT  // Vector base type of the expression
+        , size_t RF >  // Reduction flag
+inline decltype(auto) nosimd( const MatReduceExpr<VT,RF>& vector )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return reduce<RF>( nosimd( (~vector).operand() ), (~vector).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
