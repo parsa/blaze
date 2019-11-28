@@ -106,6 +106,7 @@
 #include <blaze/math/functors/Log2.h>
 #include <blaze/math/functors/Log10.h>
 #include <blaze/math/functors/LpNorm.h>
+#include <blaze/math/functors/MAC.h>
 #include <blaze/math/functors/Max.h>
 #include <blaze/math/functors/Min.h>
 #include <blaze/math/functors/ModuloAssign.h>
