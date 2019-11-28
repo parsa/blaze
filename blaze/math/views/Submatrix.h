@@ -64,6 +64,7 @@
 #include <blaze/math/expressions/SchurExpr.h>
 #include <blaze/math/expressions/TVecMatMultExpr.h>
 #include <blaze/math/expressions/VecExpandExpr.h>
+#include <blaze/math/expressions/VecTVecMapExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/IntegerSequence.h>
 #include <blaze/math/InversionFlag.h>
@@ -1227,6 +1228,67 @@ inline decltype(auto) submatrix( const MatMatMapExpr<MT>& matrix, RSAs... args )
 
    return map( submatrix<AF,CSAs...>( (~matrix).leftOperand(), args... ),
                submatrix<AF,CSAs...>( (~matrix).rightOperand(), args... ),
+               (~matrix).operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given outer map operation.
+// \ingroup submatrix
+//
+// \param matrix The constant outer map operation.
+// \return View on the specified submatrix of the outer map operation.
+//
+// This function returns an expression representing the specified submatrix of the given
+// outer map operation.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename MT         // Matrix base type of the expression
+        , typename... RSAs >  // Runtime submatrix arguments
+inline decltype(auto) submatrix( const VecTVecMapExpr<MT>& matrix, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( subvector<AF,I,M>( (~matrix).leftOperand(), args... ),
+               subvector<AF,J,N>( (~matrix).rightOperand(), args... ),
+               (~matrix).operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given outer map operation.
+// \ingroup submatrix
+//
+// \param matrix The constant outer map operation.
+// \param row The index of the first row of the submatrix.
+// \param column The index of the first column of the submatrix.
+// \param m The number of rows of the submatrix.
+// \param n The number of columns of the submatrix.
+// \return View on the specified submatrix of the outer map operation.
+//
+// This function returns an expression representing the specified submatrix of the given
+// outer map operation.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , typename MT         // Matrix base type of the expression
+        , typename... RSAs >  // Runtime submatrix arguments
+inline decltype(auto)
+   submatrix( const VecTVecMapExpr<MT>& matrix, size_t row, size_t column, size_t m, size_t n, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( subvector<AF>( (~matrix).leftOperand(), row, m, args... ),
+               subvector<AF>( (~matrix).rightOperand(), column, n, args... ),
                (~matrix).operation() );
 }
 /*! \endcond */
