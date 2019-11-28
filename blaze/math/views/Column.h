@@ -59,7 +59,9 @@
 #include <blaze/math/expressions/MatTransExpr.h>
 #include <blaze/math/expressions/SchurExpr.h>
 #include <blaze/math/expressions/VecExpandExpr.h>
+#include <blaze/math/expressions/VecTVecMapExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
+#include <blaze/math/functors/Bind2nd.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -659,6 +661,76 @@ inline decltype(auto) column( const MatMatMapExpr<MT>& matrix, RCAs... args )
    return map( column<CCAs...>( (~matrix).leftOperand(), args... ),
                column<CCAs...>( (~matrix).rightOperand(), args... ),
                (~matrix).operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given outer map operation.
+// \ingroup column
+//
+// \param matrix The constant outer map operation.
+// \param args Optional column arguments.
+// \return View on the specified column of the outer map operation.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing the specified column of the given outer
+// map operation.
+*/
+template< size_t I            // Column index
+        , typename MT         // Matrix base type of the expression
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) column( const VecTVecMapExpr<MT>& matrix, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   MAYBE_UNUSED( args... );
+
+   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
+      if( (~matrix).columns() <= I ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+      }
+   }
+
+   return map( (~matrix).leftOperand(),
+               blaze::bind2nd( (~matrix).operation(), (~matrix).rightOperand()[I] ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific column of the given outer map operation.
+// \ingroup column
+//
+// \param matrix The constant outer map operation.
+// \param index The index of the column.
+// \param args Optional column arguments.
+// \return View on the specified column of the outer map operation.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing the specified column of the given outer
+// map operation.
+*/
+template< typename MT         // Matrix base type of the expression
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) column( const VecTVecMapExpr<MT>& matrix, size_t index, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   MAYBE_UNUSED( args... );
+
+   if( !Contains_v< TypeList<RCAs...>, Unchecked > ) {
+      if( (~matrix).columns() <= index ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+      }
+   }
+
+   return map( (~matrix).leftOperand(),
+               blaze::bind2nd( (~matrix).operation(), (~matrix).rightOperand()[index] ) );
 }
 /*! \endcond */
 //*************************************************************************************************
