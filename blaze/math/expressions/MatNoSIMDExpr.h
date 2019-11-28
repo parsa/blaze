@@ -64,6 +64,7 @@
 #include <blaze/math/expressions/NoSIMDExpr.h>
 #include <blaze/math/expressions/SchurExpr.h>
 #include <blaze/math/expressions/VecExpandExpr.h>
+#include <blaze/math/expressions/VecTVecMapExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/util/FunctionTrace.h>
 
@@ -304,6 +305,28 @@ inline decltype(auto) nosimd( const MatMapExpr<MT>& matrix )
 */
 template< typename MT >  // Matrix base type of the expression
 inline decltype(auto) nosimd( const MatMatMapExpr<MT>& matrix )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( nosimd( (~matrix).leftOperand() ), nosimd( (~matrix).rightOperand() ),
+               (~matrix).operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Disable the SIMD evaluation of the given outer map operation.
+// ingroup math
+//
+// \param matrix The constant outer map operation.
+// \return The SIMD-disabled outer map operation.
+//
+// This function returns an expression representing the SIMD-disabled outer map operation.
+*/
+template< typename MT >  // Matrix base type of the expression
+inline decltype(auto) nosimd( const VecTVecMapExpr<MT>& matrix )
 {
    BLAZE_FUNCTION_TRACE;
 
