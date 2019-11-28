@@ -58,6 +58,7 @@
 #include <blaze/math/expressions/MatTransExpr.h>
 #include <blaze/math/expressions/SchurExpr.h>
 #include <blaze/math/expressions/VecExpandExpr.h>
+#include <blaze/math/expressions/VecTVecMapExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
@@ -689,6 +690,42 @@ inline decltype(auto) band( const MatMatMapExpr<MT>& matrix, RBAs... args )
 
    return map( band<CBAs...>( (~matrix).leftOperand(), args... ),
                band<CBAs...>( (~matrix).rightOperand(), args... ),
+               (~matrix).operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific band of the given outer map operation.
+// \ingroup band
+//
+// \param matrix The constant Kronecker map operation.
+// \param args The runtime band arguments.
+// \return View on the specified band of the Kronecker map operation.
+//
+// This function returns an expression representing the specified band of the given outer map
+// operation.
+*/
+template< ptrdiff_t... CBAs   // Compile time band arguments
+        , typename MT         // Type of the matrix
+        , typename... RBAs >  // Runtime band arguments
+inline decltype(auto) band( const VecTVecMapExpr<MT>& matrix, RBAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const BandData<CBAs...> bd( args... );
+
+   decltype(auto) leftOperand ( (~matrix).leftOperand()  );
+   decltype(auto) rightOperand( (~matrix).rightOperand() );
+
+   const size_t row   ( bd.band() <  0L ? -bd.band() : 0UL );
+   const size_t column( bd.band() >= 0L ?  bd.band() : 0UL );
+   const size_t size  ( min( leftOperand.size() - row, rightOperand.size() - column ) );
+
+   return map( transTo<defaultTransposeFlag>( subvector( leftOperand , row   , size ) ),
+               transTo<defaultTransposeFlag>( subvector( rightOperand, column, size ) ),
                (~matrix).operation() );
 }
 /*! \endcond */
