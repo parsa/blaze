@@ -252,6 +252,26 @@ using Operand_t = typename T::Operand;
 
 
 //*************************************************************************************************
+/*!\brief Alias declaration for nested \c Operation type definitions.
+// \ingroup aliases
+//
+// The Operation_t alias declaration provides a convenient shortcut to access the nested
+// \a Operation type definition of the given type \a T. The following code example shows both
+// ways to access the nested type definition:
+
+   \code
+   using Type1 = typename T::Operation;
+   using Type2 = Operation_t<T>;
+
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
+   \endcode
+*/
+template< typename T >
+using Operation_t = typename T::Operation;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Alias declaration for nested \c OppositeType type definitions.
 // \ingroup aliases
 //
