@@ -67,6 +67,7 @@
 #include <blaze/math/expressions/SchurExpr.h>
 #include <blaze/math/expressions/TVecMatMultExpr.h>
 #include <blaze/math/expressions/VecExpandExpr.h>
+#include <blaze/math/expressions/VecTVecMapExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/InitializerList.h>
 #include <blaze/math/IntegerSequence.h>
@@ -1169,6 +1170,33 @@ inline decltype(auto) columns( const MatMatMapExpr<MT>& matrix, RCAs... args )
    return map( columns<CCAs...>( (~matrix).leftOperand(), args... ),
                columns<CCAs...>( (~matrix).rightOperand(), args... ),
                (~matrix).operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of columns on the given outer map operation.
+// \ingroup columns
+//
+// \param matrix The constant outer map operation.
+// \param args The runtime column arguments.
+// \return View on the specified selection of columns on the outer map operation.
+//
+// This function returns an expression representing the specified selection of columns on the
+// given outer map operation.
+*/
+template< size_t... CCAs    // Compile time column arguments
+        , typename MT       // Matrix base type of the expression
+        , typename... RCAs  // Runtime column arguments
+        , EnableIf_t< ( sizeof...( CCAs ) + sizeof...( RCAs ) > 0UL ) >* = nullptr >
+inline decltype(auto) columns( const VecTVecMapExpr<MT>& matrix, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( (~matrix).leftOperand(),
+               elements<CCAs...>( (~matrix).rightOperand(), args... ), (~matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
