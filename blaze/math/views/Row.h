@@ -59,7 +59,9 @@
 #include <blaze/math/expressions/MatTransExpr.h>
 #include <blaze/math/expressions/SchurExpr.h>
 #include <blaze/math/expressions/VecExpandExpr.h>
+#include <blaze/math/expressions/VecTVecMapExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
+#include <blaze/math/functors/Bind2nd.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
@@ -656,6 +658,76 @@ inline decltype(auto) row( const MatMatMapExpr<MT>& matrix, RRAs... args )
    return map( row<CRAs...>( (~matrix).leftOperand(), args... ),
                row<CRAs...>( (~matrix).rightOperand(), args... ),
                (~matrix).operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given outer map operation.
+// \ingroup row
+//
+// \param matrix The constant outer map operation.
+// \param args Optional row arguments.
+// \return View on the specified row of the outer map operation.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing the specified row of the given outer map
+// operation.
+*/
+template< size_t I            // Row index
+        , typename MT         // Matrix base type of the expression
+        , typename... RRAs >  // Optional row arguments
+inline decltype(auto) row( const VecTVecMapExpr<MT>& matrix, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   MAYBE_UNUSED( args... );
+
+   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
+      if( (~matrix).rows() <= I ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+
+   return map( (~matrix).rightOperand(),
+               blaze::bind2nd( (~matrix).operation(), (~matrix).leftOperand()[I] ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given outer map operation.
+// \ingroup row
+//
+// \param matrix The constant outer map operation.
+// \param index The index of the row.
+// \param args Optional row arguments.
+// \return View on the specified row of the outer map operation.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing the specified row of the given outer map
+// operation.
+*/
+template< typename MT         // Matrix base type of the expression
+        , typename... RRAs >  // Optional row arguments
+inline decltype(auto) row( const VecTVecMapExpr<MT>& matrix, size_t index, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   MAYBE_UNUSED( args... );
+
+   if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
+      if( (~matrix).rows() <= index ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+
+   return map( (~matrix).rightOperand(),
+               blaze::bind2nd( (~matrix).operation(), (~matrix).leftOperand()[index] ) );
 }
 /*! \endcond */
 //*************************************************************************************************
