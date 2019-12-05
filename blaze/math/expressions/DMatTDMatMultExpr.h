@@ -1076,6 +1076,311 @@ class DMatTDMatMultExpr
 
       size_t i( 0UL );
 
+      for( ; !( LOW && UPP ) && (i+3UL) <= M; i+=3UL )
+      {
+         const size_t jend( LOW ? i+3UL : N );
+         size_t j( 0UL );
+
+         if( SYM || HERM ) {
+            for( ; j<i; ++j ) {
+               C(i    ,j) = HERM ? conj( C(j,i    ) ) : C(j,i    );
+               C(i+1UL,j) = HERM ? conj( C(j,i+1UL) ) : C(j,i+1UL);
+               C(i+2UL,j) = HERM ? conj( C(j,i+2UL) ) : C(j,i+2UL);
+            }
+         }
+         else if( UPP ) {
+            for( ; j<i; ++j ) {
+               reset( C(i    ,j) );
+               reset( C(i+1UL,j) );
+               reset( C(i+2UL,j) );
+            }
+         }
+
+         for( ; (j+3UL) <= jend; j+=3UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType b3( B.load(k,j+2UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a1 * b3 );
+               SIMDType xmm4( a2 * b1 );
+               SIMDType xmm5( a2 * b2 );
+               SIMDType xmm6( a2 * b3 );
+               SIMDType xmm7( a3 * b1 );
+               SIMDType xmm8( a3 * b2 );
+               SIMDType xmm9( a3 * b3 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  b3 = B.load(k,j+2UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a1 * b3;
+                  xmm4 += a2 * b1;
+                  xmm5 += a2 * b2;
+                  xmm6 += a2 * b3;
+                  xmm7 += a3 * b1;
+                  xmm8 += a3 * b2;
+                  xmm9 += a3 * b3;
+               }
+
+               C(i    ,j    ) = sum( xmm1 );
+               C(i    ,j+1UL) = sum( xmm2 );
+               C(i    ,j+2UL) = sum( xmm3 );
+               C(i+1UL,j    ) = sum( xmm4 );
+               C(i+1UL,j+1UL) = sum( xmm5 );
+               C(i+1UL,j+2UL) = sum( xmm6 );
+               C(i+2UL,j    ) = sum( xmm7 );
+               C(i+2UL,j+1UL) = sum( xmm8 );
+               C(i+2UL,j+2UL) = sum( xmm9 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+                  C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL);
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL);
+                  C(i+2UL,j+2UL) += A(i+2UL,k) * B(k,j+2UL);
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i    ,k) * B(k,j+2UL) );
+               ElementType value4( A(i+1UL,k) * B(k,j    ) );
+               ElementType value5( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value6( A(i+1UL,k) * B(k,j+2UL) );
+               ElementType value7( A(i+2UL,k) * B(k,j    ) );
+               ElementType value8( A(i+2UL,k) * B(k,j+1UL) );
+               ElementType value9( A(i+2UL,k) * B(k,j+2UL) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i    ,k) * B(k,j+2UL);
+                  value4 += A(i+1UL,k) * B(k,j    );
+                  value5 += A(i+1UL,k) * B(k,j+1UL);
+                  value6 += A(i+1UL,k) * B(k,j+2UL);
+                  value7 += A(i+2UL,k) * B(k,j    );
+                  value8 += A(i+2UL,k) * B(k,j+1UL);
+                  value9 += A(i+2UL,k) * B(k,j+2UL);
+               }
+
+               C(i    ,j    ) = value1;
+               C(i    ,j+1UL) = value2;
+               C(i    ,j+2UL) = value3;
+               C(i+1UL,j    ) = value4;
+               C(i+1UL,j+1UL) = value5;
+               C(i+1UL,j+2UL) = value6;
+               C(i+2UL,j    ) = value7;
+               C(i+2UL,j+1UL) = value8;
+               C(i+2UL,j+2UL) = value9;
+            }
+            else
+            {
+               reset( C(i    ,j    ) );
+               reset( C(i    ,j+1UL) );
+               reset( C(i    ,j+2UL) );
+               reset( C(i+1UL,j    ) );
+               reset( C(i+1UL,j+1UL) );
+               reset( C(i+1UL,j+2UL) );
+               reset( C(i+2UL,j    ) );
+               reset( C(i+2UL,j+1UL) );
+               reset( C(i+2UL,j+2UL) );
+            }
+         }
+
+         for( ; (j+2UL) <= jend; j+=2UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+               SIMDType xmm5( a3 * b1 );
+               SIMDType xmm6( a3 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+                  xmm5 += a3 * b1;
+                  xmm6 += a3 * b2;
+               }
+
+               C(i    ,j    ) = sum( xmm1 );
+               C(i    ,j+1UL) = sum( xmm2 );
+               C(i+1UL,j    ) = sum( xmm3 );
+               C(i+1UL,j+1UL) = sum( xmm4 );
+               C(i+2UL,j    ) = sum( xmm5 );
+               C(i+2UL,j+1UL) = sum( xmm6 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL);
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i+1UL,k) * B(k,j    ) );
+               ElementType value4( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value5( A(i+2UL,k) * B(k,j    ) );
+               ElementType value6( A(i+2UL,k) * B(k,j+1UL) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i+1UL,k) * B(k,j    );
+                  value4 += A(i+1UL,k) * B(k,j+1UL);
+                  value5 += A(i+2UL,k) * B(k,j    );
+                  value6 += A(i+2UL,k) * B(k,j+1UL);
+               }
+
+               C(i    ,j    ) = value1;
+               C(i    ,j+1UL) = value2;
+               C(i+1UL,j    ) = value3;
+               C(i+1UL,j+1UL) = value4;
+               C(i+2UL,j    ) = value5;
+               C(i+2UL,j+1UL) = value6;
+            }
+            else
+            {
+               reset( C(i    ,j    ) );
+               reset( C(i    ,j+1UL) );
+               reset( C(i+1UL,j    ) );
+               reset( C(i+1UL,j+1UL) );
+               reset( C(i+2UL,j    ) );
+               reset( C(i+2UL,j+1UL) );
+            }
+         }
+
+         if( j < jend )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+               SIMDType xmm3( A.load(i+2UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+                  xmm3 += A.load(i+2UL,k) * b1;
+               }
+
+               C(i    ,j) = sum( xmm1 );
+               C(i+1UL,j) = sum( xmm2 );
+               C(i+2UL,j) = sum( xmm3 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j);
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j);
+                  C(i+2UL,j) += A(i+2UL,k) * B(k,j);
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j) );
+               ElementType value2( A(i+1UL,k) * B(k,j) );
+               ElementType value3( A(i+2UL,k) * B(k,j) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j);
+                  value2 += A(i+1UL,k) * B(k,j);
+                  value3 += A(i+2UL,k) * B(k,j);
+               }
+
+               C(i    ,j) = value1;
+               C(i+1UL,j) = value2;
+               C(i+2UL,j) = value3;
+            }
+            else
+            {
+               reset( C(i    ,j) );
+               reset( C(i+1UL,j) );
+               reset( C(i+2UL,j) );
+            }
+
+            if( LOW ) ++j;
+         }
+
+         if( LOW ) {
+            for( ; j<N; ++j ) {
+               reset( C(i    ,j) );
+               reset( C(i+1UL,j) );
+               reset( C(i+2UL,j) );
+            }
+         }
+      }
+
       for( ; !( LOW && UPP ) && (i+2UL) <= M; i+=2UL )
       {
          const size_t jend( LOW ? i+2UL : N );
@@ -1106,44 +1411,103 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               const SIMDType b3( B.load(k,j+2UL) );
-               const SIMDType b4( B.load(k,j+3UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a1 * b3;
-               xmm4 += a1 * b4;
-               xmm5 += a2 * b1;
-               xmm6 += a2 * b2;
-               xmm7 += a2 * b3;
-               xmm8 += a2 * b4;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType b3( B.load(k,j+2UL) );
+               SIMDType b4( B.load(k,j+3UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a1 * b3 );
+               SIMDType xmm4( a1 * b4 );
+               SIMDType xmm5( a2 * b1 );
+               SIMDType xmm6( a2 * b2 );
+               SIMDType xmm7( a2 * b3 );
+               SIMDType xmm8( a2 * b4 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  b3 = B.load(k,j+2UL);
+                  b4 = B.load(k,j+3UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a1 * b3;
+                  xmm4 += a1 * b4;
+                  xmm5 += a2 * b1;
+                  xmm6 += a2 * b2;
+                  xmm7 += a2 * b3;
+                  xmm8 += a2 * b4;
+               }
+
+               C(i    ,j    ) = sum( xmm1 );
+               C(i    ,j+1UL) = sum( xmm2 );
+               C(i    ,j+2UL) = sum( xmm3 );
+               C(i    ,j+3UL) = sum( xmm4 );
+               C(i+1UL,j    ) = sum( xmm5 );
+               C(i+1UL,j+1UL) = sum( xmm6 );
+               C(i+1UL,j+2UL) = sum( xmm7 );
+               C(i+1UL,j+3UL) = sum( xmm8 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL);
+                  C(i    ,j+3UL) += A(i    ,k) * B(k,j+3UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+                  C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL);
+                  C(i+1UL,j+3UL) += A(i+1UL,k) * B(k,j+3UL);
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i    ,k) * B(k,j+2UL) );
+               ElementType value4( A(i    ,k) * B(k,j+3UL) );
+               ElementType value5( A(i+1UL,k) * B(k,j    ) );
+               ElementType value6( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value7( A(i+1UL,k) * B(k,j+2UL) );
+               ElementType value8( A(i+1UL,k) * B(k,j+3UL) );
 
-            C(i    ,j    ) = sum( xmm1 );
-            C(i    ,j+1UL) = sum( xmm2 );
-            C(i    ,j+2UL) = sum( xmm3 );
-            C(i    ,j+3UL) = sum( xmm4 );
-            C(i+1UL,j    ) = sum( xmm5 );
-            C(i+1UL,j+1UL) = sum( xmm6 );
-            C(i+1UL,j+2UL) = sum( xmm7 );
-            C(i+1UL,j+3UL) = sum( xmm8 );
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i    ,k) * B(k,j+2UL);
+                  value4 += A(i    ,k) * B(k,j+3UL);
+                  value5 += A(i+1UL,k) * B(k,j    );
+                  value6 += A(i+1UL,k) * B(k,j+1UL);
+                  value7 += A(i+1UL,k) * B(k,j+2UL);
+                  value8 += A(i+1UL,k) * B(k,j+3UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) += A(i    ,k) * B(k,j    );
-               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
-               C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL);
-               C(i    ,j+3UL) += A(i    ,k) * B(k,j+3UL);
-               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
-               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
-               C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL);
-               C(i+1UL,j+3UL) += A(i+1UL,k) * B(k,j+3UL);
+               C(i    ,j    ) = value1;
+               C(i    ,j+1UL) = value2;
+               C(i    ,j+2UL) = value3;
+               C(i    ,j+3UL) = value4;
+               C(i+1UL,j    ) = value5;
+               C(i+1UL,j+1UL) = value6;
+               C(i+1UL,j+2UL) = value7;
+               C(i+1UL,j+3UL) = value8;
+            }
+            else
+            {
+               reset( C(i    ,j    ) );
+               reset( C(i    ,j+1UL) );
+               reset( C(i    ,j+2UL) );
+               reset( C(i    ,j+3UL) );
+               reset( C(i+1UL,j    ) );
+               reset( C(i+1UL,j+1UL) );
+               reset( C(i+1UL,j+2UL) );
+               reset( C(i+1UL,j+3UL) );
             }
          }
 
@@ -1159,30 +1523,67 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a2 * b1;
-               xmm4 += a2 * b2;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+               }
+
+               C(i    ,j    ) = sum( xmm1 );
+               C(i    ,j+1UL) = sum( xmm2 );
+               C(i+1UL,j    ) = sum( xmm3 );
+               C(i+1UL,j+1UL) = sum( xmm4 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i+1UL,k) * B(k,j    ) );
+               ElementType value4( A(i+1UL,k) * B(k,j+1UL) );
 
-            C(i    ,j    ) = sum( xmm1 );
-            C(i    ,j+1UL) = sum( xmm2 );
-            C(i+1UL,j    ) = sum( xmm3 );
-            C(i+1UL,j+1UL) = sum( xmm4 );
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i+1UL,k) * B(k,j    );
+                  value4 += A(i+1UL,k) * B(k,j+1UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) += A(i    ,k) * B(k,j    );
-               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
-               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
-               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+               C(i    ,j    ) = value1;
+               C(i    ,j+1UL) = value2;
+               C(i+1UL,j    ) = value3;
+               C(i+1UL,j+1UL) = value4;
+            }
+            else
+            {
+               reset( C(i    ,j    ) );
+               reset( C(i    ,j+1UL) );
+               reset( C(i+1UL,j    ) );
+               reset( C(i+1UL,j+1UL) );
             }
          }
 
@@ -1196,21 +1597,45 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType b1( B.load(k,j) );
-               xmm1 += A.load(i    ,k) * b1;
-               xmm2 += A.load(i+1UL,k) * b1;
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+               }
+
+               C(i    ,j) = sum( xmm1 );
+               C(i+1UL,j) = sum( xmm2 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j);
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j);
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j) );
+               ElementType value2( A(i+1UL,k) * B(k,j) );
 
-            C(i    ,j) = sum( xmm1 );
-            C(i+1UL,j) = sum( xmm2 );
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j);
+                  value2 += A(i+1UL,k) * B(k,j);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j) += A(i    ,k) * B(k,j);
-               C(i+1UL,j) += A(i+1UL,k) * B(k,j);
+               C(i    ,j) = value1;
+               C(i+1UL,j) = value2;
+            }
+            else
+            {
+               reset( C(i    ,j) );
+               reset( C(i+1UL,j) );
             }
 
             if( LOW ) ++j;
@@ -1250,27 +1675,61 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i,k) );
-               xmm1 += a1 * B.load(k,j    );
-               xmm2 += a1 * B.load(k,j+1UL);
-               xmm3 += a1 * B.load(k,j+2UL);
-               xmm4 += a1 * B.load(k,j+3UL);
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i,k) );
+               SIMDType xmm1( a1 * B.load(k,j    ) );
+               SIMDType xmm2( a1 * B.load(k,j+1UL) );
+               SIMDType xmm3( a1 * B.load(k,j+2UL) );
+               SIMDType xmm4( a1 * B.load(k,j+3UL) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i,k);
+                  xmm1 += a1 * B.load(k,j    );
+                  xmm2 += a1 * B.load(k,j+1UL);
+                  xmm3 += a1 * B.load(k,j+2UL);
+                  xmm4 += a1 * B.load(k,j+3UL);
+               }
+
+               C(i,j    ) = sum( xmm1 );
+               C(i,j+1UL) = sum( xmm2 );
+               C(i,j+2UL) = sum( xmm3 );
+               C(i,j+3UL) = sum( xmm4 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i,j    ) += A(i,k) * B(k,j    );
+                  C(i,j+1UL) += A(i,k) * B(k,j+1UL);
+                  C(i,j+2UL) += A(i,k) * B(k,j+2UL);
+                  C(i,j+3UL) += A(i,k) * B(k,j+3UL);
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i,k) * B(k,j    ) );
+               ElementType value2( A(i,k) * B(k,j+1UL) );
+               ElementType value3( A(i,k) * B(k,j+2UL) );
+               ElementType value4( A(i,k) * B(k,j+3UL) );
 
-            C(i,j    ) = sum( xmm1 );
-            C(i,j+1UL) = sum( xmm2 );
-            C(i,j+2UL) = sum( xmm3 );
-            C(i,j+3UL) = sum( xmm4 );
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i,k) * B(k,j    );
+                  value2 += A(i,k) * B(k,j+1UL);
+                  value3 += A(i,k) * B(k,j+2UL);
+                  value4 += A(i,k) * B(k,j+3UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i,j    ) += A(i,k) * B(k,j    );
-               C(i,j+1UL) += A(i,k) * B(k,j+1UL);
-               C(i,j+2UL) += A(i,k) * B(k,j+2UL);
-               C(i,j+3UL) += A(i,k) * B(k,j+3UL);
+               C(i,j    ) = value1;
+               C(i,j+1UL) = value2;
+               C(i,j+2UL) = value3;
+               C(i,j+3UL) = value4;
+            }
+            else
+            {
+               reset( C(i,j    ) );
+               reset( C(i,j+1UL) );
+               reset( C(i,j+2UL) );
+               reset( C(i,j+3UL) );
             }
          }
 
@@ -1284,21 +1743,45 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i,k) );
-               xmm1 += a1 * B.load(k,j    );
-               xmm2 += a1 * B.load(k,j+1UL);
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i,k) );
+               SIMDType xmm1( a1 * B.load(k,j    ) );
+               SIMDType xmm2( a1 * B.load(k,j+1UL) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i,k);
+                  xmm1 += a1 * B.load(k,j    );
+                  xmm2 += a1 * B.load(k,j+1UL);
+               }
+
+               C(i,j    ) = sum( xmm1 );
+               C(i,j+1UL) = sum( xmm2 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i,j    ) += A(i,k) * B(k,j    );
+                  C(i,j+1UL) += A(i,k) * B(k,j+1UL);
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i,k) * B(k,j    ) );
+               ElementType value2( A(i,k) * B(k,j+1UL) );
 
-            C(i,j    ) = sum( xmm1 );
-            C(i,j+1UL) = sum( xmm2 );
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i,k) * B(k,j    );
+                  value2 += A(i,k) * B(k,j+1UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i,j    ) += A(i,k) * B(k,j    );
-               C(i,j+1UL) += A(i,k) * B(k,j+1UL);
+               C(i,j    ) = value1;
+               C(i,j+1UL) = value2;
+            }
+            else
+            {
+               reset( C(i,j    ) );
+               reset( C(i,j+1UL) );
             }
          }
 
@@ -1311,17 +1794,35 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
             BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 += A.load(i,k) * B.load(k,j);
+            if( k < kpos )
+            {
+               SIMDType xmm1( A.load(i,k) * B.load(k,j) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  xmm1 += A.load(i,k) * B.load(k,j);
+               }
+
+               C(i,j) = sum( xmm1 );
+
+               for( ; remainder && k<K; ++k ) {
+                  C(i,j) += A(i,k) * B(k,j);
+               }
             }
+            else if( k < K )
+            {
+               ElementType value( A(i,k) * B(k,j) );
 
-            C(i,j) = sum( xmm1 );
+               for( ++k; k<K; ++k ) {
+                  value += A(i,k) * B(k,j);
+               }
 
-            for( ; remainder && k<K; ++k ) {
-               C(i,j) += A(i,k) * B(k,j);
+               C(i,j) = value;
+            }
+            else
+            {
+               reset( C(i,j) );
             }
 
             if( LOW ) ++j;
@@ -1402,44 +1903,103 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType a3( A.load(i+2UL,k) );
-               const SIMDType a4( A.load(i+3UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a2 * b1;
-               xmm4 += a2 * b2;
-               xmm5 += a3 * b1;
-               xmm6 += a3 * b2;
-               xmm7 += a4 * b1;
-               xmm8 += a4 * b2;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType a4( A.load(i+3UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+               SIMDType xmm5( a3 * b1 );
+               SIMDType xmm6( a3 * b2 );
+               SIMDType xmm7( a4 * b1 );
+               SIMDType xmm8( a4 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  a4 = A.load(i+3UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+                  xmm5 += a3 * b1;
+                  xmm6 += a3 * b2;
+                  xmm7 += a4 * b1;
+                  xmm8 += a4 * b2;
+               }
+
+               C(i    ,j    ) = sum( xmm1 );
+               C(i    ,j+1UL) = sum( xmm2 );
+               C(i+1UL,j    ) = sum( xmm3 );
+               C(i+1UL,j+1UL) = sum( xmm4 );
+               C(i+2UL,j    ) = sum( xmm5 );
+               C(i+2UL,j+1UL) = sum( xmm6 );
+               C(i+3UL,j    ) = sum( xmm7 );
+               C(i+3UL,j+1UL) = sum( xmm8 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL);
+                  C(i+3UL,j    ) += A(i+3UL,k) * B(k,j    );
+                  C(i+3UL,j+1UL) += A(i+3UL,k) * B(k,j+1UL);
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i+1UL,k) * B(k,j    ) );
+               ElementType value4( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value5( A(i+2UL,k) * B(k,j    ) );
+               ElementType value6( A(i+2UL,k) * B(k,j+1UL) );
+               ElementType value7( A(i+3UL,k) * B(k,j    ) );
+               ElementType value8( A(i+3UL,k) * B(k,j+1UL) );
 
-            C(i    ,j    ) = sum( xmm1 );
-            C(i    ,j+1UL) = sum( xmm2 );
-            C(i+1UL,j    ) = sum( xmm3 );
-            C(i+1UL,j+1UL) = sum( xmm4 );
-            C(i+2UL,j    ) = sum( xmm5 );
-            C(i+2UL,j+1UL) = sum( xmm6 );
-            C(i+3UL,j    ) = sum( xmm7 );
-            C(i+3UL,j+1UL) = sum( xmm8 );
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i+1UL,k) * B(k,j    );
+                  value4 += A(i+1UL,k) * B(k,j+1UL);
+                  value5 += A(i+2UL,k) * B(k,j    );
+                  value6 += A(i+2UL,k) * B(k,j+1UL);
+                  value7 += A(i+3UL,k) * B(k,j    );
+                  value8 += A(i+3UL,k) * B(k,j+1UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) += A(i    ,k) * B(k,j    );
-               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
-               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
-               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
-               C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    );
-               C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL);
-               C(i+3UL,j    ) += A(i+3UL,k) * B(k,j    );
-               C(i+3UL,j+1UL) += A(i+3UL,k) * B(k,j+1UL);
+               C(i    ,j    ) = value1;
+               C(i    ,j+1UL) = value2;
+               C(i+1UL,j    ) = value3;
+               C(i+1UL,j+1UL) = value4;
+               C(i+2UL,j    ) = value5;
+               C(i+2UL,j+1UL) = value6;
+               C(i+3UL,j    ) = value7;
+               C(i+3UL,j+1UL) = value8;
+            }
+            else
+            {
+               reset( C(i    ,j    ) );
+               reset( C(i    ,j+1UL) );
+               reset( C(i+1UL,j    ) );
+               reset( C(i+1UL,j+1UL) );
+               reset( C(i+2UL,j    ) );
+               reset( C(i+2UL,j+1UL) );
+               reset( C(i+3UL,j    ) );
+               reset( C(i+3UL,j+1UL) );
             }
          }
 
@@ -1453,27 +2013,61 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType b1( B.load(k,j) );
-               xmm1 += A.load(i    ,k) * b1;
-               xmm2 += A.load(i+1UL,k) * b1;
-               xmm3 += A.load(i+2UL,k) * b1;
-               xmm4 += A.load(i+3UL,k) * b1;
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+               SIMDType xmm3( A.load(i+2UL,k) * b1 );
+               SIMDType xmm4( A.load(i+3UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+                  xmm3 += A.load(i+2UL,k) * b1;
+                  xmm4 += A.load(i+3UL,k) * b1;
+               }
+
+               C(i    ,j) = sum( xmm1 );
+               C(i+1UL,j) = sum( xmm2 );
+               C(i+2UL,j) = sum( xmm3 );
+               C(i+3UL,j) = sum( xmm4 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j);
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j);
+                  C(i+2UL,j) += A(i+2UL,k) * B(k,j);
+                  C(i+3UL,j) += A(i+3UL,k) * B(k,j);
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j) );
+               ElementType value2( A(i+1UL,k) * B(k,j) );
+               ElementType value3( A(i+2UL,k) * B(k,j) );
+               ElementType value4( A(i+3UL,k) * B(k,j) );
 
-            C(i    ,j) = sum( xmm1 );
-            C(i+1UL,j) = sum( xmm2 );
-            C(i+2UL,j) = sum( xmm3 );
-            C(i+3UL,j) = sum( xmm4 );
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j);
+                  value2 += A(i+1UL,k) * B(k,j);
+                  value3 += A(i+2UL,k) * B(k,j);
+                  value4 += A(i+3UL,k) * B(k,j);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j) += A(i    ,k) * B(k,j);
-               C(i+1UL,j) += A(i+1UL,k) * B(k,j);
-               C(i+2UL,j) += A(i+2UL,k) * B(k,j);
-               C(i+3UL,j) += A(i+3UL,k) * B(k,j);
+               C(i    ,j) = value1;
+               C(i+1UL,j) = value2;
+               C(i+2UL,j) = value3;
+               C(i+3UL,j) = value4;
+            }
+            else
+            {
+               reset( C(i    ,j) );
+               reset( C(i+1UL,j) );
+               reset( C(i+2UL,j) );
+               reset( C(i+3UL,j) );
             }
 
             if( LOW ) ++j;
@@ -1489,7 +2083,312 @@ class DMatTDMatMultExpr
          }
       }
 
-      for( ; !( LOW && UPP ) && (i+2UL) <= M; i+=2UL )
+      for( ; !( LOW && UPP ) && (i+3UL) <= M; i+=3UL )
+      {
+         const size_t jend( LOW ? i+3UL : N );
+         size_t j( 0UL );
+
+         if( SYM || HERM ) {
+            for( ; j<i; ++j ) {
+               C(i    ,j) = HERM ? conj( C(j,i    ) ) : C(j,i    );
+               C(i+1UL,j) = HERM ? conj( C(j,i+1UL) ) : C(j,i+1UL);
+               C(i+2UL,j) = HERM ? conj( C(j,i+2UL) ) : C(j,i+2UL);
+            }
+         }
+         else if( UPP ) {
+            for( ; j<i; ++j ) {
+               reset( C(i    ,j) );
+               reset( C(i+1UL,j) );
+               reset( C(i+2UL,j) );
+            }
+         }
+
+         for( ; (j+3UL) <= jend; j+=3UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType b3( B.load(k,j+2UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a1 * b3 );
+               SIMDType xmm4( a2 * b1 );
+               SIMDType xmm5( a2 * b2 );
+               SIMDType xmm6( a2 * b3 );
+               SIMDType xmm7( a3 * b1 );
+               SIMDType xmm8( a3 * b2 );
+               SIMDType xmm9( a3 * b3 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  b3 = B.load(k,j+2UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a1 * b3;
+                  xmm4 += a2 * b1;
+                  xmm5 += a2 * b2;
+                  xmm6 += a2 * b3;
+                  xmm7 += a3 * b1;
+                  xmm8 += a3 * b2;
+                  xmm9 += a3 * b3;
+               }
+
+               C(i    ,j    ) = sum( xmm1 );
+               C(i    ,j+1UL) = sum( xmm2 );
+               C(i    ,j+2UL) = sum( xmm3 );
+               C(i+1UL,j    ) = sum( xmm4 );
+               C(i+1UL,j+1UL) = sum( xmm5 );
+               C(i+1UL,j+2UL) = sum( xmm6 );
+               C(i+2UL,j    ) = sum( xmm7 );
+               C(i+2UL,j+1UL) = sum( xmm8 );
+               C(i+2UL,j+2UL) = sum( xmm9 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+                  C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL);
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL);
+                  C(i+2UL,j+2UL) += A(i+2UL,k) * B(k,j+2UL);
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i    ,k) * B(k,j+2UL) );
+               ElementType value4( A(i+1UL,k) * B(k,j    ) );
+               ElementType value5( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value6( A(i+1UL,k) * B(k,j+2UL) );
+               ElementType value7( A(i+2UL,k) * B(k,j    ) );
+               ElementType value8( A(i+2UL,k) * B(k,j+1UL) );
+               ElementType value9( A(i+2UL,k) * B(k,j+2UL) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i    ,k) * B(k,j+2UL);
+                  value4 += A(i+1UL,k) * B(k,j    );
+                  value5 += A(i+1UL,k) * B(k,j+1UL);
+                  value6 += A(i+1UL,k) * B(k,j+2UL);
+                  value7 += A(i+2UL,k) * B(k,j    );
+                  value8 += A(i+2UL,k) * B(k,j+1UL);
+                  value9 += A(i+2UL,k) * B(k,j+2UL);
+               }
+
+               C(i    ,j    ) = value1;
+               C(i    ,j+1UL) = value2;
+               C(i    ,j+2UL) = value3;
+               C(i+1UL,j    ) = value4;
+               C(i+1UL,j+1UL) = value5;
+               C(i+1UL,j+2UL) = value6;
+               C(i+2UL,j    ) = value7;
+               C(i+2UL,j+1UL) = value8;
+               C(i+2UL,j+2UL) = value9;
+            }
+            else
+            {
+               reset( C(i    ,j    ) );
+               reset( C(i    ,j+1UL) );
+               reset( C(i    ,j+2UL) );
+               reset( C(i+1UL,j    ) );
+               reset( C(i+1UL,j+1UL) );
+               reset( C(i+1UL,j+2UL) );
+               reset( C(i+2UL,j    ) );
+               reset( C(i+2UL,j+1UL) );
+               reset( C(i+2UL,j+2UL) );
+            }
+         }
+
+         for( ; (j+2UL) <= jend; j+=2UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+               SIMDType xmm5( a3 * b1 );
+               SIMDType xmm6( a3 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+                  xmm5 += a3 * b1;
+                  xmm6 += a3 * b2;
+               }
+
+               C(i    ,j    ) = sum( xmm1 );
+               C(i    ,j+1UL) = sum( xmm2 );
+               C(i+1UL,j    ) = sum( xmm3 );
+               C(i+1UL,j+1UL) = sum( xmm4 );
+               C(i+2UL,j    ) = sum( xmm5 );
+               C(i+2UL,j+1UL) = sum( xmm6 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL);
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i+1UL,k) * B(k,j    ) );
+               ElementType value4( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value5( A(i+2UL,k) * B(k,j    ) );
+               ElementType value6( A(i+2UL,k) * B(k,j+1UL) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i+1UL,k) * B(k,j    );
+                  value4 += A(i+1UL,k) * B(k,j+1UL);
+                  value5 += A(i+2UL,k) * B(k,j    );
+                  value6 += A(i+2UL,k) * B(k,j+1UL);
+               }
+
+               C(i    ,j    ) = value1;
+               C(i    ,j+1UL) = value2;
+               C(i+1UL,j    ) = value3;
+               C(i+1UL,j+1UL) = value4;
+               C(i+2UL,j    ) = value5;
+               C(i+2UL,j+1UL) = value6;
+            }
+            else
+            {
+               reset( C(i    ,j    ) );
+               reset( C(i    ,j+1UL) );
+               reset( C(i+1UL,j    ) );
+               reset( C(i+1UL,j+1UL) );
+               reset( C(i+2UL,j    ) );
+               reset( C(i+2UL,j+1UL) );
+            }
+         }
+
+         if( j < jend )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+               SIMDType xmm3( A.load(i+2UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+                  xmm3 += A.load(i+2UL,k) * b1;
+               }
+
+               C(i    ,j) = sum( xmm1 );
+               C(i+1UL,j) = sum( xmm2 );
+               C(i+2UL,j) = sum( xmm3 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j);
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j);
+                  C(i+2UL,j) += A(i+2UL,k) * B(k,j);
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j) );
+               ElementType value2( A(i+1UL,k) * B(k,j) );
+               ElementType value3( A(i+2UL,k) * B(k,j) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j);
+                  value2 += A(i+1UL,k) * B(k,j);
+                  value3 += A(i+2UL,k) * B(k,j);
+               }
+
+               C(i    ,j) = value1;
+               C(i+1UL,j) = value2;
+               C(i+2UL,j) = value3;
+            }
+            else
+            {
+               reset( C(i    ,j) );
+               reset( C(i+1UL,j) );
+               reset( C(i+2UL,j) );
+            }
+
+            if( LOW ) ++j;
+         }
+
+         if( LOW ) {
+            for( ; j<N; ++j ) {
+               reset( C(i    ,j) );
+               reset( C(i+1UL,j) );
+               reset( C(i+2UL,j) );
+            }
+         }
+      }
+
+      for( ; (i+2UL) <= M; i+=2UL )
       {
          const size_t jend( LOW ? i+2UL : N );
          size_t j( 0UL );
@@ -1519,30 +2418,67 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a2 * b1;
-               xmm4 += a2 * b2;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+               }
+
+               C(i    ,j    ) = sum( xmm1 );
+               C(i    ,j+1UL) = sum( xmm2 );
+               C(i+1UL,j    ) = sum( xmm3 );
+               C(i+1UL,j+1UL) = sum( xmm4 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i+1UL,k) * B(k,j    ) );
+               ElementType value4( A(i+1UL,k) * B(k,j+1UL) );
 
-            C(i    ,j    ) = sum( xmm1 );
-            C(i    ,j+1UL) = sum( xmm2 );
-            C(i+1UL,j    ) = sum( xmm3 );
-            C(i+1UL,j+1UL) = sum( xmm4 );
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i+1UL,k) * B(k,j    );
+                  value4 += A(i+1UL,k) * B(k,j+1UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) += A(i    ,k) * B(k,j    );
-               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
-               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
-               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+               C(i    ,j    ) = value1;
+               C(i    ,j+1UL) = value2;
+               C(i+1UL,j    ) = value3;
+               C(i+1UL,j+1UL) = value4;
+            }
+            else
+            {
+               reset( C(i    ,j    ) );
+               reset( C(i    ,j+1UL) );
+               reset( C(i+1UL,j    ) );
+               reset( C(i+1UL,j+1UL) );
             }
          }
 
@@ -1556,21 +2492,45 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType b1( B.load(k,j) );
-               xmm1 += A.load(i    ,k) * b1;
-               xmm2 += A.load(i+1UL,k) * b1;
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+               }
+
+               C(i    ,j) = sum( xmm1 );
+               C(i+1UL,j) = sum( xmm2 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j);
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j);
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j) );
+               ElementType value2( A(i+1UL,k) * B(k,j) );
 
-            C(i    ,j) = sum( xmm1 );
-            C(i+1UL,j) = sum( xmm2 );
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j);
+                  value2 += A(i+1UL,k) * B(k,j);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j) += A(i    ,k) * B(k,j);
-               C(i+1UL,j) += A(i+1UL,k) * B(k,j);
+               C(i    ,j) = value1;
+               C(i+1UL,j) = value2;
+            }
+            else
+            {
+               reset( C(i    ,j) );
+               reset( C(i+1UL,j) );
             }
 
             if( LOW ) ++j;
@@ -1610,21 +2570,45 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i,k) );
-               xmm1 += a1 * B.load(k,j    );
-               xmm2 += a1 * B.load(k,j+1UL);
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i,k) );
+               SIMDType xmm1( a1 * B.load(k,j    ) );
+               SIMDType xmm2( a1 * B.load(k,j+1UL) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i,k);
+                  xmm1 += a1 * B.load(k,j    );
+                  xmm2 += a1 * B.load(k,j+1UL);
+               }
+
+               C(i,j    ) = sum( xmm1 );
+               C(i,j+1UL) = sum( xmm2 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i,j    ) += A(i,k) * B(k,j    );
+                  C(i,j+1UL) += A(i,k) * B(k,j+1UL);
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i,k) * B(k,j    ) );
+               ElementType value2( A(i,k) * B(k,j+1UL) );
 
-            C(i,j    ) = sum( xmm1 );
-            C(i,j+1UL) = sum( xmm2 );
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i,k) * B(k,j    );
+                  value2 += A(i,k) * B(k,j+1UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i,j    ) += A(i,k) * B(k,j    );
-               C(i,j+1UL) += A(i,k) * B(k,j+1UL);
+               C(i,j    ) = value1;
+               C(i,j+1UL) = value2;
+            }
+            else
+            {
+               reset( C(i,j    ) );
+               reset( C(i,j+1UL) );
             }
          }
 
@@ -1637,17 +2621,35 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
             BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 += A.load(i,k) * B.load(k,j);
+            if( k < kpos )
+            {
+               SIMDType xmm1( A.load(i,k) * B.load(k,j) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  xmm1 += A.load(i,k) * B.load(k,j);
+               }
+
+               C(i,j) = sum( xmm1 );
+
+               for( ; remainder && k<K; ++k ) {
+                  C(i,j) += A(i,k) * B(k,j);
+               }
             }
+            else if( k < K )
+            {
+               ElementType value( A(i,k) * B(k,j) );
 
-            C(i,j) = sum( xmm1 );
+               for( ++k; k<K; ++k ) {
+                  value += A(i,k) * B(k,j);
+               }
 
-            for( ; remainder && k<K; ++k ) {
-               C(i,j) += A(i,k) * B(k,j);
+               C(i,j) = value;
+            }
+            else
+            {
+               reset( C(i,j) );
             }
 
             if( LOW ) ++j;
@@ -2347,7 +3349,218 @@ class DMatTDMatMultExpr
 
       size_t i( 0UL );
 
-      for( ; (i+2UL) <= M; i+=2UL )
+      for( ; !( LOW && UPP ) && (i+3UL) <= M; i+=3UL )
+      {
+         const size_t jend( LOW ? i+3UL : N );
+         size_t j( UPP ? i : 0UL );
+
+         for( ; (j+3UL) <= jend; j+=3UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType b3( B.load(k,j+2UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a1 * b3 );
+               SIMDType xmm4( a2 * b1 );
+               SIMDType xmm5( a2 * b2 );
+               SIMDType xmm6( a2 * b3 );
+               SIMDType xmm7( a3 * b1 );
+               SIMDType xmm8( a3 * b2 );
+               SIMDType xmm9( a3 * b3 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  b3 = B.load(k,j+2UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a1 * b3;
+                  xmm4 += a2 * b1;
+                  xmm5 += a2 * b2;
+                  xmm6 += a2 * b3;
+                  xmm7 += a3 * b1;
+                  xmm8 += a3 * b2;
+                  xmm9 += a3 * b3;
+               }
+
+               C(i    ,j    ) += sum( xmm1 );
+               C(i    ,j+1UL) += sum( xmm2 );
+               C(i    ,j+2UL) += sum( xmm3 );
+               C(i+1UL,j    ) += sum( xmm4 );
+               C(i+1UL,j+1UL) += sum( xmm5 );
+               C(i+1UL,j+2UL) += sum( xmm6 );
+               C(i+2UL,j    ) += sum( xmm7 );
+               C(i+2UL,j+1UL) += sum( xmm8 );
+               C(i+2UL,j+2UL) += sum( xmm9 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+                  C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL);
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL);
+                  C(i+2UL,j+2UL) += A(i+2UL,k) * B(k,j+2UL);
+               }
+            }
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+                  C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL);
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL);
+                  C(i+2UL,j+2UL) += A(i+2UL,k) * B(k,j+2UL);
+               }
+            }
+         }
+
+         for( ; (j+2UL) <= jend; j+=2UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+               SIMDType xmm5( a3 * b1 );
+               SIMDType xmm6( a3 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+                  xmm5 += a3 * b1;
+                  xmm6 += a3 * b2;
+               }
+
+               C(i    ,j    ) += sum( xmm1 );
+               C(i    ,j+1UL) += sum( xmm2 );
+               C(i+1UL,j    ) += sum( xmm3 );
+               C(i+1UL,j+1UL) += sum( xmm4 );
+               C(i+2UL,j    ) += sum( xmm5 );
+               C(i+2UL,j+1UL) += sum( xmm6 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL);
+               }
+            }
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL);
+               }
+            }
+         }
+
+         if( j < jend )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+               SIMDType xmm3( A.load(i+2UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+                  xmm3 += A.load(i+2UL,k) * b1;
+               }
+
+               C(i    ,j) += sum( xmm1 );
+               C(i+1UL,j) += sum( xmm2 );
+               C(i+2UL,j) += sum( xmm3 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j);
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j);
+                  C(i+2UL,j) += A(i+2UL,k) * B(k,j);
+               }
+            }
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j);
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j);
+                  C(i+2UL,j) += A(i+2UL,k) * B(k,j);
+               }
+            }
+         }
+      }
+
+      for( ; !( LOW && UPP ) && (i+2UL) <= M; i+=2UL )
       {
          const size_t jend( LOW ? i+2UL : N );
          size_t j( UPP ? i : 0UL );
@@ -2364,44 +3577,74 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               const SIMDType b3( B.load(k,j+2UL) );
-               const SIMDType b4( B.load(k,j+3UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a1 * b3;
-               xmm4 += a1 * b4;
-               xmm5 += a2 * b1;
-               xmm6 += a2 * b2;
-               xmm7 += a2 * b3;
-               xmm8 += a2 * b4;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType b3( B.load(k,j+2UL) );
+               SIMDType b4( B.load(k,j+3UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a1 * b3 );
+               SIMDType xmm4( a1 * b4 );
+               SIMDType xmm5( a2 * b1 );
+               SIMDType xmm6( a2 * b2 );
+               SIMDType xmm7( a2 * b3 );
+               SIMDType xmm8( a2 * b4 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  b3 = B.load(k,j+2UL);
+                  b4 = B.load(k,j+3UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a1 * b3;
+                  xmm4 += a1 * b4;
+                  xmm5 += a2 * b1;
+                  xmm6 += a2 * b2;
+                  xmm7 += a2 * b3;
+                  xmm8 += a2 * b4;
+               }
+
+               C(i    ,j    ) += sum( xmm1 );
+               C(i    ,j+1UL) += sum( xmm2 );
+               C(i    ,j+2UL) += sum( xmm3 );
+               C(i    ,j+3UL) += sum( xmm4 );
+               C(i+1UL,j    ) += sum( xmm5 );
+               C(i+1UL,j+1UL) += sum( xmm6 );
+               C(i+1UL,j+2UL) += sum( xmm7 );
+               C(i+1UL,j+3UL) += sum( xmm8 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL);
+                  C(i    ,j+3UL) += A(i    ,k) * B(k,j+3UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+                  C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL);
+                  C(i+1UL,j+3UL) += A(i+1UL,k) * B(k,j+3UL);
+               }
             }
-
-            C(i    ,j    ) += sum( xmm1 );
-            C(i    ,j+1UL) += sum( xmm2 );
-            C(i    ,j+2UL) += sum( xmm3 );
-            C(i    ,j+3UL) += sum( xmm4 );
-            C(i+1UL,j    ) += sum( xmm5 );
-            C(i+1UL,j+1UL) += sum( xmm6 );
-            C(i+1UL,j+2UL) += sum( xmm7 );
-            C(i+1UL,j+3UL) += sum( xmm8 );
-
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) += A(i    ,k) * B(k,j    );
-               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
-               C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL);
-               C(i    ,j+3UL) += A(i    ,k) * B(k,j+3UL);
-               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
-               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
-               C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL);
-               C(i+1UL,j+3UL) += A(i+1UL,k) * B(k,j+3UL);
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL);
+                  C(i    ,j+3UL) += A(i    ,k) * B(k,j+3UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+                  C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL);
+                  C(i+1UL,j+3UL) += A(i+1UL,k) * B(k,j+3UL);
+               }
             }
          }
 
@@ -2417,30 +3660,50 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a2 * b1;
-               xmm4 += a2 * b2;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+               }
+
+               C(i    ,j    ) += sum( xmm1 );
+               C(i    ,j+1UL) += sum( xmm2 );
+               C(i+1UL,j    ) += sum( xmm3 );
+               C(i+1UL,j+1UL) += sum( xmm4 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+               }
             }
-
-            C(i    ,j    ) += sum( xmm1 );
-            C(i    ,j+1UL) += sum( xmm2 );
-            C(i+1UL,j    ) += sum( xmm3 );
-            C(i+1UL,j+1UL) += sum( xmm4 );
-
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) += A(i    ,k) * B(k,j    );
-               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
-               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
-               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+               }
             }
          }
 
@@ -2454,21 +3717,34 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType b1( B.load(k,j) );
-               xmm1 += A.load(i    ,k) * b1;
-               xmm2 += A.load(i+1UL,k) * b1;
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+               }
+
+               C(i    ,j) += sum( xmm1 );
+               C(i+1UL,j) += sum( xmm2 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j);
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j);
+               }
             }
-
-            C(i    ,j) += sum( xmm1 );
-            C(i+1UL,j) += sum( xmm2 );
-
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j) += A(i    ,k) * B(k,j);
-               C(i+1UL,j) += A(i+1UL,k) * B(k,j);
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j);
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j);
+               }
             }
          }
       }
@@ -2488,27 +3764,44 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i,k) );
-               xmm1 += a1 * B.load(k,j    );
-               xmm2 += a1 * B.load(k,j+1UL);
-               xmm3 += a1 * B.load(k,j+2UL);
-               xmm4 += a1 * B.load(k,j+3UL);
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i,k) );
+               SIMDType xmm1( a1 * B.load(k,j    ) );
+               SIMDType xmm2( a1 * B.load(k,j+1UL) );
+               SIMDType xmm3( a1 * B.load(k,j+2UL) );
+               SIMDType xmm4( a1 * B.load(k,j+3UL) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i,k);
+                  xmm1 += a1 * B.load(k,j    );
+                  xmm2 += a1 * B.load(k,j+1UL);
+                  xmm3 += a1 * B.load(k,j+2UL);
+                  xmm4 += a1 * B.load(k,j+3UL);
+               }
+
+               C(i,j    ) += sum( xmm1 );
+               C(i,j+1UL) += sum( xmm2 );
+               C(i,j+2UL) += sum( xmm3 );
+               C(i,j+3UL) += sum( xmm4 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i,j    ) += A(i,k) * B(k,j    );
+                  C(i,j+1UL) += A(i,k) * B(k,j+1UL);
+                  C(i,j+2UL) += A(i,k) * B(k,j+2UL);
+                  C(i,j+3UL) += A(i,k) * B(k,j+3UL);
+               }
             }
-
-            C(i,j    ) += sum( xmm1 );
-            C(i,j+1UL) += sum( xmm2 );
-            C(i,j+2UL) += sum( xmm3 );
-            C(i,j+3UL) += sum( xmm4 );
-
-            for( ; remainder && k<kend; ++k ) {
-               C(i,j    ) += A(i,k) * B(k,j    );
-               C(i,j+1UL) += A(i,k) * B(k,j+1UL);
-               C(i,j+2UL) += A(i,k) * B(k,j+2UL);
-               C(i,j+3UL) += A(i,k) * B(k,j+3UL);
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i,j    ) += A(i,k) * B(k,j    );
+                  C(i,j+1UL) += A(i,k) * B(k,j+1UL);
+                  C(i,j+2UL) += A(i,k) * B(k,j+2UL);
+                  C(i,j+3UL) += A(i,k) * B(k,j+3UL);
+               }
             }
          }
 
@@ -2522,21 +3815,34 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i,k) );
-               xmm1 += a1 * B.load(k,j    );
-               xmm2 += a1 * B.load(k,j+1UL);
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i,k) );
+               SIMDType xmm1( a1 * B.load(k,j    ) );
+               SIMDType xmm2( a1 * B.load(k,j+1UL) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i,k);
+                  xmm1 += a1 * B.load(k,j    );
+                  xmm2 += a1 * B.load(k,j+1UL);
+               }
+
+               C(i,j    ) += sum( xmm1 );
+               C(i,j+1UL) += sum( xmm2 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i,j    ) += A(i,k) * B(k,j    );
+                  C(i,j+1UL) += A(i,k) * B(k,j+1UL);
+               }
             }
-
-            C(i,j    ) += sum( xmm1 );
-            C(i,j+1UL) += sum( xmm2 );
-
-            for( ; remainder && k<kend; ++k ) {
-               C(i,j    ) += A(i,k) * B(k,j    );
-               C(i,j+1UL) += A(i,k) * B(k,j+1UL);
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i,j    ) += A(i,k) * B(k,j    );
+                  C(i,j+1UL) += A(i,k) * B(k,j+1UL);
+               }
             }
          }
 
@@ -2549,17 +3855,27 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
             BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 += A.load(i,k) * B.load(k,j);
+            if( k < kpos )
+            {
+               SIMDType xmm1( A.load(i,k) * B.load(k,j) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  xmm1 += A.load(i,k) * B.load(k,j);
+               }
+
+               C(i,j) += sum( xmm1 );
+
+               for( ; remainder && k<K; ++k ) {
+                  C(i,j) += A(i,k) * B(k,j);
+               }
             }
-
-            C(i,j) += sum( xmm1 );
-
-            for( ; remainder && k<K; ++k ) {
-               C(i,j) += A(i,k) * B(k,j);
+            else
+            {
+               for( ; k<K; ++k ) {
+                  C(i,j) += A(i,k) * B(k,j);
+               }
             }
          }
       }
@@ -2614,44 +3930,74 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType a3( A.load(i+2UL,k) );
-               const SIMDType a4( A.load(i+3UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a2 * b1;
-               xmm4 += a2 * b2;
-               xmm5 += a3 * b1;
-               xmm6 += a3 * b2;
-               xmm7 += a4 * b1;
-               xmm8 += a4 * b2;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType a4( A.load(i+3UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+               SIMDType xmm5( a3 * b1 );
+               SIMDType xmm6( a3 * b2 );
+               SIMDType xmm7( a4 * b1 );
+               SIMDType xmm8( a4 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  a4 = A.load(i+3UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+                  xmm5 += a3 * b1;
+                  xmm6 += a3 * b2;
+                  xmm7 += a4 * b1;
+                  xmm8 += a4 * b2;
+               }
+
+               C(i    ,j    ) += sum( xmm1 );
+               C(i    ,j+1UL) += sum( xmm2 );
+               C(i+1UL,j    ) += sum( xmm3 );
+               C(i+1UL,j+1UL) += sum( xmm4 );
+               C(i+2UL,j    ) += sum( xmm5 );
+               C(i+2UL,j+1UL) += sum( xmm6 );
+               C(i+3UL,j    ) += sum( xmm7 );
+               C(i+3UL,j+1UL) += sum( xmm8 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL);
+                  C(i+3UL,j    ) += A(i+3UL,k) * B(k,j    );
+                  C(i+3UL,j+1UL) += A(i+3UL,k) * B(k,j+1UL);
+               }
             }
-
-            C(i    ,j    ) += sum( xmm1 );
-            C(i    ,j+1UL) += sum( xmm2 );
-            C(i+1UL,j    ) += sum( xmm3 );
-            C(i+1UL,j+1UL) += sum( xmm4 );
-            C(i+2UL,j    ) += sum( xmm5 );
-            C(i+2UL,j+1UL) += sum( xmm6 );
-            C(i+3UL,j    ) += sum( xmm7 );
-            C(i+3UL,j+1UL) += sum( xmm8 );
-
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) += A(i    ,k) * B(k,j    );
-               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
-               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
-               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
-               C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    );
-               C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL);
-               C(i+3UL,j    ) += A(i+3UL,k) * B(k,j    );
-               C(i+3UL,j+1UL) += A(i+3UL,k) * B(k,j+1UL);
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL);
+                  C(i+3UL,j    ) += A(i+3UL,k) * B(k,j    );
+                  C(i+3UL,j+1UL) += A(i+3UL,k) * B(k,j+1UL);
+               }
             }
          }
 
@@ -2665,27 +4011,254 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType b1( B.load(k,j) );
-               xmm1 += A.load(i    ,k) * b1;
-               xmm2 += A.load(i+1UL,k) * b1;
-               xmm3 += A.load(i+2UL,k) * b1;
-               xmm4 += A.load(i+3UL,k) * b1;
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+               SIMDType xmm3( A.load(i+2UL,k) * b1 );
+               SIMDType xmm4( A.load(i+3UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+                  xmm3 += A.load(i+2UL,k) * b1;
+                  xmm4 += A.load(i+3UL,k) * b1;
+               }
+
+               C(i    ,j) += sum( xmm1 );
+               C(i+1UL,j) += sum( xmm2 );
+               C(i+2UL,j) += sum( xmm3 );
+               C(i+3UL,j) += sum( xmm4 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j);
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j);
+                  C(i+2UL,j) += A(i+2UL,k) * B(k,j);
+                  C(i+3UL,j) += A(i+3UL,k) * B(k,j);
+               }
             }
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j);
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j);
+                  C(i+2UL,j) += A(i+2UL,k) * B(k,j);
+                  C(i+3UL,j) += A(i+3UL,k) * B(k,j);
+               }
+            }
+         }
+      }
 
-            C(i    ,j) += sum( xmm1 );
-            C(i+1UL,j) += sum( xmm2 );
-            C(i+2UL,j) += sum( xmm3 );
-            C(i+3UL,j) += sum( xmm4 );
+      for( ; !LOW && !UPP && (i+3UL) <= M; i+=3UL )
+      {
+         size_t j( 0UL );
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j) += A(i    ,k) * B(k,j);
-               C(i+1UL,j) += A(i+1UL,k) * B(k,j);
-               C(i+2UL,j) += A(i+2UL,k) * B(k,j);
-               C(i+3UL,j) += A(i+3UL,k) * B(k,j);
+         for( ; (j+3UL) <= N; j+=3UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType b3( B.load(k,j+2UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a1 * b3 );
+               SIMDType xmm4( a2 * b1 );
+               SIMDType xmm5( a2 * b2 );
+               SIMDType xmm6( a2 * b3 );
+               SIMDType xmm7( a3 * b1 );
+               SIMDType xmm8( a3 * b2 );
+               SIMDType xmm9( a3 * b3 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  b3 = B.load(k,j+2UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a1 * b3;
+                  xmm4 += a2 * b1;
+                  xmm5 += a2 * b2;
+                  xmm6 += a2 * b3;
+                  xmm7 += a3 * b1;
+                  xmm8 += a3 * b2;
+                  xmm9 += a3 * b3;
+               }
+
+               C(i    ,j    ) += sum( xmm1 );
+               C(i    ,j+1UL) += sum( xmm2 );
+               C(i    ,j+2UL) += sum( xmm3 );
+               C(i+1UL,j    ) += sum( xmm4 );
+               C(i+1UL,j+1UL) += sum( xmm5 );
+               C(i+1UL,j+2UL) += sum( xmm6 );
+               C(i+2UL,j    ) += sum( xmm7 );
+               C(i+2UL,j+1UL) += sum( xmm8 );
+               C(i+2UL,j+2UL) += sum( xmm9 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+                  C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL);
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL);
+                  C(i+2UL,j+2UL) += A(i+2UL,k) * B(k,j+2UL);
+               }
+            }
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+                  C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL);
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL);
+                  C(i+2UL,j+2UL) += A(i+2UL,k) * B(k,j+2UL);
+               }
+            }
+         }
+
+         for( ; (j+2UL) <= N; j+=2UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+               SIMDType xmm5( a3 * b1 );
+               SIMDType xmm6( a3 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+                  xmm5 += a3 * b1;
+                  xmm6 += a3 * b2;
+               }
+
+               C(i    ,j    ) += sum( xmm1 );
+               C(i    ,j+1UL) += sum( xmm2 );
+               C(i+1UL,j    ) += sum( xmm3 );
+               C(i+1UL,j+1UL) += sum( xmm4 );
+               C(i+2UL,j    ) += sum( xmm5 );
+               C(i+2UL,j+1UL) += sum( xmm6 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL);
+               }
+            }
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL);
+               }
+            }
+         }
+
+         if( j < N )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+               SIMDType xmm3( A.load(i+2UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+                  xmm3 += A.load(i+2UL,k) * b1;
+               }
+
+               C(i    ,j) += sum( xmm1 );
+               C(i+1UL,j) += sum( xmm2 );
+               C(i+2UL,j) += sum( xmm3 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j);
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j);
+                  C(i+2UL,j) += A(i+2UL,k) * B(k,j);
+               }
+            }
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j);
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j);
+                  C(i+2UL,j) += A(i+2UL,k) * B(k,j);
+               }
             }
          }
       }
@@ -2707,30 +4280,50 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a2 * b1;
-               xmm4 += a2 * b2;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+               }
+
+               C(i    ,j    ) += sum( xmm1 );
+               C(i    ,j+1UL) += sum( xmm2 );
+               C(i+1UL,j    ) += sum( xmm3 );
+               C(i+1UL,j+1UL) += sum( xmm4 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+               }
             }
-
-            C(i    ,j    ) += sum( xmm1 );
-            C(i    ,j+1UL) += sum( xmm2 );
-            C(i+1UL,j    ) += sum( xmm3 );
-            C(i+1UL,j+1UL) += sum( xmm4 );
-
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) += A(i    ,k) * B(k,j    );
-               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
-               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
-               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL);
+               }
             }
          }
 
@@ -2744,21 +4337,34 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType b1( B.load(k,j) );
-               xmm1 += A.load(i    ,k) * b1;
-               xmm2 += A.load(i+1UL,k) * b1;
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+               }
+
+               C(i    ,j) += sum( xmm1 );
+               C(i+1UL,j) += sum( xmm2 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j);
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j);
+               }
             }
-
-            C(i    ,j) += sum( xmm1 );
-            C(i+1UL,j) += sum( xmm2 );
-
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j) += A(i    ,k) * B(k,j);
-               C(i+1UL,j) += A(i+1UL,k) * B(k,j);
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j);
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j);
+               }
             }
          }
       }
@@ -2778,21 +4384,34 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i,k) );
-               xmm1 += a1 * B.load(k,j    );
-               xmm2 += a1 * B.load(k,j+1UL);
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i,k) );
+               SIMDType xmm1( a1 * B.load(k,j    ) );
+               SIMDType xmm2( a1 * B.load(k,j+1UL) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i,k);
+                  xmm1 += a1 * B.load(k,j    );
+                  xmm2 += a1 * B.load(k,j+1UL);
+               }
+
+               C(i,j    ) += sum( xmm1 );
+               C(i,j+1UL) += sum( xmm2 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i,j    ) += A(i,k) * B(k,j    );
+                  C(i,j+1UL) += A(i,k) * B(k,j+1UL);
+               }
             }
-
-            C(i,j    ) += sum( xmm1 );
-            C(i,j+1UL) += sum( xmm2 );
-
-            for( ; remainder && k<kend; ++k ) {
-               C(i,j    ) += A(i,k) * B(k,j    );
-               C(i,j+1UL) += A(i,k) * B(k,j+1UL);
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i,j    ) += A(i,k) * B(k,j    );
+                  C(i,j+1UL) += A(i,k) * B(k,j+1UL);
+               }
             }
          }
 
@@ -2805,17 +4424,27 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
             BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 += A.load(i,k) * B.load(k,j);
+            if( k < kpos )
+            {
+               SIMDType xmm1( A.load(i,k) * B.load(k,j) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  xmm1 += A.load(i,k) * B.load(k,j);
+               }
+
+               C(i,j) += sum( xmm1 );
+
+               for( ; remainder && k<K; ++k ) {
+                  C(i,j) += A(i,k) * B(k,j);
+               }
             }
-
-            C(i,j) += sum( xmm1 );
-
-            for( ; remainder && k<K; ++k ) {
-               C(i,j) += A(i,k) * B(k,j);
+            else
+            {
+               for( ; k<K; ++k ) {
+                  C(i,j) += A(i,k) * B(k,j);
+               }
             }
          }
       }
@@ -3470,7 +5099,218 @@ class DMatTDMatMultExpr
 
       size_t i( 0UL );
 
-      for( ; (i+2UL) <= M; i+=2UL )
+      for( ; !( LOW && UPP ) && (i+3UL) <= M; i+=3UL )
+      {
+         const size_t jend( LOW ? i+3UL : N );
+         size_t j( UPP ? i : 0UL );
+
+         for( ; (j+3UL) <= jend; j+=3UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType b3( B.load(k,j+2UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a1 * b3 );
+               SIMDType xmm4( a2 * b1 );
+               SIMDType xmm5( a2 * b2 );
+               SIMDType xmm6( a2 * b3 );
+               SIMDType xmm7( a3 * b1 );
+               SIMDType xmm8( a3 * b2 );
+               SIMDType xmm9( a3 * b3 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  b3 = B.load(k,j+2UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a1 * b3;
+                  xmm4 += a2 * b1;
+                  xmm5 += a2 * b2;
+                  xmm6 += a2 * b3;
+                  xmm7 += a3 * b1;
+                  xmm8 += a3 * b2;
+                  xmm9 += a3 * b3;
+               }
+
+               C(i    ,j    ) -= sum( xmm1 );
+               C(i    ,j+1UL) -= sum( xmm2 );
+               C(i    ,j+2UL) -= sum( xmm3 );
+               C(i+1UL,j    ) -= sum( xmm4 );
+               C(i+1UL,j+1UL) -= sum( xmm5 );
+               C(i+1UL,j+2UL) -= sum( xmm6 );
+               C(i+2UL,j    ) -= sum( xmm7 );
+               C(i+2UL,j+1UL) -= sum( xmm8 );
+               C(i+2UL,j+2UL) -= sum( xmm9 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
+                  C(i    ,j+2UL) -= A(i    ,k) * B(k,j+2UL);
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
+                  C(i+1UL,j+2UL) -= A(i+1UL,k) * B(k,j+2UL);
+                  C(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) -= A(i+2UL,k) * B(k,j+1UL);
+                  C(i+2UL,j+2UL) -= A(i+2UL,k) * B(k,j+2UL);
+               }
+            }
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
+                  C(i    ,j+2UL) -= A(i    ,k) * B(k,j+2UL);
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
+                  C(i+1UL,j+2UL) -= A(i+1UL,k) * B(k,j+2UL);
+                  C(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) -= A(i+2UL,k) * B(k,j+1UL);
+                  C(i+2UL,j+2UL) -= A(i+2UL,k) * B(k,j+2UL);
+               }
+            }
+         }
+
+         for( ; (j+2UL) <= jend; j+=2UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+               SIMDType xmm5( a3 * b1 );
+               SIMDType xmm6( a3 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+                  xmm5 += a3 * b1;
+                  xmm6 += a3 * b2;
+               }
+
+               C(i    ,j    ) -= sum( xmm1 );
+               C(i    ,j+1UL) -= sum( xmm2 );
+               C(i+1UL,j    ) -= sum( xmm3 );
+               C(i+1UL,j+1UL) -= sum( xmm4 );
+               C(i+2UL,j    ) -= sum( xmm5 );
+               C(i+2UL,j+1UL) -= sum( xmm6 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
+                  C(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) -= A(i+2UL,k) * B(k,j+1UL);
+               }
+            }
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
+                  C(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) -= A(i+2UL,k) * B(k,j+1UL);
+               }
+            }
+         }
+
+         if( j < jend )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+               SIMDType xmm3( A.load(i+2UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+                  xmm3 += A.load(i+2UL,k) * b1;
+               }
+
+               C(i    ,j) -= sum( xmm1 );
+               C(i+1UL,j) -= sum( xmm2 );
+               C(i+2UL,j) -= sum( xmm3 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) -= A(i    ,k) * B(k,j);
+                  C(i+1UL,j) -= A(i+1UL,k) * B(k,j);
+                  C(i+2UL,j) -= A(i+2UL,k) * B(k,j);
+               }
+            }
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j) -= A(i    ,k) * B(k,j);
+                  C(i+1UL,j) -= A(i+1UL,k) * B(k,j);
+                  C(i+2UL,j) -= A(i+2UL,k) * B(k,j);
+               }
+            }
+         }
+      }
+
+      for( ; !( LOW && UPP ) && (i+2UL) <= M; i+=2UL )
       {
          const size_t jend( LOW ? i+2UL : N );
          size_t j( UPP ? i : 0UL );
@@ -3487,44 +5327,74 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               const SIMDType b3( B.load(k,j+2UL) );
-               const SIMDType b4( B.load(k,j+3UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a1 * b3;
-               xmm4 += a1 * b4;
-               xmm5 += a2 * b1;
-               xmm6 += a2 * b2;
-               xmm7 += a2 * b3;
-               xmm8 += a2 * b4;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType b3( B.load(k,j+2UL) );
+               SIMDType b4( B.load(k,j+3UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a1 * b3 );
+               SIMDType xmm4( a1 * b4 );
+               SIMDType xmm5( a2 * b1 );
+               SIMDType xmm6( a2 * b2 );
+               SIMDType xmm7( a2 * b3 );
+               SIMDType xmm8( a2 * b4 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  b3 = B.load(k,j+2UL);
+                  b4 = B.load(k,j+3UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a1 * b3;
+                  xmm4 += a1 * b4;
+                  xmm5 += a2 * b1;
+                  xmm6 += a2 * b2;
+                  xmm7 += a2 * b3;
+                  xmm8 += a2 * b4;
+               }
+
+               C(i    ,j    ) -= sum( xmm1 );
+               C(i    ,j+1UL) -= sum( xmm2 );
+               C(i    ,j+2UL) -= sum( xmm3 );
+               C(i    ,j+3UL) -= sum( xmm4 );
+               C(i+1UL,j    ) -= sum( xmm5 );
+               C(i+1UL,j+1UL) -= sum( xmm6 );
+               C(i+1UL,j+2UL) -= sum( xmm7 );
+               C(i+1UL,j+3UL) -= sum( xmm8 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
+                  C(i    ,j+2UL) -= A(i    ,k) * B(k,j+2UL);
+                  C(i    ,j+3UL) -= A(i    ,k) * B(k,j+3UL);
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
+                  C(i+1UL,j+2UL) -= A(i+1UL,k) * B(k,j+2UL);
+                  C(i+1UL,j+3UL) -= A(i+1UL,k) * B(k,j+3UL);
+               }
             }
-
-            C(i    ,j    ) -= sum( xmm1 );
-            C(i    ,j+1UL) -= sum( xmm2 );
-            C(i    ,j+2UL) -= sum( xmm3 );
-            C(i    ,j+3UL) -= sum( xmm4 );
-            C(i+1UL,j    ) -= sum( xmm5 );
-            C(i+1UL,j+1UL) -= sum( xmm6 );
-            C(i+1UL,j+2UL) -= sum( xmm7 );
-            C(i+1UL,j+3UL) -= sum( xmm8 );
-
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) -= A(i    ,k) * B(k,j    );
-               C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
-               C(i    ,j+2UL) -= A(i    ,k) * B(k,j+2UL);
-               C(i    ,j+3UL) -= A(i    ,k) * B(k,j+3UL);
-               C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
-               C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
-               C(i+1UL,j+2UL) -= A(i+1UL,k) * B(k,j+2UL);
-               C(i+1UL,j+3UL) -= A(i+1UL,k) * B(k,j+3UL);
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
+                  C(i    ,j+2UL) -= A(i    ,k) * B(k,j+2UL);
+                  C(i    ,j+3UL) -= A(i    ,k) * B(k,j+3UL);
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
+                  C(i+1UL,j+2UL) -= A(i+1UL,k) * B(k,j+2UL);
+                  C(i+1UL,j+3UL) -= A(i+1UL,k) * B(k,j+3UL);
+               }
             }
          }
 
@@ -3540,30 +5410,50 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a2 * b1;
-               xmm4 += a2 * b2;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+               }
+
+               C(i    ,j    ) -= sum( xmm1 );
+               C(i    ,j+1UL) -= sum( xmm2 );
+               C(i+1UL,j    ) -= sum( xmm3 );
+               C(i+1UL,j+1UL) -= sum( xmm4 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
+               }
             }
-
-            C(i    ,j    ) -= sum( xmm1 );
-            C(i    ,j+1UL) -= sum( xmm2 );
-            C(i+1UL,j    ) -= sum( xmm3 );
-            C(i+1UL,j+1UL) -= sum( xmm4 );
-
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) -= A(i    ,k) * B(k,j    );
-               C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
-               C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
-               C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
+               }
             }
          }
 
@@ -3577,21 +5467,34 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType b1( B.load(k,j) );
-               xmm1 += A.load(i    ,k) * b1;
-               xmm2 += A.load(i+1UL,k) * b1;
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+               }
+
+               C(i    ,j) -= sum( xmm1 );
+               C(i+1UL,j) -= sum( xmm2 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) -= A(i    ,k) * B(k,j);
+                  C(i+1UL,j) -= A(i+1UL,k) * B(k,j);
+               }
             }
-
-            C(i    ,j) -= sum( xmm1 );
-            C(i+1UL,j) -= sum( xmm2 );
-
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j) -= A(i    ,k) * B(k,j);
-               C(i+1UL,j) -= A(i+1UL,k) * B(k,j);
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j) -= A(i    ,k) * B(k,j);
+                  C(i+1UL,j) -= A(i+1UL,k) * B(k,j);
+               }
             }
          }
       }
@@ -3611,27 +5514,44 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i,k) );
-               xmm1 += a1 * B.load(k,j    );
-               xmm2 += a1 * B.load(k,j+1UL);
-               xmm3 += a1 * B.load(k,j+2UL);
-               xmm4 += a1 * B.load(k,j+3UL);
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i,k) );
+               SIMDType xmm1( a1 * B.load(k,j    ) );
+               SIMDType xmm2( a1 * B.load(k,j+1UL) );
+               SIMDType xmm3( a1 * B.load(k,j+2UL) );
+               SIMDType xmm4( a1 * B.load(k,j+3UL) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i,k);
+                  xmm1 += a1 * B.load(k,j    );
+                  xmm2 += a1 * B.load(k,j+1UL);
+                  xmm3 += a1 * B.load(k,j+2UL);
+                  xmm4 += a1 * B.load(k,j+3UL);
+               }
+
+               C(i,j    ) -= sum( xmm1 );
+               C(i,j+1UL) -= sum( xmm2 );
+               C(i,j+2UL) -= sum( xmm3 );
+               C(i,j+3UL) -= sum( xmm4 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i,j    ) -= A(i,k) * B(k,j    );
+                  C(i,j+1UL) -= A(i,k) * B(k,j+1UL);
+                  C(i,j+2UL) -= A(i,k) * B(k,j+2UL);
+                  C(i,j+3UL) -= A(i,k) * B(k,j+3UL);
+               }
             }
-
-            C(i,j    ) -= sum( xmm1 );
-            C(i,j+1UL) -= sum( xmm2 );
-            C(i,j+2UL) -= sum( xmm3 );
-            C(i,j+3UL) -= sum( xmm4 );
-
-            for( ; remainder && k<kend; ++k ) {
-               C(i,j    ) -= A(i,k) * B(k,j    );
-               C(i,j+1UL) -= A(i,k) * B(k,j+1UL);
-               C(i,j+2UL) -= A(i,k) * B(k,j+2UL);
-               C(i,j+3UL) -= A(i,k) * B(k,j+3UL);
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i,j    ) -= A(i,k) * B(k,j    );
+                  C(i,j+1UL) -= A(i,k) * B(k,j+1UL);
+                  C(i,j+2UL) -= A(i,k) * B(k,j+2UL);
+                  C(i,j+3UL) -= A(i,k) * B(k,j+3UL);
+               }
             }
          }
 
@@ -3645,21 +5565,34 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i,k) );
-               xmm1 += a1 * B.load(k,j    );
-               xmm2 += a1 * B.load(k,j+1UL);
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i,k) );
+               SIMDType xmm1( a1 * B.load(k,j    ) );
+               SIMDType xmm2( a1 * B.load(k,j+1UL) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i,k);
+                  xmm1 += a1 * B.load(k,j    );
+                  xmm2 += a1 * B.load(k,j+1UL);
+               }
+
+               C(i,j    ) -= sum( xmm1 );
+               C(i,j+1UL) -= sum( xmm2 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i,j    ) -= A(i,k) * B(k,j    );
+                  C(i,j+1UL) -= A(i,k) * B(k,j+1UL);
+               }
             }
-
-            C(i,j    ) -= sum( xmm1 );
-            C(i,j+1UL) -= sum( xmm2 );
-
-            for( ; remainder && k<kend; ++k ) {
-               C(i,j    ) -= A(i,k) * B(k,j    );
-               C(i,j+1UL) -= A(i,k) * B(k,j+1UL);
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i,j    ) -= A(i,k) * B(k,j    );
+                  C(i,j+1UL) -= A(i,k) * B(k,j+1UL);
+               }
             }
          }
 
@@ -3672,17 +5605,27 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
             BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 += A.load(i,k) * B.load(k,j);
+            if( k < kpos )
+            {
+               SIMDType xmm1( A.load(i,k) * B.load(k,j) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  xmm1 += A.load(i,k) * B.load(k,j);
+               }
+
+               C(i,j) -= sum( xmm1 );
+
+               for( ; remainder && k<K; ++k ) {
+                  C(i,j) -= A(i,k) * B(k,j);
+               }
             }
-
-            C(i,j) -= sum( xmm1 );
-
-            for( ; remainder && k<K; ++k ) {
-               C(i,j) -= A(i,k) * B(k,j);
+            else
+            {
+               for( ; k<K; ++k ) {
+                  C(i,j) -= A(i,k) * B(k,j);
+               }
             }
          }
       }
@@ -3737,44 +5680,74 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType a3( A.load(i+2UL,k) );
-               const SIMDType a4( A.load(i+3UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a2 * b1;
-               xmm4 += a2 * b2;
-               xmm5 += a3 * b1;
-               xmm6 += a3 * b2;
-               xmm7 += a4 * b1;
-               xmm8 += a4 * b2;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType a4( A.load(i+3UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+               SIMDType xmm5( a3 * b1 );
+               SIMDType xmm6( a3 * b2 );
+               SIMDType xmm7( a4 * b1 );
+               SIMDType xmm8( a4 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  a4 = A.load(i+3UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+                  xmm5 += a3 * b1;
+                  xmm6 += a3 * b2;
+                  xmm7 += a4 * b1;
+                  xmm8 += a4 * b2;
+               }
+
+               C(i    ,j    ) -= sum( xmm1 );
+               C(i    ,j+1UL) -= sum( xmm2 );
+               C(i+1UL,j    ) -= sum( xmm3 );
+               C(i+1UL,j+1UL) -= sum( xmm4 );
+               C(i+2UL,j    ) -= sum( xmm5 );
+               C(i+2UL,j+1UL) -= sum( xmm6 );
+               C(i+3UL,j    ) -= sum( xmm7 );
+               C(i+3UL,j+1UL) -= sum( xmm8 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
+                  C(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) -= A(i+2UL,k) * B(k,j+1UL);
+                  C(i+3UL,j    ) -= A(i+3UL,k) * B(k,j    );
+                  C(i+3UL,j+1UL) -= A(i+3UL,k) * B(k,j+1UL);
+               }
             }
-
-            C(i    ,j    ) -= sum( xmm1 );
-            C(i    ,j+1UL) -= sum( xmm2 );
-            C(i+1UL,j    ) -= sum( xmm3 );
-            C(i+1UL,j+1UL) -= sum( xmm4 );
-            C(i+2UL,j    ) -= sum( xmm5 );
-            C(i+2UL,j+1UL) -= sum( xmm6 );
-            C(i+3UL,j    ) -= sum( xmm7 );
-            C(i+3UL,j+1UL) -= sum( xmm8 );
-
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) -= A(i    ,k) * B(k,j    );
-               C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
-               C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
-               C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
-               C(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    );
-               C(i+2UL,j+1UL) -= A(i+2UL,k) * B(k,j+1UL);
-               C(i+3UL,j    ) -= A(i+3UL,k) * B(k,j    );
-               C(i+3UL,j+1UL) -= A(i+3UL,k) * B(k,j+1UL);
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
+                  C(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) -= A(i+2UL,k) * B(k,j+1UL);
+                  C(i+3UL,j    ) -= A(i+3UL,k) * B(k,j    );
+                  C(i+3UL,j+1UL) -= A(i+3UL,k) * B(k,j+1UL);
+               }
             }
          }
 
@@ -3788,27 +5761,254 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType b1( B.load(k,j) );
-               xmm1 += A.load(i    ,k) * b1;
-               xmm2 += A.load(i+1UL,k) * b1;
-               xmm3 += A.load(i+2UL,k) * b1;
-               xmm4 += A.load(i+3UL,k) * b1;
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+               SIMDType xmm3( A.load(i+2UL,k) * b1 );
+               SIMDType xmm4( A.load(i+3UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+                  xmm3 += A.load(i+2UL,k) * b1;
+                  xmm4 += A.load(i+3UL,k) * b1;
+               }
+
+               C(i    ,j) -= sum( xmm1 );
+               C(i+1UL,j) -= sum( xmm2 );
+               C(i+2UL,j) -= sum( xmm3 );
+               C(i+3UL,j) -= sum( xmm4 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) -= A(i    ,k) * B(k,j);
+                  C(i+1UL,j) -= A(i+1UL,k) * B(k,j);
+                  C(i+2UL,j) -= A(i+2UL,k) * B(k,j);
+                  C(i+3UL,j) -= A(i+3UL,k) * B(k,j);
+               }
             }
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j) -= A(i    ,k) * B(k,j);
+                  C(i+1UL,j) -= A(i+1UL,k) * B(k,j);
+                  C(i+2UL,j) -= A(i+2UL,k) * B(k,j);
+                  C(i+3UL,j) -= A(i+3UL,k) * B(k,j);
+               }
+            }
+         }
+      }
 
-            C(i    ,j) -= sum( xmm1 );
-            C(i+1UL,j) -= sum( xmm2 );
-            C(i+2UL,j) -= sum( xmm3 );
-            C(i+3UL,j) -= sum( xmm4 );
+      for( ; !LOW && !UPP && (i+3UL) <= M; i+=3UL )
+      {
+         size_t j( 0UL );
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) -= A(i    ,k) * B(k,j    );
-               C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
-               C(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    );
-               C(i+3UL,j    ) -= A(i+3UL,k) * B(k,j    );
+         for( ; (j+3UL) <= N; j+=3UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType b3( B.load(k,j+2UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a1 * b3 );
+               SIMDType xmm4( a2 * b1 );
+               SIMDType xmm5( a2 * b2 );
+               SIMDType xmm6( a2 * b3 );
+               SIMDType xmm7( a3 * b1 );
+               SIMDType xmm8( a3 * b2 );
+               SIMDType xmm9( a3 * b3 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  b3 = B.load(k,j+2UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a1 * b3;
+                  xmm4 += a2 * b1;
+                  xmm5 += a2 * b2;
+                  xmm6 += a2 * b3;
+                  xmm7 += a3 * b1;
+                  xmm8 += a3 * b2;
+                  xmm9 += a3 * b3;
+               }
+
+               C(i    ,j    ) -= sum( xmm1 );
+               C(i    ,j+1UL) -= sum( xmm2 );
+               C(i    ,j+2UL) -= sum( xmm3 );
+               C(i+1UL,j    ) -= sum( xmm4 );
+               C(i+1UL,j+1UL) -= sum( xmm5 );
+               C(i+1UL,j+2UL) -= sum( xmm6 );
+               C(i+2UL,j    ) -= sum( xmm7 );
+               C(i+2UL,j+1UL) -= sum( xmm8 );
+               C(i+2UL,j+2UL) -= sum( xmm9 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
+                  C(i    ,j+2UL) -= A(i    ,k) * B(k,j+2UL);
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
+                  C(i+1UL,j+2UL) -= A(i+1UL,k) * B(k,j+2UL);
+                  C(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) -= A(i+2UL,k) * B(k,j+1UL);
+                  C(i+2UL,j+2UL) -= A(i+2UL,k) * B(k,j+2UL);
+               }
+            }
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
+                  C(i    ,j+2UL) -= A(i    ,k) * B(k,j+2UL);
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
+                  C(i+1UL,j+2UL) -= A(i+1UL,k) * B(k,j+2UL);
+                  C(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) -= A(i+2UL,k) * B(k,j+1UL);
+                  C(i+2UL,j+2UL) -= A(i+2UL,k) * B(k,j+2UL);
+               }
+            }
+         }
+
+         for( ; (j+2UL) <= N; j+=2UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+               SIMDType xmm5( a3 * b1 );
+               SIMDType xmm6( a3 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+                  xmm5 += a3 * b1;
+                  xmm6 += a3 * b2;
+               }
+
+               C(i    ,j    ) -= sum( xmm1 );
+               C(i    ,j+1UL) -= sum( xmm2 );
+               C(i+1UL,j    ) -= sum( xmm3 );
+               C(i+1UL,j+1UL) -= sum( xmm4 );
+               C(i+2UL,j    ) -= sum( xmm5 );
+               C(i+2UL,j+1UL) -= sum( xmm6 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
+                  C(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) -= A(i+2UL,k) * B(k,j+1UL);
+               }
+            }
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
+                  C(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    );
+                  C(i+2UL,j+1UL) -= A(i+2UL,k) * B(k,j+1UL);
+               }
+            }
+         }
+
+         if( j < N )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+               SIMDType xmm3( A.load(i+2UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+                  xmm3 += A.load(i+2UL,k) * b1;
+               }
+
+               C(i    ,j) -= sum( xmm1 );
+               C(i+1UL,j) -= sum( xmm2 );
+               C(i+2UL,j) -= sum( xmm3 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) -= A(i    ,k) * B(k,j);
+                  C(i+1UL,j) -= A(i+1UL,k) * B(k,j);
+                  C(i+2UL,j) -= A(i+2UL,k) * B(k,j);
+               }
+            }
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j) -= A(i    ,k) * B(k,j);
+                  C(i+1UL,j) -= A(i+1UL,k) * B(k,j);
+                  C(i+2UL,j) -= A(i+2UL,k) * B(k,j);
+               }
             }
          }
       }
@@ -3830,30 +6030,50 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a2 * b1;
-               xmm4 += a2 * b2;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+               }
+
+               C(i    ,j    ) -= sum( xmm1 );
+               C(i    ,j+1UL) -= sum( xmm2 );
+               C(i+1UL,j    ) -= sum( xmm3 );
+               C(i+1UL,j+1UL) -= sum( xmm4 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
+               }
             }
-
-            C(i    ,j    ) -= sum( xmm1 );
-            C(i    ,j+1UL) -= sum( xmm2 );
-            C(i+1UL,j    ) -= sum( xmm3 );
-            C(i+1UL,j+1UL) -= sum( xmm4 );
-
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) -= A(i    ,k) * B(k,j    );
-               C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
-               C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
-               C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    );
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL);
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    );
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL);
+               }
             }
          }
 
@@ -3867,21 +6087,34 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType b1( B.load(k,j) );
-               xmm1 += A.load(i    ,k) * b1;
-               xmm2 += A.load(i+1UL,k) * b1;
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+               }
+
+               C(i    ,j) -= sum( xmm1 );
+               C(i+1UL,j) -= sum( xmm2 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) -= A(i    ,k) * B(k,j);
+                  C(i+1UL,j) -= A(i+1UL,k) * B(k,j);
+               }
             }
-
-            C(i    ,j) -= sum( xmm1 );
-            C(i+1UL,j) -= sum( xmm2 );
-
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j) -= A(i    ,k) * B(k,j);
-               C(i+1UL,j) -= A(i+1UL,k) * B(k,j);
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i    ,j) -= A(i    ,k) * B(k,j);
+                  C(i+1UL,j) -= A(i+1UL,k) * B(k,j);
+               }
             }
          }
       }
@@ -3901,21 +6134,34 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i,k) );
-               xmm1 += a1 * B.load(k,j    );
-               xmm2 += a1 * B.load(k,j+1UL);
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i,k) );
+               SIMDType xmm1( a1 * B.load(k,j    ) );
+               SIMDType xmm2( a1 * B.load(k,j+1UL) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i,k);
+                  xmm1 += a1 * B.load(k,j    );
+                  xmm2 += a1 * B.load(k,j+1UL);
+               }
+
+               C(i,j    ) -= sum( xmm1 );
+               C(i,j+1UL) -= sum( xmm2 );
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i,j    ) -= A(i,k) * B(k,j    );
+                  C(i,j+1UL) -= A(i,k) * B(k,j+1UL);
+               }
             }
-
-            C(i,j    ) -= sum( xmm1 );
-            C(i,j+1UL) -= sum( xmm2 );
-
-            for( ; remainder && k<kend; ++k ) {
-               C(i,j    ) -= A(i,k) * B(k,j    );
-               C(i,j+1UL) -= A(i,k) * B(k,j+1UL);
+            else
+            {
+               for( ; k<kend; ++k ) {
+                  C(i,j    ) -= A(i,k) * B(k,j    );
+                  C(i,j+1UL) -= A(i,k) * B(k,j+1UL);
+               }
             }
          }
 
@@ -3928,17 +6174,27 @@ class DMatTDMatMultExpr
             const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
             BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 += A.load(i,k) * B.load(k,j);
+            if( k < kpos )
+            {
+               SIMDType xmm1( A.load(i,k) * B.load(k,j) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  xmm1 += A.load(i,k) * B.load(k,j);
+               }
+
+               C(i,j) -= sum( xmm1 );
+
+               for( ; remainder && k<K; ++k ) {
+                  C(i,j) -= A(i,k) * B(k,j);
+               }
             }
-
-            C(i,j) -= sum( xmm1 );
-
-            for( ; remainder && k<K; ++k ) {
-               C(i,j) -= A(i,k) * B(k,j);
+            else
+            {
+               for( ; k<K; ++k ) {
+                  C(i,j) -= A(i,k) * B(k,j);
+               }
             }
          }
       }
@@ -5287,6 +7543,311 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
 
       size_t i( 0UL );
 
+      for( ; !( LOW && UPP ) && (i+3UL) <= M; i+=3UL )
+      {
+         const size_t jend( LOW ? i+3UL : N );
+         size_t j( 0UL );
+
+         if( SYM || HERM ) {
+            for( ; j<i; ++j ) {
+               C(i    ,j) = HERM ? conj( C(j,i    ) ) : C(j,i    );
+               C(i+1UL,j) = HERM ? conj( C(j,i+1UL) ) : C(j,i+1UL);
+               C(i+2UL,j) = HERM ? conj( C(j,i+2UL) ) : C(j,i+2UL);
+            }
+         }
+         else if( UPP ) {
+            for( ; j<i; ++j ) {
+               reset( C(i    ,j) );
+               reset( C(i+1UL,j) );
+               reset( C(i+2UL,j) );
+            }
+         }
+
+         for( ; (j+3UL) <= jend; j+=3UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType b3( B.load(k,j+2UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a1 * b3 );
+               SIMDType xmm4( a2 * b1 );
+               SIMDType xmm5( a2 * b2 );
+               SIMDType xmm6( a2 * b3 );
+               SIMDType xmm7( a3 * b1 );
+               SIMDType xmm8( a3 * b2 );
+               SIMDType xmm9( a3 * b3 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  b3 = B.load(k,j+2UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a1 * b3;
+                  xmm4 += a2 * b1;
+                  xmm5 += a2 * b2;
+                  xmm6 += a2 * b3;
+                  xmm7 += a3 * b1;
+                  xmm8 += a3 * b2;
+                  xmm9 += a3 * b3;
+               }
+
+               C(i    ,j    ) = sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) = sum( xmm2 ) * scalar;
+               C(i    ,j+2UL) = sum( xmm3 ) * scalar;
+               C(i+1UL,j    ) = sum( xmm4 ) * scalar;
+               C(i+1UL,j+1UL) = sum( xmm5 ) * scalar;
+               C(i+1UL,j+2UL) = sum( xmm6 ) * scalar;
+               C(i+2UL,j    ) = sum( xmm7 ) * scalar;
+               C(i+2UL,j+1UL) = sum( xmm8 ) * scalar;
+               C(i+2UL,j+2UL) = sum( xmm9 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL) * scalar;
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL) * scalar;
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    ) * scalar;
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL) * scalar;
+                  C(i+2UL,j+2UL) += A(i+2UL,k) * B(k,j+2UL) * scalar;
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i    ,k) * B(k,j+2UL) );
+               ElementType value4( A(i+1UL,k) * B(k,j    ) );
+               ElementType value5( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value6( A(i+1UL,k) * B(k,j+2UL) );
+               ElementType value7( A(i+2UL,k) * B(k,j    ) );
+               ElementType value8( A(i+2UL,k) * B(k,j+1UL) );
+               ElementType value9( A(i+2UL,k) * B(k,j+2UL) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i    ,k) * B(k,j+2UL);
+                  value4 += A(i+1UL,k) * B(k,j    );
+                  value5 += A(i+1UL,k) * B(k,j+1UL);
+                  value6 += A(i+1UL,k) * B(k,j+2UL);
+                  value7 += A(i+2UL,k) * B(k,j    );
+                  value8 += A(i+2UL,k) * B(k,j+1UL);
+                  value9 += A(i+2UL,k) * B(k,j+2UL);
+               }
+
+               C(i    ,j    ) = value1 * scalar;
+               C(i    ,j+1UL) = value2 * scalar;
+               C(i    ,j+2UL) = value3 * scalar;
+               C(i+1UL,j    ) = value4 * scalar;
+               C(i+1UL,j+1UL) = value5 * scalar;
+               C(i+1UL,j+2UL) = value6 * scalar;
+               C(i+2UL,j    ) = value7 * scalar;
+               C(i+2UL,j+1UL) = value8 * scalar;
+               C(i+2UL,j+2UL) = value9 * scalar;
+            }
+            else
+            {
+               reset( C(i    ,j    ) );
+               reset( C(i    ,j+1UL) );
+               reset( C(i    ,j+2UL) );
+               reset( C(i+1UL,j    ) );
+               reset( C(i+1UL,j+1UL) );
+               reset( C(i+1UL,j+2UL) );
+               reset( C(i+2UL,j    ) );
+               reset( C(i+2UL,j+1UL) );
+               reset( C(i+2UL,j+2UL) );
+            }
+         }
+
+         for( ; (j+2UL) <= jend; j+=2UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+               SIMDType xmm5( a3 * b1 );
+               SIMDType xmm6( a3 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+                  xmm5 += a3 * b1;
+                  xmm6 += a3 * b2;
+               }
+
+               C(i    ,j    ) = sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) = sum( xmm2 ) * scalar;
+               C(i+1UL,j    ) = sum( xmm3 ) * scalar;
+               C(i+1UL,j+1UL) = sum( xmm4 ) * scalar;
+               C(i+2UL,j    ) = sum( xmm5 ) * scalar;
+               C(i+2UL,j+1UL) = sum( xmm6 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    ) * scalar;
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL) * scalar;
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i+1UL,k) * B(k,j    ) );
+               ElementType value4( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value5( A(i+2UL,k) * B(k,j    ) );
+               ElementType value6( A(i+2UL,k) * B(k,j+1UL) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i+1UL,k) * B(k,j    );
+                  value4 += A(i+1UL,k) * B(k,j+1UL);
+                  value5 += A(i+2UL,k) * B(k,j    );
+                  value6 += A(i+2UL,k) * B(k,j+1UL);
+               }
+
+               C(i    ,j    ) = value1 * scalar;
+               C(i    ,j+1UL) = value2 * scalar;
+               C(i+1UL,j    ) = value3 * scalar;
+               C(i+1UL,j+1UL) = value4 * scalar;
+               C(i+2UL,j    ) = value5 * scalar;
+               C(i+2UL,j+1UL) = value6 * scalar;
+            }
+            else
+            {
+               reset( C(i    ,j    ) );
+               reset( C(i    ,j+1UL) );
+               reset( C(i+1UL,j    ) );
+               reset( C(i+1UL,j+1UL) );
+               reset( C(i+2UL,j    ) );
+               reset( C(i+2UL,j+1UL) );
+            }
+         }
+
+         if( j < jend )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+               SIMDType xmm3( A.load(i+2UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+                  xmm3 += A.load(i+2UL,k) * b1;
+               }
+
+               C(i    ,j) = sum( xmm1 ) * scalar;
+               C(i+1UL,j) = sum( xmm2 ) * scalar;
+               C(i+2UL,j) = sum( xmm3 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
+                  C(i+2UL,j) += A(i+2UL,k) * B(k,j) * scalar;
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j) );
+               ElementType value2( A(i+1UL,k) * B(k,j) );
+               ElementType value3( A(i+2UL,k) * B(k,j) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j);
+                  value2 += A(i+1UL,k) * B(k,j);
+                  value3 += A(i+2UL,k) * B(k,j);
+               }
+
+               C(i    ,j) = value1 * scalar;
+               C(i+1UL,j) = value2 * scalar;
+               C(i+2UL,j) = value3 * scalar;
+            }
+            else
+            {
+               reset( C(i    ,j) );
+               reset( C(i+1UL,j) );
+               reset( C(i+2UL,j) );
+            }
+
+            if( LOW ) ++j;
+         }
+
+         if( LOW ) {
+            for( ; j<N; ++j ) {
+               reset( C(i    ,j) );
+               reset( C(i+1UL,j) );
+               reset( C(i+2UL,j) );
+            }
+         }
+      }
+
       for( ; !( LOW && UPP ) && (i+2UL) <= M; i+=2UL )
       {
          const size_t jend( LOW ? i+2UL : N );
@@ -5317,44 +7878,103 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               const SIMDType b3( B.load(k,j+2UL) );
-               const SIMDType b4( B.load(k,j+3UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a1 * b3;
-               xmm4 += a1 * b4;
-               xmm5 += a2 * b1;
-               xmm6 += a2 * b2;
-               xmm7 += a2 * b3;
-               xmm8 += a2 * b4;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType b3( B.load(k,j+2UL) );
+               SIMDType b4( B.load(k,j+3UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a1 * b3 );
+               SIMDType xmm4( a1 * b4 );
+               SIMDType xmm5( a2 * b1 );
+               SIMDType xmm6( a2 * b2 );
+               SIMDType xmm7( a2 * b3 );
+               SIMDType xmm8( a2 * b4 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  b3 = B.load(k,j+2UL);
+                  b4 = B.load(k,j+3UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a1 * b3;
+                  xmm4 += a1 * b4;
+                  xmm5 += a2 * b1;
+                  xmm6 += a2 * b2;
+                  xmm7 += a2 * b3;
+                  xmm8 += a2 * b4;
+               }
+
+               C(i    ,j    ) = sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) = sum( xmm2 ) * scalar;
+               C(i    ,j+2UL) = sum( xmm3 ) * scalar;
+               C(i    ,j+3UL) = sum( xmm4 ) * scalar;
+               C(i+1UL,j    ) = sum( xmm5 ) * scalar;
+               C(i+1UL,j+1UL) = sum( xmm6 ) * scalar;
+               C(i+1UL,j+2UL) = sum( xmm7 ) * scalar;
+               C(i+1UL,j+3UL) = sum( xmm8 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL) * scalar;
+                  C(i    ,j+3UL) += A(i    ,k) * B(k,j+3UL) * scalar;
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL) * scalar;
+                  C(i+1UL,j+3UL) += A(i+1UL,k) * B(k,j+3UL) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i    ,k) * B(k,j+2UL) );
+               ElementType value4( A(i    ,k) * B(k,j+3UL) );
+               ElementType value5( A(i+1UL,k) * B(k,j    ) );
+               ElementType value6( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value7( A(i+1UL,k) * B(k,j+2UL) );
+               ElementType value8( A(i+1UL,k) * B(k,j+3UL) );
 
-            C(i    ,j    ) = sum( xmm1 ) * scalar;
-            C(i    ,j+1UL) = sum( xmm2 ) * scalar;
-            C(i    ,j+2UL) = sum( xmm3 ) * scalar;
-            C(i    ,j+3UL) = sum( xmm4 ) * scalar;
-            C(i+1UL,j    ) = sum( xmm5 ) * scalar;
-            C(i+1UL,j+1UL) = sum( xmm6 ) * scalar;
-            C(i+1UL,j+2UL) = sum( xmm7 ) * scalar;
-            C(i+1UL,j+3UL) = sum( xmm8 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i    ,k) * B(k,j+2UL);
+                  value4 += A(i    ,k) * B(k,j+3UL);
+                  value5 += A(i+1UL,k) * B(k,j    );
+                  value6 += A(i+1UL,k) * B(k,j+1UL);
+                  value7 += A(i+1UL,k) * B(k,j+2UL);
+                  value8 += A(i+1UL,k) * B(k,j+3UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
-               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
-               C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL) * scalar;
-               C(i    ,j+3UL) += A(i    ,k) * B(k,j+3UL) * scalar;
-               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
-               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
-               C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL) * scalar;
-               C(i+1UL,j+3UL) += A(i+1UL,k) * B(k,j+3UL) * scalar;
+               C(i    ,j    ) = value1 * scalar;
+               C(i    ,j+1UL) = value2 * scalar;
+               C(i    ,j+2UL) = value3 * scalar;
+               C(i    ,j+3UL) = value4 * scalar;
+               C(i+1UL,j    ) = value5 * scalar;
+               C(i+1UL,j+1UL) = value6 * scalar;
+               C(i+1UL,j+2UL) = value7 * scalar;
+               C(i+1UL,j+3UL) = value8 * scalar;
+            }
+            else
+            {
+               reset( C(i    ,j    ) );
+               reset( C(i    ,j+1UL) );
+               reset( C(i    ,j+2UL) );
+               reset( C(i    ,j+3UL) );
+               reset( C(i+1UL,j    ) );
+               reset( C(i+1UL,j+1UL) );
+               reset( C(i+1UL,j+2UL) );
+               reset( C(i+1UL,j+3UL) );
             }
          }
 
@@ -5370,30 +7990,67 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a2 * b1;
-               xmm4 += a2 * b2;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+               }
+
+               C(i    ,j    ) = sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) = sum( xmm2 ) * scalar;
+               C(i+1UL,j    ) = sum( xmm3 ) * scalar;
+               C(i+1UL,j+1UL) = sum( xmm4 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i+1UL,k) * B(k,j    ) );
+               ElementType value4( A(i+1UL,k) * B(k,j+1UL) );
 
-            C(i    ,j    ) = sum( xmm1 ) * scalar;
-            C(i    ,j+1UL) = sum( xmm2 ) * scalar;
-            C(i+1UL,j    ) = sum( xmm3 ) * scalar;
-            C(i+1UL,j+1UL) = sum( xmm4 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i+1UL,k) * B(k,j    );
+                  value4 += A(i+1UL,k) * B(k,j+1UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
-               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
-               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
-               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+               C(i    ,j    ) = value1 * scalar;
+               C(i    ,j+1UL) = value2 * scalar;
+               C(i+1UL,j    ) = value3 * scalar;
+               C(i+1UL,j+1UL) = value4 * scalar;
+            }
+            else
+            {
+               reset( C(i    ,j    ) );
+               reset( C(i    ,j+1UL) );
+               reset( C(i+1UL,j    ) );
+               reset( C(i+1UL,j+1UL) );
             }
          }
 
@@ -5407,21 +8064,45 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType b1( B.load(k,j) );
-               xmm1 += A.load(i    ,k) * b1;
-               xmm2 += A.load(i+1UL,k) * b1;
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+               }
+
+               C(i    ,j) = sum( xmm1 ) * scalar;
+               C(i+1UL,j) = sum( xmm2 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j) );
+               ElementType value2( A(i+1UL,k) * B(k,j) );
 
-            C(i    ,j) = sum( xmm1 ) * scalar;
-            C(i+1UL,j) = sum( xmm2 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j);
+                  value2 += A(i+1UL,k) * B(k,j);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
-               C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
+               C(i    ,j) = value1 * scalar;
+               C(i+1UL,j) = value2 * scalar;
+            }
+            else
+            {
+               reset( C(i    ,j) );
+               reset( C(i+1UL,j) );
             }
 
             if( LOW ) ++j;
@@ -5461,27 +8142,61 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i,k) );
-               xmm1 += a1 * B.load(k,j    );
-               xmm2 += a1 * B.load(k,j+1UL);
-               xmm3 += a1 * B.load(k,j+2UL);
-               xmm4 += a1 * B.load(k,j+3UL);
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i,k) );
+               SIMDType xmm1( a1 * B.load(k,j    ) );
+               SIMDType xmm2( a1 * B.load(k,j+1UL) );
+               SIMDType xmm3( a1 * B.load(k,j+2UL) );
+               SIMDType xmm4( a1 * B.load(k,j+3UL) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i,k);
+                  xmm1 += a1 * B.load(k,j    );
+                  xmm2 += a1 * B.load(k,j+1UL);
+                  xmm3 += a1 * B.load(k,j+2UL);
+                  xmm4 += a1 * B.load(k,j+3UL);
+               }
+
+               C(i,j    ) = sum( xmm1 ) * scalar;
+               C(i,j+1UL) = sum( xmm2 ) * scalar;
+               C(i,j+2UL) = sum( xmm3 ) * scalar;
+               C(i,j+3UL) = sum( xmm4 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i,j    ) += A(i,k) * B(k,j    ) * scalar;
+                  C(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
+                  C(i,j+2UL) += A(i,k) * B(k,j+2UL) * scalar;
+                  C(i,j+3UL) += A(i,k) * B(k,j+3UL) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i,k) * B(k,j    ) );
+               ElementType value2( A(i,k) * B(k,j+1UL) );
+               ElementType value3( A(i,k) * B(k,j+2UL) );
+               ElementType value4( A(i,k) * B(k,j+3UL) );
 
-            C(i,j    ) = sum( xmm1 ) * scalar;
-            C(i,j+1UL) = sum( xmm2 ) * scalar;
-            C(i,j+2UL) = sum( xmm3 ) * scalar;
-            C(i,j+3UL) = sum( xmm4 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i,k) * B(k,j    );
+                  value2 += A(i,k) * B(k,j+1UL);
+                  value3 += A(i,k) * B(k,j+2UL);
+                  value4 += A(i,k) * B(k,j+3UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i,j    ) += A(i,k) * B(k,j    ) * scalar;
-               C(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
-               C(i,j+2UL) += A(i,k) * B(k,j+2UL) * scalar;
-               C(i,j+3UL) += A(i,k) * B(k,j+3UL) * scalar;
+               C(i,j    ) = value1 * scalar;
+               C(i,j+1UL) = value2 * scalar;
+               C(i,j+2UL) = value3 * scalar;
+               C(i,j+3UL) = value4 * scalar;
+            }
+            else
+            {
+               reset( C(i,j    ) );
+               reset( C(i,j+1UL) );
+               reset( C(i,j+2UL) );
+               reset( C(i,j+3UL) );
             }
          }
 
@@ -5495,21 +8210,45 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i,k) );
-               xmm1 += a1 * B.load(k,j    );
-               xmm2 += a1 * B.load(k,j+1UL);
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i,k) );
+               SIMDType xmm1( a1 * B.load(k,j    ) );
+               SIMDType xmm2( a1 * B.load(k,j+1UL) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i,k);
+                  xmm1 += a1 * B.load(k,j    );
+                  xmm2 += a1 * B.load(k,j+1UL);
+               }
+
+               C(i,j    ) = sum( xmm1 ) * scalar;
+               C(i,j+1UL) = sum( xmm2 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i,j    ) += A(i,k) * B(k,j    ) * scalar;
+                  C(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i,k) * B(k,j    ) );
+               ElementType value2( A(i,k) * B(k,j+1UL) );
 
-            C(i,j    ) = sum( xmm1 ) * scalar;
-            C(i,j+1UL) = sum( xmm2 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i,k) * B(k,j    );
+                  value2 += A(i,k) * B(k,j+1UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i,j    ) += A(i,k) * B(k,j    ) * scalar;
-               C(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
+               C(i,j    ) = value1 * scalar;
+               C(i,j+1UL) = value2 * scalar;
+            }
+            else
+            {
+               reset( C(i,j    ) );
+               reset( C(i,j+1UL) );
             }
          }
 
@@ -5522,17 +8261,35 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
             BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 += A.load(i,k) * B.load(k,j);
+            if( k < kpos )
+            {
+               SIMDType xmm1( A.load(i,k) * B.load(k,j) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  xmm1 += A.load(i,k) * B.load(k,j);
+               }
+
+               C(i,j) = sum( xmm1 ) * scalar;
+
+               for( ; remainder && k<K; ++k ) {
+                  C(i,j) += A(i,k) * B(k,j) * scalar;
+               }
             }
+            else if( k < K )
+            {
+               ElementType value( A(i,k) * B(k,j) );
 
-            C(i,j) = sum( xmm1 ) * scalar;
+               for( ++k; k<K; ++k ) {
+                  value += A(i,k) * B(k,j);
+               }
 
-            for( ; remainder && k<K; ++k ) {
-               C(i,j) += A(i,k) * B(k,j) * scalar;
+               C(i,j) = value * scalar;
+            }
+            else
+            {
+               reset( C(i,j) );
             }
 
             if( LOW ) ++j;
@@ -5613,44 +8370,103 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType a3( A.load(i+2UL,k) );
-               const SIMDType a4( A.load(i+3UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a2 * b1;
-               xmm4 += a2 * b2;
-               xmm5 += a3 * b1;
-               xmm6 += a3 * b2;
-               xmm7 += a4 * b1;
-               xmm8 += a4 * b2;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType a4( A.load(i+3UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+               SIMDType xmm5( a3 * b1 );
+               SIMDType xmm6( a3 * b2 );
+               SIMDType xmm7( a4 * b1 );
+               SIMDType xmm8( a4 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  a4 = A.load(i+3UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+                  xmm5 += a3 * b1;
+                  xmm6 += a3 * b2;
+                  xmm7 += a4 * b1;
+                  xmm8 += a4 * b2;
+               }
+
+               C(i    ,j    ) = sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) = sum( xmm2 ) * scalar;
+               C(i+1UL,j    ) = sum( xmm3 ) * scalar;
+               C(i+1UL,j+1UL) = sum( xmm4 ) * scalar;
+               C(i+2UL,j    ) = sum( xmm5 ) * scalar;
+               C(i+2UL,j+1UL) = sum( xmm6 ) * scalar;
+               C(i+3UL,j    ) = sum( xmm7 ) * scalar;
+               C(i+3UL,j+1UL) = sum( xmm8 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    ) * scalar;
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL) * scalar;
+                  C(i+3UL,j    ) += A(i+3UL,k) * B(k,j    ) * scalar;
+                  C(i+3UL,j+1UL) += A(i+3UL,k) * B(k,j+1UL) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i+1UL,k) * B(k,j    ) );
+               ElementType value4( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value5( A(i+2UL,k) * B(k,j    ) );
+               ElementType value6( A(i+2UL,k) * B(k,j+1UL) );
+               ElementType value7( A(i+3UL,k) * B(k,j    ) );
+               ElementType value8( A(i+3UL,k) * B(k,j+1UL) );
 
-            C(i    ,j    ) = sum( xmm1 ) * scalar;
-            C(i    ,j+1UL) = sum( xmm2 ) * scalar;
-            C(i+1UL,j    ) = sum( xmm3 ) * scalar;
-            C(i+1UL,j+1UL) = sum( xmm4 ) * scalar;
-            C(i+2UL,j    ) = sum( xmm5 ) * scalar;
-            C(i+2UL,j+1UL) = sum( xmm6 ) * scalar;
-            C(i+3UL,j    ) = sum( xmm7 ) * scalar;
-            C(i+3UL,j+1UL) = sum( xmm8 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i+1UL,k) * B(k,j    );
+                  value4 += A(i+1UL,k) * B(k,j+1UL);
+                  value5 += A(i+2UL,k) * B(k,j    );
+                  value6 += A(i+2UL,k) * B(k,j+1UL);
+                  value7 += A(i+3UL,k) * B(k,j    );
+                  value8 += A(i+3UL,k) * B(k,j+1UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
-               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
-               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
-               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
-               C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    ) * scalar;
-               C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL) * scalar;
-               C(i+3UL,j    ) += A(i+3UL,k) * B(k,j    ) * scalar;
-               C(i+3UL,j+1UL) += A(i+3UL,k) * B(k,j+1UL) * scalar;
+               C(i    ,j    ) = value1 * scalar;
+               C(i    ,j+1UL) = value2 * scalar;
+               C(i+1UL,j    ) = value3 * scalar;
+               C(i+1UL,j+1UL) = value4 * scalar;
+               C(i+2UL,j    ) = value5 * scalar;
+               C(i+2UL,j+1UL) = value6 * scalar;
+               C(i+3UL,j    ) = value7 * scalar;
+               C(i+3UL,j+1UL) = value8 * scalar;
+            }
+            else
+            {
+               reset( C(i    ,j    ) );
+               reset( C(i    ,j+1UL) );
+               reset( C(i+1UL,j    ) );
+               reset( C(i+1UL,j+1UL) );
+               reset( C(i+2UL,j    ) );
+               reset( C(i+2UL,j+1UL) );
+               reset( C(i+3UL,j    ) );
+               reset( C(i+3UL,j+1UL) );
             }
          }
 
@@ -5664,27 +8480,61 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType b1( B.load(k,j) );
-               xmm1 += A.load(i    ,k) * b1;
-               xmm2 += A.load(i+1UL,k) * b1;
-               xmm3 += A.load(i+2UL,k) * b1;
-               xmm4 += A.load(i+3UL,k) * b1;
+            if( k< kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+               SIMDType xmm3( A.load(i+2UL,k) * b1 );
+               SIMDType xmm4( A.load(i+3UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+                  xmm3 += A.load(i+2UL,k) * b1;
+                  xmm4 += A.load(i+3UL,k) * b1;
+               }
+
+               C(i    ,j) = sum( xmm1 ) * scalar;
+               C(i+1UL,j) = sum( xmm2 ) * scalar;
+               C(i+2UL,j) = sum( xmm3 ) * scalar;
+               C(i+3UL,j) = sum( xmm4 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
+                  C(i+2UL,j) += A(i+2UL,k) * B(k,j) * scalar;
+                  C(i+3UL,j) += A(i+3UL,k) * B(k,j) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j) );
+               ElementType value2( A(i+1UL,k) * B(k,j) );
+               ElementType value3( A(i+2UL,k) * B(k,j) );
+               ElementType value4( A(i+3UL,k) * B(k,j) );
 
-            C(i    ,j) = sum( xmm1 ) * scalar;
-            C(i+1UL,j) = sum( xmm2 ) * scalar;
-            C(i+2UL,j) = sum( xmm3 ) * scalar;
-            C(i+3UL,j) = sum( xmm4 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j);
+                  value2 += A(i+1UL,k) * B(k,j);
+                  value3 += A(i+2UL,k) * B(k,j);
+                  value4 += A(i+3UL,k) * B(k,j);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
-               C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
-               C(i+2UL,j) += A(i+2UL,k) * B(k,j) * scalar;
-               C(i+3UL,j) += A(i+3UL,k) * B(k,j) * scalar;
+               C(i    ,j) = value1 * scalar;
+               C(i+1UL,j) = value2 * scalar;
+               C(i+2UL,j) = value3 * scalar;
+               C(i+3UL,j) = value4 * scalar;
+            }
+            else
+            {
+               reset( C(i    ,j) );
+               reset( C(i+1UL,j) );
+               reset( C(i+2UL,j) );
+               reset( C(i+3UL,j) );
             }
 
             if( LOW ) ++j;
@@ -5700,7 +8550,312 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
          }
       }
 
-      for( ; !( LOW && UPP ) && (i+2UL) <= M; i+=2UL )
+      for( ; !( LOW && UPP ) && (i+3UL) <= M; i+=3UL )
+      {
+         const size_t jend( LOW ? i+3UL : N );
+         size_t j( 0UL );
+
+         if( SYM || HERM ) {
+            for( ; j<i; ++j ) {
+               C(i    ,j) = HERM ? conj( C(j,i    ) ) : C(j,i    );
+               C(i+1UL,j) = HERM ? conj( C(j,i+1UL) ) : C(j,i+1UL);
+               C(i+2UL,j) = HERM ? conj( C(j,i+2UL) ) : C(j,i+2UL);
+            }
+         }
+         else if( UPP ) {
+            for( ; j<i; ++j ) {
+               reset( C(i    ,j) );
+               reset( C(i+1UL,j) );
+               reset( C(i+2UL,j) );
+            }
+         }
+
+         for( ; (j+3UL) <= jend; j+=3UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType b3( B.load(k,j+2UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a1 * b3 );
+               SIMDType xmm4( a2 * b1 );
+               SIMDType xmm5( a2 * b2 );
+               SIMDType xmm6( a2 * b3 );
+               SIMDType xmm7( a3 * b1 );
+               SIMDType xmm8( a3 * b2 );
+               SIMDType xmm9( a3 * b3 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  b3 = B.load(k,j+2UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a1 * b3;
+                  xmm4 += a2 * b1;
+                  xmm5 += a2 * b2;
+                  xmm6 += a2 * b3;
+                  xmm7 += a3 * b1;
+                  xmm8 += a3 * b2;
+                  xmm9 += a3 * b3;
+               }
+
+               C(i    ,j    ) = sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) = sum( xmm2 ) * scalar;
+               C(i    ,j+2UL) = sum( xmm3 ) * scalar;
+               C(i+1UL,j    ) = sum( xmm4 ) * scalar;
+               C(i+1UL,j+1UL) = sum( xmm5 ) * scalar;
+               C(i+1UL,j+2UL) = sum( xmm6 ) * scalar;
+               C(i+2UL,j    ) = sum( xmm7 ) * scalar;
+               C(i+2UL,j+1UL) = sum( xmm8 ) * scalar;
+               C(i+2UL,j+2UL) = sum( xmm9 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL) * scalar;
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL) * scalar;
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    ) * scalar;
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL) * scalar;
+                  C(i+2UL,j+2UL) += A(i+2UL,k) * B(k,j+2UL) * scalar;
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i    ,k) * B(k,j+2UL) );
+               ElementType value4( A(i+1UL,k) * B(k,j    ) );
+               ElementType value5( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value6( A(i+1UL,k) * B(k,j+2UL) );
+               ElementType value7( A(i+2UL,k) * B(k,j    ) );
+               ElementType value8( A(i+2UL,k) * B(k,j+1UL) );
+               ElementType value9( A(i+2UL,k) * B(k,j+2UL) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i    ,k) * B(k,j+2UL);
+                  value4 += A(i+1UL,k) * B(k,j    );
+                  value5 += A(i+1UL,k) * B(k,j+1UL);
+                  value6 += A(i+1UL,k) * B(k,j+2UL);
+                  value7 += A(i+2UL,k) * B(k,j    );
+                  value8 += A(i+2UL,k) * B(k,j+1UL);
+                  value9 += A(i+2UL,k) * B(k,j+2UL);
+               }
+
+               C(i    ,j    ) = value1 * scalar;
+               C(i    ,j+1UL) = value2 * scalar;
+               C(i    ,j+2UL) = value3 * scalar;
+               C(i+1UL,j    ) = value4 * scalar;
+               C(i+1UL,j+1UL) = value5 * scalar;
+               C(i+1UL,j+2UL) = value6 * scalar;
+               C(i+2UL,j    ) = value7 * scalar;
+               C(i+2UL,j+1UL) = value8 * scalar;
+               C(i+2UL,j+2UL) = value9 * scalar;
+            }
+            else
+            {
+               reset( C(i    ,j    ) );
+               reset( C(i    ,j+1UL) );
+               reset( C(i    ,j+2UL) );
+               reset( C(i+1UL,j    ) );
+               reset( C(i+1UL,j+1UL) );
+               reset( C(i+1UL,j+2UL) );
+               reset( C(i+2UL,j    ) );
+               reset( C(i+2UL,j+1UL) );
+               reset( C(i+2UL,j+2UL) );
+            }
+         }
+
+         for( ; (j+2UL) <= jend; j+=2UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+               SIMDType xmm5( a3 * b1 );
+               SIMDType xmm6( a3 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+                  xmm5 += a3 * b1;
+                  xmm6 += a3 * b2;
+               }
+
+               C(i    ,j    ) = sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) = sum( xmm2 ) * scalar;
+               C(i+1UL,j    ) = sum( xmm3 ) * scalar;
+               C(i+1UL,j+1UL) = sum( xmm4 ) * scalar;
+               C(i+2UL,j    ) = sum( xmm5 ) * scalar;
+               C(i+2UL,j+1UL) = sum( xmm6 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    ) * scalar;
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL) * scalar;
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i+1UL,k) * B(k,j    ) );
+               ElementType value4( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value5( A(i+2UL,k) * B(k,j    ) );
+               ElementType value6( A(i+2UL,k) * B(k,j+1UL) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i+1UL,k) * B(k,j    );
+                  value4 += A(i+1UL,k) * B(k,j+1UL);
+                  value5 += A(i+2UL,k) * B(k,j    );
+                  value6 += A(i+2UL,k) * B(k,j+1UL);
+               }
+
+               C(i    ,j    ) = value1 * scalar;
+               C(i    ,j+1UL) = value2 * scalar;
+               C(i+1UL,j    ) = value3 * scalar;
+               C(i+1UL,j+1UL) = value4 * scalar;
+               C(i+2UL,j    ) = value5 * scalar;
+               C(i+2UL,j+1UL) = value6 * scalar;
+            }
+            else
+            {
+               reset( C(i    ,j    ) );
+               reset( C(i    ,j+1UL) );
+               reset( C(i+1UL,j    ) );
+               reset( C(i+1UL,j+1UL) );
+               reset( C(i+2UL,j    ) );
+               reset( C(i+2UL,j+1UL) );
+            }
+         }
+
+         if( j < jend )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k< kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+               SIMDType xmm3( A.load(i+2UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+                  xmm3 += A.load(i+2UL,k) * b1;
+               }
+
+               C(i    ,j) = sum( xmm1 ) * scalar;
+               C(i+1UL,j) = sum( xmm2 ) * scalar;
+               C(i+2UL,j) = sum( xmm3 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
+                  C(i+2UL,j) += A(i+2UL,k) * B(k,j) * scalar;
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j) );
+               ElementType value2( A(i+1UL,k) * B(k,j) );
+               ElementType value3( A(i+2UL,k) * B(k,j) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j);
+                  value2 += A(i+1UL,k) * B(k,j);
+                  value3 += A(i+2UL,k) * B(k,j);
+               }
+
+               C(i    ,j) = value1 * scalar;
+               C(i+1UL,j) = value2 * scalar;
+               C(i+2UL,j) = value3 * scalar;
+            }
+            else
+            {
+               reset( C(i    ,j) );
+               reset( C(i+1UL,j) );
+               reset( C(i+2UL,j) );
+            }
+
+            if( LOW ) ++j;
+         }
+
+         if( LOW ) {
+            for( ; j<N; ++j ) {
+               reset( C(i    ,j) );
+               reset( C(i+1UL,j) );
+               reset( C(i+2UL,j) );
+            }
+         }
+      }
+
+      for( ; (i+2UL) <= M; i+=2UL )
       {
          const size_t jend( LOW ? i+2UL : N );
          size_t j( 0UL );
@@ -5730,30 +8885,67 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a2 * b1;
-               xmm4 += a2 * b2;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+               }
+
+               C(i    ,j    ) = sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) = sum( xmm2 ) * scalar;
+               C(i+1UL,j    ) = sum( xmm3 ) * scalar;
+               C(i+1UL,j+1UL) = sum( xmm4 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i+1UL,k) * B(k,j    ) );
+               ElementType value4( A(i+1UL,k) * B(k,j+1UL) );
 
-            C(i    ,j    ) = sum( xmm1 ) * scalar;
-            C(i    ,j+1UL) = sum( xmm2 ) * scalar;
-            C(i+1UL,j    ) = sum( xmm3 ) * scalar;
-            C(i+1UL,j+1UL) = sum( xmm4 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i+1UL,k) * B(k,j    );
+                  value4 += A(i+1UL,k) * B(k,j+1UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
-               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
-               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
-               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+               C(i    ,j    ) =  value1 * scalar;
+               C(i    ,j+1UL) =  value2 * scalar;
+               C(i+1UL,j    ) =  value3 * scalar;
+               C(i+1UL,j+1UL) =  value4 * scalar;
+            }
+            else
+            {
+               reset( C(i    ,j    ) );
+               reset( C(i    ,j+1UL) );
+               reset( C(i+1UL,j    ) );
+               reset( C(i+1UL,j+1UL) );
             }
          }
 
@@ -5767,21 +8959,45 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType b1( B.load(k,j) );
-               xmm1 += A.load(i    ,k) * b1;
-               xmm2 += A.load(i+1UL,k) * b1;
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+               }
+
+               C(i    ,j) = sum( xmm1 ) * scalar;
+               C(i+1UL,j) = sum( xmm2 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j) );
+               ElementType value2( A(i+1UL,k) * B(k,j) );
 
-            C(i    ,j) = sum( xmm1 ) * scalar;
-            C(i+1UL,j) = sum( xmm2 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j);
+                  value2 += A(i+1UL,k) * B(k,j);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
-               C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
+               C(i    ,j) = value1 * scalar;
+               C(i+1UL,j) = value2 * scalar;
+            }
+            else
+            {
+               reset( C(i    ,j) );
+               reset( C(i+1UL,j) );
             }
 
             if( LOW ) ++j;
@@ -5821,21 +9037,45 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i,k) );
-               xmm1 += a1 * B.load(k,j    );
-               xmm2 += a1 * B.load(k,j+1UL);
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i,k) );
+               SIMDType xmm1( a1 * B.load(k,j    ) );
+               SIMDType xmm2( a1 * B.load(k,j+1UL) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i,k);
+                  xmm1 += a1 * B.load(k,j    );
+                  xmm2 += a1 * B.load(k,j+1UL);
+               }
+
+               C(i,j    ) = sum( xmm1 ) * scalar;
+               C(i,j+1UL) = sum( xmm2 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i,j    ) += A(i,k) * B(k,j    ) * scalar;
+                  C(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i,k) * B(k,j    ) );
+               ElementType value2( A(i,k) * B(k,j+1UL) );
 
-            C(i,j    ) = sum( xmm1 ) * scalar;
-            C(i,j+1UL) = sum( xmm2 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i,k) * B(k,j    );
+                  value2 += A(i,k) * B(k,j+1UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i,j    ) += A(i,k) * B(k,j    ) * scalar;
-               C(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
+               C(i,j    ) = value1 * scalar;
+               C(i,j+1UL) = value2 * scalar;
+            }
+            else
+            {
+               reset( C(i,j    ) );
+               reset( C(i,j+1UL) );
             }
          }
 
@@ -5848,17 +9088,35 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
             BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 += A.load(i,k) * B.load(k,j);
+            if( k < kpos )
+            {
+               SIMDType xmm1( A.load(i,k) * B.load(k,j) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  xmm1 += A.load(i,k) * B.load(k,j);
+               }
+
+               C(i,j) = sum( xmm1 ) * scalar;
+
+               for( ; remainder && k<K; ++k ) {
+                  C(i,j) += A(i,k) * B(k,j) * scalar;
+               }
             }
+            else if( k < K )
+            {
+               ElementType value( A(i,k) * B(k,j) );
 
-            C(i,j) = sum( xmm1 ) * scalar;
+               for( ++k; k<K; ++k ) {
+                  value += A(i,k) * B(k,j);
+               }
 
-            for( ; remainder && k<K; ++k ) {
-               C(i,j) += A(i,k) * B(k,j) * scalar;
+               C(i,j) = value * scalar;
+            }
+            else
+            {
+               reset( C(i,j) );
             }
 
             if( LOW ) ++j;
@@ -6403,7 +9661,260 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
 
       size_t i( 0UL );
 
-      for( ; (i+2UL) <= M; i+=2UL )
+      for( ; !( LOW && UPP ) && (i+3UL) <= M; i+=3UL )
+      {
+         const size_t jend( LOW ? i+3UL : N );
+         size_t j( UPP ? i : 0UL );
+
+         for( ; (j+3UL) <= jend; j+=3UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType b3( B.load(k,j+2UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a1 * b3 );
+               SIMDType xmm4( a2 * b1 );
+               SIMDType xmm5( a2 * b2 );
+               SIMDType xmm6( a2 * b3 );
+               SIMDType xmm7( a3 * b1 );
+               SIMDType xmm8( a3 * b2 );
+               SIMDType xmm9( a3 * b3 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  b3 = B.load(k,j+2UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a1 * b3;
+                  xmm4 += a2 * b1;
+                  xmm5 += a2 * b2;
+                  xmm6 += a2 * b3;
+                  xmm7 += a3 * b1;
+                  xmm8 += a3 * b2;
+                  xmm9 += a3 * b3;
+               }
+
+               C(i    ,j    ) += sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) += sum( xmm2 ) * scalar;
+               C(i    ,j+2UL) += sum( xmm3 ) * scalar;
+               C(i+1UL,j    ) += sum( xmm4 ) * scalar;
+               C(i+1UL,j+1UL) += sum( xmm5 ) * scalar;
+               C(i+1UL,j+2UL) += sum( xmm6 ) * scalar;
+               C(i+2UL,j    ) += sum( xmm7 ) * scalar;
+               C(i+2UL,j+1UL) += sum( xmm8 ) * scalar;
+               C(i+2UL,j+2UL) += sum( xmm9 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL) * scalar;
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL) * scalar;
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    ) * scalar;
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL) * scalar;
+                  C(i+2UL,j+2UL) += A(i+2UL,k) * B(k,j+2UL) * scalar;
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i    ,k) * B(k,j+2UL) );
+               ElementType value4( A(i+1UL,k) * B(k,j    ) );
+               ElementType value5( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value6( A(i+1UL,k) * B(k,j+2UL) );
+               ElementType value7( A(i+2UL,k) * B(k,j    ) );
+               ElementType value8( A(i+2UL,k) * B(k,j+1UL) );
+               ElementType value9( A(i+2UL,k) * B(k,j+2UL) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i    ,k) * B(k,j+2UL);
+                  value4 += A(i+1UL,k) * B(k,j    );
+                  value5 += A(i+1UL,k) * B(k,j+1UL);
+                  value6 += A(i+1UL,k) * B(k,j+2UL);
+                  value7 += A(i+2UL,k) * B(k,j    );
+                  value8 += A(i+2UL,k) * B(k,j+1UL);
+                  value9 += A(i+2UL,k) * B(k,j+2UL);
+               }
+
+               C(i    ,j    ) += value1 * scalar;
+               C(i    ,j+1UL) += value2 * scalar;
+               C(i    ,j+2UL) += value3 * scalar;
+               C(i+1UL,j    ) += value4 * scalar;
+               C(i+1UL,j+1UL) += value5 * scalar;
+               C(i+1UL,j+2UL) += value6 * scalar;
+               C(i+2UL,j    ) += value7 * scalar;
+               C(i+2UL,j+1UL) += value8 * scalar;
+               C(i+2UL,j+2UL) += value9 * scalar;
+            }
+         }
+
+         for( ; (j+2UL) <= jend; j+=2UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+               SIMDType xmm5( a3 * b1 );
+               SIMDType xmm6( a3 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+                  xmm5 += a3 * b1;
+                  xmm6 += a3 * b2;
+               }
+
+               C(i    ,j    ) += sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) += sum( xmm2 ) * scalar;
+               C(i+1UL,j    ) += sum( xmm3 ) * scalar;
+               C(i+1UL,j+1UL) += sum( xmm4 ) * scalar;
+               C(i+2UL,j    ) += sum( xmm5 ) * scalar;
+               C(i+2UL,j+1UL) += sum( xmm6 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    ) * scalar;
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL) * scalar;
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i+1UL,k) * B(k,j    ) );
+               ElementType value4( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value5( A(i+2UL,k) * B(k,j    ) );
+               ElementType value6( A(i+2UL,k) * B(k,j+1UL) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i+1UL,k) * B(k,j    );
+                  value4 += A(i+1UL,k) * B(k,j+1UL);
+                  value5 += A(i+2UL,k) * B(k,j    );
+                  value6 += A(i+2UL,k) * B(k,j+1UL);
+               }
+
+               C(i    ,j    ) += value1 * scalar;
+               C(i    ,j+1UL) += value2 * scalar;
+               C(i+1UL,j    ) += value3 * scalar;
+               C(i+1UL,j+1UL) += value4 * scalar;
+               C(i+2UL,j    ) += value5 * scalar;
+               C(i+2UL,j+1UL) += value6 * scalar;
+            }
+         }
+
+         if( j < jend )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+               SIMDType xmm3( A.load(i+2UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+                  xmm3 += A.load(i+2UL,k) * b1;
+               }
+
+               C(i    ,j) += sum( xmm1 ) * scalar;
+               C(i+1UL,j) += sum( xmm2 ) * scalar;
+               C(i+2UL,j) += sum( xmm3 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
+                  C(i+2UL,j) += A(i+2UL,k) * B(k,j) * scalar;
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j) );
+               ElementType value2( A(i+1UL,k) * B(k,j) );
+               ElementType value3( A(i+2UL,k) * B(k,j) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j);
+                  value2 += A(i+1UL,k) * B(k,j);
+                  value3 += A(i+2UL,k) * B(k,j);
+               }
+
+               C(i    ,j) += value1 * scalar;
+               C(i+1UL,j) += value2 * scalar;
+               C(i+2UL,j) += value3 * scalar;
+            }
+         }
+      }
+
+      for( ; !( LOW && UPP ) && (i+2UL) <= M; i+=2UL )
       {
          const size_t jend( LOW ? i+2UL : N );
          size_t j( UPP ? i : 0UL );
@@ -6420,44 +9931,92 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               const SIMDType b3( B.load(k,j+2UL) );
-               const SIMDType b4( B.load(k,j+3UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a1 * b3;
-               xmm4 += a1 * b4;
-               xmm5 += a2 * b1;
-               xmm6 += a2 * b2;
-               xmm7 += a2 * b3;
-               xmm8 += a2 * b4;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType b3( B.load(k,j+2UL) );
+               SIMDType b4( B.load(k,j+3UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a1 * b3 );
+               SIMDType xmm4( a1 * b4 );
+               SIMDType xmm5( a2 * b1 );
+               SIMDType xmm6( a2 * b2 );
+               SIMDType xmm7( a2 * b3 );
+               SIMDType xmm8( a2 * b4 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  b3 = B.load(k,j+2UL);
+                  b4 = B.load(k,j+3UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a1 * b3;
+                  xmm4 += a1 * b4;
+                  xmm5 += a2 * b1;
+                  xmm6 += a2 * b2;
+                  xmm7 += a2 * b3;
+                  xmm8 += a2 * b4;
+               }
+
+               C(i    ,j    ) += sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) += sum( xmm2 ) * scalar;
+               C(i    ,j+2UL) += sum( xmm3 ) * scalar;
+               C(i    ,j+3UL) += sum( xmm4 ) * scalar;
+               C(i+1UL,j    ) += sum( xmm5 ) * scalar;
+               C(i+1UL,j+1UL) += sum( xmm6 ) * scalar;
+               C(i+1UL,j+2UL) += sum( xmm7 ) * scalar;
+               C(i+1UL,j+3UL) += sum( xmm8 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL) * scalar;
+                  C(i    ,j+3UL) += A(i    ,k) * B(k,j+3UL) * scalar;
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL) * scalar;
+                  C(i+1UL,j+3UL) += A(i+1UL,k) * B(k,j+3UL) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i    ,k) * B(k,j+2UL) );
+               ElementType value4( A(i    ,k) * B(k,j+3UL) );
+               ElementType value5( A(i+1UL,k) * B(k,j    ) );
+               ElementType value6( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value7( A(i+1UL,k) * B(k,j+2UL) );
+               ElementType value8( A(i+1UL,k) * B(k,j+3UL) );
 
-            C(i    ,j    ) += sum( xmm1 ) * scalar;
-            C(i    ,j+1UL) += sum( xmm2 ) * scalar;
-            C(i    ,j+2UL) += sum( xmm3 ) * scalar;
-            C(i    ,j+3UL) += sum( xmm4 ) * scalar;
-            C(i+1UL,j    ) += sum( xmm5 ) * scalar;
-            C(i+1UL,j+1UL) += sum( xmm6 ) * scalar;
-            C(i+1UL,j+2UL) += sum( xmm7 ) * scalar;
-            C(i+1UL,j+3UL) += sum( xmm8 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i    ,k) * B(k,j+2UL);
+                  value4 += A(i    ,k) * B(k,j+3UL);
+                  value5 += A(i+1UL,k) * B(k,j    );
+                  value6 += A(i+1UL,k) * B(k,j+1UL);
+                  value7 += A(i+1UL,k) * B(k,j+2UL);
+                  value8 += A(i+1UL,k) * B(k,j+3UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
-               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
-               C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL) * scalar;
-               C(i    ,j+3UL) += A(i    ,k) * B(k,j+3UL) * scalar;
-               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
-               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
-               C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL) * scalar;
-               C(i+1UL,j+3UL) += A(i+1UL,k) * B(k,j+3UL) * scalar;
+               C(i    ,j    ) += value1 * scalar;
+               C(i    ,j+1UL) += value2 * scalar;
+               C(i    ,j+2UL) += value3 * scalar;
+               C(i    ,j+3UL) += value4 * scalar;
+               C(i+1UL,j    ) += value5 * scalar;
+               C(i+1UL,j+1UL) += value6 * scalar;
+               C(i+1UL,j+2UL) += value7 * scalar;
+               C(i+1UL,j+3UL) += value8 * scalar;
             }
          }
 
@@ -6473,30 +10032,60 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a2 * b1;
-               xmm4 += a2 * b2;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+               }
+
+               C(i    ,j    ) += sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) += sum( xmm2 ) * scalar;
+               C(i+1UL,j    ) += sum( xmm3 ) * scalar;
+               C(i+1UL,j+1UL) += sum( xmm4 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i+1UL,k) * B(k,j    ) );
+               ElementType value4( A(i+1UL,k) * B(k,j+1UL) );
 
-            C(i    ,j    ) += sum( xmm1 ) * scalar;
-            C(i    ,j+1UL) += sum( xmm2 ) * scalar;
-            C(i+1UL,j    ) += sum( xmm3 ) * scalar;
-            C(i+1UL,j+1UL) += sum( xmm4 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i+1UL,k) * B(k,j    );
+                  value4 += A(i+1UL,k) * B(k,j+1UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
-               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
-               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
-               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+               C(i    ,j    ) += value1 * scalar;
+               C(i    ,j+1UL) += value2 * scalar;
+               C(i+1UL,j    ) += value3 * scalar;
+               C(i+1UL,j+1UL) += value4 * scalar;
             }
          }
 
@@ -6510,21 +10099,40 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType b1( B.load(k,j) );
-               xmm1 += A.load(i    ,k) * b1;
-               xmm2 += A.load(i+1UL,k) * b1;
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+               }
+
+               C(i    ,j) += sum( xmm1 ) * scalar;
+               C(i+1UL,j) += sum( xmm2 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j) );
+               ElementType value2( A(i+1UL,k) * B(k,j) );
 
-            C(i    ,j) += sum( xmm1 ) * scalar;
-            C(i+1UL,j) += sum( xmm2 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j);
+                  value2 += A(i+1UL,k) * B(k,j);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
-               C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
+               C(i    ,j) += value1 * scalar;
+               C(i+1UL,j) += value2 * scalar;
             }
          }
       }
@@ -6544,27 +10152,54 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i,k) );
-               xmm1 += a1 * B.load(k,j    );
-               xmm2 += a1 * B.load(k,j+1UL);
-               xmm3 += a1 * B.load(k,j+2UL);
-               xmm4 += a1 * B.load(k,j+3UL);
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i,k) );
+               SIMDType xmm1( a1 * B.load(k,j    ) );
+               SIMDType xmm2( a1 * B.load(k,j+1UL) );
+               SIMDType xmm3( a1 * B.load(k,j+2UL) );
+               SIMDType xmm4( a1 * B.load(k,j+3UL) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i,k);
+                  xmm1 += a1 * B.load(k,j    );
+                  xmm2 += a1 * B.load(k,j+1UL);
+                  xmm3 += a1 * B.load(k,j+2UL);
+                  xmm4 += a1 * B.load(k,j+3UL);
+               }
+
+               C(i,j    ) += sum( xmm1 ) * scalar;
+               C(i,j+1UL) += sum( xmm2 ) * scalar;
+               C(i,j+2UL) += sum( xmm3 ) * scalar;
+               C(i,j+3UL) += sum( xmm4 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i,j    ) += A(i,k) * B(k,j    ) * scalar;
+                  C(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
+                  C(i,j+2UL) += A(i,k) * B(k,j+2UL) * scalar;
+                  C(i,j+3UL) += A(i,k) * B(k,j+3UL) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i,k) * B(k,j    ) );
+               ElementType value2( A(i,k) * B(k,j+1UL) );
+               ElementType value3( A(i,k) * B(k,j+2UL) );
+               ElementType value4( A(i,k) * B(k,j+3UL) );
 
-            C(i,j    ) += sum( xmm1 ) * scalar;
-            C(i,j+1UL) += sum( xmm2 ) * scalar;
-            C(i,j+2UL) += sum( xmm3 ) * scalar;
-            C(i,j+3UL) += sum( xmm4 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i,k) * B(k,j    );
+                  value2 += A(i,k) * B(k,j+1UL);
+                  value3 += A(i,k) * B(k,j+2UL);
+                  value4 += A(i,k) * B(k,j+3UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i,j    ) += A(i,k) * B(k,j    ) * scalar;
-               C(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
-               C(i,j+2UL) += A(i,k) * B(k,j+2UL) * scalar;
-               C(i,j+3UL) += A(i,k) * B(k,j+3UL) * scalar;
+               C(i,j    ) += value1 * scalar;
+               C(i,j+1UL) += value2 * scalar;
+               C(i,j+2UL) += value3 * scalar;
+               C(i,j+3UL) += value4 * scalar;
             }
          }
 
@@ -6578,21 +10213,40 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i,k) );
-               xmm1 += a1 * B.load(k,j    );
-               xmm2 += a1 * B.load(k,j+1UL);
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i,k) );
+               SIMDType xmm1( a1 * B.load(k,j    ) );
+               SIMDType xmm2( a1 * B.load(k,j+1UL) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i,k);
+                  xmm1 += a1 * B.load(k,j    );
+                  xmm2 += a1 * B.load(k,j+1UL);
+               }
+
+               C(i,j    ) += sum( xmm1 ) * scalar;
+               C(i,j+1UL) += sum( xmm2 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i,j    ) += A(i,k) * B(k,j    ) * scalar;
+                  C(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i,k) * B(k,j    ) );
+               ElementType value2( A(i,k) * B(k,j+1UL) );
 
-            C(i,j    ) += sum( xmm1 ) * scalar;
-            C(i,j+1UL) += sum( xmm2 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i,k) * B(k,j    );
+                  value2 += A(i,k) * B(k,j+1UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i,j    ) += A(i,k) * B(k,j    ) * scalar;
-               C(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
+               C(i,j    ) += value1 * scalar;
+               C(i,j+1UL) += value2 * scalar;
             }
          }
 
@@ -6605,17 +10259,31 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
             BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 += A.load(i,k) * B.load(k,j);
+            if( k < kpos )
+            {
+               SIMDType xmm1( A.load(i,k) * B.load(k,j) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  xmm1 += A.load(i,k) * B.load(k,j);
+               }
+
+               C(i,j) += sum( xmm1 ) * scalar;
+
+               for( ; remainder && k<K; ++k ) {
+                  C(i,j) += A(i,k) * B(k,j) * scalar;
+               }
             }
+            else if( k < K )
+            {
+               ElementType value( A(i,k) * B(k,j) );
 
-            C(i,j) += sum( xmm1 ) * scalar;
+               for( ++k; k<K; ++k ) {
+                  value += A(i,k) * B(k,j);
+               }
 
-            for( ; remainder && k<K; ++k ) {
-               C(i,j) += A(i,k) * B(k,j) * scalar;
+               C(i,j) += value * scalar;
             }
          }
       }
@@ -6670,44 +10338,92 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType a3( A.load(i+2UL,k) );
-               const SIMDType a4( A.load(i+3UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a2 * b1;
-               xmm4 += a2 * b2;
-               xmm5 += a3 * b1;
-               xmm6 += a3 * b2;
-               xmm7 += a4 * b1;
-               xmm8 += a4 * b2;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType a4( A.load(i+3UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+               SIMDType xmm5( a3 * b1 );
+               SIMDType xmm6( a3 * b2 );
+               SIMDType xmm7( a4 * b1 );
+               SIMDType xmm8( a4 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  a4 = A.load(i+3UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+                  xmm5 += a3 * b1;
+                  xmm6 += a3 * b2;
+                  xmm7 += a4 * b1;
+                  xmm8 += a4 * b2;
+               }
+
+               C(i    ,j    ) += sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) += sum( xmm2 ) * scalar;
+               C(i+1UL,j    ) += sum( xmm3 ) * scalar;
+               C(i+1UL,j+1UL) += sum( xmm4 ) * scalar;
+               C(i+2UL,j    ) += sum( xmm5 ) * scalar;
+               C(i+2UL,j+1UL) += sum( xmm6 ) * scalar;
+               C(i+3UL,j    ) += sum( xmm7 ) * scalar;
+               C(i+3UL,j+1UL) += sum( xmm8 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    ) * scalar;
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL) * scalar;
+                  C(i+3UL,j    ) += A(i+3UL,k) * B(k,j    ) * scalar;
+                  C(i+3UL,j+1UL) += A(i+3UL,k) * B(k,j+1UL) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i+1UL,k) * B(k,j    ) );
+               ElementType value4( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value5( A(i+2UL,k) * B(k,j    ) );
+               ElementType value6( A(i+2UL,k) * B(k,j+1UL) );
+               ElementType value7( A(i+3UL,k) * B(k,j    ) );
+               ElementType value8( A(i+3UL,k) * B(k,j+1UL) );
 
-            C(i    ,j    ) += sum( xmm1 ) * scalar;
-            C(i    ,j+1UL) += sum( xmm2 ) * scalar;
-            C(i+1UL,j    ) += sum( xmm3 ) * scalar;
-            C(i+1UL,j+1UL) += sum( xmm4 ) * scalar;
-            C(i+2UL,j    ) += sum( xmm5 ) * scalar;
-            C(i+2UL,j+1UL) += sum( xmm6 ) * scalar;
-            C(i+3UL,j    ) += sum( xmm7 ) * scalar;
-            C(i+3UL,j+1UL) += sum( xmm8 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i+1UL,k) * B(k,j    );
+                  value4 += A(i+1UL,k) * B(k,j+1UL);
+                  value5 += A(i+2UL,k) * B(k,j    );
+                  value6 += A(i+2UL,k) * B(k,j+1UL);
+                  value7 += A(i+3UL,k) * B(k,j    );
+                  value8 += A(i+3UL,k) * B(k,j+1UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
-               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
-               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
-               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
-               C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    ) * scalar;
-               C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL) * scalar;
-               C(i+3UL,j    ) += A(i+3UL,k) * B(k,j    ) * scalar;
-               C(i+3UL,j+1UL) += A(i+3UL,k) * B(k,j+1UL) * scalar;
+               C(i    ,j    ) += value1 * scalar;
+               C(i    ,j+1UL) += value2 * scalar;
+               C(i+1UL,j    ) += value3 * scalar;
+               C(i+1UL,j+1UL) += value4 * scalar;
+               C(i+2UL,j    ) += value5 * scalar;
+               C(i+2UL,j+1UL) += value6 * scalar;
+               C(i+3UL,j    ) += value7 * scalar;
+               C(i+3UL,j+1UL) += value8 * scalar;
             }
          }
 
@@ -6721,27 +10437,306 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType b1( B.load(k,j) );
-               xmm1 += A.load(i    ,k) * b1;
-               xmm2 += A.load(i+1UL,k) * b1;
-               xmm3 += A.load(i+2UL,k) * b1;
-               xmm4 += A.load(i+3UL,k) * b1;
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+               SIMDType xmm3( A.load(i+2UL,k) * b1 );
+               SIMDType xmm4( A.load(i+3UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+                  xmm3 += A.load(i+2UL,k) * b1;
+                  xmm4 += A.load(i+3UL,k) * b1;
+               }
+
+               C(i    ,j) += sum( xmm1 ) * scalar;
+               C(i+1UL,j) += sum( xmm2 ) * scalar;
+               C(i+2UL,j) += sum( xmm3 ) * scalar;
+               C(i+3UL,j) += sum( xmm4 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
+                  C(i+2UL,j) += A(i+2UL,k) * B(k,j) * scalar;
+                  C(i+3UL,j) += A(i+3UL,k) * B(k,j) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j) );
+               ElementType value2( A(i+1UL,k) * B(k,j) );
+               ElementType value3( A(i+2UL,k) * B(k,j) );
+               ElementType value4( A(i+3UL,k) * B(k,j) );
 
-            C(i    ,j) += sum( xmm1 ) * scalar;
-            C(i+1UL,j) += sum( xmm2 ) * scalar;
-            C(i+2UL,j) += sum( xmm3 ) * scalar;
-            C(i+3UL,j) += sum( xmm4 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j);
+                  value2 += A(i+1UL,k) * B(k,j);
+                  value3 += A(i+2UL,k) * B(k,j);
+                  value4 += A(i+3UL,k) * B(k,j);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
-               C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
-               C(i+2UL,j) += A(i+2UL,k) * B(k,j) * scalar;
-               C(i+3UL,j) += A(i+3UL,k) * B(k,j) * scalar;
+               C(i    ,j) += value1 * scalar;
+               C(i+1UL,j) += value2 * scalar;
+               C(i+2UL,j) += value3 * scalar;
+               C(i+3UL,j) += value4 * scalar;
+            }
+         }
+      }
+
+      for( ; !LOW && !UPP && (i+3UL) <= M; i+=3UL )
+      {
+         size_t j( 0UL );
+
+         for( ; (j+3UL) <= N; j+=3UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType b3( B.load(k,j+2UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a1 * b3 );
+               SIMDType xmm4( a2 * b1 );
+               SIMDType xmm5( a2 * b2 );
+               SIMDType xmm6( a2 * b3 );
+               SIMDType xmm7( a3 * b1 );
+               SIMDType xmm8( a3 * b2 );
+               SIMDType xmm9( a3 * b3 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  b3 = B.load(k,j+2UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a1 * b3;
+                  xmm4 += a2 * b1;
+                  xmm5 += a2 * b2;
+                  xmm6 += a2 * b3;
+                  xmm7 += a3 * b1;
+                  xmm8 += a3 * b2;
+                  xmm9 += a3 * b3;
+               }
+
+               C(i    ,j    ) += sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) += sum( xmm2 ) * scalar;
+               C(i    ,j+2UL) += sum( xmm3 ) * scalar;
+               C(i+1UL,j    ) += sum( xmm4 ) * scalar;
+               C(i+1UL,j+1UL) += sum( xmm5 ) * scalar;
+               C(i+1UL,j+2UL) += sum( xmm6 ) * scalar;
+               C(i+2UL,j    ) += sum( xmm7 ) * scalar;
+               C(i+2UL,j+1UL) += sum( xmm8 ) * scalar;
+               C(i+2UL,j+2UL) += sum( xmm9 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i    ,j+2UL) += A(i    ,k) * B(k,j+2UL) * scalar;
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j+2UL) += A(i+1UL,k) * B(k,j+2UL) * scalar;
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    ) * scalar;
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL) * scalar;
+                  C(i+2UL,j+2UL) += A(i+2UL,k) * B(k,j+2UL) * scalar;
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i    ,k) * B(k,j+2UL) );
+               ElementType value4( A(i+1UL,k) * B(k,j    ) );
+               ElementType value5( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value6( A(i+1UL,k) * B(k,j+2UL) );
+               ElementType value7( A(i+2UL,k) * B(k,j    ) );
+               ElementType value8( A(i+2UL,k) * B(k,j+1UL) );
+               ElementType value9( A(i+2UL,k) * B(k,j+2UL) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i    ,k) * B(k,j+2UL);
+                  value4 += A(i+1UL,k) * B(k,j    );
+                  value5 += A(i+1UL,k) * B(k,j+1UL);
+                  value6 += A(i+1UL,k) * B(k,j+2UL);
+                  value7 += A(i+2UL,k) * B(k,j    );
+                  value8 += A(i+2UL,k) * B(k,j+1UL);
+                  value9 += A(i+2UL,k) * B(k,j+2UL);
+               }
+
+               C(i    ,j    ) += value1 * scalar;
+               C(i    ,j+1UL) += value2 * scalar;
+               C(i    ,j+2UL) += value3 * scalar;
+               C(i+1UL,j    ) += value4 * scalar;
+               C(i+1UL,j+1UL) += value5 * scalar;
+               C(i+1UL,j+2UL) += value6 * scalar;
+               C(i+2UL,j    ) += value7 * scalar;
+               C(i+2UL,j+1UL) += value8 * scalar;
+               C(i+2UL,j+2UL) += value9 * scalar;
+            }
+         }
+
+         for( ; (j+2UL) <= N; j+=2UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+               SIMDType xmm5( a3 * b1 );
+               SIMDType xmm6( a3 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+                  xmm5 += a3 * b1;
+                  xmm6 += a3 * b2;
+               }
+
+               C(i    ,j    ) += sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) += sum( xmm2 ) * scalar;
+               C(i+1UL,j    ) += sum( xmm3 ) * scalar;
+               C(i+1UL,j+1UL) += sum( xmm4 ) * scalar;
+               C(i+2UL,j    ) += sum( xmm5 ) * scalar;
+               C(i+2UL,j+1UL) += sum( xmm6 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+                  C(i+2UL,j    ) += A(i+2UL,k) * B(k,j    ) * scalar;
+                  C(i+2UL,j+1UL) += A(i+2UL,k) * B(k,j+1UL) * scalar;
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i+1UL,k) * B(k,j    ) );
+               ElementType value4( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value5( A(i+2UL,k) * B(k,j    ) );
+               ElementType value6( A(i+2UL,k) * B(k,j+1UL) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i+1UL,k) * B(k,j    );
+                  value4 += A(i+1UL,k) * B(k,j+1UL);
+                  value5 += A(i+2UL,k) * B(k,j    );
+                  value6 += A(i+2UL,k) * B(k,j+1UL);
+               }
+
+               C(i    ,j    ) += value1 * scalar;
+               C(i    ,j+1UL) += value2 * scalar;
+               C(i+1UL,j    ) += value3 * scalar;
+               C(i+1UL,j+1UL) += value4 * scalar;
+               C(i+2UL,j    ) += value5 * scalar;
+               C(i+2UL,j+1UL) += value6 * scalar;
+            }
+         }
+
+         if( j < N )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+               SIMDType xmm3( A.load(i+2UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+                  xmm3 += A.load(i+2UL,k) * b1;
+               }
+
+               C(i    ,j) += sum( xmm1 ) * scalar;
+               C(i+1UL,j) += sum( xmm2 ) * scalar;
+               C(i+2UL,j) += sum( xmm3 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
+                  C(i+2UL,j) += A(i+2UL,k) * B(k,j) * scalar;
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j) );
+               ElementType value2( A(i+1UL,k) * B(k,j) );
+               ElementType value3( A(i+2UL,k) * B(k,j) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j);
+                  value2 += A(i+1UL,k) * B(k,j);
+                  value3 += A(i+2UL,k) * B(k,j);
+               }
+
+               C(i    ,j) += value1 * scalar;
+               C(i+1UL,j) += value2 * scalar;
+               C(i+2UL,j) += value3 * scalar;
             }
          }
       }
@@ -6763,30 +10758,60 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a2 * b1;
-               xmm4 += a2 * b2;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+               }
+
+               C(i    ,j    ) += sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) += sum( xmm2 ) * scalar;
+               C(i+1UL,j    ) += sum( xmm3 ) * scalar;
+               C(i+1UL,j+1UL) += sum( xmm4 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i+1UL,k) * B(k,j    ) );
+               ElementType value4( A(i+1UL,k) * B(k,j+1UL) );
 
-            C(i    ,j    ) += sum( xmm1 ) * scalar;
-            C(i    ,j+1UL) += sum( xmm2 ) * scalar;
-            C(i+1UL,j    ) += sum( xmm3 ) * scalar;
-            C(i+1UL,j+1UL) += sum( xmm4 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i+1UL,k) * B(k,j    );
+                  value4 += A(i+1UL,k) * B(k,j+1UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) += A(i    ,k) * B(k,j    ) * scalar;
-               C(i    ,j+1UL) += A(i    ,k) * B(k,j+1UL) * scalar;
-               C(i+1UL,j    ) += A(i+1UL,k) * B(k,j    ) * scalar;
-               C(i+1UL,j+1UL) += A(i+1UL,k) * B(k,j+1UL) * scalar;
+               C(i    ,j    ) += value1 * scalar;
+               C(i    ,j+1UL) += value2 * scalar;
+               C(i+1UL,j    ) += value3 * scalar;
+               C(i+1UL,j+1UL) += value4 * scalar;
             }
          }
 
@@ -6800,21 +10825,40 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType b1( B.load(k,j) );
-               xmm1 += A.load(i    ,k) * b1;
-               xmm2 += A.load(i+1UL,k) * b1;
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+               }
+
+               C(i    ,j) += sum( xmm1 ) * scalar;
+               C(i+1UL,j) += sum( xmm2 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
+                  C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j) );
+               ElementType value2( A(i+1UL,k) * B(k,j) );
 
-            C(i    ,j) += sum( xmm1 ) * scalar;
-            C(i+1UL,j) += sum( xmm2 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j);
+                  value2 += A(i+1UL,k) * B(k,j);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j) += A(i    ,k) * B(k,j) * scalar;
-               C(i+1UL,j) += A(i+1UL,k) * B(k,j) * scalar;
+               C(i    ,j) += value1 * scalar;
+               C(i+1UL,j) += value2 * scalar;
             }
          }
       }
@@ -6834,21 +10878,40 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i,k) );
-               xmm1 += a1 * B.load(k,j    );
-               xmm2 += a1 * B.load(k,j+1UL);
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i,k) );
+               SIMDType xmm1( a1 * B.load(k,j    ) );
+               SIMDType xmm2( a1 * B.load(k,j+1UL) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i,k);
+                  xmm1 += a1 * B.load(k,j    );
+                  xmm2 += a1 * B.load(k,j+1UL);
+               }
+
+               C(i,j    ) += sum( xmm1 ) * scalar;
+               C(i,j+1UL) += sum( xmm2 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i,j    ) += A(i,k) * B(k,j    ) * scalar;
+                  C(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i,k) * B(k,j    ) );
+               ElementType value2( A(i,k) * B(k,j+1UL) );
 
-            C(i,j    ) += sum( xmm1 ) * scalar;
-            C(i,j+1UL) += sum( xmm2 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i,k) * B(k,j    );
+                  value2 += A(i,k) * B(k,j+1UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i,j    ) += A(i,k) * B(k,j    ) * scalar;
-               C(i,j+1UL) += A(i,k) * B(k,j+1UL) * scalar;
+               C(i,j    ) += value1 * scalar;
+               C(i,j+1UL) += value2 * scalar;
             }
          }
 
@@ -6861,17 +10924,31 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
             BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 += A.load(i,k) * B.load(k,j);
+            if( k < kpos )
+            {
+               SIMDType xmm1( A.load(i,k) * B.load(k,j) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  xmm1 += A.load(i,k) * B.load(k,j);
+               }
+
+               C(i,j) += sum( xmm1 ) * scalar;
+
+               for( ; remainder && k<K; ++k ) {
+                  C(i,j) += A(i,k) * B(k,j) * scalar;
+               }
             }
+            else if( k < K )
+            {
+               ElementType value( A(i,k) * B(k,j) );
 
-            C(i,j) += sum( xmm1 ) * scalar;
+               for( ++k; k<K; ++k ) {
+                  value += A(i,k) * B(k,j);
+               }
 
-            for( ; remainder && k<K; ++k ) {
-               C(i,j) += A(i,k) * B(k,j) * scalar;
+               C(i,j) += value * scalar;
             }
          }
       }
@@ -7375,7 +11452,260 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
 
       size_t i( 0UL );
 
-      for( ; (i+2UL) <= M; i+=2UL )
+      for( ; !( LOW && UPP ) && (i+3UL) <= M; i+=3UL )
+      {
+         const size_t jend( LOW ? i+3UL : N );
+         size_t j( UPP ? i : 0UL );
+
+         for( ; (j+3UL) <= jend; j+=3UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType b3( B.load(k,j+2UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a1 * b3 );
+               SIMDType xmm4( a2 * b1 );
+               SIMDType xmm5( a2 * b2 );
+               SIMDType xmm6( a2 * b3 );
+               SIMDType xmm7( a3 * b1 );
+               SIMDType xmm8( a3 * b2 );
+               SIMDType xmm9( a3 * b3 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  b3 = B.load(k,j+2UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a1 * b3;
+                  xmm4 += a2 * b1;
+                  xmm5 += a2 * b2;
+                  xmm6 += a2 * b3;
+                  xmm7 += a3 * b1;
+                  xmm8 += a3 * b2;
+                  xmm9 += a3 * b3;
+               }
+
+               C(i    ,j    ) -= sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) -= sum( xmm2 ) * scalar;
+               C(i    ,j+2UL) -= sum( xmm3 ) * scalar;
+               C(i+1UL,j    ) -= sum( xmm4 ) * scalar;
+               C(i+1UL,j+1UL) -= sum( xmm5 ) * scalar;
+               C(i+1UL,j+2UL) -= sum( xmm6 ) * scalar;
+               C(i+2UL,j    ) -= sum( xmm7 ) * scalar;
+               C(i+2UL,j+1UL) -= sum( xmm8 ) * scalar;
+               C(i+2UL,j+2UL) -= sum( xmm9 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i    ,j+2UL) -= A(i    ,k) * B(k,j+2UL) * scalar;
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j+2UL) -= A(i+1UL,k) * B(k,j+2UL) * scalar;
+                  C(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    ) * scalar;
+                  C(i+2UL,j+1UL) -= A(i+2UL,k) * B(k,j+1UL) * scalar;
+                  C(i+2UL,j+2UL) -= A(i+2UL,k) * B(k,j+2UL) * scalar;
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i    ,k) * B(k,j+2UL) );
+               ElementType value4( A(i+1UL,k) * B(k,j    ) );
+               ElementType value5( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value6( A(i+1UL,k) * B(k,j+2UL) );
+               ElementType value7( A(i+2UL,k) * B(k,j    ) );
+               ElementType value8( A(i+2UL,k) * B(k,j+1UL) );
+               ElementType value9( A(i+2UL,k) * B(k,j+2UL) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i    ,k) * B(k,j+2UL);
+                  value4 += A(i+1UL,k) * B(k,j    );
+                  value5 += A(i+1UL,k) * B(k,j+1UL);
+                  value6 += A(i+1UL,k) * B(k,j+2UL);
+                  value7 += A(i+2UL,k) * B(k,j    );
+                  value8 += A(i+2UL,k) * B(k,j+1UL);
+                  value9 += A(i+2UL,k) * B(k,j+2UL);
+               }
+
+               C(i    ,j    ) -= value1 * scalar;
+               C(i    ,j+1UL) -= value2 * scalar;
+               C(i    ,j+2UL) -= value3 * scalar;
+               C(i+1UL,j    ) -= value4 * scalar;
+               C(i+1UL,j+1UL) -= value5 * scalar;
+               C(i+1UL,j+2UL) -= value6 * scalar;
+               C(i+2UL,j    ) -= value7 * scalar;
+               C(i+2UL,j+1UL) -= value8 * scalar;
+               C(i+2UL,j+2UL) -= value9 * scalar;
+            }
+         }
+
+         for( ; (j+2UL) <= jend; j+=2UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+               SIMDType xmm5( a3 * b1 );
+               SIMDType xmm6( a3 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+                  xmm5 += a3 * b1;
+                  xmm6 += a3 * b2;
+               }
+
+               C(i    ,j    ) -= sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) -= sum( xmm2 ) * scalar;
+               C(i+1UL,j    ) -= sum( xmm3 ) * scalar;
+               C(i+1UL,j+1UL) -= sum( xmm4 ) * scalar;
+               C(i+2UL,j    ) -= sum( xmm5 ) * scalar;
+               C(i+2UL,j+1UL) -= sum( xmm6 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL) * scalar;
+                  C(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    ) * scalar;
+                  C(i+2UL,j+1UL) -= A(i+2UL,k) * B(k,j+1UL) * scalar;
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i+1UL,k) * B(k,j    ) );
+               ElementType value4( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value5( A(i+2UL,k) * B(k,j    ) );
+               ElementType value6( A(i+2UL,k) * B(k,j+1UL) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i+1UL,k) * B(k,j    );
+                  value4 += A(i+1UL,k) * B(k,j+1UL);
+                  value5 += A(i+2UL,k) * B(k,j    );
+                  value6 += A(i+2UL,k) * B(k,j+1UL);
+               }
+
+               C(i    ,j    ) -= value1 * scalar;
+               C(i    ,j+1UL) -= value2 * scalar;
+               C(i+1UL,j    ) -= value3 * scalar;
+               C(i+1UL,j+1UL) -= value4 * scalar;
+               C(i+2UL,j    ) -= value5 * scalar;
+               C(i+2UL,j+1UL) -= value6 * scalar;
+            }
+         }
+
+         if( j < jend )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+               SIMDType xmm3( A.load(i+2UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+                  xmm3 += A.load(i+2UL,k) * b1;
+               }
+
+               C(i    ,j) -= sum( xmm1 ) * scalar;
+               C(i+1UL,j) -= sum( xmm2 ) * scalar;
+               C(i+2UL,j) -= sum( xmm3 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) -= A(i    ,k) * B(k,j) * scalar;
+                  C(i+1UL,j) -= A(i+1UL,k) * B(k,j) * scalar;
+                  C(i+2UL,j) -= A(i+2UL,k) * B(k,j) * scalar;
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j) );
+               ElementType value2( A(i+1UL,k) * B(k,j) );
+               ElementType value3( A(i+2UL,k) * B(k,j) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j);
+                  value2 += A(i+1UL,k) * B(k,j);
+                  value3 += A(i+2UL,k) * B(k,j);
+               }
+
+               C(i    ,j) -= value1 * scalar;
+               C(i+1UL,j) -= value2 * scalar;
+               C(i+2UL,j) -= value3 * scalar;
+            }
+         }
+      }
+
+      for( ; !( LOW && UPP ) && (i+2UL) <= M; i+=2UL )
       {
          const size_t jend( LOW ? i+2UL : N );
          size_t j( UPP ? i : 0UL );
@@ -7392,44 +11722,92 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               const SIMDType b3( B.load(k,j+2UL) );
-               const SIMDType b4( B.load(k,j+3UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a1 * b3;
-               xmm4 += a1 * b4;
-               xmm5 += a2 * b1;
-               xmm6 += a2 * b2;
-               xmm7 += a2 * b3;
-               xmm8 += a2 * b4;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType b3( B.load(k,j+2UL) );
+               SIMDType b4( B.load(k,j+3UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a1 * b3 );
+               SIMDType xmm4( a1 * b4 );
+               SIMDType xmm5( a2 * b1 );
+               SIMDType xmm6( a2 * b2 );
+               SIMDType xmm7( a2 * b3 );
+               SIMDType xmm8( a2 * b4 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  b3 = B.load(k,j+2UL);
+                  b4 = B.load(k,j+3UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a1 * b3;
+                  xmm4 += a1 * b4;
+                  xmm5 += a2 * b1;
+                  xmm6 += a2 * b2;
+                  xmm7 += a2 * b3;
+                  xmm8 += a2 * b4;
+               }
+
+               C(i    ,j    ) -= sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) -= sum( xmm2 ) * scalar;
+               C(i    ,j+2UL) -= sum( xmm3 ) * scalar;
+               C(i    ,j+3UL) -= sum( xmm4 ) * scalar;
+               C(i+1UL,j    ) -= sum( xmm5 ) * scalar;
+               C(i+1UL,j+1UL) -= sum( xmm6 ) * scalar;
+               C(i+1UL,j+2UL) -= sum( xmm7 ) * scalar;
+               C(i+1UL,j+3UL) -= sum( xmm8 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i    ,j+2UL) -= A(i    ,k) * B(k,j+2UL) * scalar;
+                  C(i    ,j+3UL) -= A(i    ,k) * B(k,j+3UL) * scalar;
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j+2UL) -= A(i+1UL,k) * B(k,j+2UL) * scalar;
+                  C(i+1UL,j+3UL) -= A(i+1UL,k) * B(k,j+3UL) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i    ,k) * B(k,j+2UL) );
+               ElementType value4( A(i    ,k) * B(k,j+3UL) );
+               ElementType value5( A(i+1UL,k) * B(k,j    ) );
+               ElementType value6( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value7( A(i+1UL,k) * B(k,j+2UL) );
+               ElementType value8( A(i+1UL,k) * B(k,j+3UL) );
 
-            C(i    ,j    ) -= sum( xmm1 ) * scalar;
-            C(i    ,j+1UL) -= sum( xmm2 ) * scalar;
-            C(i    ,j+2UL) -= sum( xmm3 ) * scalar;
-            C(i    ,j+3UL) -= sum( xmm4 ) * scalar;
-            C(i+1UL,j    ) -= sum( xmm5 ) * scalar;
-            C(i+1UL,j+1UL) -= sum( xmm6 ) * scalar;
-            C(i+1UL,j+2UL) -= sum( xmm7 ) * scalar;
-            C(i+1UL,j+3UL) -= sum( xmm8 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i    ,k) * B(k,j+2UL);
+                  value4 += A(i    ,k) * B(k,j+3UL);
+                  value5 += A(i+1UL,k) * B(k,j    );
+                  value6 += A(i+1UL,k) * B(k,j+1UL);
+                  value7 += A(i+1UL,k) * B(k,j+2UL);
+                  value8 += A(i+1UL,k) * B(k,j+3UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) -= A(i    ,k) * B(k,j    ) * scalar;
-               C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL) * scalar;
-               C(i    ,j+2UL) -= A(i    ,k) * B(k,j+2UL) * scalar;
-               C(i    ,j+3UL) -= A(i    ,k) * B(k,j+3UL) * scalar;
-               C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    ) * scalar;
-               C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL) * scalar;
-               C(i+1UL,j+2UL) -= A(i+1UL,k) * B(k,j+2UL) * scalar;
-               C(i+1UL,j+3UL) -= A(i+1UL,k) * B(k,j+3UL) * scalar;
+               C(i    ,j    ) -= value1 * scalar;
+               C(i    ,j+1UL) -= value2 * scalar;
+               C(i    ,j+2UL) -= value3 * scalar;
+               C(i    ,j+3UL) -= value4 * scalar;
+               C(i+1UL,j    ) -= value5 * scalar;
+               C(i+1UL,j+1UL) -= value6 * scalar;
+               C(i+1UL,j+2UL) -= value7 * scalar;
+               C(i+1UL,j+3UL) -= value8 * scalar;
             }
          }
 
@@ -7445,30 +11823,60 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a2 * b1;
-               xmm4 += a2 * b2;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+               }
+
+               C(i    ,j    ) -= sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) -= sum( xmm2 ) * scalar;
+               C(i+1UL,j    ) -= sum( xmm3 ) * scalar;
+               C(i+1UL,j+1UL) -= sum( xmm4 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i+1UL,k) * B(k,j    ) );
+               ElementType value4( A(i+1UL,k) * B(k,j+1UL) );
 
-            C(i    ,j    ) -= sum( xmm1 ) * scalar;
-            C(i    ,j+1UL) -= sum( xmm2 ) * scalar;
-            C(i+1UL,j    ) -= sum( xmm3 ) * scalar;
-            C(i+1UL,j+1UL) -= sum( xmm4 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i+1UL,k) * B(k,j    );
+                  value4 += A(i+1UL,k) * B(k,j+1UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) -= A(i    ,k) * B(k,j    ) * scalar;
-               C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL) * scalar;
-               C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    ) * scalar;
-               C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL) * scalar;
+               C(i    ,j    ) -= value1 * scalar;
+               C(i    ,j+1UL) -= value2 * scalar;
+               C(i+1UL,j    ) -= value3 * scalar;
+               C(i+1UL,j+1UL) -= value4 * scalar;
             }
          }
 
@@ -7482,21 +11890,40 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType b1( B.load(k,j) );
-               xmm1 += A.load(i    ,k) * b1;
-               xmm2 += A.load(i+1UL,k) * b1;
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+               }
+
+               C(i    ,j) -= sum( xmm1 ) * scalar;
+               C(i+1UL,j) -= sum( xmm2 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) -= A(i    ,k) * B(k,j) * scalar;
+                  C(i+1UL,j) -= A(i+1UL,k) * B(k,j) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j) );
+               ElementType value2( A(i+1UL,k) * B(k,j) );
 
-            C(i    ,j) -= sum( xmm1 ) * scalar;
-            C(i+1UL,j) -= sum( xmm2 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j);
+                  value2 += A(i+1UL,k) * B(k,j);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j) -= A(i    ,k) * B(k,j) * scalar;
-               C(i+1UL,j) -= A(i+1UL,k) * B(k,j) * scalar;
+               C(i    ,j) -= value1 * scalar;
+               C(i+1UL,j) -= value2 * scalar;
             }
          }
       }
@@ -7516,27 +11943,54 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i,k) );
-               xmm1 += a1 * B.load(k,j    );
-               xmm2 += a1 * B.load(k,j+1UL);
-               xmm3 += a1 * B.load(k,j+2UL);
-               xmm4 += a1 * B.load(k,j+3UL);
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i,k) );
+               SIMDType xmm1( a1 * B.load(k,j    ) );
+               SIMDType xmm2( a1 * B.load(k,j+1UL) );
+               SIMDType xmm3( a1 * B.load(k,j+2UL) );
+               SIMDType xmm4( a1 * B.load(k,j+3UL) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i,k);
+                  xmm1 += a1 * B.load(k,j    );
+                  xmm2 += a1 * B.load(k,j+1UL);
+                  xmm3 += a1 * B.load(k,j+2UL);
+                  xmm4 += a1 * B.load(k,j+3UL);
+               }
+
+               C(i,j    ) -= sum( xmm1 ) * scalar;
+               C(i,j+1UL) -= sum( xmm2 ) * scalar;
+               C(i,j+2UL) -= sum( xmm3 ) * scalar;
+               C(i,j+3UL) -= sum( xmm4 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i,j    ) -= A(i,k) * B(k,j    ) * scalar;
+                  C(i,j+1UL) -= A(i,k) * B(k,j+1UL) * scalar;
+                  C(i,j+2UL) -= A(i,k) * B(k,j+2UL) * scalar;
+                  C(i,j+3UL) -= A(i,k) * B(k,j+3UL) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i,k) * B(k,j    ) );
+               ElementType value2( A(i,k) * B(k,j+1UL) );
+               ElementType value3( A(i,k) * B(k,j+2UL) );
+               ElementType value4( A(i,k) * B(k,j+3UL) );
 
-            C(i,j    ) -= sum( xmm1 ) * scalar;
-            C(i,j+1UL) -= sum( xmm2 ) * scalar;
-            C(i,j+2UL) -= sum( xmm3 ) * scalar;
-            C(i,j+3UL) -= sum( xmm4 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i,k) * B(k,j    );
+                  value2 += A(i,k) * B(k,j+1UL);
+                  value3 += A(i,k) * B(k,j+2UL);
+                  value4 += A(i,k) * B(k,j+3UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i,j    ) -= A(i,k) * B(k,j    ) * scalar;
-               C(i,j+1UL) -= A(i,k) * B(k,j+1UL) * scalar;
-               C(i,j+2UL) -= A(i,k) * B(k,j+2UL) * scalar;
-               C(i,j+3UL) -= A(i,k) * B(k,j+3UL) * scalar;
+               C(i,j    ) -= value1 * scalar;
+               C(i,j+1UL) -= value2 * scalar;
+               C(i,j+2UL) -= value3 * scalar;
+               C(i,j+3UL) -= value4 * scalar;
             }
          }
 
@@ -7550,21 +12004,40 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i,k) );
-               xmm1 += a1 * B.load(k,j    );
-               xmm2 += a1 * B.load(k,j+1UL);
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i,k) );
+               SIMDType xmm1( a1 * B.load(k,j    ) );
+               SIMDType xmm2( a1 * B.load(k,j+1UL) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i,k);
+                  xmm1 += a1 * B.load(k,j    );
+                  xmm2 += a1 * B.load(k,j+1UL);
+               }
+
+               C(i,j    ) -= sum( xmm1 ) * scalar;
+               C(i,j+1UL) -= sum( xmm2 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i,j    ) -= A(i,k) * B(k,j    ) * scalar;
+                  C(i,j+1UL) -= A(i,k) * B(k,j+1UL) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i,k) * B(k,j    ) );
+               ElementType value2( A(i,k) * B(k,j+1UL) );
 
-            C(i,j    ) -= sum( xmm1 ) * scalar;
-            C(i,j+1UL) -= sum( xmm2 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i,k) * B(k,j    );
+                  value2 += A(i,k) * B(k,j+1UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i,j    ) -= A(i,k) * B(k,j    ) * scalar;
-               C(i,j+1UL) -= A(i,k) * B(k,j+1UL) * scalar;
+               C(i,j    ) -= value1 * scalar;
+               C(i,j+1UL) -= value2 * scalar;
             }
          }
 
@@ -7577,17 +12050,31 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
             BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 += A.load(i,k) * B.load(k,j);
+            if( k < kpos )
+            {
+               SIMDType xmm1( A.load(i,k) * B.load(k,j) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  xmm1 += A.load(i,k) * B.load(k,j);
+               }
+
+               C(i,j) -= sum( xmm1 ) * scalar;
+
+               for( ; remainder && k<K; ++k ) {
+                  C(i,j) -= A(i,k) * B(k,j) * scalar;
+               }
             }
+            else if( k < K )
+            {
+               ElementType value( A(i,k) * B(k,j) );
 
-            C(i,j) -= sum( xmm1 ) * scalar;
+               for( ++k; k<K; ++k ) {
+                  value += A(i,k) * B(k,j);
+               }
 
-            for( ; remainder && k<K; ++k ) {
-               C(i,j) -= A(i,k) * B(k,j) * scalar;
+               C(i,j) -= value * scalar;
             }
          }
       }
@@ -7642,45 +12129,93 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE )
+            if( k < kpos )
             {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType a3( A.load(i+2UL,k) );
-               const SIMDType a4( A.load(i+3UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a2 * b1;
-               xmm4 += a2 * b2;
-               xmm5 += a3 * b1;
-               xmm6 += a3 * b2;
-               xmm7 += a4 * b1;
-               xmm8 += a4 * b2;
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType a4( A.load(i+3UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+               SIMDType xmm5( a3 * b1 );
+               SIMDType xmm6( a3 * b2 );
+               SIMDType xmm7( a4 * b1 );
+               SIMDType xmm8( a4 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE )
+               {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  a4 = A.load(i+3UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+                  xmm5 += a3 * b1;
+                  xmm6 += a3 * b2;
+                  xmm7 += a4 * b1;
+                  xmm8 += a4 * b2;
+               }
+
+               C(i    ,j    ) -= sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) -= sum( xmm2 ) * scalar;
+               C(i+1UL,j    ) -= sum( xmm3 ) * scalar;
+               C(i+1UL,j+1UL) -= sum( xmm4 ) * scalar;
+               C(i+2UL,j    ) -= sum( xmm5 ) * scalar;
+               C(i+2UL,j+1UL) -= sum( xmm6 ) * scalar;
+               C(i+3UL,j    ) -= sum( xmm7 ) * scalar;
+               C(i+3UL,j+1UL) -= sum( xmm8 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL) * scalar;
+                  C(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    ) * scalar;
+                  C(i+2UL,j+1UL) -= A(i+2UL,k) * B(k,j+1UL) * scalar;
+                  C(i+3UL,j    ) -= A(i+3UL,k) * B(k,j    ) * scalar;
+                  C(i+3UL,j+1UL) -= A(i+3UL,k) * B(k,j+1UL) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i+1UL,k) * B(k,j    ) );
+               ElementType value4( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value5( A(i+2UL,k) * B(k,j    ) );
+               ElementType value6( A(i+2UL,k) * B(k,j+1UL) );
+               ElementType value7( A(i+3UL,k) * B(k,j    ) );
+               ElementType value8( A(i+3UL,k) * B(k,j+1UL) );
 
-            C(i    ,j    ) -= sum( xmm1 ) * scalar;
-            C(i    ,j+1UL) -= sum( xmm2 ) * scalar;
-            C(i+1UL,j    ) -= sum( xmm3 ) * scalar;
-            C(i+1UL,j+1UL) -= sum( xmm4 ) * scalar;
-            C(i+2UL,j    ) -= sum( xmm5 ) * scalar;
-            C(i+2UL,j+1UL) -= sum( xmm6 ) * scalar;
-            C(i+3UL,j    ) -= sum( xmm7 ) * scalar;
-            C(i+3UL,j+1UL) -= sum( xmm8 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i+1UL,k) * B(k,j    );
+                  value4 += A(i+1UL,k) * B(k,j+1UL);
+                  value5 += A(i+2UL,k) * B(k,j    );
+                  value6 += A(i+2UL,k) * B(k,j+1UL);
+                  value7 += A(i+3UL,k) * B(k,j    );
+                  value8 += A(i+3UL,k) * B(k,j+1UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) -= A(i    ,k) * B(k,j    ) * scalar;
-               C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL) * scalar;
-               C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    ) * scalar;
-               C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL) * scalar;
-               C(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    ) * scalar;
-               C(i+2UL,j+1UL) -= A(i+2UL,k) * B(k,j+1UL) * scalar;
-               C(i+3UL,j    ) -= A(i+3UL,k) * B(k,j    ) * scalar;
-               C(i+3UL,j+1UL) -= A(i+3UL,k) * B(k,j+1UL) * scalar;
+               C(i    ,j    ) -= value1 * scalar;
+               C(i    ,j+1UL) -= value2 * scalar;
+               C(i+1UL,j    ) -= value3 * scalar;
+               C(i+1UL,j+1UL) -= value4 * scalar;
+               C(i+2UL,j    ) -= value5 * scalar;
+               C(i+2UL,j+1UL) -= value6 * scalar;
+               C(i+3UL,j    ) -= value7 * scalar;
+               C(i+3UL,j+1UL) -= value8 * scalar;
             }
          }
 
@@ -7694,27 +12229,308 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType b1( B.load(k,j) );
-               xmm1 += A.load(i    ,k) * b1;
-               xmm2 += A.load(i+1UL,k) * b1;
-               xmm3 += A.load(i+2UL,k) * b1;
-               xmm4 += A.load(i+3UL,k) * b1;
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+               SIMDType xmm3( A.load(i+2UL,k) * b1 );
+               SIMDType xmm4( A.load(i+3UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+                  xmm3 += A.load(i+2UL,k) * b1;
+                  xmm4 += A.load(i+3UL,k) * b1;
+               }
+
+               C(i    ,j) -= sum( xmm1 ) * scalar;
+               C(i+1UL,j) -= sum( xmm2 ) * scalar;
+               C(i+2UL,j) -= sum( xmm3 ) * scalar;
+               C(i+3UL,j) -= sum( xmm4 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) -= A(i    ,k) * B(k,j) * scalar;
+                  C(i+1UL,j) -= A(i+1UL,k) * B(k,j) * scalar;
+                  C(i+2UL,j) -= A(i+2UL,k) * B(k,j) * scalar;
+                  C(i+3UL,j) -= A(i+3UL,k) * B(k,j) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j) );
+               ElementType value2( A(i+1UL,k) * B(k,j) );
+               ElementType value3( A(i+2UL,k) * B(k,j) );
+               ElementType value4( A(i+3UL,k) * B(k,j) );
 
-            C(i    ,j) -= sum( xmm1 ) * scalar;
-            C(i+1UL,j) -= sum( xmm2 ) * scalar;
-            C(i+2UL,j) -= sum( xmm3 ) * scalar;
-            C(i+3UL,j) -= sum( xmm4 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j);
+                  value2 += A(i+1UL,k) * B(k,j);
+                  value3 += A(i+2UL,k) * B(k,j);
+                  value4 += A(i+3UL,k) * B(k,j);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j) -= A(i    ,k) * B(k,j) * scalar;
-               C(i+1UL,j) -= A(i+1UL,k) * B(k,j) * scalar;
-               C(i+2UL,j) -= A(i+2UL,k) * B(k,j) * scalar;
-               C(i+3UL,j) -= A(i+3UL,k) * B(k,j) * scalar;
+               C(i    ,j) -= value1 * scalar;
+               C(i+1UL,j) -= value2 * scalar;
+               C(i+2UL,j) -= value3 * scalar;
+               C(i+3UL,j) -= value4 * scalar;
+            }
+         }
+      }
+
+      for( ; !LOW && !UPP && (i+3UL) <= M; i+=3UL )
+      {
+         size_t j( 0UL );
+
+         for( ; (j+3UL) <= N; j+=3UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+3UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+3UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType b3( B.load(k,j+2UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a1 * b3 );
+               SIMDType xmm4( a2 * b1 );
+               SIMDType xmm5( a2 * b2 );
+               SIMDType xmm6( a2 * b3 );
+               SIMDType xmm7( a3 * b1 );
+               SIMDType xmm8( a3 * b2 );
+               SIMDType xmm9( a3 * b3 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE )
+               {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  b3 = B.load(k,j+2UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a1 * b3;
+                  xmm4 += a2 * b1;
+                  xmm5 += a2 * b2;
+                  xmm6 += a2 * b3;
+                  xmm7 += a3 * b1;
+                  xmm8 += a3 * b2;
+                  xmm9 += a3 * b3;
+               }
+
+               C(i    ,j    ) -= sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) -= sum( xmm2 ) * scalar;
+               C(i    ,j+2UL) -= sum( xmm3 ) * scalar;
+               C(i+1UL,j    ) -= sum( xmm4 ) * scalar;
+               C(i+1UL,j+1UL) -= sum( xmm5 ) * scalar;
+               C(i+1UL,j+2UL) -= sum( xmm6 ) * scalar;
+               C(i+2UL,j    ) -= sum( xmm7 ) * scalar;
+               C(i+2UL,j+1UL) -= sum( xmm8 ) * scalar;
+               C(i+2UL,j+2UL) -= sum( xmm9 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i    ,j+2UL) -= A(i    ,k) * B(k,j+2UL) * scalar;
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j+2UL) -= A(i+1UL,k) * B(k,j+2UL) * scalar;
+                  C(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    ) * scalar;
+                  C(i+2UL,j+1UL) -= A(i+2UL,k) * B(k,j+1UL) * scalar;
+                  C(i+2UL,j+2UL) -= A(i+2UL,k) * B(k,j+2UL) * scalar;
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i    ,k) * B(k,j+2UL) );
+               ElementType value4( A(i+1UL,k) * B(k,j    ) );
+               ElementType value5( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value6( A(i+1UL,k) * B(k,j+2UL) );
+               ElementType value7( A(i+2UL,k) * B(k,j    ) );
+               ElementType value8( A(i+2UL,k) * B(k,j+1UL) );
+               ElementType value9( A(i+2UL,k) * B(k,j+2UL) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i    ,k) * B(k,j+2UL);
+                  value4 += A(i+1UL,k) * B(k,j    );
+                  value5 += A(i+1UL,k) * B(k,j+1UL);
+                  value6 += A(i+1UL,k) * B(k,j+2UL);
+                  value7 += A(i+2UL,k) * B(k,j    );
+                  value8 += A(i+2UL,k) * B(k,j+1UL);
+                  value9 += A(i+2UL,k) * B(k,j+2UL);
+               }
+
+               C(i    ,j    ) -= value1 * scalar;
+               C(i    ,j+1UL) -= value2 * scalar;
+               C(i    ,j+2UL) -= value3 * scalar;
+               C(i+1UL,j    ) -= value4 * scalar;
+               C(i+1UL,j+1UL) -= value5 * scalar;
+               C(i+1UL,j+2UL) -= value6 * scalar;
+               C(i+2UL,j    ) -= value7 * scalar;
+               C(i+2UL,j+1UL) -= value8 * scalar;
+               C(i+2UL,j+2UL) -= value9 * scalar;
+            }
+         }
+
+         for( ; (j+2UL) <= N; j+=2UL )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )
+                               ?( IsUpper_v<MT5> ? min( i+3UL, j+2UL ) : ( i+3UL ) )
+                               :( IsUpper_v<MT5> ? ( j+2UL ) : K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType a3( A.load(i+2UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+               SIMDType xmm5( a3 * b1 );
+               SIMDType xmm6( a3 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE )
+               {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  a3 = A.load(i+2UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+                  xmm5 += a3 * b1;
+                  xmm6 += a3 * b2;
+               }
+
+               C(i    ,j    ) -= sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) -= sum( xmm2 ) * scalar;
+               C(i+1UL,j    ) -= sum( xmm3 ) * scalar;
+               C(i+1UL,j+1UL) -= sum( xmm4 ) * scalar;
+               C(i+2UL,j    ) -= sum( xmm5 ) * scalar;
+               C(i+2UL,j+1UL) -= sum( xmm6 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL) * scalar;
+                  C(i+2UL,j    ) -= A(i+2UL,k) * B(k,j    ) * scalar;
+                  C(i+2UL,j+1UL) -= A(i+2UL,k) * B(k,j+1UL) * scalar;
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i+1UL,k) * B(k,j    ) );
+               ElementType value4( A(i+1UL,k) * B(k,j+1UL) );
+               ElementType value5( A(i+2UL,k) * B(k,j    ) );
+               ElementType value6( A(i+2UL,k) * B(k,j+1UL) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i+1UL,k) * B(k,j    );
+                  value4 += A(i+1UL,k) * B(k,j+1UL);
+                  value5 += A(i+2UL,k) * B(k,j    );
+                  value6 += A(i+2UL,k) * B(k,j+1UL);
+               }
+
+               C(i    ,j    ) -= value1 * scalar;
+               C(i    ,j+1UL) -= value2 * scalar;
+               C(i+1UL,j    ) -= value3 * scalar;
+               C(i+1UL,j+1UL) -= value4 * scalar;
+               C(i+2UL,j    ) -= value5 * scalar;
+               C(i+2UL,j+1UL) -= value6 * scalar;
+            }
+         }
+
+         if( j < N )
+         {
+            const size_t kbegin( ( IsUpper_v<MT4> )
+                                 ?( ( IsLower_v<MT5> ? max( i, j ) : i ) & size_t(-SIMDSIZE) )
+                                 :( IsLower_v<MT5> ? ( j & size_t(-SIMDSIZE) ) : 0UL ) );
+            const size_t kend( ( IsLower_v<MT4> )?( i+3UL ):( K ) );
+
+            const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
+            BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
+
+            size_t k( kbegin );
+
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+               SIMDType xmm3( A.load(i+2UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+                  xmm3 += A.load(i+2UL,k) * b1;
+               }
+
+               C(i    ,j) -= sum( xmm1 ) * scalar;
+               C(i+1UL,j) -= sum( xmm2 ) * scalar;
+               C(i+2UL,j) -= sum( xmm3 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) -= A(i    ,k) * B(k,j) * scalar;
+                  C(i+1UL,j) -= A(i+1UL,k) * B(k,j) * scalar;
+                  C(i+2UL,j) -= A(i+2UL,k) * B(k,j) * scalar;
+               }
+            }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j) );
+               ElementType value2( A(i+1UL,k) * B(k,j) );
+               ElementType value3( A(i+2UL,k) * B(k,j) );
+
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j);
+                  value2 += A(i+1UL,k) * B(k,j);
+                  value3 += A(i+2UL,k) * B(k,j);
+               }
+
+               C(i    ,j) -= value1 * scalar;
+               C(i+1UL,j) -= value2 * scalar;
+               C(i+2UL,j) -= value3 * scalar;
             }
          }
       }
@@ -7736,30 +12552,60 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2, xmm3, xmm4;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i    ,k) );
-               const SIMDType a2( A.load(i+1UL,k) );
-               const SIMDType b1( B.load(k,j    ) );
-               const SIMDType b2( B.load(k,j+1UL) );
-               xmm1 += a1 * b1;
-               xmm2 += a1 * b2;
-               xmm3 += a2 * b1;
-               xmm4 += a2 * b2;
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i    ,k) );
+               SIMDType a2( A.load(i+1UL,k) );
+               SIMDType b1( B.load(k,j    ) );
+               SIMDType b2( B.load(k,j+1UL) );
+               SIMDType xmm1( a1 * b1 );
+               SIMDType xmm2( a1 * b2 );
+               SIMDType xmm3( a2 * b1 );
+               SIMDType xmm4( a2 * b2 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i    ,k);
+                  a2 = A.load(i+1UL,k);
+                  b1 = B.load(k,j    );
+                  b2 = B.load(k,j+1UL);
+                  xmm1 += a1 * b1;
+                  xmm2 += a1 * b2;
+                  xmm3 += a2 * b1;
+                  xmm4 += a2 * b2;
+               }
+
+               C(i    ,j    ) -= sum( xmm1 ) * scalar;
+               C(i    ,j+1UL) -= sum( xmm2 ) * scalar;
+               C(i+1UL,j    ) -= sum( xmm3 ) * scalar;
+               C(i+1UL,j+1UL) -= sum( xmm4 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j    ) -= A(i    ,k) * B(k,j    ) * scalar;
+                  C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL) * scalar;
+                  C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    ) * scalar;
+                  C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j    ) );
+               ElementType value2( A(i    ,k) * B(k,j+1UL) );
+               ElementType value3( A(i+1UL,k) * B(k,j    ) );
+               ElementType value4( A(i+1UL,k) * B(k,j+1UL) );
 
-            C(i    ,j    ) -= sum( xmm1 ) * scalar;
-            C(i    ,j+1UL) -= sum( xmm2 ) * scalar;
-            C(i+1UL,j    ) -= sum( xmm3 ) * scalar;
-            C(i+1UL,j+1UL) -= sum( xmm4 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j    );
+                  value2 += A(i    ,k) * B(k,j+1UL);
+                  value3 += A(i+1UL,k) * B(k,j    );
+                  value4 += A(i+1UL,k) * B(k,j+1UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j    ) -= A(i    ,k) * B(k,j    ) * scalar;
-               C(i    ,j+1UL) -= A(i    ,k) * B(k,j+1UL) * scalar;
-               C(i+1UL,j    ) -= A(i+1UL,k) * B(k,j    ) * scalar;
-               C(i+1UL,j+1UL) -= A(i+1UL,k) * B(k,j+1UL) * scalar;
+               C(i    ,j    ) -= value1 * scalar;
+               C(i    ,j+1UL) -= value2 * scalar;
+               C(i+1UL,j    ) -= value3 * scalar;
+               C(i+1UL,j+1UL) -= value4 * scalar;
             }
          }
 
@@ -7773,21 +12619,40 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType b1( B.load(k,j) );
-               xmm1 += A.load(i    ,k) * b1;
-               xmm2 += A.load(i+1UL,k) * b1;
+            if( k < kpos )
+            {
+               SIMDType b1( B.load(k,j) );
+               SIMDType xmm1( A.load(i    ,k) * b1 );
+               SIMDType xmm2( A.load(i+1UL,k) * b1 );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  b1 = B.load(k,j);
+                  xmm1 += A.load(i    ,k) * b1;
+                  xmm2 += A.load(i+1UL,k) * b1;
+               }
+
+               C(i    ,j) -= sum( xmm1 ) * scalar;
+               C(i+1UL,j) -= sum( xmm2 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i    ,j) -= A(i    ,k) * B(k,j) * scalar;
+                  C(i+1UL,j) -= A(i+1UL,k) * B(k,j) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i    ,k) * B(k,j) );
+               ElementType value2( A(i+1UL,k) * B(k,j) );
 
-            C(i    ,j) -= sum( xmm1 ) * scalar;
-            C(i+1UL,j) -= sum( xmm2 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i    ,k) * B(k,j);
+                  value2 += A(i+1UL,k) * B(k,j);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i    ,j) -= A(i    ,k) * B(k,j) * scalar;
-               C(i+1UL,j) -= A(i+1UL,k) * B(k,j) * scalar;
+               C(i    ,j) -= value1 * scalar;
+               C(i+1UL,j) -= value2 * scalar;
             }
          }
       }
@@ -7807,21 +12672,40 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( kend & size_t(-SIMDSIZE) ) : kend );
             BLAZE_INTERNAL_ASSERT( !remainder || ( kend - ( kend % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1, xmm2;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               const SIMDType a1( A.load(i,k) );
-               xmm1 += a1 * B.load(k,j    );
-               xmm2 += a1 * B.load(k,j+1UL);
+            if( k < kpos )
+            {
+               SIMDType a1( A.load(i,k) );
+               SIMDType xmm1( a1 * B.load(k,j    ) );
+               SIMDType xmm2( a1 * B.load(k,j+1UL) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  a1 = A.load(i,k);
+                  xmm1 += a1 * B.load(k,j    );
+                  xmm2 += a1 * B.load(k,j+1UL);
+               }
+
+               C(i,j    ) -= sum( xmm1 ) * scalar;
+               C(i,j+1UL) -= sum( xmm2 ) * scalar;
+
+               for( ; remainder && k<kend; ++k ) {
+                  C(i,j    ) -= A(i,k) * B(k,j    ) * scalar;
+                  C(i,j+1UL) -= A(i,k) * B(k,j+1UL) * scalar;
+               }
             }
+            else if( k < kend )
+            {
+               ElementType value1( A(i,k) * B(k,j    ) );
+               ElementType value2( A(i,k) * B(k,j+1UL) );
 
-            C(i,j    ) -= sum( xmm1 ) * scalar;
-            C(i,j+1UL) -= sum( xmm2 ) * scalar;
+               for( ++k; k<kend; ++k ) {
+                  value1 += A(i,k) * B(k,j    );
+                  value2 += A(i,k) * B(k,j+1UL);
+               }
 
-            for( ; remainder && k<kend; ++k ) {
-               C(i,j    ) -= A(i,k) * B(k,j    ) * scalar;
-               C(i,j+1UL) -= A(i,k) * B(k,j+1UL) * scalar;
+               C(i,j    ) -= value1 * scalar;
+               C(i,j+1UL) -= value2 * scalar;
             }
          }
 
@@ -7834,17 +12718,31 @@ class DMatScalarMultExpr< DMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, false >
             const size_t kpos( remainder ? ( K & size_t(-SIMDSIZE) ) : K );
             BLAZE_INTERNAL_ASSERT( !remainder || ( K - ( K % (SIMDSIZE) ) ) == kpos, "Invalid end calculation" );
 
-            SIMDType xmm1;
             size_t k( kbegin );
 
-            for( ; k<kpos; k+=SIMDSIZE ) {
-               xmm1 += A.load(i,k) * B.load(k,j);
+            if( k < kpos )
+            {
+               SIMDType xmm1( A.load(i,k) * B.load(k,j) );
+
+               for( k+=SIMDSIZE; k<kpos; k+=SIMDSIZE ) {
+                  xmm1 += A.load(i,k) * B.load(k,j);
+               }
+
+               C(i,j) -= sum( xmm1 ) * scalar;
+
+               for( ; remainder && k<K; ++k ) {
+                  C(i,j) -= A(i,k) * B(k,j) * scalar;
+               }
             }
+            else if( k < K )
+            {
+               ElementType value( A(i,k) * B(k,j) );
 
-            C(i,j) -= sum( xmm1 ) * scalar;
+               for( ++k; k<K; ++k ) {
+                  value += A(i,k) * B(k,j);
+               }
 
-            for( ; remainder && k<K; ++k ) {
-               C(i,j) -= A(i,k) * B(k,j) * scalar;
+               C(i,j) -= value * scalar;
             }
          }
       }
