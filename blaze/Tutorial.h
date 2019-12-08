@@ -17372,6 +17372,62 @@
 //
 //
 // <hr>
+// \section faq_std_vector I experience crashes when using StaticVector/StaticMatrix in a std::vector. Is this a bug?
+//
+// With active vectorization the elements of a \c StaticVector, \c HybridVector, \c StaticMatrix,
+// and \c HybridMatrix are possibly over-aligned to meet the alignment requirements of the
+// available instruction set (SSE, AVX, AVX-512, ...). The alignment for fundamental types
+// (\c short, \c int, \c float, \c double, ...) and complex types (\c complex<float>,
+// \c complex<double>, ...) is 16 bytes for SSE, 32 bytes for AVX, and 64 bytes for AVX-512. All
+// other types are aligned according to their intrinsic alignment:
+
+   \code
+   struct Int { int i; };
+
+   using VT1 = blaze::StaticVector<double,3UL>;
+   using VT2 = blaze::StaticVector<complex<float>,2UL>;
+   using VT3 = blaze::StaticVector<Int,5UL>;
+
+   alignof( VT1 );  // Evaluates to 16 for SSE, 32 for AVX, and 64 for AVX-512
+   alignof( VT2 );  // Evaluates to 16 for SSE, 32 for AVX, and 64 for AVX-512
+   alignof( VT3 );  // Evaluates to 'alignof( Int )'
+   \endcode
+
+// For this reason \c StaticVector, \c HybridVector, \c StaticMatrix, and \c HybridMatrix cannot
+// be used in containers using dynamic memory such as \c std::vector without additionally providing
+// an allocator that can provide over-aligned memory:
+
+   \code
+   using Type = blaze::StaticVector<double,3UL>;
+   using Allocator = blaze::AlignedAllocator<Type>;
+
+   std::vector<Type> v1;  // Might be misaligned for AVX or AVX-512
+   std::vector<Type,Allocator> v2;  // Properly aligned for AVX or AVX-512
+   \endcode
+
+// It is possible to disable the vectorization entirely by the compile time switch in the
+// <tt>./blaze/config/Vectorization.h</tt> configuration file:
+
+   \code
+   #define BLAZE_USE_VECTORIZATION 1
+   \endcode
+
+// It is also possible to (de-)activate vectorization via command line or by defining this symbol
+// manually before including any \b Blaze header file:
+
+   \code
+   #define BLAZE_USE_VECTORIZATION 1
+   #include <blaze/Blaze.h>
+   \endcode
+
+// In case the switch is set to 1, vectorization is enabled and the \b Blaze library is allowed
+// to use intrinsics and the necessary alignment to speed up computations. In case the switch is
+// set to 0, vectorization is disabled entirely and the \b Blaze library chooses default,
+// non-vectorized functionality for the operations. Note that deactivating the vectorization may
+// pose a severe performance limitation for a large number of operations!
+//
+//
+// <hr>
 // \section faq_blas To which extend does Blaze make use of BLAS functions under the hood?
 //
 // Currently the only BLAS functions that are utilized by \b Blaze are the \c gemm() functions
