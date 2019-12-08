@@ -733,6 +733,36 @@
    blaze::StaticVector<double,6UL,blaze::rowVector> c;
    \endcode
 
+// The elements of a blaze::StaticVector are possibly over-aligned to meet the alignment
+// requirements of the available instruction set (SSE, AVX, AVX-512, ...). The alignment
+// for fundamental types (\c short, \c int, \c float, \c double, ...) and complex types
+// (\c complex<float>, \c complex<double>, ...) is 16 bytes for SSE, 32 bytes for AVX, and
+// 64 bytes for AVX-512. All other types are aligned according to their intrinsic alignment:
+
+   \code
+   struct Int { int i; };
+
+   using VT1 = blaze::StaticVector<double,3UL>;
+   using VT2 = blaze::StaticVector<complex<float>,2UL>;
+   using VT3 = blaze::StaticVector<Int,5UL>;
+
+   alignof( VT1 );  // Evaluates to 16 for SSE, 32 for AVX, and 64 for AVX-512
+   alignof( VT2 );  // Evaluates to 16 for SSE, 32 for AVX, and 64 for AVX-512
+   alignof( VT3 );  // Evaluates to 'alignof( Int )'
+   \endcode
+
+// Please note that for this reason a blaze::StaticVector cannot be used in containers using
+// dynamic memory such as \c std::vector without additionally providing an allocator that can
+// provide over-aligned memory:
+
+   \code
+   using Type = blaze::StaticVector<double,3UL>;
+   using Allocator = blaze::AlignedAllocator<Type>;
+
+   std::vector<Type> v1;  // Might be misaligned for AVX or AVX-512
+   std::vector<Type,Allocator> v2;  // Properly aligned for AVX or AVX-512
+   \endcode
+
 // \n \subsection vector_types_dynamic_vector DynamicVector
 //
 // The blaze::DynamicVector class template is the representation of an arbitrary sized vector
@@ -808,6 +838,36 @@
 
    // Definition of a double precision row vector with size 0 and a maximum size of 6
    blaze::HybridVector<double,6UL,blaze::rowVector> c;
+   \endcode
+
+// The elements of a blaze::HybridVector are possibly over-aligned to meet the alignment
+// requirements of the available instruction set (SSE, AVX, AVX-512, ...). The alignment
+// for fundamental types (\c short, \c int, \c float, \c double, ...) and complex types
+// (\c complex<float>, \c complex<double>, ...) is 16 bytes for SSE, 32 bytes for AVX, and
+// 64 bytes for AVX-512. All other types are aligned according to their intrinsic alignment:
+
+   \code
+   struct Int { int i; };
+
+   using VT1 = blaze::HybridVector<double,3UL>;
+   using VT2 = blaze::HybridVector<complex<float>,2UL>;
+   using VT3 = blaze::HybridVector<Int,5UL>;
+
+   alignof( VT1 );  // Evaluates to 16 for SSE, 32 for AVX, and 64 for AVX-512
+   alignof( VT2 );  // Evaluates to 16 for SSE, 32 for AVX, and 64 for AVX-512
+   alignof( VT3 );  // Evaluates to 'alignof( Int )'
+   \endcode
+
+// Please note that for this reason a blaze::HybridVector cannot be used in containers using
+// dynamic memory such as \c std::vector without additionally providing an allocator that can
+// provide over-aligned memory:
+
+   \code
+   using Type = blaze::HybridVector<double,3UL>;
+   using Allocator = blaze::AlignedAllocator<Type>;
+
+   std::vector<Type> v1;  // Might be misaligned for AVX or AVX-512
+   std::vector<Type,Allocator> v2;  // Properly aligned for AVX or AVX-512
    \endcode
 
 // \n \subsection vector_types_custom_vector CustomVector
@@ -3100,6 +3160,36 @@
    blaze::StaticMatrix<double,6UL,4UL,blaze::columnMajor> C;
    \endcode
 
+// The elements of a blaze::StaticMatrix are possibly over-aligned to meet the alignment
+// requirements of the available instruction set (SSE, AVX, AVX-512, ...). The alignment
+// for fundamental types (\c short, \c int, \c float, \c double, ...) and complex types
+// (\c complex<float>, \c complex<double>, ...) is 16 bytes for SSE, 32 bytes for AVX, and
+// 64 bytes for AVX-512. All other types are aligned according to their intrinsic alignment:
+
+   \code
+   struct Int { int i; };
+
+   using MT1 = blaze::StaticMatrix<double,3UL>;
+   using MT2 = blaze::StaticMatrix<complex<float>,2UL>;
+   using MT3 = blaze::StaticMatrix<Int,5UL>;
+
+   alignof( MT1 );  // Evaluates to 16 for SSE, 32 for AVX, and 64 for AVX-512
+   alignof( MT2 );  // Evaluates to 16 for SSE, 32 for AVX, and 64 for AVX-512
+   alignof( MT3 );  // Evaluates to 'alignof( Int )'
+   \endcode
+
+// Please note that for this reason a blaze::StaticMatrix cannot be used in containers using
+// dynamic memory such as \c std::vector without additionally providing an allocator that can
+// provide over-aligned memory:
+
+   \code
+   using Type = blaze::StaticMatrix<double,3UL>;
+   using Allocator = blaze::AlignedAllocator<Type>;
+
+   std::vector<Type> v1;  // Might be misaligned for AVX or AVX-512
+   std::vector<Type,Allocator> v2;  // Properly aligned for AVX or AVX-512
+   \endcode
+
 // \n \subsection matrix_types_dynamic_matrix DynamicMatrix
 //
 // The blaze::DynamicMatrix class template is the representation of an arbitrary sized matrix
@@ -3179,6 +3269,36 @@
 
    // Definition of a 0x0 double precision column-major matrix and maximum dimensions of 6x6
    blaze::HybridMatrix<double,6UL,6UL,blaze::columnMajor> C;
+   \endcode
+
+// The elements of a blaze::HybridMatrix are possibly over-aligned to meet the alignment
+// requirements of the available instruction set (SSE, AVX, AVX-512, ...). The alignment
+// for fundamental types (\c short, \c int, \c float, \c double, ...) and complex types
+// (\c complex<float>, \c complex<double>, ...) is 16 bytes for SSE, 32 bytes for AVX, and
+// 64 bytes for AVX-512. All other types are aligned according to their intrinsic alignment:
+
+   \code
+   struct Int { int i; };
+
+   using MT1 = blaze::HybridMatrix<double,3UL>;
+   using MT2 = blaze::HybridMatrix<complex<float>,2UL>;
+   using MT3 = blaze::HybridMatrix<Int,5UL>;
+
+   alignof( MT1 );  // Evaluates to 16 for SSE, 32 for AVX, and 64 for AVX-512
+   alignof( MT2 );  // Evaluates to 16 for SSE, 32 for AVX, and 64 for AVX-512
+   alignof( MT3 );  // Evaluates to 'alignof( Int )'
+   \endcode
+
+// Please note that for this reason a blaze::HybridMatrix cannot be used in containers using
+// dynamic memory such as \c std::vector without additionally providing an allocator that can
+// provide over-aligned memory:
+
+   \code
+   using Type = blaze::HybridMatrix<double,3UL>;
+   using Allocator = blaze::AlignedAllocator<Type>;
+
+   std::vector<Type> v1;  // Might be misaligned for AVX or AVX-512
+   std::vector<Type,Allocator> v2;  // Properly aligned for AVX or AVX-512
    \endcode
 
 // \n \subsection matrix_types_custom_matrix CustomMatrix
