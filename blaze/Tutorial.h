@@ -1434,29 +1434,58 @@
 //
 // \n \subsection vector_operations_iterators Iterators
 //
-// All vectors (sparse as well as dense) offer an alternate way via the \c begin(), \c cbegin(),
-// \c end(), and \c cend() functions to traverse the currently contained elements by iterators.
-// In case of non-const vectors, \c begin() and \c end() return an \c Iterator, which allows a
-// manipulation of the non-zero value, in case of a constant vector or in case \c cbegin() or
-// \c cend() are used a \c ConstIterator is returned:
+// An alternate way to traverse the elements contained in a dense or sparse vector is by means
+// of iterators. For that purpose, all vectors provide the \c begin(), \c cbegin(), \c end(),
+// and \c cend() members functions. In case of non-const vectors, \c begin() and \c end() return
+// an \c Iterator, which allows a manipulation of the (non-zero) value. In case of a constant
+// vector or in case \c cbegin() or \c cend() are used a \c ConstIterator is returned. Iterators
+// on dense vectors traverse all elements of the vector, including the zero elements. Iterators
+// on sparse vectors only traverse the non-zero elements.
+//
+// The following two examples demonstrate how to traverse the elements of a dense and sparse
+// vector, respectively:
+
+   \code
+   using blaze::DynamicVector;
+
+   DynamicVector<int> v1( 10UL );
+
+   // Traversing all elements contained in the vector by Iterator
+   for( DynamicVector<int>::Iterator it=v1.begin(); it!=v1.end(); ++it ) {
+      *it = ...;  // OK: Write access to the value of the element.
+      ... = *it;  // OK: Read access to the value of the element.
+   }
+
+   // Traversing all elements contained in the vector by ConstIterator
+   for( DynamicVector<int>::ConstIterator it=v1.cbegin(); it!=v1.cend(); ++it ) {
+      *it = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
+      ... = *it;  // OK: Read access to the value of the element.
+   }
+
+   // Traversing the vector elements by means of a range-based for loop
+   for( int& i : v1 ) {
+      i = ...;  // OK: Write access to the value of the element.
+      ... = i;  // OK: Read access to the value of the element.
+   }
+   \endcode
 
    \code
    using blaze::CompressedVector;
 
-   CompressedVector<int> v1( 10UL );
+   CompressedVector<int> v2( 10UL );
 
    // ... Initialization of the vector
 
-   // Traversing the vector by Iterator
-   for( CompressedVector<int>::Iterator it=v1.begin(); it!=v1.end(); ++it ) {
+   // Traversing the non-zero elements contained in the vector by Iterator
+   for( CompressedVector<int>::Iterator it=v2.begin(); it!=v2.end(); ++it ) {
       it->value() = ...;  // OK: Write access to the value of the non-zero element.
       ... = it->value();  // OK: Read access to the value of the non-zero element.
       it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
       ... = it->index();  // OK: Read access to the index of the non-zero element.
    }
 
-   // Traversing the vector by ConstIterator
-   for( CompressedVector<int>::ConstIterator it=v1.cbegin(); it!=v1.cend(); ++it ) {
+   // Traversing the non-zero elements contained in the vector by ConstIterator
+   for( CompressedVector<int>::ConstIterator it=v2.cbegin(); it!=v2.cend(); ++it ) {
       it->value() = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
       ... = it->value();  // OK: Read access to the value of the non-zero element.
       it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
@@ -1467,11 +1496,11 @@
 // Note that \c begin(), \c cbegin(), \c end(), and \c cend() are also available as free functions:
 
    \code
-   for( CompressedVector<int>::Iterator it=begin( v1 ); it!=end( v1 ); ++it ) {
+   for( CompressedVector<int>::Iterator it=begin( v2 ); it!=end( v2 ); ++it ) {
       // ...
    }
 
-   for( CompressedVector<int>::ConstIterator it=cbegin( v1 ); it!=cend( v1 ); ++it ) {
+   for( CompressedVector<int>::ConstIterator it=cbegin( v2 ); it!=cend( v2 ); ++it ) {
       // ...
    }
    \endcode
@@ -1480,7 +1509,7 @@
 // <hr>
 //
 // In contrast to dense vectors, that store all elements independent of their value and that
-// offer direct access to all elements, spares vectors only store the non-zero elements contained
+// offer direct access to all elements, sparse vectors only store the non-zero elements contained
 // in the vector. Therefore it is necessary to explicitly add elements to the vector.
 //
 // \n \subsection vector_operations_subscript_operator_2 Subscript Operator
@@ -3859,21 +3888,56 @@
 //
 // \n \subsection matrix_operations_iterators Iterators
 //
-// All matrices (sparse as well as dense) offer an alternate way via the \c begin(), \c cbegin(),
-// \c end() and \c cend() functions to traverse all contained elements by iterator. Note that
-// it is not possible to traverse all elements of the matrix, but that it is only possible to
-// traverse elements in a row/column-wise fashion. In case of a non-const matrix, \c begin() and
-// \c end() return an \c Iterator, which allows a manipulation of the non-zero value, in case of
-// a constant matrix or in case \c cbegin() or \c cend() are used a \c ConstIterator is returned:
+// An alternate way to traverse the elements contained in a dense or sparse matrix is by means
+// of iterators. For that purpose, all matrices provide the \c begin(), \c cbegin(), \c end(),
+// and \c cend() members functions. Note that it is not possible to traverse all elements of the
+// matrix, but that it is only possible to traverse elements in a row-wise fashion (in case of
+// a row-major matrix) or in a column-wise fashion (in case of a column-major matrix). In case of
+// non-const matrices, \c begin() and \c end() return an \c Iterator, which allows a manipulation
+// of the (non-zero) value. In case of a constant matrix or in case \c cbegin() or \c cend() are
+// used a \c ConstIterator is returned. Iterators on dense matrices traverse all elements of the
+// matrix, including the zero elements. Iterators on sparse matrices only traverse the non-zero
+// elements.
+//
+// The following two examples demonstrate how to traverse the elements of a dense and sparse
+// matrix, respectively:
+
+   \code
+   using blaze::DynamicMatrix;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+
+   DynamicMatrix<int,rowMajor> M1( 4UL, 6UL );
+   DynamicMatrix<int,columnMajor> M2( 4UL, 6UL );
+
+   // Traversing all elements contained in the row-major matrix by Iterator
+   for( size_t i=0UL; i<M1.rows(); ++i ) {
+      for( DynamicMatrix<int,rowMajor>::Iterator it=M1.begin(i); it!=M1.end(i); ++it ) {
+         *it = ...;  // OK: Write access to the value of the element.
+         ... = *it;  // OK: Read access to the value of the element.
+      }
+   }
+
+   // Traversing all elements contained in the column-major matrix by ConstIterator
+   for( size_t j=0UL; j<M2.columns(); ++j ) {
+      for( DynamicMatrix<int,columnMajor>::ConstIterator it=M2.cbegin(j); it!=M2.cend(j); ++it ) {
+         *it = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
+         ... = *it;  // OK: Read access to the value of the element.
+      }
+   }
+   \endcode
 
    \code
    using blaze::CompressedMatrix;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
 
-   CompressedMatrix<int,rowMajor> M1( 4UL, 6UL );
+   CompressedMatrix<int,rowMajor> M3( 4UL, 6UL );
+   CompressedMatrix<int,columnMajor> M4( 4UL, 6UL );
 
-   // Traversing the matrix by Iterator
-   for( size_t i=0UL; i<A.rows(); ++i ) {
-      for( CompressedMatrix<int,rowMajor>::Iterator it=A.begin(i); it!=A.end(i); ++it ) {
+   // Traversing the non-zero elements contained in the row-major matrix by Iterator
+   for( size_t i=0UL; i<M3.rows(); ++i ) {
+      for( CompressedMatrix<int,rowMajor>::Iterator it=M3.begin(i); it!=M3.end(i); ++it ) {
          it->value() = ...;  // OK: Write access to the value of the non-zero element.
          ... = it->value();  // OK: Read access to the value of the non-zero element.
          it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
@@ -3881,9 +3945,9 @@
       }
    }
 
-   // Traversing the matrix by ConstIterator
-   for( size_t i=0UL; i<A.rows(); ++i ) {
-      for( CompressedMatrix<int,rowMajor>::ConstIterator it=A.cbegin(i); it!=A.cend(i); ++it ) {
+   // Traversing the non-zero elements contained in the column-major matrix by ConstIterator
+   for( size_t j=0UL; j<M4.columns(); ++j ) {
+      for( CompressedMatrix<int,columnMajor>::ConstIterator it=M4.cbegin(j); it!=M4.cend(j); ++it ) {
          it->value() = ...;  // Compilation error: Assignment to the value via a ConstIterator is invalid.
          ... = it->value();  // OK: Read access to the value of the non-zero element.
          it->index() = ...;  // Compilation error: The index of a non-zero element cannot be changed.
@@ -3895,14 +3959,14 @@
 // Note that \c begin(), \c cbegin(), \c end(), and \c cend() are also available as free functions:
 
    \code
-   for( size_t i=0UL; i<A.rows(); ++i ) {
-      for( CompressedMatrix<int,rowMajor>::Iterator it=begin( A, i ); it!=end( A, i ); ++it ) {
+   for( size_t i=0UL; i<M3.rows(); ++i ) {
+      for( CompressedMatrix<int,rowMajor>::Iterator it=begin( M3, i ); it!=end( M3, i ); ++it ) {
          // ...
       }
    }
 
-   for( size_t i=0UL; i<A.rows(); ++i ) {
-      for( CompressedMatrix<int,rowMajor>::ConstIterator it=cbegin( A, i ); it!=cend( A, i ); ++it ) {
+   for( size_t j=0UL; j<M4.columns(); ++j ) {
+      for( CompressedMatrix<int,columnMajor>::ConstIterator it=cbegin( M4, j ); it!=cend( M4, j ); ++it ) {
          // ...
       }
    }
