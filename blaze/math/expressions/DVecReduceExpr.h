@@ -51,7 +51,6 @@
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsSIMDEnabled.h>
 #include <blaze/math/typetraits/IsUniform.h>
-#include <blaze/system/Compiler.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
@@ -265,22 +264,7 @@ inline auto dvecreduce( const DenseVector<VT,TF>& dv, Add /*op*/ )
 
    ET redux{};
 
-   if( !BLAZE_CLANG_COMPILER && !remainder )
-   {
-      SIMDTrait_t<ET> xmm1, xmm2;
-      size_t i( 0UL );
-
-      for( ; (i+SIMDSIZE) < N; i+=SIMDSIZE*2UL ) {
-         xmm1 += tmp.load(i         );
-         xmm2 += tmp.load(i+SIMDSIZE);
-      }
-      if( i < N ) {
-         xmm1 += tmp.load(i);
-      }
-
-      redux = sum( xmm1 + xmm2 );
-   }
-   else if( !remainder || N >= SIMDSIZE )
+   if( !remainder || N >= SIMDSIZE )
    {
       const size_t ipos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == ipos, "Invalid end calculation" );
