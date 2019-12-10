@@ -57,6 +57,8 @@
 #include <blaze/math/functors/Bitor.h>
 #include <blaze/math/functors/Bitxor.h>
 #include <blaze/math/functors/Hypot.h>
+#include <blaze/math/functors/Join.h>
+#include <blaze/math/functors/MakePair.h>
 #include <blaze/math/functors/Max.h>
 #include <blaze/math/functors/Min.h>
 #include <blaze/math/functors/Or.h>
@@ -669,6 +671,8 @@ class DMatDMatMapExpr
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
       assign( ~lhs, map( A, B, rhs.op_ ) );
@@ -747,6 +751,8 @@ class DMatDMatMapExpr
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
       addAssign( ~lhs, map( A, B, rhs.op_ ) );
@@ -790,6 +796,8 @@ class DMatDMatMapExpr
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
       subAssign( ~lhs, map( A, B, rhs.op_ ) );
@@ -833,6 +841,8 @@ class DMatDMatMapExpr
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
       schurAssign( ~lhs, map( A, B, rhs.op_ ) );
@@ -884,6 +894,8 @@ class DMatDMatMapExpr
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
       smpAssign( ~lhs, map( A, B, rhs.op_ ) );
@@ -963,6 +975,8 @@ class DMatDMatMapExpr
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
       smpAddAssign( ~lhs, map( A, B, rhs.op_ ) );
@@ -1007,6 +1021,8 @@ class DMatDMatMapExpr
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
       smpSubAssign( ~lhs, map( A, B, rhs.op_ ) );
@@ -1051,6 +1067,8 @@ class DMatDMatMapExpr
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
 
       smpSchurAssign( ~lhs, map( A, B, rhs.op_ ) );
@@ -1128,6 +1146,160 @@ inline decltype(auto)
 
    using ReturnType = const DMatDMatMapExpr<MT1,MT2,OP,SO>;
    return ReturnType( ~lhs, ~rhs, op );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Elementwise evaluation of the given ternary operation on each single element of the
+//        dense matrices \a dm1, \a dm2 and \a dm3.
+// \ingroup dense_matrix
+//
+// \param dm1 The first dense matrix operand.
+// \param dm2 The second dense matrix operand.
+// \param dm3 The third dense matrix operand.
+// \param op The custom, ternary operation.
+// \return The ternary operation applied to each single element of the three matrices.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// The \a map() function evaluates the given ternary operation on each single element of the
+// input matrices \a dm1, \a dm2, and \a dm3. The function returns an expression representing
+// this operation.\n
+// In case the current number of rows and columns of the three given matrices don't match, a
+// \a std::invalid_argument is thrown.
+*/
+template< typename MT1   // Type of the first dense matrix
+        , typename MT2   // Type of the second dense matrix
+        , typename MT3   // Type of the third dense matrix
+        , bool SO        // Storage order
+        , typename OP >  // Type of the custom operation
+inline decltype(auto)
+   map( const DenseMatrix<MT1,SO>& dm1, const DenseMatrix<MT2,SO>& dm2,
+        const DenseMatrix<MT3,SO>& dm3, OP op )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const MakePair mp{};
+   return map( map( map( ~dm1, ~dm2, mp ), ~dm3, mp ), join( op ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Elementwise evaluation of the given 4-ary operation on each single element of the
+//        dense matrices \a dm1, \a dm2, \a dm3 and \a dm4.
+// \ingroup dense_matrix
+//
+// \param dm1 The first dense matrix operand.
+// \param dm2 The second dense matrix operand.
+// \param dm3 The third dense matrix operand.
+// \param dm4 The fourth dense matrix operand.
+// \param op The custom, 4-ary operation.
+// \return The 4-ary operation applied to each single element of the four matrices.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// The \a map() function evaluates the given 4-ary operation on each single element of the input
+// matrices \a dm1, \a dm2, \a dm3, and \a dm4. The function returns an expression representing
+// this operation.\n
+// In case the current number of rows and columns of the four given matrices don't match, a
+// \a std::invalid_argument is thrown.
+*/
+template< typename MT1   // Type of the first dense matrix
+        , typename MT2   // Type of the second dense matrix
+        , typename MT3   // Type of the third dense matrix
+        , typename MT4   // Type of the fourth dense matrix
+        , bool SO        // Storage order
+        , typename OP >  // Type of the custom operation
+inline decltype(auto)
+   map( const DenseMatrix<MT1,SO>& dm1, const DenseMatrix<MT2,SO>& dm2,
+        const DenseMatrix<MT3,SO>& dm3, const DenseMatrix<MT4,SO>& dm4, OP op )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const MakePair mp{};
+   return map( map( map( map( ~dm1, ~dm2, mp ), ~dm3, mp ), ~dm4, mp ), join( op ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Elementwise evaluation of the given 5-ary operation on each single element of the
+//        dense matrices \a dm1, \a dm2, \a dm3, \a dm4, and \a dm5.
+// \ingroup dense_matrix
+//
+// \param dm1 The first dense matrix operand.
+// \param dm2 The second dense matrix operand.
+// \param dm3 The third dense matrix operand.
+// \param dm4 The fourth dense matrix operand.
+// \param dm5 The fifth dense matrix operand.
+// \param op The custom, 5-ary operation.
+// \return The 5-ary operation applied to each single element of the five matrices.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// The \a map() function evaluates the given 5-ary operation on each single element of the input
+// matrices \a dm1, \a dm2, \a dm3, \a dm4, and \a dm5. The function returns an expression
+// representing this operation.\n
+// In case the current number of rows and columns of the five given matrices don't match, a
+// \a std::invalid_argument is thrown.
+*/
+template< typename MT1   // Type of the first dense matrix
+        , typename MT2   // Type of the second dense matrix
+        , typename MT3   // Type of the third dense matrix
+        , typename MT4   // Type of the fourth dense matrix
+        , typename MT5   // Type of the fifth dense matrix
+        , bool SO        // Storage order
+        , typename OP >  // Type of the custom operation
+inline decltype(auto)
+   map( const DenseMatrix<MT1,SO>& dm1, const DenseMatrix<MT2,SO>& dm2,
+        const DenseMatrix<MT3,SO>& dm3, const DenseMatrix<MT4,SO>& dm4,
+        const DenseMatrix<MT5,SO>& dm5, OP op )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const MakePair mp{};
+   return map( map( map( map( map( ~dm1, ~dm2, mp ), ~dm3, mp ), ~dm4, mp ), ~dm5, mp ), join( op ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Elementwise evaluation of the given 6-ary operation on each single element of the
+//        dense matrices \a dm1, \a dm2, \a dm3, \a dm4, \a dm5, and \a dm6.
+// \ingroup dense_matrix
+//
+// \param dm1 The first dense matrix operand.
+// \param dm2 The second dense matrix operand.
+// \param dm3 The third dense matrix operand.
+// \param dm4 The fourth dense matrix operand.
+// \param dm5 The fifth dense matrix operand.
+// \param dm6 The sixth dense matrix operand.
+// \param op The custom, 6-ary operation.
+// \return The 6-ary operation applied to each single element of the six matrices.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// The \a map() function evaluates the given 6-ary operation on each single element of the input
+// matrices \a dm1, \a dm2, \a dm3, \a dm4, \a dm5, and \a dm6. The function returns an expression
+// representing this operation.\n
+// In case the current number of rows and columns of the six given matrices don't match, a
+// \a std::invalid_argument is thrown.
+*/
+template< typename MT1   // Type of the first dense matrix
+        , typename MT2   // Type of the second dense matrix
+        , typename MT3   // Type of the third dense matrix
+        , typename MT4   // Type of the fourth dense matrix
+        , typename MT5   // Type of the fifth dense matrix
+        , typename MT6   // Type of the sixth dense matrix
+        , bool SO        // Storage order
+        , typename OP >  // Type of the custom operation
+inline decltype(auto)
+   map( const DenseMatrix<MT1,SO>& dm1, const DenseMatrix<MT2,SO>& dm2,
+        const DenseMatrix<MT3,SO>& dm3, const DenseMatrix<MT4,SO>& dm4,
+        const DenseMatrix<MT5,SO>& dm5, const DenseMatrix<MT6,SO>& dm6, OP op )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const MakePair mp{};
+   return map( map( map( map( map( map( ~dm1, ~dm2, mp ), ~dm3, mp ), ~dm4, mp ), ~dm5, mp ), ~dm6, mp ), join( op ) );
 }
 //*************************************************************************************************
 
