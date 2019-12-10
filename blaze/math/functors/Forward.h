@@ -118,6 +118,7 @@ struct Log2;
 struct Log10;
 template< size_t... > struct LpNorm;
 struct MAC;
+struct MakePair;
 struct Max;
 struct Min;
 struct ModuloAssign;
