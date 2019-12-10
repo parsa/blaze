@@ -106,6 +106,7 @@ struct Inv;
 struct InvAdd;
 struct InvCbrt;
 struct InvSqrt;
+template< typename > struct Join;
 struct Kron;
 struct L1Norm;
 struct L2Norm;

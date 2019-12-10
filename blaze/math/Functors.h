@@ -95,6 +95,7 @@
 #include <blaze/math/functors/InvAdd.h>
 #include <blaze/math/functors/InvCbrt.h>
 #include <blaze/math/functors/InvSqrt.h>
+#include <blaze/math/functors/Join.h>
 #include <blaze/math/functors/Kron.h>
 #include <blaze/math/functors/L1Norm.h>
 #include <blaze/math/functors/L2Norm.h>
