@@ -57,6 +57,8 @@
 #include <blaze/math/functors/Bitor.h>
 #include <blaze/math/functors/Bitxor.h>
 #include <blaze/math/functors/Hypot.h>
+#include <blaze/math/functors/Join.h>
+#include <blaze/math/functors/MakePair.h>
 #include <blaze/math/functors/Max.h>
 #include <blaze/math/functors/Min.h>
 #include <blaze/math/functors/Or.h>
@@ -1101,6 +1103,160 @@ inline decltype(auto)
 
    using ReturnType = const DVecDVecMapExpr<VT1,VT2,OP,TF>;
    return ReturnType( ~lhs, ~rhs, op );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Elementwise evaluation of the given ternary operation on each single element of the
+//        dense vectors \a dv1, \a dv2, and \a dv3.
+// \ingroup dense_vector
+//
+// \param dv1 The first dense vector operand.
+// \param dv2 The second dense vector operand.
+// \param dv3 The third dense vector operand.
+// \param op The custom, ternary operation.
+// \return The ternary operation applied to each single element of the three vectors.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// The \a map() function evaluates the given ternary operation on each single element of the
+// input vectors \a dv1, \a dv2, and \a dv3. The function returns an expression representing
+// this operation.\n
+// In case the current sizes of the three given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT1   // Type of the first dense vector
+        , typename VT2   // Type of the second dense vector
+        , typename VT3   // Type of the third dense vector
+        , bool TF        // Transpose flag
+        , typename OP >  // Type of the custom operation
+inline decltype(auto)
+   map( const DenseVector<VT1,TF>& dv1, const DenseVector<VT2,TF>& dv2,
+        const DenseVector<VT3,TF>& dv3, OP op )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const MakePair mp{};
+   return map( map( map( ~dv1, ~dv2, mp ), ~dv3, mp ), join( op ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Elementwise evaluation of the given 4-ary operation on each single element of the
+//        dense vectors \a dv1, \a dv2, \a dv3, and \a dv4.
+// \ingroup dense_vector
+//
+// \param dv1 The first dense vector operand.
+// \param dv2 The second dense vector operand.
+// \param dv3 The third dense vector operand.
+// \param dv4 The fourth dense vector operand.
+// \param op The custom, 4-ary operation.
+// \return The 4-ary operation applied to each single element of the four vectors.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// The \a map() function evaluates the given 4-ary operation on each single element of the input
+// vectors \a dv1, \a dv2, \a dv3, and \a dv4. The function returns an expression representing
+// this operation.\n
+// In case the current sizes of the four given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT1   // Type of the first dense vector
+        , typename VT2   // Type of the second dense vector
+        , typename VT3   // Type of the third dense vector
+        , typename VT4   // Type of the fourth dense vector
+        , bool TF        // Transpose flag
+        , typename OP >  // Type of the custom operation
+inline decltype(auto)
+   map( const DenseVector<VT1,TF>& dv1, const DenseVector<VT2,TF>& dv2,
+        const DenseVector<VT3,TF>& dv3, const DenseVector<VT4,TF>& dv4, OP op )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const MakePair mp{};
+   return map( map( map( map( ~dv1, ~dv2, mp ), ~dv3, mp ), ~dv4, mp ), join( op ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Elementwise evaluation of the given 5-ary operation on each single element of the
+//        dense vectors \a dv1, \a dv2, \a dv3, \a dv4, and \a dv5.
+// \ingroup dense_vector
+//
+// \param dv1 The first dense vector operand.
+// \param dv2 The second dense vector operand.
+// \param dv3 The third dense vector operand.
+// \param dv4 The fourth dense vector operand.
+// \param dv5 The fifth dense vector operand.
+// \param op The custom, 5-ary operation.
+// \return The 5-ary operation applied to each single element of the five vectors.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// The \a map() function evaluates the given 5-ary operation on each single element of the input
+// vectors \a dv1, \a dv2, \a dv3, \a dv4, and \a dv5. The function returns an expression
+// representing this operation.\n
+// In case the current sizes of the five given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT1   // Type of the first dense vector
+        , typename VT2   // Type of the second dense vector
+        , typename VT3   // Type of the third dense vector
+        , typename VT4   // Type of the fourth dense vector
+        , typename VT5   // Type of the fifth dense vector
+        , bool TF        // Transpose flag
+        , typename OP >  // Type of the custom operation
+inline decltype(auto)
+   map( const DenseVector<VT1,TF>& dv1, const DenseVector<VT2,TF>& dv2,
+        const DenseVector<VT3,TF>& dv3, const DenseVector<VT4,TF>& dv4,
+        const DenseVector<VT5,TF>& dv5, OP op )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const MakePair mp{};
+   return map( map( map( map( map( ~dv1, ~dv2, mp ), ~dv3, mp ), ~dv4, mp ), ~dv5, mp ), join( op ) );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Elementwise evaluation of the given 6-ary operation on each single element of the
+//        dense vectors \a dv1, \a dv2, \a dv3, \a dv4, \a dv5, and \a dv6.
+// \ingroup dense_vector
+//
+// \param dv1 The first dense vector operand.
+// \param dv2 The second dense vector operand.
+// \param dv3 The third dense vector operand.
+// \param dv4 The fourth dense vector operand.
+// \param dv5 The fifth dense vector operand.
+// \param dv6 The sixth dense vector operand.
+// \param op The custom, 6-ary operation.
+// \return The 6-ary operation applied to each single element of the six vectors.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// The \a map() function evaluates the given 6-ary operation on each single element of the
+// input vectors \a dv1, \a dv2, \a dv3, \a dv4, \a dv5, and \a dv6. The function returns an
+// expression representing this operation.\n
+// In case the current sizes of the six given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT1   // Type of the first dense vector
+        , typename VT2   // Type of the second dense vector
+        , typename VT3   // Type of the third dense vector
+        , typename VT4   // Type of the fourth dense vector
+        , typename VT5   // Type of the fifth dense vector
+        , typename VT6   // Type of the sixth dense vector
+        , bool TF        // Transpose flag
+        , typename OP >  // Type of the custom operation
+inline decltype(auto)
+   map( const DenseVector<VT1,TF>& dv1, const DenseVector<VT2,TF>& dv2,
+        const DenseVector<VT3,TF>& dv3, const DenseVector<VT4,TF>& dv4,
+        const DenseVector<VT5,TF>& dv5, const DenseVector<VT6,TF>& dv6, OP op )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const MakePair mp{};
+   return map( map( map( map( map( map( ~dv1, ~dv2, mp ), ~dv3, mp ), ~dv4, mp ), ~dv5, mp ), ~dv6, mp ), join( op ) );
 }
 //*************************************************************************************************
 
