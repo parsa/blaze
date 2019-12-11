@@ -1485,6 +1485,50 @@ inline decltype(auto)
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Elementwise conditional selection of values from the dense matrices \a lhs and \a rhs.
+// \ingroup dense_matrix
+//
+// \param cond The dense matrix containing the selection conditions.
+// \param lhs The true-case dense matrix.
+// \param rhs The false-case dense matrix.
+// \return The resulting dense matrix.
+// \exception std::invalid_argument Matrix sizes do not match.
+//
+// This function performs an elementwise conditional selection of values from the two given dense
+// matrices \a lhs and \a rhs. In case an element in the \a cond matrix evaluates to \a true, the
+// according element of \a lhs is selected, in case the \a cond element evaluates to \a false, the
+// according element of \a rhs is selected. The function returns an expression representing this
+// operation.\n
+// The following example demonstrates the use of the \a selec() function:
+
+   \code
+   blaze::DynamicMatrix<bool> cond{ { true, false }, { true false } };
+   blaze::DynamicMatrix<int> A{ { 1, -1 }, { 1, -1 } };
+   blaze::DynamicMatrix<int> B{ { -2, 2 }, { -2, 2 } };
+   blaze::DynamicMatrix<int> C;
+   // ... Resizing and initialization
+
+   C = select( cond, A, B );  // Results in ( 1, 2 ) ( 1, 2 )
+   \endcode
+
+// In case the current number of rows and columns of the three given matrices don't match, a
+// \a std::invalid_argument is thrown.
+*/
+template< typename MT1  // Type of the conditional dense matrix
+        , typename MT2  // Type of the true-case dense matrix
+        , typename MT3  // Type of the false-case dense matrix
+        , bool SO >     // Storage order
+inline decltype(auto)
+   select( const DenseMatrix<MT1,SO>& cond, const DenseMatrix<MT2,SO>& lhs, const DenseMatrix<MT3,SO>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( cond, lhs, rhs, []( bool c, const auto& a, const auto& b ) { return c ? a : b; } );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
