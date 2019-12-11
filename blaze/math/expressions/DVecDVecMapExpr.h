@@ -1436,6 +1436,50 @@ inline decltype(auto)
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Elementwise conditional selection of values from the dense vectors \a lhs and \a rhs.
+// \ingroup dense_vector
+//
+// \param cond The dense vector containing the selection conditions.
+// \param lhs The true-case dense vector.
+// \param rhs The false-case dense vector.
+// \return The resulting dense vector.
+// \exception std::invalid_argument Vector sizes do not match.
+//
+// This function performs an elementwise conditional selection of values from the two given dense
+// vectors \a lhs and \a rhs. In case an element in the \a cond vector evaluates to \a true, the
+// according element of \a lhs is selected, in case the \a cond element evaluates to \a false, the
+// according element of \a rhs is selected. The function returns an expression representing this
+// operation.\n
+// The following example demonstrates the use of the \a selec() function:
+
+   \code
+   blaze::DynamicVector<bool> cond{ true, false, true false };
+   blaze::DynamicVector<int> a{ 1, -1, 1, -1 };
+   blaze::DynamicVector<int> b{ -2, 2, -2, 2 };
+   blaze::DynamicVector<int> c;
+   // ... Resizing and initialization
+
+   c = select( cond, a, b );  // Results in ( 1, 2, 1, 2 )
+   \endcode
+
+// In case the current sizes of the three given vectors don't match, a \a std::invalid_argument
+// is thrown.
+*/
+template< typename VT1  // Type of the conditional dense vector
+        , typename VT2  // Type of the true-case dense vector
+        , typename VT3  // Type of the false-case dense vector
+        , bool TF >     // Transpose flag
+inline decltype(auto)
+   select( const DenseVector<VT1,TF>& cond, const DenseVector<VT2,TF>& lhs, const DenseVector<VT3,TF>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( cond, lhs, rhs, []( bool c, const auto& a, const auto& b ) { return c ? a : b; } );
+}
+//*************************************************************************************************
+
+
 
 
 //=================================================================================================
