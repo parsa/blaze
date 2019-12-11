@@ -2639,6 +2639,24 @@
 // used, but the function might be deprecated in future releases of \b Blaze.
 //
 //
+// \n \subsection vector_operations_select select()
+//
+// The \c select() function performs a componentwise, conditional selection of elements. Given
+// the three dense vectors \c cond, \c a, and \c b, in case an element in the \c cond vector
+// evaluates to \a true, the according element of \a a is selected, in case the \a cond element
+// evaluates to \a false, the according element of \a b is selected. The following example
+// demonstrates the use of the \a select() function:
+
+   \code
+   blaze::DynamicVector<bool> cond{ true, false, true false };
+   blaze::DynamicVector<int> a{ 1, -1, 1, -1 };
+   blaze::DynamicVector<int> b{ -2, 2, -2, 2 };
+   blaze::DynamicVector<int> c;
+   // ... Resizing and initialization
+
+   c = select( cond, a, b );  // Results in ( 1, 2, 1, 2 )
+   \endcode
+
 // \n \section vector_operations_reduction_operations Reduction Operations
 // <hr>
 //
@@ -5518,6 +5536,24 @@
 // used, but the function might be deprecated in future releases of \b Blaze.
 //
 //
+// \n \subsection matrix_operations_select select()
+//
+// The \c select() function performs a componentwise, conditional selection of elements. Given
+// the three dense matrices \c cond, \c A, and \c B, in case an element in the \c cond vector
+// evaluates to \a true, the according element of \a A is selected, in case the \a cond element
+// evaluates to \a false, the according element of \a B is selected. The following example
+// demonstrates the use of the \a select() function:
+
+   \code
+   blaze::DynamicMatrix<bool> cond{ { true, false }, { true false } };
+   blaze::DynamicMatrix<int> A{ { 1, -1 }, { 1, -1 } };
+   blaze::DynamicMatrix<int> B{ { -2, 2 }, { -2, 2 } };
+   blaze::DynamicMatrix<int> C;
+   // ... Resizing and initialization
+
+   C = select( cond, A, B );  // Results in ( 1, 2 ) ( 1, 2 )
+   \endcode
+
 // \n \section matrix_operations_reduction_operations Reduction Operations
 // <hr>
 //
