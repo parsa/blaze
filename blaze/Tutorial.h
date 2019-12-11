@@ -2625,7 +2625,7 @@
    //   A = (  4  8  3  9 )
    //       ( -2  2 -3  3 )
    //
-   StaticMatrix<int,3UL,3UL> M1 = map( v1, v2, []( int a, int b ){ return a + b; } );
+   blaze::StaticMatrix<int,3UL,4UL> M1 = map( v1, v2, []( int a, int b ){ return a + b; } );
    \endcode
 
 // Although the computation in the two previous examples can be parallelized it is not vectorized
@@ -12135,16 +12135,16 @@
    //   A = (  4  8  3  9 )
    //       ( -2  2 -3  3 )
    //
-   StaticMatrix<int,3UL,3UL> M1 = v1 + v2;
+   blaze::StaticMatrix<int,3UL,4UL> M1 = v1 + v2;
    \endcode
 
 // The \c trans() function can be used to transpose a vector as necessary:
 
    \code
-   blaze::StaticVector<int,2UL,rowVector> v1{ 2, 5 };
+   blaze::StaticVector<int,3UL,rowVector> v1{ 2, 5, -1 };
    blaze::DynamicVector<int,rowVector> v2{ -1, 3, -2, 4 };
 
-   StaticMatrix<int,3UL,3UL> M1 = trans( v1 ) + v2;
+   blaze::StaticMatrix<int,3UL,4UL> M1 = trans( v1 ) + v2;
    \endcode
 
 // \n \section matrix_matrix_addition Matrix/Matrix Addition
@@ -12272,10 +12272,10 @@
 // The \c trans() function can be used to transpose a vector as necessary:
 
    \code
-   blaze::StaticVector<int,2UL,rowVector> v1{ 2, 5 };
+   blaze::StaticVector<int,3UL,rowVector> v1{ 2, 5, -1 };
    blaze::DynamicVector<int,rowVector> v2{ -1, 3, -2, 4 };
 
-   StaticMatrix<int,3UL,3UL> M1 = trans( v1 ) - v2;
+   blaze::StaticMatrix<int,3UL,4UL> M1 = trans( v1 ) - v2;
    \endcode
 
 // \n \section matrix_matrix_subtraction Matrix/Matrix Subtraction
@@ -12477,7 +12477,7 @@
    blaze::StaticVector<int,3UL,rowVector> v1{  2, 5, -1 };
    blaze::DynamicVector<int,rowVector> v2{ -1, 3, -2, 4 };
 
-   StaticMatrix<int,3UL,3UL> M1 = trans( v1 ) * v2;
+   blaze::StaticMatrix<int,3UL,4UL> M1 = trans( v1 ) * v2;
    \endcode
 
 // Alternatively, the \c outer() function can be used for any combination of vectors (row or column
@@ -12485,9 +12485,9 @@
 
    \code
    blaze::StaticVector<int,3UL,rowVector> v1{  2, 5, -1 };
-   blaze::DynamicVector<int,rowVector> v2{ -1, 3, -2 };
+   blaze::DynamicVector<int,rowVector> v2{ -1, 3, -2, 4 };
 
-   StaticMatrix<int,3UL,3UL> M1 = outer( v1, v2 );  // Outer product between two row vectors
+   blaze::StaticMatrix<int,3UL,4UL> M1 = outer( v1, v2 );  // Outer product between two row vectors
    \endcode
 
 // \n \section cross_product Cross Product
@@ -12601,16 +12601,16 @@
    //   A = ( -5    1 -2.5  1.25 )
    //       (  1 -0.2  0.5 -0.25 )
    //
-   StaticMatrix<int,3UL,3UL> M1 = v1 / v2;
+   blaze::StaticMatrix<int,3UL,4UL> M1 = v1 / v2;
    \endcode
 
 // The \c trans() function can be used to transpose a vector as necessary:
 
    \code
-   blaze::StaticVector<int,2UL,rowVector> v1{ 2, 5 };
+   blaze::StaticVector<int,3UL,rowVector> v1{ 2, 5, -1 };
    blaze::DynamicVector<int,rowVector> v2{ -1, 5, -2, 4 };
 
-   StaticMatrix<int,3UL,3UL> M1 = trans( v1 ) / v2;
+   blaze::StaticMatrix<int,3UL,4UL> M1 = trans( v1 ) / v2;
    \endcode
 
 // Note that all values of the divisor must be non-zero and that no checks are performed to assert
