@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/IntegerSequence.h
+//  \file blaze/util/IntegerSequence.h
 //  \brief Header file for the integer_sequence and index_sequence aliases
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
@@ -32,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_INTEGERSEQUENCE_H_
-#define _BLAZE_MATH_INTEGERSEQUENCE_H_
+#ifndef _BLAZE_UTIL_INTEGERSEQUENCE_H_
+#define _BLAZE_UTIL_INTEGERSEQUENCE_H_
 
 
 //*************************************************************************************************
@@ -55,7 +55,7 @@ namespace blaze {
 //*************************************************************************************************
 /*!\class blaze::integer_sequence
 // \brief Integer sequence type of the Blaze library.
-// \ingroup math
+// \ingroup util
 */
 using std::integer_sequence;
 //*************************************************************************************************
@@ -64,7 +64,7 @@ using std::integer_sequence;
 //*************************************************************************************************
 /*!\class blaze::index_sequence
 // \brief Index sequence type of the Blaze library.
-// \ingroup math
+// \ingroup util
 */
 using std::index_sequence;
 //*************************************************************************************************
@@ -73,7 +73,7 @@ using std::index_sequence;
 //*************************************************************************************************
 /*!\class blaze::make_integer_sequence
 // \brief Import of the std::make_integer_sequence alias template into the Blaze namespace.
-// \ingroup math
+// \ingroup util
 */
 using std::make_integer_sequence;
 //*************************************************************************************************
@@ -82,7 +82,7 @@ using std::make_integer_sequence;
 //*************************************************************************************************
 /*!\class blaze::make_index_sequence
 // \brief Import of the std::make_index_sequence alias template into the Blaze namespace.
-// \ingroup math
+// \ingroup util
 */
 using std::make_index_sequence;
 //*************************************************************************************************
@@ -98,7 +98,7 @@ using std::make_index_sequence;
 
 //*************************************************************************************************
 /*!\brief Equality operator for the comparison of two index sequences.
-// \ingroup math
+// \ingroup util
 //
 // \param lhs The left-hand side index sequence for the comparison.
 // \param rhs The right-hand side index sequence for the comparison.
@@ -117,7 +117,7 @@ constexpr bool operator==( index_sequence<I1s...> lhs, index_sequence<I2s...> rh
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Equality operator for the comparison of two identical index sequences.
-// \ingroup math
+// \ingroup util
 //
 // \param lhs The left-hand side index sequence for the comparison.
 // \param rhs The right-hand side index sequence for the comparison.
@@ -136,7 +136,7 @@ constexpr bool operator==( index_sequence<I1s...> lhs, index_sequence<I1s...> rh
 
 //*************************************************************************************************
 /*!\brief Inequality operator for the comparison of two index sequences.
-// \ingroup math
+// \ingroup util
 //
 // \param lhs The left-hand side index sequence for the comparison.
 // \param rhs The right-hand side index sequence for the comparison.
@@ -163,7 +163,7 @@ constexpr bool operator!=( index_sequence<I1s...> lhs, index_sequence<I2s...> rh
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Shifts the given index sequence by a given offset.
-// \ingroup math
+// \ingroup util
 //
 // \param sequence The given index sequence
 // \return The shifted index sequence.
@@ -183,7 +183,7 @@ constexpr decltype(auto) shift( std::index_sequence<Is...> sequence )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creates a subsequence from the given index sequence.
-// \ingroup math
+// \ingroup util
 //
 // \param sequence The given index sequence
 // \return The resulting subsequence.
@@ -211,7 +211,7 @@ constexpr decltype(auto) subsequence( std::index_sequence<Is2...> sequence )
 
 //*************************************************************************************************
 /*!\brief Auxiliary alias declaration for the setup of shifted index sequences.
-// \ingroup math
+// \ingroup util
 //
 // The make_shifted_index_sequence alias template provides a convenient way to create index
 // sequences with specific initial index and a specific number of indices. The following code
@@ -230,7 +230,7 @@ using make_shifted_index_sequence = decltype( shift<Offset>( make_index_sequence
 
 //*************************************************************************************************
 /*!\brief Auxiliary alias declaration for the setup of shifted index subsequences.
-// \ingroup math
+// \ingroup util
 //
 // The make_shifted_index_subsequence alias template provides a convenient way to create a
 // subsequence of an index sequences with specific initial index and a specific number of indices.

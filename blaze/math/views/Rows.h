@@ -70,7 +70,6 @@
 #include <blaze/math/expressions/VecTVecMapExpr.h>
 #include <blaze/math/expressions/VecTVecMultExpr.h>
 #include <blaze/math/InitializerList.h>
-#include <blaze/math/IntegerSequence.h>
 #include <blaze/math/InversionFlag.h>
 #include <blaze/math/ReductionFlag.h>
 #include <blaze/math/shims/IsDefault.h>
@@ -93,6 +92,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
+#include <blaze/util/IntegerSequence.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/SmallArray.h>

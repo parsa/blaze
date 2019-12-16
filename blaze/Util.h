@@ -57,6 +57,7 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/Indices.h>
 #include <blaze/util/InitializerList.h>
+#include <blaze/util/IntegerSequence.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/Limits.h>
