@@ -276,7 +276,7 @@ class StaticVector
    explicit inline StaticVector( size_t n, const Other* array );
 
    template< typename Other, size_t Dim >
-   explicit inline StaticVector( const Other (&array)[Dim] );
+   explicit inline constexpr StaticVector( const Other (&array)[Dim] );
 
    inline constexpr StaticVector( const StaticVector& v );
 
@@ -320,7 +320,7 @@ class StaticVector
    inline constexpr StaticVector& operator=( initializer_list<Type> list );
 
    template< typename Other, size_t Dim >
-   inline StaticVector& operator=( const Other (&array)[Dim] );
+   inline constexpr StaticVector& operator=( const Other (&array)[Dim] );
 
    inline constexpr StaticVector& operator=( const StaticVector& rhs );
 
@@ -525,6 +525,7 @@ class StaticVector
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE      ( Type );
    BLAZE_STATIC_ASSERT( !usePadding || ( NN % SIMDSIZE == 0UL ) );
    BLAZE_STATIC_ASSERT( NN >= N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -556,20 +557,16 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 inline StaticVector<Type,N,TF>::StaticVector()
+#if BLAZE_USE_DEFAULT_INITIALIZATION
    : v_()  // The statically allocated vector elements
+#endif
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
-   if( IsNumeric_v<Type> ) {
-      if( useDefaultInitialization ) {
-         for( size_t i=0UL; i<NN; ++i )
-            v_[i] = Type();
-      }
-      else if( usePadding ) {
-         for( size_t i=N; i<NN; ++i )
-            v_[i] = Type();
-      }
+#if !BLAZE_USE_DEFAULT_INITIALIZATION
+   if( IsNumeric_v<Type> && usePadding ) {
+      for( size_t i=N; i<NN; ++i )
+         v_[i] = Type();
    }
+#endif
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -585,10 +582,8 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 inline StaticVector<Type,N,TF>::StaticVector( const Type& init )
-   : v_()  // The statically allocated vector elements
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
    for( size_t i=0UL; i<N; ++i )
       v_[i] = init;
 
@@ -621,10 +616,8 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 inline constexpr StaticVector<Type,N,TF>::StaticVector( initializer_list<Type> list )
-   : v_( Type() )  // The statically allocated vector elements
+   : v_()  // The statically allocated vector elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
    if( list.size() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static vector" );
    }
@@ -653,7 +646,7 @@ inline constexpr StaticVector<Type,N,TF>::StaticVector( initializer_list<Type> l
    \code
    const double array* = new double[2];
    // ... Initialization of the array
-   blaze::StaticVector<double,2> v( array, 2UL );
+   blaze::StaticVector<double,2> v( 2UL, array );
    delete[] array;
    \endcode
 
@@ -668,10 +661,8 @@ template< typename Type     // Data type of the vector
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the initialization array
 inline StaticVector<Type,N,TF>::StaticVector( size_t n, const Other* array )
-   : v_()  // The statically allocated vector elements
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
    if( n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static vector" );
    }
@@ -702,25 +693,20 @@ inline StaticVector<Type,N,TF>::StaticVector( size_t n, const Other* array )
    blaze::StaticVector<double,3> v( init );
    \endcode
 
-// The vector is initialized with the values from the given array. Missing values are initialized
-// with default values (as e.g. the third value in the example).
+// The vector is initialized with the values from the given static array. Whereas the dimensions
+// of the vector and the static array must match, it is allowed to provide fewer initializers for
+// the static array. Missing values are initialized with default values (as e.g. the third value
+// in the example).
 */
 template< typename Type   // Data type of the vector
         , size_t N        // Number of elements
         , bool TF >       // Transpose flag
-template< typename Other  // Data type of the initialization array
-        , size_t Dim >    // Dimension of the initialization array
-inline StaticVector<Type,N,TF>::StaticVector( const Other (&array)[Dim] )
-   : v_()  // The statically allocated vector elements
+template< typename Other  // Data type of the static array
+        , size_t Dim >    // Dimension of the static array
+inline constexpr StaticVector<Type,N,TF>::StaticVector( const Other (&array)[Dim] )
+   : v_( array )  // The statically allocated vector elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
    BLAZE_STATIC_ASSERT( Dim == N );
-
-   for( size_t i=0UL; i<N; ++i )
-      v_[i] = array[i];
-
-   for( size_t i=N; i<NN; ++i )
-      v_[i] = Type();
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -740,8 +726,6 @@ template< typename Type  // Data type of the vector
 inline constexpr StaticVector<Type,N,TF>::StaticVector( const StaticVector& v )
    : v_( v.v_ )  // The statically allocated vector elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
@@ -757,10 +741,8 @@ template< typename Type     // Data type of the vector
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign vector
 inline StaticVector<Type,N,TF>::StaticVector( const StaticVector<Other,N,TF>& v )
-   : v_()  // The statically allocated vector elements
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
    for( size_t i=0UL; i<N; ++i )
       v_[i] = v[i];
 
@@ -787,11 +769,9 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 template< typename VT >  // Type of the foreign vector
 inline StaticVector<Type,N,TF>::StaticVector( const Vector<VT,TF>& v )
-   : v_()  // The statically allocated vector elements
+   // v_ is intentionally left uninitialized
 {
    using blaze::assign;
-
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    if( (~v).size() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static vector" );
@@ -1123,20 +1103,24 @@ inline constexpr StaticVector<Type,N,TF>&
    v = init;
    \endcode
 
-// The vector is assigned the values from the given array. Missing values are initialized with
-// default values (as e.g. the third value in the example).
+// The vector is assigned the values from the given static array. Whereas the dimensions of the
+// vector and the static array must match, it is allowed to provide fewer initializers for the
+// static array. Missing values are initialized with default values (as e.g. the third value in
+// the example).
 */
 template< typename Type   // Data type of the vector
         , size_t N        // Number of elements
         , bool TF >       // Transpose flag
-template< typename Other  // Data type of the initialization array
-        , size_t Dim >    // Dimension of the initialization array
-inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( const Other (&array)[Dim] )
+template< typename Other  // Data type of the static array
+        , size_t Dim >    // Dimension of the static array
+inline constexpr StaticVector<Type,N,TF>&
+   StaticVector<Type,N,TF>::operator=( const Other (&array)[Dim] )
 {
    BLAZE_STATIC_ASSERT( Dim == N );
 
    for( size_t i=0UL; i<N; ++i )
       v_[i] = array[i];
+
    return *this;
 }
 //*************************************************************************************************
@@ -1153,7 +1137,8 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( const Other 
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( const StaticVector& rhs )
+inline constexpr StaticVector<Type,N,TF>&
+   StaticVector<Type,N,TF>::operator=( const StaticVector& rhs )
 {
    v_ = rhs.v_;
 
@@ -1174,7 +1159,8 @@ template< typename Type     // Data type of the vector
         , size_t N          // Number of elements
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the foreign vector
-inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator=( const StaticVector<Other,N,TF>& rhs )
+inline StaticVector<Type,N,TF>&
+   StaticVector<Type,N,TF>::operator=( const StaticVector<Other,N,TF>& rhs )
 {
    using blaze::assign;
 
