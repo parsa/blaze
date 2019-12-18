@@ -517,6 +517,7 @@ class HybridVector
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE      ( Type );
    BLAZE_STATIC_ASSERT( !usePadding || NN % SIMDSIZE == 0UL );
    BLAZE_STATIC_ASSERT( NN >= N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -543,13 +544,6 @@ inline HybridVector<Type,N,TF>::HybridVector()
    : v_   ()       // The statically allocated vector elements
    , size_( 0UL )  // The current size/dimension of the vector
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
-   if( IsNumeric_v<Type> ) {
-      for( size_t i=0UL; i<NN; ++i )
-         v_[i] = Type();
-   }
-
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
@@ -572,15 +566,8 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n )
    : v_   ()     // The statically allocated vector elements
    , size_( n )  // The current size/dimension of the vector
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
    if( n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid size for hybrid vector" );
-   }
-
-   if( IsNumeric_v<Type> ) {
-      for( size_t i=0UL; i<NN; ++i )
-         v_[i] = Type();
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -603,11 +590,9 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Type& init )
-   : v_   ()     // The statically allocated vector elements
-   , size_( n )  // The current size/dimension of the vector
+   : size_( n )  // The current size/dimension of the vector
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
    if( n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid size for hybrid vector" );
    }
@@ -647,11 +632,9 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 inline HybridVector<Type,N,TF>::HybridVector( initializer_list<Type> list )
-   : v_   ()               // The statically allocated vector elements
-   , size_( list.size() )  // The current size/dimension of the vector
+   : size_( list.size() )  // The current size/dimension of the vector
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
    if( size_ > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid vector" );
    }
@@ -676,7 +659,7 @@ inline HybridVector<Type,N,TF>::HybridVector( initializer_list<Type> list )
    \code
    double* array = new double[6];
    // ... Initialization of the dynamic array
-   blaze::HybridVector<double,6> v( array, 6UL );
+   blaze::HybridVector<double,6> v( 6UL, array );
    delete[] array;
    \endcode
 
@@ -691,11 +674,9 @@ template< typename Type     // Data type of the vector
         , bool TF >         // Transpose flag
 template< typename Other >  // Data type of the initialization array
 inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Other* array )
-   : v_   ()     // The statically allocated vector elements
-   , size_( n )  // The current size/dimension of the vector
+   : size_( n )  // The current size/dimension of the vector
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
    if( n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid vector" );
    }
@@ -737,19 +718,10 @@ template< typename Type   // Data type of the vector
 template< typename Other  // Data type of the initialization array
         , size_t Dim >    // Number of elements of the initialization array
 inline HybridVector<Type,N,TF>::HybridVector( const Other (&array)[Dim] )
-   : v_   ()       // The statically allocated vector elements
-   , size_( Dim )  // The current size/dimension of the vector
+   : v_   ( array )  // The statically allocated vector elements
+   , size_( Dim )    // The current size/dimension of the vector
 {
    BLAZE_STATIC_ASSERT( Dim <= N );
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
-   for( size_t i=0UL; i<Dim; ++i )
-      v_[i] = array[i];
-
-   if( IsNumeric_v<Type> ) {
-      for( size_t i=Dim; i<NN; ++i )
-         v_[i] = Type();
-   }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -767,19 +739,9 @@ template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
 inline HybridVector<Type,N,TF>::HybridVector( const HybridVector& v )
-   : v_   ()           // The statically allocated vector elements
+   : v_   ( v.v_ )     // The statically allocated vector elements
    , size_( v.size_ )  // The current size/dimension of the vector
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
-   for( size_t i=0UL; i<size_; ++i )
-      v_[i] = v.v_[i];
-
-   if( IsNumeric_v<Type> ) {
-      for( size_t i=size_; i<NN; ++i )
-         v_[i] = Type();
-   }
-
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
@@ -800,12 +762,10 @@ template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
 template< typename VT >  // Type of the foreign vector
 inline HybridVector<Type,N,TF>::HybridVector( const Vector<VT,TF>& v )
-   : v_   ()               // The statically allocated vector elements
-   , size_( (~v).size() )  // The current size/dimension of the vector
+   : size_( (~v).size() )  // The current size/dimension of the vector
+   // v_ is intentionally left uninitialized
 {
    using blaze::assign;
-
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    if( (~v).size() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid vector" );
