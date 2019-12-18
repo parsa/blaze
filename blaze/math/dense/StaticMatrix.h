@@ -562,6 +562,7 @@ class StaticMatrix
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE      ( Type );
    BLAZE_STATIC_ASSERT( !usePadding || NN % SIMDSIZE == 0UL );
    BLAZE_STATIC_ASSERT( NN >= N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -594,21 +595,17 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix()
+#if BLAZE_USE_DEFAULT_INITIALIZATION
    : v_()  // The statically allocated matrix elements
+#endif
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
-   if( IsNumeric_v<Type> ) {
-      if( useDefaultInitialization ) {
-         for( size_t i=0UL; i<M*NN; ++i )
-            v_[i] = Type();
-      }
-      else if( usePadding ) {
-         for( size_t i=0UL; i<M; ++i )
-            for( size_t j=N; j<NN; ++j )
-               v_[i*NN+j] = Type();
-      }
+#if !BLAZE_USE_DEFAULT_INITIALIZATION
+   if( IsNumeric_v<Type> && usePadding ) {
+      for( size_t i=0UL; i<M; ++i )
+         for( size_t j=N; j<NN; ++j )
+            v_[i*NN+j] = Type();
    }
+#endif
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -625,10 +622,8 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Type& init )
-   : v_()  // The statically allocated matrix elements
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j )
          v_[i*NN+j] = init;
@@ -670,10 +665,8 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline constexpr StaticMatrix<Type,M,N,SO>::StaticMatrix( initializer_list< initializer_list<Type> > list )
-   : v_( Type() )  // The statically allocated matrix elements
+   : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
    if( list.size() != M || determineColumns( list ) > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
    }
@@ -709,7 +702,7 @@ inline constexpr StaticMatrix<Type,M,N,SO>::StaticMatrix( initializer_list< init
 
    int* array = new int[6];
    // ... Initialization of the dynamic array
-   blaze::StaticMatrix<int,3,4,rowMajor> v( array, 2UL, 3UL );
+   blaze::StaticMatrix<int,3,4,rowMajor> v( 2UL, 3UL, array );
    delete[] array;
    \endcode
 
@@ -726,10 +719,8 @@ template< typename Type     // Data type of the matrix
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the initialization array
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( size_t m, size_t n, const Other* array )
-   : v_()  // The statically allocated matrix elements
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
    if( m > M || n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
    }
@@ -784,9 +775,8 @@ template< typename Other  // Data type of the initialization array
         , size_t Rows     // Number of rows of the initialization array
         , size_t Cols >   // Number of columns of the initialization array
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Other (&array)[Rows][Cols] )
-   : v_()  // The statically allocated matrix elements
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
    BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
 
    for( size_t i=0UL; i<M; ++i ) {
@@ -816,8 +806,6 @@ template< typename Type  // Data type of the matrix
 inline constexpr StaticMatrix<Type,M,N,SO>::StaticMatrix( const StaticMatrix& m )
    : v_( m.v_ )  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
@@ -835,10 +823,8 @@ template< typename Type   // Data type of the matrix
 template< typename Other  // Data type of the foreign matrix
         , bool SO2 >      // Storage order of the foreign matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const StaticMatrix<Other,M,N,SO2>& m )
-   : v_()  // The statically allocated matrix elements
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
    for( size_t i=0UL; i<M; ++i ) {
       for( size_t j=0UL; j<N; ++j )
          v_[i*NN+j] = m(i,j);
@@ -869,11 +855,9 @@ template< typename Type  // Data type of the matrix
 template< typename MT    // Type of the foreign matrix
         , bool SO2 >     // Storage order of the foreign matrix
 inline StaticMatrix<Type,M,N,SO>::StaticMatrix( const Matrix<MT,SO2>& m )
-   : v_()  // The statically allocated matrix elements
+   // v_ is intentionally left uninitialized
 {
    using blaze::assign;
-
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    if( (~m).rows() != M || (~m).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
@@ -3467,6 +3451,7 @@ class StaticMatrix<Type,M,N,true>
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE      ( Type );
    BLAZE_STATIC_ASSERT( !usePadding || MM % SIMDSIZE == 0UL );
    BLAZE_STATIC_ASSERT( MM >= M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -3477,7 +3462,7 @@ class StaticMatrix<Type,M,N,true>
 
 //=================================================================================================
 //
-//  CONSTRUCTORS
+//  xex
 //
 //=================================================================================================
 
@@ -3499,21 +3484,17 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline StaticMatrix<Type,M,N,true>::StaticMatrix()
+#if BLAZE_USE_DEFAULT_INITIALIZATION
    : v_()  // The statically allocated matrix elements
+#endif
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
-
-   if( IsNumeric_v<Type> ) {
-      if( useDefaultInitialization ) {
-         for( size_t i=0UL; i<MM*N; ++i )
-            v_[i] = Type();
-      }
-      else if( usePadding ) {
-         for( size_t j=0UL; j<N; ++j )
-            for( size_t i=M; i<MM; ++i )
-               v_[i+j*MM] = Type();
-      }
+#if !BLAZE_USE_DEFAULT_INITIALIZATION
+   if( IsNumeric_v<Type> && usePadding ) {
+      for( size_t j=0UL; j<N; ++j )
+         for( size_t i=M; i<MM; ++i )
+            v_[i+j*MM] = Type();
    }
+#endif
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -3531,10 +3512,8 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Type& init )
-   : v_()  // The statically allocated matrix elements
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
-
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; ++i )
          v_[i+j*MM] = init;
@@ -3576,10 +3555,8 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline constexpr StaticMatrix<Type,M,N,true>::StaticMatrix( initializer_list< initializer_list<Type> > list )
-   : v_( Type() )  // The statically allocated matrix elements
+   : v_()  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
-
    if( list.size() != M || determineColumns( list ) > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
    }
@@ -3617,7 +3594,7 @@ inline constexpr StaticMatrix<Type,M,N,true>::StaticMatrix( initializer_list< in
 
    int* array = new int[6];
    // ... Initialization of the dynamic array
-   blaze::StaticMatrix<int,3,4,columnMajor> v( array, 2UL, 3UL );
+   blaze::StaticMatrix<int,3,4,columnMajor> v( 2UL, 3UL, array );
    delete[] array;
    \endcode
 
@@ -3633,10 +3610,8 @@ template< typename Type     // Data type of the matrix
         , size_t N >        // Number of columns
 template< typename Other >  // Data type of the initialization array
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( size_t m, size_t n, const Other* array )
-   : v_()  // The statically allocated matrix elements
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
-
    if( m > M || n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
    }
@@ -3692,9 +3667,8 @@ template< typename Other  // Data type of the initialization array
         , size_t Rows     // Number of rows of the initialization array
         , size_t Cols >   // Number of columns of the initialization array
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Other (&array)[Rows][Cols] )
-   : v_()  // The statically allocated matrix elements
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
    BLAZE_STATIC_ASSERT( Rows == M && Cols == N );
 
    for( size_t j=0UL; j<N; ++j ) {
@@ -3725,8 +3699,6 @@ template< typename Type  // Data type of the matrix
 inline constexpr StaticMatrix<Type,M,N,true>::StaticMatrix( const StaticMatrix& m )
    : v_( m.v_ )  // The statically allocated matrix elements
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
-
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
@@ -3745,10 +3717,8 @@ template< typename Type   // Data type of the matrix
 template< typename Other  // Data type of the foreign matrix
         , bool SO >       // Storage order of the foreign matrix
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const StaticMatrix<Other,M,N,SO>& m )
-   : v_()  // The statically allocated matrix elements
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
-
    for( size_t j=0UL; j<N; ++j ) {
       for( size_t i=0UL; i<M; ++i )
          v_[i+j*MM] = m(i,j);
@@ -3780,11 +3750,9 @@ template< typename Type  // Data type of the matrix
 template< typename MT    // Type of the foreign matrix
         , bool SO >      // Storage order of the foreign matrix
 inline StaticMatrix<Type,M,N,true>::StaticMatrix( const Matrix<MT,SO>& m )
-   : v_()  // The statically allocated matrix elements
+   // v_ is intentionally left uninitialized
 {
    using blaze::assign;
-
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
 
    if( (~m).rows() != M || (~m).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static matrix" );
