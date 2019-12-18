@@ -555,6 +555,7 @@ class HybridMatrix
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE      ( Type );
    BLAZE_STATIC_ASSERT( !usePadding || NN % SIMDSIZE == 0UL );
    BLAZE_STATIC_ASSERT( NN >= N );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -583,13 +584,6 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix()
    , m_( 0UL )  // The current number of rows of the matrix
    , n_( 0UL )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
-   if( IsNumeric_v<Type> ) {
-      for( size_t i=0UL; i<M*NN; ++i )
-         v_[i] = Type();
-   }
-
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 //*************************************************************************************************
@@ -617,19 +611,12 @@ inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n )
    , m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
    }
 
    if( n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of columns for hybrid matrix" );
-   }
-
-   if( IsNumeric_v<Type> ) {
-      for( size_t i=0UL; i<M*NN; ++i )
-         v_[i] = Type();
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -656,12 +643,10 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Type& init )
-   : v_()     // The statically allocated matrix elements
-   , m_( m )  // The current number of rows of the matrix
+   : m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
    }
@@ -720,12 +705,10 @@ template< typename Type  // Data type of the matrix
         , size_t N       // Number of columns
         , bool SO >      // Storage order
 inline HybridMatrix<Type,M,N,SO>::HybridMatrix( initializer_list< initializer_list<Type> > list )
-   : v_()                            // The statically allocated matrix elements
-   , m_( list.size() )               // The current number of rows of the matrix
+   : m_( list.size() )               // The current number of rows of the matrix
    , n_( determineColumns( list ) )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
    if( m_ > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
    }
@@ -785,12 +768,10 @@ template< typename Type     // Data type of the matrix
         , bool SO >         // Storage order
 template< typename Other >  // Data type of the initialization array
 inline HybridMatrix<Type,M,N,SO>::HybridMatrix( size_t m, size_t n, const Other* array )
-   : v_()     // The statically allocated matrix elements
-   , m_( m )  // The current number of rows of the matrix
+   : m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
    }
@@ -849,13 +830,12 @@ template< typename Other  // Data type of the initialization array
         , size_t Rows     // Number of rows of the initialization array
         , size_t Cols >   // Number of columns of the initialization array
 inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const Other (&array)[Rows][Cols] )
-   : v_()        // The statically allocated matrix elements
-   , m_( Rows )  // The current number of rows of the matrix
+   : m_( Rows )  // The current number of rows of the matrix
    , n_( Cols )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
 {
    BLAZE_STATIC_ASSERT( Rows <= M );
    BLAZE_STATIC_ASSERT( Cols <= N );
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    for( size_t i=0UL; i<Rows; ++i ) {
       for( size_t j=0UL; j<Cols; ++j )
@@ -891,12 +871,10 @@ template< typename Type     // Data type of the matrix
         , size_t N          // Number of columns
         , bool SO >         // Storage order
 inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const HybridMatrix& m )
-   : v_()        // The statically allocated matrix elements
-   , m_( m.m_ )  // The current number of rows of the matrix
+   : m_( m.m_ )  // The current number of rows of the matrix
    , n_( m.n_ )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
-
    for( size_t i=0UL; i<m_; ++i ) {
       for( size_t j=0UL; j<n_; ++j )
          v_[i*NN+j] = m.v_[i*NN+j];
@@ -931,13 +909,11 @@ template< typename Type  // Data type of the matrix
 template< typename MT    // Type of the foreign matrix
         , bool SO2 >     // Storage order of the foreign matrix
 inline HybridMatrix<Type,M,N,SO>::HybridMatrix( const Matrix<MT,SO2>& m )
-   : v_()                  // The statically allocated matrix elements
-   , m_( (~m).rows() )     // The current number of rows of the matrix
+   : m_( (~m).rows() )     // The current number of rows of the matrix
    , n_( (~m).columns() )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
 {
    using blaze::assign;
-
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
    if( (~m).rows() > M || (~m).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid matrix" );
@@ -3600,6 +3576,7 @@ class HybridMatrix<Type,M,N,true>
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE      ( Type );
    BLAZE_STATIC_ASSERT( !usePadding || MM % SIMDSIZE == 0UL );
    BLAZE_STATIC_ASSERT( MM >= M );
+   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -3628,13 +3605,6 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix()
    , m_( 0UL )  // The current number of rows of the matrix
    , n_( 0UL )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
-
-   if( IsNumeric_v<Type> ) {
-      for( size_t i=0UL; i<MM*N; ++i )
-         v_[i] = Type();
-   }
-
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
 /*! \endcond */
@@ -3663,19 +3633,12 @@ inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n )
    , m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
-
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
    }
 
    if( n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of columns for hybrid matrix" );
-   }
-
-   if( IsNumeric_v<Type> ) {
-      for( size_t i=0UL; i<MM*N; ++i )
-         v_[i] = Type();
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -3703,12 +3666,10 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Type& init )
-   : v_()     // The statically allocated matrix elements
-   , m_( m )  // The current number of rows of the matrix
+   : m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
-
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
    }
@@ -3768,12 +3729,10 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 inline HybridMatrix<Type,M,N,true>::HybridMatrix( initializer_list< initializer_list<Type> > list )
-   : v_()                            // The statically allocated matrix elements
-   , m_( list.size() )               // The current number of rows of the matrix
+   : m_( list.size() )               // The current number of rows of the matrix
    , n_( determineColumns( list ) )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
-
    if( m_ > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
    }
@@ -3847,12 +3806,10 @@ template< typename Type     // Data type of the matrix
         , size_t N >        // Number of columns
 template< typename Other >  // Data type of the initialization array
 inline HybridMatrix<Type,M,N,true>::HybridMatrix( size_t m, size_t n, const Other* array )
-   : v_()     // The statically allocated matrix elements
-   , m_( m )  // The current number of rows of the matrix
+   : m_( m )  // The current number of rows of the matrix
    , n_( n )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
-
    if( m > M ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of rows for hybrid matrix" );
    }
@@ -3912,13 +3869,12 @@ template< typename Other  // Data type of the initialization array
         , size_t Rows     // Number of rows of the initialization array
         , size_t Cols >   // Number of columns of the initialization array
 inline HybridMatrix<Type,M,N,true>::HybridMatrix( const Other (&array)[Rows][Cols] )
-   : v_()        // The statically allocated matrix elements
-   , m_( Rows )  // The current number of rows of the matrix
+   : m_( Rows )  // The current number of rows of the matrix
    , n_( Cols )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
 {
    BLAZE_STATIC_ASSERT( Rows <= M );
    BLAZE_STATIC_ASSERT( Cols <= N );
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
 
    for( size_t j=0UL; j<Cols; ++j ) {
       for( size_t i=0UL; i<Rows; ++i )
@@ -3955,12 +3911,10 @@ template< typename Type     // Data type of the matrix
         , size_t M          // Number of rows
         , size_t N >        // Number of columns
 inline HybridMatrix<Type,M,N,true>::HybridMatrix( const HybridMatrix& m )
-   : v_()        // The statically allocated matrix elements
-   , m_( m.m_ )  // The current number of rows of the matrix
+   : m_( m.m_ )  // The current number of rows of the matrix
    , n_( m.n_ )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
 {
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
-
    for( size_t j=0UL; j<n_; ++j ) {
       for( size_t i=0UL; i<m_; ++i )
          v_[i+j*MM] = m.v_[i+j*MM];
@@ -3996,13 +3950,11 @@ template< typename Type  // Data type of the matrix
 template< typename MT    // Type of the foreign matrix
         , bool SO2 >     // Storage order of the foreign matrix
 inline HybridMatrix<Type,M,N,true>::HybridMatrix( const Matrix<MT,SO2>& m )
-   : v_()                  // The statically allocated matrix elements
-   , m_( (~m).rows() )     // The current number of rows of the matrix
+   : m_( (~m).rows() )     // The current number of rows of the matrix
    , n_( (~m).columns() )  // The current number of columns of the matrix
+   // v_ is intentionally left uninitialized
 {
    using blaze::assign;
-
-   BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || MM == M );
 
    if( (~m).rows() > M || (~m).columns() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid matrix" );
