@@ -37,6 +37,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <array>
 #include <cstdlib>
 #include <iostream>
 #include <memory>
@@ -355,9 +356,32 @@ void AlignedUnpaddedTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "CustomVector array assignment";
+      test_ = "CustomVector static array assignment";
 
       const int array[4] = { 1, 2, 3, 4 };
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 4UL ) );
+      VT vec( memory.get(), 4UL );
+      vec = array;
+
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
+
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 2 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "CustomVector std::array assignment";
+
+      const std::array<int,4UL> array{ 1, 2, 3, 4 };
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 4UL ) );
       VT vec( memory.get(), 4UL );
       vec = array;
