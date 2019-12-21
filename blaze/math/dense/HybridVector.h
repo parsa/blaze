@@ -31,6 +31,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <array>
 #include <algorithm>
 #include <utility>
 #include <blaze/math/Aliases.h>
@@ -275,6 +276,9 @@ class HybridVector
    template< typename Other, size_t Dim >
    explicit inline HybridVector( const Other (&array)[Dim] );
 
+   template< typename Other, size_t Dim >
+   explicit inline HybridVector( const std::array<Other,Dim>& array );
+
                            inline HybridVector( const HybridVector& v );
    template< typename VT > inline HybridVector( const Vector<VT,TF>& v );
    //@}
@@ -313,6 +317,9 @@ class HybridVector
 
    template< typename Other, size_t Dim >
    inline HybridVector& operator=( const Other (&array)[Dim] );
+
+   template< typename Other, size_t Dim >
+   inline HybridVector& operator=( const std::array<Other,Dim>& array );
 
                            inline HybridVector& operator= ( const HybridVector&  rhs );
    template< typename VT > inline HybridVector& operator= ( const Vector<VT,TF>& rhs );
@@ -697,7 +704,7 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Other* array )
 //*************************************************************************************************
 /*!\brief Array initialization of all vector elements.
 //
-// \param array M-dimensional array for the initialization.
+// \param array Static array for the initialization.
 //
 // This assignment operator offers the option to directly initialize the elements of the vector
 // with a static array:
@@ -707,17 +714,51 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Other* array )
    blaze::HybridVector<double,4> v( init );
    \endcode
 
-// The vector is sized according to the size of the array and initialized with the values from
-// the given array. This constructor only works for arrays with a size smaller-or-equal than the
-// maximum number of elements of the hybrid vector (i.e. M <= N). The attempt to use a larger
-// array will result in a compile time error.
+// The vector is sized according to the size of the static array and initialized with the values
+// from the given static array. This constructor only works for arrays with a size smaller-or-equal
+// than the maximum number of elements of the hybrid vector (i.e. Dim <= N). The attempt to use a
+// larger static array will result in a compile time error.
 */
 template< typename Type   // Data type of the vector
         , size_t N        // Number of elements
         , bool TF >       // Transpose flag
-template< typename Other  // Data type of the initialization array
-        , size_t Dim >    // Number of elements of the initialization array
+template< typename Other  // Data type of the static array
+        , size_t Dim >    // Number of elements of the static array
 inline HybridVector<Type,N,TF>::HybridVector( const Other (&array)[Dim] )
+   : v_   ( array )  // The statically allocated vector elements
+   , size_( Dim )    // The current size/dimension of the vector
+{
+   BLAZE_STATIC_ASSERT( Dim <= N );
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initialization of all vector elements from the given std::array.
+//
+// \param array The given std::array for the initialization.
+//
+// This constructor operator offers the option to directly initialize the elements of the vector
+// with a std::array:
+
+   \code
+   std::array<double,2> init{ 1.0, 2.0 };
+   blaze::HybridVector<double,4> v( init );
+   \endcode
+
+// The vector is sized according to the size of the std::array and initialized with the values
+// from the given std::array. This constructor only works for arrays with a size smaller-or-equal
+// than the maximum number of elements of the hybrid vector (i.e. Dim <= N). The attempt to use a
+// larger std::array will result in a compile time error.
+*/
+template< typename Type   // Data type of the vector
+        , size_t N        // Number of elements
+        , bool TF >       // Transpose flag
+template< typename Other  // Data type of the std::array
+        , size_t Dim >    // Dimension of the std::array
+inline HybridVector<Type,N,TF>::HybridVector( const std::array<Other,Dim>& array )
    : v_   ( array )  // The statically allocated vector elements
    , size_( Dim )    // The current size/dimension of the vector
 {
@@ -1075,7 +1116,7 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( initializer_
 //*************************************************************************************************
 /*!\brief Array assignment to all vector elements.
 //
-// \param array M-dimensional array for the assignment.
+// \param array Static array for the assignment.
 // \return Reference to the assigned vector.
 //
 // This assignment operator offers the option to directly set all elements of the vector:
@@ -1086,17 +1127,56 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( initializer_
    v = init;
    \endcode
 
-// The vector is sized according to the size of the array and assigned the values of the given
-// array. This assignment operator only works for arrays with a size smaller-or-equal than the
-// maximum number of elements of the hybrid vector. (i.e. M<= N). The attempt to use a larger
-// array will result in a compile time error.
+// The vector is sized according to the size of the static array and assigned the values of the
+// given static array. This assignment operator only works for arrays with a size smaller-or-equal
+// than the maximum number of elements of the hybrid vector. (i.e. Dim <= N). The attempt to use a
+// larger static array will result in a compile time error.
 */
 template< typename Type   // Data type of the vector
         , size_t N        // Number of elements
         , bool TF >       // Transpose flag
-template< typename Other  // Data type of the initialization array
-        , size_t Dim >    // Number of elements of the initialization array
+template< typename Other  // Data type of the static array
+        , size_t Dim >    // Number of elements of the static array
 inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const Other (&array)[Dim] )
+{
+   BLAZE_STATIC_ASSERT( Dim <= N );
+
+   resize( Dim, false );
+
+   for( size_t i=0UL; i<Dim; ++i )
+      v_[i] = array[i];
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Array assignment to all vector elements.
+//
+// \param array The given std::array for the assignment.
+// \return Reference to the assigned vector.
+//
+// This assignment operator offers the option to directly set all elements of the vector:
+
+   \code
+   const std::array<double,2> init{ 1.0, 2.0 };
+   blaze::HybridVector<double,4> v;
+   v = init;
+   \endcode
+
+// The vector is sized according to the size of the std::array and assigned the values of the
+// given std::array. This assignment operator only works for arrays with a size smaller-or-equal
+// than the maximum number of elements of the hybrid vector. (i.e. Dim <= N). The attempt to use
+// a larger std::array will result in a compile time error.
+*/
+template< typename Type   // Data type of the vector
+        , size_t N        // Number of elements
+        , bool TF >       // Transpose flag
+template< typename Other  // Data type of the std::array
+        , size_t Dim >    // Dimension of the std::array
+inline HybridVector<Type,N,TF>&
+   HybridVector<Type,N,TF>::operator=( const std::array<Other,Dim>& array )
 {
    BLAZE_STATIC_ASSERT( Dim <= N );
 
