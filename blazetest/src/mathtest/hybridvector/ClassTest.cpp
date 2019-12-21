@@ -37,6 +37,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <array>
 #include <cstdlib>
 #include <iostream>
 #include <memory>
@@ -277,6 +278,27 @@ void ClassTest::testConstructors()
       test_ = "HybridVector static array initialization constructor (size 4)";
 
       const int array[4] = { 1, 2, 3, 4 };
+      blaze::HybridVector<int,5UL,blaze::rowVector> vec( array );
+
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 4UL );
+      checkNonZeros( vec, 4UL );
+
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 2 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "HybridVector std::array initialization constructor (size 4)";
+
+      const std::array<int,4UL> array{ 1, 2, 3, 4 };
       blaze::HybridVector<int,5UL,blaze::rowVector> vec( array );
 
       checkSize    ( vec, 4UL );
@@ -556,9 +578,31 @@ void ClassTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "HybridVector array assignment";
+      test_ = "HybridVector static array assignment";
 
       const int array[4] = { 1, 2, 3, 4 };
+      blaze::HybridVector<int,7UL,blaze::rowVector> vec;
+      vec = array;
+
+      checkSize    ( vec, 4UL );
+      checkCapacity( vec, 7UL );
+      checkNonZeros( vec, 4UL );
+
+      if( vec[0] != 1 || vec[1] != 2 || vec[2] != 3 || vec[3] != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << vec << "\n"
+             << "   Expected result:\n( 1 2 3 4 )\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "HybridVector std::array assignment";
+
+      const std::array<int,4UL> array{ 1, 2, 3, 4 };
       blaze::HybridVector<int,7UL,blaze::rowVector> vec;
       vec = array;
 
