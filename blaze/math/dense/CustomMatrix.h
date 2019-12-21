@@ -1334,7 +1334,7 @@ inline CustomMatrix<Type,AF,PF,SO,RT>&
 //*************************************************************************************************
 /*!\brief Array assignment to all matrix elements.
 //
-// \param array \f$ M \times N \f$ dimensional array for the assignment.
+// \param array Static array for the assignment.
 // \return Reference to the assigned matrix.
 // \exception std::invalid_argument Invalid array size.
 //
@@ -1355,19 +1355,19 @@ inline CustomMatrix<Type,AF,PF,SO,RT>&
    A = init;
    \endcode
 
-// The matrix is assigned the values from the given array. Missing values are initialized with
-// default values (as e.g. the value 6 in the example). Note that the size of the array must
-// match the size of the custom matrix. Otherwise a \a std::invalid_argument exception is thrown.
-// Also note that after the assignment \a array will have the same entries as \a init.
+// The matrix is assigned the values from the given static array. Missing values are initialized
+// with default values (as e.g. the value 6 in the example). Note that the size of the static
+// array must match the size of the custom matrix. Otherwise a \a std::invalid_argument exception
+// is thrown. Also note that after the assignment \a array will have the same entries as \a init.
 */
 template< typename Type   // Data type of the matrix
         , bool AF         // Alignment flag
         , bool PF         // Padding flag
         , bool SO         // Storage order
         , typename RT >   // Result type
-template< typename Other  // Data type of the initialization array
-        , size_t Rows     // Number of rows of the initialization array
-        , size_t Cols >   // Number of columns of the initialization array
+template< typename Other  // Data type of the static array
+        , size_t Rows     // Number of rows of the static array
+        , size_t Cols >   // Number of columns of the static array
 inline CustomMatrix<Type,AF,PF,SO,RT>&
    CustomMatrix<Type,AF,PF,SO,RT>::operator=( const Other (&array)[Rows][Cols] )
 {
@@ -4209,7 +4209,7 @@ inline CustomMatrix<Type,AF,PF,true,RT>&
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Array assignment to all matrix elements.
 //
-// \param array \f$ M \times N \f$ dimensional array for the assignment.
+// \param array Static array for the assignment.
 // \return Reference to the assigned matrix.
 // \exception std::invalid_argument Invalid array size.
 //
@@ -4230,18 +4230,18 @@ inline CustomMatrix<Type,AF,PF,true,RT>&
    A = init;
    \endcode
 
-// The matrix is assigned the values from the given array. Missing values are initialized with
-// default values (as e.g. the value 6 in the example). Note that the size of the array must
-// match the size of the custom matrix. Otherwise a \a std::invalid_argument exception is thrown.
-// Also note that after the assignment \a array will have the same entries as \a init.
+// The matrix is assigned the values from the given static array. Missing values are initialized
+// with default values (as e.g. the value 6 in the example). Note that the size of the static
+// array must match the size of the custom matrix. Otherwise a \a std::invalid_argument exception
+// is thrown. Also note that after the assignment \a array will have the same entries as \a init.
 */
 template< typename Type   // Data type of the matrix
         , bool AF         // Alignment flag
         , bool PF         // Padding flag
         , typename RT >   // Result type
-template< typename Other  // Data type of the initialization array
-        , size_t Rows     // Number of rows of the initialization array
-        , size_t Cols >   // Number of columns of the initialization array
+template< typename Other  // Data type of the static array
+        , size_t Rows     // Number of rows of the static array
+        , size_t Cols >   // Number of columns of the static array
 inline CustomMatrix<Type,AF,PF,true,RT>&
    CustomMatrix<Type,AF,PF,true,RT>::operator=( const Other (&array)[Rows][Cols] )
 {

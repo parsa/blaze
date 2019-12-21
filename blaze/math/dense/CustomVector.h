@@ -498,6 +498,9 @@ class CustomVector
    template< typename Other, size_t Dim >
    inline CustomVector& operator=( const Other (&array)[Dim] );
 
+   template< typename Other, size_t Dim >
+   inline CustomVector& operator=( const std::array<Other,Dim>& array );
+
    inline CustomVector& operator=( const CustomVector& rhs );
    inline CustomVector& operator=( CustomVector&& rhs ) noexcept;
 
@@ -1157,7 +1160,7 @@ inline CustomVector<Type,AF,PF,TF,RT>&
 //*************************************************************************************************
 /*!\brief Array assignment to all vector elements.
 //
-// \param array N-dimensional array for the assignment.
+// \param array Static array for the assignment.
 // \return Reference to the assigned vector.
 // \exception std::invalid_argument Invalid array size.
 //
@@ -1176,20 +1179,71 @@ inline CustomVector<Type,AF,PF,TF,RT>&
    v = init;
    \endcode
 
-// The vector is assigned the values from the given array. Missing values are initialized with
-// default values (as e.g. the fourth element in the example). Note that the size of the array
-// must match the size of the custom vector. Otherwise a \a std::invalid_argument exception is
-// thrown. Also note that after the assignment \a array will have the same entries as \a init.
+// The vector is assigned the values from the given static array. Missing values are initialized
+// with default values (as e.g. the fourth element in the example). Note that the size of the
+// static array must match the size of the custom vector. Otherwise a \a std::invalid_argument
+// exception is thrown. Also note that after the assignment \a array will have the same entries
+// as \a init.
 */
 template< typename Type   // Data type of the vector
         , bool AF         // Alignment flag
         , bool PF         // Padding flag
         , bool TF         // Transpose flag
         , typename RT >   // Result type
-template< typename Other  // Data type of the initialization array
-        , size_t Dim >    // Dimension of the initialization array
+template< typename Other  // Data type of the static array
+        , size_t Dim >    // Dimension of the static array
 inline CustomVector<Type,AF,PF,TF,RT>&
    CustomVector<Type,AF,PF,TF,RT>::operator=( const Other (&array)[Dim] )
+{
+   if( size_ != Dim ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
+   }
+
+   for( size_t i=0UL; i<Dim; ++i )
+      v_[i] = array[i];
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Array assignment to all vector elements.
+//
+// \param array The given std::array for the assignment.
+// \return Reference to the assigned vector.
+// \exception std::invalid_argument Invalid std::array size.
+//
+// This assignment operator offers the option to directly set all elements of the vector. The
+// following example demonstrates this by means of an unaligned, unpadded custom vector:
+
+   \code
+   using blaze::CustomVector;
+   using blaze::unaliged;
+   using blaze::unpadded;
+
+   const int array[4] = { 1, 2, 3, 4 };
+   const std::array<int,4UL> init{ 5, 6, 7 };
+
+   CustomVector<double,unaligned,unpadded> v( array, 4UL );
+   v = init;
+   \endcode
+
+// The vector is assigned the values from the given std::array. Missing values are initialized
+// with default values (as e.g. the fourth element in the example). Note that the size of the
+// std::array must match the size of the custom vector. Otherwise a \a std::invalid_argument
+// exception is thrown. Also note that after the assignment \a array will have the same entries
+// as \a init.
+*/
+template< typename Type   // Data type of the vector
+        , bool AF         // Alignment flag
+        , bool PF         // Padding flag
+        , bool TF         // Transpose flag
+        , typename RT >   // Result type
+template< typename Other  // Data type of the std::array
+        , size_t Dim >    // Dimension of the std::array
+inline CustomVector<Type,AF,PF,TF,RT>&
+   CustomVector<Type,AF,PF,TF,RT>::operator=( const std::array<Other,Dim>& array )
 {
    if( size_ != Dim ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
@@ -2787,8 +2841,11 @@ class CustomVector<Type,AF,padded,TF,RT>
    inline CustomVector& operator=( const Type& rhs );
    inline CustomVector& operator=( initializer_list<Type> list );
 
-   template< typename Other, size_t N >
-   inline CustomVector& operator=( const Other (&array)[N] );
+   template< typename Other, size_t Dim >
+   inline CustomVector& operator=( const Other (&array)[Dim] );
+
+   template< typename Other, size_t Dim >
+   inline CustomVector& operator=( const std::array<Other,Dim>& array );
 
    inline CustomVector& operator=( const CustomVector& rhs );
    inline CustomVector& operator=( CustomVector&& rhs ) noexcept;
@@ -3439,7 +3496,7 @@ inline CustomVector<Type,AF,padded,TF,RT>&
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Array assignment to all vector elements.
 //
-// \param array N-dimensional array for the assignment.
+// \param array Static array for the assignment.
 // \return Reference to the assigned vector.
 // \exception std::invalid_argument Invalid array size.
 //
@@ -3458,25 +3515,77 @@ inline CustomVector<Type,AF,padded,TF,RT>&
    v = init;
    \endcode
 
-// The vector is assigned the values from the given array. Missing values are initialized with
-// default values (as e.g. the fourth element in the example). Note that the size of the array
-// must match the size of the custom vector. Otherwise a \a std::invalid_argument exception is
-// thrown. Also note that after the assignment \a array will have the same entries as \a init.
+// The vector is assigned the values from the given static array. Missing values are initialized
+// with default values (as e.g. the fourth element in the example). Note that the size of the
+// static array must match the size of the custom vector. Otherwise a \a std::invalid_argument
+// exception is thrown. Also note that after the assignment \a array will have the same entries
+// as \a init.
 */
 template< typename Type   // Data type of the vector
         , bool AF         // Alignment flag
         , bool TF         // Transpose flag
         , typename RT >   // Result type
-template< typename Other  // Data type of the initialization array
-        , size_t N >      // Dimension of the initialization array
+template< typename Other  // Data type of the static array
+        , size_t Dim >    // Dimension of the static array
 inline CustomVector<Type,AF,padded,TF,RT>&
-   CustomVector<Type,AF,padded,TF,RT>::operator=( const Other (&array)[N] )
+   CustomVector<Type,AF,padded,TF,RT>::operator=( const Other (&array)[Dim] )
 {
-   if( size_ != N ) {
+   if( size_ != Dim ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
    }
 
-   for( size_t i=0UL; i<N; ++i )
+   for( size_t i=0UL; i<Dim; ++i )
+      v_[i] = array[i];
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Array assignment to all vector elements.
+//
+// \param array The given std::array for the assignment.
+// \return Reference to the assigned vector.
+// \exception std::invalid_argument Invalid std::array size.
+//
+// This assignment operator offers the option to directly set all elements of the vector. The
+// following example demonstrates this by means of an unaligned, padded custom vector:
+
+   \code
+   using blaze::CustomVector;
+   using blaze::unaliged;
+   using blaze::padded;
+
+   const int array[8] = { 1, 2, 3, 4, 0, 0, 0, 0 };
+   const std::array<int,4UL> init{ 5, 6, 7 };
+
+   CustomVector<double,unaligned,padded> v( array, 4UL, 8UL );
+   v = init;
+   \endcode
+
+// The vector is assigned the values from the given std::array. Missing values are initialized
+// with default values (as e.g. the fourth element in the example). Note that the size of the
+// std::array must match the size of the custom vector. Otherwise a \a std::invalid_argument
+// exception is thrown. Also note that after the assignment \a array will have the same entries
+// as \a init.
+*/
+template< typename Type   // Data type of the vector
+        , bool AF         // Alignment flag
+        , bool TF         // Transpose flag
+        , typename RT >   // Result type
+template< typename Other  // Data type of the std::array
+        , size_t Dim >    // Dimension of the std::array
+inline CustomVector<Type,AF,padded,TF,RT>&
+   CustomVector<Type,AF,padded,TF,RT>::operator=( const std::array<Other,Dim>& array )
+{
+   if( size_ != Dim ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
+   }
+
+   for( size_t i=0UL; i<Dim; ++i )
       v_[i] = array[i];
 
    return *this;
