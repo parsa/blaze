@@ -695,7 +695,7 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( size_t m, size_t n, const Other* a
 //*************************************************************************************************
 /*!\brief Array initialization of all matrix elements.
 //
-// \param array \f$ M \times N \f$ dimensional array for the initialization.
+// \param array Static array for the initialization.
 //
 // This constructor offers the option to directly initialize the elements of the matrix with
 // a static array:
@@ -709,15 +709,15 @@ inline DynamicMatrix<Type,SO>::DynamicMatrix( size_t m, size_t n, const Other* a
    blaze::DynamicMatrix<int,rowMajor> A( init );
    \endcode
 
-// The matrix is sized according to the size of the array and initialized with the values from
-// the given array. Missing values are initialized with default values (as e.g. the value 6 in
-// the example).
+// The matrix is sized according to the size of the static array and initialized with the values
+// from the given static array. Missing values are initialized with default values (as e.g. the
+// value 6 in the example).
 */
 template< typename Type   // Data type of the matrix
         , bool SO >       // Storage order
-template< typename Other  // Data type of the initialization array
-        , size_t Rows     // Number of rows of the initialization array
-        , size_t Cols >   // Number of columns of the initialization array
+template< typename Other  // Data type of the static array
+        , size_t Rows     // Number of rows of the static array
+        , size_t Cols >   // Number of columns of the static array
 inline DynamicMatrix<Type,SO>::DynamicMatrix( const Other (&array)[Rows][Cols] )
    : DynamicMatrix( Rows, Cols )
 {
@@ -1210,7 +1210,7 @@ inline DynamicMatrix<Type,SO>&
 //*************************************************************************************************
 /*!\brief Array assignment to all matrix elements.
 //
-// \param array \f$ M \times N \f$ dimensional array for the assignment.
+// \param array Static array for the assignment.
 // \return Reference to the assigned matrix.
 //
 // This assignment operator offers the option to directly set all elements of the matrix:
@@ -1225,14 +1225,15 @@ inline DynamicMatrix<Type,SO>&
    A = init;
    \endcode
 
-// The matrix is resized according to the size of the array and assigned the values of the given
-// array. Missing values are initialized with default values (as e.g. the value 6 in the example).
+// The matrix is resized according to the size of the static array and assigned the values of the
+// given static array. Missing values are initialized with default values (as e.g. the value 6 in
+// the example).
 */
 template< typename Type   // Data type of the matrix
         , bool SO >       // Storage order
-template< typename Other  // Data type of the initialization array
-        , size_t Rows     // Number of rows of the initialization array
-        , size_t Cols >   // Number of columns of the initialization array
+template< typename Other  // Data type of the static array
+        , size_t Rows     // Number of rows of the static array
+        , size_t Cols >   // Number of columns of the static array
 inline DynamicMatrix<Type,SO>& DynamicMatrix<Type,SO>::operator=( const Other (&array)[Rows][Cols] )
 {
    resize( Rows, Cols, false );
@@ -3649,7 +3650,7 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( size_t m, size_t n, const Other*
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Array initialization of all matrix elements.
 //
-// \param array \f$ M \times N \f$ dimensional array for the initialization.
+// \param array Static array for the initialization.
 //
 // This constructor offers the option to directly initialize the elements of the matrix with
 // a static array:
@@ -3663,14 +3664,14 @@ inline DynamicMatrix<Type,true>::DynamicMatrix( size_t m, size_t n, const Other*
    blaze::DynamicMatrix<int,columnMajor> A( init );
    \endcode
 
-// The matrix is sized according to the size of the array and initialized with the values from
-// the given array. Missing values are initialized with default values (as e.g. the value 6 in
-// the example).
+// The matrix is sized according to the size of the static array and initialized with the values
+// from the given static array. Missing values are initialized with default values (as e.g. the
+// value 6 in the example).
 */
 template< typename Type >  // Data type of the matrix
-template< typename Other   // Data type of the initialization array
-        , size_t Rows      // Number of rows of the initialization array
-        , size_t Cols >    // Number of columns of the initialization array
+template< typename Other   // Data type of the static array
+        , size_t Rows      // Number of rows of the static array
+        , size_t Cols >    // Number of columns of the static array
 inline DynamicMatrix<Type,true>::DynamicMatrix( const Other (&array)[Rows][Cols] )
    : DynamicMatrix( Rows, Cols )
 {
@@ -4160,7 +4161,7 @@ inline DynamicMatrix<Type,true>&
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Array assignment to all matrix elements.
 //
-// \param array \f$ M \times N \f$ dimensional array for the assignment.
+// \param array Static array for the assignment.
 // \return Reference to the assigned matrix.
 //
 // This assignment operator offers the option to directly set all elements of the matrix:
@@ -4175,13 +4176,14 @@ inline DynamicMatrix<Type,true>&
    A = init;
    \endcode
 
-// The matrix is resized according to the size of the array and assigned the values of the given
-// array. Missing values are initialized with default values (as e.g. the value 6 in the example).
+// The matrix is resized according to the size of the static array and assigned the values of the
+// given static array. Missing values are initialized with default values (as e.g. the value 6 in
+// the example).
 */
 template< typename Type >  // Data type of the matrix
-template< typename Other   // Data type of the initialization array
-        , size_t Rows      // Number of rows of the initialization array
-        , size_t Cols >    // Number of columns of the initialization array
+template< typename Other   // Data type of the static array
+        , size_t Rows      // Number of rows of the static array
+        , size_t Cols >    // Number of columns of the static array
 inline DynamicMatrix<Type,true>& DynamicMatrix<Type,true>::operator=( const Other (&array)[Rows][Cols] )
 {
    resize( Rows, Cols, false );

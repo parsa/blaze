@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <array>
 #include <algorithm>
 #include <utility>
 #include <blaze/math/Aliases.h>
@@ -265,6 +266,9 @@ class DynamicVector
    template< typename Other, size_t Dim >
    explicit inline DynamicVector( const Other (&array)[Dim] );
 
+   template< typename Other, size_t Dim >
+   explicit inline DynamicVector( const std::array<Other,Dim>& array );
+
                            inline DynamicVector( const DynamicVector& v );
                            inline DynamicVector( DynamicVector&& v ) noexcept;
    template< typename VT > inline DynamicVector( const Vector<VT,TF>& v );
@@ -304,6 +308,9 @@ class DynamicVector
 
    template< typename Other, size_t Dim >
    inline DynamicVector& operator=( const Other (&array)[Dim] );
+
+   template< typename Other, size_t Dim >
+   inline DynamicVector& operator=( const std::array<Other,Dim>& array );
 
    inline DynamicVector& operator=( const DynamicVector& rhs );
    inline DynamicVector& operator=( DynamicVector&& rhs ) noexcept;
@@ -637,7 +644,7 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Other* array )
 //*************************************************************************************************
 /*!\brief Array initialization of all vector elements.
 //
-// \param array N-dimensional array for the initialization.
+// \param array Static array for the initialization.
 //
 // This constructor offers the option to directly initialize the elements of the vector with a
 // static array:
@@ -647,15 +654,47 @@ inline DynamicVector<Type,TF>::DynamicVector( size_t n, const Other* array )
    blaze::DynamicVector<int> v( init );
    \endcode
 
-// The vector is sized according to the size of the array and initialized with the values from the
-// given array. Missing values are initialized with default values (as e.g. the fourth element in
-// the example).
+// The vector is sized according to the size of the static array and initialized with the values
+// from the given static array. Missing values are initialized with default values (as e.g. the
+// fourth element in the example).
 */
 template< typename Type   // Data type of the vector
         , bool TF >       // Transpose flag
-template< typename Other  // Data type of the initialization array
-        , size_t Dim >    // Dimension of the initialization array
+template< typename Other  // Data type of the static array
+        , size_t Dim >    // Dimension of the static array
 inline DynamicVector<Type,TF>::DynamicVector( const Other (&array)[Dim] )
+   : DynamicVector( Dim )
+{
+   for( size_t i=0UL; i<Dim; ++i )
+      v_[i] = array[i];
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Initialization of all vector elements from the given std::array.
+//
+// \param array The given std::array for the initialization.
+//
+// This constructor offers the option to directly initialize the elements of the vector with a
+// std::array:
+
+   \code
+   const std::array<int,4UL> init{ 1, 2, 3 };
+   blaze::DynamicVector<int> v( init );
+   \endcode
+
+// The vector is sized according to the size of the std::array and initialized with the values
+// from the given std::array. Missing values are initialized with default values (as e.g. the
+// fourth element in the example).
+*/
+template< typename Type   // Data type of the vector
+        , bool TF >       // Transpose flag
+template< typename Other  // Data type of the std::array
+        , size_t Dim >    // Dimension of the std::array
+inline DynamicVector<Type,TF>::DynamicVector( const std::array<Other,Dim>& array )
    : DynamicVector( Dim )
 {
    for( size_t i=0UL; i<Dim; ++i )
@@ -1017,7 +1056,7 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( initializer_li
 //*************************************************************************************************
 /*!\brief Array assignment to all vector elements.
 //
-// \param array N-dimensional array for the assignment.
+// \param array Static array for the assignment.
 // \return Reference to the assigned vector.
 //
 // This assignment operator offers the option to directly set all elements of the vector:
@@ -1028,15 +1067,49 @@ inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( initializer_li
    v = init;
    \endcode
 
-// The vector is resized according to the size of the array and assigned the values from the given
-// array. Missing values are initialized with default values (as e.g. the fourth element in the
-// example).
+// The vector is resized according to the size of the static array and assigned the values from
+// the given static array. Missing values are initialized with default values (as e.g. the fourth
+// element in the example).
 */
 template< typename Type   // Data type of the vector
         , bool TF >       // Transpose flag
-template< typename Other  // Data type of the initialization array
-        , size_t Dim >    // Dimension of the initialization array
+template< typename Other  // Data type of the static array
+        , size_t Dim >    // Dimension of the static array
 inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const Other (&array)[Dim] )
+{
+   resize( Dim, false );
+
+   for( size_t i=0UL; i<Dim; ++i )
+      v_[i] = array[i];
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Array assignment to all vector elements.
+//
+// \param array The given std::array for the assignment.
+// \return Reference to the assigned vector.
+//
+// This assignment operator offers the option to directly set all elements of the vector:
+
+   \code
+   const std::array<int,4UL> init{ 1, 2, 3 };
+   blaze::DynamicVector<int> v;
+   v = init;
+   \endcode
+
+// The vector is resized according to the size of the std::array and assigned the values from
+// the given std::array. Missing values are initialized with default values (as e.g. the fourth
+// element in the example).
+*/
+template< typename Type   // Data type of the vector
+        , bool TF >       // Transpose flag
+template< typename Other  // Data type of the std::array
+        , size_t Dim >    // Dimension of the std::array
+inline DynamicVector<Type,TF>& DynamicVector<Type,TF>::operator=( const std::array<Other,Dim>& array )
 {
    resize( Dim, false );
 
