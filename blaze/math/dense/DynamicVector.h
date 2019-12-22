@@ -120,6 +120,7 @@
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/RemoveConst.h>
+#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -510,6 +511,30 @@ class DynamicVector
    /*! \endcond */
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DEDUCTION GUIDES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+#if BLAZE_CPP17_MODE
+
+template< typename Type >
+DynamicVector( size_t, Type* ) -> DynamicVector< RemoveCV_t<Type> >;
+
+template< typename Type, size_t N >
+DynamicVector( Type (&)[N] ) -> DynamicVector< RemoveCV_t<Type> >;
+
+template< typename Type, size_t N >
+DynamicVector( std::array<Type,N> ) -> DynamicVector<Type>;
+
+#endif
 //*************************************************************************************************
 
 
