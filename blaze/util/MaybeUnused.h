@@ -78,7 +78,7 @@ namespace blaze {
    \endcode
 */
 template< typename... Args >
-inline constexpr void MAYBE_UNUSED( const Args&... )
+constexpr void MAYBE_UNUSED( const Args&... )
 {}
 //*************************************************************************************************
 

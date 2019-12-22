@@ -111,9 +111,9 @@ class AlignedAllocator
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline constexpr size_t max_size() const noexcept;
-   inline Pointer          address( Reference x ) const noexcept;
-   inline ConstPointer     address( ConstReference x ) const noexcept;
+   constexpr size_t       max_size() const noexcept;
+   inline    Pointer      address( Reference x ) const noexcept;
+   inline    ConstPointer address( ConstReference x ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -183,7 +183,7 @@ inline AlignedAllocator<Type>::AlignedAllocator( const AlignedAllocator<Type2>& 
 // \return The maximum number of elements that can be allocated together.
 */
 template< typename Type >
-inline constexpr size_t AlignedAllocator<Type>::max_size() const noexcept
+constexpr size_t AlignedAllocator<Type>::max_size() const noexcept
 {
    return size_t(-1) / sizeof( Type );
 }

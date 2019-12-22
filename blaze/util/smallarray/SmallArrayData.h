@@ -68,15 +68,15 @@ struct SmallArrayData
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   inline constexpr SmallArrayData() noexcept;
+   constexpr SmallArrayData() noexcept;
    //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline constexpr T*       array()       noexcept;
-   inline constexpr const T* array() const noexcept;
+   constexpr T*       array()       noexcept;
+   constexpr const T* array() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -115,7 +115,7 @@ constexpr SmallArrayData<T,N>::SmallArrayData() noexcept
 */
 template< typename T  // Data type of the elements
         , size_t N >  // Number of preallocated elements
-inline constexpr T* SmallArrayData<T,N>::array() noexcept
+constexpr T* SmallArrayData<T,N>::array() noexcept
 {
    return reinterpret_cast<T*>( v_ );
 }
@@ -131,7 +131,7 @@ inline constexpr T* SmallArrayData<T,N>::array() noexcept
 */
 template< typename T  // Data type of the elements
         , size_t N >  // Number of preallocated elements
-inline constexpr const T* SmallArrayData<T,N>::array() const noexcept
+constexpr const T* SmallArrayData<T,N>::array() const noexcept
 {
    return reinterpret_cast<const T*>( v_ );
 }
@@ -161,8 +161,8 @@ struct SmallArrayData<T,0UL>
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline constexpr T*       array()       noexcept;
-   inline constexpr const T* array() const noexcept;
+   constexpr T*       array()       noexcept;
+   constexpr const T* array() const noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -177,7 +177,7 @@ struct SmallArrayData<T,0UL>
 // \return A pointer to the first element of the static array.
 */
 template< typename T >  // Data type of the elements
-inline constexpr T* SmallArrayData<T,0UL>::array() noexcept
+constexpr T* SmallArrayData<T,0UL>::array() noexcept
 {
    return nullptr;
 }
@@ -192,7 +192,7 @@ inline constexpr T* SmallArrayData<T,0UL>::array() noexcept
 // \return A pointer to the first element of the static array.
 */
 template< typename T >  // Data type of the elements
-inline constexpr const T* SmallArrayData<T,0UL>::array() const noexcept
+constexpr const T* SmallArrayData<T,0UL>::array() const noexcept
 {
    return nullptr;
 }

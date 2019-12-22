@@ -73,7 +73,7 @@ namespace blaze {
    \endcode
 */
 template< typename T, size_t N >
-inline constexpr size_t dimensionof( T(&a)[N] )
+constexpr size_t dimensionof( T(&a)[N] )
 {
    MAYBE_UNUSED( a );
    return N;
