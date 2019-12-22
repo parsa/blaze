@@ -120,6 +120,7 @@
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/RemoveConst.h>
+#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -537,6 +538,30 @@ class StaticVector
    /*! \endcond */
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DEDUCTION GUIDES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+#if BLAZE_CPP17_MODE
+
+template< typename Type, typename... Ts >
+StaticVector( Type, Ts... ) -> StaticVector<Type,1+sizeof...(Ts)>;
+
+template< typename Type, size_t N >
+StaticVector( Type (&)[N] ) -> StaticVector< RemoveCV_t<Type>, N >;
+
+template< typename Type, size_t N >
+StaticVector( std::array<Type,N> ) -> StaticVector<Type,N>;
+
+#endif
 //*************************************************************************************************
 
 
