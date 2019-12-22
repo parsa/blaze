@@ -1298,17 +1298,20 @@
 // \n \subsection vector_operations_array_construction Array Construction
 //
 // Alternatively, all dense vector classes offer a constructor for an initialization with a dynamic
-// or static array. If the vector is initialized from a dynamic array, the constructor expects the
-// actual size of the array as first argument, the array as second argument. In case of a static
-// array, the fixed size of the array is used:
+// or static array, or with a \c std::array. If the vector is initialized from a dynamic array, the
+// constructor expects the actual size of the array as first argument, the array as second argument.
+// In case of a static array or \c std::array, the fixed size of the array is used:
 
    \code
    const unique_ptr<double[]> array1( new double[2] );
    // ... Initialization of the dynamic array
    blaze::StaticVector<double,2UL> v13( 2UL, array1.get() );
 
-   int array2[4] = { 4, -5, -6, 7 };
+   const int array2[4] = { 4, -5, -6, 7 };
    blaze::StaticVector<int,4UL> v14( array2 );
+
+   const std::array<float,3UL> array3{ 1.1F, 2.2F, 3.3F };
+   blaze::StaticVector<float,3UL> v15( array3 );
    \endcode
 
 // \n \subsection vector_operations_initializer_list_construction Initializer List Construction
@@ -1317,8 +1320,8 @@
 // initializer list:
 
    \code
-   blaze::DynamicVector<float> v15{ 1.0F, 2.0F, 3.0F, 4.0F };
-   blaze::CompressedVector<int> v16{ 0, 2, 0, 0, 5, 0, 7, 0 };
+   blaze::DynamicVector<float> v16{ 1.0F, 2.0F, 3.0F, 4.0F };
+   blaze::CompressedVector<int> v17{ 0, 2, 0, 0, 5, 0, 7, 0 };
    \endcode
 
 // Dynamically sized vectors (such as e.g. \ref vector_types_hybrid_vector,
@@ -1335,13 +1338,13 @@
 // with the same transpose flag (i.e. blaze::rowVector or blaze::columnVector).
 
    \code
-   StaticVector<int,9UL,columnVector> v17( v7 );  // Instantiation of the dense column vector v17
+   StaticVector<int,9UL,columnVector> v18( v7 );  // Instantiation of the dense column vector v17
                                                   // as copy of the dense column vector v7.
-   DynamicVector<int,rowVector> v18( v9 );        // Instantiation of the dense row vector v18 as
+   DynamicVector<int,rowVector> v19( v9 );        // Instantiation of the dense row vector v18 as
                                                   // copy of the sparse row vector v9.
-   CompressedVector<int,columnVector> v19( v1 );  // Instantiation of the sparse column vector v19
+   CompressedVector<int,columnVector> v20( v1 );  // Instantiation of the sparse column vector v19
                                                   // as copy of the dense column vector v1.
-   CompressedVector<float,rowVector> v20( v12 );  // Instantiation of the sparse row vector v20 as
+   CompressedVector<float,rowVector> v21( v12 );  // Instantiation of the sparse row vector v20 as
                                                   // copy of the row vector v12.
    \endcode
 
@@ -1349,8 +1352,8 @@
 // size:
 
    \code
-   StaticVector<int,5UL,columnVector> v21( v7 );  // Runtime error: Size does not match!
-   StaticVector<int,4UL,rowVector> v22( v10 );    // Compile time error: Size does not match!
+   StaticVector<int,5UL,columnVector> v22( v7 );  // Runtime error: Size does not match!
+   StaticVector<int,4UL,rowVector> v23( v10 );    // Compile time error: Size does not match!
    \endcode
 
 // \n \section vector_operations_assignment Assignment
@@ -1378,14 +1381,14 @@
 
 // \n \subsection vector_operations_array_assignment Array Assignment
 //
-// Dense vectors can also be assigned a static array:
+// Dense vectors can also be assigned a static array or \c std::array:
 
    \code
    blaze::StaticVector<float,2UL> v1;
    blaze::DynamicVector<double,rowVector> v2;
 
-   float  array1[2] = { 1.0F, 2.0F };
-   double array2[5] = { 2.1, 4.0, -1.7, 8.6, -7.2 };
+   const float array1[2] = { 1.0F, 2.0F };
+   const std::array<double,5UL> array2{ 2.1, 4.0, -1.7, 8.6, -7.2 };
 
    v1 = array1;
    v2 = array2;
