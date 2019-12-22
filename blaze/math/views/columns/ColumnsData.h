@@ -135,9 +135,9 @@ class ColumnsData< index_sequence<I,Is...> >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   static inline constexpr decltype(auto) idces  () noexcept;
-   static inline constexpr size_t         idx    ( size_t i ) noexcept;
-   static inline constexpr size_t         columns() noexcept;
+   static constexpr decltype(auto) idces  () noexcept;
+   static constexpr size_t         idx    ( size_t i ) noexcept;
+   static constexpr size_t         columns() noexcept;
    //@}
    //**********************************************************************************************
 
@@ -195,7 +195,7 @@ inline ColumnsData< index_sequence<I,Is...> >::ColumnsData( RCAs... args ) noexc
 */
 template< size_t I        // First column index
         , size_t... Is >  // Remaining column indices
-inline constexpr decltype(auto) ColumnsData< index_sequence<I,Is...> >::idces() noexcept
+constexpr decltype(auto) ColumnsData< index_sequence<I,Is...> >::idces() noexcept
 {
    return index_sequence<I,Is...>();
 }
@@ -212,7 +212,7 @@ inline constexpr decltype(auto) ColumnsData< index_sequence<I,Is...> >::idces() 
 */
 template< size_t I        // First column index
         , size_t... Is >  // Remaining column indices
-inline constexpr size_t ColumnsData< index_sequence<I,Is...> >::idx( size_t i ) noexcept
+constexpr size_t ColumnsData< index_sequence<I,Is...> >::idx( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < columns(), "Invalid column access index" );
    return indices_[i];
@@ -229,7 +229,7 @@ inline constexpr size_t ColumnsData< index_sequence<I,Is...> >::idx( size_t i ) 
 */
 template< size_t I        // First column index
         , size_t... Is >  // Remaining column indices
-inline constexpr size_t ColumnsData< index_sequence<I,Is...> >::columns() noexcept
+constexpr size_t ColumnsData< index_sequence<I,Is...> >::columns() noexcept
 {
    return N;
 }
@@ -553,7 +553,7 @@ inline size_t ColumnsData<>::columns() const noexcept
 // \return \a true if the indices of both instances are equal, \a false if not.
 */
 template< typename... CRAs1, typename... CRAs2 >
-inline constexpr bool
+constexpr bool
    compareIndices( const ColumnsData<CRAs1...>& lhs, const ColumnsData<CRAs2...>& rhs ) noexcept
 {
    if( lhs.columns() != rhs.columns() )

@@ -84,8 +84,8 @@ class ValueIndexPair
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   inline constexpr ValueIndexPair();
-   inline constexpr ValueIndexPair( const Type& v, size_t i );
+   constexpr ValueIndexPair();
+   constexpr ValueIndexPair( const Type& v, size_t i );
 
    ValueIndexPair( const ValueIndexPair& ) = default;
    ValueIndexPair( ValueIndexPair&& ) = default;
@@ -106,36 +106,36 @@ class ValueIndexPair
    ValueIndexPair& operator=( ValueIndexPair&& ) = default;
 
    template< typename Other >
-   inline constexpr auto operator=( const Other& rhs )
+   constexpr auto operator=( const Other& rhs )
       -> EnableIf_t< IsSparseElement_v<Other>, ValueIndexPair& >;
 
    template< typename Other >
-   inline constexpr auto operator=( Other&& rhs )
+   constexpr auto operator=( Other&& rhs )
       -> EnableIf_t< IsSparseElement_v< RemoveReference_t<Other> > &&
                      IsRValueReference_v<Other&&>, ValueIndexPair& >;
 
    template< typename Other >
-   inline constexpr auto operator=( const Other& v )
+   constexpr auto operator=( const Other& v )
       -> EnableIf_t< !IsSparseElement_v<Other>, ValueIndexPair& >;
 
    template< typename Other >
-   inline constexpr auto operator=( Other&& v )
+   constexpr auto operator=( Other&& v )
       -> EnableIf_t< !IsSparseElement_v< RemoveReference_t<Other> > &&
                      IsRValueReference_v<Other&&>, ValueIndexPair& >;
 
-   template< typename Other > inline constexpr ValueIndexPair& operator+=( const Other& v );
-   template< typename Other > inline constexpr ValueIndexPair& operator-=( const Other& v );
-   template< typename Other > inline constexpr ValueIndexPair& operator*=( const Other& v );
-   template< typename Other > inline constexpr ValueIndexPair& operator/=( const Other& v );
+   template< typename Other > constexpr ValueIndexPair& operator+=( const Other& v );
+   template< typename Other > constexpr ValueIndexPair& operator-=( const Other& v );
+   template< typename Other > constexpr ValueIndexPair& operator*=( const Other& v );
+   template< typename Other > constexpr ValueIndexPair& operator/=( const Other& v );
    //@}
    //**********************************************************************************************
 
    //**Acess functions*****************************************************************************
    /*!\name Access functions */
    //@{
-   inline constexpr Reference      value() noexcept;
-   inline constexpr ConstReference value() const noexcept;
-   inline constexpr IndexType      index() const noexcept;
+   constexpr Reference      value() noexcept;
+   constexpr ConstReference value() const noexcept;
+   constexpr IndexType      index() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -179,7 +179,7 @@ class ValueIndexPair
 /*!\brief Default constructor for value-index-pairs.
 */
 template< typename Type >  // Type of the value element
-inline constexpr ValueIndexPair<Type>::ValueIndexPair()
+constexpr ValueIndexPair<Type>::ValueIndexPair()
    : value_()  // Value of the value-index-pair
    , index_()  // Index of the value-index-pair
 {}
@@ -193,7 +193,7 @@ inline constexpr ValueIndexPair<Type>::ValueIndexPair()
 // \param i The index of the value-index-pair.
 */
 template< typename Type >  // Type of the value element
-inline constexpr ValueIndexPair<Type>::ValueIndexPair( const Type& v, size_t i )
+constexpr ValueIndexPair<Type>::ValueIndexPair( const Type& v, size_t i )
    : value_( v )  // Value of the value-index-pair
    , index_( i )  // Index of the value-index-pair
 {}
@@ -220,7 +220,7 @@ inline constexpr ValueIndexPair<Type>::ValueIndexPair( const Type& v, size_t i )
 */
 template< typename Type >   // Type of the value element
 template< typename Other >  // Data type of the right-hand side value-index-pair
-inline constexpr auto ValueIndexPair<Type>::operator=( const Other& rhs )
+constexpr auto ValueIndexPair<Type>::operator=( const Other& rhs )
    -> EnableIf_t< IsSparseElement_v<Other>, ValueIndexPair& >
 {
    value_ = rhs.value();
@@ -242,7 +242,7 @@ inline constexpr auto ValueIndexPair<Type>::operator=( const Other& rhs )
 */
 template< typename Type >   // Type of the value element
 template< typename Other >  // Data type of the right-hand side value-index-pair
-inline constexpr auto ValueIndexPair<Type>::operator=( Other&& rhs )
+constexpr auto ValueIndexPair<Type>::operator=( Other&& rhs )
    -> EnableIf_t< IsSparseElement_v< RemoveReference_t<Other> > &&
                   IsRValueReference_v<Other&&>, ValueIndexPair& >
 {
@@ -261,7 +261,7 @@ inline constexpr auto ValueIndexPair<Type>::operator=( Other&& rhs )
 */
 template< typename Type >   // Type of the value element
 template< typename Other >  // Data type of the right-hand side value
-inline constexpr auto ValueIndexPair<Type>::operator=( const Other& v )
+constexpr auto ValueIndexPair<Type>::operator=( const Other& v )
    -> EnableIf_t< !IsSparseElement_v<Other>, ValueIndexPair& >
 {
    value_ = v;
@@ -278,7 +278,7 @@ inline constexpr auto ValueIndexPair<Type>::operator=( const Other& v )
 */
 template< typename Type >   // Type of the value element
 template< typename Other >  // Data type of the right-hand side value
-inline constexpr auto ValueIndexPair<Type>::operator=( Other&& v )
+constexpr auto ValueIndexPair<Type>::operator=( Other&& v )
    -> EnableIf_t< !IsSparseElement_v< RemoveReference_t<Other> > &&
                   IsRValueReference_v<Other&&>, ValueIndexPair& >
 {
@@ -296,7 +296,7 @@ inline constexpr auto ValueIndexPair<Type>::operator=( Other&& v )
 */
 template< typename Type >   // Type of the value element
 template< typename Other >  // Data type of the right-hand side value
-inline constexpr ValueIndexPair<Type>& ValueIndexPair<Type>::operator+=( const Other& v )
+constexpr ValueIndexPair<Type>& ValueIndexPair<Type>::operator+=( const Other& v )
 {
    value_ += v;
    return *this;
@@ -312,7 +312,7 @@ inline constexpr ValueIndexPair<Type>& ValueIndexPair<Type>::operator+=( const O
 */
 template< typename Type >   // Type of the value element
 template< typename Other >  // Data type of the right-hand side value
-inline constexpr ValueIndexPair<Type>& ValueIndexPair<Type>::operator-=( const Other& v )
+constexpr ValueIndexPair<Type>& ValueIndexPair<Type>::operator-=( const Other& v )
 {
    value_ -= v;
    return *this;
@@ -328,7 +328,7 @@ inline constexpr ValueIndexPair<Type>& ValueIndexPair<Type>::operator-=( const O
 */
 template< typename Type >   // Type of the value element
 template< typename Other >  // Data type of the right-hand side value
-inline constexpr ValueIndexPair<Type>& ValueIndexPair<Type>::operator*=( const Other& v )
+constexpr ValueIndexPair<Type>& ValueIndexPair<Type>::operator*=( const Other& v )
 {
    value_ *= v;
    return *this;
@@ -344,7 +344,7 @@ inline constexpr ValueIndexPair<Type>& ValueIndexPair<Type>::operator*=( const O
 */
 template< typename Type >   // Type of the value element
 template< typename Other >  // Data type of the right-hand side value
-inline constexpr ValueIndexPair<Type>& ValueIndexPair<Type>::operator/=( const Other& v )
+constexpr ValueIndexPair<Type>& ValueIndexPair<Type>::operator/=( const Other& v )
 {
    value_ /= v;
    return *this;
@@ -366,7 +366,7 @@ inline constexpr ValueIndexPair<Type>& ValueIndexPair<Type>::operator/=( const O
 // \return The current value of the value-index-pair.
 */
 template< typename Type >  // Type of the value element
-inline constexpr typename ValueIndexPair<Type>::Reference
+constexpr typename ValueIndexPair<Type>::Reference
    ValueIndexPair<Type>::value() noexcept
 {
    return value_;
@@ -380,7 +380,7 @@ inline constexpr typename ValueIndexPair<Type>::Reference
 // \return The current value of the value-index-pair.
 */
 template< typename Type >  // Type of the value element
-inline constexpr typename ValueIndexPair<Type>::ConstReference
+constexpr typename ValueIndexPair<Type>::ConstReference
    ValueIndexPair<Type>::value() const noexcept
 {
    return value_;
@@ -394,7 +394,7 @@ inline constexpr typename ValueIndexPair<Type>::ConstReference
 // \return The current index of the value-index-pair.
 */
 template< typename Type >  // Type of the value element
-inline constexpr typename ValueIndexPair<Type>::IndexType
+constexpr typename ValueIndexPair<Type>::IndexType
    ValueIndexPair<Type>::index() const noexcept
 {
    return index_;

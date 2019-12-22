@@ -70,7 +70,7 @@ struct Bind3rd
    // \param op The wrapped operation.
    // \param a3 The 3rd argument.
    */
-   explicit inline constexpr Bind3rd( const OP& op, const A3& a3 )
+   explicit constexpr Bind3rd( const OP& op, const A3& a3 )
       : op_( op )  // The wrapped operation.
       , a3_( a3 )  // The 3rd argument
    {}
@@ -152,7 +152,7 @@ struct Bind3rd
 */
 template< typename OP    // Type of the operation
         , typename A3 >  // Type of the bound argument
-inline constexpr Bind3rd<OP,A3> bind3rd( const OP& op, const A3& a3 )
+constexpr Bind3rd<OP,A3> bind3rd( const OP& op, const A3& a3 )
 {
    return Bind3rd<OP,A3>( op, a3 );
 }

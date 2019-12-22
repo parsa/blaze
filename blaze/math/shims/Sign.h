@@ -64,7 +64,7 @@ namespace blaze {
 // It returns 1 if \a a is greater than zero, 0 if \a a is zero, and -1 if \a a is less than zero.
 */
 template< typename T, typename = EnableIf_t< IsIntegral_v<T> > >
-inline constexpr T sign( T a ) noexcept
+constexpr T sign( T a ) noexcept
 {
    return ( IsSigned_v<T> )
           ? ( T(0) < a ) - ( a < T(0) )
@@ -84,7 +84,7 @@ inline constexpr T sign( T a ) noexcept
 // if \a a is greater than zero, 0.0 if \a a is zero, -1.0 if \a a is less than zero, and \c NaN
 // if a is \c NaN.
 */
-inline constexpr float sign( float a ) noexcept
+constexpr float sign( float a ) noexcept
 {
    if     ( 0.0F < a ) return  1.0F;
    else if( a < 0.0F ) return -1.0F;
@@ -104,7 +104,7 @@ inline constexpr float sign( float a ) noexcept
 // if \a a is greater than zero, 0.0 if \a a is zero, -1.0 if \a a is less than zero, and \c NaN
 // if a is \c NaN.
 */
-inline constexpr double sign( double a ) noexcept
+constexpr double sign( double a ) noexcept
 {
    if     ( 0.0 < a ) return  1.0;
    else if( a < 0.0 ) return -1.0;
@@ -124,7 +124,7 @@ inline constexpr double sign( double a ) noexcept
 // if \a a is greater than zero, 0.0 if \a a is zero, -1.0 if \a a is less than zero, and \c NaN
 // if a is \c NaN.
 */
-inline constexpr long double sign( long double a ) noexcept
+constexpr long double sign( long double a ) noexcept
 {
    if     ( 0.0L < a ) return  1.0L;
    else if( a < 0.0L ) return -1.0L;

@@ -199,7 +199,7 @@ class DVecDVecCrossExpr
    //
    // \return The size of the vector.
    */
-   inline constexpr size_t size() const noexcept {
+   constexpr size_t size() const noexcept {
       return 3UL;
    }
    //**********************************************************************************************

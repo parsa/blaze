@@ -105,7 +105,7 @@ inline size_t nonZeros( initializer_list< initializer_list<Type> > list ) noexce
 // \return The maximum number of columns.
 */
 template< typename Type >
-inline constexpr size_t determineColumns( initializer_list< initializer_list<Type> > list ) noexcept
+constexpr size_t determineColumns( initializer_list< initializer_list<Type> > list ) noexcept
 {
    size_t cols( 0UL );
 

@@ -226,9 +226,9 @@ class UniformVector
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline constexpr UniformVector() noexcept;
-   explicit inline constexpr UniformVector( size_t n );
-   explicit inline constexpr UniformVector( size_t n, const Type& init );
+   explicit constexpr UniformVector() noexcept;
+   explicit constexpr UniformVector( size_t n );
+   explicit constexpr UniformVector( size_t n, const Type& init );
 
    template< typename VT >
    inline UniformVector( const Vector<VT,TF>& v );
@@ -248,20 +248,20 @@ class UniformVector
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline constexpr ConstReference operator[]( size_t index ) const noexcept;
-   inline           ConstReference at( size_t index ) const;
-   inline constexpr ConstPointer   data  () const noexcept;
-   inline constexpr ConstIterator  begin () const noexcept;
-   inline constexpr ConstIterator  cbegin() const noexcept;
-   inline constexpr ConstIterator  end   () const noexcept;
-   inline constexpr ConstIterator  cend  () const noexcept;
+   constexpr ConstReference operator[]( size_t index ) const noexcept;
+   inline    ConstReference at( size_t index ) const;
+   constexpr ConstPointer   data  () const noexcept;
+   constexpr ConstIterator  begin () const noexcept;
+   constexpr ConstIterator  cbegin() const noexcept;
+   constexpr ConstIterator  end   () const noexcept;
+   constexpr ConstIterator  cend  () const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline constexpr UniformVector& operator=( const Type& rhs );
+   constexpr UniformVector& operator=( const Type& rhs );
 
    UniformVector& operator=( const UniformVector& ) = default;
    UniformVector& operator=( UniformVector&& ) = default;
@@ -283,15 +283,15 @@ class UniformVector
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline constexpr size_t size() const noexcept;
-   inline constexpr size_t spacing() const noexcept;
-   inline constexpr size_t capacity() const noexcept;
-   inline           size_t nonZeros() const;
-   inline constexpr void   reset();
-   inline constexpr void   clear();
-   inline constexpr void   resize( size_t n, bool preserve=true );
-   inline constexpr void   extend( size_t n, bool preserve=true );
-   inline constexpr void   swap( UniformVector& v ) noexcept;
+   constexpr size_t size() const noexcept;
+   constexpr size_t spacing() const noexcept;
+   constexpr size_t capacity() const noexcept;
+   inline    size_t nonZeros() const;
+   constexpr void   reset();
+   constexpr void   clear();
+   constexpr void   resize( size_t n, bool preserve=true );
+   constexpr void   extend( size_t n, bool preserve=true );
+   constexpr void   swap( UniformVector& v ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -358,7 +358,7 @@ class UniformVector
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr UniformVector<Type,TF>::UniformVector() noexcept
+constexpr UniformVector<Type,TF>::UniformVector() noexcept
    : size_ ( 0UL )  // The current size/dimension of the uniform vector
    , value_()       // The value of all elements of the uniform vector
 {}
@@ -372,7 +372,7 @@ inline constexpr UniformVector<Type,TF>::UniformVector() noexcept
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr UniformVector<Type,TF>::UniformVector( size_t n )
+constexpr UniformVector<Type,TF>::UniformVector( size_t n )
    : size_ ( n )  // The current size/dimension of the uniform vector
    , value_()     // The value of all elements of the uniform vector
 {}
@@ -389,7 +389,7 @@ inline constexpr UniformVector<Type,TF>::UniformVector( size_t n )
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr UniformVector<Type,TF>::UniformVector( size_t n, const Type& init )
+constexpr UniformVector<Type,TF>::UniformVector( size_t n, const Type& init )
    : size_ ( n    )  // The current size/dimension of the uniform vector
    , value_( init )  // The value of all elements of the uniform vector
 {}
@@ -442,7 +442,7 @@ inline UniformVector<Type,TF>::UniformVector( const Vector<VT,TF>& v )
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr typename UniformVector<Type,TF>::ConstReference
+constexpr typename UniformVector<Type,TF>::ConstReference
    UniformVector<Type,TF>::operator[]( size_t index ) const noexcept
 {
    MAYBE_UNUSED( index );
@@ -488,7 +488,7 @@ inline typename UniformVector<Type,TF>::ConstReference
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr typename UniformVector<Type,TF>::ConstPointer
+constexpr typename UniformVector<Type,TF>::ConstPointer
    UniformVector<Type,TF>::data() const noexcept
 {
    return &value_;
@@ -503,7 +503,7 @@ inline constexpr typename UniformVector<Type,TF>::ConstPointer
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr typename UniformVector<Type,TF>::ConstIterator
+constexpr typename UniformVector<Type,TF>::ConstIterator
    UniformVector<Type,TF>::begin() const noexcept
 {
    return ConstIterator( &value_, 0UL );
@@ -518,7 +518,7 @@ inline constexpr typename UniformVector<Type,TF>::ConstIterator
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr typename UniformVector<Type,TF>::ConstIterator
+constexpr typename UniformVector<Type,TF>::ConstIterator
    UniformVector<Type,TF>::cbegin() const noexcept
 {
    return ConstIterator( &value_, 0UL );
@@ -533,7 +533,7 @@ inline constexpr typename UniformVector<Type,TF>::ConstIterator
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr typename UniformVector<Type,TF>::ConstIterator
+constexpr typename UniformVector<Type,TF>::ConstIterator
    UniformVector<Type,TF>::end() const noexcept
 {
    return ConstIterator( &value_, size_ );
@@ -548,7 +548,7 @@ inline constexpr typename UniformVector<Type,TF>::ConstIterator
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr typename UniformVector<Type,TF>::ConstIterator
+constexpr typename UniformVector<Type,TF>::ConstIterator
    UniformVector<Type,TF>::cend() const noexcept
 {
    return ConstIterator( &value_, size_ );
@@ -572,7 +572,7 @@ inline constexpr typename UniformVector<Type,TF>::ConstIterator
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr UniformVector<Type,TF>& UniformVector<Type,TF>::operator=( const Type& rhs )
+constexpr UniformVector<Type,TF>& UniformVector<Type,TF>::operator=( const Type& rhs )
 {
    value_ = rhs;
 
@@ -802,7 +802,7 @@ inline auto UniformVector<Type,TF>::operator/=( ST scalar )
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr size_t UniformVector<Type,TF>::size() const noexcept
+constexpr size_t UniformVector<Type,TF>::size() const noexcept
 {
    return size_;
 }
@@ -819,7 +819,7 @@ inline constexpr size_t UniformVector<Type,TF>::size() const noexcept
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr size_t UniformVector<Type,TF>::spacing() const noexcept
+constexpr size_t UniformVector<Type,TF>::spacing() const noexcept
 {
    return size_;
 }
@@ -833,7 +833,7 @@ inline constexpr size_t UniformVector<Type,TF>::spacing() const noexcept
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr size_t UniformVector<Type,TF>::capacity() const noexcept
+constexpr size_t UniformVector<Type,TF>::capacity() const noexcept
 {
    return size_;
 }
@@ -867,7 +867,7 @@ inline size_t UniformVector<Type,TF>::nonZeros() const
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr void UniformVector<Type,TF>::reset()
+constexpr void UniformVector<Type,TF>::reset()
 {
    using blaze::clear;
 
@@ -885,7 +885,7 @@ inline constexpr void UniformVector<Type,TF>::reset()
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr void UniformVector<Type,TF>::clear()
+constexpr void UniformVector<Type,TF>::clear()
 {
    size_ = 0UL;
 }
@@ -906,7 +906,7 @@ inline constexpr void UniformVector<Type,TF>::clear()
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr void UniformVector<Type,TF>::resize( size_t n, bool preserve )
+constexpr void UniformVector<Type,TF>::resize( size_t n, bool preserve )
 {
    MAYBE_UNUSED( preserve );
 
@@ -928,7 +928,7 @@ inline constexpr void UniformVector<Type,TF>::resize( size_t n, bool preserve )
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr void UniformVector<Type,TF>::extend( size_t n, bool preserve )
+constexpr void UniformVector<Type,TF>::extend( size_t n, bool preserve )
 {
    resize( size_+n, preserve );
 }
@@ -943,7 +943,7 @@ inline constexpr void UniformVector<Type,TF>::extend( size_t n, bool preserve )
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr void UniformVector<Type,TF>::swap( UniformVector& v ) noexcept
+constexpr void UniformVector<Type,TF>::swap( UniformVector& v ) noexcept
 {
    using std::swap;
 
@@ -1198,7 +1198,7 @@ constexpr void swap( UniformVector<Type,TF>& a, UniformVector<Type,TF>& b ) noex
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr void reset( UniformVector<Type,TF>& v )
+constexpr void reset( UniformVector<Type,TF>& v )
 {
    v.reset();
 }
@@ -1214,7 +1214,7 @@ inline constexpr void reset( UniformVector<Type,TF>& v )
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr void clear( UniformVector<Type,TF>& v )
+constexpr void clear( UniformVector<Type,TF>& v )
 {
    v.clear();
 }
@@ -1248,7 +1248,7 @@ inline constexpr void clear( UniformVector<Type,TF>& v )
 template< bool RF        // Relaxation flag
         , typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr bool isDefault( const UniformVector<Type,TF>& v )
+constexpr bool isDefault( const UniformVector<Type,TF>& v )
 {
    return ( v.size() == 0UL );
 }
@@ -1275,7 +1275,7 @@ inline constexpr bool isDefault( const UniformVector<Type,TF>& v )
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr bool isIntact( const UniformVector<Type,TF>& v ) noexcept
+constexpr bool isIntact( const UniformVector<Type,TF>& v ) noexcept
 {
    MAYBE_UNUSED( v );
 
@@ -1294,7 +1294,7 @@ inline constexpr bool isIntact( const UniformVector<Type,TF>& v ) noexcept
 */
 template< typename Type  // Data type of the vector
         , bool TF >      // Transpose flag
-inline constexpr void swap( UniformVector<Type,TF>& a, UniformVector<Type,TF>& b ) noexcept
+constexpr void swap( UniformVector<Type,TF>& a, UniformVector<Type,TF>& b ) noexcept
 {
    a.swap( b );
 }
@@ -1336,7 +1336,7 @@ inline constexpr void swap( UniformVector<Type,TF>& a, UniformVector<Type,TF>& b
    \endcode
 */
 template< bool TF = defaultTransposeFlag, typename T >
-inline constexpr decltype(auto) uniform( size_t n, T&& init )
+constexpr decltype(auto) uniform( size_t n, T&& init )
 {
    return UniformVector< RemoveCVRef_t<T>, TF >( n, std::forward<T>( init ) );
 }

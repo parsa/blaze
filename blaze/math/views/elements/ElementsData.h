@@ -135,9 +135,9 @@ class ElementsData< index_sequence<I,Is...> >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   static inline constexpr decltype(auto) idces() noexcept;
-   static inline constexpr size_t         idx  ( size_t i ) noexcept;
-   static inline constexpr size_t         size () noexcept;
+   static constexpr decltype(auto) idces() noexcept;
+   static constexpr size_t         idx  ( size_t i ) noexcept;
+   static constexpr size_t         size () noexcept;
    //@}
    //**********************************************************************************************
 
@@ -195,7 +195,7 @@ inline ElementsData< index_sequence<I,Is...> >::ElementsData( REAs... args ) noe
 */
 template< size_t I        // First element index
         , size_t... Is >  // Remaining element indices
-inline constexpr decltype(auto) ElementsData< index_sequence<I,Is...> >::idces() noexcept
+constexpr decltype(auto) ElementsData< index_sequence<I,Is...> >::idces() noexcept
 {
    return index_sequence<I,Is...>();
 }
@@ -212,7 +212,7 @@ inline constexpr decltype(auto) ElementsData< index_sequence<I,Is...> >::idces()
 */
 template< size_t I        // First element index
         , size_t... Is >  // Remaining element indices
-inline constexpr size_t ElementsData< index_sequence<I,Is...> >::idx( size_t i ) noexcept
+constexpr size_t ElementsData< index_sequence<I,Is...> >::idx( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < size(), "Invalid element access index" );
    return indices_[i];
@@ -229,7 +229,7 @@ inline constexpr size_t ElementsData< index_sequence<I,Is...> >::idx( size_t i )
 */
 template< size_t I        // First element index
         , size_t... Is >  // Remaining element indices
-inline constexpr size_t ElementsData< index_sequence<I,Is...> >::size() noexcept
+constexpr size_t ElementsData< index_sequence<I,Is...> >::size() noexcept
 {
    return N;
 }
@@ -553,7 +553,7 @@ inline size_t ElementsData<>::size() const noexcept
 // \return \a true if the indices of both instances are equal, \a false if not.
 */
 template< typename... CEAs1, typename... CEAs2 >
-inline constexpr bool
+constexpr bool
    compareIndices( const ElementsData<CEAs1...>& lhs, const ElementsData<CEAs2...>& rhs ) noexcept
 {
    if( lhs.size() != rhs.size() )

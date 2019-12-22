@@ -77,7 +77,7 @@ struct Join
    //
    // \param op The wrapped operation.
    */
-   explicit inline constexpr Join( const OP& op )
+   explicit constexpr Join( const OP& op )
       : op_( op )  // The wrapped operation.
    {}
    //**********************************************************************************************
@@ -180,7 +180,7 @@ struct Join
 // is able to unpack arguments in the form of pairs.
 */
 template< typename OP >  // Type of the operation
-inline constexpr Join<OP> join( const OP& op )
+constexpr Join<OP> join( const OP& op )
 {
    return Join<OP>( op );
 }

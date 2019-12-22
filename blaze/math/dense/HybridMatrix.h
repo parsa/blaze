@@ -362,19 +362,19 @@ class HybridMatrix
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-          inline           size_t rows() const noexcept;
-          inline           size_t columns() const noexcept;
-   static inline constexpr size_t spacing() noexcept;
-   static inline constexpr size_t capacity() noexcept;
-          inline           size_t capacity( size_t i ) const noexcept;
-          inline           size_t nonZeros() const;
-          inline           size_t nonZeros( size_t i ) const;
-          inline           void   reset();
-          inline           void   reset( size_t i );
-          inline           void   clear();
-                           void   resize ( size_t m, size_t n, bool preserve=true );
-          inline           void   extend ( size_t m, size_t n, bool preserve=true );
-          inline           void   swap( HybridMatrix& m ) noexcept;
+          inline    size_t rows() const noexcept;
+          inline    size_t columns() const noexcept;
+   static constexpr size_t spacing() noexcept;
+   static constexpr size_t capacity() noexcept;
+          inline    size_t capacity( size_t i ) const noexcept;
+          inline    size_t nonZeros() const;
+          inline    size_t nonZeros( size_t i ) const;
+          inline    void   reset();
+          inline    void   reset( size_t i );
+          inline    void   clear();
+                    void   resize ( size_t m, size_t n, bool preserve=true );
+          inline    void   extend ( size_t m, size_t n, bool preserve=true );
+          inline    void   swap( HybridMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -471,7 +471,7 @@ class HybridMatrix
    template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
    template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   static inline constexpr bool isAligned() noexcept;
+   static constexpr bool isAligned() noexcept;
 
    BLAZE_ALWAYS_INLINE SIMDType load ( size_t i, size_t j ) const noexcept;
    BLAZE_ALWAYS_INLINE SIMDType loada( size_t i, size_t j ) const noexcept;
@@ -1692,7 +1692,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline constexpr size_t HybridMatrix<Type,M,N,SO>::spacing() noexcept
+constexpr size_t HybridMatrix<Type,M,N,SO>::spacing() noexcept
 {
    return NN;
 }
@@ -1708,7 +1708,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline constexpr size_t HybridMatrix<Type,M,N,SO>::capacity() noexcept
+constexpr size_t HybridMatrix<Type,M,N,SO>::capacity() noexcept
 {
    return M*NN;
 }
@@ -2424,7 +2424,7 @@ template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N       // Number of columns
         , bool SO >      // Storage order
-inline constexpr bool HybridMatrix<Type,M,N,SO>::isAligned() noexcept
+constexpr bool HybridMatrix<Type,M,N,SO>::isAligned() noexcept
 {
    return align;
 }
@@ -3418,19 +3418,19 @@ class HybridMatrix<Type,M,N,true>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-          inline           size_t rows() const noexcept;
-          inline           size_t columns() const noexcept;
-   static inline constexpr size_t spacing() noexcept;
-   static inline constexpr size_t capacity() noexcept;
-          inline           size_t capacity( size_t j ) const noexcept;
-          inline           size_t nonZeros() const;
-          inline           size_t nonZeros( size_t j ) const;
-          inline           void   reset();
-          inline           void   reset( size_t i );
-          inline           void   clear();
-                           void   resize ( size_t m, size_t n, bool preserve=true );
-          inline           void   extend ( size_t m, size_t n, bool preserve=true );
-          inline           void   swap( HybridMatrix& m ) noexcept;
+          inline    size_t rows() const noexcept;
+          inline    size_t columns() const noexcept;
+   static constexpr size_t spacing() noexcept;
+   static constexpr size_t capacity() noexcept;
+          inline    size_t capacity( size_t j ) const noexcept;
+          inline    size_t nonZeros() const;
+          inline    size_t nonZeros( size_t j ) const;
+          inline    void   reset();
+          inline    void   reset( size_t i );
+          inline    void   clear();
+                    void   resize ( size_t m, size_t n, bool preserve=true );
+          inline    void   extend ( size_t m, size_t n, bool preserve=true );
+          inline    void   swap( HybridMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -3519,7 +3519,7 @@ class HybridMatrix<Type,M,N,true>
    template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
    template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   static inline constexpr bool isAligned() noexcept;
+   static constexpr bool isAligned() noexcept;
 
    BLAZE_ALWAYS_INLINE SIMDType load ( size_t i, size_t j ) const noexcept;
    BLAZE_ALWAYS_INLINE SIMDType loada( size_t i, size_t j ) const noexcept;
@@ -4736,7 +4736,7 @@ inline size_t HybridMatrix<Type,M,N,true>::columns() const noexcept
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline constexpr size_t HybridMatrix<Type,M,N,true>::spacing() noexcept
+constexpr size_t HybridMatrix<Type,M,N,true>::spacing() noexcept
 {
    return MM;
 }
@@ -4753,7 +4753,7 @@ inline constexpr size_t HybridMatrix<Type,M,N,true>::spacing() noexcept
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline constexpr size_t HybridMatrix<Type,M,N,true>::capacity() noexcept
+constexpr size_t HybridMatrix<Type,M,N,true>::capacity() noexcept
 {
    return MM*N;
 }
@@ -5482,7 +5482,7 @@ inline bool HybridMatrix<Type,M,N,true>::isAliased( const Other* alias ) const n
 template< typename Type  // Data type of the matrix
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline constexpr bool HybridMatrix<Type,M,N,true>::isAligned() noexcept
+constexpr bool HybridMatrix<Type,M,N,true>::isAligned() noexcept
 {
    return align;
 }

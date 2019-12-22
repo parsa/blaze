@@ -2257,7 +2257,7 @@ class Band<MT,TF,true,true,CBAs...>
    //
    // \return \a true in case the operands are aligned, \a false if not.
    */
-   inline constexpr bool isAligned() const noexcept {
+   constexpr bool isAligned() const noexcept {
       return false;
    }
    //**********************************************************************************************

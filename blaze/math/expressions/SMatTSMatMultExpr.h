@@ -220,7 +220,7 @@ class SMatTSMatMultExpr
    //
    // \return The number of non-zero elements in the sparse matrix.
    */
-   inline constexpr size_t nonZeros() const noexcept {
+   constexpr size_t nonZeros() const noexcept {
       return 0UL;
    }
    //**********************************************************************************************

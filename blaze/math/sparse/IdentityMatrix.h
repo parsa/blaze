@@ -246,7 +246,7 @@ class IdentityMatrix
       //**Default constructor**********************************************************************
       /*!\brief Default constructor for the ConstIterator class.
       */
-      inline constexpr ConstIterator() noexcept
+      constexpr ConstIterator() noexcept
          : index_()  // Index to the current identity matrix element
       {}
       //*******************************************************************************************
@@ -256,7 +256,7 @@ class IdentityMatrix
       //
       // \param index Index to the initial matrix element.
       */
-      inline constexpr ConstIterator( size_t index ) noexcept
+      constexpr ConstIterator( size_t index ) noexcept
          : index_( index )  // Index to the current identity matrix element
       {}
       //*******************************************************************************************
@@ -266,7 +266,7 @@ class IdentityMatrix
       //
       // \return Reference to the incremented iterator.
       */
-      inline constexpr ConstIterator& operator++() noexcept {
+      constexpr ConstIterator& operator++() noexcept {
          ++index_;
          return *this;
       }
@@ -277,7 +277,7 @@ class IdentityMatrix
       //
       // \return The previous position of the iterator.
       */
-      inline constexpr ConstIterator operator++( int ) noexcept {
+      constexpr ConstIterator operator++( int ) noexcept {
          ConstIterator tmp( *this );
          ++index_;
          return tmp;
@@ -289,7 +289,7 @@ class IdentityMatrix
       //
       // \return The current value of the sparse element.
       */
-      inline constexpr const Element operator*() const noexcept {
+      constexpr const Element operator*() const noexcept {
          return Element( Type(1), index_ );
       }
       //*******************************************************************************************
@@ -299,7 +299,7 @@ class IdentityMatrix
       //
       // \return Reference to the sparse matrix element at the current iterator position.
       */
-      inline constexpr const ConstIterator* operator->() const noexcept {
+      constexpr const ConstIterator* operator->() const noexcept {
          return this;
       }
       //*******************************************************************************************
@@ -309,7 +309,7 @@ class IdentityMatrix
       //
       // \return The current value of the sparse element.
       */
-      inline constexpr Type value() const noexcept {
+      constexpr Type value() const noexcept {
          return Type(1);
       }
       //*******************************************************************************************
@@ -319,7 +319,7 @@ class IdentityMatrix
       //
       // \return The current index of the sparse element.
       */
-      inline constexpr size_t index() const noexcept {
+      constexpr size_t index() const noexcept {
          return index_;
       }
       //*******************************************************************************************
@@ -330,7 +330,7 @@ class IdentityMatrix
       // \param rhs The right-hand side ConstIterator object.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
-      inline constexpr bool operator==( const ConstIterator& rhs ) const noexcept {
+      constexpr bool operator==( const ConstIterator& rhs ) const noexcept {
          return index_ == rhs.index_;
       }
       //*******************************************************************************************
@@ -341,7 +341,7 @@ class IdentityMatrix
       // \param rhs The right-hand side ConstIterator object.
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
-      inline constexpr bool operator!=( const ConstIterator& rhs ) const noexcept {
+      constexpr bool operator!=( const ConstIterator& rhs ) const noexcept {
          return index_ != rhs.index_;
       }
       //*******************************************************************************************
@@ -352,7 +352,7 @@ class IdentityMatrix
       // \param rhs The right-hand side ConstIterator object.
       // \return The number of elements between the two ConstIterator objects.
       */
-      inline constexpr DifferenceType operator-( const ConstIterator& rhs ) const noexcept {
+      constexpr DifferenceType operator-( const ConstIterator& rhs ) const noexcept {
          return index_ - rhs.index_;
       }
       //*******************************************************************************************
@@ -379,8 +379,8 @@ class IdentityMatrix
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline constexpr IdentityMatrix() noexcept;
-   explicit inline constexpr IdentityMatrix( size_t n ) noexcept;
+   explicit constexpr IdentityMatrix() noexcept;
+   explicit constexpr IdentityMatrix( size_t n ) noexcept;
 
    template< typename MT, bool SO2 >
    explicit inline IdentityMatrix( const Matrix<MT,SO2>& m );
@@ -400,12 +400,12 @@ class IdentityMatrix
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline constexpr ConstReference operator()( size_t i, size_t j ) const noexcept;
-   inline           ConstReference at( size_t i, size_t j ) const;
-   inline constexpr ConstIterator  begin ( size_t i ) const noexcept;
-   inline constexpr ConstIterator  cbegin( size_t i ) const noexcept;
-   inline constexpr ConstIterator  end   ( size_t i ) const noexcept;
-   inline constexpr ConstIterator  cend  ( size_t i ) const noexcept;
+   constexpr ConstReference operator()( size_t i, size_t j ) const noexcept;
+   inline    ConstReference at( size_t i, size_t j ) const;
+   constexpr ConstIterator  begin ( size_t i ) const noexcept;
+   constexpr ConstIterator  cbegin( size_t i ) const noexcept;
+   constexpr ConstIterator  end   ( size_t i ) const noexcept;
+   constexpr ConstIterator  cend  ( size_t i ) const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -423,15 +423,15 @@ class IdentityMatrix
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline constexpr size_t rows() const noexcept;
-   inline constexpr size_t columns() const noexcept;
-   inline constexpr size_t capacity() const noexcept;
-   inline constexpr size_t capacity( size_t i ) const noexcept;
-   inline constexpr size_t nonZeros() const noexcept;
-   inline constexpr size_t nonZeros( size_t i ) const noexcept;
-   inline constexpr void   clear() noexcept;
-          constexpr void   resize( size_t n ) noexcept;
-   inline constexpr void   swap( IdentityMatrix& m ) noexcept;
+   constexpr size_t rows() const noexcept;
+   constexpr size_t columns() const noexcept;
+   constexpr size_t capacity() const noexcept;
+   constexpr size_t capacity( size_t i ) const noexcept;
+   constexpr size_t nonZeros() const noexcept;
+   constexpr size_t nonZeros( size_t i ) const noexcept;
+   constexpr void   clear() noexcept;
+   constexpr void   resize( size_t n ) noexcept;
+   constexpr void   swap( IdentityMatrix& m ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -447,8 +447,8 @@ class IdentityMatrix
    //**Numeric functions***************************************************************************
    /*!\name Numeric functions */
    //@{
-   inline constexpr IdentityMatrix& transpose() noexcept;
-   inline constexpr IdentityMatrix& ctranspose() noexcept;
+   constexpr IdentityMatrix& transpose() noexcept;
+   constexpr IdentityMatrix& ctranspose() noexcept;
    //@}
    //**********************************************************************************************
 
@@ -496,7 +496,7 @@ class IdentityMatrix
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr IdentityMatrix<Type,SO>::IdentityMatrix() noexcept
+constexpr IdentityMatrix<Type,SO>::IdentityMatrix() noexcept
    : n_( 0UL )  // The current number of rows and columns of the identity matrix
 {}
 //*************************************************************************************************
@@ -509,7 +509,7 @@ inline constexpr IdentityMatrix<Type,SO>::IdentityMatrix() noexcept
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr IdentityMatrix<Type,SO>::IdentityMatrix( size_t n ) noexcept
+constexpr IdentityMatrix<Type,SO>::IdentityMatrix( size_t n ) noexcept
    : n_( n )  // The current number of rows and columns of the identity matrix
 {}
 //*************************************************************************************************
@@ -558,7 +558,7 @@ inline IdentityMatrix<Type,SO>::IdentityMatrix( const Matrix<MT,SO2>& m )
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr typename IdentityMatrix<Type,SO>::ConstReference
+constexpr typename IdentityMatrix<Type,SO>::ConstReference
    IdentityMatrix<Type,SO>::operator()( size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid identity matrix row access index"    );
@@ -612,7 +612,7 @@ inline typename IdentityMatrix<Type,SO>::ConstReference
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr typename IdentityMatrix<Type,SO>::ConstIterator
+constexpr typename IdentityMatrix<Type,SO>::ConstIterator
    IdentityMatrix<Type,SO>::begin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < n_, "Invalid identity matrix row/column access index" );
@@ -635,7 +635,7 @@ inline constexpr typename IdentityMatrix<Type,SO>::ConstIterator
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr typename IdentityMatrix<Type,SO>::ConstIterator
+constexpr typename IdentityMatrix<Type,SO>::ConstIterator
    IdentityMatrix<Type,SO>::cbegin( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < n_, "Invalid identity matrix row/column access index" );
@@ -658,7 +658,7 @@ inline constexpr typename IdentityMatrix<Type,SO>::ConstIterator
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr typename IdentityMatrix<Type,SO>::ConstIterator
+constexpr typename IdentityMatrix<Type,SO>::ConstIterator
    IdentityMatrix<Type,SO>::end( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < n_, "Invalid identity matrix row/column access index" );
@@ -681,7 +681,7 @@ inline constexpr typename IdentityMatrix<Type,SO>::ConstIterator
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr typename IdentityMatrix<Type,SO>::ConstIterator
+constexpr typename IdentityMatrix<Type,SO>::ConstIterator
    IdentityMatrix<Type,SO>::cend( size_t i ) const noexcept
 {
    BLAZE_USER_ASSERT( i < n_, "Invalid identity matrix row/column access index" );
@@ -742,7 +742,7 @@ inline IdentityMatrix<Type,SO>&
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr size_t IdentityMatrix<Type,SO>::rows() const noexcept
+constexpr size_t IdentityMatrix<Type,SO>::rows() const noexcept
 {
    return n_;
 }
@@ -756,7 +756,7 @@ inline constexpr size_t IdentityMatrix<Type,SO>::rows() const noexcept
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr size_t IdentityMatrix<Type,SO>::columns() const noexcept
+constexpr size_t IdentityMatrix<Type,SO>::columns() const noexcept
 {
    return n_;
 }
@@ -770,7 +770,7 @@ inline constexpr size_t IdentityMatrix<Type,SO>::columns() const noexcept
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr size_t IdentityMatrix<Type,SO>::capacity() const noexcept
+constexpr size_t IdentityMatrix<Type,SO>::capacity() const noexcept
 {
    return n_;
 }
@@ -790,7 +790,7 @@ inline constexpr size_t IdentityMatrix<Type,SO>::capacity() const noexcept
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr size_t IdentityMatrix<Type,SO>::capacity( size_t i ) const noexcept
+constexpr size_t IdentityMatrix<Type,SO>::capacity( size_t i ) const noexcept
 {
    MAYBE_UNUSED( i );
 
@@ -808,7 +808,7 @@ inline constexpr size_t IdentityMatrix<Type,SO>::capacity( size_t i ) const noex
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr size_t IdentityMatrix<Type,SO>::nonZeros() const noexcept
+constexpr size_t IdentityMatrix<Type,SO>::nonZeros() const noexcept
 {
    return n_;
 }
@@ -828,7 +828,7 @@ inline constexpr size_t IdentityMatrix<Type,SO>::nonZeros() const noexcept
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr size_t IdentityMatrix<Type,SO>::nonZeros( size_t i ) const noexcept
+constexpr size_t IdentityMatrix<Type,SO>::nonZeros( size_t i ) const noexcept
 {
    MAYBE_UNUSED( i );
 
@@ -848,7 +848,7 @@ inline constexpr size_t IdentityMatrix<Type,SO>::nonZeros( size_t i ) const noex
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr void IdentityMatrix<Type,SO>::clear() noexcept
+constexpr void IdentityMatrix<Type,SO>::clear() noexcept
 {
    n_ = 0UL;
 }
@@ -882,7 +882,7 @@ void constexpr IdentityMatrix<Type,SO>::resize( size_t n ) noexcept
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr void IdentityMatrix<Type,SO>::swap( IdentityMatrix& m ) noexcept
+constexpr void IdentityMatrix<Type,SO>::swap( IdentityMatrix& m ) noexcept
 {
    const size_t tmp( n_ );
    n_ = m.n_;
@@ -1001,7 +1001,7 @@ inline typename IdentityMatrix<Type,SO>::ConstIterator
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr IdentityMatrix<Type,SO>& IdentityMatrix<Type,SO>::transpose() noexcept
+constexpr IdentityMatrix<Type,SO>& IdentityMatrix<Type,SO>::transpose() noexcept
 {
    return *this;
 }
@@ -1015,7 +1015,7 @@ inline constexpr IdentityMatrix<Type,SO>& IdentityMatrix<Type,SO>::transpose() n
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr IdentityMatrix<Type,SO>& IdentityMatrix<Type,SO>::ctranspose() noexcept
+constexpr IdentityMatrix<Type,SO>& IdentityMatrix<Type,SO>::ctranspose() noexcept
 {
    return *this;
 }
@@ -1138,7 +1138,7 @@ constexpr void swap( IdentityMatrix<Type,SO>& a, IdentityMatrix<Type,SO>& b ) no
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr void reset( IdentityMatrix<Type,SO>& m ) noexcept
+constexpr void reset( IdentityMatrix<Type,SO>& m ) noexcept
 {
    MAYBE_UNUSED( m );
 }
@@ -1160,7 +1160,7 @@ inline constexpr void reset( IdentityMatrix<Type,SO>& m ) noexcept
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr void reset( IdentityMatrix<Type,SO>& m, size_t i ) noexcept
+constexpr void reset( IdentityMatrix<Type,SO>& m, size_t i ) noexcept
 {
    MAYBE_UNUSED( m, i );
 }
@@ -1176,7 +1176,7 @@ inline constexpr void reset( IdentityMatrix<Type,SO>& m, size_t i ) noexcept
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr void clear( IdentityMatrix<Type,SO>& m ) noexcept
+constexpr void clear( IdentityMatrix<Type,SO>& m ) noexcept
 {
    m.clear();
 }
@@ -1211,7 +1211,7 @@ inline constexpr void clear( IdentityMatrix<Type,SO>& m ) noexcept
 template< bool RF        // Relaxation flag
         , typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr bool isDefault( const IdentityMatrix<Type,SO>& m ) noexcept
+constexpr bool isDefault( const IdentityMatrix<Type,SO>& m ) noexcept
 {
    return ( m.rows() == 0UL );
 }
@@ -1238,7 +1238,7 @@ inline constexpr bool isDefault( const IdentityMatrix<Type,SO>& m ) noexcept
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr bool isIntact( const IdentityMatrix<Type,SO>& m ) noexcept
+constexpr bool isIntact( const IdentityMatrix<Type,SO>& m ) noexcept
 {
    MAYBE_UNUSED( m );
 
@@ -1257,7 +1257,7 @@ inline constexpr bool isIntact( const IdentityMatrix<Type,SO>& m ) noexcept
 */
 template< typename Type  // Data type of the matrix
         , bool SO >      // Storage order
-inline constexpr void swap( IdentityMatrix<Type,SO>& a, IdentityMatrix<Type,SO>& b ) noexcept
+constexpr void swap( IdentityMatrix<Type,SO>& a, IdentityMatrix<Type,SO>& b ) noexcept
 {
    a.swap( b );
 }

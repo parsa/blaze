@@ -79,11 +79,11 @@ class UniformIterator
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline constexpr UniformIterator() noexcept;
-   explicit inline constexpr UniformIterator( Type* ptr, size_t index ) noexcept;
+   explicit constexpr UniformIterator() noexcept;
+   explicit constexpr UniformIterator( Type* ptr, size_t index ) noexcept;
 
    template< typename Other, bool AF2 >
-   inline constexpr UniformIterator( const UniformIterator<Other,AF2>& it ) noexcept;
+   constexpr UniformIterator( const UniformIterator<Other,AF2>& it ) noexcept;
 
    UniformIterator( const UniformIterator& ) = default;
    //@}
@@ -99,8 +99,8 @@ class UniformIterator
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline constexpr UniformIterator& operator+=( ptrdiff_t inc ) noexcept;
-   inline constexpr UniformIterator& operator-=( ptrdiff_t inc ) noexcept;
+   constexpr UniformIterator& operator+=( ptrdiff_t inc ) noexcept;
+   constexpr UniformIterator& operator-=( ptrdiff_t inc ) noexcept;
 
    UniformIterator& operator=( const UniformIterator& ) = default;
    //@}
@@ -109,27 +109,27 @@ class UniformIterator
    //**Increment/decrement operators***************************************************************
    /*!\name Increment/decrement operators */
    //@{
-   inline constexpr UniformIterator&      operator++()      noexcept;
-   inline constexpr const UniformIterator operator++( int ) noexcept;
-   inline constexpr UniformIterator&      operator--()      noexcept;
-   inline constexpr const UniformIterator operator--( int ) noexcept;
+   constexpr UniformIterator&      operator++()      noexcept;
+   constexpr const UniformIterator operator++( int ) noexcept;
+   constexpr UniformIterator&      operator--()      noexcept;
+   constexpr const UniformIterator operator--( int ) noexcept;
    //@}
    //**********************************************************************************************
 
    //**Access operators****************************************************************************
    /*!\name Access operators */
    //@{
-   inline constexpr ReferenceType operator[]( size_t index ) const noexcept;
-   inline constexpr ReferenceType operator* () const noexcept;
-   inline constexpr PointerType   operator->() const noexcept;
+   constexpr ReferenceType operator[]( size_t index ) const noexcept;
+   constexpr ReferenceType operator* () const noexcept;
+   constexpr PointerType   operator->() const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline constexpr PointerType ptr() const noexcept;
-   inline constexpr size_t      idx() const noexcept;
+   constexpr PointerType ptr() const noexcept;
+   constexpr size_t      idx() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -167,7 +167,7 @@ class UniformIterator
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline constexpr UniformIterator<Type,AF>::UniformIterator() noexcept
+constexpr UniformIterator<Type,AF>::UniformIterator() noexcept
    : ptr_  ( nullptr )  // Pointer to the element
    , index_( 0UL )      // Index of the current element
 {}
@@ -182,7 +182,7 @@ inline constexpr UniformIterator<Type,AF>::UniformIterator() noexcept
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline constexpr UniformIterator<Type,AF>::UniformIterator( Type* ptr, size_t index ) noexcept
+constexpr UniformIterator<Type,AF>::UniformIterator( Type* ptr, size_t index ) noexcept
    : ptr_  ( ptr )    // Pointer to the element
    , index_( index )  // Index of the current element
 {}
@@ -198,7 +198,7 @@ template< typename Type   // Type of the elements
         , bool AF >       // Alignment flag
 template< typename Other  // Type of the foreign elements
         , bool AF2 >      // Alignment flag of the foreign iterator
-inline constexpr UniformIterator<Type,AF>::UniformIterator( const UniformIterator<Other,AF2>& it ) noexcept
+constexpr UniformIterator<Type,AF>::UniformIterator( const UniformIterator<Other,AF2>& it ) noexcept
    : ptr_  ( it.ptr() )  // Pointer to the element
    , index_( it.idx() )  // Index of the current element
 {}
@@ -221,7 +221,7 @@ inline constexpr UniformIterator<Type,AF>::UniformIterator( const UniformIterato
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline constexpr UniformIterator<Type,AF>&
+constexpr UniformIterator<Type,AF>&
    UniformIterator<Type,AF>::operator+=( ptrdiff_t inc ) noexcept
 {
    index_ += inc;
@@ -238,7 +238,7 @@ inline constexpr UniformIterator<Type,AF>&
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline constexpr UniformIterator<Type,AF>&
+constexpr UniformIterator<Type,AF>&
    UniformIterator<Type,AF>::operator-=( ptrdiff_t dec ) noexcept
 {
    index_ -= dec;
@@ -262,7 +262,7 @@ inline constexpr UniformIterator<Type,AF>&
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline constexpr UniformIterator<Type,AF>&
+constexpr UniformIterator<Type,AF>&
    UniformIterator<Type,AF>::operator++() noexcept
 {
    ++index_;
@@ -278,7 +278,7 @@ inline constexpr UniformIterator<Type,AF>&
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline constexpr const UniformIterator<Type,AF>
+constexpr const UniformIterator<Type,AF>
    UniformIterator<Type,AF>::operator++( int ) noexcept
 {
    return UniformIterator( ptr_, index_++ );
@@ -293,7 +293,7 @@ inline constexpr const UniformIterator<Type,AF>
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline constexpr UniformIterator<Type,AF>&
+constexpr UniformIterator<Type,AF>&
    UniformIterator<Type,AF>::operator--() noexcept
 {
    --index_;
@@ -309,7 +309,7 @@ inline constexpr UniformIterator<Type,AF>&
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline constexpr const UniformIterator<Type,AF>
+constexpr const UniformIterator<Type,AF>
    UniformIterator<Type,AF>::operator--( int ) noexcept
 {
    return UniformIterator( ptr_, index_-- );
@@ -333,7 +333,7 @@ inline constexpr const UniformIterator<Type,AF>
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline constexpr typename UniformIterator<Type,AF>::ReferenceType
+constexpr typename UniformIterator<Type,AF>::ReferenceType
    UniformIterator<Type,AF>::operator[]( size_t index ) const noexcept
 {
    MAYBE_UNUSED( index );
@@ -350,7 +350,7 @@ inline constexpr typename UniformIterator<Type,AF>::ReferenceType
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline constexpr typename UniformIterator<Type,AF>::ReferenceType
+constexpr typename UniformIterator<Type,AF>::ReferenceType
    UniformIterator<Type,AF>::operator*() const noexcept
 {
    return *ptr_;
@@ -365,7 +365,7 @@ inline constexpr typename UniformIterator<Type,AF>::ReferenceType
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline constexpr typename UniformIterator<Type,AF>::PointerType
+constexpr typename UniformIterator<Type,AF>::PointerType
    UniformIterator<Type,AF>::operator->() const noexcept
 {
    return ptr_;
@@ -388,7 +388,7 @@ inline constexpr typename UniformIterator<Type,AF>::PointerType
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline constexpr typename UniformIterator<Type,AF>::PointerType
+constexpr typename UniformIterator<Type,AF>::PointerType
    UniformIterator<Type,AF>::ptr() const noexcept
 {
    return ptr_;
@@ -403,7 +403,7 @@ inline constexpr typename UniformIterator<Type,AF>::PointerType
 */
 template< typename Type  // Type of the elements
         , bool AF >      // Alignment flag
-inline constexpr size_t
+constexpr size_t
    UniformIterator<Type,AF>::idx() const noexcept
 {
    return index_;
@@ -548,7 +548,7 @@ template< typename T1  // Element type of the left-hand side iterator
         , bool AF1     // Alignment flag of the left-hand side iterator
         , typename T2  // Element type of the right-hand side iterator
         , bool AF2 >   // Alignment flag of the right-hand side iterator
-inline constexpr bool
+constexpr bool
    operator==( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept
 {
    return lhs.idx() == rhs.idx();
@@ -567,7 +567,7 @@ template< typename T1  // Element type of the left-hand side iterator
         , bool AF1     // Alignment flag of the left-hand side iterator
         , typename T2  // Element type of the right-hand side iterator
         , bool AF2 >   // Alignment flag of the right-hand side iterator
-inline constexpr bool
+constexpr bool
    operator!=( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept
 {
    return lhs.idx() != rhs.idx();
@@ -586,7 +586,7 @@ template< typename T1  // Element type of the left-hand side iterator
         , bool AF1     // Alignment flag of the left-hand side iterator
         , typename T2  // Element type of the right-hand side iterator
         , bool AF2 >   // Alignment flag of the right-hand side iterator
-inline constexpr bool
+constexpr bool
    operator<( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept
 {
    return lhs.idx() == rhs.idx();
@@ -605,7 +605,7 @@ template< typename T1  // Element type of the left-hand side iterator
         , bool AF1     // Alignment flag of the left-hand side iterator
         , typename T2  // Element type of the right-hand side iterator
         , bool AF2 >   // Alignment flag of the right-hand side iterator
-inline constexpr bool
+constexpr bool
    operator>( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept
 {
    return lhs.idx() > rhs.idx();
@@ -624,7 +624,7 @@ template< typename T1  // Element type of the left-hand side iterator
         , bool AF1     // Alignment flag of the left-hand side iterator
         , typename T2  // Element type of the right-hand side iterator
         , bool AF2 >   // Alignment flag of the right-hand side iterator
-inline constexpr bool
+constexpr bool
    operator<=( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept
 {
    return lhs.idx() <= rhs.idx();
@@ -643,7 +643,7 @@ template< typename T1  // Element type of the left-hand side iterator
         , bool AF1     // Alignment flag of the left-hand side iterator
         , typename T2  // Element type of the right-hand side iterator
         , bool AF2 >   // Alignment flag of the right-hand side iterator
-inline constexpr bool
+constexpr bool
    operator>=( const UniformIterator<T1,AF1>& lhs, const UniformIterator<T2,AF2>& rhs ) noexcept
 {
    return lhs.idx() >= rhs.idx();
@@ -660,7 +660,7 @@ inline constexpr bool
 */
 template< typename Type  // Element type of the iterator
         , bool AF >      // Alignment flag of the iterator
-inline constexpr const UniformIterator<Type,AF>
+constexpr const UniformIterator<Type,AF>
    operator+( const UniformIterator<Type,AF>& it, ptrdiff_t inc ) noexcept
 {
    return UniformIterator<Type,AF>( it.ptr(), it.idx() + inc );
@@ -677,7 +677,7 @@ inline constexpr const UniformIterator<Type,AF>
 */
 template< typename Type  // Element type of the iterator
         , bool AF >      // Alignment flag of the iterator
-inline constexpr const UniformIterator<Type,AF>
+constexpr const UniformIterator<Type,AF>
    operator+( ptrdiff_t inc, const UniformIterator<Type,AF>& it ) noexcept
 {
    return UniformIterator<Type,AF>( it.ptr(), it.idx() + inc );
@@ -694,7 +694,7 @@ inline constexpr const UniformIterator<Type,AF>
 */
 template< typename Type  // Element type of the iterator
         , bool AF >      // Alignment flag of the iterator
-inline constexpr const UniformIterator<Type,AF>
+constexpr const UniformIterator<Type,AF>
    operator-( const UniformIterator<Type,AF>& it, ptrdiff_t dec ) noexcept
 {
    return UniformIterator<Type,AF>( it.ptr(), it.idx() - dec );
@@ -711,7 +711,7 @@ inline constexpr const UniformIterator<Type,AF>
 */
 template< typename Type  // Element type of the iterator
         , bool AF >      // Alignment flag of the iterator
-inline constexpr ptrdiff_t
+constexpr ptrdiff_t
    operator-( const UniformIterator<Type,AF>& lhs, const UniformIterator<Type,AF>& rhs ) noexcept
 {
    return lhs.idx() - rhs.idx();

@@ -245,8 +245,8 @@ class LowerMatrix<MT,SO,false>
    inline void   shrinkToFit();
    inline void   swap( LowerMatrix& m ) noexcept;
 
-   static inline constexpr size_t maxNonZeros() noexcept;
-   static inline constexpr size_t maxNonZeros( size_t n ) noexcept;
+   static constexpr size_t maxNonZeros() noexcept;
+   static constexpr size_t maxNonZeros( size_t n ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1571,7 +1571,7 @@ inline void LowerMatrix<MT,SO,false>::swap( LowerMatrix& m ) noexcept
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline constexpr size_t LowerMatrix<MT,SO,false>::maxNonZeros() noexcept
+constexpr size_t LowerMatrix<MT,SO,false>::maxNonZeros() noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_STATIC_TYPE( MT );
 
@@ -1593,7 +1593,7 @@ inline constexpr size_t LowerMatrix<MT,SO,false>::maxNonZeros() noexcept
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline constexpr size_t LowerMatrix<MT,SO,false>::maxNonZeros( size_t n ) noexcept
+constexpr size_t LowerMatrix<MT,SO,false>::maxNonZeros( size_t n ) noexcept
 {
    return ( ( n + 1UL ) * n ) / 2UL;
 }

@@ -335,15 +335,15 @@ class HybridVector
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-          inline           size_t size() const noexcept;
-   static inline constexpr size_t spacing() noexcept;
-   static inline constexpr size_t capacity() noexcept;
-          inline           size_t nonZeros() const;
-          inline           void   reset();
-          inline           void   clear();
-          inline           void   resize( size_t n, bool preserve=true );
-          inline           void   extend( size_t n, bool preserve=true );
-          inline           void   swap( HybridVector& v ) noexcept;
+          inline    size_t size() const noexcept;
+   static constexpr size_t spacing() noexcept;
+   static constexpr size_t capacity() noexcept;
+          inline    size_t nonZeros() const;
+          inline    void   reset();
+          inline    void   clear();
+          inline    void   resize( size_t n, bool preserve=true );
+          inline    void   extend( size_t n, bool preserve=true );
+          inline    void   swap( HybridVector& v ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -443,7 +443,7 @@ class HybridVector
    template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
    template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   static inline constexpr bool isAligned() noexcept;
+   static constexpr bool isAligned() noexcept;
 
    BLAZE_ALWAYS_INLINE SIMDType load ( size_t index ) const noexcept;
    BLAZE_ALWAYS_INLINE SIMDType loada( size_t index ) const noexcept;
@@ -1509,7 +1509,7 @@ inline size_t HybridVector<Type,N,TF>::size() const noexcept
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr size_t HybridVector<Type,N,TF>::spacing() noexcept
+constexpr size_t HybridVector<Type,N,TF>::spacing() noexcept
 {
    return NN;
 }
@@ -1524,7 +1524,7 @@ inline constexpr size_t HybridVector<Type,N,TF>::spacing() noexcept
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr size_t HybridVector<Type,N,TF>::capacity() noexcept
+constexpr size_t HybridVector<Type,N,TF>::capacity() noexcept
 {
    return NN;
 }
@@ -1991,7 +1991,7 @@ inline bool HybridVector<Type,N,TF>::isAliased( const Other* alias ) const noexc
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr bool HybridVector<Type,N,TF>::isAligned() noexcept
+constexpr bool HybridVector<Type,N,TF>::isAligned() noexcept
 {
    return align;
 }

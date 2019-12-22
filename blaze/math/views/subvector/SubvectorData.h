@@ -246,8 +246,8 @@ class SubvectorData<I,N>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   static inline constexpr size_t offset() noexcept;
-   static inline constexpr size_t size  () noexcept;
+   static constexpr size_t offset() noexcept;
+   static constexpr size_t size  () noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -280,7 +280,7 @@ inline SubvectorData<I,N>::SubvectorData( RSAs... args )
 */
 template< size_t I    // Index of the first element
         , size_t N >  // Number of elements
-inline constexpr size_t SubvectorData<I,N>::offset() noexcept
+constexpr size_t SubvectorData<I,N>::offset() noexcept
 {
    return I;
 }
@@ -296,7 +296,7 @@ inline constexpr size_t SubvectorData<I,N>::offset() noexcept
 */
 template< size_t I    // Index of the first element
         , size_t N >  // Number of elements
-inline constexpr size_t SubvectorData<I,N>::size() noexcept
+constexpr size_t SubvectorData<I,N>::size() noexcept
 {
    return N;
 }

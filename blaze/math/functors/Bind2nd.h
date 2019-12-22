@@ -70,7 +70,7 @@ struct Bind2nd
    // \param op The wrapped operation.
    // \param a2 The 2nd argument.
    */
-   explicit inline constexpr Bind2nd( const OP& op, const A2& a2 )
+   explicit constexpr Bind2nd( const OP& op, const A2& a2 )
       : op_( op )  // The wrapped operation.
       , a2_( a2 )  // The 2nd argument
    {}
@@ -151,7 +151,7 @@ struct Bind2nd
 */
 template< typename OP    // Type of the operation
         , typename A2 >  // Type of the bound argument
-inline constexpr Bind2nd<OP,A2> bind2nd( const OP& op, const A2& a2 )
+constexpr Bind2nd<OP,A2> bind2nd( const OP& op, const A2& a2 )
 {
    return Bind2nd<OP,A2>( op, a2 );
 }

@@ -77,7 +77,7 @@ class NegativeAccuracy
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline constexpr NegativeAccuracy();
+   explicit constexpr NegativeAccuracy();
    NegativeAccuracy( const NegativeAccuracy& ) = default;
    //@}
    //**********************************************************************************************
@@ -93,8 +93,8 @@ class NegativeAccuracy
    //**Unary plus/minus operators******************************************************************
    /*!\name Unary plus/minus operators */
    //@{
-   inline constexpr const NegativeAccuracy& operator+() const;
-   inline constexpr const PositiveType      operator-() const;
+   constexpr const NegativeAccuracy& operator+() const;
+   constexpr const PositiveType      operator-() const;
    //@}
    //**********************************************************************************************
 
@@ -102,7 +102,7 @@ class NegativeAccuracy
    /*!\name Conversion operator */
    //@{
    template< typename T >
-   inline constexpr operator const T() const;
+   constexpr operator const T() const;
    //@}
    //**********************************************************************************************
 
@@ -136,7 +136,7 @@ class NegativeAccuracy
 /*!\brief The default constructor of the NegativeAccuracy class.
 */
 template< typename A >  // Positive accuracy type
-inline constexpr NegativeAccuracy<A>::NegativeAccuracy()
+constexpr NegativeAccuracy<A>::NegativeAccuracy()
 {}
 //*************************************************************************************************
 
@@ -155,7 +155,7 @@ inline constexpr NegativeAccuracy<A>::NegativeAccuracy()
 // \return The negative computation accuracy.
 */
 template< typename A >  // Positive accuracy type
-inline constexpr const NegativeAccuracy<A>& NegativeAccuracy<A>::operator+() const
+constexpr const NegativeAccuracy<A>& NegativeAccuracy<A>::operator+() const
 {
    return *this;
 }
@@ -168,7 +168,7 @@ inline constexpr const NegativeAccuracy<A>& NegativeAccuracy<A>::operator+() con
 // \return The positive computation accuracy.
 */
 template< typename A >  // Positive accuracy type
-inline constexpr const typename NegativeAccuracy<A>::PositiveType
+constexpr const typename NegativeAccuracy<A>::PositiveType
    NegativeAccuracy<A>::operator-() const
 {
    return PositiveType();
@@ -192,7 +192,7 @@ inline constexpr const typename NegativeAccuracy<A>::PositiveType
 */
 template< typename A >  // Positive accuracy type
 template< typename T >  // Floating point data type
-inline constexpr NegativeAccuracy<A>::operator const T() const
+constexpr NegativeAccuracy<A>::operator const T() const
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return -Limits<T>::accuracy();
@@ -250,7 +250,7 @@ constexpr bool operator>( const T& lhs, const NegativeAccuracy<A>& rhs );
 */
 template< typename A    // Positive accuracy type
         , typename T >  // Floating point data type
-inline constexpr bool operator==( const NegativeAccuracy<A>& /*lhs*/, const T& rhs )
+constexpr bool operator==( const NegativeAccuracy<A>& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return -Limits<T>::accuracy() == rhs;
@@ -270,7 +270,7 @@ inline constexpr bool operator==( const NegativeAccuracy<A>& /*lhs*/, const T& r
 */
 template< typename A    // Positive accuracy type
         , typename T >  // Floating point data type
-inline constexpr bool operator==( const T& lhs, const NegativeAccuracy<A>& /*rhs*/ )
+constexpr bool operator==( const T& lhs, const NegativeAccuracy<A>& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs == -Limits<T>::accuracy();
@@ -290,7 +290,7 @@ inline constexpr bool operator==( const T& lhs, const NegativeAccuracy<A>& /*rhs
 */
 template< typename A    // Positive accuracy type
         , typename T >  // Floating point data type
-inline constexpr bool operator!=( const NegativeAccuracy<A>& /*lhs*/, const T& rhs )
+constexpr bool operator!=( const NegativeAccuracy<A>& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return -Limits<T>::accuracy() != rhs;
@@ -310,7 +310,7 @@ inline constexpr bool operator!=( const NegativeAccuracy<A>& /*lhs*/, const T& r
 */
 template< typename A    // Positive accuracy type
         , typename T >  // Floating point data type
-inline constexpr bool operator!=( const T& lhs, const NegativeAccuracy<A>& /*rhs*/ )
+constexpr bool operator!=( const T& lhs, const NegativeAccuracy<A>& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs != -Limits<T>::accuracy();
@@ -329,7 +329,7 @@ inline constexpr bool operator!=( const T& lhs, const NegativeAccuracy<A>& /*rhs
 */
 template< typename A    // Positive accuracy type
         , typename T >  // Floating point data type
-inline constexpr bool operator<( const NegativeAccuracy<A>& /*lhs*/, const T& rhs )
+constexpr bool operator<( const NegativeAccuracy<A>& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return -Limits<T>::accuracy() < rhs;
@@ -348,7 +348,7 @@ inline constexpr bool operator<( const NegativeAccuracy<A>& /*lhs*/, const T& rh
 */
 template< typename A    // Positive accuracy type
         , typename T >  // Floating point data type
-inline constexpr bool operator<( const T& lhs, const NegativeAccuracy<A>& /*rhs*/ )
+constexpr bool operator<( const T& lhs, const NegativeAccuracy<A>& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs < -Limits<T>::accuracy();
@@ -367,7 +367,7 @@ inline constexpr bool operator<( const T& lhs, const NegativeAccuracy<A>& /*rhs*
 */
 template< typename A    // Positive accuracy type
         , typename T >  // Floating point data type
-inline constexpr bool operator>( const NegativeAccuracy<A>& /*lhs*/, const T& rhs )
+constexpr bool operator>( const NegativeAccuracy<A>& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return -Limits<T>::accuracy() > rhs;
@@ -386,7 +386,7 @@ inline constexpr bool operator>( const NegativeAccuracy<A>& /*lhs*/, const T& rh
 */
 template< typename A    // Positive accuracy type
         , typename T >  // Floating point data type
-inline constexpr bool operator>( const T& lhs, const NegativeAccuracy<A>& /*rhs*/ )
+constexpr bool operator>( const T& lhs, const NegativeAccuracy<A>& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs > -Limits<T>::accuracy();
@@ -405,7 +405,7 @@ inline constexpr bool operator>( const T& lhs, const NegativeAccuracy<A>& /*rhs*
 */
 template< typename A    // Positive accuracy type
         , typename T >  // Floating point data type
-inline constexpr bool operator<=( const NegativeAccuracy<A>& /*lhs*/, const T& rhs )
+constexpr bool operator<=( const NegativeAccuracy<A>& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return -Limits<T>::accuracy() <= rhs;
@@ -424,7 +424,7 @@ inline constexpr bool operator<=( const NegativeAccuracy<A>& /*lhs*/, const T& r
 */
 template< typename A    // Positive accuracy type
         , typename T >  // Floating point data type
-inline constexpr bool operator<=( const T& lhs, const NegativeAccuracy<A>& /*rhs*/ )
+constexpr bool operator<=( const T& lhs, const NegativeAccuracy<A>& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs <= -Limits<T>::accuracy();
@@ -443,7 +443,7 @@ inline constexpr bool operator<=( const T& lhs, const NegativeAccuracy<A>& /*rhs
 */
 template< typename A    // Positive accuracy type
         , typename T >  // Floating point data type
-inline constexpr bool operator>=( const NegativeAccuracy<A>& /*lhs*/, const T& rhs )
+constexpr bool operator>=( const NegativeAccuracy<A>& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return -Limits<T>::accuracy() >= rhs;
@@ -462,7 +462,7 @@ inline constexpr bool operator>=( const NegativeAccuracy<A>& /*lhs*/, const T& r
 */
 template< typename A    // Positive accuracy type
         , typename T >  // Floating point data type
-inline constexpr bool operator>=( const T& lhs, const NegativeAccuracy<A>& /*rhs*/ )
+constexpr bool operator>=( const T& lhs, const NegativeAccuracy<A>& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs >= -Limits<T>::accuracy();
@@ -508,7 +508,7 @@ class Accuracy
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline constexpr Accuracy();
+   explicit constexpr Accuracy();
    Accuracy( const Accuracy& ) = default;
    //@}
    //**********************************************************************************************
@@ -523,8 +523,8 @@ class Accuracy
    //**Unary plus/minus operators******************************************************************
    /*!\name Unary plus/minus operators */
    //@{
-   inline constexpr const Accuracy& operator+() const;
-   inline constexpr const NegativeType operator-() const;
+   constexpr const Accuracy& operator+() const;
+   constexpr const NegativeType operator-() const;
    //@}
    //**********************************************************************************************
 
@@ -532,7 +532,7 @@ class Accuracy
    /*!\name Conversion operator */
    //@{
    template< typename T >
-   inline constexpr operator const T() const;
+   constexpr operator const T() const;
    //@}
    //**********************************************************************************************
 
@@ -558,7 +558,7 @@ class Accuracy
 //*************************************************************************************************
 /*!\brief The default constructor of the Accuracy class.
 */
-inline constexpr Accuracy::Accuracy()
+constexpr Accuracy::Accuracy()
 {}
 //*************************************************************************************************
 
@@ -576,7 +576,7 @@ inline constexpr Accuracy::Accuracy()
 //
 // \return The positive computation accuracy.
 */
-inline constexpr const Accuracy& Accuracy::operator+() const
+constexpr const Accuracy& Accuracy::operator+() const
 {
    return *this;
 }
@@ -588,7 +588,7 @@ inline constexpr const Accuracy& Accuracy::operator+() const
 //
 // \return The negative computation accuracy.
 */
-inline constexpr const Accuracy::NegativeType Accuracy::operator-() const
+constexpr const Accuracy::NegativeType Accuracy::operator-() const
 {
    return NegativeType();
 }
@@ -610,7 +610,7 @@ inline constexpr const Accuracy::NegativeType Accuracy::operator-() const
 // type \a T.
 */
 template< typename T >  // Floating point data type
-inline constexpr Accuracy::operator const T() const
+constexpr Accuracy::operator const T() const
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return Limits<T>::accuracy();
@@ -679,7 +679,7 @@ constexpr bool operator>=( const T& lhs, const Accuracy& rhs );
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >  // Floating point data type
-inline constexpr bool operator==( const Accuracy& /*lhs*/, const T& rhs )
+constexpr bool operator==( const Accuracy& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return Limits<T>::accuracy() == rhs;
@@ -698,7 +698,7 @@ inline constexpr bool operator==( const Accuracy& /*lhs*/, const T& rhs )
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >  // Floating point data type
-inline constexpr bool operator==( const T& lhs, const Accuracy& /*rhs*/ )
+constexpr bool operator==( const T& lhs, const Accuracy& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs == Limits<T>::accuracy();
@@ -717,7 +717,7 @@ inline constexpr bool operator==( const T& lhs, const Accuracy& /*rhs*/ )
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >  // Floating point data type
-inline constexpr bool operator!=( const Accuracy& /*lhs*/, const T& rhs )
+constexpr bool operator!=( const Accuracy& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return Limits<T>::accuracy() != rhs;
@@ -736,7 +736,7 @@ inline constexpr bool operator!=( const Accuracy& /*lhs*/, const T& rhs )
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >  // Floating point data type
-inline constexpr bool operator!=( const T& lhs, const Accuracy& /*rhs*/ )
+constexpr bool operator!=( const T& lhs, const Accuracy& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs != Limits<T>::accuracy();
@@ -754,7 +754,7 @@ inline constexpr bool operator!=( const T& lhs, const Accuracy& /*rhs*/ )
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >  // Floating point data type
-inline constexpr bool operator<( const Accuracy& /*lhs*/, const T& rhs )
+constexpr bool operator<( const Accuracy& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return Limits<T>::accuracy() < rhs;
@@ -772,7 +772,7 @@ inline constexpr bool operator<( const Accuracy& /*lhs*/, const T& rhs )
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >  // Floating point data type
-inline constexpr bool operator<( const T& lhs, const Accuracy& /*rhs*/ )
+constexpr bool operator<( const T& lhs, const Accuracy& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs < Limits<T>::accuracy();
@@ -790,7 +790,7 @@ inline constexpr bool operator<( const T& lhs, const Accuracy& /*rhs*/ )
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >  // Floating point data type
-inline constexpr bool operator>( const Accuracy& /*lhs*/, const T& rhs )
+constexpr bool operator>( const Accuracy& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return Limits<T>::accuracy() > rhs;
@@ -808,7 +808,7 @@ inline constexpr bool operator>( const Accuracy& /*lhs*/, const T& rhs )
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >  // Floating point data type
-inline constexpr bool operator>( const T& lhs, const Accuracy& /*rhs*/ )
+constexpr bool operator>( const T& lhs, const Accuracy& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs > Limits<T>::accuracy();
@@ -826,7 +826,7 @@ inline constexpr bool operator>( const T& lhs, const Accuracy& /*rhs*/ )
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >  // Floating point data type
-inline constexpr bool operator<=( const Accuracy& /*lhs*/, const T& rhs )
+constexpr bool operator<=( const Accuracy& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return Limits<T>::accuracy() <= rhs;
@@ -844,7 +844,7 @@ inline constexpr bool operator<=( const Accuracy& /*lhs*/, const T& rhs )
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >  // Floating point data type
-inline constexpr bool operator<=( const T& lhs, const Accuracy& /*rhs*/ )
+constexpr bool operator<=( const T& lhs, const Accuracy& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs <= Limits<T>::accuracy();
@@ -862,7 +862,7 @@ inline constexpr bool operator<=( const T& lhs, const Accuracy& /*rhs*/ )
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >  // Floating point data type
-inline constexpr bool operator>=( const Accuracy& /*lhs*/, const T& rhs )
+constexpr bool operator>=( const Accuracy& /*lhs*/, const T& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return Limits<T>::accuracy() >= rhs;
@@ -880,7 +880,7 @@ inline constexpr bool operator>=( const Accuracy& /*lhs*/, const T& rhs )
 // integral data type or user-defined class types will result in a compile time error.
 */
 template< typename T >  // Floating point data type
-inline constexpr bool operator>=( const T& lhs, const Accuracy& /*rhs*/ )
+constexpr bool operator>=( const T& lhs, const Accuracy& /*rhs*/ )
 {
    BLAZE_CONSTRAINT_MUST_BE_FLOATING_POINT_TYPE( T );
    return lhs >= Limits<T>::accuracy();

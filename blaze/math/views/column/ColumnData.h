@@ -225,7 +225,7 @@ class ColumnData<I>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   static inline constexpr size_t column() noexcept;
+   static constexpr size_t column() noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -256,7 +256,7 @@ inline ColumnData<I>::ColumnData( RCAs... args )
 // \return The index of the column.
 */
 template< size_t I >  // Compile time column index
-inline constexpr size_t ColumnData<I>::column() noexcept
+constexpr size_t ColumnData<I>::column() noexcept
 {
    return I;
 }

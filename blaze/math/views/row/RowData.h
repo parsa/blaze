@@ -225,7 +225,7 @@ class RowData<Index>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   static inline constexpr size_t row() noexcept;
+   static constexpr size_t row() noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -256,7 +256,7 @@ inline RowData<Index>::RowData( RRAs... args )
 // \return The index of the row.
 */
 template< size_t Index >  // Compile time row index
-inline constexpr size_t RowData<Index>::row() noexcept
+constexpr size_t RowData<Index>::row() noexcept
 {
    return Index;
 }

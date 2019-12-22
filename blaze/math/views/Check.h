@@ -58,7 +58,7 @@ struct Check
    //**Constructor*********************************************************************************
    /*!\name Constructor */
    //@{
-   explicit inline constexpr Check() = default;
+   explicit constexpr Check() = default;
    //@}
    //**********************************************************************************************
 };

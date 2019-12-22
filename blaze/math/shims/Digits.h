@@ -71,7 +71,7 @@ namespace blaze {
 // other type will result in a compile time error.
 */
 template< typename T >
-inline constexpr size_t digits( T a ) noexcept
+constexpr size_t digits( T a ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_INTEGRAL_TYPE( T );
 

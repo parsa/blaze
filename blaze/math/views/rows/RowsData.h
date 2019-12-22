@@ -135,9 +135,9 @@ class RowsData< index_sequence<I,Is...> >
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline static constexpr decltype(auto) idces() noexcept;
-   inline static constexpr size_t         idx  ( size_t i ) noexcept;
-   inline static constexpr size_t         rows () noexcept;
+   static constexpr decltype(auto) idces() noexcept;
+   static constexpr size_t         idx  ( size_t i ) noexcept;
+   static constexpr size_t         rows () noexcept;
    //@}
    //**********************************************************************************************
 
@@ -195,7 +195,7 @@ inline RowsData< index_sequence<I,Is...> >::RowsData( RRAs... args ) noexcept
 */
 template< size_t I        // First row index
         , size_t... Is >  // Remaining row indices
-inline constexpr decltype(auto) RowsData< index_sequence<I,Is...> >::idces() noexcept
+constexpr decltype(auto) RowsData< index_sequence<I,Is...> >::idces() noexcept
 {
    return index_sequence<I,Is...>();
 }
@@ -212,7 +212,7 @@ inline constexpr decltype(auto) RowsData< index_sequence<I,Is...> >::idces() noe
 */
 template< size_t I        // First row index
         , size_t... Is >  // Remaining row indices
-inline constexpr size_t RowsData< index_sequence<I,Is...> >::idx( size_t i ) noexcept
+constexpr size_t RowsData< index_sequence<I,Is...> >::idx( size_t i ) noexcept
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    return indices_[i];
@@ -229,7 +229,7 @@ inline constexpr size_t RowsData< index_sequence<I,Is...> >::idx( size_t i ) noe
 */
 template< size_t I        // First row index
         , size_t... Is >  // Remaining row indices
-inline constexpr size_t RowsData< index_sequence<I,Is...> >::rows() noexcept
+constexpr size_t RowsData< index_sequence<I,Is...> >::rows() noexcept
 {
    return N;
 }
@@ -553,7 +553,7 @@ inline size_t RowsData<>::rows() const noexcept
 // \return \a true if the indices of both instances are equal, \a false if not.
 */
 template< typename... CRAs1, typename... CRAs2 >
-inline constexpr bool
+constexpr bool
    compareIndices( const RowsData<CRAs1...>& lhs, const RowsData<CRAs2...>& rhs ) noexcept
 {
    if( lhs.rows() != rhs.rows() )

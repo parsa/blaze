@@ -248,8 +248,8 @@ class StrictlyUpperMatrix<MT,SO,false>
    inline void   shrinkToFit();
    inline void   swap( StrictlyUpperMatrix& m ) noexcept;
 
-   static inline constexpr size_t maxNonZeros() noexcept;
-   static inline constexpr size_t maxNonZeros( size_t n ) noexcept;
+   static constexpr size_t maxNonZeros() noexcept;
+   static constexpr size_t maxNonZeros( size_t n ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -1605,7 +1605,7 @@ inline void StrictlyUpperMatrix<MT,SO,false>::swap( StrictlyUpperMatrix& m ) noe
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline constexpr size_t StrictlyUpperMatrix<MT,SO,false>::maxNonZeros() noexcept
+constexpr size_t StrictlyUpperMatrix<MT,SO,false>::maxNonZeros() noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_STATIC_TYPE( MT );
 
@@ -1627,7 +1627,7 @@ inline constexpr size_t StrictlyUpperMatrix<MT,SO,false>::maxNonZeros() noexcept
 */
 template< typename MT  // Type of the adapted dense matrix
         , bool SO >    // Storage order of the adapted dense matrix
-inline constexpr size_t StrictlyUpperMatrix<MT,SO,false>::maxNonZeros( size_t n ) noexcept
+constexpr size_t StrictlyUpperMatrix<MT,SO,false>::maxNonZeros( size_t n ) noexcept
 {
    return ( ( n - 1UL ) * n ) / 2UL;
 }

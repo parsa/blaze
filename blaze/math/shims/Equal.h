@@ -77,7 +77,7 @@ template< bool RF      // Relaxation flag
         , typename T2  // Type of the right-hand side value/object
         , typename = EnableIf_t< ( IsSigned_v<T1> && IsSigned_v<T2> ) ||
                                  ( IsUnsigned_v<T1> && IsUnsigned_v<T2> ) > >
-inline constexpr bool equal( const T1& a, const T2& b )
+constexpr bool equal( const T1& a, const T2& b )
 {
    return a == b;
 }
@@ -429,7 +429,7 @@ inline bool equal( complex<T1> a, complex<T2> b )
 */
 template< typename T1    // Type of the left-hand side value/object
         , typename T2 >  // Type of the right-hand side value/object
-inline constexpr bool equal( const T1& a, const T2& b )
+constexpr bool equal( const T1& a, const T2& b )
 {
    return equal<relaxed>( a, b );
 }

@@ -179,7 +179,7 @@ class ExpandExprData<E>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline constexpr ExpandExprData() noexcept;
+   explicit constexpr ExpandExprData() noexcept;
 
    ExpandExprData( const ExpandExprData& ) = default;
    //@}
@@ -202,7 +202,7 @@ class ExpandExprData<E>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   static inline constexpr size_t expansion() noexcept;
+   static constexpr size_t expansion() noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -215,7 +215,7 @@ class ExpandExprData<E>
 /*!\brief The constructor for ExpandExprData.
 */
 template< size_t E >  // Compile time expansion
-inline constexpr ExpandExprData<E>::ExpandExprData() noexcept
+constexpr ExpandExprData<E>::ExpandExprData() noexcept
 {}
 /*! \endcond */
 //*************************************************************************************************
@@ -228,7 +228,7 @@ inline constexpr ExpandExprData<E>::ExpandExprData() noexcept
 // \return The expansion.
 */
 template< size_t E >  // Compile time expansion
-inline constexpr size_t ExpandExprData<E>::expansion() noexcept
+constexpr size_t ExpandExprData<E>::expansion() noexcept
 {
    return E;
 }

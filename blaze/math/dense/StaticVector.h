@@ -271,20 +271,20 @@ class StaticVector
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline           StaticVector();
-   explicit inline           StaticVector( const Type& init );
-            inline constexpr StaticVector( initializer_list<Type> list );
+   explicit inline    StaticVector();
+   explicit inline    StaticVector( const Type& init );
+            constexpr StaticVector( initializer_list<Type> list );
 
    template< typename Other >
    explicit inline StaticVector( size_t n, const Other* array );
 
    template< typename Other, size_t Dim >
-   explicit inline constexpr StaticVector( const Other (&array)[Dim] );
+   explicit constexpr StaticVector( const Other (&array)[Dim] );
 
    template< typename Other, size_t Dim >
-   explicit inline constexpr StaticVector( const std::array<Other,Dim>& array );
+   explicit constexpr StaticVector( const std::array<Other,Dim>& array );
 
-   inline constexpr StaticVector( const StaticVector& v );
+   constexpr StaticVector( const StaticVector& v );
 
    template< typename Other >
    inline StaticVector( const StaticVector<Other,N,TF>& v );
@@ -304,34 +304,34 @@ class StaticVector
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline constexpr Reference      operator[]( size_t index ) noexcept;
-   inline constexpr ConstReference operator[]( size_t index ) const noexcept;
-   inline           Reference      at( size_t index );
-   inline           ConstReference at( size_t index ) const;
-   inline constexpr Pointer        data  () noexcept;
-   inline constexpr ConstPointer   data  () const noexcept;
-   inline constexpr Iterator       begin () noexcept;
-   inline constexpr ConstIterator  begin () const noexcept;
-   inline constexpr ConstIterator  cbegin() const noexcept;
-   inline constexpr Iterator       end   () noexcept;
-   inline constexpr ConstIterator  end   () const noexcept;
-   inline constexpr ConstIterator  cend  () const noexcept;
+   constexpr Reference      operator[]( size_t index ) noexcept;
+   constexpr ConstReference operator[]( size_t index ) const noexcept;
+   inline    Reference      at( size_t index );
+   inline    ConstReference at( size_t index ) const;
+   constexpr Pointer        data  () noexcept;
+   constexpr ConstPointer   data  () const noexcept;
+   constexpr Iterator       begin () noexcept;
+   constexpr ConstIterator  begin () const noexcept;
+   constexpr ConstIterator  cbegin() const noexcept;
+   constexpr Iterator       end   () noexcept;
+   constexpr ConstIterator  end   () const noexcept;
+   constexpr ConstIterator  cend  () const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline constexpr StaticVector& operator=( const Type& rhs );
-   inline constexpr StaticVector& operator=( initializer_list<Type> list );
+   constexpr StaticVector& operator=( const Type& rhs );
+   constexpr StaticVector& operator=( initializer_list<Type> list );
 
    template< typename Other, size_t Dim >
-   inline constexpr StaticVector& operator=( const Other (&array)[Dim] );
+   constexpr StaticVector& operator=( const Other (&array)[Dim] );
 
    template< typename Other, size_t Dim >
-   inline constexpr StaticVector& operator=( const std::array<Other,Dim>& array );
+   constexpr StaticVector& operator=( const std::array<Other,Dim>& array );
 
-   inline constexpr StaticVector& operator=( const StaticVector& rhs );
+   constexpr StaticVector& operator=( const StaticVector& rhs );
 
    template< typename Other >
    inline StaticVector& operator=( const StaticVector<Other,N,TF>& rhs );
@@ -348,12 +348,12 @@ class StaticVector
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   static inline constexpr size_t size() noexcept;
-   static inline constexpr size_t spacing() noexcept;
-   static inline constexpr size_t capacity() noexcept;
-          inline           size_t nonZeros() const;
-          inline constexpr void   reset();
-          inline           void   swap( StaticVector& v ) noexcept;
+   static constexpr size_t size() noexcept;
+   static constexpr size_t spacing() noexcept;
+   static constexpr size_t capacity() noexcept;
+          inline    size_t nonZeros() const;
+          constexpr void   reset();
+          inline    void   swap( StaticVector& v ) noexcept;
    //@}
    //**********************************************************************************************
 
@@ -443,7 +443,7 @@ class StaticVector
    //**Debugging functions*************************************************************************
    /*!\name Debugging functions */
    //@{
-   inline constexpr bool isIntact() const noexcept;
+   constexpr bool isIntact() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -453,7 +453,7 @@ class StaticVector
    template< typename Other > inline bool canAlias ( const Other* alias ) const noexcept;
    template< typename Other > inline bool isAliased( const Other* alias ) const noexcept;
 
-   static inline constexpr bool isAligned() noexcept;
+   static constexpr bool isAligned() noexcept;
 
    BLAZE_ALWAYS_INLINE SIMDType load ( size_t index ) const noexcept;
    BLAZE_ALWAYS_INLINE SIMDType loada( size_t index ) const noexcept;
@@ -648,7 +648,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Type& init )
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr StaticVector<Type,N,TF>::StaticVector( initializer_list<Type> list )
+constexpr StaticVector<Type,N,TF>::StaticVector( initializer_list<Type> list )
    : v_()  // The statically allocated vector elements
 {
    if( list.size() > N ) {
@@ -736,7 +736,7 @@ template< typename Type   // Data type of the vector
         , bool TF >       // Transpose flag
 template< typename Other  // Data type of the static array
         , size_t Dim >    // Dimension of the static array
-inline constexpr StaticVector<Type,N,TF>::StaticVector( const Other (&array)[Dim] )
+constexpr StaticVector<Type,N,TF>::StaticVector( const Other (&array)[Dim] )
    : v_( array )  // The statically allocated vector elements
 {
    BLAZE_STATIC_ASSERT( Dim == N );
@@ -769,7 +769,7 @@ template< typename Type   // Data type of the vector
         , bool TF >       // Transpose flag
 template< typename Other  // Data type of the std::array
         , size_t Dim >    // Dimension of the std::array
-inline constexpr StaticVector<Type,N,TF>::StaticVector( const std::array<Other,Dim>& array )
+constexpr StaticVector<Type,N,TF>::StaticVector( const std::array<Other,Dim>& array )
    : v_( array )  // The statically allocated vector elements
 {
    BLAZE_STATIC_ASSERT( Dim == N );
@@ -789,7 +789,7 @@ inline constexpr StaticVector<Type,N,TF>::StaticVector( const std::array<Other,D
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr StaticVector<Type,N,TF>::StaticVector( const StaticVector& v )
+constexpr StaticVector<Type,N,TF>::StaticVector( const StaticVector& v )
    : v_( v.v_ )  // The statically allocated vector elements
 {
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -874,7 +874,7 @@ inline StaticVector<Type,N,TF>::StaticVector( const Vector<VT,TF>& v )
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr typename StaticVector<Type,N,TF>::Reference
+constexpr typename StaticVector<Type,N,TF>::Reference
    StaticVector<Type,N,TF>::operator[]( size_t index ) noexcept
 {
    BLAZE_USER_ASSERT( index < N, "Invalid vector access index" );
@@ -895,7 +895,7 @@ inline constexpr typename StaticVector<Type,N,TF>::Reference
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr typename StaticVector<Type,N,TF>::ConstReference
+constexpr typename StaticVector<Type,N,TF>::ConstReference
    StaticVector<Type,N,TF>::operator[]( size_t index ) const noexcept
 {
    BLAZE_USER_ASSERT( index < N, "Invalid vector access index" );
@@ -962,7 +962,7 @@ inline typename StaticVector<Type,N,TF>::ConstReference
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr typename StaticVector<Type,N,TF>::Pointer
+constexpr typename StaticVector<Type,N,TF>::Pointer
    StaticVector<Type,N,TF>::data() noexcept
 {
    return v_;
@@ -980,7 +980,7 @@ inline constexpr typename StaticVector<Type,N,TF>::Pointer
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr typename StaticVector<Type,N,TF>::ConstPointer
+constexpr typename StaticVector<Type,N,TF>::ConstPointer
    StaticVector<Type,N,TF>::data() const noexcept
 {
    return v_;
@@ -996,7 +996,7 @@ inline constexpr typename StaticVector<Type,N,TF>::ConstPointer
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr typename StaticVector<Type,N,TF>::Iterator
+constexpr typename StaticVector<Type,N,TF>::Iterator
    StaticVector<Type,N,TF>::begin() noexcept
 {
    return Iterator( v_ );
@@ -1012,7 +1012,7 @@ inline constexpr typename StaticVector<Type,N,TF>::Iterator
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr typename StaticVector<Type,N,TF>::ConstIterator
+constexpr typename StaticVector<Type,N,TF>::ConstIterator
    StaticVector<Type,N,TF>::begin() const noexcept
 {
    return ConstIterator( v_ );
@@ -1028,7 +1028,7 @@ inline constexpr typename StaticVector<Type,N,TF>::ConstIterator
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr typename StaticVector<Type,N,TF>::ConstIterator
+constexpr typename StaticVector<Type,N,TF>::ConstIterator
    StaticVector<Type,N,TF>::cbegin() const noexcept
 {
    return ConstIterator( v_ );
@@ -1044,7 +1044,7 @@ inline constexpr typename StaticVector<Type,N,TF>::ConstIterator
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr typename StaticVector<Type,N,TF>::Iterator
+constexpr typename StaticVector<Type,N,TF>::Iterator
    StaticVector<Type,N,TF>::end() noexcept
 {
    return Iterator( v_ + N );
@@ -1060,7 +1060,7 @@ inline constexpr typename StaticVector<Type,N,TF>::Iterator
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr typename StaticVector<Type,N,TF>::ConstIterator
+constexpr typename StaticVector<Type,N,TF>::ConstIterator
    StaticVector<Type,N,TF>::end() const noexcept
 {
    return ConstIterator( v_ + N );
@@ -1076,7 +1076,7 @@ inline constexpr typename StaticVector<Type,N,TF>::ConstIterator
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr typename StaticVector<Type,N,TF>::ConstIterator
+constexpr typename StaticVector<Type,N,TF>::ConstIterator
    StaticVector<Type,N,TF>::cend() const noexcept
 {
    return ConstIterator( v_ + N );
@@ -1101,7 +1101,7 @@ inline constexpr typename StaticVector<Type,N,TF>::ConstIterator
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr StaticVector<Type,N,TF>&
+constexpr StaticVector<Type,N,TF>&
    StaticVector<Type,N,TF>::operator=( const Type& rhs )
 {
    for( size_t i=0UL; i<N; ++i )
@@ -1132,7 +1132,7 @@ inline constexpr StaticVector<Type,N,TF>&
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr StaticVector<Type,N,TF>&
+constexpr StaticVector<Type,N,TF>&
    StaticVector<Type,N,TF>::operator=( initializer_list<Type> list )
 {
    if( list.size() > N ) {
@@ -1179,7 +1179,7 @@ template< typename Type   // Data type of the vector
         , bool TF >       // Transpose flag
 template< typename Other  // Data type of the static array
         , size_t Dim >    // Dimension of the static array
-inline constexpr StaticVector<Type,N,TF>&
+constexpr StaticVector<Type,N,TF>&
    StaticVector<Type,N,TF>::operator=( const Other (&array)[Dim] )
 {
    BLAZE_STATIC_ASSERT( Dim == N );
@@ -1216,7 +1216,7 @@ template< typename Type   // Data type of the vector
         , bool TF >       // Transpose flag
 template< typename Other  // Data type of the std::array
         , size_t Dim >    // Dimension of the std::array
-inline constexpr StaticVector<Type,N,TF>&
+constexpr StaticVector<Type,N,TF>&
    StaticVector<Type,N,TF>::operator=( const std::array<Other,Dim>& array )
 {
    BLAZE_STATIC_ASSERT( Dim == N );
@@ -1240,7 +1240,7 @@ inline constexpr StaticVector<Type,N,TF>&
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr StaticVector<Type,N,TF>&
+constexpr StaticVector<Type,N,TF>&
    StaticVector<Type,N,TF>::operator=( const StaticVector& rhs )
 {
    v_ = rhs.v_;
@@ -1524,7 +1524,7 @@ inline StaticVector<Type,N,TF>& StaticVector<Type,N,TF>::operator%=( const Vecto
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr size_t StaticVector<Type,N,TF>::size() noexcept
+constexpr size_t StaticVector<Type,N,TF>::size() noexcept
 {
    return N;
 }
@@ -1542,7 +1542,7 @@ inline constexpr size_t StaticVector<Type,N,TF>::size() noexcept
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr size_t StaticVector<Type,N,TF>::spacing() noexcept
+constexpr size_t StaticVector<Type,N,TF>::spacing() noexcept
 {
    return NN;
 }
@@ -1557,7 +1557,7 @@ inline constexpr size_t StaticVector<Type,N,TF>::spacing() noexcept
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr size_t StaticVector<Type,N,TF>::capacity() noexcept
+constexpr size_t StaticVector<Type,N,TF>::capacity() noexcept
 {
    return NN;
 }
@@ -1597,7 +1597,7 @@ inline size_t StaticVector<Type,N,TF>::nonZeros() const
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr void StaticVector<Type,N,TF>::reset()
+constexpr void StaticVector<Type,N,TF>::reset()
 {
    using blaze::clear;
    for( size_t i=0UL; i<N; ++i )
@@ -1849,7 +1849,7 @@ inline void StaticVector<Type,N,TF>::operator delete[]( void* ptr, const std::no
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr bool StaticVector<Type,N,TF>::isIntact() const noexcept
+constexpr bool StaticVector<Type,N,TF>::isIntact() const noexcept
 {
    if( IsNumeric_v<Type> ) {
       for( size_t i=N; i<NN; ++i ) {
@@ -1925,7 +1925,7 @@ inline bool StaticVector<Type,N,TF>::isAliased( const Other* alias ) const noexc
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr bool StaticVector<Type,N,TF>::isAligned() noexcept
+constexpr bool StaticVector<Type,N,TF>::isAligned() noexcept
 {
    return align;
 }
@@ -2629,7 +2629,7 @@ constexpr const Type&& get( const StaticVector<Type,N,TF>&& v ) noexcept;
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr void reset( StaticVector<Type,N,TF>& v )
+constexpr void reset( StaticVector<Type,N,TF>& v )
 {
    v.reset();
 }
@@ -2648,7 +2648,7 @@ inline constexpr void reset( StaticVector<Type,N,TF>& v )
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr void clear( StaticVector<Type,N,TF>& v )
+constexpr void clear( StaticVector<Type,N,TF>& v )
 {
    v.reset();
 }
@@ -2714,7 +2714,7 @@ inline bool isDefault( const StaticVector<Type,N,TF>& v )
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline constexpr bool isIntact( const StaticVector<Type,N,TF>& v ) noexcept
+constexpr bool isIntact( const StaticVector<Type,N,TF>& v ) noexcept
 {
    return v.isIntact();
 }
