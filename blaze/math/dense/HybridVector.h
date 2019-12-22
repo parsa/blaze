@@ -111,6 +111,7 @@
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/RemoveConst.h>
+#include <blaze/util/typetraits/RemoveCV.h>
 
 
 namespace blaze {
@@ -528,6 +529,30 @@ class HybridVector
    /*! \endcond */
    //**********************************************************************************************
 };
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DEDUCTION GUIDES
+//
+//=================================================================================================
+
+//*************************************************************************************************
+#if BLAZE_CPP17_MODE
+
+template< typename Type, typename... Ts >
+HybridVector( Type, Ts... ) -> HybridVector<Type,1+sizeof...(Ts)>;
+
+template< typename Type, size_t N >
+HybridVector( Type (&)[N] ) -> HybridVector< RemoveCV_t<Type>, N >;
+
+template< typename Type, size_t N >
+HybridVector( std::array<Type,N> ) -> HybridVector<Type,N>;
+
+#endif
 //*************************************************************************************************
 
 
