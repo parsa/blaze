@@ -32,7 +32,6 @@
 //*************************************************************************************************
 
 #include <array>
-#include <algorithm>
 #include <utility>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/DenseVector.h>
@@ -266,22 +265,24 @@ class HybridVector
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline HybridVector();
-   explicit inline HybridVector( size_t n );
-   explicit inline HybridVector( size_t n, const Type& init );
-            inline HybridVector( initializer_list<Type> list );
+   explicit constexpr HybridVector();
+   explicit constexpr HybridVector( size_t n );
+   explicit inline    HybridVector( size_t n, const Type& init );
+            constexpr HybridVector( initializer_list<Type> list );
 
    template< typename Other >
    explicit inline HybridVector( size_t n, const Other* array );
 
    template< typename Other, size_t Dim >
-   explicit inline HybridVector( const Other (&array)[Dim] );
+   explicit constexpr HybridVector( const Other (&array)[Dim] );
 
    template< typename Other, size_t Dim >
-   explicit inline HybridVector( const std::array<Other,Dim>& array );
+   explicit constexpr HybridVector( const std::array<Other,Dim>& array );
 
-                           inline HybridVector( const HybridVector& v );
-   template< typename VT > inline HybridVector( const Vector<VT,TF>& v );
+   constexpr HybridVector( const HybridVector& v );
+
+   template< typename VT >
+   inline HybridVector( const Vector<VT,TF>& v );
    //@}
    //**********************************************************************************************
 
@@ -295,34 +296,35 @@ class HybridVector
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator[]( size_t index ) noexcept;
-   inline ConstReference operator[]( size_t index ) const noexcept;
-   inline Reference      at( size_t index );
-   inline ConstReference at( size_t index ) const;
-   inline Pointer        data  () noexcept;
-   inline ConstPointer   data  () const noexcept;
-   inline Iterator       begin () noexcept;
-   inline ConstIterator  begin () const noexcept;
-   inline ConstIterator  cbegin() const noexcept;
-   inline Iterator       end   () noexcept;
-   inline ConstIterator  end   () const noexcept;
-   inline ConstIterator  cend  () const noexcept;
+   constexpr Reference      operator[]( size_t index ) noexcept;
+   constexpr ConstReference operator[]( size_t index ) const noexcept;
+   inline    Reference      at( size_t index );
+   inline    ConstReference at( size_t index ) const;
+   constexpr Pointer        data  () noexcept;
+   constexpr ConstPointer   data  () const noexcept;
+   constexpr Iterator       begin () noexcept;
+   constexpr ConstIterator  begin () const noexcept;
+   constexpr ConstIterator  cbegin() const noexcept;
+   constexpr Iterator       end   () noexcept;
+   constexpr ConstIterator  end   () const noexcept;
+   constexpr ConstIterator  cend  () const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline HybridVector& operator=( const Type& rhs );
-   inline HybridVector& operator=( initializer_list<Type> list );
+   constexpr HybridVector& operator=( const Type& rhs );
+   constexpr HybridVector& operator=( initializer_list<Type> list );
 
    template< typename Other, size_t Dim >
-   inline HybridVector& operator=( const Other (&array)[Dim] );
+   constexpr HybridVector& operator=( const Other (&array)[Dim] );
 
    template< typename Other, size_t Dim >
-   inline HybridVector& operator=( const std::array<Other,Dim>& array );
+   constexpr HybridVector& operator=( const std::array<Other,Dim>& array );
 
-                           inline HybridVector& operator= ( const HybridVector&  rhs );
+   constexpr HybridVector& operator=( const HybridVector& rhs );
+
    template< typename VT > inline HybridVector& operator= ( const Vector<VT,TF>& rhs );
    template< typename VT > inline HybridVector& operator+=( const Vector<VT,TF>& rhs );
    template< typename VT > inline HybridVector& operator-=( const Vector<VT,TF>& rhs );
@@ -335,14 +337,14 @@ class HybridVector
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-          inline    size_t size() const noexcept;
+          constexpr size_t size() const noexcept;
    static constexpr size_t spacing() noexcept;
    static constexpr size_t capacity() noexcept;
           inline    size_t nonZeros() const;
-          inline    void   reset();
-          inline    void   clear();
-          inline    void   resize( size_t n, bool preserve=true );
-          inline    void   extend( size_t n, bool preserve=true );
+          constexpr void   reset();
+          constexpr void   clear();
+          constexpr void   resize( size_t n, bool preserve=true );
+          constexpr void   extend( size_t n, bool preserve=true );
           inline    void   swap( HybridVector& v ) noexcept;
    //@}
    //**********************************************************************************************
@@ -433,7 +435,7 @@ class HybridVector
    //**Debugging functions*************************************************************************
    /*!\name Debugging functions */
    //@{
-   inline bool isIntact() const noexcept;
+   constexpr bool isIntact() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -572,7 +574,7 @@ HybridVector( std::array<Type,N> ) -> HybridVector<Type,N>;
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline HybridVector<Type,N,TF>::HybridVector()
+constexpr HybridVector<Type,N,TF>::HybridVector()
    : v_   ()       // The statically allocated vector elements
    , size_( 0UL )  // The current size/dimension of the vector
 {
@@ -594,7 +596,7 @@ inline HybridVector<Type,N,TF>::HybridVector()
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline HybridVector<Type,N,TF>::HybridVector( size_t n )
+constexpr HybridVector<Type,N,TF>::HybridVector( size_t n )
    : v_   ()     // The statically allocated vector elements
    , size_( n )  // The current size/dimension of the vector
 {
@@ -663,15 +665,20 @@ inline HybridVector<Type,N,TF>::HybridVector( size_t n, const Type& init )
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline HybridVector<Type,N,TF>::HybridVector( initializer_list<Type> list )
-   : size_( list.size() )  // The current size/dimension of the vector
-   // v_ is intentionally left uninitialized
+constexpr HybridVector<Type,N,TF>::HybridVector( initializer_list<Type> list )
+   : v_   ()               // The statically allocated vector elements
+   , size_( list.size() )  // The current size/dimension of the vector
 {
    if( size_ > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of hybrid vector" );
    }
 
-   std::fill( std::copy( list.begin(), list.end(), v_.data() ), v_.data()+NN, Type() );
+   size_t i( 0UL );
+
+   for( const auto& element : list ) {
+      v_[i] = element;
+      ++i;
+   }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -749,7 +756,7 @@ template< typename Type   // Data type of the vector
         , bool TF >       // Transpose flag
 template< typename Other  // Data type of the static array
         , size_t Dim >    // Number of elements of the static array
-inline HybridVector<Type,N,TF>::HybridVector( const Other (&array)[Dim] )
+constexpr HybridVector<Type,N,TF>::HybridVector( const Other (&array)[Dim] )
    : v_   ( array )  // The statically allocated vector elements
    , size_( Dim )    // The current size/dimension of the vector
 {
@@ -783,7 +790,7 @@ template< typename Type   // Data type of the vector
         , bool TF >       // Transpose flag
 template< typename Other  // Data type of the std::array
         , size_t Dim >    // Dimension of the std::array
-inline HybridVector<Type,N,TF>::HybridVector( const std::array<Other,Dim>& array )
+constexpr HybridVector<Type,N,TF>::HybridVector( const std::array<Other,Dim>& array )
    : v_   ( array )  // The statically allocated vector elements
    , size_( Dim )    // The current size/dimension of the vector
 {
@@ -804,7 +811,7 @@ inline HybridVector<Type,N,TF>::HybridVector( const std::array<Other,Dim>& array
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline HybridVector<Type,N,TF>::HybridVector( const HybridVector& v )
+constexpr HybridVector<Type,N,TF>::HybridVector( const HybridVector& v )
    : v_   ( v.v_ )     // The statically allocated vector elements
    , size_( v.size_ )  // The current size/dimension of the vector
 {
@@ -869,7 +876,7 @@ inline HybridVector<Type,N,TF>::HybridVector( const Vector<VT,TF>& v )
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename HybridVector<Type,N,TF>::Reference
+constexpr typename HybridVector<Type,N,TF>::Reference
    HybridVector<Type,N,TF>::operator[]( size_t index ) noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
@@ -890,7 +897,7 @@ inline typename HybridVector<Type,N,TF>::Reference
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename HybridVector<Type,N,TF>::ConstReference
+constexpr typename HybridVector<Type,N,TF>::ConstReference
    HybridVector<Type,N,TF>::operator[]( size_t index ) const noexcept
 {
    BLAZE_USER_ASSERT( index < size_, "Invalid vector access index" );
@@ -957,7 +964,7 @@ inline typename HybridVector<Type,N,TF>::ConstReference
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename HybridVector<Type,N,TF>::Pointer HybridVector<Type,N,TF>::data() noexcept
+constexpr typename HybridVector<Type,N,TF>::Pointer HybridVector<Type,N,TF>::data() noexcept
 {
    return v_;
 }
@@ -974,7 +981,7 @@ inline typename HybridVector<Type,N,TF>::Pointer HybridVector<Type,N,TF>::data()
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename HybridVector<Type,N,TF>::ConstPointer HybridVector<Type,N,TF>::data() const noexcept
+constexpr typename HybridVector<Type,N,TF>::ConstPointer HybridVector<Type,N,TF>::data() const noexcept
 {
    return v_;
 }
@@ -989,7 +996,7 @@ inline typename HybridVector<Type,N,TF>::ConstPointer HybridVector<Type,N,TF>::d
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename HybridVector<Type,N,TF>::Iterator HybridVector<Type,N,TF>::begin() noexcept
+constexpr typename HybridVector<Type,N,TF>::Iterator HybridVector<Type,N,TF>::begin() noexcept
 {
    return Iterator( v_ );
 }
@@ -1004,7 +1011,7 @@ inline typename HybridVector<Type,N,TF>::Iterator HybridVector<Type,N,TF>::begin
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::begin() const noexcept
+constexpr typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::begin() const noexcept
 {
    return ConstIterator( v_ );
 }
@@ -1019,7 +1026,7 @@ inline typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::cbegin() const noexcept
+constexpr typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::cbegin() const noexcept
 {
    return ConstIterator( v_ );
 }
@@ -1034,7 +1041,7 @@ inline typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename HybridVector<Type,N,TF>::Iterator HybridVector<Type,N,TF>::end() noexcept
+constexpr typename HybridVector<Type,N,TF>::Iterator HybridVector<Type,N,TF>::end() noexcept
 {
    BLAZE_INTERNAL_ASSERT( size_ <= N, "Invalid size detected" );
    return Iterator( v_ + size_ );
@@ -1050,7 +1057,7 @@ inline typename HybridVector<Type,N,TF>::Iterator HybridVector<Type,N,TF>::end()
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::end() const noexcept
+constexpr typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::end() const noexcept
 {
    BLAZE_INTERNAL_ASSERT( size_ <= N, "Invalid size detected" );
    return ConstIterator( v_ + size_ );
@@ -1066,7 +1073,7 @@ inline typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::cend() const noexcept
+constexpr typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::cend() const noexcept
 {
    BLAZE_INTERNAL_ASSERT( size_ <= N, "Invalid size detected" );
    return ConstIterator( v_ + size_ );
@@ -1091,7 +1098,7 @@ inline typename HybridVector<Type,N,TF>::ConstIterator HybridVector<Type,N,TF>::
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const Type& rhs )
+constexpr HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const Type& rhs )
 {
    BLAZE_INTERNAL_ASSERT( size_ <= N, "Invalid size detected" );
 
@@ -1124,14 +1131,20 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const Type& 
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( initializer_list<Type> list )
+constexpr HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( initializer_list<Type> list )
 {
    if( list.size() > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to hybrid vector" );
    }
 
    resize( list.size(), false );
-   std::copy( list.begin(), list.end(), v_.data() );
+
+   size_t i( 0UL );
+
+   for( const auto& element : list ) {
+      v_[i] = element;
+      ++i;
+   }
 
    return *this;
 }
@@ -1162,7 +1175,7 @@ template< typename Type   // Data type of the vector
         , bool TF >       // Transpose flag
 template< typename Other  // Data type of the static array
         , size_t Dim >    // Number of elements of the static array
-inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const Other (&array)[Dim] )
+constexpr HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const Other (&array)[Dim] )
 {
    BLAZE_STATIC_ASSERT( Dim <= N );
 
@@ -1200,7 +1213,7 @@ template< typename Type   // Data type of the vector
         , bool TF >       // Transpose flag
 template< typename Other  // Data type of the std::array
         , size_t Dim >    // Dimension of the std::array
-inline HybridVector<Type,N,TF>&
+constexpr HybridVector<Type,N,TF>&
    HybridVector<Type,N,TF>::operator=( const std::array<Other,Dim>& array )
 {
    BLAZE_STATIC_ASSERT( Dim <= N );
@@ -1226,7 +1239,7 @@ inline HybridVector<Type,N,TF>&
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const HybridVector& rhs )
+constexpr HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator=( const HybridVector& rhs )
 {
    using blaze::assign;
 
@@ -1491,7 +1504,7 @@ inline HybridVector<Type,N,TF>& HybridVector<Type,N,TF>::operator%=( const Vecto
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline size_t HybridVector<Type,N,TF>::size() const noexcept
+constexpr size_t HybridVector<Type,N,TF>::size() const noexcept
 {
    return size_;
 }
@@ -1564,7 +1577,7 @@ inline size_t HybridVector<Type,N,TF>::nonZeros() const
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline void HybridVector<Type,N,TF>::reset()
+constexpr void HybridVector<Type,N,TF>::reset()
 {
    using blaze::clear;
    for( size_t i=0UL; i<size_; ++i )
@@ -1583,7 +1596,7 @@ inline void HybridVector<Type,N,TF>::reset()
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline void HybridVector<Type,N,TF>::clear()
+constexpr void HybridVector<Type,N,TF>::clear()
 {
    resize( 0UL );
 }
@@ -1624,7 +1637,7 @@ inline void HybridVector<Type,N,TF>::clear()
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline void HybridVector<Type,N,TF>::resize( size_t n, bool preserve )
+constexpr void HybridVector<Type,N,TF>::resize( size_t n, bool preserve )
 {
    MAYBE_UNUSED( preserve );
 
@@ -1659,7 +1672,7 @@ inline void HybridVector<Type,N,TF>::resize( size_t n, bool preserve )
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline void HybridVector<Type,N,TF>::extend( size_t n, bool preserve )
+constexpr void HybridVector<Type,N,TF>::extend( size_t n, bool preserve )
 {
    MAYBE_UNUSED( preserve );
    resize( size_+n );
@@ -1912,7 +1925,7 @@ inline void HybridVector<Type,N,TF>::operator delete[]( void* ptr, const std::no
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline bool HybridVector<Type,N,TF>::isIntact() const noexcept
+constexpr bool HybridVector<Type,N,TF>::isIntact() const noexcept
 {
    if( size_ > N )
       return false;
@@ -2650,16 +2663,16 @@ inline auto HybridVector<Type,N,TF>::divAssign( const DenseVector<VT,TF>& rhs )
 /*!\name HybridVector operators */
 //@{
 template< typename Type, size_t N, bool TF >
-void reset( HybridVector<Type,N,TF>& v );
+constexpr void reset( HybridVector<Type,N,TF>& v );
 
 template< typename Type, size_t N, bool TF >
-void clear( HybridVector<Type,N,TF>& v );
+constexpr void clear( HybridVector<Type,N,TF>& v );
 
 template< bool RF, typename Type, size_t N, bool TF >
 bool isDefault( const HybridVector<Type,N,TF>& v );
 
 template< typename Type, size_t N, bool TF >
-bool isIntact( const HybridVector<Type,N,TF>& v );
+constexpr bool isIntact( const HybridVector<Type,N,TF>& v );
 
 template< typename Type, size_t N, bool TF >
 void swap( HybridVector<Type,N,TF>& a, HybridVector<Type,N,TF>& b ) noexcept;
@@ -2677,7 +2690,7 @@ void swap( HybridVector<Type,N,TF>& a, HybridVector<Type,N,TF>& b ) noexcept;
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline void reset( HybridVector<Type,N,TF>& v )
+constexpr void reset( HybridVector<Type,N,TF>& v )
 {
    v.reset();
 }
@@ -2694,7 +2707,7 @@ inline void reset( HybridVector<Type,N,TF>& v )
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline void clear( HybridVector<Type,N,TF>& v )
+constexpr void clear( HybridVector<Type,N,TF>& v )
 {
    v.clear();
 }
@@ -2757,7 +2770,7 @@ inline bool isDefault( const HybridVector<Type,N,TF>& v )
 template< typename Type  // Data type of the vector
         , size_t N       // Number of elements
         , bool TF >      // Transpose flag
-inline bool isIntact( const HybridVector<Type,N,TF>& v )
+constexpr bool isIntact( const HybridVector<Type,N,TF>& v )
 {
    return v.isIntact();
 }
