@@ -302,7 +302,7 @@ struct Limits<long>
 
 
 //*************************************************************************************************
-#if BLAZE_WIN64_PLATFORM
+#if BLAZE_WIN32_PLATFORM || BLAZE_WIN64_PLATFORM
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Limits<size_t> specialization.
 // \ingroup util
@@ -320,7 +320,7 @@ struct Limits<size_t>
 
 
 //*************************************************************************************************
-#if BLAZE_WIN64_PLATFORM
+#if BLAZE_WIN32_PLATFORM || BLAZE_WIN64_PLATFORM
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Limits<ptrdiff_t> specialization.
 // \ingroup util
