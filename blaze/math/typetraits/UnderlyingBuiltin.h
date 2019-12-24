@@ -40,8 +40,9 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/RemoveCV.h>
-#include <blaze/util/typetraits/Void.h>
 
 
 namespace blaze {
@@ -129,7 +130,7 @@ struct UnderlyingBuiltinHelper1
 };
 
 template< typename T >
-struct UnderlyingBuiltinHelper1< T, Void_t< typename T::ElementType > >
+struct UnderlyingBuiltinHelper1< T, EnableIf_t< !IsSame_v< T, typename T::ElementType > > >
 {
    using Type = typename UnderlyingBuiltinHelper1< typename T::ElementType >::Type;
 };
@@ -149,7 +150,7 @@ struct UnderlyingBuiltinHelper2
 };
 
 template< typename T >
-struct UnderlyingBuiltinHelper2< T, Void_t< typename T::value_type > >
+struct UnderlyingBuiltinHelper2< T, EnableIf_t< !IsSame_v< T, typename T::value_type > > >
 {
    using Type = typename UnderlyingBuiltinHelper1< typename T::value_type >::Type;
 };
