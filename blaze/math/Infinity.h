@@ -118,7 +118,7 @@ class NegativeInfinity
    constexpr operator short()       const;
    constexpr operator int()         const;
    constexpr operator long()        const;
-#if BLAZE_WIN64_PLATFORM
+#if BLAZE_WIN32_PLATFORM || BLAZE_WIN64_PLATFORM
    constexpr operator ptrdiff_t()   const;
 #endif
    constexpr operator float()       const;
@@ -257,7 +257,7 @@ constexpr NegativeInfinity<I>::operator long() const
 
 
 //*************************************************************************************************
-#if BLAZE_WIN64_PLATFORM
+#if BLAZE_WIN32_PLATFORM || BLAZE_WIN64_PLATFORM
 /*!\brief Conversion operator to the ptrdiff_t built-in type.
 //
 // The conversion operator returns the smallest possible ptrdiff_t value.
@@ -560,7 +560,7 @@ class Infinity
    constexpr operator int()            const;
    constexpr operator unsigned long()  const;
    constexpr operator long()           const;
-#if BLAZE_WIN64_PLATFORM
+#if BLAZE_WIN32_PLATFORM || BLAZE_WIN64_PLATFORM
    constexpr operator size_t()         const;
    constexpr operator ptrdiff_t()      const;
 #endif
@@ -742,7 +742,7 @@ constexpr Infinity::operator long() const
 
 
 //*************************************************************************************************
-#if BLAZE_WIN64_PLATFORM
+#if BLAZE_WIN32_PLATFORM || BLAZE_WIN64_PLATFORM
 /*!\brief Conversion operator to the size_t built-in type.
 //
 // The conversion operator returns the largest possible size_t value.
@@ -756,7 +756,7 @@ constexpr Infinity::operator size_t() const
 
 
 //*************************************************************************************************
-#if BLAZE_WIN64_PLATFORM
+#if BLAZE_WIN32_PLATFORM || BLAZE_WIN64_PLATFORM
 /*!\brief Conversion operator to the ptrdiff_t built-in type.
 //
 // The conversion operator returns the largest possible ptrdiff_t value.
