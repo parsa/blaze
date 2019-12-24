@@ -41,8 +41,9 @@
 //*************************************************************************************************
 
 #include <blaze/util/Complex.h>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/typetraits/IsSame.h>
 #include <blaze/util/typetraits/RemoveCV.h>
-#include <blaze/util/typetraits/Void.h>
 
 
 namespace blaze {
@@ -136,7 +137,7 @@ struct UnderlyingNumericHelper1< complex<T>, void >
 };
 
 template< typename T >
-struct UnderlyingNumericHelper1< T, Void_t< typename T::ElementType > >
+struct UnderlyingNumericHelper1< T, EnableIf_t< !IsSame_v< T, typename T::ElementType > > >
 {
    using Type = typename UnderlyingNumericHelper1< typename T::ElementType >::Type;
 };
@@ -156,7 +157,7 @@ struct UnderlyingNumericHelper2
 };
 
 template< typename T >
-struct UnderlyingNumericHelper2< T, Void_t< typename T::value_type > >
+struct UnderlyingNumericHelper2< T, EnableIf_t< !IsSame_v< T, typename T::value_type > > >
 {
    using Type = typename UnderlyingNumericHelper1< typename T::value_type >::Type;
 };
