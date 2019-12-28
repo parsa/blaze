@@ -69,7 +69,7 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Generic wrapper for the multiply-accumulate (\f$ (a*b)+c \$f; MAC) operation.
+/*!\brief Generic wrapper for the multiply-accumulate (\f$ (a*b)+c \f$; MAC) operation.
 // \ingroup functors
 */
 struct MAC
