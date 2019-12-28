@@ -52,7 +52,10 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/ColumnTrait.h>
 #include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/MaxSize.h>
+#include <blaze/math/typetraits/Size.h>
 #include <blaze/math/typetraits/UnderlyingElement.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
@@ -82,8 +85,15 @@ class DMatSVDExpr
 {
  private:
    //**Type definitions****************************************************************************
-   using VT = ColumnTrait_t< ResultType_t<MT> >;         //!< Type of the resulting vector.
-   using ET = UnderlyingElement_t< ElementType_t<MT> >;  //!< Element type of the resulting vector.
+   using CRT = ColumnTrait_t< ResultType_t<MT> >;     //!< Column type of the matrix result type.
+   using CTT = ColumnTrait_t< TransposeType_t<MT> >;  //!< Column type of the matrix transpose type.
+
+   //! Type of the resulting vector.
+   using VT =
+      If_t< ( Size_v<CRT,0UL> < Size_v<CTT,0UL> || MaxSize_v<CRT,0UL> < MaxSize_v<CTT,0UL> ), CRT, CTT >;
+
+   //! Element type of the resulting vector.
+   using ET = UnderlyingElement_t< ElementType_t<MT> >;
    //**********************************************************************************************
 
  public:
@@ -126,7 +136,7 @@ class DMatSVDExpr
    // \return The size of the vector.
    */
    inline size_t size() const noexcept {
-      return dm_.rows();
+      return min( dm_.rows(), dm_.columns() );
    }
    //**********************************************************************************************
 
