@@ -78,8 +78,9 @@ namespace blaze {
 */
 template< typename MT  // Type of the matrix
         , bool SO >    // Storage order
-struct Matrix
+class Matrix
 {
+ public:
    //**Type definitions****************************************************************************
    using MatrixType = MT;  //!< Type of the matrix.
    //**********************************************************************************************
@@ -106,6 +107,19 @@ struct Matrix
    BLAZE_ALWAYS_INLINE constexpr const MatrixType& operator~() const noexcept {
       return *static_cast<const MatrixType*>( this );
    }
+   //**********************************************************************************************
+
+ protected:
+   //**Special member functions********************************************************************
+   /*!\name Special member functions */
+   //@{
+   Matrix() = default;
+   Matrix( const Matrix& ) = default;
+   Matrix( Matrix&& ) = default;
+   ~Matrix() = default;
+   Matrix& operator=( const Matrix& ) = default;
+   Matrix& operator=( Matrix&& ) = default;
+   //@}
    //**********************************************************************************************
 };
 //*************************************************************************************************

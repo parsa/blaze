@@ -60,8 +60,9 @@ namespace blaze {
 // back to this type via the 'Curiously Recurring Template Pattern' (CRTP).
 */
 template< typename T >  // Type of the SIMD pack
-struct SIMDPack
+class SIMDPack
 {
+ public:
    //**Non-const conversion operator***************************************************************
    /*!\brief Conversion operator for non-constant vectors.
    //
@@ -80,6 +81,19 @@ struct SIMDPack
    BLAZE_ALWAYS_INLINE const T& operator~() const noexcept {
       return *static_cast<const T*>( this );
    }
+   //**********************************************************************************************
+
+ protected:
+   //**Special member functions********************************************************************
+   /*!\name Special member functions */
+   //@{
+   SIMDPack() = default;
+   SIMDPack( const SIMDPack& ) = default;
+   SIMDPack( SIMDPack&& ) = default;
+   ~SIMDPack() = default;
+   SIMDPack& operator=( const SIMDPack& ) = default;
+   SIMDPack& operator=( SIMDPack&& ) = default;
+   //@}
    //**********************************************************************************************
 };
 //*************************************************************************************************

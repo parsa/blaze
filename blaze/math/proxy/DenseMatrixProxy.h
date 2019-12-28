@@ -144,6 +144,19 @@ class DenseMatrixProxy
    //@}
    //**********************************************************************************************
 
+ protected:
+   //**Special member functions********************************************************************
+   /*!\name Special member functions */
+   //@{
+   DenseMatrixProxy() = default;
+   DenseMatrixProxy( const DenseMatrixProxy& ) = default;
+   DenseMatrixProxy( DenseMatrixProxy&& ) = default;
+   ~DenseMatrixProxy() = default;
+   DenseMatrixProxy& operator=( const DenseMatrixProxy& ) = default;
+   DenseMatrixProxy& operator=( DenseMatrixProxy&& ) = default;
+   //@}
+   //**********************************************************************************************
+
  private:
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */

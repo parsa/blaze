@@ -170,6 +170,19 @@ class SparseMatrixProxy
    //@}
    //**********************************************************************************************
 
+ protected:
+   //**Special member functions********************************************************************
+   /*!\name Special member functions */
+   //@{
+   SparseMatrixProxy() = default;
+   SparseMatrixProxy( const SparseMatrixProxy& ) = default;
+   SparseMatrixProxy( SparseMatrixProxy&& ) = default;
+   ~SparseMatrixProxy() = default;
+   SparseMatrixProxy& operator=( const SparseMatrixProxy& ) = default;
+   SparseMatrixProxy& operator=( SparseMatrixProxy&& ) = default;
+   //@}
+   //**********************************************************************************************
+
  private:
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */

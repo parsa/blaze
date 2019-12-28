@@ -51,8 +51,8 @@ namespace blaze {
 //
 //=================================================================================================
 
-template< typename, bool > struct DenseMatrix;
-template< typename, bool > struct DenseVector;
+template< typename, bool > class DenseMatrix;
+template< typename, bool > class DenseVector;
 template< typename, bool > class DMatDeclDiagExpr;
 template< typename, bool > class DMatDeclHermExpr;
 template< typename, bool > class DMatDeclLowExpr;
@@ -123,7 +123,7 @@ template< typename, typename > class DVecSVecOuterExpr;
 template< typename, typename, bool > class DVecSVecSubExpr;
 template< typename, bool > class DVecTransExpr;
 template< typename, bool > class DVecTransposer;
-template< typename, bool > struct Matrix;
+template< typename, bool > class Matrix;
 template< typename, bool > class SMatDeclDiagExpr;
 template< typename, bool > class SMatDeclHermExpr;
 template< typename, bool > class SMatDeclLowExpr;
@@ -160,8 +160,8 @@ template< typename, typename > class SMatTSMatKronExpr;
 template< typename, typename > class SMatTSMatMultExpr;
 template< typename, typename > class SMatTSMatSchurExpr;
 template< typename, typename > class SMatTSMatSubExpr;
-template< typename, bool > struct SparseMatrix;
-template< typename, bool > struct SparseVector;
+template< typename, bool > class SparseMatrix;
+template< typename, bool > class SparseVector;
 template< typename, typename, bool > class SVecDVecCrossExpr;
 template< typename, typename, bool > class SVecDVecDivExpr;
 template< typename, typename, bool > class SVecDVecKronExpr;
@@ -215,7 +215,7 @@ template< typename, typename > class TSVecDMatMultExpr;
 template< typename, typename > class TSVecSMatMultExpr;
 template< typename, typename > class TSVecTDMatMultExpr;
 template< typename, typename > class TSVecTSMatMultExpr;
-template< typename, bool > struct Vector;
+template< typename, bool > class Vector;
 
 
 template< typename VT1, typename VT2, bool TF >

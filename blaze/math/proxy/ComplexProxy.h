@@ -91,6 +91,19 @@ class ComplexProxy
    //@}
    //**********************************************************************************************
 
+ protected:
+   //**Special member functions********************************************************************
+   /*!\name Special member functions */
+   //@{
+   ComplexProxy() = default;
+   ComplexProxy( const ComplexProxy& ) = default;
+   ComplexProxy( ComplexProxy&& ) = default;
+   ~ComplexProxy() = default;
+   ComplexProxy& operator=( const ComplexProxy& ) = default;
+   ComplexProxy& operator=( ComplexProxy&& ) = default;
+   //@}
+   //**********************************************************************************************
+
  private:
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */

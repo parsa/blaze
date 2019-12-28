@@ -161,6 +161,19 @@ class SparseVectorProxy
    //@}
    //**********************************************************************************************
 
+ protected:
+   //**Special member functions********************************************************************
+   /*!\name Special member functions */
+   //@{
+   SparseVectorProxy() = default;
+   SparseVectorProxy( const SparseVectorProxy& ) = default;
+   SparseVectorProxy( SparseVectorProxy&& ) = default;
+   ~SparseVectorProxy() = default;
+   SparseVectorProxy& operator=( const SparseVectorProxy& ) = default;
+   SparseVectorProxy& operator=( SparseVectorProxy&& ) = default;
+   //@}
+   //**********************************************************************************************
+
  private:
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */

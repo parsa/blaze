@@ -74,8 +74,9 @@ namespace blaze {
 */
 template< typename VT  // Type of the vector
         , bool TF >    // Transpose flag
-struct Vector
+class Vector
 {
+ public:
    //**Type definitions****************************************************************************
    using VectorType = VT;  //!< Type of the vector.
    //**********************************************************************************************
@@ -102,6 +103,19 @@ struct Vector
    BLAZE_ALWAYS_INLINE constexpr const VectorType& operator~() const noexcept {
       return *static_cast<const VectorType*>( this );
    }
+   //**********************************************************************************************
+
+ protected:
+   //**Special member functions********************************************************************
+   /*!\name Special member functions */
+   //@{
+   Vector() = default;
+   Vector( const Vector& ) = default;
+   Vector( Vector&& ) = default;
+   ~Vector() = default;
+   Vector& operator=( const Vector& ) = default;
+   Vector& operator=( Vector&& ) = default;
+   //@}
    //**********************************************************************************************
 };
 //*************************************************************************************************

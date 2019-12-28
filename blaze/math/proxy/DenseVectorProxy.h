@@ -133,6 +133,19 @@ class DenseVectorProxy
    //@}
    //**********************************************************************************************
 
+ protected:
+   //**Special member functions********************************************************************
+   /*!\name Special member functions */
+   //@{
+   DenseVectorProxy() = default;
+   DenseVectorProxy( const DenseVectorProxy& ) = default;
+   DenseVectorProxy( DenseVectorProxy&& ) = default;
+   ~DenseVectorProxy() = default;
+   DenseVectorProxy& operator=( const DenseVectorProxy& ) = default;
+   DenseVectorProxy& operator=( DenseVectorProxy&& ) = default;
+   //@}
+   //**********************************************************************************************
+
  private:
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */

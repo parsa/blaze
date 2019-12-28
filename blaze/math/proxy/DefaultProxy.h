@@ -71,6 +71,19 @@ class DefaultProxy
    BLAZE_ALWAYS_INLINE const PT& operator~() const;
    //@}
    //**********************************************************************************************
+
+ protected:
+   //**Special member functions********************************************************************
+   /*!\name Special member functions */
+   //@{
+   DefaultProxy() = default;
+   DefaultProxy( const DefaultProxy& ) = default;
+   DefaultProxy( DefaultProxy&& ) = default;
+   ~DefaultProxy() = default;
+   DefaultProxy& operator=( const DefaultProxy& ) = default;
+   DefaultProxy& operator=( DefaultProxy&& ) = default;
+   //@}
+   //**********************************************************************************************
 };
 //*************************************************************************************************
 
