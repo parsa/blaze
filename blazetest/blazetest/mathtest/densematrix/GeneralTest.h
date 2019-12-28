@@ -106,6 +106,7 @@ class GeneralTest
    void testMinimum();
    void testMaximum();
    void testTrace();
+   void testRank();
    void testL1Norm();
    void testL2Norm();
    void testL3Norm();

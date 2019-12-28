@@ -88,6 +88,7 @@ GeneralTest::GeneralTest()
    testMinimum();
    testMaximum();
    testTrace();
+   testRank();
    testL1Norm();
    testL2Norm();
    testL3Norm();
@@ -5278,6 +5279,165 @@ void GeneralTest::testTrace()
          throw std::runtime_error( oss.str() );
       }
       catch( std::invalid_argument& ) {}
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the \c rank() function for dense matrices.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the \c rank() function for dense matrices. In case an error
+// is detected, a \a std::runtime_error exception is thrown.
+*/
+void GeneralTest::testRank()
+{
+   //=====================================================================================
+   // Row-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major rank()";
+
+      // Determining the rank of a 0x0 matrix
+      {
+         blaze::DynamicMatrix<double,blaze::rowMajor> mat;
+
+         checkRows   ( mat, 0UL );
+         checkColumns( mat, 0UL );
+
+         const size_t rank = blaze::rank( mat );
+
+         if( rank != 0UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Rank computation failed\n"
+                << " Details:\n"
+                << "   Result: " << rank << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the rank of a 3x3 matrix (rank deficient)
+      {
+         blaze::DynamicMatrix<double,blaze::rowMajor> mat{ { 1.0, 2.0, 3.0 },
+                                                           { 0.0, 0.0, 1.0 },
+                                                           { 0.0, 0.0, 1.0 } };
+
+         checkRows   ( mat, 3UL );
+         checkColumns( mat, 3UL );
+
+         const size_t rank = blaze::rank( mat );
+
+         if( rank != 2UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Rank computation failed\n"
+                << " Details:\n"
+                << "   Result: " << rank << "\n"
+                << "   Expected result: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the rank of a 3x3 matrix (full rank)
+      {
+         blaze::DynamicMatrix<double,blaze::rowMajor> mat{ { 1.0, 2.0, 3.0 },
+                                                           { 0.0, 1.0, 2.0 },
+                                                           { 0.0, 0.0, 1.0 } };
+
+         checkRows   ( mat, 3UL );
+         checkColumns( mat, 3UL );
+
+         const size_t rank = blaze::rank( mat );
+
+         if( rank != 3UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Rank computation failed\n"
+                << " Details:\n"
+                << "   Result: " << rank << "\n"
+                << "   Expected result: 3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Column-major matrix tests
+   //=====================================================================================
+
+   {
+      test_ = "Column-major rank()";
+
+      // Determining the rank of a 0x0 matrix
+      {
+         blaze::DynamicMatrix<double,blaze::columnMajor> mat;
+
+         checkRows   ( mat, 0UL );
+         checkColumns( mat, 0UL );
+
+         const size_t rank = blaze::rank( mat );
+
+         if( rank != 0UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Rank computation failed\n"
+                << " Details:\n"
+                << "   Result: " << rank << "\n"
+                << "   Expected result: 0\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the rank of a 3x3 matrix (rank deficient)
+      {
+         blaze::DynamicMatrix<double,blaze::columnMajor> mat{ { 1.0, 2.0, 3.0 },
+                                                              { 0.0, 0.0, 1.0 },
+                                                              { 0.0, 0.0, 1.0 } };
+
+         checkRows   ( mat, 3UL );
+         checkColumns( mat, 3UL );
+
+         const size_t rank = blaze::rank( mat );
+
+         if( rank != 2UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Rank computation failed\n"
+                << " Details:\n"
+                << "   Result: " << rank << "\n"
+                << "   Expected result: 2\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Determining the rank of a 3x3 matrix (full rank)
+      {
+         blaze::DynamicMatrix<double,blaze::columnMajor> mat{ { 1.0, 2.0, 3.0 },
+                                                              { 0.0, 1.0, 2.0 },
+                                                              { 0.0, 0.0, 1.0 } };
+
+         checkRows   ( mat, 3UL );
+         checkColumns( mat, 3UL );
+
+         const size_t rank = blaze::rank( mat );
+
+         if( rank != 3UL ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Rank computation failed\n"
+                << " Details:\n"
+                << "   Result: " << rank << "\n"
+                << "   Expected result: 3\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
    }
 }
 //*************************************************************************************************
