@@ -299,16 +299,16 @@ class HybridMatrix
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit constexpr HybridMatrix();
-   explicit constexpr HybridMatrix( size_t m, size_t n );
-   explicit inline    HybridMatrix( size_t m, size_t n, const Type& init );
-            constexpr HybridMatrix( initializer_list< initializer_list<Type> > list );
+   constexpr HybridMatrix();
+   constexpr HybridMatrix( size_t m, size_t n );
+   inline    HybridMatrix( size_t m, size_t n, const Type& init );
+   constexpr HybridMatrix( initializer_list< initializer_list<Type> > list );
 
    template< typename Other >
-   explicit inline HybridMatrix( size_t m, size_t n, const Other* array );
+   inline HybridMatrix( size_t m, size_t n, const Other* array );
 
    template< typename Other, size_t Rows, size_t Cols >
-   explicit inline HybridMatrix( const Other (&array)[Rows][Cols] );
+   inline HybridMatrix( const Other (&array)[Rows][Cols] );
 
    constexpr HybridMatrix( const HybridMatrix& m );
 
@@ -3347,16 +3347,16 @@ class HybridMatrix<Type,M,N,true>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit constexpr HybridMatrix();
-   explicit constexpr HybridMatrix( size_t m, size_t n );
-   explicit inline    HybridMatrix( size_t m, size_t n, const Type& init );
-            constexpr HybridMatrix( initializer_list< initializer_list<Type> > list );
+   constexpr HybridMatrix();
+   constexpr HybridMatrix( size_t m, size_t n );
+   inline    HybridMatrix( size_t m, size_t n, const Type& init );
+   constexpr HybridMatrix( initializer_list< initializer_list<Type> > list );
 
    template< typename Other >
-   explicit inline HybridMatrix( size_t m, size_t n, const Other* array );
+   inline HybridMatrix( size_t m, size_t n, const Other* array );
 
    template< typename Other, size_t Rows, size_t Cols >
-   explicit inline HybridMatrix( const Other (&array)[Rows][Cols] );
+   inline HybridMatrix( const Other (&array)[Rows][Cols] );
 
    constexpr HybridMatrix( const HybridMatrix& m );
 

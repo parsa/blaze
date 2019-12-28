@@ -472,10 +472,9 @@ class CustomMatrix
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline CustomMatrix();
-   explicit inline CustomMatrix( Type* ptr, size_t m, size_t n );
-   explicit inline CustomMatrix( Type* ptr, size_t m, size_t n, size_t nn );
-
+   inline CustomMatrix();
+   inline CustomMatrix( Type* ptr, size_t m, size_t n );
+   inline CustomMatrix( Type* ptr, size_t m, size_t n, size_t nn );
    inline CustomMatrix( const CustomMatrix& m );
    inline CustomMatrix( CustomMatrix&& m ) noexcept;
    //@}
@@ -3364,10 +3363,9 @@ class CustomMatrix<Type,AF,PF,true,RT>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline CustomMatrix();
-   explicit inline CustomMatrix( Type* ptr, size_t m, size_t n );
-   explicit inline CustomMatrix( Type* ptr, size_t m, size_t n, size_t mm );
-
+   inline CustomMatrix();
+   inline CustomMatrix( Type* ptr, size_t m, size_t n );
+   inline CustomMatrix( Type* ptr, size_t m, size_t n, size_t mm );
    inline CustomMatrix( const CustomMatrix& m );
    inline CustomMatrix( CustomMatrix&& m ) noexcept;
    //@}

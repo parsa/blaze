@@ -294,15 +294,15 @@ class StaticMatrix
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline    StaticMatrix();
+            inline    StaticMatrix();
    explicit inline    StaticMatrix( const Type& init );
             constexpr StaticMatrix( initializer_list< initializer_list<Type> > list );
 
    template< typename Other >
-   explicit inline StaticMatrix( size_t m, size_t n, const Other* array );
+   inline StaticMatrix( size_t m, size_t n, const Other* array );
 
    template< typename Other, size_t Rows, size_t Cols >
-   explicit inline StaticMatrix( const Other (&array)[Rows][Cols] );
+   inline StaticMatrix( const Other (&array)[Rows][Cols] );
 
    constexpr StaticMatrix( const StaticMatrix& m );
 
@@ -3220,15 +3220,15 @@ class StaticMatrix<Type,M,N,true>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline    StaticMatrix();
+            inline    StaticMatrix();
    explicit inline    StaticMatrix( const Type& init );
             constexpr StaticMatrix( initializer_list< initializer_list<Type> > list );
 
    template< typename Other >
-   explicit inline StaticMatrix( size_t m, size_t n, const Other* array );
+   inline StaticMatrix( size_t m, size_t n, const Other* array );
 
    template< typename Other, size_t Rows, size_t Cols >
-   explicit inline StaticMatrix( const Other (&array)[Rows][Cols] );
+   inline StaticMatrix( const Other (&array)[Rows][Cols] );
 
    constexpr StaticMatrix( const StaticMatrix& m );
 

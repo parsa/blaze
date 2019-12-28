@@ -233,8 +233,8 @@ class InitializerMatrix
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline InitializerMatrix( initializer_list< initializer_list<Type> > list ) noexcept;
-   explicit inline InitializerMatrix( initializer_list< initializer_list<Type> > list, size_t n );
+   inline InitializerMatrix( initializer_list< initializer_list<Type> > list ) noexcept;
+   inline InitializerMatrix( initializer_list< initializer_list<Type> > list, size_t n );
 
    InitializerMatrix( const InitializerMatrix& ) = default;
    //@}

@@ -243,9 +243,9 @@ class UniformMatrix
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit constexpr UniformMatrix() noexcept;
-   explicit constexpr UniformMatrix( size_t m, size_t n );
-   explicit constexpr UniformMatrix( size_t m, size_t n, const Type& init );
+   constexpr UniformMatrix() noexcept;
+   constexpr UniformMatrix( size_t m, size_t n );
+   constexpr UniformMatrix( size_t m, size_t n, const Type& init );
 
    template< typename MT, bool SO2 >
    inline UniformMatrix( const Matrix<MT,SO2>& m );

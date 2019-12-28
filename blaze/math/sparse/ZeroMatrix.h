@@ -233,11 +233,11 @@ class ZeroMatrix
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit constexpr ZeroMatrix() noexcept;
-   explicit constexpr ZeroMatrix( size_t m, size_t n ) noexcept;
+   constexpr ZeroMatrix() noexcept;
+   constexpr ZeroMatrix( size_t m, size_t n ) noexcept;
 
    template< typename MT, bool SO2 >
-   explicit inline ZeroMatrix( const Matrix<MT,SO2>& m );
+   inline ZeroMatrix( const Matrix<MT,SO2>& m );
 
    ZeroMatrix( const ZeroMatrix& ) = default;
    ZeroMatrix( ZeroMatrix&& ) = default;

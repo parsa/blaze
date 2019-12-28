@@ -245,9 +245,9 @@ class CompressedMatrix
       : public ElementBase
    {
       //**Constructors*****************************************************************************
-      explicit Element() = default;
-               Element( const Element& rhs ) = default;
-               Element( Element&& rhs ) = default;
+      Element() = default;
+      Element( const Element& rhs ) = default;
+      Element( Element&& rhs ) = default;
       //*******************************************************************************************
 
       //**Assignment operators*********************************************************************
@@ -359,11 +359,11 @@ class CompressedMatrix
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline CompressedMatrix();
-   explicit inline CompressedMatrix( size_t m, size_t n );
-   explicit inline CompressedMatrix( size_t m, size_t n, size_t nonzeros );
-   explicit        CompressedMatrix( size_t m, size_t n, const std::vector<size_t>& nonzeros );
-            inline CompressedMatrix( initializer_list< initializer_list<Type> > list );
+   inline CompressedMatrix();
+   inline CompressedMatrix( size_t m, size_t n );
+   inline CompressedMatrix( size_t m, size_t n, size_t nonzeros );
+          CompressedMatrix( size_t m, size_t n, const std::vector<size_t>& nonzeros );
+   inline CompressedMatrix( initializer_list< initializer_list<Type> > list );
 
    inline CompressedMatrix( const CompressedMatrix& sm );
    inline CompressedMatrix( CompressedMatrix&& sm ) noexcept;
@@ -504,7 +504,7 @@ class CompressedMatrix
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline CompressedMatrix( size_t m, size_t n, Uninitialized );
+   inline CompressedMatrix( size_t m, size_t n, Uninitialized );
    //@}
    //**********************************************************************************************
 
@@ -3019,9 +3019,9 @@ class CompressedMatrix<Type,true>
       : public ElementBase
    {
       //**Constructors*****************************************************************************
-      explicit Element() = default;
-               Element( const Element& rhs ) = default;
-               Element( Element&& rhs ) = default;
+      Element() = default;
+      Element( const Element& rhs ) = default;
+      Element( Element&& rhs ) = default;
       //*******************************************************************************************
 
       //**Assignment operators*********************************************************************
@@ -3130,11 +3130,11 @@ class CompressedMatrix<Type,true>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline CompressedMatrix();
-   explicit inline CompressedMatrix( size_t m, size_t n );
-   explicit inline CompressedMatrix( size_t m, size_t n, size_t nonzeros );
-   explicit        CompressedMatrix( size_t m, size_t n, const std::vector<size_t>& nonzeros );
-            inline CompressedMatrix( initializer_list< initializer_list<Type> > list );
+   inline CompressedMatrix();
+   inline CompressedMatrix( size_t m, size_t n );
+   inline CompressedMatrix( size_t m, size_t n, size_t nonzeros );
+          CompressedMatrix( size_t m, size_t n, const std::vector<size_t>& nonzeros );
+   inline CompressedMatrix( initializer_list< initializer_list<Type> > list );
 
    inline CompressedMatrix( const CompressedMatrix& sm );
    inline CompressedMatrix( CompressedMatrix&& sm ) noexcept;
@@ -3275,7 +3275,7 @@ class CompressedMatrix<Type,true>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline CompressedMatrix( size_t m, size_t n, Uninitialized );
+   inline CompressedMatrix( size_t m, size_t n, Uninitialized );
    //@}
    //**********************************************************************************************
 

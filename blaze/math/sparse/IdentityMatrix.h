@@ -379,11 +379,11 @@ class IdentityMatrix
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit constexpr IdentityMatrix() noexcept;
+            constexpr IdentityMatrix() noexcept;
    explicit constexpr IdentityMatrix( size_t n ) noexcept;
 
    template< typename MT, bool SO2 >
-   explicit inline IdentityMatrix( const Matrix<MT,SO2>& m );
+   inline IdentityMatrix( const Matrix<MT,SO2>& m );
 
    IdentityMatrix( const IdentityMatrix& ) = default;
    IdentityMatrix( IdentityMatrix&& ) = default;
