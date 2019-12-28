@@ -4706,30 +4706,8 @@
 //
 // \note The \c isPositiveDefinite() function can only be used for dense matrices with \c float,
 // \c double, \c complex<float> or \c complex<double> element type. The attempt to call the
-// function wit matrices of any other element type or with a sparse matrix results in a compile
+// function with matrices of any other element type or with a sparse matrix results in a compile
 // time error!
-//
-// \note The function is depending on LAPACK kernels. Thus the function can only be used if the
-// fitting LAPACK library is available and linked to the executable. Otherwise a linker error
-// will be created.
-//
-//
-// \n \subsection matrix_operations_matrix_determinant det()
-//
-// The determinant of a square dense matrix can be computed by means of the \c det() function:
-
-   \code
-   blaze::DynamicMatrix<double,blaze::rowMajor> A;
-   // ... Resizing and initialization
-   double d = det( A );  // Compute the determinant of A
-   \endcode
-
-// In case the given dense matrix is not a square matrix, a \c std::invalid_argument exception is
-// thrown.
-//
-// \note The \c det() function can only be used for dense matrices with \c float, \c double,
-// \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type or with a sparse matrix results in a compile time error!
 //
 // \note The function is depending on LAPACK kernels. Thus the function can only be used if the
 // fitting LAPACK library is available and linked to the executable. Otherwise a linker error
@@ -5188,6 +5166,58 @@
 
 // In case the given matrix is not a square matrix, a \c std::invalid_argument exception is
 // thrown.
+//
+//
+// \n \subsection matrix_operations_matrix_determinant det()
+//
+// The determinant of a square dense matrix can be computed by means of the \c det() function:
+
+   \code
+   blaze::DynamicMatrix<double,blaze::rowMajor> A;
+   // ... Resizing and initialization
+   double d = det( A );  // Compute the determinant of A
+   \endcode
+
+// In case the given dense matrix is not a square matrix, a \c std::invalid_argument exception is
+// thrown.
+//
+// \note The \c det() function can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type or with a sparse matrix results in a compile time error!
+//
+// \note The function is depending on LAPACK kernels. Thus the function can only be used if the
+// fitting LAPACK library is available and linked to the executable. Otherwise a linker error
+// will be created.
+//
+//
+// \n \subsection matrix_operators_rank rank()
+//
+// The \c rank() function computes the rank of a given dense matrix:
+
+   \code
+   blaze::DynamicMatrix<double> A( 5UL, 8UL );
+   // ... Initialization
+   rank( A );
+   \endcode
+
+// The rank is determined as the number of singular values greater than a given tolerance. This
+// tolerance is computed as
+
+   \code
+   tolerance = max(m,n) * max(s) * epsilon,
+   \endcode
+
+// where \c m is the number of rows of \a dm, \c n is the number of columns of \a dm, \c max(s)
+// is the maximum singular value of \a dm and epsilon is the difference between 1 and the least
+// value greater than 1 that is representable by the floating point type of the singular values.
+//
+// \note The \c rank() function can only be used for dense matrices with \c float, \c double,
+// \c complex<float> or \c complex<double> element type. The attempt to call the function with
+// matrices of any other element type or with a sparse matrix results in a compile time error!
+//
+// \note The function is depending on LAPACK kernels. Thus the function can only be used if the
+// fitting LAPACK library is available and linked to the executable. Otherwise a linker error
+// will be created.
 //
 //
 // \n \subsection matrix_operators_abs abs()
