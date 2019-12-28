@@ -40,11 +40,14 @@
 // Includes
 //*************************************************************************************************
 
+#include <algorithm>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/BLASCompatible.h>
+#include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/constraints/Triangular.h>
 #include <blaze/math/constraints/UniTriangular.h>
+#include <blaze/math/Epsilon.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/lapack/clapack/potrf.h>
 #include <blaze/math/ReductionFlag.h>
@@ -75,10 +78,13 @@
 #include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/IsZero.h>
 #include <blaze/math/typetraits/RemoveAdaptor.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/views/Check.h>
+#include <blaze/util/algorithms/Max.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/Limits.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/NumericCast.h>
 #include <blaze/util/Types.h>
@@ -2555,6 +2561,55 @@ bool isPositiveDefinite( const DenseMatrix<MT,SO>& dm )
    potrf( uplo, n, (~L).data(), lda, &info );
 
    return ( info == 0 );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Computes the rank of the given dense matrix.
+// \ingroup dense_matrix
+//
+// \param dm The dense matrix for the rank computation.
+// \return The rank of the given dense matrix.
+//
+// This function computes the rank of the given dense matrix \a dm. The rank is determined as
+// the number of singular values greater than a given tolerance. This tolerance is computed as
+
+   \code
+   tolerance = max(m,n) * max(s) * epsilon,
+   \endcode
+
+// where \c m is the number of rows of \a dm, \c n is the number of columns of \a dm, \c max(s)
+// is the maximum singular value of \a dm and epsilon is the difference between 1 and the least
+// value greater than 1 that is representable by the floating point type of the singular values.
+// Example:
+
+   \code
+   blaze::DynamicMatrix<double> A( 5UL, 8UL );
+   // ... Initialization
+   rank( A );
+   \endcode
+
+// \note This function only works for matrices with \c float, \c double, \c complex<float>, or
+// \c complex<double> element type. The attempt to call the function with matrices of any other
+// element type results in a compile time error!
+//
+// \note This function can only be used if a fitting LAPACK library is available and linked to
+// the executable. Otherwise a call to this function will result in a linker error.
+*/
+template< typename MT  // Type of the dense matrix
+        , bool SO >    // Storage order
+size_t rank( const DenseMatrix<MT,SO>& dm )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
+
+   using BT = UnderlyingBuiltin_t<MT>;
+
+   const auto s( evaluate( svd( ~dm ) ) );
+
+   const BT tolerance( max( rows(dm), columns(dm) ) * Limits<BT>::epsilon() * max(s) );
+   return std::count_if( begin(s), end(s), [tolerance]( auto val ) { return abs(val) > tolerance; } );
 }
 //*************************************************************************************************
 
