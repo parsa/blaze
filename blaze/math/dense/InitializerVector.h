@@ -229,8 +229,8 @@ class InitializerVector
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline InitializerVector( initializer_list<Type> list ) noexcept;
-   explicit inline InitializerVector( initializer_list<Type> list, size_t n );
+   inline InitializerVector( initializer_list<Type> list ) noexcept;
+   inline InitializerVector( initializer_list<Type> list, size_t n );
 
    InitializerVector( const InitializerVector& ) = default;
    //@}

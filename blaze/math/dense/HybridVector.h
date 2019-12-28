@@ -265,19 +265,19 @@ class HybridVector
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit constexpr HybridVector();
+            constexpr HybridVector();
    explicit constexpr HybridVector( size_t n );
-   explicit inline    HybridVector( size_t n, const Type& init );
+            inline    HybridVector( size_t n, const Type& init );
             constexpr HybridVector( initializer_list<Type> list );
 
    template< typename Other >
-   explicit inline HybridVector( size_t n, const Other* array );
+   inline HybridVector( size_t n, const Other* array );
 
    template< typename Other, size_t Dim >
-   explicit constexpr HybridVector( const Other (&array)[Dim] );
+   constexpr HybridVector( const Other (&array)[Dim] );
 
    template< typename Other, size_t Dim >
-   explicit constexpr HybridVector( const std::array<Other,Dim>& array );
+   constexpr HybridVector( const std::array<Other,Dim>& array );
 
    constexpr HybridVector( const HybridVector& v );
 

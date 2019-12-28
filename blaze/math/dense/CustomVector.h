@@ -455,10 +455,9 @@ class CustomVector
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline CustomVector();
-   explicit inline CustomVector( Type* ptr, size_t n );
-   explicit inline CustomVector( Type* ptr, size_t n, size_t nn );
-
+   inline CustomVector();
+   inline CustomVector( Type* ptr, size_t n );
+   inline CustomVector( Type* ptr, size_t n, size_t nn );
    inline CustomVector( const CustomVector& v );
    inline CustomVector( CustomVector&& v ) noexcept;
    //@}
@@ -2802,9 +2801,8 @@ class CustomVector<Type,AF,padded,TF,RT>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline CustomVector();
-   explicit inline CustomVector( Type* ptr, size_t n, size_t nn );
-
+   inline CustomVector();
+   inline CustomVector( Type* ptr, size_t n, size_t nn );
    inline CustomVector( const CustomVector& v );
    inline CustomVector( CustomVector&& v ) noexcept;
    //@}

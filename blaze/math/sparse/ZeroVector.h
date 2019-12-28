@@ -219,7 +219,7 @@ class ZeroVector
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit constexpr ZeroVector() noexcept;
+            constexpr ZeroVector() noexcept;
    explicit constexpr ZeroVector( size_t size ) noexcept;
 
    template< typename VT > inline ZeroVector( const Vector<VT,TF>& v );

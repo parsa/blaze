@@ -271,18 +271,18 @@ class StaticVector
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline    StaticVector();
+            inline    StaticVector();
    explicit inline    StaticVector( const Type& init );
             constexpr StaticVector( initializer_list<Type> list );
 
    template< typename Other >
-   explicit inline StaticVector( size_t n, const Other* array );
+   inline StaticVector( size_t n, const Other* array );
 
    template< typename Other, size_t Dim >
-   explicit constexpr StaticVector( const Other (&array)[Dim] );
+   constexpr StaticVector( const Other (&array)[Dim] );
 
    template< typename Other, size_t Dim >
-   explicit constexpr StaticVector( const std::array<Other,Dim>& array );
+   constexpr StaticVector( const std::array<Other,Dim>& array );
 
    constexpr StaticVector( const StaticVector& v );
 

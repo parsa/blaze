@@ -256,19 +256,19 @@ class DynamicVector
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline DynamicVector() noexcept;
+            inline DynamicVector() noexcept;
    explicit inline DynamicVector( size_t n );
-   explicit inline DynamicVector( size_t n, const Type& init );
+            inline DynamicVector( size_t n, const Type& init );
             inline DynamicVector( initializer_list<Type> list );
 
    template< typename Other >
-   explicit inline DynamicVector( size_t n, const Other* array );
+   inline DynamicVector( size_t n, const Other* array );
 
    template< typename Other, size_t Dim >
-   explicit inline DynamicVector( const Other (&array)[Dim] );
+   inline DynamicVector( const Other (&array)[Dim] );
 
    template< typename Other, size_t Dim >
-   explicit inline DynamicVector( const std::array<Other,Dim>& array );
+   inline DynamicVector( const std::array<Other,Dim>& array );
 
                            inline DynamicVector( const DynamicVector& v );
                            inline DynamicVector( DynamicVector&& v ) noexcept;

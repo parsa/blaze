@@ -226,9 +226,9 @@ class UniformVector
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit constexpr UniformVector() noexcept;
+            constexpr UniformVector() noexcept;
    explicit constexpr UniformVector( size_t n );
-   explicit constexpr UniformVector( size_t n, const Type& init );
+            constexpr UniformVector( size_t n, const Type& init );
 
    template< typename VT >
    inline UniformVector( const Vector<VT,TF>& v );

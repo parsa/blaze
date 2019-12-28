@@ -226,9 +226,9 @@ class CompressedVector
       : public ElementBase
    {
       //**Constructors*****************************************************************************
-      explicit Element() = default;
-               Element( const Element& rhs ) = default;
-               Element( Element&& rhs ) = default;
+      Element() = default;
+      Element( const Element& rhs ) = default;
+      Element( Element&& rhs ) = default;
       //*******************************************************************************************
 
       //**Assignment operators*********************************************************************
@@ -330,9 +330,9 @@ class CompressedVector
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline CompressedVector() noexcept;
+            inline CompressedVector() noexcept;
    explicit inline CompressedVector( size_t size ) noexcept;
-   explicit inline CompressedVector( size_t size, size_t nonzeros );
+            inline CompressedVector( size_t size, size_t nonzeros );
             inline CompressedVector( initializer_list<Type> list );
 
    inline CompressedVector( const CompressedVector& sv );
