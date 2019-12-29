@@ -575,7 +575,7 @@ class Singleton
    //
    // In case a cyclic lifetime dependency is detected, a compilation error is created.
    */
-   explicit Singleton()
+   Singleton()
       : dependency1_( D1::instance() )  // Handle to the first lifetime dependency
       , dependency2_( D2::instance() )  // Handle to the second lifetime dependency
       , dependency3_( D3::instance() )  // Handle to the third lifetime dependency
@@ -684,7 +684,7 @@ class Singleton<T,D1,D2,D3,D4,D5,D6,D7,NullType>
    //
    // In case a cyclic lifetime dependency is detected, a compilation error is created.
    */
-   explicit Singleton()
+   Singleton()
       : dependency1_( D1::instance() )  // Handle to the first lifetime dependency
       , dependency2_( D2::instance() )  // Handle to the second lifetime dependency
       , dependency3_( D3::instance() )  // Handle to the third lifetime dependency
@@ -789,7 +789,7 @@ class Singleton<T,D1,D2,D3,D4,D5,D6,NullType,NullType>
    //
    // In case a cyclic lifetime dependency is detected, a compilation error is created.
    */
-   explicit Singleton()
+   Singleton()
       : dependency1_( D1::instance() )  // Handle to the first lifetime dependency
       , dependency2_( D2::instance() )  // Handle to the second lifetime dependency
       , dependency3_( D3::instance() )  // Handle to the third lifetime dependency
@@ -889,7 +889,7 @@ class Singleton<T,D1,D2,D3,D4,D5,NullType,NullType,NullType>
    //
    // In case a cyclic lifetime dependency is detected, a compilation error is created.
    */
-   explicit Singleton()
+   Singleton()
       : dependency1_( D1::instance() )  // Handle to the first lifetime dependency
       , dependency2_( D2::instance() )  // Handle to the second lifetime dependency
       , dependency3_( D3::instance() )  // Handle to the third lifetime dependency
@@ -984,7 +984,7 @@ class Singleton<T,D1,D2,D3,D4,NullType,NullType,NullType,NullType>
    //
    // In case a cyclic lifetime dependency is detected, a compilation error is created.
    */
-   explicit Singleton()
+   Singleton()
       : dependency1_( D1::instance() )  // Handle to the first lifetime dependency
       , dependency2_( D2::instance() )  // Handle to the second lifetime dependency
       , dependency3_( D3::instance() )  // Handle to the third lifetime dependency
@@ -1074,7 +1074,7 @@ class Singleton<T,D1,D2,D3,NullType,NullType,NullType,NullType,NullType>
    //
    // In case a cyclic lifetime dependency is detected, a compilation error is created.
    */
-   explicit Singleton()
+   Singleton()
       : dependency1_( D1::instance() )  // Handle to the first lifetime dependency
       , dependency2_( D2::instance() )  // Handle to the second lifetime dependency
       , dependency3_( D3::instance() )  // Handle to the third lifetime dependency
@@ -1159,7 +1159,7 @@ class Singleton<T,D1,D2,NullType,NullType,NullType,NullType,NullType,NullType>
    //
    // In case a cyclic lifetime dependency is detected, a compilation error is created.
    */
-   explicit Singleton()
+   Singleton()
       : dependency1_( D1::instance() )  // Handle to the first lifetime dependency
       , dependency2_( D2::instance() )  // Handle to the second lifetime dependency
    {
@@ -1239,7 +1239,7 @@ class Singleton<T,D1,NullType,NullType,NullType,NullType,NullType,NullType,NullT
    //
    // In case a cyclic lifetime dependency is detected, a compilation error is created.
    */
-   explicit Singleton()
+   Singleton()
       : dependency1_( D1::instance() )  // Handle to the lifetime dependency
    {
       BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T, SingletonType );
@@ -1314,7 +1314,7 @@ class Singleton<T,NullType,NullType,NullType,NullType,NullType,NullType,NullType
    //
    // In case a cyclic lifetime dependency is detected, a compilation error is created.
    */
-   explicit Singleton()
+   Singleton()
    {
       BLAZE_CONSTRAINT_MUST_BE_DERIVED_FROM( T, SingletonType );
    }

@@ -118,16 +118,16 @@ class AlignedArray
    AlignedArray( AlignedArray&& ) = default;
 
    template< typename... Ts >
-   explicit constexpr AlignedArray( const Ts&... args );
+   constexpr AlignedArray( const Ts&... args );
 
    template< typename T, size_t M >
-   explicit constexpr AlignedArray( const T (&array)[M] );
+   constexpr AlignedArray( const T (&array)[M] );
 
    template< typename T, size_t M >
-   explicit constexpr AlignedArray( const std::array<T,M>& array );
+   constexpr AlignedArray( const std::array<T,M>& array );
 
    template< typename T, size_t M >
-   explicit constexpr AlignedArray( const AlignedArray<T,M>& array );
+   constexpr AlignedArray( const AlignedArray<T,M>& array );
    //@}
    //**********************************************************************************************
 
@@ -206,7 +206,7 @@ class AlignedArray
    /*!\name Constructors */
    //@{
    template< typename T, size_t... Is >
-   explicit constexpr AlignedArray( const T& array, std::index_sequence<Is...> );
+   constexpr AlignedArray( const T& array, std::index_sequence<Is...> );
    //@}
    //**********************************************************************************************
 

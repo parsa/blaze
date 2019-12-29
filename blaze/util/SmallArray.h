@@ -98,13 +98,13 @@ class SmallArray
    //@{
    explicit inline SmallArray( const A& alloc = A() );
    explicit inline SmallArray( size_t n, const A& alloc = A() );
-   explicit inline SmallArray( size_t n, const T& init, const A& alloc = A() );
+            inline SmallArray( size_t n, const T& init, const A& alloc = A() );
 
    template< typename InputIt >
-   explicit inline SmallArray( InputIt first, InputIt last, const A& alloc = A() );
+   inline SmallArray( InputIt first, InputIt last, const A& alloc = A() );
 
    template< typename U >
-   explicit inline SmallArray( initializer_list<U> list, const A& alloc = A() );
+   inline SmallArray( initializer_list<U> list, const A& alloc = A() );
 
    inline SmallArray( const SmallArray& sa );
    inline SmallArray( SmallArray&& sa );
@@ -179,7 +179,7 @@ class SmallArray
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SmallArray( size_t n, const A& alloc, Uninitialized );
+   inline SmallArray( size_t n, const A& alloc, Uninitialized );
    //@}
    //**********************************************************************************************
 

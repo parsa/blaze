@@ -101,7 +101,7 @@ class AlignedAllocator
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline AlignedAllocator();
+   inline AlignedAllocator();
 
    template< typename Type2 >
    inline AlignedAllocator( const AlignedAllocator<Type2>& );
