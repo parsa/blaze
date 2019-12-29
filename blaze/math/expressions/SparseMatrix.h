@@ -74,7 +74,20 @@ template< typename MT  // Type of the sparse matrix
         , bool SO >    // Storage order
 class SparseMatrix
    : public Matrix<MT,SO>
-{};
+{
+ protected:
+   //**Special member functions********************************************************************
+   /*!\name Special member functions */
+   //@{
+   SparseMatrix() = default;
+   SparseMatrix( const SparseMatrix& ) = default;
+   SparseMatrix( SparseMatrix&& ) = default;
+   ~SparseMatrix() = default;
+   SparseMatrix& operator=( const SparseMatrix& ) = default;
+   SparseMatrix& operator=( SparseMatrix&& ) = default;
+   //@}
+   //**********************************************************************************************
+};
 //*************************************************************************************************
 
 

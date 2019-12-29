@@ -159,7 +159,20 @@ class Proxy
                       , If_t< IsComplex_v<RT>
                             , ComplexProxy<PT,RT>
                             , DefaultProxy<PT,RT> > > >
-{};
+{
+ protected:
+   //**Special member functions********************************************************************
+   /*!\name Special member functions */
+   //@{
+   Proxy() = default;
+   Proxy( const Proxy& ) = default;
+   Proxy( Proxy&& ) = default;
+   ~Proxy() = default;
+   Proxy& operator=( const Proxy& ) = default;
+   Proxy& operator=( Proxy&& ) = default;
+   //@}
+   //**********************************************************************************************
+};
 //*************************************************************************************************
 
 

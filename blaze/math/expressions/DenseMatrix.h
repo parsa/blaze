@@ -79,7 +79,20 @@ template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order
 class DenseMatrix
    : public Matrix<MT,SO>
-{};
+{
+ protected:
+   //**Special member functions********************************************************************
+   /*!\name Special member functions */
+   //@{
+   DenseMatrix() = default;
+   DenseMatrix( const DenseMatrix& ) = default;
+   DenseMatrix( DenseMatrix&& ) = default;
+   ~DenseMatrix() = default;
+   DenseMatrix& operator=( const DenseMatrix& ) = default;
+   DenseMatrix& operator=( DenseMatrix&& ) = default;
+   //@}
+   //**********************************************************************************************
+};
 //*************************************************************************************************
 
 

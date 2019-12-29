@@ -69,7 +69,20 @@ template< typename VT  // Type of the sparse vector
         , bool TF >    // Transpose flag
 class SparseVector
    : public Vector<VT,TF>
-{};
+{
+ protected:
+   //**Special member functions********************************************************************
+   /*!\name Special member functions */
+   //@{
+   SparseVector() = default;
+   SparseVector( const SparseVector& ) = default;
+   SparseVector( SparseVector&& ) = default;
+   ~SparseVector() = default;
+   SparseVector& operator=( const SparseVector& ) = default;
+   SparseVector& operator=( SparseVector&& ) = default;
+   //@}
+   //**********************************************************************************************
+};
 //*************************************************************************************************
 
 } // namespace blaze

@@ -74,7 +74,20 @@ template< typename VT  // Type of the dense vector
         , bool TF >    // Transpose flag
 class DenseVector
    : public Vector<VT,TF>
-{};
+{
+ protected:
+   //**Special member functions********************************************************************
+   /*!\name Special member functions */
+   //@{
+   DenseVector() = default;
+   DenseVector( const DenseVector& ) = default;
+   DenseVector( DenseVector&& ) = default;
+   ~DenseVector() = default;
+   DenseVector& operator=( const DenseVector& ) = default;
+   DenseVector& operator=( DenseVector&& ) = default;
+   //@}
+   //**********************************************************************************************
+};
 //*************************************************************************************************
 
 
