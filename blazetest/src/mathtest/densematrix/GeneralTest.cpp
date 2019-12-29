@@ -5295,6 +5295,8 @@ void GeneralTest::testTrace()
 */
 void GeneralTest::testRank()
 {
+#if BLAZETEST_MATHTEST_LAPACK_MODE
+
    //=====================================================================================
    // Row-major matrix tests
    //=====================================================================================
@@ -5439,6 +5441,8 @@ void GeneralTest::testRank()
          }
       }
    }
+
+#endif
 }
 //*************************************************************************************************
 
@@ -10333,11 +10337,11 @@ void GeneralTest::testNot()
 
       // Matrix logical NOT of a general matrix
       {
-         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> A{ { true , false, true , false },
-                                                               { false, true , false, true  },
-                                                               { true , false, true , false } };
+         blaze::DynamicMatrix<bool,blaze::rowMajor> A{ { true , false, true , false },
+                                                       { false, true , false, true  },
+                                                       { true , false, true , false } };
 
-         blaze::DynamicMatrix<unsigned int,blaze::rowMajor> B( !A );
+         blaze::DynamicMatrix<bool,blaze::rowMajor> B( !A );
 
          checkRows    ( B,  3UL );
          checkColumns ( B,  4UL );
@@ -10381,11 +10385,11 @@ void GeneralTest::testNot()
 
       // Matrix logical NOT of a general matrix
       {
-         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> A{ { true , false, true , false },
-                                                                  { false, true , false, true  },
-                                                                  { true , false, true , false } };
+         blaze::DynamicMatrix<bool,blaze::columnMajor> A{ { true , false, true , false },
+                                                          { false, true , false, true  },
+                                                          { true , false, true , false } };
 
-         blaze::DynamicMatrix<unsigned int,blaze::columnMajor> B( !A );
+         blaze::DynamicMatrix<bool,blaze::columnMajor> B( !A );
 
          checkRows    ( B,  3UL );
          checkColumns ( B,  4UL );
