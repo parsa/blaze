@@ -183,7 +183,7 @@ class DMatTDMatSubExpr
    // \param lhs The left-hand side operand of the subtraction expression.
    // \param rhs The right-hand side operand of the subtraction expression.
    */
-   explicit inline DMatTDMatSubExpr( const MT1& lhs, const MT2& rhs ) noexcept
+   inline DMatTDMatSubExpr( const MT1& lhs, const MT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side dense matrix of the subtraction expression
       , rhs_( rhs )  // Right-hand side dense matrix of the subtraction expression
    {

@@ -245,7 +245,7 @@ class TDVecDMatMultExpr
    // \param vec The left-hand side vector operand of the multiplication expression.
    // \param mat The right-hand side matrix operand of the multiplication expression.
    */
-   explicit inline TDVecDMatMultExpr( const VT& vec, const MT& mat ) noexcept
+   inline TDVecDMatMultExpr( const VT& vec, const MT& mat ) noexcept
       : vec_( vec )  // Left-hand side dense vector of the multiplication expression
       , mat_( mat )  // Right-hand side dense matrix of the multiplication expression
    {
@@ -2657,7 +2657,7 @@ class DVecScalarMultExpr< TDVecDMatMultExpr<VT,MT>, ST, true >
    // \param vector The left-hand side dense vector of the multiplication expression.
    // \param scalar The right-hand side scalar of the multiplication expression.
    */
-   explicit inline DVecScalarMultExpr( const VMM& vector, ST scalar )
+   inline DVecScalarMultExpr( const VMM& vector, ST scalar )
       : vector_( vector )  // Left-hand side dense vector of the multiplication expression
       , scalar_( scalar )  // Right-hand side scalar of the multiplication expression
    {}

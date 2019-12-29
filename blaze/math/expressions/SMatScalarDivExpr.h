@@ -315,7 +315,7 @@ class SMatScalarDivExpr
    // \param matrix The left-hand side sparse matrix of the division expression.
    // \param scalar The right-hand side scalar of the division expression.
    */
-   explicit inline SMatScalarDivExpr( const MT& matrix, ST scalar ) noexcept
+   inline SMatScalarDivExpr( const MT& matrix, ST scalar ) noexcept
       : matrix_( matrix )  // Left-hand side sparse matrix of the division expression
       , scalar_( scalar )  // Right-hand side scalar of the division expression
    {}

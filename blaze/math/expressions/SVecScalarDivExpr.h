@@ -313,7 +313,7 @@ class SVecScalarDivExpr
    // \param vector The left-hand side sparse vector of the division expression.
    // \param scalar The right-hand side scalar of the division expression.
    */
-   explicit inline SVecScalarDivExpr( const VT& vector, ST scalar ) noexcept
+   inline SVecScalarDivExpr( const VT& vector, ST scalar ) noexcept
       : vector_( vector )  // Left-hand side sparse vector of the division expression
       , scalar_( scalar )  // Right-hand side scalar of the division expression
    {}

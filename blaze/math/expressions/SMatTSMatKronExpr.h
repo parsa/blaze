@@ -145,7 +145,7 @@ class SMatTSMatKronExpr
    // \param lhs The left-hand side sparse matrix operand of the Kronecker product expression.
    // \param rhs The right-hand side sparse matrix operand of the Kronecker product expression.
    */
-   explicit inline SMatTSMatKronExpr( const MT1& lhs, const MT2& rhs ) noexcept
+   inline SMatTSMatKronExpr( const MT1& lhs, const MT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side sparse matrix of the Kronecker product expression
       , rhs_( rhs )  // Right-hand side sparse matrix of the Kronecker product expression
    {}

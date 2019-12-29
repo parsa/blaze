@@ -148,7 +148,7 @@ class DMatSMatKronExpr
    // \param lhs The left-hand side dense matrix operand of the Kronecker product expression.
    // \param rhs The right-hand side sparse matrix operand of the Kronecker product expression.
    */
-   explicit inline DMatSMatKronExpr( const MT1& lhs, const MT2& rhs ) noexcept
+   inline DMatSMatKronExpr( const MT1& lhs, const MT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side dense matrix of the Kronecker product expression
       , rhs_( rhs )  // Right-hand side sparse matrix of the Kronecker product expression
    {}

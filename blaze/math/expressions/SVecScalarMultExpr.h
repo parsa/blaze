@@ -307,7 +307,7 @@ class SVecScalarMultExpr
    // \param vector The left-hand side sparse vector of the multiplication expression.
    // \param scalar The right-hand side scalar of the multiplication expression.
    */
-   explicit inline SVecScalarMultExpr( const VT& vector, ST scalar ) noexcept
+   inline SVecScalarMultExpr( const VT& vector, ST scalar ) noexcept
       : vector_( vector )  // Left-hand side sparse vector of the multiplication expression
       , scalar_( scalar )  // Right-hand side scalar of the multiplication expression
    {}

@@ -171,7 +171,7 @@ class TSMatDVecMultExpr
    // \param mat The left-hand side sparse matrix operand of the multiplication expression.
    // \param vec The right-hand side dense vector operand of the multiplication expression.
    */
-   explicit inline TSMatDVecMultExpr( const MT& mat, const VT& vec ) noexcept
+   inline TSMatDVecMultExpr( const MT& mat, const VT& vec ) noexcept
       : mat_( mat )  // Left-hand side sparse matrix of the multiplication expression
       , vec_( vec )  // Right-hand side dense vector of the multiplication expression
    {

@@ -174,7 +174,7 @@ class SMatSMatAddExpr
    // \param lhs The left-hand side sparse matrix operand of the addition expression.
    // \param rhs The right-hand side sparse matrix operand of the addition expression.
    */
-   explicit inline SMatSMatAddExpr( const MT1& lhs, const MT2& rhs ) noexcept
+   inline SMatSMatAddExpr( const MT1& lhs, const MT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side sparse matrix of the addition expression
       , rhs_( rhs )  // Right-hand side sparse matrix of the addition expression
    {

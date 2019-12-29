@@ -151,7 +151,7 @@ class SVecSVecOuterExpr
    // \param lhs The left-hand side sparse vector operand of the multiplication expression.
    // \param rhs The right-hand side sparse vector operand of the multiplication expression.
    */
-   explicit inline SVecSVecOuterExpr( const VT1& lhs, const VT2& rhs ) noexcept
+   inline SVecSVecOuterExpr( const VT1& lhs, const VT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side sparse vector of the multiplication expression
       , rhs_( rhs )  // Right-hand side sparse vector of the multiplication expression
    {}

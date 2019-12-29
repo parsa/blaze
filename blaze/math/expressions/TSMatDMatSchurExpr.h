@@ -308,7 +308,7 @@ class TSMatDMatSchurExpr
    // \param lhs The left-hand side sparse matrix operand of the Schur product expression.
    // \param rhs The right-hand side dense matrix operand of the Schur product expression.
    */
-   explicit inline TSMatDMatSchurExpr( const MT1& lhs, const MT2& rhs ) noexcept
+   inline TSMatDMatSchurExpr( const MT1& lhs, const MT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side sparse matrix of the Schur product expression
       , rhs_( rhs )  // Right-hand side dense matrix of the Schur product expression
    {

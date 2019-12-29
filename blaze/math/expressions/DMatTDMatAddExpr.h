@@ -184,7 +184,7 @@ class DMatTDMatAddExpr
    // \param lhs The left-hand side operand of the addition expression.
    // \param rhs The right-hand side operand of the addition expression.
    */
-   explicit inline DMatTDMatAddExpr( const MT1& lhs, const MT2& rhs ) noexcept
+   inline DMatTDMatAddExpr( const MT1& lhs, const MT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side dense matrix of the addition expression
       , rhs_( rhs )  // Right-hand side dense matrix of the addition expression
    {

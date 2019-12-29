@@ -89,7 +89,7 @@ class ExpandExprData<>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline ExpandExprData( size_t expansion ) noexcept;
+   inline ExpandExprData( size_t expansion ) noexcept;
 
    ExpandExprData( const ExpandExprData& ) = default;
    //@}
@@ -179,7 +179,7 @@ class ExpandExprData<E>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit constexpr ExpandExprData() noexcept;
+   constexpr ExpandExprData() noexcept;
 
    ExpandExprData( const ExpandExprData& ) = default;
    //@}

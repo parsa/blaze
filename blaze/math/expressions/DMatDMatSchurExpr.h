@@ -218,7 +218,7 @@ class DMatDMatSchurExpr
       // \param left Iterator to the initial left-hand side element.
       // \param right Iterator to the initial right-hand side element.
       */
-      explicit inline BLAZE_DEVICE_CALLABLE ConstIterator( LeftIteratorType left, RightIteratorType right )
+      inline BLAZE_DEVICE_CALLABLE ConstIterator( LeftIteratorType left, RightIteratorType right )
          : left_ ( left  )  // Iterator to the current left-hand side element
          , right_( right )  // Iterator to the current right-hand side element
       {}
@@ -455,7 +455,7 @@ class DMatDMatSchurExpr
    // \param lhs The left-hand side operand of the Schur product expression.
    // \param rhs The right-hand side operand of the Schur product expression.
    */
-   explicit inline DMatDMatSchurExpr( const MT1& lhs, const MT2& rhs ) noexcept
+   inline DMatDMatSchurExpr( const MT1& lhs, const MT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side dense matrix of the Schur product expression
       , rhs_( rhs )  // Right-hand side dense matrix of the Schur product expression
    {

@@ -204,7 +204,7 @@ class DMatScalarMultExpr
       // \param iterator Iterator to the initial element.
       // \param scalar Scalar of the multiplication expression.
       */
-      explicit inline ConstIterator( IteratorType iterator, RightOperand scalar )
+      inline ConstIterator( IteratorType iterator, RightOperand scalar )
          : iterator_( iterator )  // Iterator to the current element
          , scalar_  ( scalar   )  // Scalar of the multiplication expression
       {}
@@ -438,7 +438,7 @@ class DMatScalarMultExpr
    // \param matrix The left-hand side dense matrix of the multiplication expression.
    // \param scalar The right-hand side scalar of the multiplication expression.
    */
-   explicit inline DMatScalarMultExpr( const MT& matrix, ST scalar ) noexcept
+   inline DMatScalarMultExpr( const MT& matrix, ST scalar ) noexcept
       : matrix_( matrix )  // Left-hand side dense matrix of the multiplication expression
       , scalar_( scalar )  // Right-hand side scalar of the multiplication expression
    {}

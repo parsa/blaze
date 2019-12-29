@@ -171,7 +171,7 @@ class SMatReduceExpr<MT,OP,columnwise>
    // \param sm The matrix operand of the reduction expression.
    // \param op The reduction operation.
    */
-   explicit inline SMatReduceExpr( const MT& sm, OP op ) noexcept
+   inline SMatReduceExpr( const MT& sm, OP op ) noexcept
       : sm_( sm )  // Sparse matrix of the reduction expression
       , op_( op )  // The reduction operation
    {}
@@ -841,7 +841,7 @@ class SMatReduceExpr<MT,OP,rowwise>
       // \param index Index to the initial matrix row.
       // \param op The reduction operation.
       */
-      explicit inline ConstIterator( Operand sm, size_t index, OP op )
+      inline ConstIterator( Operand sm, size_t index, OP op )
          : sm_   ( sm    )  // Sparse matrix of the reduction expression
          , index_( index )  // Index to the current matrix row
          , op_   ( op    )  // The reduction operation
@@ -1060,7 +1060,7 @@ class SMatReduceExpr<MT,OP,rowwise>
    // \param sm The matrix operand of the reduction expression.
    // \param op The reduction operation.
    */
-   explicit inline SMatReduceExpr( const MT& sm, OP op ) noexcept
+   inline SMatReduceExpr( const MT& sm, OP op ) noexcept
       : sm_( sm )  // Sparse matrix of the reduction expression
       , op_( op )  // The reduction operation
    {}

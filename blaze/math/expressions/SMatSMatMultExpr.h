@@ -180,7 +180,7 @@ class SMatSMatMultExpr
    // \param lhs The left-hand side sparse matrix operand of the multiplication expression.
    // \param rhs The right-hand side sparse matrix operand of the multiplication expression.
    */
-   explicit inline SMatSMatMultExpr( const MT1& lhs, const MT2& rhs ) noexcept
+   inline SMatSMatMultExpr( const MT1& lhs, const MT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side sparse matrix of the multiplication expression
       , rhs_( rhs )  // Right-hand side sparse matrix of the multiplication expression
    {

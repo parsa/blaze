@@ -178,7 +178,7 @@ class DMatReduceExpr<MT,OP,columnwise>
    // \param dm The matrix operand of the reduction expression.
    // \param op The reduction operation.
    */
-   explicit inline DMatReduceExpr( const MT& dm, OP op ) noexcept
+   inline DMatReduceExpr( const MT& dm, OP op ) noexcept
       : dm_( dm )  // Dense matrix of the reduction expression
       , op_( op )  // The reduction operation
    {}
@@ -848,7 +848,7 @@ class DMatReduceExpr<MT,OP,rowwise>
       // \param index Index to the initial matrix row.
       // \param op The reduction operation.
       */
-      explicit inline ConstIterator( Operand dm, size_t index, OP op )
+      inline ConstIterator( Operand dm, size_t index, OP op )
          : dm_   ( dm    )  // Dense matrix of the reduction expression
          , index_( index )  // Index to the current matrix row
          , op_   ( op    )  // The reduction operation
@@ -1067,7 +1067,7 @@ class DMatReduceExpr<MT,OP,rowwise>
    // \param dm The matrix operand of the reduction expression.
    // \param op The reduction operation.
    */
-   explicit inline DMatReduceExpr( const MT& dm, OP op ) noexcept
+   inline DMatReduceExpr( const MT& dm, OP op ) noexcept
       : dm_( dm )  // Dense matrix of the reduction expression
       , op_( op )  // The reduction operation
    {}

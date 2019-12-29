@@ -196,7 +196,7 @@ class DMatMapExpr
       // \param it Iterator to the initial matrix element.
       // \param op The custom unary operation.
       */
-      explicit inline BLAZE_DEVICE_CALLABLE ConstIterator( IteratorType it, OP op )
+      inline BLAZE_DEVICE_CALLABLE ConstIterator( IteratorType it, OP op )
          : it_( it )  // Iterator to the current matrix element
          , op_( op )  // The custom unary operation
       {}
@@ -430,7 +430,7 @@ class DMatMapExpr
    // \param dm The dense matrix operand of the map expression.
    // \param op The custom unary operation.
    */
-   explicit inline DMatMapExpr( const MT& dm, OP op ) noexcept
+   inline DMatMapExpr( const MT& dm, OP op ) noexcept
       : dm_( dm )  // Dense matrix of the map expression
       , op_( op )  // The custom unary operation
    {}

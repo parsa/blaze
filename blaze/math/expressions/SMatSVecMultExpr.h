@@ -162,7 +162,7 @@ class SMatSVecMultExpr
    // \param mat The left-hand side sparse matrix operand of the multiplication expression.
    // \param vec The right-hand side sparse vector operand of the multiplication expression.
    */
-   explicit inline SMatSVecMultExpr( const MT& mat, const VT& vec ) noexcept
+   inline SMatSVecMultExpr( const MT& mat, const VT& vec ) noexcept
       : mat_( mat )  // Left-hand side sparse matrix of the multiplication expression
       , vec_( vec )  // Right-hand side sparse vector of the multiplication expression
    {

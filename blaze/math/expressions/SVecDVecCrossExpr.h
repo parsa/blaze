@@ -157,7 +157,7 @@ class SVecDVecCrossExpr
    // \param lhs The left-hand side operand of the cross product expression.
    // \param rhs The right-hand side operand of the cross product expression.
    */
-   explicit inline SVecDVecCrossExpr( const VT1& lhs, const VT2& rhs ) noexcept
+   inline SVecDVecCrossExpr( const VT1& lhs, const VT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side sparse vector of the cross product expression
       , rhs_( rhs )  // Right-hand side dense vector of the cross product expression
    {

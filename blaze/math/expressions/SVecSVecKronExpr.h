@@ -140,7 +140,7 @@ class SVecSVecKronExpr
    //**Constructor*********************************************************************************
    /*!\brief Constructor for the SVecSVecKronExpr class.
    */
-   explicit inline SVecSVecKronExpr( const VT1& lhs, const VT2& rhs ) noexcept
+   inline SVecSVecKronExpr( const VT1& lhs, const VT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side sparse vector of the Kronecker product expression
       , rhs_( rhs )  // Right-hand side sparse vector of the Kronecker product expression
    {}

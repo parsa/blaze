@@ -121,7 +121,7 @@ class DMatDMatSolveExpr
    // \param lhs The left-hand side matrix operand of the solver expression.
    // \param rhs The right-hand side matrix operand of the solver expression.
    */
-   explicit inline DMatDMatSolveExpr( const MT1& lhs, const MT2& rhs ) noexcept
+   inline DMatDMatSolveExpr( const MT1& lhs, const MT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side dense matrix of the solver expression
       , rhs_( rhs )  // Right-hand side dense matrix of the solver expression
    {}

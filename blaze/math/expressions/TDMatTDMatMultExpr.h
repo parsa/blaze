@@ -325,7 +325,7 @@ class TDMatTDMatMultExpr
    // \param lhs The left-hand side operand of the multiplication expression.
    // \param rhs The right-hand side operand of the multiplication expression.
    */
-   explicit inline TDMatTDMatMultExpr( const MT1& lhs, const MT2& rhs ) noexcept
+   inline TDMatTDMatMultExpr( const MT1& lhs, const MT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side dense matrix of the multiplication expression
       , rhs_( rhs )  // Right-hand side dense matrix of the multiplication expression
    {
@@ -5001,7 +5001,7 @@ class DMatScalarMultExpr< TDMatTDMatMultExpr<MT1,MT2,SF,HF,LF,UF>, ST, true >
    // \param matrix The left-hand side dense matrix of the multiplication expression.
    // \param scalar The right-hand side scalar of the multiplication expression.
    */
-   explicit inline DMatScalarMultExpr( const MMM& matrix, ST scalar )
+   inline DMatScalarMultExpr( const MMM& matrix, ST scalar )
       : matrix_( matrix )  // Left-hand side dense matrix of the multiplication expression
       , scalar_( scalar )  // Right-hand side scalar of the multiplication expression
    {}

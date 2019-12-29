@@ -159,7 +159,7 @@ class SMatTDMatSubExpr
    // \param lhs The left-hand side sparse matrix operand of the addition expression.
    // \param rhs The right-hand side dense matrix operand of the addition expression.
    */
-   explicit inline SMatTDMatSubExpr( const MT1& lhs, const MT2& rhs ) noexcept
+   inline SMatTDMatSubExpr( const MT1& lhs, const MT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side sparse matrix of the subtraction expression
       , rhs_( rhs )  // Right-hand side dense matrix of the subtraction expression
    {

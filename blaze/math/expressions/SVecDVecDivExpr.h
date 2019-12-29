@@ -295,7 +295,7 @@ class SVecDVecDivExpr
    // \param lhs The left-hand side sparse vector operand of the division expression.
    // \param rhs The right-hand side dense vector operand of the division expression.
    */
-   explicit inline SVecDVecDivExpr( const VT1& lhs, const VT2& rhs ) noexcept
+   inline SVecDVecDivExpr( const VT1& lhs, const VT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side sparse vector of the division expression
       , rhs_( rhs )  // Right-hand side dense vector of the division expression
    {

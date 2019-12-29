@@ -152,7 +152,7 @@ class DVecDVecCrossExpr
    // \param lhs The left-hand side operand of the cross product expression.
    // \param rhs The right-hand side operand of the cross product expression.
    */
-   explicit inline DVecDVecCrossExpr( const VT1& lhs, const VT2& rhs ) noexcept
+   inline DVecDVecCrossExpr( const VT1& lhs, const VT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side dense vector of the cross product expression
       , rhs_( rhs )  // Right-hand side dense vector of the cross product expression
    {

@@ -295,7 +295,7 @@ class SMatMapExpr
    // \param sm The sparse matrix operand of the map expression.
    // \param op The custom unary operation.
    */
-   explicit inline SMatMapExpr( const MT& sm, OP op ) noexcept
+   inline SMatMapExpr( const MT& sm, OP op ) noexcept
       : sm_( sm )  // Sparse matrix of the map expression
       , op_( op )  // The custom unary operation
    {}

@@ -214,7 +214,7 @@ class DVecDVecMapExpr
       // \param right Iterator to the initial right-hand side element.
       // \param op The custom binary operation.
       */
-      explicit inline ConstIterator( LeftIteratorType left, RightIteratorType right, OP op )
+      inline ConstIterator( LeftIteratorType left, RightIteratorType right, OP op )
          : left_ ( left  )  // Iterator to the current left-hand side element
          , right_( right )  // Iterator to the current right-hand side element
          , op_   ( op    )  // The custom binary operation
@@ -455,7 +455,7 @@ class DVecDVecMapExpr
    // \param rhs The right-hand side dense vector operand of the map expression.
    // \param op The custom binary operation.
    */
-   explicit inline DVecDVecMapExpr( const VT1& lhs, const VT2& rhs, OP op ) noexcept
+   inline DVecDVecMapExpr( const VT1& lhs, const VT2& rhs, OP op ) noexcept
       : lhs_( lhs )  // Left-hand side dense vector of the map expression
       , rhs_( rhs )  // Right-hand side dense vector of the map expression
       , op_ ( op  )  // The custom binary operation

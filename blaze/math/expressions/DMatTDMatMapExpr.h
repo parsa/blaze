@@ -182,7 +182,7 @@ class DMatTDMatMapExpr
    // \param rhs The right-hand side dense matrix operand of the map expression.
    // \param op The custom unary operation.
    */
-   explicit inline DMatTDMatMapExpr( const MT1& lhs, const MT2& rhs, OP op ) noexcept
+   inline DMatTDMatMapExpr( const MT1& lhs, const MT2& rhs, OP op ) noexcept
       : lhs_( lhs )  // Left-hand side dense matrix of the map expression
       , rhs_( rhs )  // Right-hand side dense matrix of the map expression
       , op_ ( op  )  // The custom unary operation

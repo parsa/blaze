@@ -147,7 +147,7 @@ class DVecDVecKronExpr
    // \param lhs The left-hand side operand of the Kronecker product expression.
    // \param rhs The right-hand side operand of the Kronecker product expression.
    */
-   explicit inline DVecDVecKronExpr( const VT1& lhs, const VT2& rhs ) noexcept
+   inline DVecDVecKronExpr( const VT1& lhs, const VT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side dense vector of the Kronecker product expression
       , rhs_( rhs )  // Right-hand side dense vector of the Kronecker product expression
    {}

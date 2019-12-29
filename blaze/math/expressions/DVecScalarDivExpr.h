@@ -209,7 +209,7 @@ class DVecScalarDivExpr
       // \param iterator Iterator to the initial element.
       // \param scalar Scalar of the division expression.
       */
-      explicit inline ConstIterator( IteratorType iterator, RightOperand scalar )
+      inline ConstIterator( IteratorType iterator, RightOperand scalar )
          : iterator_( iterator )  // Iterator to the current element
          , scalar_  ( scalar   )  // Scalar of the division expression
       {}
@@ -443,7 +443,7 @@ class DVecScalarDivExpr
    // \param vector The left-hand side dense vector of the division expression.
    // \param scalar The right-hand side scalar of the division expression.
    */
-   explicit inline DVecScalarDivExpr( const VT& vector, ST scalar ) noexcept
+   inline DVecScalarDivExpr( const VT& vector, ST scalar ) noexcept
       : vector_( vector )  // Left-hand side dense vector of the division expression
       , scalar_( scalar )  // Right-hand side scalar of the division expression
    {}

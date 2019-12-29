@@ -292,7 +292,7 @@ class SVecMapExpr
    // \param sv The sparse vector operand of the map expression.
    // \param op The custom unary operation.
    */
-   explicit inline SVecMapExpr( const VT& sv, OP op ) noexcept
+   inline SVecMapExpr( const VT& sv, OP op ) noexcept
       : sv_( sv )  // Sparse vector of the map expression
       , op_( op )  // The custom unary operation
    {}

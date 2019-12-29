@@ -155,7 +155,7 @@ class SVecSVecSubExpr
    //**Constructor*********************************************************************************
    /*!\brief Constructor for the SVecSVecSubExpr class.
    */
-   explicit inline SVecSVecSubExpr( const VT1& lhs, const VT2& rhs ) noexcept
+   inline SVecSVecSubExpr( const VT1& lhs, const VT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side sparse vector of the subtraction expression
       , rhs_( rhs )  // Right-hand side sparse vector of the subtraction expression
    {

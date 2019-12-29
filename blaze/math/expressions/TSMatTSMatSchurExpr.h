@@ -167,7 +167,7 @@ class TSMatTSMatSchurExpr
    // \param lhs The left-hand side sparse matrix operand of the Schur product expression.
    // \param rhs The right-hand side sparse matrix operand of the Schur product expression.
    */
-   explicit inline TSMatTSMatSchurExpr( const MT1& lhs, const MT2& rhs ) noexcept
+   inline TSMatTSMatSchurExpr( const MT1& lhs, const MT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side sparse matrix of the Schur product expression
       , rhs_( rhs )  // Right-hand side sparse matrix of the Schur product expression
    {

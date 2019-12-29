@@ -179,7 +179,7 @@ class TSMatSMatSubExpr
    // \param lhs The left-hand side sparse matrix operand of the subtraction expression.
    // \param rhs The right-hand side sparse matrix operand of the subtraction expression.
    */
-   explicit inline TSMatSMatSubExpr( const MT1& lhs, const MT2& rhs ) noexcept
+   inline TSMatSMatSubExpr( const MT1& lhs, const MT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side sparse matrix of the subtraction expression
       , rhs_( rhs )  // Right-hand side sparse matrix of the subtraction expression
    {

@@ -207,7 +207,7 @@ class DVecDVecMultExpr
       // \param left Iterator to the initial left-hand side element.
       // \param right Iterator to the initial right-hand side element.
       */
-      explicit inline BLAZE_DEVICE_CALLABLE ConstIterator( LeftIteratorType left, RightIteratorType right )
+      inline BLAZE_DEVICE_CALLABLE ConstIterator( LeftIteratorType left, RightIteratorType right )
          : left_ ( left  )  // Iterator to the current left-hand side element
          , right_( right )  // Iterator to the current right-hand side element
       {}
@@ -444,7 +444,7 @@ class DVecDVecMultExpr
    // \param lhs The left-hand side operand of the multiplication expression.
    // \param rhs The right-hand side operand of the multiplication expression.
    */
-   explicit inline DVecDVecMultExpr( const VT1& lhs, const VT2& rhs ) noexcept
+   inline DVecDVecMultExpr( const VT1& lhs, const VT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side dense vector of the multiplication expression
       , rhs_( rhs )  // Right-hand side dense vector of the multiplication expression
    {

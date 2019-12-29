@@ -155,7 +155,7 @@ class SVecSVecAddExpr
    //**Constructor*********************************************************************************
    /*!\brief Constructor for the SVecSVecAddExpr class.
    */
-   explicit inline SVecSVecAddExpr( const VT1& lhs, const VT2& rhs ) noexcept
+   inline SVecSVecAddExpr( const VT1& lhs, const VT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side sparse vector of the addition expression
       , rhs_( rhs )  // Right-hand side sparse vector of the addition expression
    {

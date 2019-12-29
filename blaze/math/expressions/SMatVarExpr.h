@@ -632,7 +632,7 @@ class SMatVarExpr<MT,rowwise>
       // \param sm The sparse matrix operand of the variance expression.
       // \param index Index to the initial matrix row.
       */
-      explicit inline ConstIterator( Operand sm, size_t index )
+      inline ConstIterator( Operand sm, size_t index )
          : sm_   ( sm    )  // Sparse matrix of the variance expression
          , index_( index )  // Index to the current matrix row
       {}

@@ -307,7 +307,7 @@ class SMatScalarMultExpr
    // \param matrix The left-hand side sparse matrix of the multiplication expression.
    // \param scalar The right-hand side scalar of the multiplication expression.
    */
-   explicit inline SMatScalarMultExpr( const MT& matrix, ST scalar ) noexcept
+   inline SMatScalarMultExpr( const MT& matrix, ST scalar ) noexcept
       : matrix_( matrix )  // Left-hand side sparse matrix of the multiplication expression
       , scalar_( scalar )  // Right-hand side scalar of the multiplication expression
    {}

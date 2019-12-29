@@ -206,7 +206,7 @@ class DVecScalarMultExpr
       // \param iterator Iterator to the initial element.
       // \param scalar Scalar of the multiplication expression.
       */
-      explicit inline BLAZE_DEVICE_CALLABLE ConstIterator( IteratorType iterator, RightOperand scalar )
+      inline BLAZE_DEVICE_CALLABLE ConstIterator( IteratorType iterator, RightOperand scalar )
          : iterator_( iterator )  // Iterator to the current element
          , scalar_  ( scalar   )  // Scalar of the multiplication expression
       {}
@@ -440,7 +440,7 @@ class DVecScalarMultExpr
    // \param vector The left-hand side dense vector of the multiplication expression.
    // \param scalar The right-hand side scalar of the multiplication expression.
    */
-   explicit inline DVecScalarMultExpr( const VT& vector, ST scalar ) noexcept
+   inline DVecScalarMultExpr( const VT& vector, ST scalar ) noexcept
       : vector_( vector )  // Left-hand side dense vector of the multiplication expression
       , scalar_( scalar )  // Right-hand side scalar of the multiplication expression
    {}

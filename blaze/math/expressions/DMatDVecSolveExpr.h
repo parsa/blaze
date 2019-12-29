@@ -121,7 +121,7 @@ class DMatDVecSolveExpr
    // \param mat The left-hand side matrix operand of the solver expression.
    // \param vec The right-hand side vector operand of the solver expression.
    */
-   explicit inline DMatDVecSolveExpr( const MT& mat, const VT& vec ) noexcept
+   inline DMatDVecSolveExpr( const MT& mat, const VT& vec ) noexcept
       : mat_( mat )  // Left-hand side dense matrix of the solver expression
       , vec_( vec )  // Right-hand side dense vector of the solver expression
    {}

@@ -161,7 +161,7 @@ class DVecSVecAddExpr
    // \param lhs The left-hand side dense vector operand of the addition expression.
    // \param rhs The right-hand side sparse vector operand of the addition expression.
    */
-   explicit inline DVecSVecAddExpr( const VT1& lhs, const VT2& rhs ) noexcept
+   inline DVecSVecAddExpr( const VT1& lhs, const VT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side dense vector of the addition expression
       , rhs_( rhs )  // Right-hand side sparse vector of the addition expression
    {

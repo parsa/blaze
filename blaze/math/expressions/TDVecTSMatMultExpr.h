@@ -179,7 +179,7 @@ class TDVecTSMatMultExpr
    //**Constructor*********************************************************************************
    /*!\brief Constructor for the TDVecTSMatMultExpr class.
    */
-   explicit inline TDVecTSMatMultExpr( const VT& vec, const MT& mat ) noexcept
+   inline TDVecTSMatMultExpr( const VT& vec, const MT& mat ) noexcept
       : vec_( vec )  // Left-hand side dense vector of the multiplication expression
       , mat_( mat )  // Right-hand side sparse matrix of the multiplication expression
    {

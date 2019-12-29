@@ -140,7 +140,7 @@ class SVecSVecMultExpr
    //**Constructor*********************************************************************************
    /*!\brief Constructor for the SVecSVecMultExpr class.
    */
-   explicit inline SVecSVecMultExpr( const VT1& lhs, const VT2& rhs ) noexcept
+   inline SVecSVecMultExpr( const VT1& lhs, const VT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side sparse vector of the multiplication expression
       , rhs_( rhs )  // Right-hand side sparse vector of the multiplication expression
    {

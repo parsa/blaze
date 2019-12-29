@@ -194,7 +194,7 @@ class DMatTDMatSchurExpr
    // \param lhs The left-hand side operand of the Schur product expression.
    // \param rhs The right-hand side operand of the Schur product expression.
    */
-   explicit inline DMatTDMatSchurExpr( const MT1& lhs, const MT2& rhs ) noexcept
+   inline DMatTDMatSchurExpr( const MT1& lhs, const MT2& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side dense matrix of the Schur product expression
       , rhs_( rhs )  // Right-hand side dense matrix of the Schur product expression
    {
