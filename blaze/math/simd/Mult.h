@@ -765,7 +765,7 @@ struct SIMDf32MultExpr
    // \param a The left-hand side operand for the multiplication.
    // \param b The right-hand side operand for the multiplication.
    */
-   explicit BLAZE_ALWAYS_INLINE SIMDf32MultExpr( const T1& a, const T2& b )
+   BLAZE_ALWAYS_INLINE SIMDf32MultExpr( const T1& a, const T2& b )
       : a_( a )  // The left-hand side operand for the multiplication
       , b_( b )  // The right-hand side operand for the multiplication
    {}
@@ -960,7 +960,7 @@ struct SIMDf64MultExpr
    // \param a The left-hand side operand for the multiplication.
    // \param b The right-hand side operand for the multiplication.
    */
-   explicit BLAZE_ALWAYS_INLINE SIMDf64MultExpr( const T1& a, const T2& b )
+   BLAZE_ALWAYS_INLINE SIMDf64MultExpr( const T1& a, const T2& b )
       : a_( a )  // The left-hand side operand for the multiplication
       , b_( b )  // The right-hand side operand for the multiplication
    {}

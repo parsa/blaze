@@ -81,7 +81,7 @@ struct SIMDf32FmaddExpr
    // \param b The right-hand side operand for the multiplication.
    // \param c The right-hand side operand for the addition.
    */
-   explicit BLAZE_ALWAYS_INLINE SIMDf32FmaddExpr( const T1& a, const T2& b, const T3& c )
+   BLAZE_ALWAYS_INLINE SIMDf32FmaddExpr( const T1& a, const T2& b, const T3& c )
       : a_( a )  // The left-hand side operand for the multiplication
       , b_( b )  // The right-hand side operand for the multiplication
       , c_( c )  // The right-hand side operand for the addition
@@ -145,7 +145,7 @@ struct SIMDf32FmsubExpr
    // \param b The right-hand side operand for the multiplication.
    // \param c The right-hand side operand for the subtraction.
    */
-   explicit BLAZE_ALWAYS_INLINE SIMDf32FmsubExpr( const T1& a, const T2& b, const T3& c )
+   BLAZE_ALWAYS_INLINE SIMDf32FmsubExpr( const T1& a, const T2& b, const T3& c )
       : a_( a )  // The left-hand side operand for the multiplication
       , b_( b )  // The right-hand side operand for the multiplication
       , c_( c )  // The right-hand side operand for the subtraction
@@ -795,7 +795,7 @@ struct SIMDf64FmaddExpr
    // \param b The right-hand side operand for the multiplication.
    // \param c The right-hand side operand for the addition.
    */
-   explicit BLAZE_ALWAYS_INLINE SIMDf64FmaddExpr( const T1& a, const T2& b, const T3& c )
+   BLAZE_ALWAYS_INLINE SIMDf64FmaddExpr( const T1& a, const T2& b, const T3& c )
       : a_( a )  // The left-hand side operand for the multiplication
       , b_( b )  // The right-hand side operand for the multiplication
       , c_( c )  // The right-hand side operand for the addition
@@ -859,7 +859,7 @@ struct SIMDf64FmsubExpr
    // \param b The right-hand side operand for the multiplication.
    // \param c The right-hand side operand for the subtraction.
    */
-   explicit BLAZE_ALWAYS_INLINE SIMDf64FmsubExpr( const T1& a, const T2& b, const T3& c )
+   BLAZE_ALWAYS_INLINE SIMDf64FmsubExpr( const T1& a, const T2& b, const T3& c )
       : a_( a )  // The left-hand side operand for the multiplication
       , b_( b )  // The right-hand side operand for the multiplication
       , c_( c )  // The right-hand side operand for the subtraction

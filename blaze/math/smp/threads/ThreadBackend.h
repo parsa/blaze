@@ -119,7 +119,7 @@ class ThreadBackend
       // \param source The source operand to be assigned to the target.
       // \param op The (compound) assignment operation.
       */
-      explicit inline Assigner( Target& target, const Source& source, OP op )
+      inline Assigner( Target& target, const Source& source, OP op )
          : target_( target )  // The target operand
          , source_( source )  // The source operand
          , op_    ( op     )  // The (compound) assignment operation

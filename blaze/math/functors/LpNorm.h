@@ -109,13 +109,6 @@ template<>
 struct LpNorm<1UL>
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the LpNorm functor.
-   */
-   explicit inline LpNorm()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Calls the lpNorm() function with the given object/value.
    //
    // \param a The given object/value.
@@ -140,13 +133,6 @@ struct LpNorm<1UL>
 template<>
 struct LpNorm<2UL>
 {
-   //**********************************************************************************************
-   /*!\brief Default constructor of the LpNorm functor.
-   */
-   explicit inline LpNorm()
-   {}
-   //**********************************************************************************************
-
    //**********************************************************************************************
    /*!\brief Calls the lpNorm() function with the given object/value.
    //
@@ -173,13 +159,6 @@ template<>
 struct LpNorm<3UL>
 {
    //**********************************************************************************************
-   /*!\brief Default constructor of the LpNorm functor.
-   */
-   explicit inline LpNorm()
-   {}
-   //**********************************************************************************************
-
-   //**********************************************************************************************
    /*!\brief Calls the lpNorm() function with the given object/value.
    //
    // \param a The given object/value.
@@ -204,13 +183,6 @@ struct LpNorm<3UL>
 template<>
 struct LpNorm<4UL>
 {
-   //**********************************************************************************************
-   /*!\brief Default constructor of the LpNorm functor.
-   */
-   explicit inline LpNorm()
-   {}
-   //**********************************************************************************************
-
    //**********************************************************************************************
    /*!\brief Calls the lpNorm() function with the given object/value.
    //

@@ -70,7 +70,7 @@ struct Bind2nd
    // \param op The wrapped operation.
    // \param a2 The 2nd argument.
    */
-   explicit constexpr Bind2nd( const OP& op, const A2& a2 )
+   constexpr Bind2nd( const OP& op, const A2& a2 )
       : op_( op )  // The wrapped operation.
       , a2_( a2 )  // The 2nd argument
    {}

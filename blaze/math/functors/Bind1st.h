@@ -70,7 +70,7 @@ struct Bind1st
    // \param op The wrapped operation.
    // \param a1 The 1st argument.
    */
-   explicit constexpr Bind1st( const OP& op, const A1& a1 )
+   constexpr Bind1st( const OP& op, const A1& a1 )
       : op_( op )  // The wrapped operation.
       , a1_( a1 )  // The 1st argument
    {}

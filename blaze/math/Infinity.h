@@ -96,7 +96,7 @@ class NegativeInfinity
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit constexpr NegativeInfinity();
+   constexpr NegativeInfinity();
    NegativeInfinity( const NegativeInfinity& ) = default;
    //@}
    //**********************************************************************************************
@@ -535,7 +535,7 @@ class Infinity
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit constexpr Infinity();
+   constexpr Infinity();
    Infinity( const Infinity& ) = default;
    //@}
    //**********************************************************************************************

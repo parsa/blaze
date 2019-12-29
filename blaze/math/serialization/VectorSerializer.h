@@ -192,7 +192,7 @@ class VectorSerializer
    //**Constructor*********************************************************************************
    /*!\name Constructor */
    //@{
-   explicit inline VectorSerializer();
+   inline VectorSerializer();
    //@}
    //**********************************************************************************************
 

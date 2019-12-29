@@ -70,7 +70,7 @@ struct Bind3rd
    // \param op The wrapped operation.
    // \param a3 The 3rd argument.
    */
-   explicit constexpr Bind3rd( const OP& op, const A3& a3 )
+   constexpr Bind3rd( const OP& op, const A3& a3 )
       : op_( op )  // The wrapped operation.
       , a3_( a3 )  // The 3rd argument
    {}

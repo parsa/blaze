@@ -77,7 +77,7 @@ class NegativeAccuracy
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit constexpr NegativeAccuracy();
+   constexpr NegativeAccuracy();
    NegativeAccuracy( const NegativeAccuracy& ) = default;
    //@}
    //**********************************************************************************************
@@ -508,7 +508,7 @@ class Accuracy
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit constexpr Accuracy();
+   constexpr Accuracy();
    Accuracy( const Accuracy& ) = default;
    //@}
    //**********************************************************************************************

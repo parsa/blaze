@@ -197,7 +197,7 @@ class MatrixSerializer
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline MatrixSerializer();
+   inline MatrixSerializer();
    //@}
    //**********************************************************************************************
 

@@ -77,7 +77,7 @@ class NegativeEpsilon
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit constexpr NegativeEpsilon();
+   constexpr NegativeEpsilon();
    NegativeEpsilon( const NegativeEpsilon& ) = default;
    //@}
    //**********************************************************************************************
@@ -507,7 +507,7 @@ class Epsilon
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit constexpr Epsilon();
+   constexpr Epsilon();
    Epsilon( const Epsilon& ) = default;
    //@}
    //**********************************************************************************************
