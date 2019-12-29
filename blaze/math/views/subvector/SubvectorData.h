@@ -100,7 +100,7 @@ class SubvectorData<>
    /*!\name Constructors */
    //@{
    template< typename... RSAs >
-   explicit inline SubvectorData( size_t index, size_t n, RSAs... args );
+   inline SubvectorData( size_t index, size_t n, RSAs... args );
 
    SubvectorData( const SubvectorData& ) = default;
    //@}

@@ -275,7 +275,7 @@ class ElementsData<P>
    /*!\name Constructors */
    //@{
    template< typename... REAs >
-   explicit inline ElementsData( P p, size_t n, REAs... args ) noexcept;
+   inline ElementsData( P p, size_t n, REAs... args ) noexcept;
 
    ElementsData( const ElementsData& ) = default;
    ElementsData( ElementsData&& ) = default;
@@ -424,7 +424,7 @@ class ElementsData<>
    /*!\name Constructors */
    //@{
    template< typename T, typename... REAs >
-   explicit inline ElementsData( T* indices, size_t n, REAs... args );
+   inline ElementsData( T* indices, size_t n, REAs... args );
 
    ElementsData( const ElementsData& ) = default;
    ElementsData( ElementsData&& ) = default;

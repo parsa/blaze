@@ -100,7 +100,7 @@ class SubmatrixData<>
    /*!\name Constructors */
    //@{
    template< typename... RSAs >
-   explicit inline SubmatrixData( size_t rindex, size_t cindex, size_t m, size_t n, RSAs... args );
+   inline SubmatrixData( size_t rindex, size_t cindex, size_t m, size_t n, RSAs... args );
 
    SubmatrixData( const SubmatrixData& ) = default;
    //@}

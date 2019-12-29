@@ -275,7 +275,7 @@ class ColumnsData<P>
    /*!\name Constructors */
    //@{
    template< typename... RCAs >
-   explicit inline ColumnsData( P p, size_t n, RCAs... args ) noexcept;
+   inline ColumnsData( P p, size_t n, RCAs... args ) noexcept;
 
    ColumnsData( const ColumnsData& ) = default;
    ColumnsData( ColumnsData&& ) = default;
@@ -424,7 +424,7 @@ class ColumnsData<>
    /*!\name Constructors */
    //@{
    template< typename T, typename... RCAs >
-   explicit inline ColumnsData( T* indices, size_t n, RCAs... args );
+   inline ColumnsData( T* indices, size_t n, RCAs... args );
 
    ColumnsData( const ColumnsData& ) = default;
    ColumnsData( ColumnsData&& ) = default;

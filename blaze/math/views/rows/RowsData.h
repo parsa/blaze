@@ -275,7 +275,7 @@ class RowsData<P>
    /*!\name Constructors */
    //@{
    template< typename... RRAs >
-   explicit inline RowsData( P p, size_t n, RRAs... args ) noexcept;
+   inline RowsData( P p, size_t n, RRAs... args ) noexcept;
 
    RowsData( const RowsData& ) = default;
    RowsData( RowsData&& ) = default;
@@ -424,7 +424,7 @@ class RowsData<>
    /*!\name Constructors */
    //@{
    template< typename T, typename... RRAs >
-   explicit inline RowsData( T* indices, size_t n, RRAs... args );
+   inline RowsData( T* indices, size_t n, RRAs... args );
 
    RowsData( const RowsData& ) = default;
    RowsData( RowsData&& ) = default;
