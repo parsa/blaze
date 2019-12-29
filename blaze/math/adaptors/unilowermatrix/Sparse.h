@@ -310,10 +310,10 @@ class UniLowerMatrix<MT,SO,false>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline UniLowerMatrix();
+            inline UniLowerMatrix();
    explicit inline UniLowerMatrix( size_t n );
-   explicit inline UniLowerMatrix( size_t n, size_t nonzeros );
-   explicit inline UniLowerMatrix( size_t n, const std::vector<size_t>& nonzeros );
+            inline UniLowerMatrix( size_t n, size_t nonzeros );
+            inline UniLowerMatrix( size_t n, const std::vector<size_t>& nonzeros );
             inline UniLowerMatrix( initializer_list< initializer_list<ElementType> > list );
 
    inline UniLowerMatrix( const UniLowerMatrix& m );

@@ -732,18 +732,18 @@ class HermitianMatrix<MT,SO,true>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline HermitianMatrix();
+            inline HermitianMatrix();
    explicit inline HermitianMatrix( size_t n );
             inline HermitianMatrix( initializer_list< initializer_list<ElementType> > list );
 
    template< typename Other >
-   explicit inline HermitianMatrix( size_t n, const Other* array );
+   inline HermitianMatrix( size_t n, const Other* array );
 
    template< typename Other, size_t N >
-   explicit inline HermitianMatrix( const Other (&array)[N][N] );
+   inline HermitianMatrix( const Other (&array)[N][N] );
 
-   explicit inline HermitianMatrix( ElementType* ptr, size_t n );
-   explicit inline HermitianMatrix( ElementType* ptr, size_t n, size_t nn );
+   inline HermitianMatrix( ElementType* ptr, size_t n );
+   inline HermitianMatrix( ElementType* ptr, size_t n, size_t nn );
 
    inline HermitianMatrix( const HermitianMatrix& m );
    inline HermitianMatrix( HermitianMatrix&& m ) noexcept;

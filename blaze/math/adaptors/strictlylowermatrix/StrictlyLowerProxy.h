@@ -118,8 +118,8 @@ class StrictlyLowerProxy
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline StrictlyLowerProxy( MT& matrix, size_t row, size_t column );
-            inline StrictlyLowerProxy( const StrictlyLowerProxy& ulp );
+   inline StrictlyLowerProxy( MT& matrix, size_t row, size_t column );
+   inline StrictlyLowerProxy( const StrictlyLowerProxy& ulp );
    //@}
    //**********************************************************************************************
 

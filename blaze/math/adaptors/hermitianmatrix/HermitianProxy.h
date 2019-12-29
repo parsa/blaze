@@ -137,8 +137,8 @@ class HermitianProxy
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline HermitianProxy( MT& matrix, size_t row, size_t column );
-            inline HermitianProxy( const HermitianProxy& hp );
+   inline HermitianProxy( MT& matrix, size_t row, size_t column );
+   inline HermitianProxy( const HermitianProxy& hp );
    //@}
    //**********************************************************************************************
 

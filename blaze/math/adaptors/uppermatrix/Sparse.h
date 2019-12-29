@@ -151,10 +151,10 @@ class UpperMatrix<MT,SO,false>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline UpperMatrix();
+            inline UpperMatrix();
    explicit inline UpperMatrix( size_t n );
-   explicit inline UpperMatrix( size_t n, size_t nonzeros );
-   explicit inline UpperMatrix( size_t n, const std::vector<size_t>& nonzeros );
+            inline UpperMatrix( size_t n, size_t nonzeros );
+            inline UpperMatrix( size_t n, const std::vector<size_t>& nonzeros );
             inline UpperMatrix( initializer_list< initializer_list<ElementType> > list );
 
    inline UpperMatrix( const UpperMatrix& m );

@@ -644,20 +644,20 @@ class UniLowerMatrix<MT,SO,true>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-                           explicit inline UniLowerMatrix();
+                                    inline UniLowerMatrix();
    template< typename A1 > explicit inline UniLowerMatrix( const A1& a1 );
-                           explicit inline UniLowerMatrix( size_t n, const ElementType& init );
+                                    inline UniLowerMatrix( size_t n, const ElementType& init );
 
    inline UniLowerMatrix( initializer_list< initializer_list<ElementType> > list );
 
    template< typename Other >
-   explicit inline UniLowerMatrix( size_t n, const Other* array );
+   inline UniLowerMatrix( size_t n, const Other* array );
 
    template< typename Other, size_t N >
-   explicit inline UniLowerMatrix( const Other (&array)[N][N] );
+   inline UniLowerMatrix( const Other (&array)[N][N] );
 
-   explicit inline UniLowerMatrix( ElementType* ptr, size_t n );
-   explicit inline UniLowerMatrix( ElementType* ptr, size_t n, size_t nn );
+   inline UniLowerMatrix( ElementType* ptr, size_t n );
+   inline UniLowerMatrix( ElementType* ptr, size_t n, size_t nn );
 
    inline UniLowerMatrix( const UniLowerMatrix& m );
    inline UniLowerMatrix( UniLowerMatrix&& m ) noexcept;

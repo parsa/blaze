@@ -645,20 +645,20 @@ class DiagonalMatrix<MT,SO,true>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-                           explicit inline DiagonalMatrix();
+                                    inline DiagonalMatrix();
    template< typename A1 > explicit inline DiagonalMatrix( const A1& a1 );
-                           explicit inline DiagonalMatrix( size_t n, const ElementType& init );
+                                    inline DiagonalMatrix( size_t n, const ElementType& init );
 
    inline DiagonalMatrix( initializer_list< initializer_list<ElementType> > list );
 
    template< typename Other >
-   explicit inline DiagonalMatrix( size_t n, const Other* array );
+   inline DiagonalMatrix( size_t n, const Other* array );
 
    template< typename Other, size_t N >
-   explicit inline DiagonalMatrix( const Other (&array)[N][N] );
+   inline DiagonalMatrix( const Other (&array)[N][N] );
 
-   explicit inline DiagonalMatrix( ElementType* ptr, size_t n );
-   explicit inline DiagonalMatrix( ElementType* ptr, size_t n, size_t nn );
+   inline DiagonalMatrix( ElementType* ptr, size_t n );
+   inline DiagonalMatrix( ElementType* ptr, size_t n, size_t nn );
 
    inline DiagonalMatrix( const DiagonalMatrix& m );
    inline DiagonalMatrix( DiagonalMatrix&& m ) noexcept;

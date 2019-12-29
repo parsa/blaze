@@ -644,20 +644,20 @@ class UniUpperMatrix<MT,SO,true>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-                           explicit inline UniUpperMatrix();
+                                    inline UniUpperMatrix();
    template< typename A1 > explicit inline UniUpperMatrix( const A1& a1 );
-                           explicit inline UniUpperMatrix( size_t n, const ElementType& init );
+                                    inline UniUpperMatrix( size_t n, const ElementType& init );
 
    inline UniUpperMatrix( initializer_list< initializer_list<ElementType> > list );
 
    template< typename Other >
-   explicit inline UniUpperMatrix( size_t n, const Other* array );
+   inline UniUpperMatrix( size_t n, const Other* array );
 
    template< typename Other, size_t N >
-   explicit inline UniUpperMatrix( const Other (&array)[N][N] );
+   inline UniUpperMatrix( const Other (&array)[N][N] );
 
-   explicit inline UniUpperMatrix( ElementType* ptr, size_t n );
-   explicit inline UniUpperMatrix( ElementType* ptr, size_t n, size_t nn );
+   inline UniUpperMatrix( ElementType* ptr, size_t n );
+   inline UniUpperMatrix( ElementType* ptr, size_t n, size_t nn );
 
    inline UniUpperMatrix( const UniUpperMatrix& m );
    inline UniUpperMatrix( UniUpperMatrix&& m ) noexcept;

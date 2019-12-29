@@ -136,8 +136,8 @@ class NumericProxy
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline NumericProxy( MT& matrix, size_t row, size_t column );
-            inline NumericProxy( const NumericProxy& np );
+   inline NumericProxy( MT& matrix, size_t row, size_t column );
+   inline NumericProxy( const NumericProxy& np );
    //@}
    //**********************************************************************************************
 

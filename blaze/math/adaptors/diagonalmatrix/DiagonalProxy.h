@@ -116,8 +116,8 @@ class DiagonalProxy
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline DiagonalProxy( MT& matrix, size_t row, size_t column );
-            inline DiagonalProxy( const DiagonalProxy& dp );
+   inline DiagonalProxy( MT& matrix, size_t row, size_t column );
+   inline DiagonalProxy( const DiagonalProxy& dp );
    //@}
    //**********************************************************************************************
 

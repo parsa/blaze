@@ -639,20 +639,20 @@ class UpperMatrix<MT,SO,true>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-                           explicit inline UpperMatrix();
+                                    inline UpperMatrix();
    template< typename A1 > explicit inline UpperMatrix( const A1& a1 );
-                           explicit inline UpperMatrix( size_t n, const ElementType& init );
+                                    inline UpperMatrix( size_t n, const ElementType& init );
 
    inline UpperMatrix( initializer_list< initializer_list<ElementType> > list );
 
    template< typename Other >
-   explicit inline UpperMatrix( size_t n, const Other* array );
+   inline UpperMatrix( size_t n, const Other* array );
 
    template< typename Other, size_t N >
-   explicit inline UpperMatrix( const Other (&array)[N][N] );
+   inline UpperMatrix( const Other (&array)[N][N] );
 
-   explicit inline UpperMatrix( ElementType* ptr, size_t n );
-   explicit inline UpperMatrix( ElementType* ptr, size_t n, size_t nn );
+   inline UpperMatrix( ElementType* ptr, size_t n );
+   inline UpperMatrix( ElementType* ptr, size_t n, size_t nn );
 
    inline UpperMatrix( const UpperMatrix& m );
    inline UpperMatrix( UpperMatrix&& m ) noexcept;

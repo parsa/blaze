@@ -143,8 +143,8 @@ class UniLowerProxy
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline UniLowerProxy( MT& matrix, size_t row, size_t column );
-            inline UniLowerProxy( const UniLowerProxy& ulp );
+   inline UniLowerProxy( MT& matrix, size_t row, size_t column );
+   inline UniLowerProxy( const UniLowerProxy& ulp );
    //@}
    //**********************************************************************************************
 

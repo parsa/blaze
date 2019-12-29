@@ -464,10 +464,10 @@ class SymmetricMatrix<MT,SO,false,false>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SymmetricMatrix();
+            inline SymmetricMatrix();
    explicit inline SymmetricMatrix( size_t n );
-   explicit inline SymmetricMatrix( size_t n, size_t nonzeros );
-   explicit inline SymmetricMatrix( size_t n, const std::vector<size_t>& nonzeros );
+            inline SymmetricMatrix( size_t n, size_t nonzeros );
+            inline SymmetricMatrix( size_t n, const std::vector<size_t>& nonzeros );
 
    inline SymmetricMatrix( const SymmetricMatrix& m );
    inline SymmetricMatrix( SymmetricMatrix&& m ) noexcept;

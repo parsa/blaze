@@ -470,11 +470,11 @@ class SymmetricMatrix<MT,SO,true,false>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SymmetricMatrix();
+            inline SymmetricMatrix();
    explicit inline SymmetricMatrix( size_t n );
 
-   explicit inline SymmetricMatrix( ElementType* ptr, size_t n );
-   explicit inline SymmetricMatrix( ElementType* ptr, size_t n, size_t nn );
+   inline SymmetricMatrix( ElementType* ptr, size_t n );
+   inline SymmetricMatrix( ElementType* ptr, size_t n, size_t nn );
 
    inline SymmetricMatrix( const SymmetricMatrix& m );
    inline SymmetricMatrix( SymmetricMatrix&& m ) noexcept;

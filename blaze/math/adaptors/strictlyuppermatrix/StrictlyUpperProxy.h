@@ -118,8 +118,8 @@ class StrictlyUpperProxy
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline StrictlyUpperProxy( MT& matrix, size_t row, size_t column );
-            inline StrictlyUpperProxy( const StrictlyUpperProxy& uup );
+   inline StrictlyUpperProxy( MT& matrix, size_t row, size_t column );
+   inline StrictlyUpperProxy( const StrictlyUpperProxy& uup );
    //@}
    //**********************************************************************************************
 

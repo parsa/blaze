@@ -126,8 +126,8 @@ class NonNumericProxy
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline NonNumericProxy( MT& sm, size_t i, size_t j );
-            inline NonNumericProxy( const NonNumericProxy& nnp );
+   inline NonNumericProxy( MT& sm, size_t i, size_t j );
+   inline NonNumericProxy( const NonNumericProxy& nnp );
    //@}
    //**********************************************************************************************
 

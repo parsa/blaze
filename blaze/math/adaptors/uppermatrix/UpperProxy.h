@@ -116,8 +116,8 @@ class UpperProxy
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline UpperProxy( MT& matrix, size_t row, size_t column );
-            inline UpperProxy( const UpperProxy& up );
+   inline UpperProxy( MT& matrix, size_t row, size_t column );
+   inline UpperProxy( const UpperProxy& up );
    //@}
    //**********************************************************************************************
 

@@ -143,8 +143,8 @@ class UniUpperProxy
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline UniUpperProxy( MT& matrix, size_t row, size_t column );
-            inline UniUpperProxy( const UniUpperProxy& uup );
+   inline UniUpperProxy( MT& matrix, size_t row, size_t column );
+   inline UniUpperProxy( const UniUpperProxy& uup );
    //@}
    //**********************************************************************************************
 

@@ -154,10 +154,10 @@ class StrictlyUpperMatrix<MT,SO,false>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline StrictlyUpperMatrix();
+            inline StrictlyUpperMatrix();
    explicit inline StrictlyUpperMatrix( size_t n );
-   explicit inline StrictlyUpperMatrix( size_t n, size_t nonzeros );
-   explicit inline StrictlyUpperMatrix( size_t n, const std::vector<size_t>& nonzeros );
+            inline StrictlyUpperMatrix( size_t n, size_t nonzeros );
+            inline StrictlyUpperMatrix( size_t n, const std::vector<size_t>& nonzeros );
             inline StrictlyUpperMatrix( initializer_list< initializer_list<ElementType> > list );
 
    inline StrictlyUpperMatrix( const StrictlyUpperMatrix& m );

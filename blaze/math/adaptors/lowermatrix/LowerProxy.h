@@ -116,8 +116,8 @@ class LowerProxy
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline LowerProxy( MT& matrix, size_t row, size_t column );
-            inline LowerProxy( const LowerProxy& lp );
+   inline LowerProxy( MT& matrix, size_t row, size_t column );
+   inline LowerProxy( const LowerProxy& lp );
    //@}
    //**********************************************************************************************
 

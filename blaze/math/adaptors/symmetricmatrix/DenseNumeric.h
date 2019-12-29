@@ -730,18 +730,18 @@ class SymmetricMatrix<MT,SO,true,true>
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SymmetricMatrix();
+            inline SymmetricMatrix();
    explicit inline SymmetricMatrix( size_t n );
             inline SymmetricMatrix( initializer_list< initializer_list<ElementType> > list );
 
    template< typename Other >
-   explicit inline SymmetricMatrix( size_t n, const Other* array );
+   inline SymmetricMatrix( size_t n, const Other* array );
 
    template< typename Other, size_t N >
-   explicit inline SymmetricMatrix( const Other (&array)[N][N] );
+   inline SymmetricMatrix( const Other (&array)[N][N] );
 
-   explicit inline SymmetricMatrix( ElementType* ptr, size_t n );
-   explicit inline SymmetricMatrix( ElementType* ptr, size_t n, size_t nn );
+   inline SymmetricMatrix( ElementType* ptr, size_t n );
+   inline SymmetricMatrix( ElementType* ptr, size_t n, size_t nn );
 
    inline SymmetricMatrix( const SymmetricMatrix& m );
    inline SymmetricMatrix( SymmetricMatrix&& m ) noexcept;

@@ -78,7 +78,7 @@ class SharedValue
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline SharedValue();
+            inline SharedValue();
    explicit inline SharedValue( const Type& value );
 
    SharedValue( const SharedValue& ) = default;
