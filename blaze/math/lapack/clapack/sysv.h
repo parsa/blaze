@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/blas/Types.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
@@ -56,14 +57,22 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void ssysv_( char* uplo, int* n, int* nrhs, float* A, int* lda, int* ipiv, float* b, int* ldb,
-             float* work, int* lwork, int* info, blaze::fortran_charlen_t nuplo );
-void dsysv_( char* uplo, int* n, int* nrhs, double* A, int* lda, int* ipiv, double* b, int* ldb,
-             double* work, int* lwork, int* info, blaze::fortran_charlen_t nuplo );
-void csysv_( char* uplo, int* n, int* nrhs, float* A, int* lda, int* ipiv, float* b, int* ldb,
-             float* work, int* lwork, int* info, blaze::fortran_charlen_t nuplo );
-void zsysv_( char* uplo, int* n, int* nrhs, double* A, int* lda, int* ipiv, double* b, int* ldb,
-             double* work, int* lwork, int* info, blaze::fortran_charlen_t nuplo );
+void ssysv_( char* uplo, blaze::blas_int_t* n, blaze::blas_int_t* nrhs, float* A,
+             blaze::blas_int_t* lda, blaze::blas_int_t* ipiv, float* b, blaze::blas_int_t* ldb,
+             float* work, blaze::blas_int_t* lwork, blaze::blas_int_t* info,
+             blaze::fortran_charlen_t nuplo );
+void dsysv_( char* uplo, blaze::blas_int_t* n, blaze::blas_int_t* nrhs, double* A,
+             blaze::blas_int_t* lda, blaze::blas_int_t* ipiv, double* b, blaze::blas_int_t* ldb,
+             double* work, blaze::blas_int_t* lwork, blaze::blas_int_t* info,
+             blaze::fortran_charlen_t nuplo );
+void csysv_( char* uplo, blaze::blas_int_t* n, blaze::blas_int_t* nrhs, float* A,
+             blaze::blas_int_t* lda, blaze::blas_int_t* ipiv, float* b, blaze::blas_int_t* ldb,
+             float* work, blaze::blas_int_t* lwork, blaze::blas_int_t* info,
+             blaze::fortran_charlen_t nuplo );
+void zsysv_( char* uplo, blaze::blas_int_t* n, blaze::blas_int_t* nrhs, double* A,
+             blaze::blas_int_t* lda, blaze::blas_int_t* ipiv, double* b, blaze::blas_int_t* ldb,
+             double* work, blaze::blas_int_t* lwork, blaze::blas_int_t* info,
+             blaze::fortran_charlen_t nuplo );
 
 }
 #endif
@@ -84,17 +93,21 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK symmetric indefinite linear system functions (sysv) */
 //@{
-void sysv( char uplo, int n, int nrhs, float* A, int lda, int* ipiv,
-           float* B, int ldb, float* work, int lwork, int* info );
+void sysv( char uplo, blas_int_t n, blas_int_t nrhs, float* A, blas_int_t lda,
+           blas_int_t* ipiv, float* B, blas_int_t ldb, float* work, blas_int_t lwork,
+           blas_int_t* info );
 
-void sysv( char uplo, int n, int nrhs, double* A, int lda, int* ipiv,
-           double* B, int ldb, double* work, int lwork, int* info );
+void sysv( char uplo, blas_int_t n, blas_int_t nrhs, double* A, blas_int_t lda,
+           blas_int_t* ipiv, double* B, blas_int_t ldb, double* work, blas_int_t lwork,
+           blas_int_t* info );
 
-void sysv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* ipiv,
-           complex<float>* B, int ldb, complex<float>* work, int lwork, int* info );
+void sysv( char uplo, blas_int_t n, blas_int_t nrhs, complex<float>* A, blas_int_t lda,
+           blas_int_t* ipiv, complex<float>* B, blas_int_t ldb, complex<float>* work,
+           blas_int_t lwork, blas_int_t* info );
 
-void sysv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* ipiv,
-           complex<double>* B, int ldb, complex<double>* work, int lwork, int* info );
+void sysv( char uplo, blas_int_t n, blas_int_t nrhs, complex<double>* A, blas_int_t lda,
+           blas_int_t* ipiv, complex<double>* B, blas_int_t ldb, complex<double>* work,
+           blas_int_t lwork, blas_int_t* info );
 //@}
 //*************************************************************************************************
 
@@ -148,11 +161,12 @@ void sysv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* ipiv,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void sysv( char uplo, int n, int nrhs, float* A, int lda, int* ipiv,
-                  float* B, int ldb, float* work, int lwork, int* info )
+inline void sysv( char uplo, blas_int_t n, blas_int_t nrhs, float* A, blas_int_t lda,
+                  blas_int_t* ipiv, float* B, blas_int_t ldb, float* work, blas_int_t lwork,
+                  blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    ssysv_( &uplo, &n, &nrhs, A, &lda, ipiv, B, &ldb, work, &lwork, info
@@ -213,11 +227,12 @@ inline void sysv( char uplo, int n, int nrhs, float* A, int lda, int* ipiv,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void sysv( char uplo, int n, int nrhs, double* A, int lda, int* ipiv,
-                  double* B, int ldb, double* work, int lwork, int* info )
+inline void sysv( char uplo, blas_int_t n, blas_int_t nrhs, double* A, blas_int_t lda,
+                  blas_int_t* ipiv, double* B, blas_int_t ldb, double* work, blas_int_t lwork,
+                  blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    dsysv_( &uplo, &n, &nrhs, A, &lda, ipiv, B, &ldb, work, &lwork, info
@@ -278,13 +293,15 @@ inline void sysv( char uplo, int n, int nrhs, double* A, int lda, int* ipiv,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void sysv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* ipiv,
-                  complex<float>* B, int ldb, complex<float>* work, int lwork, int* info )
+inline void sysv( char uplo, blas_int_t n, blas_int_t nrhs, complex<float>* A, blas_int_t lda,
+                  blas_int_t* ipiv, complex<float>* B, blas_int_t ldb, complex<float>* work,
+                  blas_int_t lwork, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
    using ET = MKL_Complex8;
 #else
    using ET = float;
@@ -349,13 +366,15 @@ inline void sysv( char uplo, int n, int nrhs, complex<float>* A, int lda, int* i
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void sysv( char uplo, int n, int nrhs, complex<double>* A, int lda, int* ipiv,
-                  complex<double>* B, int ldb, complex<double>* work, int lwork, int* info )
+inline void sysv( char uplo, blas_int_t n, blas_int_t nrhs, complex<double>* A, blas_int_t lda,
+                  blas_int_t* ipiv, complex<double>* B, blas_int_t ldb, complex<double>* work,
+                  blas_int_t lwork, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
    using ET = MKL_Complex16;
 #else
    using ET = double;

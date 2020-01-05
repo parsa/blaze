@@ -64,7 +64,7 @@ namespace blaze {
 /*!\name LAPACK LU decomposition functions (getrf) */
 //@{
 template< typename MT, bool SO >
-void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
+void getrf( DenseMatrix<MT,SO>& A, blas_int_t* ipiv );
 //@}
 //*************************************************************************************************
 
@@ -118,7 +118,7 @@ void getrf( DenseMatrix<MT,SO>& A, int* ipiv );
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv )
+inline void getrf( DenseMatrix<MT,SO>& A, blas_int_t* ipiv )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
@@ -126,10 +126,10 @@ inline void getrf( DenseMatrix<MT,SO>& A, int* ipiv )
    BLAZE_CONSTRAINT_MUST_BE_CONTIGUOUS_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
 
-   int m   ( numeric_cast<int>( SO ? (~A).rows() : (~A).columns() ) );
-   int n   ( numeric_cast<int>( SO ? (~A).columns() : (~A).rows() ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int info( 0 );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (~A).rows() : (~A).columns() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (~A).columns() : (~A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t info( 0 );
 
    if( m == 0 || n == 0 ) {
       return;

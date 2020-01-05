@@ -199,11 +199,11 @@ inline void trtrs( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid diag argument provided" );
    }
 
-   int n   ( numeric_cast<int>( (~A).rows() ) );
-   int nrhs( 1 );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int ldb ( numeric_cast<int>( (~b).size() ) );
-   int info( 0 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows() ) );
+   blas_int_t nrhs( 1 );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t ldb ( numeric_cast<blas_int_t>( (~b).size() ) );
+   blas_int_t info( 0 );
 
    if( n == 0 ) {
       return;
@@ -344,12 +344,12 @@ inline void trtrs( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid diag argument provided" );
    }
 
-   int n   ( numeric_cast<int>( (~A).rows()    ) );
-   int mrhs( numeric_cast<int>( SO2 ? (~B).rows() : (~B).columns() ) );
-   int nrhs( numeric_cast<int>( SO2 ? (~B).columns() : (~B).rows() ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int ldb ( numeric_cast<int>( (~B).spacing() ) );
-   int info( 0 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows()    ) );
+   blas_int_t mrhs( numeric_cast<blas_int_t>( SO2 ? (~B).rows() : (~B).columns() ) );
+   blas_int_t nrhs( numeric_cast<blas_int_t>( SO2 ? (~B).columns() : (~B).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t ldb ( numeric_cast<blas_int_t>( (~B).spacing() ) );
+   blas_int_t info( 0 );
 
    if( n != mrhs ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-hand side matrix provided" );

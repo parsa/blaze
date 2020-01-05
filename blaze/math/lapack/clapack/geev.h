@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/blas/Types.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
@@ -56,18 +57,22 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void sgeev_( char* jobvl, char* jobvr, int* n, float* A, int* lda, float* wr, float* wi,
-             float* VL, int* ldvl, float* VR, int* ldvr, float* work, int* lwork, int* info,
+void sgeev_( char* jobvl, char* jobvr, blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda,
+             float* wr, float* wi, float* VL, blaze::blas_int_t* ldvl, float* VR, blaze::blas_int_t* ldvr,
+             float* work, blaze::blas_int_t* lwork, blaze::blas_int_t* info,
              blaze::fortran_charlen_t njobvl, blaze::fortran_charlen_t njobvr );
-void dgeev_( char* jobvl, char* jobvr, int* n, double* A, int* lda, double* wr, double* wi,
-             double* VL, int* ldvl, double* VR, int* ldvr, double* work, int* lwork, int* info,
+void dgeev_( char* jobvl, char* jobvr, blaze::blas_int_t* n, double* A, blaze::blas_int_t* lda,
+             double* wr, double* wi, double* VL, blaze::blas_int_t* ldvl, double* VR, blaze::blas_int_t* ldvr,
+             double* work, blaze::blas_int_t* lwork, blaze::blas_int_t* info,
              blaze::fortran_charlen_t njobvl, blaze::fortran_charlen_t njobvr );
-void cgeev_( char* jobvl, char* jobvr, int* n, float* A, int* lda, float* w, float* VL,
-             int* ldvl, float* VR, int* ldvr, float* work, int* lwork, float* rwork,
-             int* info, blaze::fortran_charlen_t njobvl, blaze::fortran_charlen_t njobvr );
-void zgeev_( char* jobvl, char* jobvr, int* n, double* A, int* lda, double* w, double* VL,
-             int* ldvl, double* VR, int* ldvr, double* work, int* lwork, double* rwork,
-             int* info, blaze::fortran_charlen_t njobvl, blaze::fortran_charlen_t njobvr );
+void cgeev_( char* jobvl, char* jobvr, blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda,
+             float* w, float* VL, blaze::blas_int_t* ldvl, float* VR, blaze::blas_int_t* ldvr,
+             float* work, blaze::blas_int_t* lwork, float* rwork, blaze::blas_int_t* info,
+             blaze::fortran_charlen_t njobvl, blaze::fortran_charlen_t njobvr );
+void zgeev_( char* jobvl, char* jobvr, blaze::blas_int_t* n, double* A, blaze::blas_int_t* lda,
+             double* w, double* VL, blaze::blas_int_t* ldvl, double* VR, blaze::blas_int_t* ldvr,
+             double* work, blaze::blas_int_t* lwork, double* rwork, blaze::blas_int_t* info,
+             blaze::fortran_charlen_t njobvl, blaze::fortran_charlen_t njobvr );
 
 }
 #endif
@@ -88,21 +93,23 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK general matrix eigenvalue functions (geev) */
 //@{
-void geev( char jobvl, char jobvr, int n, float* A, int lda,
-           float* wr, float* wi, float* VL, int ldvl, float* VR, int ldvr,
-           float* work, int lwork, int* info );
+void geev( char jobvl, char jobvr, blas_int_t n, float* A, blas_int_t lda,
+           float* wr, float* wi, float* VL, blas_int_t ldvl, float* VR, blas_int_t ldvr,
+           float* work, blas_int_t lwork, blas_int_t* info );
 
-void geev( char jobvl, char jobvr, int n, double* A, int lda,
-           double* wr, double* wi, double* VL, int ldvl, double* VR, int ldvr,
-           double* work, int lwork, int* info );
+void geev( char jobvl, char jobvr, blas_int_t n, double* A, blas_int_t lda,
+           double* wr, double* wi, double* VL, blas_int_t ldvl, double* VR, blas_int_t ldvr,
+           double* work, blas_int_t lwork, blas_int_t* info );
 
-void geev( char jobvl, char jobvr, int n, complex<float>* A, int lda,
-           complex<float>* w, complex<float>* VL, int ldvl, complex<float>* VR, int ldvr,
-           complex<float>* work, int lwork, float* rwork, int* info );
+void geev( char jobvl, char jobvr, blas_int_t n, complex<float>* A, blas_int_t lda,
+           complex<float>* w, complex<float>* VL, blas_int_t ldvl, complex<float>* VR,
+           blas_int_t ldvr, complex<float>* work, blas_int_t lwork, float* rwork,
+           blas_int_t* info );
 
-void geev( char jobvl, char jobvr, int n, complex<double>* A, int lda,
-           complex<double>* w, complex<double>* VL, int ldvl, complex<double>* VR, int ldvr,
-           complex<double>* work, int lwork, double* rwork, int* info );
+void geev( char jobvl, char jobvr, blas_int_t n, complex<double>* A, blas_int_t lda,
+           complex<double>* w, complex<double>* VL, blas_int_t ldvl, complex<double>* VR,
+           blas_int_t ldvr, complex<double>* work, blas_int_t lwork, double* rwork,
+           blas_int_t* info );
 //@}
 //*************************************************************************************************
 
@@ -169,12 +176,12 @@ void geev( char jobvl, char jobvr, int n, complex<double>* A, int lda,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void geev( char jobvl, char jobvr, int n, float* A, int lda,
-                  float* wr, float* wi, float* VL, int ldvl, float* VR, int ldvr,
-                  float* work, int lwork, int* info )
+inline void geev( char jobvl, char jobvr, blas_int_t n, float* A, blas_int_t lda,
+                  float* wr, float* wi, float* VL, blas_int_t ldvl, float* VR, blas_int_t ldvr,
+                  float* work, blas_int_t lwork, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    sgeev_( &jobvl, &jobvr, &n, A, &lda, wr, wi, VL, &ldvl, VR, &ldvr, work, &lwork, info
@@ -248,12 +255,12 @@ inline void geev( char jobvl, char jobvr, int n, float* A, int lda,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void geev( char jobvl, char jobvr, int n, double* A, int lda,
-                  double* wr, double* wi, double* VL, int ldvl, double* VR, int ldvr,
-                  double* work, int lwork, int* info )
+inline void geev( char jobvl, char jobvr, blas_int_t n, double* A, blas_int_t lda,
+                  double* wr, double* wi, double* VL, blas_int_t ldvl, double* VR, blas_int_t ldvr,
+                  double* work, blas_int_t lwork, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    dgeev_( &jobvl, &jobvr, &n, A, &lda, wr, wi, VL, &ldvl, VR, &ldvr, work, &lwork, info
@@ -327,14 +334,16 @@ inline void geev( char jobvl, char jobvr, int n, double* A, int lda,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void geev( char jobvl, char jobvr, int n, complex<float>* A, int lda,
-                  complex<float>* w, complex<float>* VL, int ldvl, complex<float>* VR, int ldvr,
-                  complex<float>* work, int lwork, float* rwork, int* info )
+inline void geev( char jobvl, char jobvr, blas_int_t n, complex<float>* A, blas_int_t lda,
+                  complex<float>* w, complex<float>* VL, blas_int_t ldvl, complex<float>* VR,
+                  blas_int_t ldvr, complex<float>* work, blas_int_t lwork, float* rwork,
+                  blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
    using ET = MKL_Complex8;
 #else
    using ET = float;
@@ -413,14 +422,16 @@ inline void geev( char jobvl, char jobvr, int n, complex<float>* A, int lda,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void geev( char jobvl, char jobvr, int n, complex<double>* A, int lda,
-                  complex<double>* w, complex<double>* VL, int ldvl, complex<double>* VR, int ldvr,
-                  complex<double>* work, int lwork, double* rwork, int* info )
+inline void geev( char jobvl, char jobvr, blas_int_t n, complex<double>* A, blas_int_t lda,
+                  complex<double>* w, complex<double>* VL, blas_int_t ldvl, complex<double>* VR,
+                  blas_int_t ldvr, complex<double>* work, blas_int_t lwork, double* rwork,
+                  blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
    using ET = MKL_Complex16;
 #else
    using ET = double;

@@ -133,9 +133,9 @@ inline void trtri( DenseMatrix<MT,SO>& A, char uplo, char diag )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid diag argument provided" );
    }
 
-   int n   ( numeric_cast<int>( (~A).columns() ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int info( 0 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).columns() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t info( 0 );
 
    if( n == 0 ) {
       return;

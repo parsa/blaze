@@ -68,10 +68,10 @@ namespace blaze {
 /*!\name LAPACK Hermitian indefinite linear system functions (hesv) */
 //@{
 template< typename MT, bool SO, typename VT, bool TF >
-void hesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* ipiv );
+void hesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, blas_int_t* ipiv );
 
 template< typename MT1, bool SO1, typename MT2, bool SO2 >
-void hesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, int* ipiv );
+void hesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B, char uplo, blas_int_t* ipiv );
 //@}
 //*************************************************************************************************
 
@@ -139,7 +139,7 @@ template< typename MT  // Type of the system matrix
         , bool SO      // Storage order of the system matrix
         , typename VT  // Type of the right-hand side vector
         , bool TF >    // Transpose flag of the right-hand side vector
-inline void hesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* ipiv )
+inline void hesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, blas_int_t* ipiv )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
@@ -166,11 +166,11 @@ inline void hesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* 
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   int n   ( numeric_cast<int>( (~A).rows() ) );
-   int nrhs( 1 );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int ldb ( numeric_cast<int>( (~b).size() ) );
-   int info( 0 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows() ) );
+   blas_int_t nrhs( 1 );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t ldb ( numeric_cast<blas_int_t>( (~b).size() ) );
+   blas_int_t info( 0 );
 
    if( n == 0 ) {
       return;
@@ -180,7 +180,7 @@ inline void hesv( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo, int* 
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 
-   int lwork( n*lda );
+   blas_int_t lwork( n*lda );
    const std::unique_ptr<ET[]> work( new ET[lwork] );
 
    hesv( uplo, n, nrhs, (~A).data(), lda, ipiv, (~b).data(), ldb, work.get(), lwork, &info );
@@ -262,7 +262,7 @@ template< typename MT1  // Type of the system matrix
         , typename MT2  // Type of the right-hand side matrix
         , bool SO2 >    // Storage order of the right-hand side matrix
 inline void hesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
-                  char uplo, int* ipiv )
+                  char uplo, blas_int_t* ipiv )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
@@ -286,12 +286,12 @@ inline void hesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   int n   ( numeric_cast<int>( (~A).rows() ) );
-   int mrhs( numeric_cast<int>( SO2 ? (~B).rows() : (~B).columns() ) );
-   int nrhs( numeric_cast<int>( SO2 ? (~B).columns() : (~B).rows() ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int ldb ( numeric_cast<int>( (~B).spacing() ) );
-   int info( 0 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows() ) );
+   blas_int_t mrhs( numeric_cast<blas_int_t>( SO2 ? (~B).rows() : (~B).columns() ) );
+   blas_int_t nrhs( numeric_cast<blas_int_t>( SO2 ? (~B).columns() : (~B).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t ldb ( numeric_cast<blas_int_t>( (~B).spacing() ) );
+   blas_int_t info( 0 );
 
    if( n != mrhs ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid right-hand side matrix provided" );
@@ -305,7 +305,7 @@ inline void hesv( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
    }
 
-   int lwork( n*lda );
+   blas_int_t lwork( n*lda );
    const std::unique_ptr<ET[]> work( new ET[lwork] );
 
    hesv( uplo, n, nrhs, (~A).data(), lda, ipiv, (~B).data(), ldb, work.get(), lwork, &info );

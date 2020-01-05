@@ -167,15 +167,15 @@ inline void syev( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char 
 
    resize( ~w, (~A).rows(), false );
 
-   int n   ( numeric_cast<int>( (~A).rows()    ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int info( 0 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows()    ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t info( 0 );
 
    if( n == 0 ) {
       return;
    }
 
-   int lwork( 10*n + 2 );
+   blas_int_t lwork( 10*n + 2 );
    const std::unique_ptr<ET[]> work( new ET[lwork] );
 
    if( IsRowMajorMatrix_v<MT> ) {

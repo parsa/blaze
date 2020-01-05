@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/blas/Types.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
 
@@ -55,10 +56,14 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void sgeqlf_( int* m, int* n, float* A, int* lda, float* tau, float* work, int* lwork, int* info );
-void dgeqlf_( int* m, int* n, double* A, int* lda, double* tau, double* work, int* lwork, int* info );
-void cgeqlf_( int* m, int* n, float* A, int* lda, float* tau, float* work, int* lwork, int* info );
-void zgeqlf_( int* m, int* n, double* A, int* lda, double* tau, double* work, int* lwork, int* info );
+void sgeqlf_( blaze::blas_int_t* m, blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda,
+              float* tau, float* work, blaze::blas_int_t* lwork, blaze::blas_int_t* info );
+void dgeqlf_( blaze::blas_int_t* m, blaze::blas_int_t* n, double* A, blaze::blas_int_t* lda,
+              double* tau, double* work, blaze::blas_int_t* lwork, blaze::blas_int_t* info );
+void cgeqlf_( blaze::blas_int_t* m, blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda,
+              float* tau, float* work, blaze::blas_int_t* lwork, blaze::blas_int_t* info );
+void zgeqlf_( blaze::blas_int_t* m, blaze::blas_int_t* n, double* A, blaze::blas_int_t* lda,
+              double* tau, double* work, blaze::blas_int_t* lwork, blaze::blas_int_t* info );
 
 }
 #endif
@@ -79,17 +84,17 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK QL decomposition functions (geqlf) */
 //@{
-void geqlf( int m, int n, float* A, int lda, float* tau,
-            float* work, int lwork, int* info );
+void geqlf( blas_int_t m, blas_int_t n, float* A, blas_int_t lda,
+            float* tau, float* work, blas_int_t lwork, blas_int_t* info );
 
-void geqlf( int m, int n, double* A, int lda, double* tau,
-            double* work, int lwork, int* info );
+void geqlf( blas_int_t m, blas_int_t n, double* A, blas_int_t lda,
+            double* tau, double* work, blas_int_t lwork, blas_int_t* info );
 
-void geqlf( int m, int n, complex<float>* A, int lda, complex<float>* tau,
-            complex<float>* work, int lwork, int* info );
+void geqlf( blas_int_t m, blas_int_t n, complex<float>* A, blas_int_t lda,
+            complex<float>* tau, complex<float>* work, blas_int_t lwork, blas_int_t* info );
 
-void geqlf( int m, int n, complex<double>* A, int lda, complex<double>* tau,
-            complex<double>* work, int lwork, int* info );
+void geqlf( blas_int_t m, blas_int_t n, complex<double>* A, blas_int_t lda,
+            complex<double>* tau, complex<double>* work, blas_int_t lwork, blas_int_t* info );
 //@}
 //*************************************************************************************************
 
@@ -144,11 +149,11 @@ void geqlf( int m, int n, complex<double>* A, int lda, complex<double>* tau,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void geqlf( int m, int n, float* A, int lda, float* tau,
-                   float* work, int lwork, int* info )
+inline void geqlf( blas_int_t m, blas_int_t n, float* A, blas_int_t lda,
+                   float* tau, float* work, blas_int_t lwork, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    sgeqlf_( &m, &n, A, &lda, tau, work, &lwork, info );
@@ -206,11 +211,11 @@ inline void geqlf( int m, int n, float* A, int lda, float* tau,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void geqlf( int m, int n, double* A, int lda, double* tau,
-                   double* work, int lwork, int* info )
+inline void geqlf( blas_int_t m, blas_int_t n, double* A, blas_int_t lda,
+                   double* tau, double* work, blas_int_t lwork, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    dgeqlf_( &m, &n, A, &lda, tau, work, &lwork, info );
@@ -268,13 +273,14 @@ inline void geqlf( int m, int n, double* A, int lda, double* tau,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void geqlf( int m, int n, complex<float>* A, int lda, complex<float>* tau,
-                   complex<float>* work, int lwork, int* info )
+inline void geqlf( blas_int_t m, blas_int_t n, complex<float>* A, blas_int_t lda,
+                   complex<float>* tau, complex<float>* work, blas_int_t lwork, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
    using ET = MKL_Complex8;
 #else
    using ET = float;
@@ -336,13 +342,14 @@ inline void geqlf( int m, int n, complex<float>* A, int lda, complex<float>* tau
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void geqlf( int m, int n, complex<double>* A, int lda, complex<double>* tau,
-                   complex<double>* work, int lwork, int* info )
+inline void geqlf( blas_int_t m, blas_int_t n, complex<double>* A, blas_int_t lda,
+                   complex<double>* tau, complex<double>* work, blas_int_t lwork, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
    using ET = MKL_Complex16;
 #else
    using ET = double;

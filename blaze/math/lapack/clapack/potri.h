@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/blas/Types.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
@@ -56,10 +57,14 @@
 #if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
 extern "C" {
 
-void spotri_( char* uplo, int* n, float* A, int* lda, int* info, blaze::fortran_charlen_t nuplo );
-void dpotri_( char* uplo, int* n, double* A, int* lda, int* info, blaze::fortran_charlen_t nuplo );
-void cpotri_( char* uplo, int* n, float* A, int* lda, int* info, blaze::fortran_charlen_t nuplo );
-void zpotri_( char* uplo, int* n, double* A, int* lda, int* info, blaze::fortran_charlen_t nuplo );
+void spotri_( char* uplo, blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda,
+              blaze::blas_int_t* info, blaze::fortran_charlen_t nuplo );
+void dpotri_( char* uplo, blaze::blas_int_t* n, double* A, blaze::blas_int_t* lda,
+              blaze::blas_int_t* info, blaze::fortran_charlen_t nuplo );
+void cpotri_( char* uplo, blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda,
+              blaze::blas_int_t* info, blaze::fortran_charlen_t nuplo );
+void zpotri_( char* uplo, blaze::blas_int_t* n, double* A, blaze::blas_int_t* lda,
+              blaze::blas_int_t* info, blaze::fortran_charlen_t nuplo );
 
 }
 #endif
@@ -80,13 +85,13 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK LLH-based inversion functions (potri) */
 //@{
-void potri( char uplo, int n, float* A, int lda, int* info );
+void potri( char uplo, blas_int_t n, float* A, blas_int_t lda, blas_int_t* info );
 
-void potri( char uplo, int n, double* A, int lda, int* info );
+void potri( char uplo, blas_int_t n, double* A, blas_int_t lda, blas_int_t* info );
 
-void potri( char uplo, int n, complex<float>* A, int lda, int* info );
+void potri( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda, blas_int_t* info );
 
-void potri( char uplo, int n, complex<double>* A, int lda, int* info );
+void potri( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda, blas_int_t* info );
 //@}
 //*************************************************************************************************
 
@@ -122,10 +127,10 @@ void potri( char uplo, int n, complex<double>* A, int lda, int* info );
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void potri( char uplo, int n, float* A, int lda, int* info )
+inline void potri( char uplo, blas_int_t n, float* A, blas_int_t lda, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    spotri_( &uplo, &n, A, &lda, info
@@ -168,10 +173,10 @@ inline void potri( char uplo, int n, float* A, int lda, int* info )
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void potri( char uplo, int n, double* A, int lda, int* info )
+inline void potri( char uplo, blas_int_t n, double* A, blas_int_t lda, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    dpotri_( &uplo, &n, A, &lda, info
@@ -214,12 +219,13 @@ inline void potri( char uplo, int n, double* A, int lda, int* info )
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void potri( char uplo, int n, complex<float>* A, int lda, int* info )
+inline void potri( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
    using ET = MKL_Complex8;
 #else
    using ET = float;
@@ -265,12 +271,13 @@ inline void potri( char uplo, int n, complex<float>* A, int lda, int* info )
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void potri( char uplo, int n, complex<double>* A, int lda, int* info )
+inline void potri( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
    using ET = MKL_Complex16;
 #else
    using ET = double;

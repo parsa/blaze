@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/blas/Types.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
@@ -56,14 +57,18 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void ssytrs_( char* uplo, int* n, int* nrhs, float* A, int* lda, int* ipiv,
-              float* B, int* ldb, int* info, blaze::fortran_charlen_t nuplo );
-void dsytrs_( char* uplo, int* n, int* nrhs, double* A, int* lda, int* ipiv,
-              double* B, int* ldb, int* info, blaze::fortran_charlen_t nuplo );
-void csytrs_( char* uplo, int* n, int* nrhs, float* A, int* lda, int* ipiv,
-              float* B, int* ldb, int* info, blaze::fortran_charlen_t nuplo );
-void zsytrs_( char* uplo, int* n, int* nrhs, double* A, int* lda, int* ipiv,
-              double* B, int* ldb, int* info, blaze::fortran_charlen_t nuplo );
+void ssytrs_( char* uplo, blaze::blas_int_t* n, blaze::blas_int_t* nrhs, float* A,
+              blaze::blas_int_t* lda, blaze::blas_int_t* ipiv, float* B, blaze::blas_int_t* ldb,
+              blaze::blas_int_t* info, blaze::fortran_charlen_t nuplo );
+void dsytrs_( char* uplo, blaze::blas_int_t* n, blaze::blas_int_t* nrhs, double* A,
+              blaze::blas_int_t* lda, blaze::blas_int_t* ipiv, double* B, blaze::blas_int_t* ldb,
+              blaze::blas_int_t* info, blaze::fortran_charlen_t nuplo );
+void csytrs_( char* uplo, blaze::blas_int_t* n, blaze::blas_int_t* nrhs, float* A,
+              blaze::blas_int_t* lda, blaze::blas_int_t* ipiv, float* B, blaze::blas_int_t* ldb,
+              blaze::blas_int_t* info, blaze::fortran_charlen_t nuplo );
+void zsytrs_( char* uplo, blaze::blas_int_t* n, blaze::blas_int_t* nrhs, double* A,
+              blaze::blas_int_t* lda, blaze::blas_int_t* ipiv, double* B, blaze::blas_int_t* ldb,
+              blaze::blas_int_t* info, blaze::fortran_charlen_t nuplo );
 
 }
 #endif
@@ -84,17 +89,17 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK LDLT-based substitution functions (sytrs) */
 //@{
-void sytrs( char uplo, int n, int nrhs, const float* A, int lda, const int* ipiv,
-            float* B, int ldb, int* info );
+void sytrs( char uplo, blas_int_t n, blas_int_t nrhs, const float* A, blas_int_t lda,
+            const blas_int_t* ipiv, float* B, blas_int_t ldb, blas_int_t* info );
 
-void sytrs( char uplo, int n, int nrhs, const double* A, int lda, const int* ipiv,
-            double* B, int ldb, int* info );
+void sytrs( char uplo, blas_int_t n, blas_int_t nrhs, const double* A, blas_int_t lda,
+            const blas_int_t* ipiv, double* B, blas_int_t ldb, blas_int_t* info );
 
-void sytrs( char uplo, int n, int nrhs, const complex<float>* A, int lda, const int* ipiv,
-            complex<float>* B, int ldb, int* info );
+void sytrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<float>* A, blas_int_t lda,
+            const blas_int_t* ipiv, complex<float>* B, blas_int_t ldb, blas_int_t* info );
 
-void sytrs( char uplo, int n, int nrhs, const complex<double>* A, int lda, const int* ipiv,
-            complex<double>* B, int ldb, int* info );
+void sytrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<double>* A, blas_int_t lda,
+            const blas_int_t* ipiv, complex<double>* B, blas_int_t ldb, blas_int_t* info );
 //@}
 //*************************************************************************************************
 
@@ -133,15 +138,15 @@ void sytrs( char uplo, int n, int nrhs, const complex<double>* A, int lda, const
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void sytrs( char uplo, int n, int nrhs, const float* A, int lda, const int* ipiv,
-                   float* B, int ldb, int* info )
+inline void sytrs( char uplo, blas_int_t n, blas_int_t nrhs, const float* A, blas_int_t lda,
+                   const blas_int_t* ipiv, float* B, blas_int_t ldb, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    ssytrs_( &uplo, &n, &nrhs, const_cast<float*>( A ), &lda,
-            const_cast<int*>( ipiv ), B, &ldb, info
+            const_cast<blas_int_t*>( ipiv ), B, &ldb, info
 #if !defined(INTEL_MKL_VERSION)
           , blaze::fortran_charlen_t(1)
 #endif
@@ -184,15 +189,15 @@ inline void sytrs( char uplo, int n, int nrhs, const float* A, int lda, const in
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void sytrs( char uplo, int n, int nrhs, const double* A, int lda, const int* ipiv,
-                   double* B, int ldb, int* info )
+inline void sytrs( char uplo, blas_int_t n, blas_int_t nrhs, const double* A, blas_int_t lda,
+                   const blas_int_t* ipiv, double* B, blas_int_t ldb, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    dsytrs_( &uplo, &n, &nrhs, const_cast<double*>( A ), &lda,
-            const_cast<int*>( ipiv ), B, &ldb, info
+            const_cast<blas_int_t*>( ipiv ), B, &ldb, info
 #if !defined(INTEL_MKL_VERSION)
           , blaze::fortran_charlen_t(1)
 #endif
@@ -235,20 +240,21 @@ inline void sytrs( char uplo, int n, int nrhs, const double* A, int lda, const i
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void sytrs( char uplo, int n, int nrhs, const complex<float>* A, int lda,
-                   const int* ipiv, complex<float>* B, int ldb, int* info )
+inline void sytrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<float>* A, blas_int_t lda,
+                   const blas_int_t* ipiv, complex<float>* B, blas_int_t ldb, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
    using ET = MKL_Complex8;
 #else
    using ET = float;
 #endif
 
    csytrs_( &uplo, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
-            &lda, const_cast<int*>( ipiv ), reinterpret_cast<ET*>( B ), &ldb, info
+            &lda, const_cast<blas_int_t*>( ipiv ), reinterpret_cast<ET*>( B ), &ldb, info
 #if !defined(INTEL_MKL_VERSION)
           , blaze::fortran_charlen_t(1)
 #endif
@@ -291,20 +297,21 @@ inline void sytrs( char uplo, int n, int nrhs, const complex<float>* A, int lda,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void sytrs( char uplo, int n, int nrhs, const complex<double>* A, int lda,
-                   const int* ipiv, complex<double>* B, int ldb, int* info )
+inline void sytrs( char uplo, blas_int_t n, blas_int_t nrhs, const complex<double>* A, blas_int_t lda,
+                   const blas_int_t* ipiv, complex<double>* B, blas_int_t ldb, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
    using ET = MKL_Complex16;
 #else
    using ET = double;
 #endif
 
    zsytrs_( &uplo, &n, &nrhs, const_cast<ET*>( reinterpret_cast<const ET*>( A ) ),
-            &lda, const_cast<int*>( ipiv ), reinterpret_cast<ET*>( B ), &ldb, info
+            &lda, const_cast<blas_int_t*>( ipiv ), reinterpret_cast<ET*>( B ), &ldb, info
 #if !defined(INTEL_MKL_VERSION)
           , blaze::fortran_charlen_t(1)
 #endif

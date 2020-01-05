@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/blas/Types.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
@@ -56,18 +57,22 @@
 #if !defined(BLAS_H)
 extern "C" {
 
-void strsv_( char* uplo, char* trans, char* diag, int* n, float* A, int* lda,
-             float* x, int* incX, blaze::fortran_charlen_t nuplo,
-             blaze::fortran_charlen_t ntrans, blaze::fortran_charlen_t ndiag );
-void dtrsv_( char* uplo, char* trans, char* diag, int* n, double* A, int* lda,
-             double* x, int* incX, blaze::fortran_charlen_t nuplo,
-             blaze::fortran_charlen_t ntrans, blaze::fortran_charlen_t ndiag );
-void ctrsv_( char* uplo, char* trans, char* diag, int* n, float* A, int* lda,
-             float* x, int* incX, blaze::fortran_charlen_t nuplo,
-             blaze::fortran_charlen_t ntrans, blaze::fortran_charlen_t ndiag );
-void ztrsv_( char* uplo, char* trans, char* diag, int* n, double* A, int* lda,
-             double* x, int* incX, blaze::fortran_charlen_t nuplo,
-             blaze::fortran_charlen_t ntrans, blaze::fortran_charlen_t ndiag );
+void strsv_( char* uplo, char* trans, char* diag, blaze::blas_int_t* n, float* A,
+             blaze::blas_int_t* lda, float* x, blaze::blas_int_t* incX,
+             blaze::fortran_charlen_t nuplo, blaze::fortran_charlen_t ntrans,
+             blaze::fortran_charlen_t ndiag );
+void dtrsv_( char* uplo, char* trans, char* diag, blaze::blas_int_t* n, double* A,
+             blaze::blas_int_t* lda, double* x, blaze::blas_int_t* incX,
+             blaze::fortran_charlen_t nuplo, blaze::fortran_charlen_t ntrans,
+             blaze::fortran_charlen_t ndiag );
+void ctrsv_( char* uplo, char* trans, char* diag, blaze::blas_int_t* n, float* A,
+             blaze::blas_int_t* lda, float* x, blaze::blas_int_t* incX,
+             blaze::fortran_charlen_t nuplo, blaze::fortran_charlen_t ntrans,
+             blaze::fortran_charlen_t ndiag );
+void ztrsv_( char* uplo, char* trans, char* diag, blaze::blas_int_t* n, double* A,
+             blaze::blas_int_t* lda, double* x, blaze::blas_int_t* incX,
+             blaze::fortran_charlen_t nuplo, blaze::fortran_charlen_t ntrans,
+             blaze::fortran_charlen_t ndiag );
 
 }
 #endif
@@ -88,17 +93,17 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK triangular linear system functions (trsv) */
 //@{
-void trsv( char uplo, char trans, char diag, int n, const float* A,
-           int lda, float* x, int incX );
+void trsv( char uplo, char trans, char diag, blas_int_t n, const float* A,
+           blas_int_t lda, float* x, blas_int_t incX );
 
-void trsv( char uplo, char trans, char diag, int n, const double* A,
-           int lda, double* x, int incX );
+void trsv( char uplo, char trans, char diag, blas_int_t n, const double* A,
+           blas_int_t lda, double* x, blas_int_t incX );
 
-void trsv( char uplo, char trans, char diag, int n, const complex<float>* A,
-           int lda, complex<float>* x, int incX );
+void trsv( char uplo, char trans, char diag, blas_int_t n, const complex<float>* A,
+           blas_int_t lda, complex<float>* x, blas_int_t incX );
 
-void trsv( char uplo, char trans, char diag, int n, const complex<double>* A,
-           int lda, complex<double>* x, int incX );
+void trsv( char uplo, char trans, char diag, blas_int_t n, const complex<double>* A,
+           blas_int_t lda, complex<double>* x, blas_int_t incX );
 //@}
 //*************************************************************************************************
 
@@ -138,8 +143,8 @@ void trsv( char uplo, char trans, char diag, int n, const complex<double>* A,
 // \note The function does not perform any test for singularity or near-singularity. Such tests
 // must be performed prior to calling this function!
 */
-inline void trsv( char uplo, char trans, char diag, int n, const float* A,
-                  int lda, float* x, int incX )
+inline void trsv( char uplo, char trans, char diag, blas_int_t n, const float* A,
+                  blas_int_t lda, float* x, blas_int_t incX )
 {
    strsv_( &uplo, &trans, &diag, &n, const_cast<float*>( A ), &lda, x, &incX
 #if !defined(BLAS_H)
@@ -185,8 +190,8 @@ inline void trsv( char uplo, char trans, char diag, int n, const float* A,
 // \note The function does not perform any test for singularity or near-singularity. Such tests
 // must be performed prior to calling this function!
 */
-inline void trsv( char uplo, char trans, char diag, int n, const double* A,
-                  int lda, double* x, int incX )
+inline void trsv( char uplo, char trans, char diag, blas_int_t n, const double* A,
+                  blas_int_t lda, double* x, blas_int_t incX )
 {
    dtrsv_( &uplo, &trans, &diag, &n, const_cast<double*>( A ), &lda, x, &incX
 #if !defined(BLAS_H)
@@ -232,8 +237,8 @@ inline void trsv( char uplo, char trans, char diag, int n, const double* A,
 // \note The function does not perform any test for singularity or near-singularity. Such tests
 // must be performed prior to calling this function!
 */
-inline void trsv( char uplo, char trans, char diag, int n, const complex<float>* A,
-                  int lda, complex<float>* x, int incX )
+inline void trsv( char uplo, char trans, char diag, blas_int_t n, const complex<float>* A,
+                  blas_int_t lda, complex<float>* x, blas_int_t incX )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
@@ -282,8 +287,8 @@ inline void trsv( char uplo, char trans, char diag, int n, const complex<float>*
 // \note The function does not perform any test for singularity or near-singularity. Such tests
 // must be performed prior to calling this function!
 */
-inline void trsv( char uplo, char trans, char diag, int n, const complex<double>* A,
-                  int lda, complex<double>* x, int incX )
+inline void trsv( char uplo, char trans, char diag, blas_int_t n, const complex<double>* A,
+                  blas_int_t lda, complex<double>* x, blas_int_t incX )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 

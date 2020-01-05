@@ -199,9 +199,9 @@ inline void trsv( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b, char uplo,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid diag argument provided" );
    }
 
-   int n   ( numeric_cast<int>( (~A).rows() ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int incX( 1 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t incX( 1 );
 
    if( n == 0 ) {
       return;

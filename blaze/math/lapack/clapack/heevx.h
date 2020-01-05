@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/blas/Types.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
@@ -56,16 +57,20 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void cheevx_( char* jobz, char* range, char* uplo, int* n, float* A, int* lda, float* vl,
-              float* vu, int* il, int* iu, float* abstol, int* m, float* w, float* Z, int* ldz,
-              float* work, int* lwork, float* rwork, int* iwork, int* ifail, int* info,
-              blaze::fortran_charlen_t njobz, blaze::fortran_charlen_t nrange,
-              blaze::fortran_charlen_t nuplo );
-void zheevx_( char* jobz, char* range, char* uplo, int* n, double* A, int* lda, double* vl,
-              double* vu, int* il, int* iu, double* abstol, int* m, double* w, double* Z, int* ldz,
-              double* work, int* lwork, double* rwork, int* iwork, int* ifail, int* info,
-              blaze::fortran_charlen_t njobz, blaze::fortran_charlen_t nrange,
-              blaze::fortran_charlen_t nuplo );
+void cheevx_( char* jobz, char* range, char* uplo, blaze::blas_int_t* n, float* A,
+              blaze::blas_int_t* lda, float* vl, float* vu, blaze::blas_int_t* il,
+              blaze::blas_int_t* iu, float* abstol, blaze::blas_int_t* m, float* w,
+              float* Z, blaze::blas_int_t* ldz, float* work, blaze::blas_int_t* lwork,
+              float* rwork, blaze::blas_int_t* iwork, blaze::blas_int_t* ifail,
+              blaze::blas_int_t* info, blaze::fortran_charlen_t njobz,
+              blaze::fortran_charlen_t nrange, blaze::fortran_charlen_t nuplo );
+void zheevx_( char* jobz, char* range, char* uplo, blaze::blas_int_t* n, double* A,
+              blaze::blas_int_t* lda, double* vl, double* vu, blaze::blas_int_t* il,
+              blaze::blas_int_t* iu, double* abstol, blaze::blas_int_t* m, double* w,
+              double* Z, blaze::blas_int_t* ldz, double* work, blaze::blas_int_t* lwork,
+              double* rwork, blaze::blas_int_t* iwork, blaze::blas_int_t* ifail,
+              blaze::blas_int_t* info, blaze::fortran_charlen_t njobz,
+              blaze::fortran_charlen_t nrange, blaze::fortran_charlen_t nuplo );
 
 }
 #endif
@@ -86,15 +91,17 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK Hermitian matrix eigenvalue functions (heevx) */
 //@{
-void heevx( char jobz, char range, char uplo, int n, complex<float>* A, int lda,
-            float vl, float vu, int il, int iu, float abstol, int* m, float* w,
-            complex<float>* Z, int ldz, complex<float>* work, int lwork,
-            float* rwork, int* iwork, int* ifail, int* info );
+void heevx( char jobz, char range, char uplo, blas_int_t n, complex<float>* A,
+            blas_int_t lda, float vl, float vu, blas_int_t il, blas_int_t iu,
+            float abstol, blas_int_t* m, float* w, complex<float>* Z, blas_int_t ldz,
+            complex<float>* work, blas_int_t lwork, float* rwork, blas_int_t* iwork,
+            blas_int_t* ifail, blas_int_t* info );
 
-void heevx( char jobz, char range, char uplo, int n, complex<double>* A, int lda,
-            double vl, double vu, int il, int iu, double abstol, int* m, double* w,
-            complex<double>* Z, int ldz, complex<double>* work, int lwork,
-            double* rwork, int* iwork, int* ifail, int* info );
+void heevx( char jobz, char range, char uplo, blas_int_t n, complex<double>* A,
+            blas_int_t lda, double vl, double vu, blas_int_t il, blas_int_t iu,
+            double abstol, blas_int_t* m, double* w, complex<double>* Z, blas_int_t ldz,
+            complex<double>* work, blas_int_t lwork, double* rwork, blas_int_t* iwork,
+            blas_int_t* ifail, blas_int_t* info );
 //@}
 //*************************************************************************************************
 
@@ -157,15 +164,17 @@ void heevx( char jobz, char range, char uplo, int n, complex<double>* A, int lda
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void heevx( char jobz, char range, char uplo, int n, complex<float>* A, int lda,
-                   float vl, float vu, int il, int iu, float abstol, int* m, float* w,
-                   complex<float>* Z, int ldz, complex<float>* work, int lwork,
-                   float* rwork, int* iwork, int* ifail, int* info )
+inline void heevx( char jobz, char range, char uplo, blas_int_t n, complex<float>* A,
+                   blas_int_t lda, float vl, float vu, blas_int_t il, blas_int_t iu,
+                   float abstol, blas_int_t* m, float* w, complex<float>* Z, blas_int_t ldz,
+                   complex<float>* work, blas_int_t lwork, float* rwork, blas_int_t* iwork,
+                   blas_int_t* ifail, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
    using ET = MKL_Complex8;
 #else
    using ET = float;
@@ -243,15 +252,17 @@ inline void heevx( char jobz, char range, char uplo, int n, complex<float>* A, i
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void heevx( char jobz, char range, char uplo, int n, complex<double>* A, int lda,
-                   double vl, double vu, int il, int iu, double abstol, int* m, double* w,
-                   complex<double>* Z, int ldz, complex<double>* work, int lwork,
-                   double* rwork, int* iwork, int* ifail, int* info )
+inline void heevx( char jobz, char range, char uplo, blas_int_t n, complex<double>* A,
+                   blas_int_t lda, double vl, double vu, blas_int_t il, blas_int_t iu,
+                   double abstol, blas_int_t* m, double* w, complex<double>* Z, blas_int_t ldz,
+                   complex<double>* work, blas_int_t lwork, double* rwork, blas_int_t* iwork,
+                   blas_int_t* ifail, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
    using ET = MKL_Complex16;
 #else
    using ET = double;

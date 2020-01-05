@@ -66,7 +66,7 @@ namespace blaze {
 /*!\name LAPACK LU-based inversion functions (getri) */
 //@{
 template< typename MT, bool SO >
-void getri( DenseMatrix<MT,SO>& A, const int* ipiv );
+void getri( DenseMatrix<MT,SO>& A, const blas_int_t* ipiv );
 //@}
 //*************************************************************************************************
 
@@ -108,7 +108,7 @@ void getri( DenseMatrix<MT,SO>& A, const int* ipiv );
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline void getri( DenseMatrix<MT,SO>& A, const int* ipiv )
+inline void getri( DenseMatrix<MT,SO>& A, const blas_int_t* ipiv )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
@@ -122,15 +122,15 @@ inline void getri( DenseMatrix<MT,SO>& A, const int* ipiv )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid non-square matrix provided" );
    }
 
-   int n   ( numeric_cast<int>( (~A).columns() ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int info( 0 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).columns() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t info( 0 );
 
    if( n == 0 ) {
       return;
    }
 
-   int lwork( n*lda );
+   blas_int_t lwork( n*lda );
    const std::unique_ptr<ET[]> work( new ET[lwork] );
 
    getri( n, (~A).data(), lda, ipiv, work.get(), lwork, &info );

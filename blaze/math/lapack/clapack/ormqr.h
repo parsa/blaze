@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/blas/Types.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
 
@@ -55,11 +56,13 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void sormqr_( char* side, char* trans, int* m, int* n, int* k, float* A, int* lda,
-              float* tau, float* C, int* ldc, float* work, int* lwork, int* info,
+void sormqr_( char* side, char* trans, blaze::blas_int_t* m, blaze::blas_int_t* n,
+              blaze::blas_int_t* k, float* A, blaze::blas_int_t* lda, float* tau, float* C,
+              blaze::blas_int_t* ldc, float* work, blaze::blas_int_t* lwork, blaze::blas_int_t* info,
               blaze::fortran_charlen_t nside, blaze::fortran_charlen_t ntrans );
-void dormqr_( char* side, char* trans, int* m, int* n, int* k, double* A, int* lda,
-              double* tau, double* C, int* ldc, double* work, int* lwork, int* info,
+void dormqr_( char* side, char* trans, blaze::blas_int_t* m, blaze::blas_int_t* n,
+              blaze::blas_int_t* k, double* A, blaze::blas_int_t* lda, double* tau, double* C,
+              blaze::blas_int_t* ldc, double* work, blaze::blas_int_t* lwork, blaze::blas_int_t* info,
               blaze::fortran_charlen_t nside, blaze::fortran_charlen_t ntrans );
 
 }
@@ -81,11 +84,13 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK functions to multiply Q from a QR decomposition with a matrix (ormqr) */
 //@{
-void ormqr( char side, char trans, int m, int n, int k, const float* A, int lda,
-            const float* tau, float* C, int ldc, float* work, int lwork, int* info );
+void ormqr( char side, char trans, blas_int_t m, blas_int_t n, blas_int_t k,
+            const float* A, blas_int_t lda, const float* tau, float* C, blas_int_t ldc,
+            float* work, blas_int_t lwork, blas_int_t* info );
 
-void ormqr( char side, char trans, int m, int n, int k, const double* A, int lda,
-            const double* tau, double* C, int ldc, double* work, int lwork, int* info );
+void ormqr( char side, char trans, blas_int_t m, blas_int_t n, blas_int_t k,
+            const double* A, blas_int_t lda, const double* tau, double* C, blas_int_t ldc,
+            double* work, blas_int_t lwork, blas_int_t* info );
 //@}
 //*************************************************************************************************
 
@@ -137,11 +142,12 @@ void ormqr( char side, char trans, int m, int n, int k, const double* A, int lda
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void ormqr( char side, char trans, int m, int n, int k, const float* A, int lda,
-                   const float* tau, float* C, int ldc, float* work, int lwork, int* info )
+inline void ormqr( char side, char trans, blas_int_t m, blas_int_t n, blas_int_t k,
+                   const float* A, blas_int_t lda, const float* tau, float* C, blas_int_t ldc,
+                   float* work, blas_int_t lwork, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    sormqr_( &side, &trans, &m, &n, &k, const_cast<float*>( A ), &lda,
@@ -201,11 +207,12 @@ inline void ormqr( char side, char trans, int m, int n, int k, const float* A, i
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void ormqr( char side, char trans, int m, int n, int k, const double* A, int lda,
-                   const double* tau, double* C, int ldc, double* work, int lwork, int* info )
+inline void ormqr( char side, char trans, blas_int_t m, blas_int_t n, blas_int_t k,
+                   const double* A, blas_int_t lda, const double* tau, double* C, blas_int_t ldc,
+                   double* work, blas_int_t lwork, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    dormqr_( &side, &trans, &m, &n, &k, const_cast<double*>( A ), &lda,

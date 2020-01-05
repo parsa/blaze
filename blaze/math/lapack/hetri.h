@@ -68,7 +68,7 @@ namespace blaze {
 /*!\name LAPACK LDLH-based inversion functions (hetri) */
 //@{
 template< typename MT, bool SO >
-void hetri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv );
+void hetri( DenseMatrix<MT,SO>& A, char uplo, const blas_int_t* ipiv );
 //@}
 //*************************************************************************************************
 
@@ -113,7 +113,7 @@ void hetri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv );
 */
 template< typename MT  // Type of the dense matrix
         , bool SO >    // Storage order of the dense matrix
-inline void hetri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv )
+inline void hetri( DenseMatrix<MT,SO>& A, char uplo, const blas_int_t* ipiv )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_ADAPTOR_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
@@ -131,9 +131,9 @@ inline void hetri( DenseMatrix<MT,SO>& A, char uplo, const int* ipiv )
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid uplo argument provided" );
    }
 
-   int n   ( numeric_cast<int>( (~A).columns() ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int info( 0 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).columns() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t info( 0 );
 
    if( n == 0 ) {
       return;

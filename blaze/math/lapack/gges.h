@@ -146,17 +146,17 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
 
-   const int n  ( numeric_cast<int>( (~A).rows() ) );
-   const int lda( numeric_cast<int>( (~A).spacing() ) );
-   const int ldb( numeric_cast<int>( (~B).spacing() ) );
-   int info( 0 );
-   int sdim( 0 );
+   const blas_int_t n  ( numeric_cast<blas_int_t>( (~A).rows() ) );
+   const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   const blas_int_t ldb( numeric_cast<blas_int_t>( (~B).spacing() ) );
+   blas_int_t info( 0 );
+   blas_int_t sdim( 0 );
 
-   int lwork = max( 8*n, 6*n + 16 );
+   blas_int_t lwork = max( 8*n, 6*n + 16 );
    const std::unique_ptr<BT[]> alphar( new BT[n] );
    const std::unique_ptr<BT[]> alphai( new BT[n] );
    const std::unique_ptr<BT[]> work( new BT[max(1,lwork)] );
-   const std::unique_ptr<int[]> bwork( select ? new int[n] : nullptr );
+   const std::unique_ptr<blas_int_t[]> bwork( select ? new blas_int_t[n] : nullptr );
 
    gges( 'N', 'N', ( select ? 'S' : 'N' ), select, n, (~A).data(), lda, (~B).data(), ldb, &sdim,
          alphar.get(), alphai.get(), (~beta).data(), nullptr, 1, nullptr, 1,
@@ -222,16 +222,16 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
 
-   const int n  ( numeric_cast<int>( (~A).rows() ) );
-   const int lda( numeric_cast<int>( (~A).spacing() ) );
-   const int ldb( numeric_cast<int>( (~B).spacing() ) );
-   int info( 0 );
-   int sdim( 0 );
+   const blas_int_t n  ( numeric_cast<blas_int_t>( (~A).rows() ) );
+   const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   const blas_int_t ldb( numeric_cast<blas_int_t>( (~B).spacing() ) );
+   blas_int_t info( 0 );
+   blas_int_t sdim( 0 );
 
-   int lwork = max( 1, 2*n );
+   blas_int_t lwork = max( 1, 2*n );
    const std::unique_ptr<CT[]> work( new CT[max(1,lwork)] );
    const std::unique_ptr<BT[]> rwork( new BT[8*n] );
-   const std::unique_ptr<int[]> bwork( select ? new int[n] : nullptr );
+   const std::unique_ptr<blas_int_t[]> bwork( select ? new blas_int_t[n] : nullptr );
 
    gges( 'N', 'N', ( select ? 'S' : 'N' ), select, n, (~A).data(), lda, (~B).data(), ldb, &sdim,
          (~alpha).data(), (~beta).data(), nullptr, 1, nullptr, 1,
@@ -559,19 +559,19 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
 
-   const int n    ( numeric_cast<int>( (~A).rows() ) );
-   const int lda  ( numeric_cast<int>( (~A).spacing() ) );
-   const int ldb  ( numeric_cast<int>( (~B).spacing() ) );
-   const int ldvsl( numeric_cast<int>( (~VSL).spacing() ) );
-   const int ldvsr( numeric_cast<int>( (~VSR).spacing() ) );
-   int info( 0 );
-   int sdim( 0 );
+   const blas_int_t n    ( numeric_cast<blas_int_t>( (~A).rows() ) );
+   const blas_int_t lda  ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   const blas_int_t ldb  ( numeric_cast<blas_int_t>( (~B).spacing() ) );
+   const blas_int_t ldvsl( numeric_cast<blas_int_t>( (~VSL).spacing() ) );
+   const blas_int_t ldvsr( numeric_cast<blas_int_t>( (~VSR).spacing() ) );
+   blas_int_t info( 0 );
+   blas_int_t sdim( 0 );
 
-   int lwork = max( 8*n, 6*n + 16 );
+   blas_int_t lwork = max( 8*n, 6*n + 16 );
    const std::unique_ptr<BT[]> alphar( new BT[n] );
    const std::unique_ptr<BT[]> alphai( new BT[n] );
    const std::unique_ptr<BT[]> work( new BT[max(1, lwork)] );
-   const std::unique_ptr<int[]> bwork( select ? new int[n] : nullptr );
+   const std::unique_ptr<blas_int_t[]> bwork( select ? new blas_int_t[n] : nullptr );
 
    gges( 'V', 'V', ( select ? 'S' : 'N' ), select, n, (~A).data(), lda, (~B).data(), ldb, &sdim,
          alphar.get(), alphai.get(), (~beta).data(), (~VSL).data(), ldvsl, (~VSR).data(), ldvsr,
@@ -648,18 +648,18 @@ inline auto gges_backend( DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
    BLAZE_CONSTRAINT_MUST_BE_COMPLEX_TYPE( CT );
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( BT );
 
-   const int n    ( numeric_cast<int>( (~A).rows() ) );
-   const int lda  ( numeric_cast<int>( (~A).spacing() ) );
-   const int ldb  ( numeric_cast<int>( (~B).spacing() ) );
-   const int ldvsl( numeric_cast<int>( (~VSL).spacing() ) );
-   const int ldvsr( numeric_cast<int>( (~VSR).spacing() ) );
-   int info( 0 );
-   int sdim( 0 );
+   const blas_int_t n    ( numeric_cast<blas_int_t>( (~A).rows() ) );
+   const blas_int_t lda  ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   const blas_int_t ldb  ( numeric_cast<blas_int_t>( (~B).spacing() ) );
+   const blas_int_t ldvsl( numeric_cast<blas_int_t>( (~VSL).spacing() ) );
+   const blas_int_t ldvsr( numeric_cast<blas_int_t>( (~VSR).spacing() ) );
+   blas_int_t info( 0 );
+   blas_int_t sdim( 0 );
 
-   int lwork = max( 1, 2*n );
+   blas_int_t lwork = max( 1, 2*n );
    const std::unique_ptr<CT[]> work( new CT[max(1,lwork)] );
    const std::unique_ptr<BT[]> rwork( new BT[8*n] );
-   const std::unique_ptr<int[]> bwork( select ? new int[n] : nullptr );
+   const std::unique_ptr<blas_int_t[]> bwork( select ? new blas_int_t[n] : nullptr );
 
    gges( 'V', 'V', ( select ? 'S' : 'N' ), select, n, (~A).data(), lda, (~B).data(), ldb, &sdim,
          (~alpha).data(), (~beta).data(), (~VSL).data(), ldvsl, (~VSR).data(), ldvsr,

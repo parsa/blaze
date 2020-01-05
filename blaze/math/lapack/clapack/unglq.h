@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/blas/Types.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
 
@@ -55,10 +56,12 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void cunglq_( int* m, int* n, int* k, float* A, int* lda, float* tau,
-              float* work, int* lwork, int* info );
-void zunglq_( int* m, int* n, int* k, double* A, int* lda, double* tau,
-              double* work, int* lwork, int* info );
+void cunglq_( blaze::blas_int_t* m, blaze::blas_int_t* n, blaze::blas_int_t* k, float* A,
+              blaze::blas_int_t* lda, float* tau, float* work, blaze::blas_int_t* lwork,
+              blaze::blas_int_t* info );
+void zunglq_( blaze::blas_int_t* m, blaze::blas_int_t* n, blaze::blas_int_t* k, double* A,
+              blaze::blas_int_t* lda, double* tau, double* work, blaze::blas_int_t* lwork,
+              blaze::blas_int_t* info );
 
 }
 #endif
@@ -79,11 +82,13 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK functions to reconstruct Q from a LQ decomposition (unglq) */
 //@{
-void unglq( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau,
-            complex<float>* work, int lwork, int* info );
+void unglq( blas_int_t m, blas_int_t n, blas_int_t k, complex<float>* A,
+            blas_int_t lda, const complex<float>* tau, complex<float>* work,
+            blas_int_t lwork, blas_int_t* info );
 
-void unglq( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau,
-            complex<double>* work, int lwork, int* info );
+void unglq( blas_int_t m, blas_int_t n, blas_int_t k, complex<double>* A,
+            blas_int_t lda, const complex<double>* tau, complex<double>* work,
+            blas_int_t lwork, blas_int_t* info );
 //@}
 //*************************************************************************************************
 
@@ -119,13 +124,15 @@ void unglq( int m, int n, int k, complex<double>* A, int lda, const complex<doub
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void unglq( int m, int n, int k, complex<float>* A, int lda, const complex<float>* tau,
-                   complex<float>* work, int lwork, int* info )
+inline void unglq( blas_int_t m, blas_int_t n, blas_int_t k, complex<float>* A,
+                   blas_int_t lda, const complex<float>* tau, complex<float>* work,
+                   blas_int_t lwork, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
    using ET = MKL_Complex8;
 #else
    using ET = float;
@@ -169,13 +176,15 @@ inline void unglq( int m, int n, int k, complex<float>* A, int lda, const comple
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void unglq( int m, int n, int k, complex<double>* A, int lda, const complex<double>* tau,
-                   complex<double>* work, int lwork, int* info )
+inline void unglq( blas_int_t m, blas_int_t n, blas_int_t k, complex<double>* A,
+                   blas_int_t lda, const complex<double>* tau, complex<double>* work,
+                   blas_int_t lwork, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
    using ET = MKL_Complex16;
 #else
    using ET = double;

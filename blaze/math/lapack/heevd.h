@@ -169,22 +169,22 @@ inline void heevd( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char jobz, char
 
    resize( ~w, (~A).rows(), false );
 
-   int n   ( numeric_cast<int>( (~A).rows()    ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int info( 0 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows()    ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t info( 0 );
 
    if( n == 0 ) {
       return;
    }
 
-   int lwork( n*n + 2*n + 2 );
+   blas_int_t lwork( n*n + 2*n + 2 );
    const std::unique_ptr<CT[]> work( new CT[lwork] );
 
-   int lrwork( 1 + 5*n + 2*n*n );
+   blas_int_t lrwork( 1 + 5*n + 2*n*n );
    const std::unique_ptr<BT[]> rwork( new BT[lrwork] );
 
-   int liwork( 3 + 5*n );
-   const std::unique_ptr<int[]> iwork( new int[liwork] );
+   blas_int_t liwork( 3 + 5*n );
+   const std::unique_ptr<blas_int_t[]> iwork( new blas_int_t[liwork] );
 
    if( IsRowMajorMatrix_v<MT> ) {
       ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );

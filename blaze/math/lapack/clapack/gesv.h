@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/blas/Types.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
 
@@ -55,10 +56,14 @@
 #if !defined(INTEL_MKL_VERSION) && !defined(BLAS_H)
 extern "C" {
 
-void sgesv_( int* n, int* nrhs, float* A, int* lda, int* ipiv, float* b, int* ldb, int* info );
-void dgesv_( int* n, int* nrhs, double* A, int* lda, int* ipiv, double* b, int* ldb, int* info );
-void cgesv_( int* n, int* nrhs, float* A, int* lda, int* ipiv, float* b, int* ldb, int* info );
-void zgesv_( int* n, int* nrhs, double* A, int* lda, int* ipiv, double* b, int* ldb, int* info );
+void sgesv_( blaze::blas_int_t* n, blaze::blas_int_t* nrhs, float* A, blaze::blas_int_t* lda,
+             blaze::blas_int_t* ipiv, float* b, blaze::blas_int_t* ldb, blaze::blas_int_t* info );
+void dgesv_( blaze::blas_int_t* n, blaze::blas_int_t* nrhs, double* A, blaze::blas_int_t* lda,
+             blaze::blas_int_t* ipiv, double* b, blaze::blas_int_t* ldb, blaze::blas_int_t* info );
+void cgesv_( blaze::blas_int_t* n, blaze::blas_int_t* nrhs, float* A, blaze::blas_int_t* lda,
+             blaze::blas_int_t* ipiv, float* b, blaze::blas_int_t* ldb, blaze::blas_int_t* info );
+void zgesv_( blaze::blas_int_t* n, blaze::blas_int_t* nrhs, double* A, blaze::blas_int_t* lda,
+             blaze::blas_int_t* ipiv, double* b, blaze::blas_int_t* ldb, blaze::blas_int_t* info );
 
 }
 #endif
@@ -79,13 +84,17 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK general linear system functions (gesv) */
 //@{
-void gesv( int n, int nrhs, float* A, int lda, int* ipiv, float* B, int ldb, int* info );
+void gesv( blas_int_t n, blas_int_t nrhs, float* A, blas_int_t lda,
+           blas_int_t* ipiv, float* B, blas_int_t ldb, blas_int_t* info );
 
-void gesv( int n, int nrhs, double* A, int lda, int* ipiv, double* B, int ldb, int* info );
+void gesv( blas_int_t n, blas_int_t nrhs, double* A, blas_int_t lda,
+           blas_int_t* ipiv, double* B, blas_int_t ldb, blas_int_t* info );
 
-void gesv( int n, int nrhs, complex<float>* A, int lda, int* ipiv, complex<float>* B, int ldb, int* info );
+void gesv( blas_int_t n, blas_int_t nrhs, complex<float>* A, blas_int_t lda,
+           blas_int_t* ipiv, complex<float>* B, blas_int_t ldb, blas_int_t* info );
 
-void gesv( int n, int nrhs, complex<double>* A, int lda, int* ipiv, complex<double>* B, int ldb, int* info );
+void gesv( blas_int_t n, blas_int_t nrhs, complex<double>* A, blas_int_t lda,
+           blas_int_t* ipiv, complex<double>* B, blas_int_t ldb, blas_int_t* info );
 //@}
 //*************************************************************************************************
 
@@ -133,10 +142,11 @@ void gesv( int n, int nrhs, complex<double>* A, int lda, int* ipiv, complex<doub
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void gesv( int n, int nrhs, float* A, int lda, int* ipiv, float* B, int ldb, int* info )
+inline void gesv( blas_int_t n, blas_int_t nrhs, float* A, blas_int_t lda,
+                  blas_int_t* ipiv, float* B, blas_int_t ldb, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    sgesv_( &n, &nrhs, A, &lda, ipiv, B, &ldb, info );
@@ -187,10 +197,11 @@ inline void gesv( int n, int nrhs, float* A, int lda, int* ipiv, float* B, int l
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void gesv( int n, int nrhs, double* A, int lda, int* ipiv, double* B, int ldb, int* info )
+inline void gesv( blas_int_t n, blas_int_t nrhs, double* A, blas_int_t lda,
+                  blas_int_t* ipiv, double* B, blas_int_t ldb, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    dgesv_( &n, &nrhs, A, &lda, ipiv, B, &ldb, info );
@@ -241,12 +252,14 @@ inline void gesv( int n, int nrhs, double* A, int lda, int* ipiv, double* B, int
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void gesv( int n, int nrhs, complex<float>* A, int lda, int* ipiv, complex<float>* B, int ldb, int* info )
+inline void gesv( blas_int_t n, blas_int_t nrhs, complex<float>* A, blas_int_t lda,
+                  blas_int_t* ipiv, complex<float>* B, blas_int_t ldb, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
    using ET = MKL_Complex8;
 #else
    using ET = float;
@@ -301,12 +314,14 @@ inline void gesv( int n, int nrhs, complex<float>* A, int lda, int* ipiv, comple
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void gesv( int n, int nrhs, complex<double>* A, int lda, int* ipiv, complex<double>* B, int ldb, int* info )
+inline void gesv( blas_int_t n, blas_int_t nrhs, complex<double>* A, blas_int_t lda,
+                  blas_int_t* ipiv, complex<double>* B, blas_int_t ldb, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
    using ET = MKL_Complex16;
 #else
    using ET = double;

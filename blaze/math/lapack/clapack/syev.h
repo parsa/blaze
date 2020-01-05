@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/blas/Types.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
@@ -56,10 +57,12 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void ssyev_( char* jobz, char* uplo, int* n, float* A, int* lda, float* w, float* work,
-             int* lwork, int* info, blaze::fortran_charlen_t njobz, blaze::fortran_charlen_t nuplo );
-void dsyev_( char* jobz, char* uplo, int* n, double* A, int* lda, double* w, double* work,
-             int* lwork, int* info, blaze::fortran_charlen_t njobz, blaze::fortran_charlen_t nuplo );
+void ssyev_( char* jobz, char* uplo, blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda,
+             float* w, float* work, blaze::blas_int_t* lwork, blaze::blas_int_t* info,
+             blaze::fortran_charlen_t njobz, blaze::fortran_charlen_t nuplo );
+void dsyev_( char* jobz, char* uplo, blaze::blas_int_t* n, double* A, blaze::blas_int_t* lda,
+             double* w, double* work, blaze::blas_int_t* lwork, blaze::blas_int_t* info,
+             blaze::fortran_charlen_t njobz, blaze::fortran_charlen_t nuplo );
 
 }
 #endif
@@ -80,11 +83,11 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK symmetric matrix eigenvalue functions (syev) */
 //@{
-void syev( char jobz, char uplo, int n, float* A, int lda,
-           float* w, float* work, int lwork, int* info );
+void syev( char jobz, char uplo, blas_int_t n, float* A, blas_int_t lda,
+           float* w, float* work, blas_int_t lwork, blas_int_t* info );
 
-void syev( char jobz, char uplo, int n, double* A, int lda,
-           double* w, double* work, int lwork, int* info );
+void syev( char jobz, char uplo, blas_int_t n, double* A, blas_int_t lda,
+           double* w, double* work, blas_int_t lwork, blas_int_t* info );
 //@}
 //*************************************************************************************************
 
@@ -129,11 +132,11 @@ void syev( char jobz, char uplo, int n, double* A, int lda,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void syev( char jobz, char uplo, int n, float* A, int lda,
-                  float* w, float* work, int lwork, int* info )
+inline void syev( char jobz, char uplo, blas_int_t n, float* A, blas_int_t lda,
+                  float* w, float* work, blas_int_t lwork, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    ssyev_( &jobz, &uplo, &n, A, &lda, w, work, &lwork, info
@@ -185,11 +188,11 @@ inline void syev( char jobz, char uplo, int n, float* A, int lda,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void syev( char jobz, char uplo, int n, double* A, int lda,
-                  double* w, double* work, int lwork, int* info )
+inline void syev( char jobz, char uplo, blas_int_t n, double* A, blas_int_t lda,
+                  double* w, double* work, blas_int_t lwork, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    dsyev_( &jobz, &uplo, &n, A, &lda, w, work, &lwork, info

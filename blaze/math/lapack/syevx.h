@@ -116,7 +116,8 @@ template< typename MT    // Type of the matrix A
         , bool TF        // Transpose flag of the vector w
         , typename ST >  // Type of the scalar boundary values
 inline size_t syevx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w,
-                             char uplo, char range, ST vl, ST vu, int il, int iu )
+                             char uplo, char range, ST vl, ST vu,
+                             blas_int_t il, blas_int_t iu )
 {
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( range != 'A' || (~w).size() == (~A).rows(), "Invalid vector dimension detected" );
@@ -127,15 +128,15 @@ inline size_t syevx_backend( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w,
 
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ET );
 
-   int n   ( numeric_cast<int>( (~A).rows() ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int m   ( 0 );
-   int info( 0 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t m   ( 0 );
+   blas_int_t info( 0 );
 
-   int lwork( 12*n + 2 );
+   blas_int_t lwork( 12*n + 2 );
    const std::unique_ptr<ET[]>  work ( new ET[lwork] );
-   const std::unique_ptr<int[]> iwork( new int[12*n] );
-   const std::unique_ptr<int[]> ifail( new int[n] );
+   const std::unique_ptr<blas_int_t[]> iwork( new blas_int_t[12*n] );
+   const std::unique_ptr<blas_int_t[]> ifail( new blas_int_t[n] );
 
    syevx( 'N', range, uplo, n, (~A).data(), lda, vl, vu, il, iu, ET(0), &m,
           (~w).data(), nullptr, 1, work.get(), lwork, iwork.get(), ifail.get(), &info );
@@ -388,11 +389,11 @@ inline size_t syevx( DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& w, char uplo, ST
       return 0;
    }
 
-   const char range( IsFloatingPoint_v<ST> ? 'V' : 'I' );
-   const ST   vl   ( IsFloatingPoint_v<ST> ? low : ST() );
-   const ST   vu   ( IsFloatingPoint_v<ST> ? upp : ST() );
-   const int  il   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( low ) );
-   const int  iu   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( upp ) );
+   const char       range( IsFloatingPoint_v<ST> ? 'V' : 'I' );
+   const ST         vl   ( IsFloatingPoint_v<ST> ? low : ST() );
+   const ST         vu   ( IsFloatingPoint_v<ST> ? upp : ST() );
+   const blas_int_t il   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<blas_int_t>( low ) );
+   const blas_int_t iu   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<blas_int_t>( upp ) );
 
    return syevx_backend( ~A, ~w, uplo, range, vl, vu, il, iu );
 }
@@ -432,7 +433,7 @@ template< typename MT1   // Type of the matrix A
         , typename ST >  // Type of the scalar boundary values
 inline size_t syevx_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
                              DenseMatrix<MT2,SO2>& Z, char uplo, char range,
-                             ST vl, ST vu, int il, int iu )
+                             ST vl, ST vu, blas_int_t il, blas_int_t iu )
 {
    BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Invalid non-square matrix detected" );
    BLAZE_INTERNAL_ASSERT( range != 'A' || (~w).size() == (~A).rows(), "Invalid vector dimension detected" );
@@ -447,16 +448,16 @@ inline size_t syevx_backend( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
 
    BLAZE_CONSTRAINT_MUST_BE_BUILTIN_TYPE( ET );
 
-   int n   ( numeric_cast<int>( (~A).rows() ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int m   ( 0 );
-   int ldz ( numeric_cast<int>( (~Z).spacing() ) );
-   int info( 0 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( (~A).rows() ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t m   ( 0 );
+   blas_int_t ldz ( numeric_cast<blas_int_t>( (~Z).spacing() ) );
+   blas_int_t info( 0 );
 
-   int lwork( 12*n + 2 );
+   blas_int_t lwork( 12*n + 2 );
    const std::unique_ptr<ET[]>  work ( new ET[lwork] );
-   const std::unique_ptr<int[]> iwork( new int[12*n] );
-   const std::unique_ptr<int[]> ifail( new int[n] );
+   const std::unique_ptr<blas_int_t[]> iwork( new blas_int_t[12*n] );
+   const std::unique_ptr<blas_int_t[]> ifail( new blas_int_t[n] );
 
    syevx( 'N', range, uplo, n, (~A).data(), lda, vl, vu, il, iu, ET(0), &m,
           (~w).data(), (~Z).data(), ldz, work.get(), lwork, iwork.get(), ifail.get(), &info );
@@ -749,11 +750,11 @@ inline size_t syevx( DenseMatrix<MT1,SO1>& A, DenseVector<VT,TF>& w,
       return 0;
    }
 
-   const char range( IsFloatingPoint_v<ST> ? 'V' : 'I' );
-   const ST   vl   ( IsFloatingPoint_v<ST> ? low : ST() );
-   const ST   vu   ( IsFloatingPoint_v<ST> ? upp : ST() );
-   const int  il   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( low ) );
-   const int  iu   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<int>( upp ) );
+   const char       range( IsFloatingPoint_v<ST> ? 'V' : 'I' );
+   const ST         vl   ( IsFloatingPoint_v<ST> ? low : ST() );
+   const ST         vu   ( IsFloatingPoint_v<ST> ? upp : ST() );
+   const blas_int_t il   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<blas_int_t>( low ) );
+   const blas_int_t iu   ( IsFloatingPoint_v<ST> ? 0 : numeric_cast<blas_int_t>( upp ) );
 
    return syevx_backend( ~A, ~w, ~Z, uplo, range, vl, vu, il, iu );
 }

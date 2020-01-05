@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/blas/Types.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
@@ -56,14 +57,18 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void ssytri_( char* uplo, int* n, float* A, int* lda, int* ipiv, float* work,
-              int* info, blaze::fortran_charlen_t nuplo );
-void dsytri_( char* uplo, int* n, double* A, int* lda, int* ipiv, double* work,
-              int* info, blaze::fortran_charlen_t nuplo );
-void csytri_( char* uplo, int* n, float* A, int* lda, int* ipiv, float* work,
-              int* info, blaze::fortran_charlen_t nuplo );
-void zsytri_( char* uplo, int* n, double* A, int* lda, int* ipiv, double* work,
-              int* info, blaze::fortran_charlen_t nuplo );
+void ssytri_( char* uplo, blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda,
+              blaze::blas_int_t* ipiv, float* work, blaze::blas_int_t* info,
+              blaze::fortran_charlen_t nuplo );
+void dsytri_( char* uplo, blaze::blas_int_t* n, double* A, blaze::blas_int_t* lda,
+              blaze::blas_int_t* ipiv, double* work, blaze::blas_int_t* info,
+              blaze::fortran_charlen_t nuplo );
+void csytri_( char* uplo, blaze::blas_int_t* n, float* A, blaze::blas_int_t* lda,
+              blaze::blas_int_t* ipiv, float* work, blaze::blas_int_t* info,
+              blaze::fortran_charlen_t nuplo );
+void zsytri_( char* uplo, blaze::blas_int_t* n, double* A, blaze::blas_int_t* lda,
+              blaze::blas_int_t* ipiv, double* work, blaze::blas_int_t* info,
+              blaze::fortran_charlen_t nuplo );
 
 }
 #endif
@@ -84,15 +89,17 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK LDLT-based inversion functions (sytri) */
 //@{
-void sytri( char uplo, int n, float* A, int lda, const int* ipiv, float* work, int* info );
+void sytri( char uplo, blas_int_t n, float* A, blas_int_t lda,
+            const blas_int_t* ipiv, float* work, blas_int_t* info );
 
-void sytri( char uplo, int n, double* A, int lda, const int* ipiv, double* work, int* info );
+void sytri( char uplo, blas_int_t n, double* A, blas_int_t lda,
+            const blas_int_t* ipiv, double* work, blas_int_t* info );
 
-void sytri( char uplo, int n, complex<float>* A, int lda,
-            const int* ipiv, complex<float>* work, int* info );
+void sytri( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda,
+            const blas_int_t* ipiv, complex<float>* work, blas_int_t* info );
 
-void sytri( char uplo, int n, complex<double>* A, int lda,
-            const int* ipiv, complex<double>* work, int* info );
+void sytri( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda,
+            const blas_int_t* ipiv, complex<double>* work, blas_int_t* info );
 //@}
 //*************************************************************************************************
 
@@ -129,13 +136,14 @@ void sytri( char uplo, int n, complex<double>* A, int lda,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void sytri( char uplo, int n, float* A, int lda, const int* ipiv, float* work, int* info )
+inline void sytri( char uplo, blas_int_t n, float* A, blas_int_t lda,
+                   const blas_int_t* ipiv, float* work, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
-   ssytri_( &uplo, &n, A, &lda, const_cast<int*>( ipiv ), work, info
+   ssytri_( &uplo, &n, A, &lda, const_cast<blas_int_t*>( ipiv ), work, info
 #if !defined(INTEL_MKL_VERSION)
           , blaze::fortran_charlen_t(1)
 #endif
@@ -176,13 +184,14 @@ inline void sytri( char uplo, int n, float* A, int lda, const int* ipiv, float* 
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void sytri( char uplo, int n, double* A, int lda, const int* ipiv, double* work, int* info )
+inline void sytri( char uplo, blas_int_t n, double* A, blas_int_t lda,
+                   const blas_int_t* ipiv, double* work, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
-   dsytri_( &uplo, &n, A, &lda, const_cast<int*>( ipiv ), work, info
+   dsytri_( &uplo, &n, A, &lda, const_cast<blas_int_t*>( ipiv ), work, info
 #if !defined(INTEL_MKL_VERSION)
           , blaze::fortran_charlen_t(1)
 #endif
@@ -223,20 +232,21 @@ inline void sytri( char uplo, int n, double* A, int lda, const int* ipiv, double
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void sytri( char uplo, int n, complex<float>* A, int lda,
-                   const int* ipiv, complex<float>* work, int* info )
+inline void sytri( char uplo, blas_int_t n, complex<float>* A, blas_int_t lda,
+                   const blas_int_t* ipiv, complex<float>* work, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex8 ) == sizeof( complex<float> ) );
    using ET = MKL_Complex8;
 #else
    using ET = float;
 #endif
 
    csytri_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda,
-            const_cast<int*>( ipiv ), reinterpret_cast<ET*>( work ), info
+            const_cast<blas_int_t*>( ipiv ), reinterpret_cast<ET*>( work ), info
 #if !defined(INTEL_MKL_VERSION)
           , blaze::fortran_charlen_t(1)
 #endif
@@ -277,20 +287,21 @@ inline void sytri( char uplo, int n, complex<float>* A, int lda,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void sytri( char uplo, int n, complex<double>* A, int lda,
-                   const int* ipiv, complex<double>* work, int* info )
+inline void sytri( char uplo, blas_int_t n, complex<double>* A, blas_int_t lda,
+                   const blas_int_t* ipiv, complex<double>* work, blas_int_t* info )
 {
    BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
 
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_Complex16 ) == sizeof( complex<double> ) );
    using ET = MKL_Complex16;
 #else
    using ET = double;
 #endif
 
    zsytri_( &uplo, &n, reinterpret_cast<ET*>( A ), &lda,
-            const_cast<int*>( ipiv ), reinterpret_cast<ET*>( work ), info
+            const_cast<blas_int_t*>( ipiv ), reinterpret_cast<ET*>( work ), info
 #if !defined(INTEL_MKL_VERSION)
           , blaze::fortran_charlen_t(1)
 #endif

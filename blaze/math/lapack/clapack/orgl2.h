@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/blas/Types.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
 
@@ -55,8 +56,10 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void sorgl2_( int* m, int* n, int* k, float* A, int* lda, float* tau, float* work, int* info );
-void dorgl2_( int* m, int* n, int* k, double* A, int* lda, double* tau, double* work, int* info );
+void sorgl2_( blaze::blas_int_t* m, blaze::blas_int_t* n, blaze::blas_int_t* k, float* A,
+              blaze::blas_int_t* lda, float* tau, float* work, blaze::blas_int_t* info );
+void dorgl2_( blaze::blas_int_t* m, blaze::blas_int_t* n, blaze::blas_int_t* k, double* A,
+              blaze::blas_int_t* lda, double* tau, double* work, blaze::blas_int_t* info );
 
 }
 #endif
@@ -77,9 +80,11 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK functions to reconstruct Q from a LQ decomposition (orgl2) */
 //@{
-void orgl2( int m, int n, int k, float* A, int lda, const float* tau, float* work, int* info );
+void orgl2( blas_int_t m, blas_int_t n, blas_int_t k, float* A, blas_int_t lda,
+            const float* tau, float* work, blas_int_t* info );
 
-void orgl2( int m, int n, int k, double* A, int lda, const double* tau, double* work, int* info );
+void orgl2( blas_int_t m, blas_int_t n, blas_int_t k, double* A, blas_int_t lda,
+             const double* tau, double* work, blas_int_t* info );
 //@}
 //*************************************************************************************************
 
@@ -114,10 +119,11 @@ void orgl2( int m, int n, int k, double* A, int lda, const double* tau, double* 
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void orgl2( int m, int n, int k, float* A, int lda, const float* tau, float* work, int* info )
+inline void orgl2( blas_int_t m, blas_int_t n, blas_int_t k, float* A, blas_int_t lda,
+                   const float* tau, float* work, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    sorgl2_( &m, &n, &k, A, &lda, const_cast<float*>( tau ), work, info );
@@ -155,10 +161,11 @@ inline void orgl2( int m, int n, int k, float* A, int lda, const float* tau, flo
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void orgl2( int m, int n, int k, double* A, int lda, const double* tau, double* work, int* info )
+inline void orgl2( blas_int_t m, blas_int_t n, blas_int_t k, double* A, blas_int_t lda,
+                   const double* tau, double* work, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    dorgl2_( &m, &n, &k, A, &lda, const_cast<double*>( tau ), work, info );

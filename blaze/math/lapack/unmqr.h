@@ -172,12 +172,12 @@ inline void unmqr( DenseMatrix<MT1,SO>& C, DenseMatrix<MT2,SO>& A,
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid trans argument provided" );
    }
 
-   int m   ( numeric_cast<int>( SO ? (~C).rows() : (~C).columns() ) );
-   int n   ( numeric_cast<int>( SO ? (~C).columns() : (~C).rows() ) );
-   int k   ( numeric_cast<int>( min( (~A).rows(), (~A).columns() ) ) );
-   int lda ( numeric_cast<int>( (~A).spacing() ) );
-   int ldc ( numeric_cast<int>( (~C).spacing() ) );
-   int info( 0 );
+   blas_int_t m   ( numeric_cast<blas_int_t>( SO ? (~C).rows() : (~C).columns() ) );
+   blas_int_t n   ( numeric_cast<blas_int_t>( SO ? (~C).columns() : (~C).rows() ) );
+   blas_int_t k   ( numeric_cast<blas_int_t>( min( (~A).rows(), (~A).columns() ) ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   blas_int_t ldc ( numeric_cast<blas_int_t>( (~C).spacing() ) );
+   blas_int_t info( 0 );
 
    if( m == 0 || n == 0 || k == 0 ) {
       return;
@@ -187,7 +187,7 @@ inline void unmqr( DenseMatrix<MT1,SO>& C, DenseMatrix<MT2,SO>& A,
       ( side  == 'L' )?( side  = 'R' ):( side  = 'L' );
    }
 
-   int lwork( k*ldc );
+   blas_int_t lwork( k*ldc );
    const std::unique_ptr<ET[]> work( new ET[lwork] );
 
    if( SO ) {

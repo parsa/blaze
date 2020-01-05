@@ -40,6 +40,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/blas/Types.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/StaticAssert.h>
 
@@ -55,10 +56,12 @@
 #if !defined(INTEL_MKL_VERSION)
 extern "C" {
 
-void sorglq_( int* m, int* n, int* k, float* A, int* lda, float* tau,
-              float* work, int* lwork, int* info );
-void dorglq_( int* m, int* n, int* k, double* A, int* lda, double* tau,
-              double* work, int* lwork, int* info );
+void sorglq_( blaze::blas_int_t* m, blaze::blas_int_t* n, blaze::blas_int_t* k, float* A,
+              blaze::blas_int_t* lda, float* tau, float* work, blaze::blas_int_t* lwork,
+              blaze::blas_int_t* info );
+void dorglq_( blaze::blas_int_t* m, blaze::blas_int_t* n, blaze::blas_int_t* k, double* A,
+              blaze::blas_int_t* lda, double* tau, double* work, blaze::blas_int_t* lwork,
+              blaze::blas_int_t* info );
 
 }
 #endif
@@ -79,11 +82,11 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name LAPACK functions to reconstruct Q from a LQ decomposition (orglq) */
 //@{
-void orglq( int m, int n, int k, float* A, int lda, const float* tau,
-            float* work, int lwork, int* info );
+void orglq( blas_int_t m, blas_int_t n, blas_int_t k, float* A, blas_int_t lda,
+            const float* tau, float* work, blas_int_t lwork, blas_int_t* info );
 
-void orglq( int m, int n, int k, double* A, int lda, const double* tau,
-            double* work, int lwork, int* info );
+void orglq( blas_int_t m, blas_int_t n, blas_int_t k, double* A, blas_int_t lda,
+            const double* tau, double* work, blas_int_t lwork, blas_int_t* info );
 //@}
 //*************************************************************************************************
 
@@ -119,10 +122,11 @@ void orglq( int m, int n, int k, double* A, int lda, const double* tau,
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void orglq( int m, int n, int k, float* A, int lda, const float* tau, float* work, int lwork, int* info )
+inline void orglq( blas_int_t m, blas_int_t n, blas_int_t k, float* A, blas_int_t lda,
+                   const float* tau, float* work, blas_int_t lwork, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    sorglq_( &m, &n, &k, A, &lda, const_cast<float*>( tau ), work, &lwork, info );
@@ -161,10 +165,11 @@ inline void orglq( int m, int n, int k, float* A, int lda, const float* tau, flo
 // is available and linked to the executable. Otherwise a call to this function will result in a
 // linker error.
 */
-inline void orglq( int m, int n, int k, double* A, int lda, const double* tau, double* work, int lwork, int* info )
+inline void orglq( blas_int_t m, blas_int_t n, blas_int_t k, double* A, blas_int_t lda,
+                   const double* tau, double* work, blas_int_t lwork, blas_int_t* info )
 {
 #if defined(INTEL_MKL_VERSION)
-   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( int ) );
+   BLAZE_STATIC_ASSERT( sizeof( MKL_INT ) == sizeof( blas_int_t ) );
 #endif
 
    dorglq_( &m, &n, &k, A, &lda, const_cast<double*>( tau ), work, &lwork, info );
