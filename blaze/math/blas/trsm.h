@@ -41,6 +41,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/Aliases.h>
+#include <blaze/math/blas/cblas/trsm.h>
 #include <blaze/math/constraints/BLASCompatible.h>
 #include <blaze/math/constraints/Computation.h>
 #include <blaze/math/constraints/ConstDataAccess.h>
@@ -49,11 +50,9 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blaze/system/BLAS.h>
-#include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/NumericCast.h>
-#include <blaze/util/StaticAssert.h>
 
 
 namespace blaze {
@@ -67,25 +66,171 @@ namespace blaze {
 //*************************************************************************************************
 /*!\name BLAS wrapper functions (trsm) */
 //@{
+template< typename MT, bool SO, typename VT, bool TF, typename ST >
+void trsm( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
+           char side, char uplo, char diag, ST alpha );
+
+template< typename MT1, bool SO1, typename MT2, bool SO2, typename ST >
+void trsm( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
+           char side, char uplo, char diag, ST alpha );
+//@}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief BLAS kernel for solving a triangular system of equations (\f$ A*\vec{x}=\alpha*\vec{b} \f$
+//        or \f$ \vec{x}^T*A=\alpha*\vec{b}^T \f$).
+// \ingroup blas
+//
+// \param A The system matrix.
+// \param B The matrix of right-hand sides.
+// \param side \c 'L' to compute \f$ A*\vec{x}=\alpha*\vec{b} \f$, \c 'R' to compute \f$ \vec{x}^T*A=\alpha*\vec{b}^T \f$.
+// \param uplo \c 'L' to use the lower triangle from \a A, \c 'U' to use the upper triangle.
+// \param alpha The scaling factor for \f$ \vec{b} \f$.
+// \return void
+//
+// This function solves a triangular system of equations based on the BLAS trsm() functions.
+// During the solution process, vector \a b is overwritten with the resulting vector \a x. Note
+// that the function only works for matrices with \c float, \c double, \c complex<float>, and
+// \c complex<double> element type. The attempt to call the function with matrices of any other
+// element type results in a compile time error. Also note that matrix \a A is expected to be a
+// square matrix.
+//
+// \note This function can only be used if a fitting BLAS library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
+*/
+template< typename MT    // Type of the system matrix
+        , bool SO        // Storage order of the system matrix
+        , typename VT    // Type of the target vector
+        , bool TF        // Storage order of the target vector
+        , typename ST >  // Type of the scalar factor
+inline void trsm( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
+                  char side, char uplo, char diag, ST alpha )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
+
+   BLAZE_CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS  ( MT );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( VT );
+
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<VT> );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square triangular matrix detected" );
+   BLAZE_INTERNAL_ASSERT( side == 'L'  || side == 'R', "Invalid side argument detected" );
+   BLAZE_INTERNAL_ASSERT( uplo == 'L' || uplo == 'U', "Invalid uplo argument detected" );
+   BLAZE_INTERNAL_ASSERT( diag == 'U' || diag == 'N', "Invalid diag argument detected" );
+
+   const char transA( IsRowMajorMatrix_v<MT> ? 'T' : 'N' );
+
+   const blas_int_t m  ( side == 'L' ? numeric_cast<blas_int_t>( (~b).size() ) : 1 );
+   const blas_int_t n  ( side == 'R' ? numeric_cast<blas_int_t>( (~b).size() ) : 1 );
+   const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
+
+   if( IsRowMajorMatrix_v<MT> ) {
+      ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
+   }
+
+   trsm( side, uplo, transA, diag, m, n, alpha, (~A).data(), lda, (~b).data(), m );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief BLAS kernel for solving a triangular system of equations (\f$ A*X=\alpha*B \f$ or
+//        \f$ X*A=\alpha*B \f$).
+// \ingroup blas
+//
+// \param A The system matrix.
+// \param B The matrix of right-hand sides.
+// \param side \c 'L' to compute \f$ A*X=\alpha*B \f$, \c 'R' to compute \f$ X*A=\alpha*B \f$.
+// \param uplo \c 'L' to use the lower triangle from \a A, \c 'U' to use the upper triangle.
+// \param alpha The scaling factor for \f$ B \f$.
+// \return void
+//
+// This function solves a triangular system of equations with multiple values for the right side
+// based on the BLAS trsm() functions. During the solution process, matrix \a B is overwritten
+// with the resulting matrix \a X. Note that the function only works for matrices with \c float,
+// \c double, \c complex<float>, and \c complex<double> element type. The attempt to call the
+// function with matrices of any other element type results in a compile time error. Also note
+// that matrix \a A is expected to be a square matrix.
+//
+// \note This function can only be used if a fitting BLAS library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
+*/
+template< typename MT1   // Type of the system matrix
+        , bool SO1       // Storage order of the system matrix
+        , typename MT2   // Type of the target matrix
+        , bool SO2       // Storage order of the target matrix
+        , typename ST >  // Type of the scalar factor
+inline void trsm( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
+                  char side, char uplo, char diag, ST alpha )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
+
+   BLAZE_CONSTRAINT_MUST_HAVE_CONST_DATA_ACCESS  ( MT1 );
+   BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( MT2 );
+
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT1> );
+   BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT2> );
+
+   BLAZE_INTERNAL_ASSERT( isSquare( ~A ), "Non-square triangular matrix detected" );
+   BLAZE_INTERNAL_ASSERT( side == 'L'  || side == 'R', "Invalid side argument detected" );
+   BLAZE_INTERNAL_ASSERT( uplo == 'L' || uplo == 'U', "Invalid uplo argument detected" );
+   BLAZE_INTERNAL_ASSERT( diag == 'U' || diag == 'N', "Invalid diag argument detected" );
+
+   if( IsRowMajorMatrix_v<MT2> )
+   {
+      const char transA( IsRowMajorMatrix_v<MT1> ? 'N' : 'T' );
+
+      const blas_int_t m  ( numeric_cast<blas_int_t>( (~B).columns() ) );
+      const blas_int_t n  ( numeric_cast<blas_int_t>( (~B).rows()    ) );
+      const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
+      const blas_int_t ldb( numeric_cast<blas_int_t>( (~B).spacing() ) );
+
+      ( side == 'L' )?( side = 'R' ):( side = 'L' );
+
+      if( IsRowMajorMatrix_v<MT1> ) {
+         ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
+      }
+
+      trsm( side, uplo, transA, diag, m, n, alpha, (~A).data(), lda, (~B).data(), ldb );
+   }
+   else
+   {
+      const char transA( IsRowMajorMatrix_v<MT1> ? 'T' : 'N' );
+
+      const blas_int_t m  ( numeric_cast<blas_int_t>( (~B).rows() )    );
+      const blas_int_t n  ( numeric_cast<blas_int_t>( (~B).columns() ) );
+      const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
+      const blas_int_t ldb( numeric_cast<blas_int_t>( (~B).spacing() ) );
+
+      if( IsRowMajorMatrix_v<MT1> ) {
+         ( uplo == 'L' )?( uplo = 'U' ):( uplo = 'L' );
+      }
+
+      trsm( side, uplo, transA, diag, m, n, alpha, (~A).data(), lda, (~B).data(), ldb );
+   }
+}
+//*************************************************************************************************
+
+
+
+
+
+//=================================================================================================
+//
+//  BLAS WRAPPER FUNCTIONS (TRSM)
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\name BLAS wrapper functions (trsm) */
+//@{
 #if BLAZE_BLAS_MODE
-
-void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
-           CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
-           float alpha, const float* A, int lda, float* B, int ldb );
-
-void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
-           CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
-           double alpha, const double* A, int lda, double* B, int ldb );
-
-void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
-           CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
-           complex<float> alpha, const complex<float>* A, int lda,
-           complex<float>* B, int ldb );
-
-void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
-           CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
-           complex<double> alpha, const complex<double>* A, int lda,
-           complex<double>* B, int ldb );
 
 template< typename MT, bool SO, typename VT, bool TF, typename ST >
 void trsm( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
@@ -97,150 +242,6 @@ void trsm( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
 
 #endif
 //@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-#if BLAZE_BLAS_MODE
-/*!\brief BLAS kernel for solving a triangular system of equations with single precision matrices
-//        (\f$ A*X=\alpha*B \f$ or \f$ X*A=\alpha*B \f$).
-// \ingroup blas
-//
-// \param order Specifies the storage order of matrix \a B (\a CblasRowMajor or \a CblasColMajor).
-// \param side \a CblasLeft to compute \f$ A*X=\alpha*B \f$, \a CblasRight to compute \f$ X*A=\alpha*B \f$.
-// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
-// \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
-// \param diag Specifies whether \a A is unitriangular (\a CblasNonUnit or \a CblasUnit).
-// \param m The number of rows of matrix \a B \f$[0..\infty)\f$.
-// \param n The number of columns of matrix \a B \f$[0..\infty)\f$.
-// \param alpha The scaling factor for \f$ B \f$.
-// \param A Pointer to the first element of the triangular matrix \a A.
-// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param B Pointer to the first element of matrix \a B.
-// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
-// \return void
-//
-// This function solves a triangular system of equations with multiple values for the right side
-// based on the cblas_strsm() function. During the solution process, matrix \a B is overwritten
-// with the resulting matrix \a X. Note that matrix \a A is expected to be a square matrix.
-*/
-BLAZE_ALWAYS_INLINE void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
-                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
-                               float alpha, const float* A, int lda, float* B, int ldb )
-{
-   cblas_strsm( order, side, uplo, transA, diag, m, n, alpha, A, lda, B, ldb );
-}
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-#if BLAZE_BLAS_MODE
-/*!\brief BLAS kernel for solving a triangular system of equations with double precision matrices
-//        (\f$ A*X=\alpha*B \f$ or \f$ X*A=\alpha*B \f$).
-// \ingroup blas
-//
-// \param order Specifies the storage order of matrix \a B (\a CblasRowMajor or \a CblasColMajor).
-// \param side \a CblasLeft to compute \f$ A*X=\alpha*B \f$, \a CblasRight to compute \f$ X*A=\alpha*B \f$.
-// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
-// \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
-// \param diag Specifies whether \a A is unitriangular (\a CblasNonUnit or \a CblasUnit).
-// \param m The number of rows of matrix \a B \f$[0..\infty)\f$.
-// \param n The number of columns of matrix \a B \f$[0..\infty)\f$.
-// \param alpha The scaling factor for \f$ B \f$.
-// \param A Pointer to the first element of the triangular matrix \a A.
-// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param B Pointer to the first element of matrix \a B.
-// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
-// \return void
-//
-// This function solves a triangular system of equations with multiple values for the right side
-// based on the cblas_dtrsm() function. During the solution process, matrix \a B is overwritten
-// with the resulting matrix \a X. Note that matrix \a A is expected to be a square matrix.
-*/
-BLAZE_ALWAYS_INLINE void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
-                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
-                               double alpha, const double* A, int lda, double* B, int ldb )
-{
-   cblas_dtrsm( order, side, uplo, transA, diag, m, n, alpha, A, lda, B, ldb );
-}
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-#if BLAZE_BLAS_MODE
-/*!\brief BLAS kernel for solving a triangular system of equations with single precision complex
-//        matrices (\f$ A*X=\alpha*B \f$ or \f$ X*A=\alpha*B \f$).
-// \ingroup blas
-//
-// \param order Specifies the storage order of matrix \a B (\a CblasRowMajor or \a CblasColMajor).
-// \param side \a CblasLeft to compute \f$ A*X=\alpha*B \f$, \a CblasRight to compute \f$ X*A=\alpha*B \f$.
-// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
-// \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
-// \param diag Specifies whether \a A is unitriangular (\a CblasNonUnit or \a CblasUnit).
-// \param m The number of rows of matrix \a B \f$[0..\infty)\f$.
-// \param n The number of columns of matrix \a B \f$[0..\infty)\f$.
-// \param alpha The scaling factor for \f$ B \f$.
-// \param A Pointer to the first element of the triangular matrix \a A.
-// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param B Pointer to the first element of matrix \a B.
-// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
-// \return void
-//
-// This function solves a triangular system of equations with multiple values for the right side
-// based on the cblas_ctrsm() function. During the solution process, matrix \a B is overwritten
-// with the resulting matrix \a X. Note that matrix \a A is expected to be a square matrix.
-*/
-BLAZE_ALWAYS_INLINE void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
-                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
-                               complex<float> alpha, const complex<float>* A, int lda,
-                               complex<float>* B, int ldb )
-{
-   BLAZE_STATIC_ASSERT( sizeof( complex<float> ) == 2UL*sizeof( float ) );
-
-   cblas_ctrsm( order, side, uplo, transA, diag, m, n, reinterpret_cast<const float*>( &alpha ),
-                reinterpret_cast<const float*>( A ), lda, reinterpret_cast<float*>( B ), ldb );
-}
-#endif
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-#if BLAZE_BLAS_MODE
-/*!\brief BLAS kernel for solving a triangular system of equations with double precision complex
-//        matrices (\f$ A*X=\alpha*B \f$ or \f$ X*A=\alpha*B \f$).
-// \ingroup blas
-//
-// \param order Specifies the storage order of matrix \a B (\a CblasRowMajor or \a CblasColMajor).
-// \param side \a CblasLeft to compute \f$ A*X=\alpha*B \f$, \a CblasRight to compute \f$ X*A=\alpha*B \f$.
-// \param uplo \a CblasLower to use the lower triangle from \a A, \a CblasUpper to use the upper triangle.
-// \param transA Specifies whether to transpose matrix \a A (\a CblasNoTrans or \a CblasTrans).
-// \param diag Specifies whether \a A is unitriangular (\a CblasNonUnit or \a CblasUnit).
-// \param m The number of rows of matrix \a B \f$[0..\infty)\f$.
-// \param n The number of columns of matrix \a B \f$[0..\infty)\f$.
-// \param alpha The scaling factor for \f$ B \f$.
-// \param A Pointer to the first element of the triangular matrix \a A.
-// \param lda The total number of elements between two rows/columns of matrix \a A \f$[0..\infty)\f$.
-// \param B Pointer to the first element of matrix \a B.
-// \param ldb The total number of elements between two rows/columns of matrix \a B \f$[0..\infty)\f$.
-// \return void
-//
-// This function solves a triangular system of equations with multiple values for the right side
-// based on the cblas_ztrsm() function. During the solution process, matrix \a B is overwritten
-// with the resulting matrix \a X. Note that matrix \a A is expected to be a square matrix.
-*/
-BLAZE_ALWAYS_INLINE void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO uplo,
-                               CBLAS_TRANSPOSE transA, CBLAS_DIAG diag, int m, int n,
-                               complex<double> alpha, const complex<double>* A, int lda,
-                               complex<double>* B, int ldb )
-{
-   BLAZE_STATIC_ASSERT( sizeof( complex<double> ) == 2UL*sizeof( double ) );
-
-   cblas_ztrsm( order, side, uplo, transA, diag, m, n, reinterpret_cast<const double*>( &alpha ),
-                reinterpret_cast<const double*>( A ), lda, reinterpret_cast<double*>( B ), ldb );
-}
-#endif
 //*************************************************************************************************
 
 
@@ -263,14 +264,18 @@ BLAZE_ALWAYS_INLINE void trsm( CBLAS_ORDER order, CBLAS_SIDE side, CBLAS_UPLO up
 // \c complex<double> element type. The attempt to call the function with matrices of any other
 // element type results in a compile time error. Also note that matrix \a A is expected to be a
 // square matrix.
+//
+// \note This function can only be used if a fitting BLAS library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 template< typename MT    // Type of the system matrix
         , bool SO        // Storage order of the system matrix
-        , typename VT    // Type of the right-hand side matrix
-        , bool TF        // Storage order of the right-hand side matrix
+        , typename VT    // Type of the target vector
+        , bool TF        // Storage order of the target vector
         , typename ST >  // Type of the scalar factor
-BLAZE_ALWAYS_INLINE void trsm( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
-                               CBLAS_SIDE side, CBLAS_UPLO uplo, ST alpha )
+inline void trsm( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& b,
+                  CBLAS_SIDE side, CBLAS_UPLO uplo, ST alpha )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
@@ -285,10 +290,10 @@ BLAZE_ALWAYS_INLINE void trsm( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& 
    BLAZE_INTERNAL_ASSERT( side == CblasLeft  || side == CblasRight, "Invalid side argument detected" );
    BLAZE_INTERNAL_ASSERT( uplo == CblasLower || uplo == CblasUpper, "Invalid uplo argument detected" );
 
-   const int m  ( ( side == CblasLeft  )?( numeric_cast<int>( (~b).size() ) ):( 1 ) );
-   const int n  ( ( side == CblasRight )?( numeric_cast<int>( (~b).size() ) ):( 1 ) );
-   const int lda( numeric_cast<int>( (~A).spacing() ) );
-   const int ldb( ( IsRowMajorMatrix_v<MT> )?( n ):( m ) );
+   const blas_int_t m  ( ( side == CblasLeft  )?( numeric_cast<blas_int_t>( (~b).size() ) ):( 1 ) );
+   const blas_int_t n  ( ( side == CblasRight )?( numeric_cast<blas_int_t>( (~b).size() ) ):( 1 ) );
+   const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   const blas_int_t ldb( ( IsRowMajorMatrix_v<MT> )?( n ):( m ) );
 
    trsm( ( IsRowMajorMatrix_v<MT> )?( CblasRowMajor ):( CblasColMajor ),
          side,
@@ -320,14 +325,18 @@ BLAZE_ALWAYS_INLINE void trsm( const DenseMatrix<MT,SO>& A, DenseVector<VT,TF>& 
 // \c double, \c complex<float>, and \c complex<double> element type. The attempt to call the
 // function with matrices of any other element type results in a compile time error. Also note
 // that matrix \a A is expected to be a square matrix.
+//
+// \note This function can only be used if a fitting BLAS library, which supports this function,
+// is available and linked to the executable. Otherwise a call to this function will result in a
+// linker error.
 */
 template< typename MT1   // Type of the system matrix
         , bool SO1       // Storage order of the system matrix
-        , typename MT2   // Type of the right-hand side matrix
-        , bool SO2       // Storage order of the right-hand side matrix
+        , typename MT2   // Type of the target matrix
+        , bool SO2       // Storage order of the target matrix
         , typename ST >  // Type of the scalar factor
-BLAZE_ALWAYS_INLINE void trsm( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
-                               CBLAS_SIDE side, CBLAS_UPLO uplo, ST alpha )
+inline void trsm( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& B,
+                  CBLAS_SIDE side, CBLAS_UPLO uplo, ST alpha )
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT1 );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( MT2 );
@@ -342,10 +351,10 @@ BLAZE_ALWAYS_INLINE void trsm( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO
    BLAZE_INTERNAL_ASSERT( side == CblasLeft  || side == CblasRight, "Invalid side argument detected" );
    BLAZE_INTERNAL_ASSERT( uplo == CblasLower || uplo == CblasUpper, "Invalid uplo argument detected" );
 
-   const int m  ( numeric_cast<int>( (~B).rows() )    );
-   const int n  ( numeric_cast<int>( (~B).columns() ) );
-   const int lda( numeric_cast<int>( (~A).spacing() ) );
-   const int ldb( numeric_cast<int>( (~B).spacing() ) );
+   const blas_int_t m  ( numeric_cast<blas_int_t>( (~B).rows() )    );
+   const blas_int_t n  ( numeric_cast<blas_int_t>( (~B).columns() ) );
+   const blas_int_t lda( numeric_cast<blas_int_t>( (~A).spacing() ) );
+   const blas_int_t ldb( numeric_cast<blas_int_t>( (~B).spacing() ) );
 
    trsm( ( IsRowMajorMatrix_v<MT2> )?( CblasRowMajor ):( CblasColMajor ),
          side,
