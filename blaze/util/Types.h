@@ -187,6 +187,30 @@ using fortran_charlen_t = size_t;
 #endif
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Type of single precision complex numbers within a Fortran forward declaration.
+// \ingroup util
+*/
+struct fortran_complex8
+{
+   float real;
+   float imag;
+};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Type of double precision complex numbers within a Fortran forward declaration.
+// \ingroup util
+*/
+struct fortran_complex16
+{
+   double real;
+   double imag;
+};
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif
