@@ -5250,7 +5250,7 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    resize( ~x, N );
    smpAssign( ~x, ~b );
 
-   const std::unique_ptr<int[]> ipiv( new int[N] );
+   const std::unique_ptr<blas_int_t[]> ipiv( new blas_int_t[N] );
 
    gesv( Atmp, ~x, ipiv.get() );
 }
@@ -5311,7 +5311,7 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    resize( ~x, N );
    smpAssign( ~x, ~b );
 
-   const std::unique_ptr<int[]> ipiv( new int[N] );
+   const std::unique_ptr<blas_int_t[]> ipiv( new blas_int_t[N] );
 
    sysv( Atmp, ~x, 'L', ipiv.get() );
 }
@@ -5372,7 +5372,7 @@ void solveNxN( const DenseMatrix<MT,SO>& A, DenseVector<VT1,TF1>& x, const Dense
    resize( ~x, N );
    smpAssign( ~x, ~b );
 
-   const std::unique_ptr<int[]> ipiv( new int[N] );
+   const std::unique_ptr<blas_int_t[]> ipiv( new blas_int_t[N] );
 
    hesv( Atmp, ~x, 'L', ipiv.get() );
 }
@@ -5765,7 +5765,7 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    MT4 Atmp( A );
    MT5 Xtmp( B );
 
-   const std::unique_ptr<int[]> ipiv( new int[N] );
+   const std::unique_ptr<blas_int_t[]> ipiv( new blas_int_t[N] );
 
    gesv( Atmp, Xtmp, ipiv.get() );
 
@@ -5832,7 +5832,7 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    MT4 Atmp( A );
    MT5 Xtmp( B );
 
-   const std::unique_ptr<int[]> ipiv( new int[N] );
+   const std::unique_ptr<blas_int_t[]> ipiv( new blas_int_t[N] );
 
    sysv( Atmp, Xtmp, 'L', ipiv.get() );
 
@@ -5899,7 +5899,7 @@ void solveNxN( const DenseMatrix<MT1,SO1>& A, DenseMatrix<MT2,SO2>& X, const Den
    MT4 Atmp( A );
    MT5 Xtmp( B );
 
-   const std::unique_ptr<int[]> ipiv( new int[N] );
+   const std::unique_ptr<blas_int_t[]> ipiv( new blas_int_t[N] );
 
    hesv( Atmp, Xtmp, 'L', ipiv.get() );
 

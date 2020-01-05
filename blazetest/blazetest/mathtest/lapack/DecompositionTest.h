@@ -173,8 +173,8 @@ void DecompositionTest::testGetrf()
 
       blaze::StaticMatrix<Type,5UL,2UL,blaze::columnMajor> B( trans( A ) );
 
-      blaze::StaticVector<int,2UL,blaze::columnVector> ipivA;
-      blaze::StaticVector<int,2UL,blaze::columnVector> ipivB;
+      blaze::StaticVector<blaze::blas_int_t,2UL,blaze::columnVector> ipivA;
+      blaze::StaticVector<blaze::blas_int_t,2UL,blaze::columnVector> ipivB;
 
       blaze::getrf( A, ipivA.data() );
       blaze::getrf( B, ipivB.data() );
@@ -200,8 +200,8 @@ void DecompositionTest::testGetrf()
 
       blaze::StaticMatrix<Type,2UL,5UL,blaze::columnMajor> B( trans( A ) );
 
-      blaze::StaticVector<int,2UL,blaze::columnVector> ipivA;
-      blaze::StaticVector<int,2UL,blaze::columnVector> ipivB;
+      blaze::StaticVector<blaze::blas_int_t,2UL,blaze::columnVector> ipivA;
+      blaze::StaticVector<blaze::blas_int_t,2UL,blaze::columnVector> ipivB;
 
       blaze::getrf( A, ipivA.data() );
       blaze::getrf( B, ipivB.data() );
@@ -250,8 +250,8 @@ void DecompositionTest::testSytrf()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( S );
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( S );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipivA;
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipivB;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipivA;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipivB;
 
       blaze::sytrf( A, 'L', ipivA.data() );
       blaze::sytrf( B, 'U', ipivB.data() );
@@ -300,8 +300,8 @@ void DecompositionTest::testHetrf()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor>    A( H );
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( H );
 
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipivA;
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipivB;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipivA;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipivB;
 
       blaze::hetrf( A, 'L', ipivA.data() );
       blaze::hetrf( B, 'U', ipivB.data() );

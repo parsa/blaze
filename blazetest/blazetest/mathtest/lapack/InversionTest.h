@@ -149,7 +149,7 @@ void InversionTest::testGetri()
       while( blaze::isDefault( det( A ) ) );
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> Ainv( A );
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       blaze::getrf( Ainv, ipiv.data() );
       blaze::getri( Ainv, ipiv.data() );
@@ -183,7 +183,7 @@ void InversionTest::testGetri()
       while( blaze::isDefault( det( A ) ) );
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> Ainv( A );
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       blaze::getrf( Ainv, ipiv.data() );
       blaze::getri( Ainv, ipiv.data() );
@@ -232,7 +232,7 @@ void InversionTest::testSytri()
       randomize( A );
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B( A );
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       blaze::sytrf( B, 'L', ipiv.data() );
       blaze::sytri( B, 'L', ipiv.data() );
@@ -260,7 +260,7 @@ void InversionTest::testSytri()
       randomize( A );
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B( A );
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       blaze::sytrf( B, 'U', ipiv.data() );
       blaze::sytri( B, 'U', ipiv.data() );
@@ -293,7 +293,7 @@ void InversionTest::testSytri()
       randomize( A );
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       blaze::sytrf( B, 'L', ipiv.data() );
       blaze::sytri( B, 'L', ipiv.data() );
@@ -321,7 +321,7 @@ void InversionTest::testSytri()
       randomize( A );
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       blaze::sytrf( B, 'U', ipiv.data() );
       blaze::sytri( B, 'U', ipiv.data() );
@@ -376,7 +376,7 @@ void InversionTest::testHetri()
       randomize( A );
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B( A );
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       blaze::hetrf( B, 'L', ipiv.data() );
       blaze::hetri( B, 'L', ipiv.data() );
@@ -404,7 +404,7 @@ void InversionTest::testHetri()
       randomize( A );
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B( A );
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       blaze::hetrf( B, 'U', ipiv.data() );
       blaze::hetri( B, 'U', ipiv.data() );
@@ -437,7 +437,7 @@ void InversionTest::testHetri()
       randomize( A );
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       blaze::hetrf( B, 'L', ipiv.data() );
       blaze::hetri( B, 'L', ipiv.data() );
@@ -465,7 +465,7 @@ void InversionTest::testHetri()
       randomize( A );
 
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B( A );
-      blaze::StaticVector<int,3UL,blaze::rowVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::rowVector> ipiv;
 
       blaze::hetrf( B, 'U', ipiv.data() );
       blaze::hetri( B, 'U', ipiv.data() );

@@ -105,14 +105,14 @@ void lu( DenseMatrix<MT1,SO1>& A, Matrix<MT2,SO2>& P )
 
    using ET = ElementType_t<MT2>;
 
-   const int m( numeric_cast<int>( (~A).rows()    ) );
-   const int n( numeric_cast<int>( (~A).columns() ) );
-   const int mindim( min( m, n ) );
-   const int size( SO1 ? m : n );
+   const blas_int_t m( numeric_cast<blas_int_t>( (~A).rows()    ) );
+   const blas_int_t n( numeric_cast<blas_int_t>( (~A).columns() ) );
+   const blas_int_t mindim( min( m, n ) );
+   const blas_int_t size( SO1 ? m : n );
 
-   const std::unique_ptr<int[]> helper( new int[mindim + size] );
-   int* ipiv  ( helper.get() );
-   int* permut( ipiv + mindim );
+   const std::unique_ptr<blas_int_t[]> helper( new blas_int_t[mindim + size] );
+   blas_int_t* ipiv  ( helper.get() );
+   blas_int_t* permut( ipiv + mindim );
 
    getrf( ~A, ipiv );
 

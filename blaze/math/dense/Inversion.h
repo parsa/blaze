@@ -3340,7 +3340,7 @@ inline void invertByLU( DenseMatrix<MT,SO>& dm )
    BLAZE_CONSTRAINT_MUST_BE_BLAS_COMPATIBLE_TYPE( ElementType_t<MT> );
 
    const size_t n( min( (~dm).rows(), (~dm).columns() ) );
-   const std::unique_ptr<int[]> ipiv( new int[n] );
+   const std::unique_ptr<blas_int_t[]> ipiv( new blas_int_t[n] );
 
    getrf( ~dm, ipiv.get() );
    getri( ~dm, ipiv.get() );
@@ -3387,7 +3387,7 @@ inline void invertByLDLT( DenseMatrix<MT,SO>& dm )
    BLAZE_USER_ASSERT( isSymmetric( ~dm ), "Invalid non-symmetric matrix detected" );
 
    const char uplo( ( SO )?( 'L' ):( 'U' ) );
-   const std::unique_ptr<int[]> ipiv( new int[(~dm).rows()] );
+   const std::unique_ptr<blas_int_t[]> ipiv( new blas_int_t[(~dm).rows()] );
 
    sytrf( ~dm, uplo, ipiv.get() );
    sytri( ~dm, uplo, ipiv.get() );
@@ -3489,7 +3489,7 @@ inline auto invertByLDLH( DenseMatrix<MT,SO>& dm )
    BLAZE_USER_ASSERT( isHermitian( ~dm ), "Invalid non-Hermitian matrix detected" );
 
    const char uplo( ( SO )?( 'L' ):( 'U' ) );
-   const std::unique_ptr<int[]> ipiv( new int[(~dm).rows()] );
+   const std::unique_ptr<blas_int_t[]> ipiv( new blas_int_t[(~dm).rows()] );
 
    hetrf( ~dm, uplo, ipiv.get() );
    hetri( ~dm, uplo, ipiv.get() );

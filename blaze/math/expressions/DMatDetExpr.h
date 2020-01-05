@@ -336,11 +336,11 @@ ElementType_t<MT> detNxN( const DenseMatrix<MT,SO>& dm )
 
    URT A( ~dm );
 
-   int n   ( numeric_cast<int>( A.rows()    ) );
-   int lda ( numeric_cast<int>( A.spacing() ) );
-   int info( 0 );
+   blas_int_t n   ( numeric_cast<blas_int_t>( A.rows()    ) );
+   blas_int_t lda ( numeric_cast<blas_int_t>( A.spacing() ) );
+   blas_int_t info( 0 );
 
-   const std::unique_ptr<int[]> ipiv( new int[n] );
+   const std::unique_ptr<blas_int_t[]> ipiv( new blas_int_t[n] );
 
    getrf( n, n, A.data(), lda, ipiv.get(), &info );
 

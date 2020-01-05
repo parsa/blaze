@@ -151,7 +151,7 @@ void SolverTest::testGesv()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::columnVector> ipiv;
 
       LU = A;
       x = b;
@@ -186,7 +186,7 @@ void SolverTest::testGesv()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::columnVector> ipiv;
 
       LU = A;
       X = B;
@@ -226,7 +226,7 @@ void SolverTest::testGesv()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::columnVector> ipiv;
 
       LU = A;
       x = b;
@@ -261,7 +261,7 @@ void SolverTest::testGesv()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::columnVector> ipiv;
 
       LU = A;
       X = B;
@@ -320,7 +320,7 @@ void SolverTest::testSysv()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::columnVector> ipiv;
 
       LU = A;
       x = b;
@@ -356,7 +356,7 @@ void SolverTest::testSysv()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::columnVector> ipiv;
 
       LU = A;
       x = b;
@@ -392,7 +392,7 @@ void SolverTest::testSysv()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::columnVector> ipiv;
 
       LU = A;
       X = B;
@@ -428,7 +428,7 @@ void SolverTest::testSysv()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::columnVector> ipiv;
 
       LU = A;
       X = B;
@@ -469,7 +469,7 @@ void SolverTest::testSysv()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::columnVector> ipiv;
 
       LU = A;
       x = b;
@@ -505,7 +505,7 @@ void SolverTest::testSysv()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::columnVector> ipiv;
 
       LU = A;
       x = b;
@@ -541,7 +541,7 @@ void SolverTest::testSysv()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::columnVector> ipiv;
 
       LU = A;
       X = B;
@@ -577,7 +577,7 @@ void SolverTest::testSysv()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::columnVector> ipiv;
 
       LU = A;
       X = B;
@@ -636,7 +636,7 @@ void SolverTest::testHesv()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::columnVector> ipiv;
 
       LU = A;
       x = b;
@@ -672,7 +672,7 @@ void SolverTest::testHesv()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::columnVector> ipiv;
 
       LU = A;
       x = b;
@@ -708,7 +708,7 @@ void SolverTest::testHesv()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::columnVector> ipiv;
 
       LU = A;
       X = B;
@@ -744,7 +744,7 @@ void SolverTest::testHesv()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::rowMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::columnVector> ipiv;
 
       LU = A;
       X = B;
@@ -785,7 +785,7 @@ void SolverTest::testHesv()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::columnVector> ipiv;
 
       LU = A;
       x = b;
@@ -821,7 +821,7 @@ void SolverTest::testHesv()
       blaze::StaticVector<Type,3UL,blaze::columnVector> b, x;
       randomize( b );
 
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::columnVector> ipiv;
 
       LU = A;
       x = b;
@@ -857,7 +857,7 @@ void SolverTest::testHesv()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::columnVector> ipiv;
 
       LU = A;
       X = B;
@@ -893,7 +893,7 @@ void SolverTest::testHesv()
       blaze::StaticMatrix<Type,3UL,3UL,blaze::columnMajor> B, X;
       randomize( B );
 
-      blaze::StaticVector<int,3UL,blaze::columnVector> ipiv;
+      blaze::StaticVector<blaze::blas_int_t,3UL,blaze::columnVector> ipiv;
 
       LU = A;
       X = B;
