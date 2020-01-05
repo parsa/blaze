@@ -62,6 +62,7 @@ function(Blaze_Import)
       )
       set(oneValueArgs
          BLAS                    # ON/OFF
+         BLAS_64BIT              # ON/OFF
          BLAS_PARALLEL           # ON/OFF
          BLAS_MV                 # ON/OFF
          BLAS_MM                 # ON/OFF
@@ -269,6 +270,16 @@ function(Blaze_Import)
       else()
          target_compile_definitions( Blaze INTERFACE BLAZE_BLAS_MODE=0 )
          msg("Configuring BLAS : OFF")
+      endif()
+
+      if(Blaze_Import_BLAS_64BIT)
+         target_compile_definitions( Blaze INTERFACE BLAZE_BLAS_IS_64BIT=1 )
+         msg_db("Configuring 64-bit BLAS : ON")
+      elseif("${Blaze_Import_BLAS_64BIT}" STREQUAL "")
+         msg_db("Using default configuration for 64-bit BLAS.")
+      else()
+         target_compile_definitions( Blaze INTERFACE BLAZE_BLAS_IS_64BIT=0 )
+         msg_db("Configuring 64-bit BLAS : OFF")
       endif()
 
       if(Blaze_Import_BLAS_PARALLEL)
