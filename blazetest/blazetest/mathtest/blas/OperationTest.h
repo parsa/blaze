@@ -280,7 +280,7 @@ void OperationTest::testTrsm()
 
       x = b;
 
-      blaze::trsm( A, x, CblasLeft, CblasLower, 1.0 );
+      blaze::trsm( A, x, 'L', 'L', 'N', 1.0 );
 
       if( ( A * x ) != b ) {
          std::ostringstream oss;
@@ -308,7 +308,7 @@ void OperationTest::testTrsm()
 
       x = b;
 
-      blaze::trsm( A, x, CblasLeft, CblasUpper, 1.0 );
+      blaze::trsm( A, x, 'L', 'U', 'N', 1.0 );
 
       if( ( A * x ) != b ) {
          std::ostringstream oss;
@@ -336,7 +336,7 @@ void OperationTest::testTrsm()
 
       x = b;
 
-      blaze::trsm( A, x, CblasRight, CblasLower, 1.0 );
+      blaze::trsm( A, x, 'R', 'L', 'N', 1.0 );
 
       if( ( x * A ) != b ) {
          std::ostringstream oss;
@@ -364,7 +364,7 @@ void OperationTest::testTrsm()
 
       x = b;
 
-      blaze::trsm( A, x, CblasRight, CblasUpper, 1.0 );
+      blaze::trsm( A, x, 'R', 'U', 'N', 1.0 );
 
       if( ( x * A ) != b ) {
          std::ostringstream oss;
@@ -392,7 +392,7 @@ void OperationTest::testTrsm()
 
       X = B;
 
-      blaze::trsm( A, X, CblasLeft, CblasLower, 1.0 );
+      blaze::trsm( A, X, 'L', 'L', 'N', 1.0 );
 
       if( ( A * X ) != B ) {
          std::ostringstream oss;
@@ -420,7 +420,7 @@ void OperationTest::testTrsm()
 
       X = B;
 
-      blaze::trsm( A, X, CblasLeft, CblasUpper, 1.0 );
+      blaze::trsm( A, X, 'L', 'U', 'N', 1.0 );
 
       if( ( A * X ) != B ) {
          std::ostringstream oss;
@@ -448,7 +448,7 @@ void OperationTest::testTrsm()
 
       X = B;
 
-      blaze::trsm( A, X, CblasRight, CblasLower, 1.0 );
+      blaze::trsm( A, X, 'R', 'L', 'N', 1.0 );
 
       if( ( X * A ) != B ) {
          std::ostringstream oss;
@@ -476,7 +476,7 @@ void OperationTest::testTrsm()
 
       X = B;
 
-      blaze::trsm( A, X, CblasRight, CblasUpper, 1.0 );
+      blaze::trsm( A, X, 'R', 'U', 'N', 1.0 );
 
       if( ( X * A ) != B ) {
          std::ostringstream oss;
@@ -509,7 +509,7 @@ void OperationTest::testTrsm()
 
       x = b;
 
-      blaze::trsm( A, x, CblasLeft, CblasLower, 1.0 );
+      blaze::trsm( A, x, 'L', 'L', 'N', 1.0 );
 
       if( ( A * x ) != b ) {
          std::ostringstream oss;
@@ -537,7 +537,7 @@ void OperationTest::testTrsm()
 
       x = b;
 
-      blaze::trsm( A, x, CblasLeft, CblasUpper, 1.0 );
+      blaze::trsm( A, x, 'L', 'U', 'N', 1.0 );
 
       if( ( A * x ) != b ) {
          std::ostringstream oss;
@@ -565,7 +565,7 @@ void OperationTest::testTrsm()
 
       x = b;
 
-      blaze::trsm( A, x, CblasRight, CblasLower, 1.0 );
+      blaze::trsm( A, x, 'R', 'L', 'N', 1.0 );
 
       if( ( x * A ) != b ) {
          std::ostringstream oss;
@@ -593,7 +593,7 @@ void OperationTest::testTrsm()
 
       x = b;
 
-      blaze::trsm( A, x, CblasRight, CblasUpper, 1.0 );
+      blaze::trsm( A, x, 'R', 'U', 'N', 1.0 );
 
       if( ( x * A ) != b ) {
          std::ostringstream oss;
@@ -621,7 +621,7 @@ void OperationTest::testTrsm()
 
       X = B;
 
-      blaze::trsm( A, X, CblasLeft, CblasLower, 1.0 );
+      blaze::trsm( A, X, 'L', 'L', 'N', 1.0 );
 
       if( ( A * X ) != B ) {
          std::ostringstream oss;
@@ -649,7 +649,7 @@ void OperationTest::testTrsm()
 
       X = B;
 
-      blaze::trsm( A, X, CblasLeft, CblasUpper, 1.0 );
+      blaze::trsm( A, X, 'L', 'U', 'N', 1.0 );
 
       if( ( A * X ) != B ) {
          std::ostringstream oss;
@@ -677,7 +677,7 @@ void OperationTest::testTrsm()
 
       X = B;
 
-      blaze::trsm( A, X, CblasRight, CblasLower, 1.0 );
+      blaze::trsm( A, X, 'R', 'L', 'N', 1.0 );
 
       if( ( X * A ) != B ) {
          std::ostringstream oss;
@@ -705,7 +705,7 @@ void OperationTest::testTrsm()
 
       X = B;
 
-      blaze::trsm( A, X, CblasRight, CblasUpper, 1.0 );
+      blaze::trsm( A, X, 'R', 'U', 'N', 1.0 );
 
       if( ( X * A ) != B ) {
          std::ostringstream oss;
