@@ -287,9 +287,9 @@ namespace blaze {
 
    using CustomType = CustomMatrix<double,aligned,padded>;
 
-   std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 12UL ) );
-   std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 12UL ) );
-   std::unique_ptr<int[],Deallocate> memory3( allocate<double>( 12UL ) );
+   std::unique_ptr<double[],Deallocate> memory1( allocate<double>( 12UL ) );
+   std::unique_ptr<double[],Deallocate> memory2( allocate<double>( 12UL ) );
+   std::unique_ptr<double[],Deallocate> memory3( allocate<double>( 12UL ) );
 
    // Creating padded custom 3x3 matrix with an additional padding element in each row
    CustomType A( memory1.get(), 3UL, 3UL, 4UL );
@@ -313,9 +313,9 @@ namespace blaze {
 
    using CustomType = CustomMatrix<double,aligned,unpadded>;
 
-   std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 9UL ) );
-   std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 9UL ) );
-   std::unique_ptr<int[],Deallocate> memory3( allocate<double>( 9UL ) );
+   std::unique_ptr<double[],Deallocate> memory1( allocate<double>( 9UL ) );
+   std::unique_ptr<double[],Deallocate> memory2( allocate<double>( 9UL ) );
+   std::unique_ptr<double[],Deallocate> memory3( allocate<double>( 9UL ) );
 
    // Creating unpadded custom 3x3 matrix
    CustomType A( memory1.get(), 3UL, 3UL );

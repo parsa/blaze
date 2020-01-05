@@ -272,9 +272,9 @@ namespace blaze {
 
    using CustomType = CustomVector<double,aligned,padded>;
 
-   std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 4UL ) );
-   std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 4UL ) );
-   std::unique_ptr<int[],Deallocate> memory3( allocate<double>( 4UL ) );
+   std::unique_ptr<double[],Deallocate> memory1( allocate<double>( 4UL ) );
+   std::unique_ptr<double[],Deallocate> memory2( allocate<double>( 4UL ) );
+   std::unique_ptr<double[],Deallocate> memory3( allocate<double>( 4UL ) );
 
    // Creating padded custom vectors of size 3 and a capacity of 4
    CustomType a( memory1.get(), 3UL, 4UL );
@@ -298,9 +298,9 @@ namespace blaze {
 
    using CustomType = CustomVector<double,aligned,unpadded>;
 
-   std::unique_ptr<int[],Deallocate> memory1( allocate<double>( 3UL ) );
-   std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 3UL ) );
-   std::unique_ptr<int[],Deallocate> memory3( allocate<double>( 3UL ) );
+   std::unique_ptr<double[],Deallocate> memory1( allocate<double>( 3UL ) );
+   std::unique_ptr<double[],Deallocate> memory2( allocate<double>( 3UL ) );
+   std::unique_ptr<double[],Deallocate> memory3( allocate<double>( 3UL ) );
 
    // Creating unpadded custom vector of size 3
    CustomType a( allocate<double>( 3UL ), 3UL );
@@ -358,7 +358,7 @@ namespace blaze {
 
    // Non-initialized custom column vector of size 2 and capacity 4. All given arrays are required
    // to be properly aligned and padded. The memory is managed via a 'std::unique_ptr'.
-   std::unique_ptr<int[],Deallocate> memory2( allocate<double>( 4UL ) );
+   std::unique_ptr<double[],Deallocate> memory2( allocate<double>( 4UL ) );
    CustomVector<double,aligned,padded> b( memory2.get(), 2UL, 4UL );
 
    b = 2.0;  // Homogeneous initialization of all elements
